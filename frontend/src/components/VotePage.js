@@ -8,7 +8,7 @@ import { useHistory } from "react-router";
 
 const VotePage = ({ }) => {
     const {id} = useParams();
-    const {data: election, isPending, error} = useFetch(`/Election/${id}`)
+    const {data: election, isPending, error} = useFetch(`/API/Election/${id}`)
     const [rankings, setRankings] = useState([])
     const history = useHistory();
 
@@ -26,7 +26,7 @@ const VotePage = ({ }) => {
             )
           }
           console.log(message)
-          fetch(`/Election/${id}`,{
+          fetch(`/API/Election/${id}`,{
             method: 'POST',
             headers: {
               'Accept': 'application/json',

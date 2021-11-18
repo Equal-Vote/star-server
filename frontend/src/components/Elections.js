@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import React from 'react'
 
 const Elections = ({ onVote,onNewElection,onViewResults}) => {
-    const {data: elections, isPending, error} = useFetch('/Elections')
+    const {data: elections, isPending, error} = useFetch('/API/Elections')
 
     return (
         <>

@@ -11,33 +11,36 @@ const logger = (req,res,next) => {
     console.log(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
     next();
 }
-
-app.use(logger);
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+//app.use(logger);
 
 // Get election from id
-app.get('/Election/:id', (req,res) => {
+app.get('/API/Election/:id', (req,res) => {
     res.json(Election)
 })
 
 // Get election results from id
-app.get('/ElectionResult/:id', (req,res) => {
+app.get('/API/ElectionResult/:id', (req,res) => {
     res.json(ElectionResults)
 
 })
 
 // Get all elections
-app.get('/Elections', (req,res) => {
+app.get('/API/Elections', (req,res) => {
     res.json(Elections)
 })
 
 // Create New Election
-app.post('/Elections', (req,res) => {
+app.post('/API/Elections', (req,res) => {
     const newElection = {
         ElectionName: req.body.ElectionName,
         CandidateNames: req.body.CandidateNames,
     }
+})
 
-    
+app.get('*', (req,res) => {
+    res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 })
 
 const PORT = process.env.PORT || 5000;

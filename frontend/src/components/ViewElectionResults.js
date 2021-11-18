@@ -5,7 +5,7 @@ import useFetch from "../useFetch";
 const ViewElectionResults = () => {
 
     const {id} = useParams();
-    const {data: electionResults, isPending, error} = useFetch(`/ElectionResult/${id}`)
+    const {data: electionResults, isPending, error} = useFetch(`/API/ElectionResult/${id}`)
 
     return (
         <>

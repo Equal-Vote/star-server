@@ -14,7 +14,7 @@ const AddElection = ( {  }) => {
     const history = useHistory()
     const onAddElection = (election) => {
 
-        fetch('/Elections',{
+        fetch('/API/Elections',{
             method: 'POST',
             headers: {
               'Accept': 'application/json',
