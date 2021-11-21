@@ -4,3 +4,5 @@
 /venv
 backend/__pycache__/app.cpython-37.pyc
 backend/node_modules
+
+package-lock.json
