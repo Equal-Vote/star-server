@@ -1,5 +1,5 @@
-import { Email } from "../../domain_model/Email";
-import { Uid } from "../../domain_model/Uid";
+import { Email } from "../../../domain_model/Email";
+import { Uid } from "../../../domain_model/Uid";
 import { UserModel } from "./data_model/UserModel";
 import { IUserStore } from "./IUserStore";
 
@@ -15,15 +15,23 @@ export class MockUserStore {
         this.indexByEmail = new Map();
     }
 
-    getByEmail(email: Email): Promise<UserModel> {
-        var res = this.indexByEmail.get(email);
-        res = res.copy();
+    getByEmail(email: Email): Promise<UserModel|null> {
+        console.log('get by email ' + email);
+        var val = this.indexByEmail.get(email);
+        console.log("got val " + JSON.stringify(val));
+        var res = null;
+        if (val !== undefined){
+            res = val.copy();
+        }
         return Promise.resolve(res);
     }
 
-    getById(id: Uid): Promise<UserModel> {
-        var res = this.indexById.get(id);
-        res = res.copy();
+    getById(id: Uid): Promise<UserModel|null> {
+        var val = this.indexById.get(id);
+        var res = null;
+        if (val != undefined){
+            res = val.copy();
+        }
         return Promise.resolve(res);
     }
 

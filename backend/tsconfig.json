@@ -3,9 +3,10 @@
     "allowJs": true,
     "target": "es6",
     "module": "commonjs",
-    "rootDir": "./src",
+    "rootDir": "../",
     "outDir": "./build",
     "esModuleInterop": true,
-    "strict": true
-  }
+    "strict": true,
+  },
+  "include": ["../domain_model/**/*", "./src/**/*"],
 }

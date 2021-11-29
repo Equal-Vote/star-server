@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run-script build && node ./build/index",
+    "start": "npm run-script build && node ./build/backend/src/index.js",
     "dev": "nodemon ./src/index.ts",
      "build": "tsc --project ./"
   },
