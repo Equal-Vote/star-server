@@ -28,5 +28,3 @@ Launch front end to localhost:3000
 cd frontend
 npm start
 ```
-
-evans was here
