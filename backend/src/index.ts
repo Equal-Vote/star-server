@@ -1,4 +1,4 @@
-const express = require('express');
+import express from 'express';
 
 const app = express();
 
@@ -7,13 +7,16 @@ const Elections = require('./Elections')
 const Election = require('./Election')
 const ElectionResults = require('./ElectionResults')
 
-const logger = (req,res,next) => {
-    console.log(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
-    next();
-}
-const path = require('path');
-app.use(express.static(path.join(__dirname, '../frontend/build')));
+const frontendPath = '../../frontend/build/';
+
+// const logger = (req,res,next) => {
+//     console.log(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+//     next();
+// }
 //app.use(logger);
+
+const path = require('path');
+app.use(express.static(path.join(__dirname, frontendPath)));
 
 // Get election from id
 app.get('/API/Election/:id', (req,res) => {
@@ -39,8 +42,13 @@ app.post('/API/Elections', (req,res) => {
     }
 })
 
+// Get all elections
+app.get('/debug/', (req,res) => {
+    res.json("12:27")
+})
+
 app.get('*', (req,res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+    res.sendFile(path.join(__dirname, frontendPath + "index.html"));
 })
 
 const PORT = process.env.PORT || 5000;
