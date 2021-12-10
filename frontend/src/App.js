@@ -4,7 +4,7 @@ import Elections from './components/Elections'
 import AddElection from './components/AddElection'
 import VotePage from './components/VotePage'
 import ViewElectionResults from './components/ViewElectionResults'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 const App = () => {
 
@@ -12,21 +12,12 @@ const App = () => {
     <Router>
       <div className="container">
         <Header/>
-        <Switch>
-          <Route exact path='/'> 
-            <Elections/>
-          </Route>
-          <Route exact path='/CreateElection'> 
-            <AddElection />
-          </Route>
-          <Route path='/Election/:id'> 
-            <VotePage />
-          </Route>
-          <Route path='/ElectionResults/:id'> 
-            <ViewElectionResults />
-          </Route>
-        </Switch>
-        
+        <Routes>
+          <Route path='/' element={<Elections/>}/> 
+          <Route path='/CreateElection' element={<AddElection />}/>
+          <Route path='/Election/:id' element={<VotePage/>}/> 
+          <Route path='/ElectionResults/:id' element={<ViewElectionResults />}/> 
+        </Routes>
       </div>
     </Router>
   );
