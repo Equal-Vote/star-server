@@ -4,13 +4,13 @@ import Button from "./Button";
 import useFetch from "../useFetch";
 import { useParams } from "react-router";
 import React from 'react'
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 
 const VotePage = ({ }) => {
     const {id} = useParams();
     const {data: election, isPending, error} = useFetch(`/API/Election/${id}`)
     const [rankings, setRankings] = useState([])
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const onUpdate = (rankings) => {
         setRankings(rankings)
@@ -34,7 +34,7 @@ const VotePage = ({ }) => {
             },
             body: JSON.stringify(message)
           }).then(
-            history.push(`/ElectionResults/${id}`)
+            navigate.push(`/ElectionResults/${id}`)
           )
     }
     return (

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import React from 'react'
-import { useHistory } from "react-router"
+import { useNavigate } from "react-router"
 
 const AddElection = ( {  }) => {
     const [electionName, setElectionName] = useState('')
@@ -11,7 +11,7 @@ const AddElection = ( {  }) => {
         setCandidateNames(newArray)
 
     }
-    const history = useHistory()
+    const navigate = useNavigate()
     const onAddElection = (election) => {
 
         fetch('/API/Elections',{
@@ -25,7 +25,7 @@ const AddElection = ( {  }) => {
             })
           }).then(response =>
             response.json().then(
-                history.push('/')
+                navigate.push('/')
             ))
     }
 
