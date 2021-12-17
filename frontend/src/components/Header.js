@@ -3,16 +3,25 @@ import { Link } from 'react-router-dom'
 import Button from './Button'
 import React from 'react'
 
-
-const Header = (props) => {
-    
+const Header = ({title, authConfig}) => {
+    const queryString = Object.entries(authConfig['params'])
+                              .map(([key, value]) => `${key}=${value}`)
+                              .join('&')
     return (
         <header class='header'>
-            
-            <Link to ='/'> <h1>{props.title}</h1></Link>
-                
-            
+            <Link to ='/'> <h1>{title}</h1></Link>
+            {window.location.pathname != '/Login' &&
+                <Button
+                    color='steelblue'
+                    text='Login'
+                    // I'm using window.open instead of navigate since loginUrl could be external, and navigate only supports local
+                    onClick={() => (
+                        window.location = authConfig['endpoints']['login']+"?"+queryString
+                    )}
+                />
+            }
             {/* {<Button color='steelblue' text='Home' onClick={props.onClick}/>} */}
+
         </header>
     )
 }

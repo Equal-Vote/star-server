@@ -71,8 +71,20 @@ body {
   justify-content: space-between;
 }
 
-.add-form {
+.login-form {
   margin-bottom: 40px;
+  padding-right: 30px;
+  border-right: 2px solid steelblue;
+}
+
+.register-form {
+  margin-bottom: 40px;
+  padding-left: 30px;
+}
+
+.login-components{
+  display:flex;
+  flex-direction:row;
 }
 
 .form-control {
