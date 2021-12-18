@@ -1,32 +1,44 @@
 import express from 'express';
 import { testMockUserStore } from './auth/test/TestMockUserStore';
+import StarResults from './StarResults.cjs';
 
 const app = express();
 
 //Example data structures that would be sent in API responses
 const Elections = require('./Elections')
 const Election = require('./Election')
+const Ballots = new Array();
 const ElectionResults = require('./ElectionResults')
 
 const frontendPath = '../../../../frontend/build/';
 
-// const logger = (req,res,next) => {
-//     console.log(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
-//     next();
-// }
 //app.use(logger);
-
+function GetResultsByID(electionID: number) {
+    // console.log('Looking For Ballots for Election:')
+    // console.log(electionID)
+    const ballots = Ballots.filter(Ballot  => parseInt(Ballot.ElectionID) === electionID );
+    // console.log(ballots)
+    const cvr = ballots.map((ballot:any) => (
+        ballot.candidateScores.map((candidateScore:any) =>(
+            candidateScore.score
+        ))
+    ))
+    const candidateNames = Elections[electionID].Candidates.map((Candidate:any) =>( Candidate.CandidateName))
+    const results = StarResults(candidateNames,cvr)
+    return results
+}
 const path = require('path');
 app.use(express.static(path.join(__dirname, frontendPath)));
+app.use(express.json());
 
 // Get election from id
 app.get('/API/Election/:id', (req, res) => {
-    res.json(Election)
+    res.json(Elections[req.params.id])
 })
 
 // Get election results from id
 app.get('/API/ElectionResult/:id', (req, res) => {
-    res.json(ElectionResults)
+    res.json(GetResultsByID(parseInt(req.params.id)))
 
 })
 
@@ -37,10 +49,22 @@ app.get('/API/Elections', (req, res) => {
 
 // Create New Election
 app.post('/API/Elections', (req, res) => {
+    const Candidates = req.body.Election.Candidates.map((CandidateName:any,ind:any) => ({id: ind,CandidateName: CandidateName}))
     const newElection = {
-        ElectionName: req.body.ElectionName,
-        CandidateNames: req.body.CandidateNames,
+        id: Elections.length,
+        ElectionName: req.body.Election.ElectionName,
+        Candidates: Candidates,
     }
+    Elections.push(newElection)
+    console.log(Elections)
+})
+
+// Submit Ballot
+app.post('/API/Election/:id', (req, res) => {
+console.log('Ballot Submitted')
+Ballots.push(req.body)
+console.log(Ballots)
+
 })
 
 // Just for debugging

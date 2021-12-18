@@ -7,13 +7,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run-script build && node ./build/backend/src/index.js",
     "dev": "nodemon ./src/index.ts",
-     "build": "tsc --project ./"
+    "build": "tsc --project ./"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "star-tabulator": "^1.0.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",

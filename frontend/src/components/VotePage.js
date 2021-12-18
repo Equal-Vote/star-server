@@ -34,8 +34,9 @@ const VotePage = ({ }) => {
             },
             body: JSON.stringify(message)
           }).then(
-            navigate.push(`/ElectionResults/${id}`)
+            navigate(`/ElectionResults/${id}`)
           )
+          
     }
     return (
         <div>

@@ -23,10 +23,7 @@ const AddElection = ( {  }) => {
             body: JSON.stringify({
               Election: election,
             })
-          }).then(response =>
-            response.json().then(
-                navigate.push('/')
-            ))
+          }).then(navigate('/'))
     }
 
 
@@ -37,8 +34,8 @@ const AddElection = ( {  }) => {
             alert('Please add election name')
             return
         }
-
-        onAddElection({electionName,candidateNames})
+        console.log({ElectionName: electionName,Candidates:candidateNames})
+        onAddElection({ElectionName: electionName,Candidates:candidateNames})
         setElectionName('')
         setCandidateNames(['','','','',''])
     }
