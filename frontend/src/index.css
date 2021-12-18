@@ -54,23 +54,46 @@ body {
   width: 100%;
 }
 
-.task {
-  background: #f4f4f4;
+.cell {
+  background: #ffffff;
   margin: 5px;
   padding: 10px 20px;
-  cursor: pointer;
 }
 
-.task.reminder {
+.cell.reminder {
   border-left: 5px solid green;
 }
 
-.task h3 {
+.cell h3 {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-
+/* .matrix table th, td, thead, tr, tbody {
+  border: 1px solid rgba(100, 100, 100, 0.39);
+} */
+.matrix th, td {
+  border: 1px solid rgba(100, 100, 100, 0.39);
+}
+.matrix th,thead,tr,tbody {
+  text-align: center;
+}
+.matrix th {
+  text-align: center;
+  overflow-wrap: break-word;
+}
+.matrix thead {
+  text-align: center;
+}
+.matrix tr {
+  text-align: center;
+}
+.matrix tbody {
+  text-align: center;
+}
+.matrix table {
+  table-layout: fixed;  
+}
 .login-form {
   margin-bottom: 40px;
   padding-right: 30px;
@@ -531,8 +554,8 @@ h2.selected {
 }
 
 .circle p {
-  margin-top: -0.1em;
-  margin-left: 0.16em;
+  margin-top: -0.3em;
+  margin-left: 0.em;
   text-align: left;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1.35em;

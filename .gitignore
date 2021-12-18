@@ -4,4 +4,5 @@
 /venv
 backend/__pycache__/app.cpython-37.pyc
 backend/node_modules
+backend/build
 *Workspacenpm-cache*
