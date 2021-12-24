@@ -4,7 +4,7 @@ import useFetch from "../useFetch"
 import { Link } from "react-router-dom"
 import React from 'react'
 
-const Elections = ({ onVote,onNewElection,onViewResults}) => {
+const Elections = () => {
     const {data: elections, isPending, error} = useFetch('/API/Elections')
 
     return (
@@ -15,8 +15,6 @@ const Elections = ({ onVote,onNewElection,onViewResults}) => {
             { elections && <div><Link to='/CreateElection'> Create New Election</Link></div>}
             { elections && elections.map((election) => (
                 <Election key = {election.id} election ={election}
-                onVote = {onVote}
-                onViewResults = {onViewResults}
                 />
             ))}
         </>

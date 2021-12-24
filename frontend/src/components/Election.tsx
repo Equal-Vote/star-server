@@ -1,8 +1,8 @@
 import Button from "./Button"
-import { Link, useHistory } from "react-router-dom"
+import { Link } from "react-router-dom"
 import React from 'react'
 
-const Election = ({election, onVote, onViewResults}) => {
+const Election = ({election}) => {
 
     return (
         <div>
