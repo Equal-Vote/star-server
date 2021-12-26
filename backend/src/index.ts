@@ -1,6 +1,10 @@
 import express from 'express';
 import { testMockUserStore } from './auth/test/TestMockUserStore';
 import StarResults from './StarResults.cjs';
+<<<<<<< HEAD
+import { tempTestSuite } from './test/TempTestSuite';
+=======
+>>>>>>> d33e9f359e84198ef54255878f90a115777c00cd
 
 const app = express();
 
@@ -69,11 +73,19 @@ console.log(Ballots)
 
 // Just for debugging
 app.get('/debug/', (req, res) => {
+<<<<<<< HEAD
+    res.json("19:40")
+})
+
+app.get('/debug/test', (req, res) => {
+    tempTestSuite().then(
+=======
     res.json("15:29")
 })
 
 app.get('/debug/test', (req, res) => {
     testMockUserStore().then(
+>>>>>>> d33e9f359e84198ef54255878f90a115777c00cd
         val => {
             res.json(val);
         }
