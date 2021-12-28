@@ -8,14 +8,17 @@ import ViewElectionResults from './components/ViewElectionResults'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 const App = () => {
-  // login details
   /* oAuth2 reference
- * Express Guide: https://www.youtube.com/watch?v=Ppeqd9xXp3Q 
-  * Cognito oAuth Endpoints Reference: https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html
-  * Auth0 Endpoints: https://auth0.com/docs/authorization/protocols/protocol-oauth2
-  * openid.net: https://openid.net/specs/openid-connect-core-1_0.html
-  */
-  const localBaseUrl = 'http://localhost:3000'
+   * Express Guide: https://www.youtube.com/watch?v=Ppeqd9xXp3Q 
+   * Cognito oAuth Endpoints Reference: https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html
+   * Auth0 Endpoints: https://auth0.com/docs/authorization/protocols/protocol-oauth2
+   * openid.net: https://openid.net/specs/openid-connect-core-1_0.html
+   */
+
+  // Q: Why not use relative links for the local endpoints? That way you don't have to consider the window location at all
+  // A: That was my initial plan, but since the oAuth endpoints will almost always be direct endpoints, I figured I'd keep
+  //    it consistent for the testing cases as well
+  const localBaseUrl = window.location.origin; 
   const localAuthConfig = {
     endpoints: {
       login: `${localBaseUrl}/Login`,
@@ -26,7 +29,7 @@ const App = () => {
     params: {
       client_id: 'abcd', // dummy client id for now
       response_type: 'code',
-      redirect_uri: 'http://localhost:3000',
+      redirect_uri: window.location.origin,
     }
   }
 
@@ -41,7 +44,7 @@ const App = () => {
       params: {
         client_id: '3j4jcchkffod8q1onipug0oqa4',
         response_type: 'code',
-        redirect_uri: 'http://localhost:3000',
+        redirect_uri: window.location.origin,
       }
   }
 
