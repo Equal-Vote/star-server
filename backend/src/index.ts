@@ -2,6 +2,7 @@ import express from 'express';
 import { Election } from '../../domain_model/Election';
 import { testMockUserStore } from './auth/test/TestMockUserStore';
 import StarResults from './StarResults.cjs';
+import { tempTestSuite } from './test/TempTestSuite';
 
 const app = express();
 
@@ -73,11 +74,11 @@ console.log(Ballots)
 
 // Just for debugging
 app.get('/debug/', (req, res) => {
-    res.json("15:29")
+    res.json("19:40")
 })
 
 app.get('/debug/test', (req, res) => {
-    testMockUserStore().then(
+    tempTestSuite().then(
         val => {
             res.json(val);
         }

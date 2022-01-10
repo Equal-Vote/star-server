@@ -6,6 +6,7 @@
     "rootDir": "../",
     "outDir": "./build",
     "esModuleInterop": true,
+    "strictNullChecks": true,
     "strict": true,
   },
   "include": ["../domain_model/**/*", "./src/**/*"],
