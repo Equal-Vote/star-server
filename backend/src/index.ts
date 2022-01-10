@@ -1,12 +1,13 @@
 import express from 'express';
+import { Election } from '../../domain_model/Election';
 import { testMockUserStore } from './auth/test/TestMockUserStore';
 import StarResults from './StarResults.cjs';
 
 const app = express();
 
 //Example data structures that would be sent in API responses
-const Elections = require('./Elections')
-const Election = require('./Election')
+const Elections = [] as Election[];//require('./Elections')
+const SampleElection = require('./SampleElection')
 const Ballots = new Array();
 const ElectionResults = require('./ElectionResults')
 
@@ -23,7 +24,8 @@ function GetResultsByID(electionID: number) {
             candidateScore.score
         ))
     ))
-    const candidateNames = Elections[electionID].Candidates.map((Candidate:any) =>( Candidate.CandidateName))
+    console.log(Elections[electionID].polls[0])
+    const candidateNames = Elections[electionID].polls[0].candidates.map((Candidate:any) =>( Candidate.shortName))
     const results = StarResults(candidateNames,cvr)
     return results
 }
@@ -33,7 +35,7 @@ app.use(express.json());
 
 // Get election from id
 app.get('/API/Election/:id', (req, res) => {
-    res.json(Elections[req.params.id])
+    res.json(Elections[parseInt(req.params.id)])
 })
 
 // Get election results from id
@@ -49,12 +51,14 @@ app.get('/API/Elections', (req, res) => {
 
 // Create New Election
 app.post('/API/Elections', (req, res) => {
-    const Candidates = req.body.Election.Candidates.map((CandidateName:any,ind:any) => ({id: ind,CandidateName: CandidateName}))
-    const newElection = {
-        id: Elections.length,
-        ElectionName: req.body.Election.ElectionName,
-        Candidates: Candidates,
-    }
+    // const Candidates = req.body.Election.Candidates.map((CandidateName:any,ind:any) => ({id: ind,CandidateName: CandidateName}))
+    // const newElection = {
+    //     id: Elections.length,
+    //     ElectionName: req.body.Election.ElectionName,
+    //     Candidates: Candidates,
+    // }
+    const newElection = req.body.Election as Election;
+    newElection.electionId = String(Elections.length);
     Elections.push(newElection)
     console.log(Elections)
 })

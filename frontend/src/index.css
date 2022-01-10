@@ -11,7 +11,7 @@ body {
 }
 
 .container {
-  max-width: 500px;
+  max-width: 75%;
   margin: 30px auto;
   overflow: auto;
   min-height: 300px;
@@ -630,4 +630,29 @@ td.starScore {
   margin-bottom: 0.5em;
   color: black;
   font-weight: bold;
+}
+
+div.election {
+  border: 2px solid rgb(0, 0, 0);
+  max-width: 500px;
+  background-color: rgb(83, 83, 83);
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  margin:10px;
+  border: 1px solid rgb(0, 0, 0);
+  border-radius: 5px;
+  padding: 5px;
+  max-width: 500px;
+}
+
+.card__cover {
+  /* height: 150px; */
+  width: 100%;
+}
+
+.card__content {
+  /* Take available height */
+  flex: 1;
 }

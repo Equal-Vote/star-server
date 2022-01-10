@@ -11,7 +11,7 @@ const VotePage = ({ }) => {
     const {data: election, isPending, error} = useFetch(`/API/Election/${id}`)
     const [rankings, setRankings] = useState([])
     const navigate = useNavigate();
-
+    console.log(election)
     const onUpdate = (rankings) => {
         setRankings(rankings)
         console.log(rankings)}
@@ -21,8 +21,8 @@ const VotePage = ({ }) => {
         console.log(rankings)
         const message = {
             ElectionID: id,
-            candidateScores: election.Candidates.map((candidate,i) => 
-              ({'id': election.Candidates[i].id, 'score':rankings[i]})
+            candidateScores: election.polls[0].candidates.map((candidate,i) => 
+              ({'id': election.polls[0].candidates[i].candidateId, 'score':rankings[i]})
             )
           }
           console.log(message)
@@ -45,10 +45,10 @@ const VotePage = ({ }) => {
             { isPending && <div> Loading Election... </div>}
             {election && 
                 <StarBallot
-                race = {election.ElectionName}
-                candidates = {election.Candidates}
+                race = {election.title}
+                candidates = {election.polls[0].candidates}
                 onUpdate = {onUpdate}
-                defaultRankings = {Array(election.Candidates.length).fill(0)}
+                defaultRankings = {Array(election.polls[0].candidates.length).fill(0)}
                 readonly = {false}
             />}
             {election && <Button 

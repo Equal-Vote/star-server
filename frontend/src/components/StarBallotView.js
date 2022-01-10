@@ -60,7 +60,7 @@ const Rows = ({ candidates, rankings, onClick }) =>
     <Row
       rowIndex={n}
       key={`starRow${n}`}
-      candidate={row.CandidateName}
+      candidate={row.shortName}
       party={row.party}
       ranking={rankings[n]}
       onClick={(ranking) => onClick(n, ranking)}

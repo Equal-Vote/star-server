@@ -1,4 +1,4 @@
-const Election = {
+const SampleElection = {
     id: 1,
     ElenctionName: "Election 1",
     Candidates: [
@@ -20,4 +20,4 @@ const Election = {
         },
     ]
 }
-module.exports = Election
+module.exports = SampleElection

@@ -14,7 +14,7 @@ const Elections = () => {
             {/* { elections && <Button color='steelblue' text='New Election' onClick={onNewElection} />} */}
             { elections && <div><Link to='/CreateElection'> Create New Election</Link></div>}
             { elections && elections.map((election) => (
-                <Election key = {election.id} election ={election}
+                <Election key = {election.electionId} election ={election}
                 />
             ))}
         </>
