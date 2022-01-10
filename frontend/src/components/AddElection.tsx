@@ -1,10 +1,14 @@
 import { useState } from "react"
 import React from 'react'
 import { useNavigate } from "react-router"
+import {Election} from './../../../domain_model/Election'
+import { Poll } from "../../../domain_model/Poll"
+import { Candidate} from "../../../domain_model/Candidate"
 
-const AddElection = ( {  }) => {
+const AddElection = () => {
     const [electionName, setElectionName] = useState('')
     const [candidateNames, setCandidateNames] = useState(['','','','',''])
+
     const updateArray = index => e => {
         let newArray = [...candidateNames]
         newArray[index] = e.target.value
@@ -12,6 +16,7 @@ const AddElection = ( {  }) => {
 
     }
     const navigate = useNavigate()
+    
     const onAddElection = (election) => {
 
         fetch('/API/Elections',{
@@ -23,8 +28,9 @@ const AddElection = ( {  }) => {
             body: JSON.stringify({
               Election: election,
             })
-          }).then(navigate('/'))
-    }
+          })
+          navigate('/')
+    } 
 
 
     const onSubmit = (e) => {
@@ -34,8 +40,30 @@ const AddElection = ( {  }) => {
             alert('Please add election name')
             return
         }
-        console.log({ElectionName: electionName,Candidates:candidateNames})
-        onAddElection({ElectionName: electionName,Candidates:candidateNames})
+        const NewPoll : Poll = {
+            pollId: '0',
+            title: electionName,
+            candidates: candidateNames.map( (name,ind) => {
+                return {
+                    candidateId:   String(ind),
+                    shortName:     name, // short mnemonic for the candidate
+                    fullName:      name,
+                    } as Candidate;
+            })
+        }
+
+        const NewElection : Election = {
+            electionId:    '0', // identifier assigned by the system
+            frontendUrl:   '', // base URL for the frontend
+            title:         electionName, // one-line election title
+            description:  '', // mark-up text describing the election
+            startUtc:     new Date(),   // when the election starts 
+            endUtc:      new Date(),   // when the election ends
+            polls: [NewPoll]
+        }
+
+        // console.log(NewElection)
+        onAddElection(NewElection)
         setElectionName('')
         setCandidateNames(['','','','',''])
     }
