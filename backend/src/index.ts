@@ -3,13 +3,14 @@ import { Election } from '../../domain_model/Election';
 import { testMockUserStore } from './auth/test/TestMockUserStore';
 import StarResults from './StarResults.cjs';
 import { tempTestSuite } from './test/TempTestSuite';
-
+import { Ballot } from '../../domain_model/Ballot';
+import { Score } from '../../domain_model/Score';
 const app = express();
 
 //Example data structures that would be sent in API responses
 const Elections = [] as Election[];//require('./Elections')
 const SampleElection = require('./SampleElection')
-const Ballots = new Array();
+const Ballots = new Array() as Ballot[];
 const ElectionResults = require('./ElectionResults')
 
 const frontendPath = '../../../../frontend/build/';
@@ -18,11 +19,11 @@ const frontendPath = '../../../../frontend/build/';
 function GetResultsByID(electionID: number) {
     // console.log('Looking For Ballots for Election:')
     // console.log(electionID)
-    const ballots = Ballots.filter(Ballot  => parseInt(Ballot.ElectionID) === electionID );
+    const ballots = Ballots.filter(Ballot  => parseInt(Ballot.votes[0].pollId) === electionID );
     // console.log(ballots)
-    const cvr = ballots.map((ballot:any) => (
-        ballot.candidateScores.map((candidateScore:any) =>(
-            candidateScore.score
+    const cvr = ballots.map((ballot) => (
+        ballot.votes[0].scores.map((score:Score) =>(
+            score.score
         ))
     ))
     console.log(Elections[electionID].polls[0])

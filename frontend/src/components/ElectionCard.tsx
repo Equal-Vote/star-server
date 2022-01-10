@@ -1,29 +1,25 @@
 import Button from "./Button"
 import { Link } from "react-router-dom"
 import React from 'react'
+import { Election } from "../../../domain_model/Election"
 
-const Election = ({ election }) => {
+type ElectionCardProps = {
+    election: Election
+}
+
+const ElectionCard = ({ election }: ElectionCardProps) => {
 
     return (
         <div className="card">
             <div className="card__cover">
-                <h3>{election.title}</h3>
-        
+                <h1>{election.title}</h1>
             </div>
             <div className="card__content">
                 <Link to = {`/Election/${election.electionId}`}> <h1>Vote</h1> </Link>
-                {/* {<Button color='steelblue' text='Vote' onClick={() => onVote(election.id)} />} */}
                 <Link to = {`/ElectionResults/${election.electionId}`}> <h1>View Results</h1> </Link>
-                {/* <Button color='steelblue' text='View Results' onClick={() => onViewResults(election.id)} /> */}
             </div>
-    
 </div>
-        // <div className = 'election'>
-        //     <h3>{election.ElectionName}</h3>
-        
-        //     </div>
-
     )
 }
 
-export default Election
+export default ElectionCard

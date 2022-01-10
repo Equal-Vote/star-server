@@ -1,12 +1,13 @@
-import Election from "./Election"
+import ElectionCard from "./ElectionCard"
 import Button from "./Button"
 import useFetch from "../useFetch"
 import { Link } from "react-router-dom"
 import React from 'react'
+import { Election } from "../../../domain_model/Election"
 
 const Elections = () => {
-    const {data: elections, isPending, error} = useFetch('/API/Elections')
-
+    const {data, isPending, error} = useFetch('/API/Elections')
+    let elections = data as Election[];
     return (
         <>
             { error && <div> {error} </div>}
@@ -14,7 +15,7 @@ const Elections = () => {
             {/* { elections && <Button color='steelblue' text='New Election' onClick={onNewElection} />} */}
             { elections && <div><Link to='/CreateElection'> Create New Election</Link></div>}
             { elections && elections.map((election) => (
-                <Election key = {election.electionId} election ={election}
+                <ElectionCard key = {election.electionId} election ={election}
                 />
             ))}
         </>
