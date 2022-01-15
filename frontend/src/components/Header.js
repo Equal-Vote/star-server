@@ -10,7 +10,7 @@ const Header = ({title, authConfig}) => {
     return (
         <header class='header'>
             <Link to ='/'> <h1>{title}</h1></Link>
-            {window.location.pathname != '/Login' &&
+            {window.location.pathname !== '/Login' &&
                 <Button
                     color='steelblue'
                     text='Login'
