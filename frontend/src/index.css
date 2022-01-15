@@ -11,7 +11,8 @@ body {
 }
 
 .container {
-  max-width: 400px;
+  max-width: max-content;
+  min-width: 400px;
   margin: 30px auto;
   overflow: auto;
   min-height: 300px;
@@ -119,13 +120,19 @@ body {
 }
 
 .form-control input {
-  width: 100%;
+  width: 300px;
   height: 40px;
   margin: 5px;
   padding: 3px 7px;
   font-size: 17px;
 }
-
+.form-control select {
+  width: 300px;
+  height: 40px;
+  margin: 5px;
+  padding: 3px 7px;
+  font-size: 17px;
+}
 .form-control-check {
   display: flex;
   align-items: center;

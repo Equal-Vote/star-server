@@ -47,7 +47,7 @@ function SummaryViewer({ cvr }) {
       <p>
         <b>{summaryMessage}</b>
       </p>
-      <p>{instructions}</p>
+      {/* <p>{instructions}</p> */}
     </>
   );
 }
@@ -56,10 +56,24 @@ export default function Results({data}) {
   console.log(data)
   return (
     <div>
-      <SummaryViewer cvr={data.cvr} />
+      <SummaryViewer cvr={data.Results.cvr} />
       <div className="flexContainer">
-        <ResultViewer title="Single-Winner Results" results={data.single} />
-        <ResultViewer title="Multi-Winner Results" results={data.multi} />
+        {data.Election.polls[0].voting_method === "STAR" &&
+         data.Election.polls[0].num_winners == 1 &&
+          <ResultViewer title="Single-Winner Results" results={data.Results.single} />}
+          
+        {data.Election.polls[0].voting_method === "STAR" &&
+         data.Election.polls[0].num_winners > 1 &&
+         <ResultViewer title="Multi-Winner Results" results={data.Results.multi} />}
+
+        {data.Election.polls[0].voting_method === "STAR-PR" &&
+          <div>
+            <h2>Winners:</h2> 
+            {data.Results.pr.winners.map((winner) => <h3> {winner.name}</h3>) }
+            <h2>Losers:</h2> 
+            {data.Results.pr.losers.map((loser) => <h3> {loser.name}</h3>)}
+        </div>}
+         
       </div>
     </div>
   );
