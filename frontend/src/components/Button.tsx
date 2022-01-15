@@ -9,7 +9,7 @@ type Props = {
   }
 
 const Button = ({onClick,color,text}:Props) => {
-    return <button onClick = {onClick} style={{backgroundColor: color}} className='btn'> {text}</button>
+    return <button onClick = {onClick} style={{backgroundColor: color}} type='button' className='btn'> {text} </button>
 }
 
 Button.defaultProps = {
