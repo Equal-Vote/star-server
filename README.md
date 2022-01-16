@@ -1,16 +1,16 @@
 # star-server
 
-star-server is built using Express (For now) for the back end server and React for the front end user interface
+star-server is built using the PERN stack (PostgreSQL, Express, React, and Node)
 
 ## Installation
+[Download Node](https://nodejs.org/en/download/) for installing required javascript packages
 
-Requires npm for installing required javascript packages
+### Install required frontend packages
 ```bash
 cd frontend
 npm install
 ```
-
-Requires npm for installing required javascript packages
+### Install required backend packages
 ```bash
 cd backend
 npm install
