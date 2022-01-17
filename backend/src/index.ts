@@ -15,6 +15,12 @@ const ElectionResults = require('./ElectionResults')
 
 const frontendPath = '../../../../frontend/build/';
 
+function GetElectionByID(electionID: number) {
+    // returns election for input ID, will need rework when database is implemented
+    const election = Elections.filter(Election  => parseInt(Election.electionId) === electionID );
+    return election[0]
+}
+
 //app.use(logger);
 function GetResultsByID(electionID: number) {
     // console.log('Looking For Ballots for Election:')
@@ -42,7 +48,12 @@ app.get('/API/Election/:id', (req, res) => {
 
 // Get election results from id
 app.get('/API/ElectionResult/:id', (req, res) => {
-    res.json(GetResultsByID(parseInt(req.params.id)))
+    res.json(
+        {
+            Election: GetElectionByID(parseInt(req.params.id)),
+            Results: GetResultsByID(parseInt(req.params.id))
+        }
+        )
 
 })
 
