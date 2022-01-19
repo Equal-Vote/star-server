@@ -39,25 +39,27 @@ app.post('/API/Token', (req, res) => {
     //       this probably means I'm making my /API/Token call in a bad place?
     // TODO: load this from a shared config file
     //       Github Issue:  https://github.com/Equal-Vote/star-server/issues/14
-    const cognitoBaseUrl = 'https://star.auth.us-east-1.amazoncognito.com'
-    const cognitoAuthConfig = {
-      clientId: '3j4jcchkffod8q1onipug0oqa4',
-      responseType: 'code',
-      // redirectUri: window.location.origin,
-      endpoints: {
-        login: `${cognitoBaseUrl}/login`,
-        token: `${cognitoBaseUrl}/oauth2/token`,
-        authorize: `${cognitoBaseUrl}/oauth2/authorize`,
-        userinfo: `${cognitoBaseUrl}/oauth2/userinfo`
-      },
+    const keycloakBaseUrl = 'https://keycloak.6j0.org/auth/realms/STAR%20Voting/protocol/openid-connect'
+    const keycloakAuthConfig = {
+        clientId: 'star_vote_web',
+        responseType: 'code',
+        // redirectUri: window.location.origin,
+        // logoutUri: window.location.origin,
+        endpoints: {
+            login: `${keycloakBaseUrl}/auth`,
+            logout: `${keycloakBaseUrl}/logout`,
+            token: `${keycloakBaseUrl}/token`,
+            authorize: `${keycloakBaseUrl}/auth`,
+            userinfo: `${keycloakBaseUrl}/userinfo`
+        },
     }
-    const authConfig = cognitoAuthConfig;
+    const authConfig = keycloakAuthConfig;
 
     // Q: WAIT! You shouldn't be posting client secrets on a public github repo!
-    // A: Yes, you're right. But we won't be using cognito long term, and I'll be deleting the userbase once we're done with it
+    // A: Yes, you're right. But we won't be this particular keycloak host long term, and we'll be deleting the userbase once we're done with it
     //      In the future we should load this from a .env file
     //      Github Issue: https://github.com/Equal-Vote/star-server/issues/20
-    const clientSecret = '1vqlvnq0lj220tsbvtr0g5ohbfaf4t1ugj6fmgcji2b9heavvpbk';
+    const clientSecret = 'rn18lnA0MN0sPAfxdREPlqUroIL5F6Vd';
 
     // "any" is the only way I could get this to work (https://blog.logrocket.com/building-type-safe-dictionary-typescript/)
     var params: any = {

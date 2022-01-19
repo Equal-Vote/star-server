@@ -49,9 +49,25 @@ const App = () => {
       },
   }
 
+  // http://keycloak.6j0.org/auth/realms/STAR%20Voting/.well-known/openid-configuration
+  const keycloakBaseUrl = 'https://keycloak.6j0.org/auth/realms/STAR%20Voting/protocol/openid-connect'
+  const keycloakAuthConfig = {
+      clientId: 'star_vote_web',
+      responseType: 'code',
+      redirectUri: window.location.origin,
+      logoutUri: window.location.origin,
+      endpoints: {
+        login: `${keycloakBaseUrl}/auth`,
+        logout: `${keycloakBaseUrl}/logout`,
+        token: `${keycloakBaseUrl}/token`,
+        authorize: `${keycloakBaseUrl}/auth`,
+        userinfo: `${keycloakBaseUrl}/userinfo`
+      },
+  }
+
   // TODO: load all the above values from a yaml file
 
-  const authConfig = localAuthConfig;
+  const authConfig = keycloakAuthConfig;
 
   const authSession = new oAuthSession({
       clientId: authConfig.clientId,

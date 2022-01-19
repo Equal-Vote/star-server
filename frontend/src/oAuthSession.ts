@@ -132,6 +132,7 @@ export class oAuthSession {
             `client_id=${this.clientId}`,
             `response_type=${this.responseType}`,
             `redirect_uri=${this.redirectUri}`,
+            `scope=openid`,
         ].join('&');
 
         window.location.href = this.endpoints.login+"?"+queryString;
