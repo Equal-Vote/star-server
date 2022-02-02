@@ -89,8 +89,11 @@ export class oAuthSession {
             return;
         }
         const grant_type = (auth_code == null)? 'refresh_token' : 'authorization_code';
+        /* The full URL approach wasn't reaching the server, I feel like there was a reason I avoided relative paths, but I don't remember it
         var token_url = `${window.location.protocol}//${window.location.hostname}:${SERVER_PORT}`+
                         `/API/Token?grant_type=${grant_type}&redirect_uri=${this.redirectUri}`;
+        */
+        var token_url = `/API/Token?grant_type=${grant_type}&redirect_uri=${this.redirectUri}`;
 
         if(grant_type == 'authorization_code'){
             token_url = `${token_url}&code=${auth_code}`
