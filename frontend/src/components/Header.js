@@ -3,25 +3,29 @@ import { Link } from 'react-router-dom'
 import Button from './Button'
 import React from 'react'
 
-const Header = ({title, authConfig}) => {
-    const queryString = Object.entries(authConfig['params'])
-                              .map(([key, value]) => `${key}=${value}`)
-                              .join('&')
+const Header = ({title, authSession}) => {
     return (
-        <header class='header'>
+        <header className='header'>
             <Link to ='/'> <h1>{title}</h1></Link>
-            {window.location.pathname !== '/Login' &&
+            {window.location.pathname !== '/Login' && !authSession.isLoggedIn() && 
                 <Button
                     color='steelblue'
                     text='Login'
-                    // I'm using window.open instead of navigate since loginUrl could be external, and navigate only supports local
-                    onClick={() => (
-                        window.location = authConfig['endpoints']['login']+"?"+queryString
-                    )}
+                    // I'm using window.location instead of navigate since loginUrl could be external, and navigate only supports local
+                    onClick={() => authSession.openLogin()}
                 />
             }
-            {/* {<Button color='steelblue' text='Home' onClick={props.onClick}/>} */}
-
+            {window.location.pathname !== '/Login' && authSession.isLoggedIn() && 
+                <Button
+                    color='steelblue'
+                    text='Logout'
+                    // I'm using window.location instead of navigate since loginUrl could be external, and navigate only supports local
+                    onClick={() => authSession.openLogout()}
+                />
+            }
+            {authSession.isLoggedIn() && 
+                `Hi ${authSession.getIdField('email')}!`
+            }
         </header>
     )
 }
