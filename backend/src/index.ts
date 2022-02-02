@@ -20,9 +20,7 @@ app.use(cors({
 
 app.use(cookieParser())
 
-
-
-const frontendPath = '../../../../frontend/public/';
+const frontendPath = '../../../../frontend/build/';
 
 const path = require('path');
 app.use(express.static(path.join(__dirname, frontendPath)));
