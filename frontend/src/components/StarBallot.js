@@ -6,11 +6,13 @@ export default function StarBallot({
   candidates,
   onUpdate,
   defaultRankings,
-  readonly
+  readonly,
+  onSubmitBallot
 }) {
   const [rankings, setRankings] = useState(
     defaultRankings ? defaultRankings : Array(candidates.length).fill(0)
   );
+
 
   return (
     <StarBallotView
@@ -28,6 +30,7 @@ export default function StarBallot({
         onUpdate(newRankings.map((x) => (x > 0 ? x - 1 : 0)));
       }}
       readonly={readonly}
+      onSubmitBallot = {onSubmitBallot}
     />
   );
 }

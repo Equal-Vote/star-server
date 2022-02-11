@@ -6,7 +6,9 @@ import VotePage from './components/VotePage'
 import Login from './components/Login'
 import ViewElectionResults from './components/ViewElectionResults'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import {oAuthSession} from './oAuthSession'
+import { oAuthSession } from './oAuthSession'
+import theme from './theme'
+import { ThemeProvider } from '@material-ui/styles'
 
 const App = () => {
   /* oAuth2 reference
@@ -19,7 +21,7 @@ const App = () => {
   // Q: Why not use relative links for the local endpoints? That way you don't have to consider the window location at all
   // A: That was my initial plan, but since the oAuth endpoints will almost always be direct endpoints, I figured I'd keep
   //    it consistent for the testing cases as well
-  const localBaseUrl = window.location.origin; 
+  const localBaseUrl = window.location.origin;
   const localAuthConfig = {
     clientId: 'abcd', // dummy client id for now
     responseType: 'code',
@@ -36,33 +38,33 @@ const App = () => {
 
   const cognitoBaseUrl = 'https://star.auth.us-east-1.amazoncognito.com'
   const cognitoAuthConfig = {
-      clientId: '3j4jcchkffod8q1onipug0oqa4',
-      responseType: 'code',
-      redirectUri: window.location.origin,
-      logoutUri: window.location.origin,
-      endpoints: {
-        login: `${cognitoBaseUrl}/login`,
-        logout: `${cognitoBaseUrl}/logout`,
-        token: `${cognitoBaseUrl}/oauth2/token`,
-        authorize: `${cognitoBaseUrl}/oauth2/authorize`,
-        userinfo: `${cognitoBaseUrl}/oauth2/userinfo`
-      },
+    clientId: '3j4jcchkffod8q1onipug0oqa4',
+    responseType: 'code',
+    redirectUri: window.location.origin,
+    logoutUri: window.location.origin,
+    endpoints: {
+      login: `${cognitoBaseUrl}/login`,
+      logout: `${cognitoBaseUrl}/logout`,
+      token: `${cognitoBaseUrl}/oauth2/token`,
+      authorize: `${cognitoBaseUrl}/oauth2/authorize`,
+      userinfo: `${cognitoBaseUrl}/oauth2/userinfo`
+    },
   }
 
   // http://keycloak.6j0.org/auth/realms/STAR%20Voting/.well-known/openid-configuration
   const keycloakBaseUrl = 'https://keycloak.6j0.org/auth/realms/STAR%20Voting/protocol/openid-connect'
   const keycloakAuthConfig = {
-      clientId: 'star_vote_web',
-      responseType: 'code',
-      redirectUri: window.location.origin,
-      logoutUri: window.location.origin,
-      endpoints: {
-        login: `${keycloakBaseUrl}/auth`,
-        logout: `${keycloakBaseUrl}/logout`,
-        token: `${keycloakBaseUrl}/token`,
-        authorize: `${keycloakBaseUrl}/auth`,
-        userinfo: `${keycloakBaseUrl}/userinfo`
-      },
+    clientId: 'star_vote_web',
+    responseType: 'code',
+    redirectUri: window.location.origin,
+    logoutUri: window.location.origin,
+    endpoints: {
+      login: `${keycloakBaseUrl}/auth`,
+      logout: `${keycloakBaseUrl}/logout`,
+      token: `${keycloakBaseUrl}/token`,
+      authorize: `${keycloakBaseUrl}/auth`,
+      userinfo: `${keycloakBaseUrl}/userinfo`
+    },
   }
 
   // TODO: load all the above values from a yaml file
@@ -70,26 +72,26 @@ const App = () => {
   const authConfig = keycloakAuthConfig;
 
   const authSession = new oAuthSession({
-      clientId: authConfig.clientId,
-      responseType: authConfig.responseType,
-      redirectUri: authConfig.redirectUri,
-      endpoints: authConfig.endpoints,
+    clientId: authConfig.clientId,
+    responseType: authConfig.responseType,
+    redirectUri: authConfig.redirectUri,
+    endpoints: authConfig.endpoints,
   })
 
   // TODO: insert urls for keycloak 
 
   return (
     <Router>
-      <div className="container">
-        <Header authSession={authSession}/>
+      <ThemeProvider theme={theme}>
+        <Header authSession={authSession} />
         <Routes>
-          <Route path='/' element={<Elections/>}/> 
-          <Route path='/Login' element={<Login/>}/> 
-          <Route path='/CreateElection' element={<AddElection />}/>
-          <Route path='/Election/:id' element={<VotePage/>}/> 
-          <Route path='/ElectionResults/:id' element={<ViewElectionResults />}/> 
+          <Route path='/' element={<Elections />} />
+          <Route path='/Login' element={<Login />} />
+          <Route path='/CreateElection' element={<AddElection />} />
+          <Route path='/Election/:id' element={<VotePage />} />
+          <Route path='/ElectionResults/:id' element={<ViewElectionResults />} />
         </Routes>
-      </div>
+      </ThemeProvider>
     </Router>
   );
 }

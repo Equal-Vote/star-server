@@ -22,8 +22,8 @@ const getElectionResults = (req:any, res:any, next:any) => {
             score.score
         ))
     ))
-
-    const results = StarResults(candidateNames,cvr)
+    const num_winners = election.polls[0].num_winners
+    const results = StarResults(candidateNames,cvr,num_winners)
 
     res.json(
         {
