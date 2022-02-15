@@ -148,7 +148,7 @@ const AddCandidate = ({ onSaveCandidate, candidate, index }: CandidateProps) => 
                     <label>Party URL</label>
                     <input type='url' placeholder='Add Party URL' value={partyUrl} onChange={(e) => setPartyUrl(e.target.value)} />
                 </div> */}
-                <Button onClick= { () => saveCandidate() }>Save Candidate</Button>
+                <Button variant = 'outlined' onClick= { () => saveCandidate() }>Save Candidate</Button>
                 </Grid>
             </div>
             }

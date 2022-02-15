@@ -228,7 +228,7 @@ const AddElection = () => {
                         <Divider light/>
                     </Grid>
                 ))}
-                <Button onClick={() => onAddCandidate()} > Add Candidate </Button>
+                <Button variant = 'outlined' onClick={() => onAddCandidate()} > Add Candidate </Button>
                 <input type='submit' value='Create Election' className='btn btn-block' />
             </Grid>
             </Container>
