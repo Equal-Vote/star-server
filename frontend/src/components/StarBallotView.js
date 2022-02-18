@@ -111,12 +111,13 @@ export default function StarBallotView({
           </tr>
           <tr>
             <th colSpan="7" className="instructions">
-              <p>
-                Score candidate from 0 - 5 stars.
-                <br />
-                If you don't have a preference you can give candidates
-                <br /> the same scores. Those you leave blank receive a zero.
-              </p>
+              <ul>
+                <li>Give your favorite(s) five stars.</li>
+                <li>Give your last choice(s) zero stars.</li>
+                <li>Show preference order and level of support.</li>
+                <li>Equal scores indicate no preference.</li>
+                <li>Those left blank receive zero stars.</li>
+              </ul>
             </th>
           </tr>
           <tr>
