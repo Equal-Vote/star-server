@@ -23,20 +23,22 @@ const VotePage = ({ }) => {
     console.log(election)
     console.log(election.Candidates)
     console.log(rankings)
-    // const message = {
-    //     ElectionID: id,
-    //     candidateScores: election.polls[0].candidates.map((candidate,i) => 
-    //       ({'id': election.polls[0].candidates[i].candidateId, 'score':rankings[i]})
-    //     )
-    //   }
-    const ballot = {
-      votes: [{
-        pollId: id,
-        scores: election.polls[0].candidates.map((candidate, i) =>
-          ({ 'candidateId': election.polls[0].candidates[i].candidateId, 'score': rankings[i] } as Score)
+
+    const votes:Vote[] = [{
+        race_id: '0',
+        scores: election.races[0].candidates.map((candidate, i) =>
+          ({ 'candidate_id': election.races[0].candidates[i].candidate_id, 'score': rankings[i] } as Score)
         )
-      }] as Vote[]
-    } as Ballot
+      }]
+
+    const ballot:Ballot = {
+      ballot_id: '0', //Defaults to zero but is assigned ballot id by server when submitted
+      election_id: election.election_id,
+      votes:votes,
+      date_submitted: new Date(),
+      status: 'submitted',
+
+    }
     console.log(ballot)
     fetch(`/API/Election/${id}`, {
       method: 'POST',
@@ -47,8 +49,6 @@ const VotePage = ({ }) => {
       body: JSON.stringify(ballot)
     })
     navigate(`/ElectionResults/${id}`)
-
-
   }
   return (
     <Container >
@@ -57,20 +57,13 @@ const VotePage = ({ }) => {
         {isPending && <div> Loading Election... </div>}
         {election &&
           <StarBallot
-            race={election.polls[0]}
-            candidates={election.polls[0].candidates}
+            race={election.races[0]}
+            candidates={election.races[0].candidates}
             onUpdate={onUpdate}
-            defaultRankings={Array(election.polls[0].candidates.length).fill(0)}
+            defaultRankings={Array(election.races[0].candidates.length).fill(0)}
             readonly={false}
             onSubmitBallot={submit}
-
           />}
-        {/* {election &&
-
-          <Button
-            text='Submit'
-          />} */}
-
       </>
     </Container>
   )

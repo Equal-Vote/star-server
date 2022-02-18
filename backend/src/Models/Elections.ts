@@ -1,27 +1,126 @@
 import { Election } from '../../../domain_model/Election';
 
-// Temporary in memory storage of election data
-const Elections = [] as Election[];//require('./Elections')
+class ElectionsDB {
 
-function getElectionByID(electionID: number) {
-    // returns election for input ID, will need rework when database is implemented
-    const election = Elections.filter(Election  => parseInt(Election.electionId) === electionID );
-    return election[0]
+    _postgresClient;
+    _tableName: string;
+
+    constructor(client: any, tableName: string) {
+        this._postgresClient = client;
+        this._tableName = tableName;
+    }
+
+    init(): Promise<ElectionsDB> {
+        console.log("ElectionsDB.init");
+        var query = `
+        CREATE TABLE IF NOT EXISTS ${this._tableName} (
+            election_id  SERIAL PRIMARY KEY,
+            title       VARCHAR,
+            description TEXT,
+            frontend_url VARCHAR,
+            start_time    VARCHAR, 
+            end_time      VARCHAR, 
+            support_email VARCHAR,
+            owner_id      VARCHAR,
+            audit_id      VARCHAR,
+            admin_id      VARCHAR,
+            state         VARCHAR,
+            races         json NOT NULL,
+            settings      json
+          );
+        `;
+        console.log(query);
+        var p = this._postgresClient.query(query);
+        return p.then((_: any) => {
+            return this;
+        });
+    }
+
+    createElection(election: Election): Promise<string> {
+        console.log(`ElectionDB.create`);
+        var sqlString = `INSERT INTO ${this._tableName} (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_id,admin_id,state,races,settings)
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`;
+
+        var p = this._postgresClient.query({
+            rowMode: 'array',
+            text: sqlString,
+            values: [election.title,
+                election.description,
+                election.frontend_url,
+                election.start_time,
+                election.end_time,
+                election.support_email,
+                election.owner_id,
+                election.audit_id,
+                election.admin_id,
+                election.state,
+                JSON.stringify(election.races),
+                JSON.stringify(election.settings)]
+        });
+
+        return p.then((res: any) => {
+            console.log("set response rows: " + JSON.stringify(res));
+            return election;
+        });
+    }
+
+    getElections(): Promise<Election[] | null> {
+        console.log(`ElectionDB.getAll`);
+        var sqlString = `SELECT * FROM ${this._tableName}`;
+        console.log(sqlString);
+
+        var p = this._postgresClient.query({
+
+            text: sqlString,
+            values: []
+        });
+        return p.then((response: any) => {
+            var rows = response.rows;
+            console.log(rows[0])
+            if (rows.length == 0) {
+                console.log(".get null");
+                return [] as Election[];
+            }
+            return rows
+        });
+    }
+
+    getElectionByID(election_id: string): Promise<string | null> {
+        console.log(`ElectionDB.get ${election_id}`);
+        var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1`;
+        console.log(sqlString);
+
+        var p = this._postgresClient.query({
+            text: sqlString,
+            values: [election_id]
+        });
+        return p.then((response: any) => {
+            var rows = response.rows;
+            if (rows.length == 0) {
+                console.log(".get null");
+                return null;
+            }
+            return  rows[0] as Election;
+        });
+    }
+
+    delete(election_id: string): Promise<boolean> {
+        console.log(`DemoPGStore.delete ${election_id}`);
+        var sqlString = `DELETE FROM ${this._tableName} WHERE election_id = $1`;
+        console.log(sqlString);
+
+        var p = this._postgresClient.query({
+            rowMode: 'array',
+            text: sqlString,
+            values: [election_id]
+        });
+        return p.then((response: any) => {
+            if (response.rowCount == 1) {
+                return true;
+            }
+            return false;
+        });
+    }
 }
 
-function getElections() {
-    console.log('Getting Elections')
-    return Elections
-}
-
-function createElection(newElection: Election) {
-    newElection.electionId = String(Elections.length);
-    Elections.push(newElection)
-    console.log(Elections)
-}
-
-module.exports = { 
-    getElectionByID,
-    getElections,
-    createElection
-}
+module.exports = ElectionsDB

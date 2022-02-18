@@ -90,7 +90,7 @@ const Row = ({ rowIndex, candidate, party, ranking, onClick }) => {
         </Grid>
         <Grid item xs={4}>
           <Typography align='left' variant="h6" component="h6">
-            {candidate.shortName}
+            {candidate.candidate_name}
           </Typography>
         </Grid>
         <Choices
@@ -107,9 +107,9 @@ const Row = ({ rowIndex, candidate, party, ranking, onClick }) => {
           </Grid>
           <Grid item xs={5}>
             <Typography align='left'  component="h6">
-              {candidate.fullName}
+              {candidate.full_name}
             </Typography>
-            <Link color="inherit" href={candidate.candidateUrl} target="_blank" underline="always">
+            <Link color="inherit" href={candidate.candidate_url} target="_blank" underline="always">
               <Typography align='left' component="h6">
                 Candidate URL
               </Typography>

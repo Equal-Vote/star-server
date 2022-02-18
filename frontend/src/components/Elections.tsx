@@ -13,6 +13,7 @@ const theme = createTheme();
 const Elections = () => {
     const { data, isPending, error } = useFetch('/API/Elections')
     let elections = data as Election[];
+    console.log(elections)
     return (
         <ThemeProvider theme={theme}>
             <main>
@@ -24,7 +25,7 @@ const Elections = () => {
                     <Grid container alignItems="stretch" spacing={4}>
                         {elections && elections.map((election) => (
                             <Grid item xs={12} >
-                                <ElectionCard key={election.electionId} election={election}
+                                <ElectionCard key={election.election_id} election={election}
                                 />
                             </Grid>
                         ))}
