@@ -4,7 +4,9 @@ const BallotsDB = require('../Models/Ballots')
 const { Pool } = require('pg');
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-    ssl: false
+    ssl:  {
+        rejectUnauthorized: false
+      }
 });
 var BallotModel = new BallotsDB(pool, "ballotDB");
 BallotModel.init();

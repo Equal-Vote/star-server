@@ -7,7 +7,9 @@ import StarResults from '../StarResults.cjs';
 const { Pool } = require('pg');
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-    ssl: false
+    ssl:  {
+        rejectUnauthorized: false
+      }
 });
 var ElectionsModel = new ElectionsDB(pool, "electionDB");
 ElectionsModel.init();
