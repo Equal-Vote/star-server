@@ -1,5 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
 
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+/* 
 * {
   box-sizing: border-box;
   margin: 0;
@@ -72,7 +86,7 @@ body {
 }
 /* .matrix table th, td, thead, tr, tbody {
   border: 1px solid rgba(100, 100, 100, 0.39);
-} */
+} 
 .matrix th, td {
   border: 1px solid rgba(100, 100, 100, 0.39);
 }
@@ -95,6 +109,7 @@ body {
 .matrix table {
   table-layout: fixed;  
 }
+*/
 .login-form {
   margin-bottom: 40px;
   padding-right: 30px;
@@ -147,7 +162,7 @@ body {
   flex: 2;
   height: 20px;
 }
-
+/*
 footer {
   margin-top: 30px;
   text-align: center;
@@ -295,7 +310,7 @@ h3 {
 }
 
 .wrapper .star h1:hover {
-  /* color: blue; */
+  /* color: blue; 
   cursor: default;
 }
 
@@ -530,7 +545,6 @@ h2.selected {
   flex-direction: row;
   height: 1.2em;
   width: 1.2em;
-  background-color: #fff;
   border: 2px solid #808080;
   border-radius: 50%;
   -moz-border-radius: 50%;
@@ -561,9 +575,10 @@ h2.selected {
 }
 
 .circle p {
-  margin-top: -0.3em;
-  margin-left: 0.em;
-  text-align: left;
+  margin-top: -0.1em;
+  margin-left: 0.1em;
+  text-align: center;
+  vertical-align: middle;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1.35em;
   font-weight: bold;
@@ -622,7 +637,7 @@ td.starScore {
   margin: 0.5em;
   cursor: pointer;
 }
-
+/*
 .wrapper .classic {
   color: black;
   background: white;
@@ -655,11 +670,11 @@ div.election {
 }
 
 .card__cover {
-  /* height: 150px; */
+  /* height: 150px; 
   width: 100%;
 }
 
 .card__content {
-  /* Take available height */
+  /* Take available height 
   flex: 1;
-}
+} */

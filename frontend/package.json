@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@date-io/date-fns": "^1.3.13",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/pickers": "^3.3.10",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
@@ -11,6 +15,7 @@
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
     "jwt-decode": "^3.1.2",
+    "date-fns": "^2.28.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-ratings-declarative": "3.4.1",
