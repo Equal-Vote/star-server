@@ -15,7 +15,7 @@ var ElectionsModel = new ElectionsDB(pool, "electionDB");
 ElectionsModel.init();
 
 
-const electionByID = async (req: any, res: any, next: any) => {
+const getElectionByID = async (req: any, res: any, next: any) => {
     try {
         const election = await ElectionsModel.getElectionByID(parseInt(req.params.id))
         if (!election)
@@ -33,7 +33,7 @@ const electionByID = async (req: any, res: any, next: any) => {
     }
 }
 
-const getElection = async (req: any, res: any, next: any) => {
+const returnElection = async (req: any, res: any, next: any) => {
     res.json(req.election)
 }
 
@@ -93,9 +93,9 @@ const createElection = async (req: any, res: any, next: any) => {
 }
 
 module.exports = {
-    getElection,
+    returnElection,
     getElectionResults,
     getElections,
     createElection,
-    electionByID
+    getElectionByID
 }
