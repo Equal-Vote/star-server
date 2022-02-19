@@ -233,9 +233,9 @@ export default function StarBallotView({
   return (
     <Container maxWidth="sm">
       <Box border={2} sx={{ mt: 5, width: '100%' }}>
-        <Grid container alignItems="center" justify="center" direction="column" >
+        <Grid container alignItems="center" justify="center" direction="column">
 
-          <Grid item>
+          <Grid item style={{ padding: '0.8cm 0cm 0cm 0cm' }}>
             <Typography align='center' gutterBottom variant="h2" component="h6">
               {race.title}
             </Typography>
@@ -245,10 +245,17 @@ export default function StarBallotView({
               {race.description}
             </Typography>
           </Grid>
-          <Grid item xs={8}>
+
+          <Grid item xs={8} style={{ padding: '0cm 0cm 1cm 0cm' }}>
             <SingleWinnerInstructions />
           </Grid>
-          <Grid item>
+
+          <ColumnHeadings />
+          <Divider style={{ width: '100%' }} />
+          <Rows candidates={candidates} rankings={rankings} onClick={onClick} />
+
+
+          <Grid item xs={10} style={{ padding: '0.4cm 0cm' }}>
             {race.num_winners == 1 && race.voting_method == 'STAR' &&
               <Typography align='center' component="p">
                 This election uses STAR Voting and will elect 1 winner. In STAR Voting the two highest scoring candidates are finalists and the finalist preferred by more voters wins.
@@ -260,9 +267,6 @@ export default function StarBallotView({
               </Typography>
             }
           </Grid>
-          <ColumnHeadings />
-          <Divider style={{ width: '100%' }} />
-          <Rows candidates={candidates} rankings={rankings} onClick={onClick} />
 
         </Grid>
       </Box>
