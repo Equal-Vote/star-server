@@ -2,7 +2,7 @@ import { useState } from "react"
 import React from 'react'
 import { useNavigate } from "react-router"
 import { Election } from './../../../domain_model/Election'
-import { Poll } from "../../../domain_model/Poll"
+import { Race } from "../../../domain_model/Race"
 import { Candidate } from "../../../domain_model/Candidate"
 import AddCandidate from "./AddCandidate"
 // import Button from "./Button"
@@ -21,13 +21,8 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 
-
-
-
-
 const AddElection = () => {
     const [electionName, setElectionName] = useState('')
-    const [candidateNames, setCandidateNames] = useState(['', '', '', '', ''])
     const [startDate, setStartDate] = useState('')
     const [stopDate, setStopDate] = useState('')
     const [description, setDescription] = useState('')
@@ -71,8 +66,8 @@ const AddElection = () => {
             alert('Please add election name')
             return
         }
-        const NewPoll: Poll = {
-            pollId: '0',
+        const NewRace: Race = {
+            race_id: '0',
             title: electionName,
             voting_method: votingMethod,
             num_winners: numWinners,
@@ -81,33 +76,32 @@ const AddElection = () => {
         }
 
         const NewElection: Election = {
-            electionId: '0', // identifier assigned by the system
-            frontendUrl: '', // base URL for the frontend
+            election_id: '0', // identifier assigned by the system
+            frontend_url: '', // base URL for the frontend
             title: electionName, // one-line election title
             description: description, // mark-up text describing the election
-            startUtc: new Date(startDate),   // when the election starts 
-            endUtc: new Date(stopDate),   // when the election ends
-            polls: [NewPoll]
+            start_time: new Date(startDate),   // when the election starts 
+            end_time: new Date(stopDate),   // when the election ends
+            owner_id: '0',
+            state: 'draft',
+            races: [NewRace]
         }
 
-        // console.log(NewElection)
         try {
             onAddElection(NewElection)
             navigate('/')
         } catch (error) {
             console.log(error)
         }
-        // setElectionName('')
-        // setCandidateNames(['', '', '', '', ''])
     }
 
 
     const onAddCandidate = () => {
         const newCandidates = [...candidates]
         const EmptyCandidate: Candidate = {
-            candidateId: String(newCandidates.length),
-            shortName: '', // short mnemonic for the candidate
-            fullName: '',
+            candidate_id: String(newCandidates.length),
+            candidate_name: '', // short mnemonic for the candidate
+            full_name: '',
         }
         newCandidates.push(EmptyCandidate)
         setCandidates(newCandidates)

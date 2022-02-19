@@ -58,15 +58,15 @@ export default function Results({data}) {
     <div>
       <SummaryViewer cvr={data.Results.cvr} />
       <div className="flexContainer">
-        {data.Election.polls[0].voting_method === "STAR" &&
-         data.Election.polls[0].num_winners == 1 &&
+        {data.Election.races[0].voting_method === "STAR" &&
+         data.Election.races[0].num_winners == 1 &&
           <ResultViewer title="Single-Winner Results" results={data.Results.single} />}
           
-        {data.Election.polls[0].voting_method === "STAR" &&
-         data.Election.polls[0].num_winners > 1 &&
+        {data.Election.races[0].voting_method === "STAR" &&
+         data.Election.races[0].num_winners > 1 &&
          <ResultViewer title="Multi-Winner Results" results={data.Results.multi} />}
 
-        {data.Election.polls[0].voting_method === "STAR-PR" &&
+        {data.Election.races[0].voting_method === "STAR-PR" &&
           <div>
             <h2>Winners:</h2> 
             {data.Results.pr.winners.map((winner) => <h3> {winner.name}</h3>) }

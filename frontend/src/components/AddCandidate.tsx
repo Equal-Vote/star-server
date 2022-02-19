@@ -30,10 +30,10 @@ type CandidateProps = {
 
 const AddCandidate = ({ onSaveCandidate, candidate, index }: CandidateProps) => {
     const [candidateIndex, setCandidateIndex] = useState(index)
-    const [shortName, setShortName] = useState(candidate.shortName)
-    const [fullName, setFullName] = useState(candidate.fullName)
+    const [candidateName, setCandidateName] = useState(candidate.candidate_name)
+    const [fullName, setFullName] = useState(candidate.full_name)
     const [party, setParty] = useState(candidate.party)
-    const [candidateUrl, setCandidateUrl] = useState(candidate.candidateUrl)
+    const [candidateUrl, setCandidateUrl] = useState(candidate.candidate_url)
     const [partyUrl, setPartyUrl] = useState(candidate.partyUrl)
     const [bio, setBio] = useState(candidate.bio)
 
@@ -41,11 +41,11 @@ const AddCandidate = ({ onSaveCandidate, candidate, index }: CandidateProps) => 
 
     const saveCandidate = () => {
         const newCandidate: Candidate = {
-            candidateId: String(candidateIndex),
-            shortName: shortName,
-            fullName: fullName,
+            candidate_id: String(candidateIndex),
+            candidate_name: candidateName,
+            full_name: fullName,
             party: party,
-            candidateUrl: candidateUrl,
+            candidate_url: candidateUrl,
             partyUrl: partyUrl,
             bio: bio
         }
@@ -69,13 +69,13 @@ const AddCandidate = ({ onSaveCandidate, candidate, index }: CandidateProps) => 
                         name="short name"
                         label="Short Name"
                         type="text"
-                        value={shortName}
-                        onChange={(e) => setShortName( e.target.value )}
+                        value={candidateName}
+                        onChange={(e) => setCandidateName( e.target.value )}
                     />
                 </Grid>
                 {/* <div className='form-control'>
                     <label>Short Name</label>
-                    <input type='text' placeholder='Add Short name' value={shortName} onChange={(e) => setShortName(e.target.value)} />
+                    <input type='text' placeholder='Add Short name' value={shortName} onChange={(e) => setCandidateName(e.target.value)} />
                 </div> */}
                 <Grid item>
                     <TextField
@@ -154,7 +154,7 @@ const AddCandidate = ({ onSaveCandidate, candidate, index }: CandidateProps) => 
             }
             {!editCandidate &&
             <div >
-                <Typography align='center' gutterBottom variant="h5" component="h5"> {shortName} </Typography>
+                <Typography align='center' gutterBottom variant="h5" component="h5"> {candidateName} </Typography>
                 <Box textAlign='center'>
                 <Button onClick= { () => setEditCandidate(true) }>Edit</Button>
                 </Box>

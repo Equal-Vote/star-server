@@ -26,12 +26,12 @@ const ElectionCard = ({ election }: ElectionCardProps) => {
                     {election.description}
                 </Typography>
                 
-                <Link to={`/Election/${election.electionId}`}>
+                <Link to={`/Election/${String(election.election_id)}`}>
                 <Typography align='center' gutterBottom variant="h6" component="h6">
                     Vote
                 </Typography>
                 </Link>
-                <Link to={`/ElectionResults/${election.electionId}`}>
+                <Link to={`/ElectionResults/${election.election_id}`}>
                 <Typography align='center' gutterBottom variant="h6" component="h6">
                     View Results
                 </Typography>

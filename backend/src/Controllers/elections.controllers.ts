@@ -1,63 +1,101 @@
 import { Election } from '../../../domain_model/Election';
 import { Ballot } from '../../../domain_model/Ballot';
 import { Score } from '../../../domain_model/Score';
-const ElectionsModel = require('../Models/Elections')
-const BallotModel = require('../Models/Ballots')
+const ElectionsDB = require('../Models/Elections')
 import StarResults from '../StarResults.cjs';
 
+const { Pool } = require('pg');
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+    ssl:  {
+        rejectUnauthorized: false
+      }
+});
+var ElectionsModel = new ElectionsDB(pool, "electionDB");
+ElectionsModel.init();
 
-const getElection = (req:any, res:any, next:any) => {
-    console.log('Made it to controller')
-    res.json(ElectionsModel.getElectionByID(parseInt(req.params.id)))
 
+const getElectionByID = async (req: any, res: any, next: any) => {
+    try {
+        const election = await ElectionsModel.getElectionByID(parseInt(req.params.id))
+        if (!election)
+            return res.status('400').json({
+                error: "Election not found"
+            })
+        console.log(`Getting Election: ${req.params.id}`)
+        console.log(election)
+        req.election = election
+        next()
+    } catch (err) {
+        return res.status('400').json({
+            error: "Could not retrieve election"
+        })
+    }
 }
 
-const getElectionResults = (req:any, res:any, next:any) => {
+const returnElection = async (req: any, res: any, next: any) => {
+    res.json(req.election)
+}
 
-    const ballots = BallotModel.getBallotsByElectionID(parseInt(req.params.id))
-    const election = ElectionsModel.getElectionByID(parseInt(req.params.id))
-    const candidateNames = election.polls[0].candidates.map((Candidate:any) =>( Candidate.shortName))
-    const cvr = ballots.map((ballot:Ballot) => (
-        ballot.votes[0].scores.map((score:Score) =>(
+const getElectionResults = async (req: any, res: any, next: any) => {
+
+    const ballots = req.ballots
+    const election = req.election
+    const candidateNames = election.races[0].candidates.map((Candidate: any) => (Candidate.candidate_name))
+    console.log(candidateNames)
+    const cvr = ballots.map((ballot: Ballot) => (
+        ballot.votes[0].scores.map((score: Score) => (
             score.score
         ))
     ))
-    const num_winners = election.polls[0].num_winners
-    const results = StarResults(candidateNames,cvr,num_winners)
+    const num_winners = election.races[0].num_winners
+    const results = StarResults(candidateNames, cvr, num_winners)
 
     res.json(
         {
             Election: election,
             Results: results
         }
-        )
+    )
 
 }
 
-const getElections = (req:any, res:any, next:any) => {
+const getElections = async (req: any, res: any, next: any) => {
 
-    console.log('Made it to controller')
-    const Elections = ElectionsModel.getElections()
-    res.json(Elections)
-
+    try {
+        const Elections = await ElectionsModel.getElections()
+        if (!Elections)
+            return res.status('400').json({
+                error: "Elections not found"
+            })
+        console.log(Elections)
+        res.json(Elections)
+    } catch (err) {
+        return res.status('400').json({
+            error: "Could not retrieve elections"
+        })
+    }
 }
 
-const createElection = (req:any, res:any, next:any) => {
+const createElection = async (req: any, res: any, next: any) => {
 
-    const newElection = ElectionsModel.createElection(req.body.Election)
-
-}
-
-const submitBallot = (req:any, res:any, next:any) => {
-
-    const Ballot = BallotModel.submitBallot(req.body)
-
+    try {
+        const newElection = await ElectionsModel.createElection(req.body.Election)
+        if (!newElection)
+            return res.status('400').json({
+                error: "Election not found"
+            })
+    } catch (err) {
+        return res.status('400').json({
+            error: "Could not create election"
+        })
+    }
 }
 
 module.exports = {
-    getElection,
+    returnElection,
     getElectionResults,
     getElections,
     createElection,
-    submitBallot
+    getElectionByID
 }
