@@ -1,12 +1,21 @@
+import { Grid } from "@material-ui/core";
 import React from "react";
 import MatrixViewer from "./MatrixViewer";
 
-function CandidateViewer({ candidate }) {
+function CandidateViewer({ candidate, runoffScore }) {
   return (
-    <p>
-      <b>{candidate.name}</b>: Total Score: {candidate.totalScore}, Average
-      Score: {candidate.averageScore}
-    </p>
+    <>
+      {typeof runoffScore != "undefined" &&
+        <p>
+          <b>{candidate.name}</b>: Total Score: {candidate.totalScore}, Runoff Votes: {runoffScore}
+        </p>
+      }
+      {typeof runoffScore == "undefined" &&
+        <p>
+          <b>{candidate.name}</b>: Total Score: {candidate.totalScore}
+        </p>
+      }
+    </>
   );
 }
 function ResultViewer({ title, results }) {
@@ -23,7 +32,12 @@ function ResultViewer({ title, results }) {
               </p>
             )}
             {section.candidates.map((index, n) => (
-              <CandidateViewer key={n} candidate={results.candidates[index]} />
+              <>
+                {typeof section.votes != "undefined" &&
+                  <CandidateViewer key={n} candidate={results.candidates[index]} runoffScore={section.votes[n]} />}
+                {typeof section.votes == "undefined" &&
+                  <CandidateViewer key={n} candidate={results.candidates[index]} />}
+              </>
             ))}
           </>
         </>
@@ -52,28 +66,51 @@ function SummaryViewer({ cvr }) {
   );
 }
 
-export default function Results({data}) {
+export default function Results({ data }) {
   console.log(data)
   return (
     <div>
       <SummaryViewer cvr={data.Results.cvr} />
       <div className="flexContainer">
         {data.Election.races[0].voting_method === "STAR" &&
-         data.Election.races[0].num_winners == 1 &&
+          data.Election.races[0].num_winners == 1 &&
           <ResultViewer title="Single-Winner Results" results={data.Results.single} />}
-          
+
         {data.Election.races[0].voting_method === "STAR" &&
-         data.Election.races[0].num_winners > 1 &&
-         <ResultViewer title="Multi-Winner Results" results={data.Results.multi} />}
+          data.Election.races[0].num_winners > 1 &&
+          <ResultViewer title="Multi-Winner Results" results={data.Results.multi} />}
 
         {data.Election.races[0].voting_method === "STAR-PR" &&
           <div>
-            <h2>Winners:</h2> 
-            {data.Results.pr.winners.map((winner) => <h3> {winner.name}</h3>) }
-            <h2>Losers:</h2> 
+            <h2>Winners:</h2>
+            {data.Results.pr.winners.map((winner) => <h3> {winner.name}</h3>)}
+            <h2>Losers:</h2>
             {data.Results.pr.losers.map((loser) => <h3> {loser.name}</h3>)}
-        </div>}
-         
+            <h2>Scores By Round</h2>
+            <table className='matrix'>
+              <thead className='matrix'>
+                <tr className='matrix'>
+                  <th className='matrix'> Candidate</th>
+                  {data.Results.pr.winners.map((c, n) => (
+                    <th className='matrix' key={`h${n}`} >Round {n+1} </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className='matrix'>
+                {console.log(data.Results.pr.weightedSumsData)}
+                {data.Results.pr.weightedSumsData.map((row, i) => (
+                  <tr className='matrix' key={`d${i}`}>
+                    <th className='matrix' key={`dh${i}`} >{data.Results.cvr.candidates[i].name}</th>
+                    {row.map((col, j) => (
+                      <td className='matrix' key={`c${i},${j}`}>
+                        <h3>{Math.round(col*10)/10}</h3>
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>}
       </div>
     </div>
   );
