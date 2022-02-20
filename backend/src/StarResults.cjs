@@ -667,7 +667,6 @@ function flatten(cvr, sections) {
 function flattenSingle(cvr) {
   
   const data = cvr.singleResults;
-  console.log(data)
   const sections = [
     {
       title: data.winners.length > 1 ? "Winner (TIE)" : "Winner",
@@ -689,7 +688,6 @@ function flattenSingle(cvr) {
 
 function flattenMulti(cvr) {
   const data = cvr.multiResults;
-  console.log(data)
   const sections = data.map((section, n) => {
     return {
       title: `${position(n + 1)} Place${section.winners.length > 1 ? " (TIE)" : ""}`,
