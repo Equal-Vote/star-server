@@ -89,7 +89,7 @@ function parseData(header, data, nWinners) {
 
   const candidateOrder = sortCandidates(candidates, matrix);
   const singleResults = splitCandidates(candidateOrder, candidates, matrix);
-  const multiResults = splitMulti(singleResults, candidates, matrix);
+  const multiResults = splitMulti(singleResults, [...candidates], matrix);
   // The splitPR method alters the candidate array it is passed
   // so let's pass it a copy of the array
   const prResults = splitPR([...candidates], scores, nWinners);
@@ -112,11 +112,11 @@ function parseData(header, data, nWinners) {
 
 function splitMulti(single, candidates, matrix) {
   const multiResults = [];
-  multiResults.push(single.winners);
+  multiResults.push(single);
   var remaining = [...single.losers, ...single.others];
   while (remaining.length > 0) {
     const results = splitCandidates(remaining, candidates, matrix);
-    multiResults.push(results.winners);
+    multiResults.push(results);
     remaining = [...results.losers, ...results.others];
   }
   return multiResults;
@@ -689,10 +689,12 @@ function flattenSingle(cvr) {
 
 function flattenMulti(cvr) {
   const data = cvr.multiResults;
-  const sections = data.map((candidates, n) => {
+  console.log(data)
+  const sections = data.map((section, n) => {
     return {
-      title: `${position(n + 1)} Place${candidates.length > 1 ? " (TIE)" : ""}`,
-      candidates: candidates
+      title: `${position(n + 1)} Place${section.winners.length > 1 ? " (TIE)" : ""}`,
+      candidates: section.winners,
+      votes: section.winnersVotes
     };
   });
   return flatten(cvr, sections);
