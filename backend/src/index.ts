@@ -5,6 +5,7 @@ import axios from 'axios';
 import qs from 'qs';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+require('dotenv').config();
 
 const app = express();
 
@@ -56,12 +57,6 @@ app.post('/API/Token', (req, res) => {
     }
     const authConfig = keycloakAuthConfig;
 
-    // Q: WAIT! You shouldn't be posting client secrets on a public github repo!
-    // A: Yes, you're right. But we won't be this particular keycloak host long term, and we'll be deleting the userbase once we're done with it
-    //      In the future we should load this from a .env file
-    //      Github Issue: https://github.com/Equal-Vote/star-server/issues/20
-    const clientSecret = 'rn18lnA0MN0sPAfxdREPlqUroIL5F6Vd';
-
     // "any" is the only way I could get this to work (https://blog.logrocket.com/building-type-safe-dictionary-typescript/)
     var params: any = {
         grant_type: req.query.grant_type,
@@ -88,7 +83,7 @@ app.post('/API/Token', (req, res) => {
         {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': `Basic ${Buffer.from(`${authConfig.clientId}:${clientSecret}`).toString('base64')}`
+                'Authorization': `Basic ${Buffer.from(`${authConfig.clientId}:${process.env.KEYCLOAK_SECRET}`).toString('base64')}`
             }
         }
     )
