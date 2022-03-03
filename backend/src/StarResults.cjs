@@ -239,10 +239,10 @@ function splitWinners(finalists, candidates, matrix) {
   );
   // Handle degenerate edge cases
   if (!candidateOrder || candidateOrder.length === 0) {
-    return { winners: [], losers: [] };
+    return { winners: [], losers: [], winnersVotes:[], losersVotes: [] };
   }
   if (candidateOrder.length === 1) {
-    return { winners: candidateOrder, losers: [],votes};
+    return { winners: candidateOrder, losers: [], winnersVotes:votes, losersVotes: []};
   }
 
   const targetVotes = votes[0];
