@@ -1,15 +1,6 @@
 import React from "react";
 import { useState } from 'react'
 import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import Slider from "@material-ui/core/Slider";
 import Button from "@material-ui/core/Button";
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
@@ -89,7 +80,7 @@ const Row = ({ rowIndex, candidate, party, ranking, onClick }) => {
             </IconButton>}
         </Grid>
         <Grid item xs={4}>
-          <Typography align='left' variant="h6" component="h6">
+          <Typography wrap sx={{wordwrap: "break-word"}} align='left' variant="h6" component="h6">
             {candidate.candidate_name}
           </Typography>
         </Grid>
@@ -102,32 +93,40 @@ const Row = ({ rowIndex, candidate, party, ranking, onClick }) => {
 
       </Grid>
       {expanded &&
+      <>
         <Grid container style={{ backgroundColor: rowColor }}>
           <Grid item xs={1}>
           </Grid>
           <Grid item xs={5}>
-            <Typography align='left'  component="h6">
+            {candidate.full_name &&
+            <Typography align='left' component="h6">
               {candidate.full_name}
-            </Typography>
-            <Link color="inherit" href={candidate.candidate_url} target="_blank" underline="always">
+            </Typography>}
+            {candidate.candidate_url && <Link color="inherit" href={candidate.candidate_url} target="_blank" underline="always">
               <Typography align='left' component="h6">
                 Candidate URL
               </Typography>
-            </Link>
-            <Typography align='left' s component="h6">
-              {`Party: ${candidate.party}`}
-            </Typography>
-            <Link color="inherit" href={candidate.partyUrl} target="_blank" underline="always">
-              <Typography align='left' component="h6">
-                Party URL
-              </Typography>
-            </Link>
+            </Link>}
+            {candidate.party &&
+              <Typography align='left' s component="h6">
+                {`Party: ${candidate.party}`}
+              </Typography>}
+            {candidate.partyUrl &&
+              <Link color="inherit" href={candidate.partyUrl} target="_blank" underline="always">
+                <Typography align='left' component="h6">
+                  Party URL
+                </Typography>
+              </Link>}
 
 
           </Grid>
+          {candidate.photo_filename &&
           <Grid item xs={6}>
             <img src={ProfilePic} style={{ width: 200, height: 200 }} />
+          </Grid>}
           </Grid>
+          
+          <Grid container style={{ backgroundColor: rowColor }}>
           <Grid item xs={1}>
           </Grid>
           <Grid item xs={8}>
@@ -138,6 +137,7 @@ const Row = ({ rowIndex, candidate, party, ranking, onClick }) => {
 
           </Grid>
         </Grid>
+        </>
       }
 
     </>
@@ -231,8 +231,9 @@ export default function StarBallotView({
   onSubmitBallot
 }) {
   return (
-    <Container maxWidth="sm">
-      <Box border={2} sx={{ mt: 5, width: '100%' }}>
+    <Container disableGutters={true} maxWidth="sm">
+
+      <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }}>
         <Grid container alignItems="center" justify="center" direction="column">
 
           <Grid item style={{ padding: '0.8cm 0cm 0cm 0cm' }}>
@@ -270,7 +271,8 @@ export default function StarBallotView({
 
         </Grid>
       </Box>
-      <Button variant = 'outlined' onClick={onSubmitBallot}>Submit Ballot</Button>
+      <Button variant='outlined' onClick={onSubmitBallot}>Submit Ballot</Button>
+
     </Container>
   );
 }

@@ -2,50 +2,30 @@ import React from 'react'
 import { useParams } from "react-router";
 import useFetch from "../useFetch";
 import Results from './Results';
+import { Grid } from "@material-ui/core";
+import Box from '@material-ui/core/Box';
 
 const ViewElectionResults = () => {
-
     const {id} = useParams();
     const {data, isPending, error} = useFetch(`/API/ElectionResult/${id}`)
     console.log(data)
     return (
-        // <Results data = {electionResults}/>
-        <>
-            { error && <div> {error} </div>}
-            { isPending && <div> Loading Election... </div>}
-            {data && (
-                <Results data = {data}/>)}
-                
-        </>
-        //     <div>
-        //         <h3>    {electionResults.ElectionName} </h3> 
-        //         <h3>   Winner: {electionResults['winnerName']} </h3> 
-        //         <header>
-        //             {electionResults['candidateNames'].map(candidateName => {
-        //             return <>{candidateName + '\t '}</>;
-        //             })}
-        //         </header>
-        //         <header>
-        //             {electionResults['scores'].map(score => {
-        //             return <>{score + '\t \t'}</>;
-        //             })}
-        //         </header>
-            
-        //         <ul>
-        //             {electionResults['preferenceMatrix'].map(row => {
-        //                 return <header>
-        //                     {row.map(score => {
-        //                     return <>{score + '\t \t'}</>;
-        //                     })}
-        //                 </header>;
-        //             })}
-        //         </ul>
-        //     </div>
-        //     )}
-
-        // </>
+        //Using grid to force results into the center and fill screen on smaller screens.
+        //Using theme settings and css can probably replace the grids
+        <Grid container spacing={0}>
+            <Grid item xs={12} sm={2}>
+            </Grid>
+             <Grid item xs={12} sm={8}>
+                <Box border={2} sx={{ mt: 5, width: '100%', p:2}}>
+                    { error && <div> {error} </div>}
+                    { isPending && <div> Loading Election... </div>}
+                    {data && (
+                        <Results data = {data}/>)}
+                </Box>
+            </Grid>
+            <Grid item xs={12} sm={2}>
+            </Grid>
+        </Grid>
     )
 }
-
 export default ViewElectionResults
-           // <>   {electionResults['candidateNames'].map((candidateName) => (<h3> {candidateName}</h3>))} </> 

@@ -89,7 +89,7 @@ function parseData(header, data, nWinners) {
 
   const candidateOrder = sortCandidates(candidates, matrix);
   const singleResults = splitCandidates(candidateOrder, candidates, matrix);
-  const multiResults = splitMulti(singleResults, candidates, matrix);
+  const multiResults = splitMulti(singleResults, [...candidates], matrix);
   // The splitPR method alters the candidate array it is passed
   // so let's pass it a copy of the array
   const prResults = splitPR([...candidates], scores, nWinners);
@@ -112,11 +112,11 @@ function parseData(header, data, nWinners) {
 
 function splitMulti(single, candidates, matrix) {
   const multiResults = [];
-  multiResults.push(single.winners);
+  multiResults.push(single);
   var remaining = [...single.losers, ...single.others];
   while (remaining.length > 0) {
     const results = splitCandidates(remaining, candidates, matrix);
-    multiResults.push(results.winners);
+    multiResults.push(results);
     remaining = [...results.losers, ...results.others];
   }
   return multiResults;
@@ -227,22 +227,22 @@ function splitCandidates(candidateOrder, candidates, matrix) {
 
   const finalists = candidateOrder.slice(0, count);
   const others = candidateOrder.slice(count);
-  const { winners, losers } = splitWinners(finalists, candidates, matrix);
-  return { winners, losers, others };
+  const { winners, losers, winnersVotes, losersVotes } = splitWinners(finalists, candidates, matrix);
+  return { winners, losers, others, winnersVotes, losersVotes};
 }
 
 function splitWinners(finalists, candidates, matrix) {
-  const { candidateOrder, votes } = sortFinalists(
+  const { candidateOrder, votes,votes_unsorted } = sortFinalists(
     finalists,
     candidates,
     matrix
   );
   // Handle degenerate edge cases
   if (!candidateOrder || candidateOrder.length === 0) {
-    return { winners: [], losers: [] };
+    return { winners: [], losers: [], winnersVotes:[], losersVotes: [] };
   }
   if (candidateOrder.length === 1) {
-    return { winners: candidateOrder, losers: [] };
+    return { winners: candidateOrder, losers: [], winnersVotes:votes, losersVotes: []};
   }
 
   const targetVotes = votes[0];
@@ -261,9 +261,11 @@ function splitWinners(finalists, candidates, matrix) {
   }
 
   const winners = candidateOrder.slice(0, count);
+  const winnersVotes = votes.slice(0,count)
   const losers = candidateOrder.slice(count);
+  const losersVotes = votes.slice(count)
 
-  return { winners, losers };
+  return { winners, losers, winnersVotes, losersVotes };
 }
 
 function sortFinalists(finalists, candidates, matrix) {
@@ -298,7 +300,8 @@ function sortFinalists(finalists, candidates, matrix) {
   order = order.sort(compare);
   const result = {
     candidateOrder: order.map((i) => finalists[i]),
-    votes: order.map((i) => votes[i])
+    votes: order.map((i) => votes[i]),
+    votes_unsorted: votes
   };
   return result;
 }
@@ -405,8 +408,8 @@ export function splitPR(candidates, scores, nWinners) {
   if (!candidates || candidates.length === 0) {
     return { winners: [], losers: [], others: [] };
   }
-
-  if (candidates.length === 1) {
+  var num_candidates = candidates.length
+  if (num_candidates === 1) {
     return { winners: candidates, losers: [], others: [] };
   }
 
@@ -424,6 +427,8 @@ export function splitPR(candidates, scores, nWinners) {
   var others = [];
   var debuginfo = { splitPoints: [], spentAboves: [], weight_on_splits: [] };
   var ties = [];
+  var weightedSumsByRound = []
+  var candidatesByRound = []
   // run loop until specified number of winners are found
   while (winners.length < nWinners) {
     // weight the scores
@@ -437,7 +442,8 @@ export function splitPR(candidates, scores, nWinners) {
       // sum scores for each candidate
       weighted_sums[r] = sumArray(weighted_scores[r]);
     });
-
+    weightedSumsByRound.push(weighted_sums)
+    candidatesByRound.push([...candidates])
     // get index of winner
     var maxAndTies = indexOfMax(weighted_sums);
     var w = maxAndTies.maxIndex;
@@ -503,8 +509,19 @@ export function splitPR(candidates, scores, nWinners) {
       split_point
     );
   }
+  //Moving weighted sum totals to matrix for easier plotting
+  var weightedSumsData = []
+  for (let c = 0; c < num_candidates; c++) {
+    weightedSumsData.push(Array(weightedSumsByRound.length).fill(0))
+  }
+  weightedSumsByRound.map((weightedSums,i) => {
+    weightedSums.map((weightedSum,j) => {
+      let candidate = candidatesByRound[i][j]
+      weightedSumsData[candidate.index][i] = weightedSum*5
+    })
+  })
   losers = candidates;
-  return { winners, losers, others, ties, debuginfo };
+  return { winners, losers, others, ties, debuginfo,weightedSumsData };
 }
 
 function updateBallotWeights(
@@ -620,7 +637,7 @@ function flatten(cvr, sections) {
         )
       )
     );
-    newSections.push({ title: section.title, candidates: candidates });
+    newSections.push({ title: section.title, candidates: candidates, votes: section.votes });
   });
 
   // Next, build a new matrix based on that ordering
@@ -648,15 +665,18 @@ function flatten(cvr, sections) {
 }
 
 function flattenSingle(cvr) {
+  
   const data = cvr.singleResults;
   const sections = [
     {
       title: data.winners.length > 1 ? "Winner (TIE)" : "Winner",
-      candidates: data.winners
+      candidates: data.winners,
+      votes: data.winnersVotes 
     },
     {
       title: data.losers.length > 1 ? "Runner-Up (TIE)" : "Runner Up",
-      candidates: data.losers
+      candidates: data.losers,
+      votes: data.losersVotes
     },
     {
       title: "Other Candidates",
@@ -668,10 +688,11 @@ function flattenSingle(cvr) {
 
 function flattenMulti(cvr) {
   const data = cvr.multiResults;
-  const sections = data.map((candidates, n) => {
+  const sections = data.map((section, n) => {
     return {
-      title: `${position(n + 1)} Place${candidates.length > 1 ? " (TIE)" : ""}`,
-      candidates: candidates
+      title: `${position(n + 1)} Place${section.winners.length > 1 ? " (TIE)" : ""}`,
+      candidates: section.winners,
+      votes: section.winnersVotes
     };
   });
   return flatten(cvr, sections);
