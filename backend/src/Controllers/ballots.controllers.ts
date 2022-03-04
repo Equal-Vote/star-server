@@ -2,6 +2,11 @@
 const BallotsDB = require('../Models/Ballots')
 
 const { Pool } = require('pg');
+// May need to use this ssl setting when using local database
+// const pool = new Pool({
+//     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+//     ssl:  false
+// });
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
     ssl:  {
