@@ -21,7 +21,7 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 
-const AddElection = () => {
+const AddElection = ({authSession}) => {
     const [electionName, setElectionName] = useState('')
     const [startDate, setStartDate] = useState('')
     const [stopDate, setStopDate] = useState('')
@@ -82,7 +82,7 @@ const AddElection = () => {
             description: description, // mark-up text describing the election
             start_time: new Date(startDate),   // when the election starts 
             end_time: new Date(stopDate),   // when the election ends
-            owner_id: '0',
+            owner_id: authSession.getIdField('sub'),
             state: 'draft',
             races: [NewRace]
         }

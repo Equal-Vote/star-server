@@ -82,7 +82,7 @@ export class oAuthSession {
         //      If the user is already logged in and their access token expires, 
         //      This tempoary code can then be used the retrieve tokens
 
-        const url_params = new URLSearchParams(window.location.search)
+        const url_params = new URLSearchParams(window.location.search);
         const auth_code = url_params.get('code');
         if(auth_code == null && !this.cookieExists('refresh_token')){
             console.log("No code or refresh token available, can't refresh");

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 // import Button from './Button'
 import React from 'react'
 import AppBar from '@material-ui/core/AppBar'
@@ -10,6 +11,7 @@ import HomeIcon from '@material-ui/icons/Home'
 import Button from '@material-ui/core/Button'
 
 const Header = ({authSession}) => {
+    const navigate = useNavigate()
     return (
         <AppBar position="static">
             <Toolbar>
@@ -25,12 +27,18 @@ const Header = ({authSession}) => {
             {window.location.pathname !== '/Login' && !authSession.isLoggedIn() && 
                 <Button
                     color='inherit'
-                    
-                    // I'm using window.location instead of navigate since loginUrl could be external, and navigate only supports local
                     onClick={() => authSession.openLogin()}
                 >
                     Login 
-                    </Button>
+                </Button>
+            }
+            {authSession.isLoggedIn() && 
+                <Button
+                    color='inherit'
+                    onClick={() => authSession.openLogout()}
+                >
+                    Logout 
+                </Button>
             }
             {window.location.pathname !== '/Login' && authSession.isLoggedIn() && 
                 <Button
@@ -41,17 +49,31 @@ const Header = ({authSession}) => {
                 />
             }
             <Button color='inherit' href= 'https://www.starvoting.us' target="_blank">
-                    About
-                </Button>
+                About
+            </Button>
+            {authSession.isLoggedIn() && 
                 <Button color='inherit' href= '/CreateElection'>
                     Quick Poll
                 </Button>
+            }
+            {authSession.isLoggedIn() && 
                 <Button color='inherit' href= '/CreateElection'>
                     New Election
                 </Button>
-                <Button color='inherit' href= '/'>
+            }
+            {authSession.isLoggedIn() && 
+                <Button
+                    color='inherit'
+                    onClick={
+                        () => {
+                            navigate({pathname:'/', search:`?filter=owner_id:${authSession.getIdField('sub')}`});
+                            window.location.reload();
+                        } 
+                    }
+                >
                     My Elections
                 </Button>
+            }
             {authSession.isLoggedIn() && 
                 `Hi ${authSession.getIdField('email')}!`
             }
