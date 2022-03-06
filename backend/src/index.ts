@@ -13,9 +13,12 @@ const app = express();
 //      (at least that's my understanding)
 app.use(cors({
     origin: [
+        'https://star-vote.herokuapp.com/',
         'http://localhost:3000', // since this is the server side I can't use window.location.href :'(
-        'https://star-vote-re-oauth-dev-ng9mif5.herokuapp.com/', // this is to verify that it works during the PR phase
-        'https://star-vote.herokuapp.com/'
+        // these are to verify that it works during the PR phase
+        'https://star-vote-review-1.herokuapp.com/',
+        'https://star-vote-review-2.herokuapp.com/',
+        'https://star-vote-review-3.herokuapp.com/',
     ],
     credentials: true, // allow the backend to receive cookies from the frontend
 }))
