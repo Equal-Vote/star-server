@@ -14,11 +14,11 @@ class VoterRollDB {
         console.log("VoterRollDB.init");
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
-            voter_roll_id  SERIAL PRIMARY KEY,
-            election_id     VARCHAR,
-            voter_id        VARCHAR,
+            election_id     VARCHAR NOT NULL,
+            voter_id        VARCHAR NOT NULL,
             ballot_id       INTEGER,
-            submitted       BOOLEAN
+            submitted       BOOLEAN,
+            PRIMARY KEY(election_id,voter_id)
           );
         `;
         console.log(query);
@@ -85,12 +85,12 @@ class VoterRollDB {
     }
     update(voter_roll: VoterRoll): Promise<VoterRoll[] | null> {
         console.log(`VoterRollDB.updateRoll`);
-        var sqlString = `UPDATE ${this._tableName} SET election_id = $1, voter_id=$2, ballot_id=$3, submitted=$4  WHERE voter_roll_id = $5`;
+        var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2  WHERE election_id = $3 AND voter_id=$4`;
         console.log(sqlString);
         console.log(voter_roll)
         var p = this._postgresClient.query({
             text: sqlString,
-            values: [voter_roll.election_id, voter_roll.voter_id,voter_roll.ballot_id,voter_roll.submitted,voter_roll.voter_roll_id]
+            values: [voter_roll.ballot_id,voter_roll.submitted,voter_roll.election_id, voter_roll.voter_id]
         });
         return p.then((response: any) => {
             var rows = response.rows;
@@ -103,15 +103,15 @@ class VoterRollDB {
         });
     }
 
-    delete(votter_roll_id: string): Promise<boolean> {
-        console.log(`VoterRollDB.delete ${votter_roll_id}`);
-        var sqlString = `DELETE FROM ${this._tableName} WHERE votter_roll_id = $1`;
+    delete(voter_roll: VoterRoll): Promise<boolean> {
+        console.log(`VoterRollDB.delete`);
+        var sqlString = `DELETE FROM ${this._tableName} WHERE election_id = $1 AND voter_id=$2`;
         console.log(sqlString);
 
         var p = this._postgresClient.query({
             rowMode: 'array',
             text: sqlString,
-            values: [votter_roll_id]
+            values: [voter_roll.election_id, voter_roll.voter_id]
         });
         return p.then((response: any) => {
             if (response.rowCount == 1) {
