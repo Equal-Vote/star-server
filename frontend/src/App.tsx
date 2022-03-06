@@ -85,11 +85,11 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <Header authSession={authSession} />
         <Routes>
-          <Route path='/' element={<Elections />} />
+          <Route path='/' element={<Elections authSession={authSession}/>} />
           <Route path='/Login' element={<Login />} />
-          <Route path='/CreateElection' element={<AddElection />} />
-          <Route path='/Election/:id' element={<VotePage />} />
-          <Route path='/ElectionResults/:id' element={<ViewElectionResults />} />
+          <Route path='/CreateElection' element={<AddElection authSession={authSession}/>} />
+          <Route path='/Election/:id/vote' element={<VotePage />} />
+          <Route path='/Election/:id/results' element={<ViewElectionResults />} />
         </Routes>
       </ThemeProvider>
     </Router>

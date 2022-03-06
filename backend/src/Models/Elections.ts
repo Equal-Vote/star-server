@@ -64,13 +64,24 @@ class ElectionsDB {
         });
     }
 
-    getElections(): Promise<Election[] | null> {
+    getElections(filter: string): Promise<Election[] | null> {
+        // When I filter in trello it adds "filter=member:arendpetercastelein,overdue:true" to the URL, I'm following the same pattern here
+
         console.log(`ElectionDB.getAll`);
         var sqlString = `SELECT * FROM ${this._tableName}`;
+        if(filter != ""){
+            var filters = filter.split(',');
+            if(filters.length > 0){
+                sqlString = `${sqlString} WHERE`
+            }
+            for(var i = 0; i < filters.length; i++){
+                var [key, value] = filters[i].split(':');
+                sqlString = `${sqlString} ${key}='${value}'`
+            }
+        }
         console.log(sqlString);
 
         var p = this._postgresClient.query({
-
             text: sqlString,
             values: []
         });

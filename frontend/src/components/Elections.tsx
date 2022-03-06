@@ -10,8 +10,15 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 
 const theme = createTheme();
-const Elections = () => {
-    const { data, isPending, error } = useFetch('/API/Elections')
+const Elections = ({authSession}) => {
+
+    const url_params = new URLSearchParams(window.location.search)
+    var url = '/API/Elections';
+    if(url_params.has('filter')){
+        url = `${url}?filter=${url_params.get('filter')}`
+    }
+    console.log(`fetch ${url}`)
+    const { data, isPending, error } = useFetch(url)
     let elections = data as Election[];
     console.log(elections)
     return (
@@ -20,7 +27,7 @@ const Elections = () => {
                 {error && <div> {error} </div>}
                 {isPending && <Typography align='center' variant="h3" component="h2"> Loading Elections... </Typography>}
                 {/* { elections && <Button color='steelblue' text='New Election' onClick={onNewElection} />} */}
-                {elections && <div><Link to='/CreateElection'> <Typography align='center' variant="h4" component="h3"> Create New Election</Typography></Link></div>}
+                {authSession.isLoggedIn() && <Link to='/CreateElection'> <Typography align='center' variant="h4" component="h3"> Create New Election</Typography></Link>}
                 <Container maxWidth="md">
                     <Grid container alignItems="stretch" spacing={4}>
                         {elections && elections.map((election) => (

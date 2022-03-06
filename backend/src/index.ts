@@ -1,3 +1,4 @@
+require('dotenv').config();
 import express from 'express';
 var electionRouter = require('./Routes/elections.routes')
 var debugRouter = require('./Routes/debug.routes')
@@ -5,7 +6,6 @@ import axios from 'axios';
 import qs from 'qs';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-require('dotenv').config();
 
 const app = express();
 

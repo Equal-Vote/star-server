@@ -14,7 +14,7 @@ const pool = new Pool({
     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
     ssl:  {
         rejectUnauthorized: false
-      }
+    }
 });
 var ElectionsModel = new ElectionsDB(pool, "electionDB");
 ElectionsModel.init();
@@ -66,9 +66,9 @@ const getElectionResults = async (req: any, res: any, next: any) => {
 }
 
 const getElections = async (req: any, res: any, next: any) => {
-
     try {
-        const Elections = await ElectionsModel.getElections()
+        var filter = (req.query.filter == undefined)? "" : req.query.filter;
+        const Elections = await ElectionsModel.getElections(filter);
         if (!Elections)
             return res.status('400').json({
                 error: "Elections not found"
