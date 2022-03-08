@@ -15,5 +15,5 @@ export interface Election {
     admin_id?:      Uid;  // user_id of account with admin access
     state:          string; // State of election, In development, finalized, etc
     races:          Race[]; // one or more race definitions
-    settings?:      ElectionSettings;
+    settings:      ElectionSettings;
   }

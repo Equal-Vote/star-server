@@ -43,7 +43,8 @@ const getRollsByElectionID = async (req: any, res: any, next: any) => {
 const addVoterRoll = async (req: any, res: any, next: any) => {
 
     try {
-        const NewVoterRoll = await VoterRollModel.submitVoterRoll(req.election.election_id, req.voterRoll,false)
+        console.log(req.election)
+        const NewVoterRoll = await VoterRollModel.submitVoterRoll(req.election.election_id, req.body.VoterIDList,false)
         if (!NewVoterRoll)
             return res.status('400').json({
                 error: "Voter Roll not found"
@@ -93,9 +94,62 @@ const getByVoterID = async (req: any, res: any, next: any) => {
     }
 }
 
+const getVoterAuth = async (req: any, res: any, next: any) => {
+
+    if (req.election.settings.voter_id_type==='IP Address'){
+        console.log(String(req.ip))
+        req.voter_id = String(req.ip)
+    } else if(req.election.settings.voter_id_type==='Email'){
+        req.voter_id = req.user.email
+    } else if(req.election.settings.voter_id_type==='IDs'){
+        req.voter_id = req.body.voter_id
+    }
+    try {
+        const voterRollEntry = await VoterRollModel.getByVoterID(req.election.election_id, req.voter_id)
+        if (!voterRollEntry)
+            return res.status('400').json({
+                error: "Voter Roll not found"
+            })
+        req.voterRollEntry = voterRollEntry
+    } catch (err) {
+        return res.status('400').json({
+            error: "Could not find voter roll entry"
+        })
+    }
+    console.log(req.voterRollEntry)
+    if (req.election.settings.voter_roll_type==='None'){
+        req.authorized_voter = true;
+        if (req.voterRollEntry.length==0){
+            //Adds voter to roll if they aren't currently
+            const NewVoterRoll = await VoterRollModel.submitVoterRoll(req.election.election_id, [req.voter_id],false)
+            if (!NewVoterRoll)
+                return res.status('400').json({
+                    error: "Voter Roll not found"
+                })
+            req.voterRollEntry = NewVoterRoll
+            req.has_voted = false
+            next()
+        } else{
+            req.has_voted = req.voterRollEntry.submitted
+            next()
+        }
+    } else if (req.election.settings.voter_roll_type==='Email' || req.election.settings.voter_roll_type==='IDs' ){
+        if (req.voterRollEntry.length==0){
+            req.authorized_voter = false;
+            req.has_voted = false
+            next()
+        } else{
+            req.authorized_voter = true
+            req.has_voted = req.voterRollEntry.submitted
+            next()
+        }
+    }
+}
+
 module.exports = {
     updateVoterRoll,
     getRollsByElectionID,
     addVoterRoll,
     getByVoterID,
+    getVoterAuth,
 }

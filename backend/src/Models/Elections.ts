@@ -39,10 +39,9 @@ class ElectionsDB {
     createElection(election: Election): Promise<string> {
         console.log(`ElectionDB.create`);
         var sqlString = `INSERT INTO ${this._tableName} (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_id,admin_id,state,races,settings)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`;
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *;`;
 
         var p = this._postgresClient.query({
-            rowMode: 'array',
             text: sqlString,
             values: [election.title,
                 election.description,
@@ -59,8 +58,8 @@ class ElectionsDB {
         });
 
         return p.then((res: any) => {
-            console.log("set response rows: " + JSON.stringify(res));
-            return election;
+            // console.log(res);
+            return res.rows[0];
         });
     }
 

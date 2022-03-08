@@ -39,7 +39,10 @@ const getElectionByID = async (req: any, res: any, next: any) => {
 }
 
 const returnElection = async (req: any, res: any, next: any) => {
-    res.json(req.election)
+    console.log(req.authorized_voter)
+    console.log(req.has_voted)
+
+    res.json({election: req.election, voterAuth: {authorized_voter: req.authorized_voter,has_voted: req.has_voted}})
 }
 
 const getElectionResults = async (req: any, res: any, next: any) => {
@@ -90,12 +93,15 @@ const createElection = async (req: any, res: any, next: any) => {
             return res.status('400').json({
                 error: "Election not found"
             })
+        req.election = newElection
+        next()
     } catch (err) {
         return res.status('400').json({
             error: "Could not create election"
         })
     }
 }
+
 
 module.exports = {
     returnElection,

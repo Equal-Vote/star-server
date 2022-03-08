@@ -1,29 +1,24 @@
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router'
 // import Button from './Button'
 import React from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
-import HomeIcon from '@material-ui/icons/Home'
 import Button from '@material-ui/core/Button'
+
 
 const Header = ({authSession}) => {
     const navigate = useNavigate()
     return (
         <AppBar position="static">
             <Toolbar>
-                <Typography variant="h6" color="inherit">
-                    STAR Vote 2.0
-                </Typography>
-                {/* <Link to='/'> <h1> STAR Vote 2.0 </h1></Link> */}
-                <Link to="/">
-                    <IconButton aria-label="Home" >
-                        <HomeIcon />
-                    </IconButton>
-                </Link>
+                <Button color='inherit' href="/">
+                    <Typography variant="h6" color="inherit">
+                        STAR Vote 2.0
+                    </Typography>
+                </Button>
             {window.location.pathname !== '/Login' && !authSession.isLoggedIn() && 
                 <Button
                     color='inherit'

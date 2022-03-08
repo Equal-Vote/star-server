@@ -14,7 +14,7 @@ class VoterRollDB {
         console.log("VoterRollDB.init");
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
-            election_id     VARCHAR NOT NULL,
+            election_id     INTEGER NOT NULL,
             voter_id        VARCHAR NOT NULL,
             ballot_id       INTEGER,
             submitted       BOOLEAN,
@@ -28,7 +28,7 @@ class VoterRollDB {
         });
     }
 
-    submitVoterRoll(election_id: string, voter_ids: string[],submitted:Boolean): Promise<boolean> {
+    submitVoterRoll(election_id: number, voter_ids: string[],submitted:Boolean): Promise<boolean> {
         console.log(`VoterRollDB.submit`);
         var values = voter_ids.map((voter_id) => ([election_id,
             voter_id,
@@ -80,7 +80,7 @@ class VoterRollDB {
                 console.log(".get null");
                 return [];
             }
-            return rows
+            return rows[0]
         });
     }
     update(voter_roll: VoterRoll): Promise<VoterRoll[] | null> {

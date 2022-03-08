@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { oAuthSession } from './oAuthSession'
 import theme from './theme'
 import { ThemeProvider } from '@material-ui/styles'
+import ElectionHome from './components/ElectionHome'
 
 const App = () => {
   /* oAuth2 reference
@@ -88,6 +89,7 @@ const App = () => {
           <Route path='/' element={<Elections authSession={authSession}/>} />
           <Route path='/Login' element={<Login />} />
           <Route path='/CreateElection' element={<AddElection authSession={authSession}/>} />
+          <Route path='/Election/:id' element={<ElectionHome />} />
           <Route path='/Election/:id/vote' element={<VotePage />} />
           <Route path='/Election/:id/results' element={<ViewElectionResults />} />
         </Routes>

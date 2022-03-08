@@ -53,13 +53,27 @@ const getBallotsByElectionID = async (req: any, res: any, next: any) => {
 }
 
 const submitBallot = async (req: any, res: any, next: any) => {
+    if (!req.authorized_voter){
+        console.log("Voter not authorized")
+        return res.status('400').json({
+            error: "Voter not authorized"
+        })
+    }
+    if (req.has_voted){
+        console.log("Voter already submitted ballot")
+        return res.status('400').json({
+            error: "Voter already submitted ballot"
+        })
+    }
+
     try {
         const Ballot = await BallotModel.submitBallot(req.body)
         if (!Ballot)
             return res.status('400').json({
                 error: "Ballots not found"
             })
-        return res.status('200')
+        req.voterRollEntry.submitted = true
+        next()
 
     } catch (err) {
         return res.status('400').json({
