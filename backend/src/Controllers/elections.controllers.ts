@@ -67,6 +67,21 @@ const getElectionResults = async (req: any, res: any, next: any) => {
     )
 
 }
+const getSandboxResults = async (req: any, res: any, next: any) => {
+
+    const candidateNames = req.body.candidates
+    const cvr = req.body.cvr
+    const num_winners = req.body.num_winners
+    console.log(candidateNames)
+    const results = StarResults(candidateNames, cvr, num_winners)
+
+    res.json(
+        {
+            Results: results
+        }
+    )
+
+}
 
 const getElections = async (req: any, res: any, next: any) => {
     try {
@@ -108,5 +123,6 @@ module.exports = {
     getElectionResults,
     getElections,
     createElection,
-    getElectionByID
+    getElectionByID,
+    getSandboxResults,
 }

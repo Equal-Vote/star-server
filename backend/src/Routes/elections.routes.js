@@ -25,6 +25,9 @@ router.post('/Election/:id',
     ballotController.submitBallot,
     voterRollController.updateVoterRoll)
 
+router.post('/Sandbox',
+    electionController.getSandboxResults)
+
 router.param('id', electionController.getElectionByID)
 
 module.exports = router

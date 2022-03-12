@@ -10,6 +10,7 @@ import { oAuthSession } from './oAuthSession'
 import theme from './theme'
 import { ThemeProvider } from '@material-ui/styles'
 import ElectionHome from './components/ElectionHome'
+import Sandbox from './components/Sandbox'
 
 const App = () => {
   /* oAuth2 reference
@@ -92,6 +93,7 @@ const App = () => {
           <Route path='/Election/:id' element={<ElectionHome />} />
           <Route path='/Election/:id/vote' element={<VotePage />} />
           <Route path='/Election/:id/results' element={<ViewElectionResults />} />
+          <Route path='/Sandbox' element={<Sandbox />} />
         </Routes>
       </ThemeProvider>
     </Router>

@@ -69,6 +69,9 @@ const Header = ({authSession}) => {
                     My Elections
                 </Button>
             }
+            <Button color='inherit' href= '/sandbox' >
+                Sandbox
+            </Button>
             {authSession.isLoggedIn() && 
                 `Hi ${authSession.getIdField('email')}!`
             }
