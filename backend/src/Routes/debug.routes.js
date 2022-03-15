@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-import { nextTick } from 'process';
 import { tempTestSuite } from '../test/TempTestSuite';
 
 const voterRollController = require('../Controllers/voterRolls.controller')

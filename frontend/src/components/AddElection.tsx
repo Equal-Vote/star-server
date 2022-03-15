@@ -94,7 +94,7 @@ const AddElection = ({ authSession }) => {
         }
 
         const NewElection: Election = {
-            election_id: '0', // identifier assigned by the system
+            election_id: 0, // identifier assigned by the system
             frontend_url: '', // base URL for the frontend
             title: electionName, // one-line election title
             description: description, // mark-up text describing the election

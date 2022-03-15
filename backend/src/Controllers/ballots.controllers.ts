@@ -1,21 +1,6 @@
-
 const BallotsDB = require('../Models/Ballots')
 
-const { Pool } = require('pg');
-// May need to use this ssl setting when using local database
-// const pool = new Pool({
-//     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-//     ssl:  false
-// });
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-    ssl:  {
-        rejectUnauthorized: false
-      }
-});
-var BallotModel = new BallotsDB(pool, "ballotDB");
-BallotModel.init();
-
+var BallotModel = new BallotsDB();
 
 const ballotByID = async (req: any, res: any, next: any) => {
     try {
@@ -81,6 +66,7 @@ const submitBallot = async (req: any, res: any, next: any) => {
         })
     }
 }
+
 
 module.exports = {
     getBallotsByElectionID,

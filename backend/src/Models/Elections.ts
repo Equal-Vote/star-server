@@ -1,13 +1,18 @@
 import { Election } from '../../../domain_model/Election';
+const { Pool } = require('pg');
 
 class ElectionsDB {
 
     _postgresClient;
     _tableName: string;
 
-    constructor(client: any, tableName: string) {
-        this._postgresClient = client;
-        this._tableName = tableName;
+    constructor() {
+        this._tableName = "electionDB";
+        this._postgresClient = new Pool({
+            connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+            ssl:  false
+        });
+        this.init()
     }
 
     init(): Promise<ElectionsDB> {
@@ -95,7 +100,7 @@ class ElectionsDB {
         });
     }
 
-    getElectionByID(election_id: string): Promise<string | null> {
+    getElectionByID(election_id: string): Promise<Election | null> {
         console.log(`ElectionDB.get ${election_id}`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1`;
         console.log(sqlString);

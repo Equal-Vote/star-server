@@ -14,6 +14,7 @@ router.get('/Elections',
     authController.getUser,
     electionController.getElections)
 router.post('/Elections/',
+    authController.getUser,
     electionController.createElection,
     voterRollController.addVoterRoll)
 router.get('/ElectionResult/:id',

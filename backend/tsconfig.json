@@ -8,6 +8,9 @@
     "esModuleInterop": true,
     "strictNullChecks": true,
     "strict": true,
+    "types": [
+      "jest",
+    ],
   },
   "include": ["../domain_model/**/*", "./src/**/*"],
 }

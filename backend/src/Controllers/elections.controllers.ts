@@ -2,23 +2,9 @@ import { Election } from '../../../domain_model/Election';
 import { Ballot } from '../../../domain_model/Ballot';
 import { Score } from '../../../domain_model/Score';
 const ElectionsDB = require('../Models/Elections')
-import StarResults from '../StarResults.cjs';
+const StarResults = require('../StarResults.js');
 
-const { Pool } = require('pg');
-// May need to use this ssl setting when using local database
-// const pool = new Pool({
-//     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-//     ssl:  false
-// });
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-    ssl:  {
-        rejectUnauthorized: false
-    }
-});
-var ElectionsModel = new ElectionsDB(pool, "electionDB");
-ElectionsModel.init();
-
+var ElectionsModel = new ElectionsDB();
 
 const getElectionByID = async (req: any, res: any, next: any) => {
     try {
@@ -39,9 +25,6 @@ const getElectionByID = async (req: any, res: any, next: any) => {
 }
 
 const returnElection = async (req: any, res: any, next: any) => {
-    console.log(req.authorized_voter)
-    console.log(req.has_voted)
-
     res.json({election: req.election, voterAuth: {authorized_voter: req.authorized_voter,has_voted: req.has_voted}})
 }
 
@@ -112,11 +95,10 @@ const createElection = async (req: any, res: any, next: any) => {
         next()
     } catch (err) {
         return res.status('400').json({
-            error: "Could not create election"
+            error: (err as any).message
         })
     }
 }
-
 
 module.exports = {
     returnElection,

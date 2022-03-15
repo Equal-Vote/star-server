@@ -1,13 +1,24 @@
 import { Ballot } from '../../../domain_model/Ballot';
+const { Pool } = require('pg');
 
 class BallotsDB {
 
     _postgresClient;
     _tableName: string;
 
-    constructor(client: any, tableName: string) {
-        this._postgresClient = client;
-        this._tableName = tableName;
+    constructor() {
+        // this._postgresClient = new Pool({
+        //     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+        //     ssl:  {
+        //         rejectUnauthorized: false
+        //       }
+        // });
+        this._postgresClient = new Pool({
+                connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+                ssl:  false
+            });
+        this._tableName = "ballotDB";
+        this.init();
     }
 
     init(): Promise<BallotsDB> {

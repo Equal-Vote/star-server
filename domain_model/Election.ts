@@ -3,7 +3,7 @@ import { Race } from "./Race";
 import { Uid } from "./Uid";
 
 export interface Election {
-    election_id:    Uid; // identifier assigned by the system
+    election_id:    number; // identifier assigned by the system
     title:          string; // one-line election title
     description?:   string; // mark-up text describing the election
     frontend_url:   string; // base URL for the frontend

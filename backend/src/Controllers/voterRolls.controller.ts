@@ -1,25 +1,6 @@
-import { Election } from '../../../domain_model/Election';
-import { Ballot } from '../../../domain_model/Ballot';
-import { Score } from '../../../domain_model/Score';
-import { VoterRoll } from '../../../domain_model/VoterRoll';
 const VoterRollDB = require('../Models/VoterRolls')
-import StarResults from '../StarResults.cjs';
 
-const { Pool } = require('pg');
-// May need to use this ssl setting when using local database
-// const pool = new Pool({
-//     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-//     ssl:  false
-// });
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-    ssl:  {
-        rejectUnauthorized: false
-      }
-});
-var VoterRollModel = new VoterRollDB(pool, "voterRollDB");
-VoterRollModel.init();
-
+var VoterRollModel = new VoterRollDB();
 
 const getRollsByElectionID = async (req: any, res: any, next: any) => {
     //requires election data in req, adds entire voter roll 
@@ -43,7 +24,7 @@ const getRollsByElectionID = async (req: any, res: any, next: any) => {
 const addVoterRoll = async (req: any, res: any, next: any) => {
 
     try {
-        console.log(req.election)
+        // console.log(req)
         const NewVoterRoll = await VoterRollModel.submitVoterRoll(req.election.election_id, req.body.VoterIDList,false)
         if (!NewVoterRoll)
             return res.status('400').json({
@@ -54,7 +35,7 @@ const addVoterRoll = async (req: any, res: any, next: any) => {
     } catch (err) {
         console.log(err)
         return res.status('400').json({
-            error: "Could not create voter roll"
+            error: req.user
         })
     }
 }
