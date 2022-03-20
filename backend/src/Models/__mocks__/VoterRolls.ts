@@ -1,3 +1,4 @@
+import { Vote } from '../../../../domain_model/Vote';
 import { VoterRoll } from '../../../../domain_model/VoterRoll';
 
 class VoerRollDB {
@@ -23,10 +24,10 @@ class VoerRollDB {
         }
         return Promise.resolve(voterRolls)
     }
-    getByVoterID(election_id: string,voter_id:string): Promise<VoterRoll | null> {
+    getByVoterID(election_id: string,voter_id:string): Promise<VoterRoll | [] | null> {
         const ballots = this.voterRolls.find(voterRoll => voterRoll.election_id===election_id && voterRoll.voter_id===voter_id)
         if (!ballots){
-            return Promise.resolve(null)
+            return Promise.resolve([])
         }
         return Promise.resolve(ballots)
     }

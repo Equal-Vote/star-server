@@ -7,7 +7,11 @@ class BallotsDB {
     constructor() {
     }
     submitBallot(ballot: Ballot): Promise<Ballot>{
-        ballot.ballot_id = this.ballots[this.ballots.length-1].ballot_id+1;
+        if (this.ballots.length>0){
+            ballot.ballot_id = this.ballots[this.ballots.length-1].ballot_id+1;
+        } else{
+            ballot.ballot_id = 0
+        }
         this.ballots.push(ballot)
         return Promise.resolve(ballot)
     }

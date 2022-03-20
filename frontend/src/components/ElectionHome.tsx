@@ -22,7 +22,15 @@ import { ThemeProvider } from '@material-ui/styles';
 import Box from '@material-ui/core/Box';
 const ElectionHome = ({ }) => {
   const { id } = useParams();
-  const { data, isPending, error } = useFetch(`/API/Election/${id}`)
+  //TODO: Add logic for entering vote ID
+  const { data, isPending, error } = useFetch(`/API/Election/${id}/ballot`,{
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({})
+  })
   const [rankings, setRankings] = useState([])
   const navigate = useNavigate();
   console.log(data)
@@ -43,7 +51,7 @@ const ElectionHome = ({ }) => {
   const electionEnded = () => {
     const currentTime = new Date()
     if (!data.election.end_time){
-      return true
+      return false
     } else if (new Date(data.election.end_time).getTime() < currentTime.getTime()){
       return true
     } else {
@@ -78,15 +86,17 @@ const ElectionHome = ({ }) => {
 
               {data.voterAuth.has_voted == false && electionStarted() && !electionEnded()&&
                 <>
+                  {data.election.end_time &&
                   <Typography align='center' gutterBottom variant="h6" component="h6">
                     {`Election ends on ${new Date(data.election.end_time).toLocaleDateString()} at ${new Date(data.election.end_time).toLocaleTimeString()} `}
-                  </Typography>
+                  </Typography>}
                   <Link to={`/Election/${String(data.election.election_id)}/vote`}>
                     <Typography align='center' gutterBottom variant="h6" component="h6">
                       Vote
                     </Typography>
                   </Link>
                 </>}
+                
               {data.voterAuth.has_voted == true &&
                 <Typography align='center' gutterBottom variant="h6" component="h6">
                   Ballot Submitted

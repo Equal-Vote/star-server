@@ -49,7 +49,8 @@ const updateVoterRoll = async (req: any, res: any, next: any) => {
                 error: "Voter Roll not found"
             })
         req.voterRollEntry = voterRollEntry
-        next()
+        console.log('Voter Roll Updated')
+        res.status('200').json()
     } catch (err) {
         console.log(err)
         return res.status('400').json({

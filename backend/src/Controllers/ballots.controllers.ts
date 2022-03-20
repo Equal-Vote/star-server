@@ -52,7 +52,7 @@ const submitBallot = async (req: any, res: any, next: any) => {
     }
 
     try {
-        const Ballot = await BallotModel.submitBallot(req.body)
+        const Ballot = await BallotModel.submitBallot(req.body.ballot)
         if (!Ballot)
             return res.status('400').json({
                 error: "Ballots not found"
@@ -62,7 +62,7 @@ const submitBallot = async (req: any, res: any, next: any) => {
 
     } catch (err) {
         return res.status('400').json({
-            error: "Could not submit ballot"
+            error: (err as any).message
         })
     }
 }

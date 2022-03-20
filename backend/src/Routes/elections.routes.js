@@ -10,17 +10,22 @@ router.get('/Election/:id',
     authController.getUser,
     voterRollController.getVoterAuth,
     electionController.returnElection)
+router.post('/Election/:id/ballot',
+    authController.getUser,
+    voterRollController.getVoterAuth,
+    electionController.returnElection)
 router.get('/Elections',
     authController.getUser,
     electionController.getElections)
 router.post('/Elections/',
     authController.getUser,
+    authController.isLoggedIn,
     electionController.createElection,
     voterRollController.addVoterRoll)
 router.get('/ElectionResult/:id',
     ballotController.getBallotsByElectionID,
     electionController.getElectionResults)
-router.post('/Election/:id',
+router.post('/Election/:id/vote',
     authController.getUser,
     voterRollController.getVoterAuth,
     ballotController.submitBallot,

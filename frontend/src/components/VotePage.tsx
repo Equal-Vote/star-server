@@ -40,15 +40,15 @@ const VotePage = ({ }) => {
 
     }
     console.log(ballot)
-    fetch(`/API/Election/${id}`, {
+    fetch(`/API/Election/${id}/vote`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(ballot)
+      body: JSON.stringify({ballot: ballot})
     })
-    navigate(`/ElectionResults/${id}`)
+    navigate(`/Election/${id}`)
   }
   return (
     <Container >
