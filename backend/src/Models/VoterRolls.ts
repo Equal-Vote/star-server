@@ -10,8 +10,14 @@ class VoterRollDB {
         this._tableName = "voterRollDB";
         this._postgresClient = new Pool({
             connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-            ssl:  false
+            ssl:  {
+                rejectUnauthorized: false
+              }
         });
+        // this._postgresClient = new Pool({
+        //     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+        //     ssl:  false
+        // });
         this.init()
     }
 
