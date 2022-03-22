@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-import { nextTick } from 'process';
 import { tempTestSuite } from '../test/TempTestSuite';
 
 const voterRollController = require('../Controllers/voterRolls.controller')
@@ -23,16 +22,16 @@ router.get('/test', (req, res) => {
     )
 })
 router.get('/addRoll', (req, res, next) => {
-    const election = { election_id: '0' }
+    const election = { election_id: 0 }
     req.election = election
-    req.voterRoll = ['Alexa', 'Bob', 'Carol', 'Dave']
+    req.body.VoterIDList = ['Alexa', 'Bob', 'Carol', 'Dave']
     next()
 },
     voterRollController.addVoterRoll
 )
 
 router.get('/getRoll', (req, res, next) => {
-    const election = { election_id: '0' }
+    const election = { election_id: 0 }
     req.election = election
     req.voter_id = "Bob"
     next()
@@ -44,7 +43,7 @@ router.get('/getRoll', (req, res, next) => {
     
 )
 router.get('/updateRoll', (req, res, next) => {
-    const election = { election_id: '0' }
+    const election = { election_id: 0 }
     req.election = election
     req.voter_id = "Bob"
     next()

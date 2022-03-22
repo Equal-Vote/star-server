@@ -3,5 +3,6 @@
 # dependencies
 **node_modules**
 backend/build
+backend/coverage
 *Workspacenpm-cache*
 **.env

@@ -1,13 +1,24 @@
 import { Election } from '../../../domain_model/Election';
+const { Pool } = require('pg');
 
 class ElectionsDB {
 
     _postgresClient;
     _tableName: string;
 
-    constructor(client: any, tableName: string) {
-        this._postgresClient = client;
-        this._tableName = tableName;
+    constructor() {
+        this._tableName = "electionDB";
+        this._postgresClient = new Pool({
+            connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+            ssl:  {
+                rejectUnauthorized: false
+              }
+        });
+        // this._postgresClient = new Pool({
+        //     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+        //     ssl:  false
+        // });
+        this.init()
     }
 
     init(): Promise<ElectionsDB> {
@@ -39,10 +50,9 @@ class ElectionsDB {
     createElection(election: Election): Promise<string> {
         console.log(`ElectionDB.create`);
         var sqlString = `INSERT INTO ${this._tableName} (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_id,admin_id,state,races,settings)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`;
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *;`;
 
         var p = this._postgresClient.query({
-            rowMode: 'array',
             text: sqlString,
             values: [election.title,
                 election.description,
@@ -59,8 +69,8 @@ class ElectionsDB {
         });
 
         return p.then((res: any) => {
-            console.log("set response rows: " + JSON.stringify(res));
-            return election;
+            // console.log(res);
+            return res.rows[0];
         });
     }
 
@@ -96,7 +106,7 @@ class ElectionsDB {
         });
     }
 
-    getElectionByID(election_id: string): Promise<string | null> {
+    getElectionByID(election_id: string): Promise<Election | null> {
         console.log(`ElectionDB.get ${election_id}`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1`;
         console.log(sqlString);

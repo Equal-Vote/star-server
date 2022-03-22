@@ -1,20 +1,31 @@
 import { VoterRoll } from '../../../domain_model/VoterRoll';
+const { Pool } = require('pg');
 var format = require('pg-format');
 class VoterRollDB {
 
     _postgresClient;
     _tableName: string;
 
-    constructor(client: any, tableName: string) {
-        this._postgresClient = client;
-        this._tableName = tableName;
+    constructor() {
+        this._tableName = "voterRollDB";
+        this._postgresClient = new Pool({
+            connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+            ssl:  {
+                rejectUnauthorized: false
+              }
+        });
+        // this._postgresClient = new Pool({
+        //     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+        //     ssl:  false
+        // });
+        this.init()
     }
 
     init(): Promise<VoterRollDB> {
         console.log("VoterRollDB.init");
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
-            election_id     VARCHAR NOT NULL,
+            election_id     INTEGER NOT NULL,
             voter_id        VARCHAR NOT NULL,
             ballot_id       INTEGER,
             submitted       BOOLEAN,
@@ -28,7 +39,7 @@ class VoterRollDB {
         });
     }
 
-    submitVoterRoll(election_id: string, voter_ids: string[],submitted:Boolean): Promise<boolean> {
+    submitVoterRoll(election_id: number, voter_ids: string[],submitted:Boolean): Promise<boolean> {
         console.log(`VoterRollDB.submit`);
         var values = voter_ids.map((voter_id) => ([election_id,
             voter_id,
@@ -64,7 +75,7 @@ class VoterRollDB {
             return rows
         });
     }
-    getByVoterID(election_id: string,voter_id:string): Promise<VoterRoll[] | null> {
+    getByVoterID(election_id: string,voter_id:string): Promise<VoterRoll | null> {
         console.log(`VoterRollDB.getByVoterID`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1 AND voter_id = $2`;
         console.log(sqlString);
@@ -80,10 +91,10 @@ class VoterRollDB {
                 console.log(".get null");
                 return [];
             }
-            return rows
+            return rows[0]
         });
     }
-    update(voter_roll: VoterRoll): Promise<VoterRoll[] | null> {
+    update(voter_roll: VoterRoll): Promise<VoterRoll | null> {
         console.log(`VoterRollDB.updateRoll`);
         var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2  WHERE election_id = $3 AND voter_id=$4`;
         console.log(sqlString);

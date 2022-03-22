@@ -403,7 +403,7 @@ function getTransforms(header, data) {
   return transforms;
 }
 
-export function splitPR(candidates, scores, nWinners) {
+function splitPR(candidates, scores, nWinners) {
   // Handle degenerate edge cases
   if (!candidates || candidates.length === 0) {
     return { winners: [], losers: [], others: [] };
@@ -714,7 +714,7 @@ function position(number) {
 
 /***************************** Public API *****************************/
 
-export default function StarResults(candidates, votes, nWinners = 3) {
+module.exports = function StarResults(candidates, votes, nWinners = 3) {
   const cvr = parseData(candidates, votes, nWinners);
   const single = flattenSingle(cvr);
   const multi = flattenMulti(cvr);

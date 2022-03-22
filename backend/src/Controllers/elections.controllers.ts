@@ -2,23 +2,9 @@ import { Election } from '../../../domain_model/Election';
 import { Ballot } from '../../../domain_model/Ballot';
 import { Score } from '../../../domain_model/Score';
 const ElectionsDB = require('../Models/Elections')
-import StarResults from '../StarResults.cjs';
+const StarResults = require('../StarResults.js');
 
-const { Pool } = require('pg');
-// May need to use this ssl setting when using local database
-// const pool = new Pool({
-//     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-//     ssl:  false
-// });
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-    ssl:  {
-        rejectUnauthorized: false
-    }
-});
-var ElectionsModel = new ElectionsDB(pool, "electionDB");
-ElectionsModel.init();
-
+var ElectionsModel = new ElectionsDB();
 
 const getElectionByID = async (req: any, res: any, next: any) => {
     try {
@@ -39,7 +25,7 @@ const getElectionByID = async (req: any, res: any, next: any) => {
 }
 
 const returnElection = async (req: any, res: any, next: any) => {
-    res.json(req.election)
+    res.json({election: req.election, voterAuth: {authorized_voter: req.authorized_voter,has_voted: req.has_voted}})
 }
 
 const getElectionResults = async (req: any, res: any, next: any) => {
@@ -59,6 +45,21 @@ const getElectionResults = async (req: any, res: any, next: any) => {
     res.json(
         {
             Election: election,
+            Results: results
+        }
+    )
+
+}
+const getSandboxResults = async (req: any, res: any, next: any) => {
+
+    const candidateNames = req.body.candidates
+    const cvr = req.body.cvr
+    const num_winners = req.body.num_winners
+    console.log(candidateNames)
+    const results = StarResults(candidateNames, cvr, num_winners)
+
+    res.json(
+        {
             Results: results
         }
     )
@@ -90,9 +91,11 @@ const createElection = async (req: any, res: any, next: any) => {
             return res.status('400').json({
                 error: "Election not found"
             })
+        req.election = newElection
+        next()
     } catch (err) {
         return res.status('400').json({
-            error: "Could not create election"
+            error: (err as any).message
         })
     }
 }
@@ -102,5 +105,6 @@ module.exports = {
     getElectionResults,
     getElections,
     createElection,
-    getElectionByID
+    getElectionByID,
+    getSandboxResults,
 }

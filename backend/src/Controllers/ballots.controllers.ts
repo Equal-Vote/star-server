@@ -1,21 +1,6 @@
-
 const BallotsDB = require('../Models/Ballots')
 
-const { Pool } = require('pg');
-// May need to use this ssl setting when using local database
-// const pool = new Pool({
-//     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-//     ssl:  false
-// });
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-    ssl:  {
-        rejectUnauthorized: false
-      }
-});
-var BallotModel = new BallotsDB(pool, "ballotDB");
-BallotModel.init();
-
+var BallotModel = new BallotsDB();
 
 const ballotByID = async (req: any, res: any, next: any) => {
     try {
@@ -53,20 +38,35 @@ const getBallotsByElectionID = async (req: any, res: any, next: any) => {
 }
 
 const submitBallot = async (req: any, res: any, next: any) => {
+    if (!req.authorized_voter){
+        console.log("Voter not authorized")
+        return res.status('400').json({
+            error: "Voter not authorized"
+        })
+    }
+    if (req.has_voted){
+        console.log("Voter already submitted ballot")
+        return res.status('400').json({
+            error: "Voter already submitted ballot"
+        })
+    }
+
     try {
-        const Ballot = await BallotModel.submitBallot(req.body)
+        const Ballot = await BallotModel.submitBallot(req.body.ballot)
         if (!Ballot)
             return res.status('400').json({
                 error: "Ballots not found"
             })
-        return res.status('200')
+        req.voterRollEntry.submitted = true
+        next()
 
     } catch (err) {
         return res.status('400').json({
-            error: "Could not submit ballot"
+            error: (err as any).message
         })
     }
 }
+
 
 module.exports = {
     getBallotsByElectionID,
