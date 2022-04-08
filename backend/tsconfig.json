@@ -9,8 +9,8 @@
     "strictNullChecks": true,
     "strict": true,
     "types": [
-      "jest",
-    ],
+      "jest"
+    ]
   },
-  "include": ["../domain_model/**/*", "./src/**/*"],
+  "include": ["../domain_model/**/*", "./src/**/*"]
 }

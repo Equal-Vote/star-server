@@ -2,6 +2,7 @@ import React from 'react'
 import Header from './components/Header'
 import Elections from './components/Elections'
 import AddElection from './components/AddElection'
+import EditElection from './components/EditElection'
 import VotePage from './components/VotePage'
 import Login from './components/Login'
 import ViewElectionResults from './components/ViewElectionResults'
@@ -93,6 +94,7 @@ const App = () => {
           <Route path='/Election/:id' element={<ElectionHome />} />
           <Route path='/Election/:id/vote' element={<VotePage />} />
           <Route path='/Election/:id/results' element={<ViewElectionResults />} />
+          <Route path='/Election/:id/edit' element={<EditElection authSession={authSession}/>} />
           <Route path='/Sandbox' element={<Sandbox />} />
         </Routes>
       </ThemeProvider>
