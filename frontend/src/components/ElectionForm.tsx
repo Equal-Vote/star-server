@@ -13,6 +13,9 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
+// https://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-deep-clone-an-object-in-javascript
+// https://web.dev/structured-clone/
+import structuredClone from '@ungap/structured-clone';
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Slider from "@material-ui/core/Slider";
@@ -22,171 +25,193 @@ import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 import { ElectionSettings } from "../../../domain_model/ElectionSettings"
 import { Box, Checkbox, InputLabel } from "@material-ui/core"
+import { isReturnStatement } from "typescript"
 
-const ElectionForm = ({authSession, onSubmitElection, election}) => {
-    // TODO: There's probably a cleaner native syntax for this, but I couldn't find it
-    const electionGet = (...keys) => {
-        var struct = election
-        keys.forEach(function(key){
-            if(struct == null) return null;
-            struct = struct[key];
-        });
-        return struct;
+const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitText}) => {
+    // I'm referencing 4th option here
+    // https://daveceddia.com/usestate-hook-examples/
+
+    if(prevElectionData == null){
+        prevElectionData = {
+            title: '',
+            start_time: new Date(''),
+            end_time: new Date(''),
+            description: '',
+            races: [
+                {
+                    num_winners: 1,
+                    voting_method: 'STAR',
+                    candidates: [] as Candidate[],
+                }
+            ],
+            settings: {
+                voter_id_type: 'IP Address',
+                email_verification: false,
+                two_factor_auth: false,
+                ballot_updates: false,
+                public_results: true,
+                voter_roll_type: 'None'
+            }
+        }
     }
 
-    const [electionName, setElectionName] = useState(election.title || '')
-    const [startDate, setStartDate] = useState(election.start_time || '')
-    const [stopDate, setStopDate] = useState(election.end_time || '')
-    const [description, setDescription] = useState(election.description || '')
-    const [votingMethod, setVotingMethod] = useState(electionGet('races', 0, 'voting_method') || 'STAR')
-    const [numWinners, setNumWinners] = useState(electionGet('races', 0, 'num_winners') || 1)
-    const [candidates, setCandidates] = useState(electionGet('races', 0, 'candidates') || [] as Candidate[])
-    const [voterRollType, setVoterRollType] = useState(electionGet('settings', 'voter_roll_type') || 'None')
-    const [voterIDType, setVoterIDType] = useState(electionGet('settings', 'voter_id_type') || 'IP Address')
-    const [emailVerification, setEmailVerification] = useState(electionGet('settings', 'email_verification') || false)
-    const [twoFactorAuth, setTwoFactorAuth] = useState(electionGet('settings', 'email_verification') || false)
-    const [ballotUpdates, setBallotUpdates] = useState(electionGet('settings', 'ballot_updates') || false)
-    const [publicResults, setPublicResults] = useState(electionGet('settings', 'public_results') || true)
+    const [election, setElectionData] = useState(prevElectionData)
+    // TODO: I need to figure out how to load previous voter ID list
     const [voterIDList, setVoterIDList] = useState('')
+    const [titleError, setTitleError] = useState(false)
 
-    console.log(setElectionName);
+    const applyElectionUpdate = (updateFunc) => {
+        const electionCopy = structuredClone(election)
+        updateFunc(electionCopy)
+        setElectionData(electionCopy)
+    };
+
+    const getStyle = (...keys) => {
+        var cur = election;
+        var prev = prevElectionData;
+        keys.forEach(key => {
+            cur = cur[key]
+            prev = prev[key]
+        })
+        return {style: {fontWeight: (cur == prev)? 'normal' : 'bold' }}
+    }
+
+    const dateAsInputString = (date) => {
+        // TODO: Using ISO create a bug with timezones
+        //       ex. If I select April 20th late in the PDT timezone, that's April 21th in UTC/ISO, so it sets April 21
+        if(isNaN(date.valueOf())) return ''
+        var s = date.toISOString()
+        // the timezone offset throws off the input component
+        s = s.replace(':00.000Z','')
+        return s
+    }
 
     const navigate = useNavigate()
 
     const onSubmit = (e) => {
         e.preventDefault()
 
-        if (!electionName) {
-            alert('Please add election name')
-            return
-        }
-        const NewRace: Race = {
-            race_id: '0',
-            title: electionName,
-            voting_method: votingMethod,
-            num_winners: numWinners,
-            candidates: candidates,
-            description: description
-        }
-        const settings: ElectionSettings = {
-            voter_roll_type: voterRollType,
-            voter_id_type: voterIDType,
-            email_verification: emailVerification,
-            two_factor_auth: twoFactorAuth,
-            ballot_updates: ballotUpdates,
-            public_results: publicResults,
+        if (!election.title) {
+            setTitleError(true);
+            return;
         }
 
-        const NewElection: Election = {
+        // This assigns only the new fields, but otherwise keeps the existing election fields
+        const newElection = {
+            ...election,
             election_id: 0, // identifier assigned by the system
             frontend_url: '', // base URL for the frontend
-            title: electionName, // one-line election title
-            description: description, // mark-up text describing the election
-            start_time: new Date(startDate),   // when the election starts 
-            end_time: new Date(stopDate),   // when the election ends
             owner_id: authSession.getIdField('sub'),
             state: 'draft',
-            races: [NewRace],
-            settings: settings,
+            races: [
+                {
+                    ...election.races[0],
+                    race_id: '0',
+                    title: election.title,
+                    description: election.description,
+                }
+            ]
         }
 
+        console.log("submitting")
+        console.log(newElection)
+
         try {
-            onSubmitElection(NewElection, voterIDList.split('\n'))
+            onSubmitElection(newElection, voterIDList.split('\n'))
             navigate('/')
         } catch (error) {
             console.log(error)
         }
     }
 
-
     const onAddCandidate = () => {
-        const newCandidates = [...candidates]
-        const EmptyCandidate: Candidate = {
-            candidate_id: String(newCandidates.length),
-            candidate_name: '', // short mnemonic for the candidate
-            full_name: '',
-        }
-        newCandidates.push(EmptyCandidate)
-        setCandidates(newCandidates)
+        applyElectionUpdate(election => {
+            election.races[0].candidates.push(
+                {
+                    candidate_id: String(election.races[0].candidates.length),
+                    candidate_name: '', // short mnemonic for the candidate
+                    full_name: '',
+                }
+            )
+        })
     }
 
     const onSaveCandidate = (candidate: Candidate, index) => {
-        const newCandidates = [...candidates]
-        newCandidates[index] = candidate
-        setCandidates(newCandidates)
-        console.log(candidates)
+        applyElectionUpdate(election => {
+            election.races[0].candidates[index] = candidate
+        })
+        console.log("saved")
+        console.log(election)
     }
     const onUpdateVoterRoll = (voterRoll: string) => {
-        setVoterRollType(voterRoll)
-        if (voterRoll === 'None') {
-            setVoterIDType('IP Address')
-            setVoterIDList('')
-        } else if (voterRoll === 'Email') {
-            setVoterIDType('Email')
-        } else if (voterRoll === 'IDs') {
-            setVoterIDType('IDs')
-        }
+        applyElectionUpdate(election => {
+            election.settings.voter_roll_type = voterRoll;
+            if (voterRoll === 'None') {
+                election.settings.voter_id_type = 'IP Address';
+                setVoterIDList('')
+            } else if (voterRoll === 'Email') {
+                election.settings.voter_id_type = 'Email';
+            } else if (voterRoll === 'IDs') {
+                election.settings.voter_id_type = 'IDs';
+            }
+        })
     }
 
     return (
         <form onSubmit={onSubmit}>
             <Container maxWidth='sm'>
                 <Grid container alignItems="center" justify="center" direction="column" >
-                    {/* <form className='add-form' onSubmit={onSubmit}> */}
                     <Grid item>
                         <TextField
+                            error={titleError}
+                            helperText={titleError?"Election name is required":""}
                             id="election-name"
                             name="name"
+                            // TODO: This bolding method only works for the text fields, if we like it we should figure out a way to add it to other fields as well
+                            inputProps={getStyle('title')}
                             label="Election Title"
                             type="text"
-                            value={electionName}
-                            onChange={(e) => setElectionName(e.target.value)}
+                            value={election.title}
+                            onChange={(e) => {
+                                setTitleError(false)
+                                applyElectionUpdate(election => {election.title = e.target.value})
+                            }}
                         />
                     </Grid>
-                    {/* <div className='form-control'>
-                    <label>Election Name</label>
-                    <input type='text' placeholder='Election Name' value={electionName} onChange={(e) => setElectionName(e.target.value)} />
-                </div> */}
-                    {/* <div className='form-control'>
-                    <label>Description</label>
-                    <input type='text' placeholder='Description' value={description} onChange={(e) => setDescription(e.target.value)} />
-                </div> */}
                     <Grid item>
                         <TextField
                             id="election-description"
                             name="description"
                             label="Description"
+                            inputProps={getStyle('description')}
                             multiline
                             type="text"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            value={election.description}
+                            onChange={(e) => applyElectionUpdate(election => {election.description = e.target.value})}
                         />
                     </Grid>
                     <div>
                         <label>Start Date</label>
                     </div>
                     <div>
-                        <input type='datetime-local' placeholder='Add Name' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                        <input
+                            type='datetime-local'
+                            placeholder='Add Name'
+                            value={dateAsInputString(election.start_time)}
+                            onChange={(e) => applyElectionUpdate(election => election.start_time = new Date(e.target.value))}
+                        />
                     </div>
-                    {/* <Grid item>
-                    <TextField
-                        id="start-date"
-                        name="start-date"
-                        label="Start Date"
-                        type="text"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                    />
-                </Grid> */}
                     <div >
                         <label>Stop Date</label>
                     </div>
                     <div>
-                        <input type='datetime-local' placeholder='Add Name' value={stopDate} onChange={(e) => setStopDate(e.target.value)} />
+                        <input
+                            type='datetime-local'
+                            placeholder='Add Name'
+                            value={dateAsInputString(election.end_time)}
+                            onChange={(e) => applyElectionUpdate(election => {election.end_time = new Date(e.target.value)})}
+                        />
                     </div>
-                    {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <DateTimePicker value={stopDate} onChange={(e) => setStopDate(String(e))} />
-                </MuiPickersUtilsProvider> */}
                     <Grid item>
                         <Box sx={{ minWidth: 120 }}>
                             <FormControl fullWidth>
@@ -196,8 +221,8 @@ const ElectionForm = ({authSession, onSubmitElection, election}) => {
                                 <Select
                                     name="Voting Method"
                                     label="Voting Method"
-                                    value={votingMethod}
-                                    onChange={(e) => setVotingMethod(e.target.value as string)}
+                                    value={election.races[0].voting_method}
+                                    onChange={(e) => applyElectionUpdate(election => {election.races[0].voting_method = e.target.value})}
                                 >
                                     <MenuItem key="STAR" value="STAR">
                                         STAR
@@ -209,22 +234,15 @@ const ElectionForm = ({authSession, onSubmitElection, election}) => {
                             </FormControl>
                         </Box>
                     </Grid>
-
-                    {/* <div className='form-control'>
-                    <label>Voting Method</label>
-                    <select value={votingMethod} onChange={(e) => setVotingMethod(e.target.value)}>
-                        <option value="STAR"> STAR </option>
-                        <option value="STAR-PR"> STAR-PR </option>
-                    </select>
-                </div> */}
                     <Grid item>
                         <TextField
                             id="num-winners"
                             name="Number Of Winners"
                             label="Number of Winners"
+                            inputProps={getStyle('races', 0, 'num_winners')}
                             type="number"
-                            value={numWinners}
-                            onChange={(e) => setNumWinners(parseInt(e.target.value))}
+                            value={election.races[0].num_winners}
+                            onChange={(e) => applyElectionUpdate(election => {election.races[0].num_winners = e.target.value})}
                         />
                     </Grid>
                     <Grid item>
@@ -236,7 +254,7 @@ const ElectionForm = ({authSession, onSubmitElection, election}) => {
                                 <Select
                                     name="Voter Roll"
                                     label="Voter Roll"
-                                    value={voterRollType}
+                                    value={election.settings.voter_roll_type}
                                     onChange={(e) => onUpdateVoterRoll(e.target.value as string)}
                                 >
                                     <MenuItem key="None" value="None">
@@ -252,8 +270,7 @@ const ElectionForm = ({authSession, onSubmitElection, election}) => {
                             </FormControl>
                         </Box>
                     </Grid>
-                    {voterRollType === 'None' &&
-                        
+                    {election.settings.voter_roll_type === 'None' &&
                             <Grid item>
                                 <Box sx={{ minWidth: 120 }}>
                                     <FormControl fullWidth>
@@ -263,8 +280,8 @@ const ElectionForm = ({authSession, onSubmitElection, election}) => {
                                         <Select
                                             name="Voter ID"
                                             label="Voter ID"
-                                            value={voterIDType}
-                                            onChange={(e) => setVoterIDType(e.target.value as string)}
+                                            value={election.settings.voter_id_type}
+                                            onChange={(e) => applyElectionUpdate(election => {election.settings.voter_id_type = e.target.value})}
                                         >
                                             <MenuItem key="None" value="None">
                                                 None
@@ -281,7 +298,7 @@ const ElectionForm = ({authSession, onSubmitElection, election}) => {
                             </Grid>
                             
                         }
-                    {voterRollType === 'Email' &&
+                    {election.settings.voter_roll_type === 'Email' &&
                         <Grid item>
                         <TextField
                             id="email-list"
@@ -294,7 +311,7 @@ const ElectionForm = ({authSession, onSubmitElection, election}) => {
                         />
                     </Grid>
                     }
-                    {voterRollType === 'IDs' &&
+                    {election.settings.voter_roll_type === 'Email' &&
                         <Grid item>
                         <TextField
                             id="id-list"
@@ -312,8 +329,8 @@ const ElectionForm = ({authSession, onSubmitElection, election}) => {
                             <Checkbox
                                 id="email-verification"
                                 name="Email Verification"
-                                checked={emailVerification}
-                                onChange={(e) => setEmailVerification(e.target.checked)}
+                                checked={election.settings.email_verification}
+                                onChange={(e) => applyElectionUpdate(election => {election.settings.email_verification = e.target.value})}
                             />}
                             label="Email Verification"
                         />
@@ -323,8 +340,8 @@ const ElectionForm = ({authSession, onSubmitElection, election}) => {
                             <Checkbox
                                 id="two-factor-auth"
                                 name="Two Factor Auth"
-                                checked={twoFactorAuth}
-                                onChange={(e) => setTwoFactorAuth(e.target.checked)}
+                                checked={election.settings.two_factor_auth}
+                                onChange={(e) => applyElectionUpdate(election => {election.settings.two_factor_auth = e.target.value})}
                             />}
                             label="Two Factor Auth"
                         />
@@ -334,8 +351,8 @@ const ElectionForm = ({authSession, onSubmitElection, election}) => {
                             <Checkbox
                                 id="ballot-updates"
                                 name="Ballot Updates"
-                                checked={ballotUpdates}
-                                onChange={(e) => setBallotUpdates(e.target.checked)}
+                                checked={election.settings.ballot_updates}
+                                onChange={(e) => applyElectionUpdate(election => {election.settings.ballot_updates = e.target.value})}
                             />}
                             label="Ballot Updates"
                         />
@@ -345,8 +362,8 @@ const ElectionForm = ({authSession, onSubmitElection, election}) => {
                             <Checkbox
                                 id="public-results"
                                 name="Public Results"
-                                checked={publicResults}
-                                onChange={(e) => setPublicResults(e.target.checked)}
+                                checked={election.settings.public_results}
+                                onChange={(e) => applyElectionUpdate(election => {election.settings.public_results = e.target.value})}
                             />}
                             label="Public Results"
                         />
@@ -354,15 +371,14 @@ const ElectionForm = ({authSession, onSubmitElection, election}) => {
                     <Typography align='center' gutterBottom variant="h6" component="h6">
                         Candidates
                     </Typography>
-                    {candidates.map((candidate, index) => (
-
+                    {election.races[0].candidates.map((candidate, index) => (
                         <Grid item sm={12}>
                             <AddCandidate onSaveCandidate={(newCandidate) => onSaveCandidate(newCandidate, index)} candidate={candidate} index={index} />
                             <Divider light />
                         </Grid>
                     ))}
                     <Button variant='outlined' onClick={() => onAddCandidate()} > Add Candidate </Button>
-                    <input type='submit' value='Create Election' className='btn btn-block' />
+                    <input type='submit' value={submitText} className='btn btn-block' />
                 </Grid>
             </Container>
         </form>

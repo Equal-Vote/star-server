@@ -51,7 +51,7 @@ const EditElection = ({ authSession }) => {
         {isPending && <div> Loading Election... </div>}
         {!authSession.isLoggedIn() && <div> Must be logged in to edit </div>}
         {authSession.isLoggedIn() && data && data.election && authSession.getIdField('sub') == data.election.owner_id &&
-            <ElectionForm authSession={authSession} onSubmitElection={onEditElection} election={data.election}/>
+            <ElectionForm authSession={authSession} onSubmitElection={onEditElection} prevElectionData={data.election} submitText='Apply Updates'/>
         }
         </>
         </Container>

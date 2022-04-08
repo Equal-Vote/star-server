@@ -4,6 +4,7 @@ import ElectionForm from "./ElectionForm";
 const AddElection = ({ authSession }) => {
     const onAddElection = async (election, voterIds) => {
         // try {
+        console.log(election)
         const res = await fetch('/API/Elections', {
             method: 'POST',
             headers: {
@@ -30,7 +31,7 @@ const AddElection = ({ authSession }) => {
         // }
     }
 
-    return ( <ElectionForm authSession={authSession} onSubmitElection={onAddElection} election={{}}/> );
+    return ( <ElectionForm authSession={authSession} onSubmitElection={onAddElection} prevElectionData={null} submitText='Create Election'/> );
 }
 
 export default AddElection
