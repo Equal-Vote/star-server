@@ -22,7 +22,7 @@ class VoterRollDB {
     }
 
     init(): Promise<VoterRollDB> {
-        console.log("VoterRollDB.init");
+        console.log("-> VoterRollDB.init");
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
             election_id     INTEGER NOT NULL,
@@ -40,7 +40,7 @@ class VoterRollDB {
     }
 
     submitVoterRoll(election_id: number, voter_ids: string[],submitted:Boolean): Promise<boolean> {
-        console.log(`VoterRollDB.submit`);
+        console.log(`-> VoterRollDB.submit`);
         var values = voter_ids.map((voter_id) => ([election_id,
             voter_id,
             submitted]))
@@ -57,7 +57,7 @@ class VoterRollDB {
     }
 
     getRollsByElectionID(election_id: string): Promise<VoterRoll[] | null> {
-        console.log(`VoterRollDB.getByElectionID`);
+        console.log(`-> VoterRollDB.getByElectionID`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1`;
         console.log(sqlString);
 
@@ -76,7 +76,7 @@ class VoterRollDB {
         });
     }
     getByVoterID(election_id: string,voter_id:string): Promise<VoterRoll | null> {
-        console.log(`VoterRollDB.getByVoterID`);
+        console.log(`-> VoterRollDB.getByVoterID`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1 AND voter_id = $2`;
         console.log(sqlString);
 
@@ -95,7 +95,7 @@ class VoterRollDB {
         });
     }
     update(voter_roll: VoterRoll): Promise<VoterRoll | null> {
-        console.log(`VoterRollDB.updateRoll`);
+        console.log(`-> VoterRollDB.updateRoll`);
         var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2  WHERE election_id = $3 AND voter_id=$4`;
         console.log(sqlString);
         console.log(voter_roll)
@@ -115,7 +115,7 @@ class VoterRollDB {
     }
 
     delete(voter_roll: VoterRoll): Promise<boolean> {
-        console.log(`VoterRollDB.delete`);
+        console.log(`-> VoterRollDB.delete`);
         var sqlString = `DELETE FROM ${this._tableName} WHERE election_id = $1 AND voter_id=$2`;
         console.log(sqlString);
 

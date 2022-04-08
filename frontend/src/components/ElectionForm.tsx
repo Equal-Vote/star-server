@@ -34,6 +34,7 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
     if(prevElectionData == null){
         prevElectionData = {
             title: '',
+            election_id: 0,
             start_time: new Date(''),
             end_time: new Date(''),
             description: '',
@@ -99,7 +100,6 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
         // This assigns only the new fields, but otherwise keeps the existing election fields
         const newElection = {
             ...election,
-            election_id: 0, // identifier assigned by the system
             frontend_url: '', // base URL for the frontend
             owner_id: authSession.getIdField('sub'),
             state: 'draft',
@@ -112,9 +112,6 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                 }
             ]
         }
-
-        console.log("submitting")
-        console.log(newElection)
 
         try {
             onSubmitElection(newElection, voterIDList.split('\n'))
@@ -140,8 +137,6 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
         applyElectionUpdate(election => {
             election.races[0].candidates[index] = candidate
         })
-        console.log("saved")
-        console.log(election)
     }
     const onUpdateVoterRoll = (voterRoll: string) => {
         applyElectionUpdate(election => {

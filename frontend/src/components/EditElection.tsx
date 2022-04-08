@@ -16,32 +16,22 @@ const EditElection = ({ authSession }) => {
 
     console.log(data);
 
-    const onEditElection = async (election) => {
-        // try {
-        // const res = await fetch('/API/Elections', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //         Election: election,
-        //         VoterIDList: voterIDList.split("\n"),
-        //     })
-        // })
-        // if (!res.ok) {
-        //     Error('Could not fetch data')
-        // }
-        // return res
-        // console.log(res)
-        // if (!res.ok) {
-        //     throw Error('Could not fetch data')
-        // }
-        // console.log('Navigating')
-        // } catch (error) {
-        //     console.log(error)
-        //     return
-        // }
+    const onEditElection = async (election, voterIds) => {
+        const res = await fetch(`/API/Election/${election.election_id}/edit`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                Election: election,
+                VoterIDList: voterIds,
+            })
+        })
+        if (!res.ok) {
+            Error('Could not fetch data')
+        }
+        return res
     }
 
     return (

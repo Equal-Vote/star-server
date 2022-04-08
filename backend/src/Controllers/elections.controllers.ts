@@ -7,14 +7,13 @@ const StarResults = require('../StarResults.js');
 var ElectionsModel = new ElectionsDB();
 
 const getElectionByID = async (req: any, res: any, next: any) => {
+    console.log(`-> elections.getElectionByID ${req.params.id}`)
     try {
         const election = await ElectionsModel.getElectionByID(parseInt(req.params.id))
         if (!election)
             return res.status('400').json({
                 error: "Election not found"
             })
-        console.log(`Getting Election: ${req.params.id}`)
-        console.log(election)
         req.election = election
         next()
     } catch (err) {
@@ -25,10 +24,12 @@ const getElectionByID = async (req: any, res: any, next: any) => {
 }
 
 const returnElection = async (req: any, res: any, next: any) => {
+    console.log(`-> elections.returnElection ${req.params.id}`)
     res.json({election: req.election, voterAuth: {authorized_voter: req.authorized_voter,has_voted: req.has_voted}})
 }
 
 const getElectionResults = async (req: any, res: any, next: any) => {
+    console.log(`-> elections.getElectionResults ${req.params.id}`)
 
     const ballots = req.ballots
     const election = req.election
@@ -51,6 +52,7 @@ const getElectionResults = async (req: any, res: any, next: any) => {
 
 }
 const getSandboxResults = async (req: any, res: any, next: any) => {
+    console.log(`-> elections.getSandboxResults`)
 
     const candidateNames = req.body.candidates
     const cvr = req.body.cvr
@@ -67,6 +69,7 @@ const getSandboxResults = async (req: any, res: any, next: any) => {
 }
 
 const getElections = async (req: any, res: any, next: any) => {
+    console.log(`-> elections.getElections`)
     try {
         var filter = (req.query.filter == undefined)? "" : req.query.filter;
         const Elections = await ElectionsModel.getElections(filter);
@@ -74,7 +77,6 @@ const getElections = async (req: any, res: any, next: any) => {
             return res.status('400').json({
                 error: "Elections not found"
             })
-        console.log(Elections)
         res.json(Elections)
     } catch (err) {
         return res.status('400').json({
@@ -84,7 +86,7 @@ const getElections = async (req: any, res: any, next: any) => {
 }
 
 const createElection = async (req: any, res: any, next: any) => {
-
+    console.log(`-> elections.createElection`)
     try {
         const newElection = await ElectionsModel.createElection(req.body.Election)
         if (!newElection)
@@ -100,6 +102,23 @@ const createElection = async (req: any, res: any, next: any) => {
     }
 }
 
+const editElection = async (req: any, res: any, next: any) => {
+    console.log(`-> elections.editElection ${req.body.Election.election_id}`)
+    try {
+        const updatedElection = await ElectionsModel.updateElection(req.body.Election)
+        if (!updatedElection)
+            return res.status('400').json({
+                error: "Failed to update Election"
+            })
+        req.election = updatedElection
+        next()
+    } catch (err) {
+        return res.status('400').json({
+            error: (err as any).message
+        })
+    }
+}
+
 module.exports = {
     returnElection,
     getElectionResults,
@@ -107,4 +126,5 @@ module.exports = {
     createElection,
     getElectionByID,
     getSandboxResults,
+    editElection,
 }

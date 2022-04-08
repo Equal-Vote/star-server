@@ -22,7 +22,7 @@ class BallotsDB {
     }
 
     init(): Promise<BallotsDB> {
-        console.log("BallotsDB.init");
+        console.log("-> BallotsDB.init");
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
             ballot_id       SERIAL PRIMARY KEY,
@@ -42,7 +42,7 @@ class BallotsDB {
     }
 
     submitBallot(ballot: Ballot): Promise<string> {
-        console.log(`BallotsDB.submit`);
+        console.log(`-> BallotsDB.submit`);
         var sqlString = `INSERT INTO ${this._tableName} (election_id,user_id,status,date_submitted,ip_address,votes)
         VALUES($1, $2, $3, $4, $5, $6);`;
         console.log(sqlString)
@@ -64,7 +64,7 @@ class BallotsDB {
     }
 
     getBallotsByElectionID(election_id:string): Promise<Ballot[] | null> {
-        console.log(`BallotsDB.getByElectionID`);
+        console.log(`-> BallotsDB.getByElectionID ${election_id}`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1`;
         console.log(sqlString);
 
@@ -84,7 +84,7 @@ class BallotsDB {
     }
 
     delete(ballot_id: string): Promise<boolean> {
-        console.log(`BallotsDB.delete ${ballot_id}`);
+        console.log(`-> BallotsDB.delete ${ballot_id}`);
         var sqlString = `DELETE FROM ${this._tableName} WHERE ballot_id = $1`;
         console.log(sqlString);
 
