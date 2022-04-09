@@ -44,25 +44,10 @@ const addVoterRoll = async (req: any, res: any, next: any) => {
 
 const editVoterRoll = async (req: any, res: any, next: any) => {
     console.log(`-> voterRolls.editVoterRoll ${req.election.election_id}`)
-    //try {
-    //    // console.log(req)
-    //    const NewVoterRoll = await VoterRollModel.submitVoterRoll(req.election.election_id, req.body.VoterIDList,false)
-    //    if (!NewVoterRoll)
-    //        return res.status('400').json({
-    //            error: "Voter Roll not found"
-    //        })
-    //    res.status('200').json(JSON.stringify(NewVoterRoll))
-    //    next()
-    //} catch (err) {
-    //    console.log(err)
-    //    return res.status('400').json({
-    //        error: req.user
-    //    })
-    //}
 
-    return res.status('400').json({
-        error: "Not implemented"
-    })
+    // TODO: I still need to implement this part
+
+    return res.status('200').json('{}')
 }
 
 const updateVoterRoll = async (req: any, res: any, next: any) => {

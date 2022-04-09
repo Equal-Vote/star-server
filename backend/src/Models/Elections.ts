@@ -47,7 +47,7 @@ class ElectionsDB {
         });
     }
 
-    createElection(election: Election): Promise<string> {
+    createElection(election: Election): Promise<Election> {
         console.log(`-> ElectionDB.create`);
         var sqlString = `INSERT INTO ${this._tableName} (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_id,admin_id,state,races,settings)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *;`;
@@ -74,7 +74,7 @@ class ElectionsDB {
         });
     }
 
-    updateElection(election: Election): Promise<string> {
+    updateElection(election: Election): Promise<Election> {
         console.log(`-> ElectionDB.update ${election.election_id}`);
         var sqlString = `UPDATE ${this._tableName} SET (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_id,admin_id,state,races,settings) =
         ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) WHERE election_id = $1 RETURNING *;`;
@@ -173,4 +173,4 @@ class ElectionsDB {
     }
 }
 
-module.exports = ElectionsDB
+ module.exports = ElectionsDB

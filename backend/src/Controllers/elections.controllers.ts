@@ -10,10 +10,13 @@ const getElectionByID = async (req: any, res: any, next: any) => {
     console.log(`-> elections.getElectionByID ${req.params.id}`)
     try {
         const election = await ElectionsModel.getElectionByID(parseInt(req.params.id))
-        if (!election)
+        console.log(`get election ${req.params.id}`)
+        if (!election){
+            console.log('Error')
             return res.status('400').json({
                 error: "Election not found"
             })
+        }
         req.election = election
         next()
     } catch (err) {
@@ -103,7 +106,13 @@ const createElection = async (req: any, res: any, next: any) => {
 }
 
 const editElection = async (req: any, res: any, next: any) => {
+    if(req.body.Election == undefined){
+        return res.status('400').json({
+            error: "Election not provided"
+        })
+    }
     console.log(`-> elections.editElection ${req.body.Election.election_id}`)
+
     try {
         const updatedElection = await ElectionsModel.updateElection(req.body.Election)
         if (!updatedElection)

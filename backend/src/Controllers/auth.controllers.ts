@@ -11,16 +11,19 @@ const getUser = (req: any, res: any, next: any) => {
 
 const isLoggedIn = (req: any, res: any, next: any) => {
   console.log(`-> auth.isLoggedIn ${!!req.user}`)
-  if (!req.user)
+  if (!req.user){
+    console.log("Not Logged In")
     return res.status('400').json({
       error: "Not Logged In"
     })
+  }
   next()
 }
 
 const assertOwnership = (req: any, res: any, next: any) => {
-  console.log(`-> auth.assertOwnership ${req.body.Election.owner_id} ${req.user.sub}`)
-  if (req.body.Election.owner_id != req.user.sub){
+  console.log(`-> auth.assertOwnership`)
+  console.log(`${req.election.owner_id} ==? ${req.user.sub}`)
+  if (req.election.owner_id != req.user.sub){
     console.log("NOT AUTHORIZED")
     return res.status('400').json({
       error: "Unauthorized: User does not own election"
