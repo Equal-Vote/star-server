@@ -106,6 +106,12 @@ const ElectionHome = ({ }) => {
                   View Results
                 </Typography>
               </Link>
+
+              <Link to={`/Election/${data.election.election_id}/edit`}>
+                <Typography align='center' gutterBottom variant="h6" component="h6">
+                    Edit
+                </Typography>
+              </Link>
             </Grid>
           </Box>
         }

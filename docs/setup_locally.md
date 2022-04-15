@@ -137,7 +137,22 @@ You need a reference from your local clone to the `upstream` repository in addit
 
 ## Running star.vote locally
 
-Now that you have a local copy of star.vote, you can follow these instructions to run it locally. This will allow you to:
+Now that you have a local copy of star.vote, you can follow these instructions to run it locally.
+
+
+```
+# terminal 1
+cd backend
+npm install
+npm start
+
+# terminal 2
+cd frontend
+npm install
+npm start
+```
+
+This will allow you to:
 
 - Preview edits to pages as they would appear on star.vote.
 - Work on UI related issues and enhancements.

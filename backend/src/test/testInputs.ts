@@ -29,7 +29,7 @@ module.exports = {
          title: 'Election 1',
          state: 'Draft',
          frontend_url: '',
-         owner_id: '0',
+         owner_id: 'Alice1234',
          races: [] as Race[],
          settings: {
             voter_roll_type: 'None',

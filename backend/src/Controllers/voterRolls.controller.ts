@@ -3,6 +3,7 @@ const VoterRollDB = require('../Models/VoterRolls')
 var VoterRollModel = new VoterRollDB();
 
 const getRollsByElectionID = async (req: any, res: any, next: any) => {
+    console.log(`-> voterRolls.getRollsByElectionID ${req.election.election_id}`)
     //requires election data in req, adds entire voter roll 
     try {
         const voterRoll = await VoterRollModel.getRollsByElectionID(req.election.election_id)
@@ -22,6 +23,7 @@ const getRollsByElectionID = async (req: any, res: any, next: any) => {
 }
 
 const addVoterRoll = async (req: any, res: any, next: any) => {
+    console.log(`-> voterRolls.addVoterRoll ${req.election.election_id}`)
 
     try {
         // console.log(req)
@@ -40,7 +42,16 @@ const addVoterRoll = async (req: any, res: any, next: any) => {
     }
 }
 
+const editVoterRoll = async (req: any, res: any, next: any) => {
+    console.log(`-> voterRolls.editVoterRoll ${req.election.election_id}`)
+
+    // TODO: I still need to implement this part
+
+    return res.status('200').json('{}')
+}
+
 const updateVoterRoll = async (req: any, res: any, next: any) => {
+    console.log(`-> voterRolls.updateVoterRoll`)
     // Updates single entry of voter roll
     try {
         const voterRollEntry = await VoterRollModel.update(req.voterRollEntry)
@@ -60,6 +71,7 @@ const updateVoterRoll = async (req: any, res: any, next: any) => {
 }
 
 const getByVoterID = async (req: any, res: any, next: any) => {
+    console.log(`-> voterRolls.getByVoterID ${req.election.election_id} ${req.voter_id}`)
 
     try {
         const voterRollEntry = await VoterRollModel.getByVoterID(req.election.election_id, req.voter_id)
@@ -77,6 +89,7 @@ const getByVoterID = async (req: any, res: any, next: any) => {
 }
 
 const getVoterAuth = async (req: any, res: any, next: any) => {
+    console.log(`-> voterRolls.getVoterAuth`)
 
     if (req.election.settings.voter_id_type==='IP Address'){
         console.log(String(req.ip))
@@ -134,4 +147,5 @@ module.exports = {
     addVoterRoll,
     getByVoterID,
     getVoterAuth,
+    editVoterRoll,
 }

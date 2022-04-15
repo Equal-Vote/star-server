@@ -60,7 +60,7 @@ describe("Post Election", () => {
 
     })
     describe("User is not logged in", () => {
-        test("responds with 200 status", async () => {
+        test("responds with 400 status", async () => {
             const response = await request(app)
                 .post('/API/Elections')
                 .set('Accept', 'application/json')
@@ -69,6 +69,113 @@ describe("Post Election", () => {
             expect(response.statusCode).toBe(400)
         })
 
+    })
+})
+
+
+
+describe("Edit Election", () => {
+    // TODO: I'm making a lot of calls to add elections within the edit election tests
+    //       Ideally I'd like to setup the mocks without relying on the other apis, but I couldn't figure out a way to do that
+    const setupInitialElection = async () => {
+        await request(app)
+            .post('/API/Elections')
+            .set('Cookie', ['id_token=' + testInputs.user1token])
+            .set('Accept', 'application/json')
+            .send({ Election: testInputs.Election1, VoterIDList: [] })
+    }
+
+    describe("Election data provided", () => {
+        test("responds with 200 status", async () => {
+            await setupInitialElection()
+
+            const response = await request(app)
+                .post('/API/Election/0/edit')
+                .set('Cookie', ['id_token=' + testInputs.user1token])
+                .set('Accept', 'application/json')
+                .send({ Election: testInputs.Election1, VoterIDList: [] })
+
+            expect(response.statusCode).toBe(200)
+        })
+    })
+    describe("Election not provided/incorrect format", () => {
+        test("responds with 400 status", async () => {
+            await setupInitialElection()
+
+            const response = await request(app)
+                .post('/API/Election/0/edit')
+                .set('Cookie', ['id_token=' + testInputs.user1token])
+                .set('Accept', 'application/json')
+                .send({ VoterIDList: [] })
+
+            expect(response.statusCode).toBe(400)
+        })
+    })
+    describe("User is not logged in", () => {
+        test("responds with 400 status", async () => {
+            await setupInitialElection()
+
+            const response = await request(app)
+                .post('/API/Election/0/edit')
+                .set('Accept', 'application/json')
+                .send({ Election: testInputs.Election1, VoterIDList: [] })
+
+            expect(response.statusCode).toBe(400)
+        })
+    })
+    describe("User is not owner", () => {
+        test("responds with 400 status", async () => {
+            await setupInitialElection()
+
+            const response = await request(app)
+                .post('/API/Election/0/edit')
+                .set('Cookie', ['id_token=' + testInputs.user2token])
+                .set('Accept', 'application/json')
+                .send({ Election: testInputs.Election1, VoterIDList: [] })
+
+            expect(response.statusCode).toBe(400)
+        })
+    })
+    describe("User edits election", () => {
+        test("edits title", async () => {
+            await setupInitialElection()
+
+            var election1Copy = {...testInputs.Election1}
+            var newTitle = `${election1Copy.title} - Edited`
+            election1Copy.title = newTitle
+
+            const response = await request(app)
+                .post('/API/Election/0/edit')
+                .set('Cookie', ['id_token=' + testInputs.user1token])
+                .set('Accept', 'application/json')
+                .send({ Election: election1Copy, VoterIDList: [] })
+
+            // expect(ElectionsDB.elections[election1Copy.election_id].title).toBe(newTitle)
+            expect(response.statusCode).toBe(200)
+        })
+        test("edits roll type", async () => {
+            // I'm testing roll type specifically to make sure nested fields are applied correctly
+
+            await setupInitialElection()
+
+            // I wanted to use structuredClone here, but I had trouble getting it to work with jest :'(
+            var election1Copy = {...testInputs.Election1, settings: {...testInputs.Election1.settings}}
+            var newRollType = 'Some Other Roll Type'
+            election1Copy.settings.voter_roll_type = newRollType
+
+            const response = await request(app)
+                .post('/API/Election/0/edit')
+                .set('Cookie', ['id_token=' + testInputs.user1token])
+                .set('Accept', 'application/json')
+                .send({ Election: election1Copy, VoterIDList: [] })
+
+            // TODO: I couldn't figure out how to make this work, it kept saying that ElectionsDB.mock was undefined?
+            // expect(ElectionsDB.mock.instances[0].elections[election1Copy.election_id].settings.voter_roll_type).toBe(newRollType)
+            expect(response.statusCode).toBe(200)
+        })
+        test("edits voter ids", async () => {
+            // TODO
+        })
     })
 })
 

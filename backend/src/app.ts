@@ -25,6 +25,11 @@ app.use(cors({
     credentials: true, // allow the backend to receive cookies from the frontend
 }))
 
+app.use((req, res, next) => {
+    console.log(`--> NEW REQUEST: ${req.method} ${req.url} @ ${new Date(Date.now()).toISOString()}`);
+    next();
+})
+
 app.use(cookieParser())
 
 const frontendPath = '../../../../frontend/build/';

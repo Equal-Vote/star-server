@@ -22,6 +22,12 @@ router.post('/Elections/',
     authController.isLoggedIn,
     electionController.createElection,
     voterRollController.addVoterRoll)
+router.post('/Election/:id/edit',
+    authController.getUser,
+    authController.isLoggedIn,
+    authController.assertOwnership,
+    electionController.editElection,
+    voterRollController.editVoterRoll)
 router.get('/ElectionResult/:id',
     ballotController.getBallotsByElectionID,
     electionController.getElectionResults)
