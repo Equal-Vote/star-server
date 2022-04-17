@@ -8,16 +8,16 @@ class BallotsDB {
 
     constructor() {
         this._tableName = "ballotDB";
-        this._postgresClient = new Pool({
-            connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-            ssl:  {
-                rejectUnauthorized: false
-              }
-        });
         // this._postgresClient = new Pool({
-        //         connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-        //         ssl:  false
-        //     });
+        //     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+        //     ssl:  {
+        //         rejectUnauthorized: false
+        //       }
+        // });
+        this._postgresClient = new Pool({
+                connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+                ssl:  false
+            });
         this.init();
     }
 

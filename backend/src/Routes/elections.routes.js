@@ -21,13 +21,13 @@ router.post('/Elections/',
     authController.getUser,
     authController.isLoggedIn,
     electionController.createElection,
-    voterRollController.addVoterRoll)
+    voterRollController.addElectionRoll)
 router.post('/Election/:id/edit',
     authController.getUser,
     authController.isLoggedIn,
     authController.assertOwnership,
     electionController.editElection,
-    voterRollController.editVoterRoll)
+    voterRollController.editElectionRoll)
 router.get('/ElectionResult/:id',
     ballotController.getBallotsByElectionID,
     electionController.getElectionResults)
@@ -35,7 +35,7 @@ router.post('/Election/:id/vote',
     authController.getUser,
     voterRollController.getVoterAuth,
     ballotController.submitBallot,
-    voterRollController.updateVoterRoll)
+    voterRollController.updateElectionRoll)
 
 router.post('/Sandbox',
     electionController.getSandboxResults)

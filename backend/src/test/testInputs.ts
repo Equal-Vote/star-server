@@ -32,7 +32,7 @@ module.exports = {
          owner_id: 'Alice1234',
          races: [] as Race[],
          settings: {
-            voter_roll_type: 'None',
+            election_roll_type: 'None',
             voter_id_type: 'IP Address'
          } as ElectionSettings
      } as Election,
@@ -74,7 +74,7 @@ module.exports = {
             }
         ] as Race[],
         settings: {
-           voter_roll_type: 'Email',
+           election_roll_type: 'Email',
            voter_id_type: 'Email'
         } as ElectionSettings
     } as Election,
@@ -136,7 +136,7 @@ module.exports = {
             }
         ] as Race[],
         settings: {
-           voter_roll_type: 'IDs',
+           election_roll_type: 'IDs',
            voter_id_type: 'IDs'
         } as ElectionSettings
     } as Election,

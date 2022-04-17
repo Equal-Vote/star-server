@@ -51,7 +51,7 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                 two_factor_auth: false,
                 ballot_updates: false,
                 public_results: true,
-                voter_roll_type: 'None'
+                election_roll_type: 'None'
             }
         }
     }
@@ -138,9 +138,9 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
             election.races[0].candidates[index] = candidate
         })
     }
-    const onUpdateVoterRoll = (voterRoll: string) => {
+    const onUpdateElectionRoll = (voterRoll: string) => {
         applyElectionUpdate(election => {
-            election.settings.voter_roll_type = voterRoll;
+            election.settings.election_roll_type = voterRoll;
             if (voterRoll === 'None') {
                 election.settings.voter_id_type = 'IP Address';
                 setVoterIDList('')
@@ -244,13 +244,13 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                         <Box sx={{ minWidth: 120 }}>
                             <FormControl fullWidth>
                                 <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                    Voter Roll
+                                    Election Roll
                                 </InputLabel>
                                 <Select
-                                    name="Voter Roll"
-                                    label="Voter Roll"
-                                    value={election.settings.voter_roll_type}
-                                    onChange={(e) => onUpdateVoterRoll(e.target.value as string)}
+                                    name="Election Roll"
+                                    label="Election Roll"
+                                    value={election.settings.election_roll_type}
+                                    onChange={(e) => onUpdateElectionRoll(e.target.value as string)}
                                 >
                                     <MenuItem key="None" value="None">
                                         None
@@ -265,7 +265,7 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                             </FormControl>
                         </Box>
                     </Grid>
-                    {election.settings.voter_roll_type === 'None' &&
+                    {election.settings.election_roll_type === 'None' &&
                             <Grid item>
                                 <Box sx={{ minWidth: 120 }}>
                                     <FormControl fullWidth>
@@ -293,7 +293,7 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                             </Grid>
                             
                         }
-                    {election.settings.voter_roll_type === 'Email' &&
+                    {election.settings.election_roll_type === 'Email' &&
                         <Grid item>
                         <TextField
                             id="email-list"
@@ -306,7 +306,7 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                         />
                     </Grid>
                     }
-                    {election.settings.voter_roll_type === 'Email' &&
+                    {election.settings.election_roll_type === 'Email' &&
                         <Grid item>
                         <TextField
                             id="id-list"
