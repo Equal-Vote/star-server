@@ -57,7 +57,7 @@ const submitBallot = async (req: any, res: any, next: any) => {
             return res.status('400').json({
                 error: "Ballots not found"
             })
-        req.voterRollEntry.submitted = true
+        req.electionRollEntry.submitted = true
         next()
 
     } catch (err) {
