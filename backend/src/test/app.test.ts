@@ -161,7 +161,7 @@ describe("Edit Election", () => {
             // I wanted to use structuredClone here, but I had trouble getting it to work with jest :'(
             var election1Copy = {...testInputs.Election1, settings: {...testInputs.Election1.settings}}
             var newRollType = 'Some Other Roll Type'
-            election1Copy.settings.voter_roll_type = newRollType
+            election1Copy.settings.election_roll_type = newRollType
 
             const response = await request(app)
                 .post('/API/Election/0/edit')
@@ -170,7 +170,7 @@ describe("Edit Election", () => {
                 .send({ Election: election1Copy, VoterIDList: [] })
 
             // TODO: I couldn't figure out how to make this work, it kept saying that ElectionsDB.mock was undefined?
-            // expect(ElectionsDB.mock.instances[0].elections[election1Copy.election_id].settings.voter_roll_type).toBe(newRollType)
+            // expect(ElectionsDB.mock.instances[0].elections[election1Copy.election_id].settings.election_roll_type).toBe(newRollType)
             expect(response.statusCode).toBe(200)
         })
         test("edits voter ids", async () => {

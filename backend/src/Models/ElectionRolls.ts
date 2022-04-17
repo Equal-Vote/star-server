@@ -1,28 +1,28 @@
-import { VoterRoll } from '../../../domain_model/VoterRoll';
+import { ElectionRoll } from '../../../domain_model/ElectionRoll';
 const { Pool } = require('pg');
 var format = require('pg-format');
-class VoterRollDB {
+class ElectionRollDB {
 
     _postgresClient;
     _tableName: string;
 
     constructor() {
-        this._tableName = "voterRollDB";
-        this._postgresClient = new Pool({
-            connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-            ssl:  {
-                rejectUnauthorized: false
-              }
-        });
+        this._tableName = "electionRollDB";
         // this._postgresClient = new Pool({
         //     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-        //     ssl:  false
+        //     ssl:  {
+        //         rejectUnauthorized: false
+        //       }
         // });
+        this._postgresClient = new Pool({
+            connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+            ssl:  false
+        });
         this.init()
     }
 
-    init(): Promise<VoterRollDB> {
-        console.log("-> VoterRollDB.init");
+    init(): Promise<ElectionRollDB> {
+        console.log("-> ElectionRollDB.init");
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
             election_id     INTEGER NOT NULL,
@@ -39,8 +39,8 @@ class VoterRollDB {
         });
     }
 
-    submitVoterRoll(election_id: number, voter_ids: string[],submitted:Boolean): Promise<boolean> {
-        console.log(`-> VoterRollDB.submit`);
+    submitElectionRoll(election_id: number, voter_ids: string[],submitted:Boolean): Promise<boolean> {
+        console.log(`-> ElectionRollDB.submit`);
         var values = voter_ids.map((voter_id) => ([election_id,
             voter_id,
             submitted]))
@@ -56,8 +56,8 @@ class VoterRollDB {
         });
     }
 
-    getRollsByElectionID(election_id: string): Promise<VoterRoll[] | null> {
-        console.log(`-> VoterRollDB.getByElectionID`);
+    getRollsByElectionID(election_id: string): Promise<ElectionRoll[] | null> {
+        console.log(`-> ElectionRollDB.getByElectionID`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1`;
         console.log(sqlString);
 
@@ -75,8 +75,8 @@ class VoterRollDB {
             return rows
         });
     }
-    getByVoterID(election_id: string,voter_id:string): Promise<VoterRoll | null> {
-        console.log(`-> VoterRollDB.getByVoterID`);
+    getByVoterID(election_id: string,voter_id:string): Promise<ElectionRoll | null> {
+        console.log(`-> ElectionRollDB.getByVoterID`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1 AND voter_id = $2`;
         console.log(sqlString);
 
@@ -94,35 +94,35 @@ class VoterRollDB {
             return rows[0]
         });
     }
-    update(voter_roll: VoterRoll): Promise<VoterRoll | null> {
-        console.log(`-> VoterRollDB.updateRoll`);
+    update(election_roll: ElectionRoll): Promise<ElectionRoll | null> {
+        console.log(`-> ElectionRollDB.updateRoll`);
         var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2  WHERE election_id = $3 AND voter_id=$4`;
         console.log(sqlString);
-        console.log(voter_roll)
+        console.log(election_roll)
         var p = this._postgresClient.query({
             text: sqlString,
-            values: [voter_roll.ballot_id,voter_roll.submitted,voter_roll.election_id, voter_roll.voter_id]
+            values: [election_roll.ballot_id,election_roll.submitted,election_roll.election_id, election_roll.voter_id]
         });
         return p.then((response: any) => {
             var rows = response.rows;
             console.log(response)
             if (rows.length == 0) {
                 console.log(".get null");
-                return [] as VoterRoll[];
+                return [] as ElectionRoll[];
             }
             return rows
         });
     }
 
-    delete(voter_roll: VoterRoll): Promise<boolean> {
-        console.log(`-> VoterRollDB.delete`);
+    delete(election_roll: ElectionRoll): Promise<boolean> {
+        console.log(`-> ElectionRollDB.delete`);
         var sqlString = `DELETE FROM ${this._tableName} WHERE election_id = $1 AND voter_id=$2`;
         console.log(sqlString);
 
         var p = this._postgresClient.query({
             rowMode: 'array',
             text: sqlString,
-            values: [voter_roll.election_id, voter_roll.voter_id]
+            values: [election_roll.election_id, election_roll.voter_id]
         });
         return p.then((response: any) => {
             if (response.rowCount == 1) {
@@ -133,4 +133,4 @@ class VoterRollDB {
     }
 }
 
-module.exports = VoterRollDB
+module.exports = ElectionRollDB

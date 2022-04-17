@@ -1,38 +1,38 @@
-const VoterRollDB = require('../Models/VoterRolls')
+const ElectionRollDB = require('../Models/ElectionRolls')
 
-var VoterRollModel = new VoterRollDB();
+var ElectionRollModel = new ElectionRollDB();
 
 const getRollsByElectionID = async (req: any, res: any, next: any) => {
-    console.log(`-> voterRolls.getRollsByElectionID ${req.election.election_id}`)
-    //requires election data in req, adds entire voter roll 
+    console.log(`-> electionRolls.getRollsByElectionID ${req.election.election_id}`)
+    //requires election data in req, adds entire election roll 
     try {
-        const voterRoll = await VoterRollModel.getRollsByElectionID(req.election.election_id)
-        if (!voterRoll)
+        const electionRoll = await ElectionRollModel.getRollsByElectionID(req.election.election_id)
+        if (!electionRoll)
             return res.status('400').json({
                 error: "Election roll not found"
             })
         console.log(`Getting Election: ${req.params.id}`)
-        console.log(voterRoll)
-        req.voterRoll = voterRoll
+        console.log(electionRoll)
+        req.electionRoll = electionRoll
         next()
     } catch (err) {
         return res.status('400').json({
-            error: "Could not retrieve voter roll"
+            error: "Could not retrieve election roll"
         })
     }
 }
 
-const addVoterRoll = async (req: any, res: any, next: any) => {
-    console.log(`-> voterRolls.addVoterRoll ${req.election.election_id}`)
+const addElectionRoll = async (req: any, res: any, next: any) => {
+    console.log(`-> electionRolls.addElectionRoll ${req.election.election_id}`)
 
     try {
         // console.log(req)
-        const NewVoterRoll = await VoterRollModel.submitVoterRoll(req.election.election_id, req.body.VoterIDList,false)
-        if (!NewVoterRoll)
+        const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, req.body.VoterIDList,false)
+        if (!NewElectionRoll)
             return res.status('400').json({
                 error: "Voter Roll not found"
             })
-        res.status('200').json(JSON.stringify(NewVoterRoll))
+        res.status('200').json(JSON.stringify(NewElectionRoll))
         next()
     } catch (err) {
         console.log(err)
@@ -42,54 +42,54 @@ const addVoterRoll = async (req: any, res: any, next: any) => {
     }
 }
 
-const editVoterRoll = async (req: any, res: any, next: any) => {
-    console.log(`-> voterRolls.editVoterRoll ${req.election.election_id}`)
+const editElectionRoll = async (req: any, res: any, next: any) => {
+    console.log(`-> electionRolls.editElectionRoll ${req.election.election_id}`)
 
     // TODO: I still need to implement this part
 
     return res.status('200').json('{}')
 }
 
-const updateVoterRoll = async (req: any, res: any, next: any) => {
-    console.log(`-> voterRolls.updateVoterRoll`)
-    // Updates single entry of voter roll
+const updateElectionRoll = async (req: any, res: any, next: any) => {
+    console.log(`-> electionRolls.updateElectionRoll`)
+    // Updates single entry of election roll
     try {
-        const voterRollEntry = await VoterRollModel.update(req.voterRollEntry)
-        if (!voterRollEntry)
+        const electionRollEntry = await ElectionRollModel.update(req.electionRollEntry)
+        if (!electionRollEntry)
             return res.status('400').json({
                 error: "Voter Roll not found"
             })
-        req.voterRollEntry = voterRollEntry
+        req.electionRollEntry = electionRollEntry
         console.log('Voter Roll Updated')
         res.status('200').json()
     } catch (err) {
         console.log(err)
         return res.status('400').json({
-            error: "Could not update voter roll"
+            error: "Could not update election roll"
         })
     }
 }
 
 const getByVoterID = async (req: any, res: any, next: any) => {
-    console.log(`-> voterRolls.getByVoterID ${req.election.election_id} ${req.voter_id}`)
+    console.log(`-> electionRolls.getByVoterID ${req.election.election_id} ${req.voter_id}`)
 
     try {
-        const voterRollEntry = await VoterRollModel.getByVoterID(req.election.election_id, req.voter_id)
-        if (!voterRollEntry)
+        const electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.voter_id)
+        if (!electionRollEntry)
             return res.status('400').json({
                 error: "Voter Roll not found"
             })
-        req.voterRollEntry = voterRollEntry
+        req.electionRollEntry = electionRollEntry
         next()
     } catch (err) {
         return res.status('400').json({
-            error: "Could not find voter roll entry"
+            error: "Could not find election roll entry"
         })
     }
 }
 
 const getVoterAuth = async (req: any, res: any, next: any) => {
-    console.log(`-> voterRolls.getVoterAuth`)
+    console.log(`-> electionRolls.getVoterAuth`)
 
     if (req.election.settings.voter_id_type==='IP Address'){
         console.log(String(req.ip))
@@ -100,52 +100,52 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
         req.voter_id = req.body.voter_id
     }
     try {
-        const voterRollEntry = await VoterRollModel.getByVoterID(req.election.election_id, req.voter_id)
-        if (!voterRollEntry)
+        const electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.voter_id)
+        if (!electionRollEntry)
             return res.status('400').json({
                 error: "Voter Roll not found"
             })
-        req.voterRollEntry = voterRollEntry
+        req.electionRollEntry = electionRollEntry
     } catch (err) {
         return res.status('400').json({
-            error: "Could not find voter roll entry"
+            error: "Could not find election roll entry"
         })
     }
-    console.log(req.voterRollEntry)
-    if (req.election.settings.voter_roll_type==='None'){
+    console.log(req.electionRollEntry)
+    if (req.election.settings.election_roll_type==='None'){
         req.authorized_voter = true;
-        if (req.voterRollEntry.length==0){
+        if (req.electionRollEntry.length==0){
             //Adds voter to roll if they aren't currently
-            const NewVoterRoll = await VoterRollModel.submitVoterRoll(req.election.election_id, [req.voter_id],false)
-            if (!NewVoterRoll)
+            const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, [req.voter_id],false)
+            if (!NewElectionRoll)
                 return res.status('400').json({
                     error: "Voter Roll not found"
                 })
-            req.voterRollEntry = NewVoterRoll
+            req.electionRollEntry = NewElectionRoll
             req.has_voted = false
             next()
         } else{
-            req.has_voted = req.voterRollEntry.submitted
+            req.has_voted = req.electionRollEntry.submitted
             next()
         }
-    } else if (req.election.settings.voter_roll_type==='Email' || req.election.settings.voter_roll_type==='IDs' ){
-        if (req.voterRollEntry.length==0){
+    } else if (req.election.settings.election_roll_type==='Email' || req.election.settings.election_roll_type==='IDs' ){
+        if (req.electionRollEntry.length==0){
             req.authorized_voter = false;
             req.has_voted = false
             next()
         } else{
             req.authorized_voter = true
-            req.has_voted = req.voterRollEntry.submitted
+            req.has_voted = req.electionRollEntry.submitted
             next()
         }
     }
 }
 
 module.exports = {
-    updateVoterRoll,
+    updateElectionRoll,
     getRollsByElectionID,
-    addVoterRoll,
+    addElectionRoll,
     getByVoterID,
     getVoterAuth,
-    editVoterRoll,
+    editElectionRoll,
 }
