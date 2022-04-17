@@ -38,7 +38,7 @@ router.get('/getRoll', (req, res, next) => {
 },
     voterRollController.getByVoterID,
     (req, res, next) => {
-        res.status('200').json(req.voterRollEntry)
+        res.status('200').json(req.electionRollEntry)
     }
     
 )
@@ -50,15 +50,15 @@ router.get('/updateRoll', (req, res, next) => {
 },
     voterRollController.getByVoterID,
     (req, res, next) => {
-        console.log(req.voterRollEntry)
-        req.voterRollEntry = req.voterRollEntry[0]
-        req.voterRollEntry.submitted = true
+        console.log(req.electionRollEntry)
+        req.electionRollEntry = req.electionRollEntry[0]
+        req.electionRollEntry.submitted = true
         next()
     },
     voterRollController.updateVoterRoll,
     voterRollController.getByVoterID,
     (req, res, next) => {
-        res.status('200').json(req.voterRollEntry)
+        res.status('200').json(req.electionRollEntry)
     }
     
 )

@@ -10,7 +10,7 @@ const testInputs = require('./testInputs')
 // Uses mocks defined in ./../Models/__Mocks__/
 jest.mock('./../Models/Ballots')
 jest.mock('./../Models/Elections')
-jest.mock('./../Models/VoterRolls')
+jest.mock('./../Models/ElectionRolls')
 
 afterEach(() => {
     jest.clearAllMocks();
@@ -181,7 +181,7 @@ describe("Edit Election", () => {
 
 describe("Email Roll", () => {
     beforeAll(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
     test("Create election, responds 200", async () => {
         const response = await request(app)
@@ -195,7 +195,7 @@ describe("Email Roll", () => {
     })
     test("Get voter auth, is authorized and hasn't voted", async () => {
         const response = await request(app)
-            .post(`/API/Election/1/ballot`)
+            .post(`/API/Election/7/ballot`)
             .set('Cookie', ['id_token=' + testInputs.user1token])
             .set('Accept', 'application/json')
         expect(response.statusCode).toBe(200)
@@ -204,16 +204,16 @@ describe("Email Roll", () => {
     })
     test("Authorized voter submits ballot", async () => {
         const response = await request(app)
-            .post('/API/Election/1/vote')
+            .post('/API/Election/7/vote')
             .set('Cookie', ['id_token=' + testInputs.user1token])
             .set('Accept', 'application/json')
             .send({ ballot: testInputs.Ballot1 })
-        // console.log(response)
+        // console.log(response.body)
         expect(response.statusCode).toBe(200)
     })
     test("Get voter auth, is authorized and has voted", async () => {
         const response = await request(app)
-            .post(`/API/Election/1/ballot`)
+            .post(`/API/Election/7/ballot`)
             .set('Cookie', ['id_token=' + testInputs.user1token])
             .set('Accept', 'application/json')
         expect(response.statusCode).toBe(200)
@@ -222,7 +222,7 @@ describe("Email Roll", () => {
     })
     test("Authorized voter re-submits ballot", async () => {
         const response = await request(app)
-            .post('/API/Election/1/vote')
+            .post('/API/Election/7/vote')
             .set('Cookie', ['id_token=' + testInputs.user1token])
             .set('Accept', 'application/json')
             .send({ ballot: testInputs.Ballot1 })
@@ -231,7 +231,7 @@ describe("Email Roll", () => {
     })
     test("Get voter auth, isn't authorized and hasn't voted", async () => {
         const response = await request(app)
-            .post(`/API/Election/1/ballot`)
+            .post(`/API/Election/7/ballot`)
             .set('Cookie', ['id_token=' + testInputs.user3token])
             .set('Accept', 'application/json')
         expect(response.statusCode).toBe(200)
@@ -240,7 +240,7 @@ describe("Email Roll", () => {
     })
     test("Unauthorized voter submits ballot", async () => {
         const response = await request(app)
-            .post('/API/Election/1/vote')
+            .post('/API/Election/7/vote')
             .set('Cookie', ['id_token=' + testInputs.user3token])
             .set('Accept', 'application/json')
             .send({ ballot: testInputs.Ballot1 })
@@ -265,7 +265,7 @@ describe("ID Roll", () => {
     })
     test("Get voter auth, is authorized and hasn't voted", async () => {
         const response = await request(app)
-            .post(`/API/Election/2/ballot`)
+            .post(`/API/Election/8/ballot`)
             .set('Cookie', ['id_token=' + testInputs.user1token])
             .set('Accept', 'application/json')
             .send({ voter_id: testInputs.IDRoll[0] })
@@ -275,7 +275,7 @@ describe("ID Roll", () => {
     })
     test("Authorized voter submits ballot", async () => {
         const response = await request(app)
-            .post('/API/Election/2/vote')
+            .post('/API/Election/8/vote')
             .set('Cookie', ['id_token=' + testInputs.user1token])
             .set('Accept', 'application/json')
             .send({ ballot: testInputs.Ballot2, voter_id: testInputs.IDRoll[0] })
@@ -284,7 +284,7 @@ describe("ID Roll", () => {
     })
     test("Get voter auth, is authorized and has voted", async () => {
         const response = await request(app)
-            .post(`/API/Election/2/ballot`)
+            .post(`/API/Election/8/ballot`)
             .set('Cookie', ['id_token=' + testInputs.user1token])
             .set('Accept', 'application/json')
             .send({ voter_id: testInputs.IDRoll[0] })
@@ -294,7 +294,7 @@ describe("ID Roll", () => {
     })
     test("Authorized voter re-submits ballot", async () => {
         const response = await request(app)
-            .post('/API/Election/2/vote')
+            .post('/API/Election/8/vote')
             .set('Cookie', ['id_token=' + testInputs.user1token])
             .set('Accept', 'application/json')
             .send({ ballot: testInputs.Ballot2, voter_id: testInputs.IDRoll[0] })
@@ -303,7 +303,7 @@ describe("ID Roll", () => {
     })
     test("Get voter auth, isn't authorized and hasn't voted", async () => {
         const response = await request(app)
-            .post(`/API/Election/2/ballot`)
+            .post(`/API/Election/8/ballot`)
             .set('Cookie', ['id_token=' + testInputs.user3token])
             .set('Accept', 'application/json')
             .send({ voter_id: 'FakeVoterID' })
@@ -313,7 +313,7 @@ describe("ID Roll", () => {
     })
     test("Unauthorized voter submits ballot", async () => {
         const response = await request(app)
-            .post('/API/Election/2/vote')
+            .post('/API/Election/8/vote')
             .set('Cookie', ['id_token=' + testInputs.user3token])
             .set('Accept', 'application/json')
             .send({ ballot: testInputs.Ballot2, voter_id: 'FakeVoterID' })

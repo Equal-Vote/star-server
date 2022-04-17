@@ -85,7 +85,7 @@ module.exports = {
     ],
     Ballot1: {
         ballot_id: 0,
-        election_id: 1,
+        election_id: 7,
         status: 'Submitted',
         date_submitted: new Date(),
         votes: [{
@@ -147,7 +147,7 @@ module.exports = {
     ],
     Ballot2: {
         ballot_id: 0,
-        election_id: 2,
+        election_id: 8,
         status: 'Submitted',
         date_submitted: new Date(),
         votes: [{
