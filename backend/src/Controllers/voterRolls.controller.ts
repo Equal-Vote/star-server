@@ -98,9 +98,7 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
         req.authorized_voter = true
         req.has_voted = false
         req.electionRollEntry = {}
-        console.log('--> Before Next')
         return next()
-        console.log('--> After Next')
     } else if (req.election.settings.voter_id_type === 'IP Address') {
         console.log(String(req.ip))
         req.voter_id = String(req.ip)
