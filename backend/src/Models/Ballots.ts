@@ -8,16 +8,19 @@ class BallotsDB {
 
     constructor() {
         this._tableName = "ballotDB";
-        // this._postgresClient = new Pool({
-        //     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-        //     ssl:  {
-        //         rejectUnauthorized: false
-        //       }
-        // });
-        this._postgresClient = new Pool({
+        if (process.env.DEV_DATABASE === 'TRUE') {
+            this._postgresClient = new Pool({
                 connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-                ssl:  false
+                ssl: {
+                    rejectUnauthorized: false
+                }
             });
+        } else {
+            this._postgresClient = new Pool({
+                connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+                ssl: false
+            });
+        }
         this.init();
     }
 
@@ -50,11 +53,11 @@ class BallotsDB {
             rowMode: 'array',
             text: sqlString,
             values: [ballot.election_id,
-                ballot.user_id,
-                ballot.status,
-                ballot.date_submitted,
-                ballot.ip_address,
-                JSON.stringify(ballot.votes)]
+            ballot.user_id,
+            ballot.status,
+            ballot.date_submitted,
+            ballot.ip_address,
+            JSON.stringify(ballot.votes)]
         });
 
         return p.then((res: any) => {
@@ -63,7 +66,7 @@ class BallotsDB {
         });
     }
 
-    getBallotsByElectionID(election_id:string): Promise<Ballot[] | null> {
+    getBallotsByElectionID(election_id: string): Promise<Ballot[] | null> {
         console.log(`-> BallotsDB.getByElectionID ${election_id}`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1`;
         console.log(sqlString);

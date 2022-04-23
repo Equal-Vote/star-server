@@ -8,16 +8,19 @@ class ElectionsDB {
 
     constructor() {
         this._tableName = "electionDB";
-        // this._postgresClient = new Pool({
-        //     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-        //     ssl:  {
-        //         rejectUnauthorized: false
-        //       }
-        // });
-        this._postgresClient = new Pool({
-            connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-            ssl:  false
-        });
+        if (process.env.DEV_DATABASE === 'TRUE') {
+            this._postgresClient = new Pool({
+                connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+                ssl: {
+                    rejectUnauthorized: false
+                }
+            });
+        } else {
+            this._postgresClient = new Pool({
+                connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
+                ssl: false
+            });
+        }
         this.init()
     }
 
@@ -55,17 +58,17 @@ class ElectionsDB {
         var p = this._postgresClient.query({
             text: sqlString,
             values: [election.title,
-                election.description,
-                election.frontend_url,
-                election.start_time,
-                election.end_time,
-                election.support_email,
-                election.owner_id,
-                election.audit_id,
-                election.admin_id,
-                election.state,
-                JSON.stringify(election.races),
-                JSON.stringify(election.settings)]
+            election.description,
+            election.frontend_url,
+            election.start_time,
+            election.end_time,
+            election.support_email,
+            election.owner_id,
+            election.audit_id,
+            election.admin_id,
+            election.state,
+            JSON.stringify(election.races),
+            JSON.stringify(election.settings)]
         });
 
         return p.then((res: any) => {
@@ -109,12 +112,12 @@ class ElectionsDB {
 
         console.log(`-> ElectionDB.getAll`);
         var sqlString = `SELECT * FROM ${this._tableName}`;
-        if(filter != ""){
+        if (filter != "") {
             var filters = filter.split(',');
-            if(filters.length > 0){
+            if (filters.length > 0) {
                 sqlString = `${sqlString} WHERE`
             }
-            for(var i = 0; i < filters.length; i++){
+            for (var i = 0; i < filters.length; i++) {
                 var [key, value] = filters[i].split(':');
                 sqlString = `${sqlString} ${key}='${value}'`
             }
@@ -150,7 +153,7 @@ class ElectionsDB {
                 console.log(".get null");
                 return null;
             }
-            return  rows[0] as Election;
+            return rows[0] as Election;
         });
     }
 
@@ -173,4 +176,4 @@ class ElectionsDB {
     }
 }
 
- module.exports = ElectionsDB
+module.exports = ElectionsDB
