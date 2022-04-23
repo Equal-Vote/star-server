@@ -14,6 +14,7 @@ const VotePage = ({ }) => {
   const { data, isPending, error } = useFetch(`/API/Election/${id}`)
   const [rankings, setRankings] = useState([])
   const navigate = useNavigate();
+  const [submitError,setSubmitError] = useState('')
   console.log(data)
   const onUpdate = (rankings) => {
     setRankings(rankings)
@@ -46,9 +47,18 @@ const VotePage = ({ }) => {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ballot: ballot})
-    })
-    navigate(`/Election/${id}`)
+      body: JSON.stringify({
+        ballot: ballot
+      })
+    }).then(res => {
+      if(!res.ok) {
+          console.log(res)
+          setSubmitError('Error Submitting Ballot')
+          throw Error('Could not submit ballot')
+      }
+      navigate(`/Election/${id}`)
+  })
+    
   }
   return (
     <Container >
@@ -64,6 +74,7 @@ const VotePage = ({ }) => {
             readonly={false}
             onSubmitBallot={submit}
           />}
+        {<div> {submitError} </div>}
       </>
     </Container>
   )

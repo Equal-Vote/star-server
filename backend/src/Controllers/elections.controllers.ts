@@ -18,7 +18,7 @@ const getElectionByID = async (req: any, res: any, next: any) => {
             })
         }
         req.election = election
-        next()
+        return next()
     } catch (err) {
         return res.status('400').json({
             error: "Could not retrieve election"
@@ -97,7 +97,7 @@ const createElection = async (req: any, res: any, next: any) => {
                 error: "Election not found"
             })
         req.election = newElection
-        next()
+        return next()
     } catch (err) {
         return res.status('400').json({
             error: (err as any).message
@@ -120,7 +120,7 @@ const editElection = async (req: any, res: any, next: any) => {
                 error: "Failed to update Election"
             })
         req.election = updatedElection
-        next()
+        return next()
     } catch (err) {
         return res.status('400').json({
             error: (err as any).message

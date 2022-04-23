@@ -19,18 +19,19 @@ import ProfilePic from '../images/blank-profile.png'
 import { Link } from "react-router-dom"
 import { createTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
+import TextField from "@material-ui/core/TextField";
 import Box from '@material-ui/core/Box';
-const ElectionHome = ({ }) => {
+const ElectionHome = ({ authSession }) => {
   const { id } = useParams();
-  //TODO: Add logic for entering vote ID
-  const { data, isPending, error } = useFetch(`/API/Election/${id}/ballot`,{
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({})
-  })
+  const [isPending, setIsPending] = useState(true)
+  const [error, setError] = useState(null)
+  const [data, setData] = useState(null)
+  const [voterID, setVoterID] = useState('')
+
+  useEffect(() => {
+    fetchElection()
+  }, [])
+
   const [rankings, setRankings] = useState([])
   const navigate = useNavigate();
   console.log(data)
@@ -38,11 +39,46 @@ const ElectionHome = ({ }) => {
     setRankings(rankings)
     console.log(rankings)
   }
+
+  const fetchElection = () => {
+    const url = `/API/Election/${id}/ballot`;
+    const options = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({})
+    }
+    fetch(url, options)
+      .then(res => {
+        if (!res.ok) {
+          setError('Error submitting ballot')
+          throw Error('Could not fetch data')
+        }
+        return res.json();
+      })
+      .then(data => {
+        setData(data);
+        setIsPending(false);
+        setError(null);
+      })
+      .catch(err => {
+        setIsPending(false);
+        setError(err.message);
+      })
+  }
+
+  const submitVoterID = () => {
+    authSession.setCookie('voter_id', voterID, 1)
+    fetchElection()
+  }
+
   const electionStarted = () => {
     const currentTime = new Date()
-    if (!data.election.start_time){
+    if (!data.election.start_time) {
       return true
-    } else if (new Date(data.election.start_time).getTime() < currentTime.getTime()){
+    } else if (new Date(data.election.start_time).getTime() < currentTime.getTime()) {
       return true
     } else {
       return false
@@ -50,9 +86,9 @@ const ElectionHome = ({ }) => {
   }
   const electionEnded = () => {
     const currentTime = new Date()
-    if (!data.election.end_time){
+    if (!data.election.end_time) {
       return false
-    } else if (new Date(data.election.end_time).getTime() < currentTime.getTime()){
+    } else if (new Date(data.election.end_time).getTime() < currentTime.getTime()) {
       return true
     } else {
       return false
@@ -64,6 +100,7 @@ const ElectionHome = ({ }) => {
       <>
         {error && <div> {error} </div>}
         {isPending && <div> Loading Election... </div>}
+
         {data && data.voterAuth.authorized_voter && data.election &&
           <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }}>
             <Grid container alignItems="center" justify="center" direction="column">
@@ -84,19 +121,19 @@ const ElectionHome = ({ }) => {
                 </Typography>
               }
 
-              {data.voterAuth.has_voted == false && electionStarted() && !electionEnded()&&
+              {data.voterAuth.has_voted == false && electionStarted() && !electionEnded() &&
                 <>
                   {data.election.end_time &&
-                  <Typography align='center' gutterBottom variant="h6" component="h6">
-                    {`Election ends on ${new Date(data.election.end_time).toLocaleDateString()} at ${new Date(data.election.end_time).toLocaleTimeString()} `}
-                  </Typography>}
+                    <Typography align='center' gutterBottom variant="h6" component="h6">
+                      {`Election ends on ${new Date(data.election.end_time).toLocaleDateString()} at ${new Date(data.election.end_time).toLocaleTimeString()} `}
+                    </Typography>}
                   <Link to={`/Election/${String(data.election.election_id)}/vote`}>
                     <Typography align='center' gutterBottom variant="h6" component="h6">
                       Vote
                     </Typography>
                   </Link>
                 </>}
-                
+
               {data.voterAuth.has_voted == true &&
                 <Typography align='center' gutterBottom variant="h6" component="h6">
                   Ballot Submitted
@@ -109,13 +146,13 @@ const ElectionHome = ({ }) => {
 
               <Link to={`/Election/${data.election.election_id}/edit`}>
                 <Typography align='center' gutterBottom variant="h6" component="h6">
-                    Edit
+                  Edit
                 </Typography>
               </Link>
             </Grid>
           </Box>
         }
-        {data && !data.voterAuth.authorized_voter &&
+        {data && !data.voterAuth.authorized_voter && !data.voterAuth.required &&
           <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }}>
             <Grid container alignItems="center" justify="center" direction="column">
               <Typography align='center' gutterBottom variant="h4" component="h4">
@@ -123,6 +160,38 @@ const ElectionHome = ({ }) => {
               </Typography>
             </Grid>
           </Box>
+        }
+        {data && !data.voterAuth.authorized_voter && data.voterAuth.required && data.voterAuth.required === "Log In" &&
+          <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }}>
+            <Grid container alignItems="center" justify="center" direction="column">
+              <Typography align='center' gutterBottom variant="h4" component="h4">
+                You must log in to access this election
+              </Typography>
+            </Grid>
+          </Box>
+        }
+        {data && !data.voterAuth.authorized_voter && data.voterAuth.required && data.voterAuth.required === "Voter ID" &&
+          <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }}>
+            <Grid container alignItems="center" justify="center" direction="column">
+              <Typography align='center' gutterBottom variant="h4" component="h4">
+                Enter Voter ID
+              </Typography>
+
+              <TextField
+                id="voter-id"
+                name="voterid"
+                label="Voter ID"
+                type="text"
+                value={voterID}
+                onChange={(e) => {
+                  setVoterID(e.target.value)
+                }}
+              />
+
+              <Button variant='outlined' onClick={() => submitVoterID()} > Submit </Button>
+            </Grid>
+          </Box>
+
         }
       </>
     </Container>

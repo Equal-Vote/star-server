@@ -91,7 +91,7 @@ const App = () => {
           <Route path='/' element={<Elections authSession={authSession}/>} />
           <Route path='/Login' element={<Login />} />
           <Route path='/CreateElection' element={<AddElection authSession={authSession}/>} />
-          <Route path='/Election/:id' element={<ElectionHome />} />
+          <Route path='/Election/:id' element={<ElectionHome authSession={authSession}/>} />
           <Route path='/Election/:id/vote' element={<VotePage />} />
           <Route path='/Election/:id/results' element={<ViewElectionResults />} />
           <Route path='/Election/:id/edit' element={<EditElection authSession={authSession}/>} />

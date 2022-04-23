@@ -306,7 +306,7 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                         />
                     </Grid>
                     }
-                    {election.settings.election_roll_type === 'Email' &&
+                    {election.settings.election_roll_type === 'IDs' &&
                         <Grid item>
                         <TextField
                             id="id-list"
