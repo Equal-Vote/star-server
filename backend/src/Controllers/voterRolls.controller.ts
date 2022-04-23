@@ -14,7 +14,7 @@ const getRollsByElectionID = async (req: any, res: any, next: any) => {
         console.log(`Getting Election: ${req.params.id}`)
         console.log(electionRoll)
         req.electionRoll = electionRoll
-        next()
+        return next()
     } catch (err) {
         return res.status('400').json({
             error: "Could not retrieve election roll"
@@ -27,13 +27,13 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
 
     try {
         // console.log(req)
-        const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, req.body.VoterIDList,false)
+        const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, req.body.VoterIDList, false)
         if (!NewElectionRoll)
             return res.status('400').json({
                 error: "Voter Roll not found"
             })
         res.status('200').json(JSON.stringify(NewElectionRoll))
-        next()
+        return next()
     } catch (err) {
         console.log(err)
         return res.status('400').json({
@@ -53,6 +53,9 @@ const editElectionRoll = async (req: any, res: any, next: any) => {
 const updateElectionRoll = async (req: any, res: any, next: any) => {
     console.log(`-> electionRolls.updateElectionRoll`)
     // Updates single entry of election roll
+    if (req.election.settings.voter_id_type === 'None') {
+        res.status('200').json()
+    }
     try {
         const electionRollEntry = await ElectionRollModel.update(req.electionRollEntry)
         if (!electionRollEntry)
@@ -90,14 +93,39 @@ const getByVoterID = async (req: any, res: any, next: any) => {
 
 const getVoterAuth = async (req: any, res: any, next: any) => {
     console.log(`-> electionRolls.getVoterAuth`)
-
-    if (req.election.settings.voter_id_type==='IP Address'){
+    // 
+    if (req.election.settings.voter_id_type === 'None') {
+        req.authorized_voter = true
+        req.has_voted = false
+        req.electionRollEntry = {}
+        console.log('--> Before Next')
+        return next()
+        console.log('--> After Next')
+    } else if (req.election.settings.voter_id_type === 'IP Address') {
         console.log(String(req.ip))
         req.voter_id = String(req.ip)
-    } else if(req.election.settings.voter_id_type==='Email'){
+    } else if (req.election.settings.voter_id_type === 'Email') {
+        // If user isn't logged in, send response requesting log in
+        if (!req.user) {
+            return res.json({
+                voterAuth: {
+                    authorized_voter: false,
+                    required: "Log In"
+                }
+            })
+        }
         req.voter_id = req.user.email
-    } else if(req.election.settings.voter_id_type==='IDs'){
-        req.voter_id = req.body.voter_id
+    } else if (req.election.settings.voter_id_type === 'IDs') {
+        // If voter ID not set, send response requesting voter ID to be entered
+        if (!req.cookies.voter_id) {
+            return res.json({
+                voterAuth: {
+                    authorized_voter: false,
+                    required: "Voter ID"
+                }
+            })
+        }
+        req.voter_id = req.cookies.voter_id
     }
     try {
         const electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.voter_id)
@@ -111,32 +139,31 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
             error: "Could not find election roll entry"
         })
     }
-    console.log(req.electionRollEntry)
-    if (req.election.settings.election_roll_type==='None'){
+    if (req.election.settings.election_roll_type === 'None') {
         req.authorized_voter = true;
-        if (req.electionRollEntry.length==0){
+        if (req.electionRollEntry.length == 0) {
             //Adds voter to roll if they aren't currently
-            const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, [req.voter_id],false)
+            const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, [req.voter_id], false)
             if (!NewElectionRoll)
                 return res.status('400').json({
                     error: "Voter Roll not found"
                 })
             req.electionRollEntry = NewElectionRoll
             req.has_voted = false
-            next()
-        } else{
+            return next()
+        } else {
             req.has_voted = req.electionRollEntry.submitted
-            next()
+            return next()
         }
-    } else if (req.election.settings.election_roll_type==='Email' || req.election.settings.election_roll_type==='IDs' ){
-        if (req.electionRollEntry.length==0){
+    } else if (req.election.settings.election_roll_type === 'Email' || req.election.settings.election_roll_type === 'IDs') {
+        if (req.electionRollEntry.length == 0) {
             req.authorized_voter = false;
             req.has_voted = false
-            next()
-        } else{
+            return next()
+        } else {
             req.authorized_voter = true
             req.has_voted = req.electionRollEntry.submitted
-            next()
+            return next()
         }
     }
 }

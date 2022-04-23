@@ -29,7 +29,7 @@ const getBallotsByElectionID = async (req: any, res: any, next: any) => {
             })
         console.log(ballots)
         req.ballots = ballots
-        next()
+        return next()
     } catch (err) {
         return res.status('400').json({
             error: "Could not retrieve ballots"
@@ -58,7 +58,7 @@ const submitBallot = async (req: any, res: any, next: any) => {
                 error: "Ballots not found"
             })
         req.electionRollEntry.submitted = true
-        next()
+        return next()
 
     } catch (err) {
         return res.status('400').json({
