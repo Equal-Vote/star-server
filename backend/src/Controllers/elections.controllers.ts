@@ -9,14 +9,44 @@ var ElectionsModel = new ElectionsDB();
 const getElectionByID = async (req: any, res: any, next: any) => {
     console.log(`-> elections.getElectionByID ${req.params.id}`)
     try {
-        const election = await ElectionsModel.getElectionByID(parseInt(req.params.id))
+        var election = await ElectionsModel.getElectionByID(parseInt(req.params.id))
         console.log(`get election ${req.params.id}`)
-        if (!election){
+        if (!election) {
             console.log('Error')
             return res.status('400').json({
                 error: "Election not found"
             })
         }
+        // Update Election State
+        const currentTime = new Date();
+        if (election.state === 'draft') {
+
+        }
+        if (election.state === 'finalized') {
+            if (election.start_time) {
+                console.log(`-> Election Transitioning To Open From ${election.state}`)
+                const startTime = new Date(election.start_time);
+                if (currentTime.getTime() > startTime.getTime()) {
+                    election.state = 'open';
+                    election = await ElectionsModel.updateElection(election)
+                }
+            } else {
+                console.log(`-> Election Transitioning To Open From ${election.state}`)
+                election.state = 'open';
+                election = await ElectionsModel.updateElection(election)
+            }
+        }
+        if (election.state === 'open') {
+            if (election.end_time) {
+                const endTime = new Date(election.end_time);
+                if (currentTime.getTime() > endTime.getTime()) {
+                    console.log('-> Election Transitioning To Closed')
+                    election.state = 'closed';
+                    election = await ElectionsModel.updateElection(election)
+                }
+            }
+        }
+
         req.election = election
         return next()
     } catch (err) {
@@ -28,7 +58,7 @@ const getElectionByID = async (req: any, res: any, next: any) => {
 
 const returnElection = async (req: any, res: any, next: any) => {
     console.log(`-> elections.returnElection ${req.params.id}`)
-    res.json({election: req.election, voterAuth: {authorized_voter: req.authorized_voter,has_voted: req.has_voted}})
+    res.json({ election: req.election, voterAuth: { authorized_voter: req.authorized_voter, has_voted: req.has_voted } })
 }
 
 const getElectionResults = async (req: any, res: any, next: any) => {
@@ -74,7 +104,7 @@ const getSandboxResults = async (req: any, res: any, next: any) => {
 const getElections = async (req: any, res: any, next: any) => {
     console.log(`-> elections.getElections`)
     try {
-        var filter = (req.query.filter == undefined)? "" : req.query.filter;
+        var filter = (req.query.filter == undefined) ? "" : req.query.filter;
         const Elections = await ElectionsModel.getElections(filter);
         if (!Elections)
             return res.status('400').json({
@@ -106,9 +136,15 @@ const createElection = async (req: any, res: any, next: any) => {
 }
 
 const editElection = async (req: any, res: any, next: any) => {
-    if(req.body.Election == undefined){
+    if (req.body.Election == undefined) {
         return res.status('400').json({
             error: "Election not provided"
+        })
+    }
+    if (req.election.state !== 'draft') {
+        console.log(`--> Failed to Edit while in ${req.election.state}`)
+        return res.status('400').json({
+            error: "Election is not editable"
         })
     }
     console.log(`-> elections.editElection ${req.body.Election.election_id}`)
@@ -128,6 +164,31 @@ const editElection = async (req: any, res: any, next: any) => {
     }
 }
 
+const finalize = async (req: any, res: any, next: any) => {
+    if (req.election.state !== 'draft') {
+        console.log(`-> Already Finalized`)
+        return res.status('400').json({
+            error: "Election already finalized"
+        })
+    }
+    console.log(`-> elections.finalize ${req.election.election_id}`)
+
+    try {
+        req.election.state = 'finalized'
+        const updatedElection = await ElectionsModel.updateElection(req.election)
+        if (!updatedElection)
+            return res.status('400').json({
+                error: "Failed to update Election"
+            })
+        req.election = updatedElection
+        return  res.json({election: updatedElection})
+    } catch (err) {
+        return res.status('400').json({
+            error: (err as any).message
+        })
+    }
+}
+
 module.exports = {
     returnElection,
     getElectionResults,
@@ -136,4 +197,5 @@ module.exports = {
     getElectionByID,
     getSandboxResults,
     editElection,
+    finalize,
 }

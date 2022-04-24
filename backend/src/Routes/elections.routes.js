@@ -36,6 +36,11 @@ router.post('/Election/:id/vote',
     voterRollController.getVoterAuth,
     ballotController.submitBallot,
     voterRollController.updateElectionRoll)
+    router.post('/Election/:id/finalize',
+        authController.getUser,
+        authController.isLoggedIn,
+        authController.assertOwnership,
+        electionController.finalize)
 
 router.post('/Sandbox',
     electionController.getSandboxResults)

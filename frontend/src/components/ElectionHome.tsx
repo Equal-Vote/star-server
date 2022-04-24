@@ -21,6 +21,7 @@ import { createTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import TextField from "@material-ui/core/TextField";
 import Box from '@material-ui/core/Box';
+import { Tooltip } from "@material-ui/core";
 const ElectionHome = ({ authSession }) => {
   const { id } = useParams();
   const [isPending, setIsPending] = useState(true)
@@ -67,6 +68,27 @@ const ElectionHome = ({ authSession }) => {
         setIsPending(false);
         setError(err.message);
       })
+  }
+  const finalizeElection = () => {
+    const url = `/API/Election/${id}/finalize`;
+    const options = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+    fetch(url, options)
+      .then(res => {
+        if (!res.ok) {
+          setError('Error submitting ballot')
+          throw Error('Could not fetch data')
+        }
+        return res.json();
+      })
+      .then((data) =>
+        fetchElection()
+      )
   }
 
   const submitVoterID = () => {
@@ -144,11 +166,20 @@ const ElectionHome = ({ authSession }) => {
                 </Typography>
               </Link>
 
-              <Link to={`/Election/${data.election.election_id}/edit`}>
-                <Typography align='center' gutterBottom variant="h6" component="h6">
-                  Edit
-                </Typography>
-              </Link>
+              {data && data.election.state === 'draft' &&
+                <>
+                  <Link to={`/Election/${data.election.election_id}/edit`}>
+                    <Typography align='center' gutterBottom variant="h6" component="h6">
+                      Edit
+                    </Typography>
+                  </Link>
+                  <Tooltip title="Opens election for ballots to be submitted and prevents future edits" >
+                    <Button variant='outlined' onClick={() => finalizeElection()} > Finalize </Button>
+                  </Tooltip>
+                </>
+              }
+
+
             </Grid>
           </Box>
         }
