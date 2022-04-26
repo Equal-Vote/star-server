@@ -40,7 +40,9 @@ router.post('/Election/:id/vote',
         authController.getUser,
         authController.isLoggedIn,
         authController.assertOwnership,
-        electionController.finalize)
+        electionController.finalize,
+        voterRollController.getRollsByElectionID,
+        voterRollController.sendInvitations)
 
 router.post('/Sandbox',
     electionController.getSandboxResults)

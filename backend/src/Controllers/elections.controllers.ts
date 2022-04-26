@@ -2,7 +2,7 @@ import { Election } from '../../../domain_model/Election';
 import { Ballot } from '../../../domain_model/Ballot';
 import { Score } from '../../../domain_model/Score';
 const ElectionsDB = require('../Models/Elections')
-const StarResults = require('../StarResults.js');
+const StarResults = require('../Tabulators/StarResults.js');
 
 var ElectionsModel = new ElectionsDB();
 
@@ -181,7 +181,8 @@ const finalize = async (req: any, res: any, next: any) => {
                 error: "Failed to update Election"
             })
         req.election = updatedElection
-        return  res.json({election: updatedElection})
+        // return  res.json({election: updatedElection})
+        next()
     } catch (err) {
         return res.status('400').json({
             error: (err as any).message

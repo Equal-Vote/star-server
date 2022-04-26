@@ -73,7 +73,6 @@ const submitBallot = async (req: any, res: any, next: any) => {
     }
 }
 
-
 module.exports = {
     getBallotsByElectionID,
     submitBallot,
