@@ -27,7 +27,7 @@ module.exports = {
      Election1 : {
          election_id: 0,
          title: 'Election 1',
-         state: 'Draft',
+         state: 'draft',
          frontend_url: '',
          owner_id: 'Alice1234',
          races: [] as Race[],
@@ -40,7 +40,7 @@ module.exports = {
      IncompleteElection : {
         election_id: 0,
         title: 'Election 1',
-        state: 'Draft',
+        state: 'draft',
         frontend_url: '',
         owner_id: '0',
     } as Election,
@@ -48,7 +48,7 @@ module.exports = {
     EmailRollElection : {
         election_id: 0,
         title: 'Election 1',
-        state: 'Draft',
+        state: 'open',
         frontend_url: '',
         owner_id: '0',
         races: [
@@ -110,7 +110,7 @@ module.exports = {
     IDRollElection : {
         election_id: 0,
         title: 'Election 1',
-        state: 'Draft',
+        state: 'open',
         frontend_url: '',
         owner_id: '0',
         races: [

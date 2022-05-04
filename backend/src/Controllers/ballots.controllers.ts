@@ -38,6 +38,12 @@ const getBallotsByElectionID = async (req: any, res: any, next: any) => {
 }
 
 const submitBallot = async (req: any, res: any, next: any) => {
+    if (req.election.state!=='open'){
+        console.log("-> Election not open")
+        return res.status('400').json({
+            error: "Election is not open"
+        })
+    }
     if (!req.authorized_voter){
         console.log("Voter not authorized")
         return res.status('400').json({

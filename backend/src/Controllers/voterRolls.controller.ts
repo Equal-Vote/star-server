@@ -32,7 +32,7 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
             return res.status('400').json({
                 error: "Voter Roll not found"
             })
-        res.status('200').json(JSON.stringify(NewElectionRoll))
+        res.status('200').json(JSON.stringify({election:req.election,NewElectionRoll}))
         return next()
     } catch (err) {
         console.log(err)
