@@ -1,4 +1,4 @@
-const StarResults = require('./StarResults')
+const ParseData = require('./ParseData')
 
 const candidates = ['Alice','Bob','Carol','Dave']
 
@@ -10,6 +10,6 @@ const votes = [
     [0,0,0,1],
 ]
 
+const results = ParseData(candidates,votes,0,5,5,true)
 
-const results = StarResults(candidates,votes)
-// console.log(results.cvr.voters)
+console.log(results)

@@ -1,21 +1,15 @@
 const EmailService = require('../Services/EmailService')
+const Invitation = require('../Services/Invitation')
+const election = {
+    title: 'Test Election',
+    election_id: 1
+}
+const voter = [{
+    voter_id: 'mikefranze@gmail.com'
+}]
+// use req.get(host) to get url
 
-EmailService.sendEmails(
-    [
-        {
-            to: 'mikefranze@gmail.com', // Change to your recipient
-            from: 'mike@equal.vote', // Change to your verified sender
-            subject: 'Testing SendGrid',
-            text: 'Hi Mike',
-            html: '<h1>Hello Mike</h1>',
-        },
-
-        {
-            to: 'mike@equal.vote', // Change to your recipient
-            from: 'mike@equal.vote', // Change to your verified sender
-            subject: 'Testing SendGrid',
-            text: 'Hi Me',
-            html: '<h1>Hello Me</h1>',
-        }]
-
-)
+// const msg = Invitation(election,voter,'https://localhost:3000')
+// console.log(msg)
+// EmailService.sendEmails(msg)
+EmailService.sendInvitations(election,voter,'https://localhost:3000')
