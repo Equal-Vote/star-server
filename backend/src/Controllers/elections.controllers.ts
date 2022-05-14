@@ -19,34 +19,37 @@ const getElectionByID = async (req: any, res: any, next: any) => {
         }
         // Update Election State
         const currentTime = new Date();
+        var stateChange = false
         if (election.state === 'draft') {
 
         }
         if (election.state === 'finalized') {
             if (election.start_time) {
-                console.log(`-> Election Transitioning To Open From ${election.state}`)
                 const startTime = new Date(election.start_time);
                 if (currentTime.getTime() > startTime.getTime()) {
+                    console.log(`-> Election Transitioning To Open From ${election.state}`)
+                    stateChange = true;
                     election.state = 'open';
-                    election = await ElectionsModel.updateElection(election)
                 }
             } else {
                 console.log(`-> Election Transitioning To Open From ${election.state}`)
+                stateChange = true;
                 election.state = 'open';
-                election = await ElectionsModel.updateElection(election)
             }
         }
         if (election.state === 'open') {
             if (election.end_time) {
                 const endTime = new Date(election.end_time);
                 if (currentTime.getTime() > endTime.getTime()) {
-                    console.log('-> Election Transitioning To Closed')
+                    console.log(`-> Election Transitioning To Closed From ${election.state}`)
+                    stateChange = true;
                     election.state = 'closed';
-                    election = await ElectionsModel.updateElection(election)
                 }
             }
         }
-
+        if (stateChange) {
+            election = await ElectionsModel.updateElection(election)
+        }
         req.election = election
         return next()
     } catch (err) {
