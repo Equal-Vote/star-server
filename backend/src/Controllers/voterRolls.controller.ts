@@ -1,5 +1,5 @@
 const ElectionRollDB = require('../Models/ElectionRolls')
-
+const EmailService = require('../Services/EmailService')
 var ElectionRollModel = new ElectionRollDB();
 
 const getRollsByElectionID = async (req: any, res: any, next: any) => {
@@ -32,7 +32,7 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
             return res.status('400').json({
                 error: "Voter Roll not found"
             })
-        res.status('200').json(JSON.stringify({election:req.election,NewElectionRoll}))
+        res.status('200').json(JSON.stringify({ election: req.election, NewElectionRoll }))
         return next()
     } catch (err) {
         console.log(err)
@@ -166,6 +166,22 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
     }
 }
 
+const sendInvitations = async (req: any, res: any, next: any) => {
+    //requires election data in req, adds entire election roll 
+    if (req.election.settings.election_roll_type === 'Email') {
+        console.log(`-> electionRolls.sendInvitations ${req.election.election_id}`)
+        try {
+            const url = req.protocol + '://'+req.get('host')
+            EmailService.sendInvitations(req.election,req.electionRoll,url)
+        } catch (err) {
+            return res.status('400').json({
+                error: "Could not send invitations"
+            })
+        }
+    }
+    return  res.json({election: req.election})
+}
+
 module.exports = {
     updateElectionRoll,
     getRollsByElectionID,
@@ -173,4 +189,5 @@ module.exports = {
     getByVoterID,
     getVoterAuth,
     editElectionRoll,
+    sendInvitations
 }
