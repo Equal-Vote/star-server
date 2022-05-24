@@ -25,11 +25,11 @@ app.use(cors({
     credentials: true, // allow the backend to receive cookies from the frontend
 }))
 
+// Set to trust proxy so we can resolve client IP address
 app.enable('trust proxy')
 
 app.use((req, res, next) => {
     console.log(`--> NEW REQUEST: ${req.method} ${req.url} @ ${new Date(Date.now()).toISOString()}`);
-    console.log(`IP ADDRESS: ${req.ip}`)
     next();
 })
 
