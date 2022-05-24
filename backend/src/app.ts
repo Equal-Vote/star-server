@@ -25,8 +25,11 @@ app.use(cors({
     credentials: true, // allow the backend to receive cookies from the frontend
 }))
 
+app.enable('trust proxy')
+
 app.use((req, res, next) => {
     console.log(`--> NEW REQUEST: ${req.method} ${req.url} @ ${new Date(Date.now()).toISOString()}`);
+    console.log(`IP ADDRESS: ${req.ip}`)
     next();
 })
 
