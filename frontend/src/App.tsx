@@ -13,6 +13,10 @@ import { ThemeProvider } from '@material-ui/styles'
 import ElectionHome from './components/ElectionHome'
 import Sandbox from './components/Sandbox'
 
+const prodEndpoints = [
+  'https://star-vote.herokuapp.com/',
+];
+
 const App = () => {
   /* oAuth2 reference
    * Express Guide: https://www.youtube.com/watch?v=Ppeqd9xXp3Q 
@@ -21,41 +25,14 @@ const App = () => {
    * openid.net: https://openid.net/specs/openid-connect-core-1_0.html
    */
 
-  // Q: Why not use relative links for the local endpoints? That way you don't have to consider the window location at all
-  // A: That was my initial plan, but since the oAuth endpoints will almost always be direct endpoints, I figured I'd keep
-  //    it consistent for the testing cases as well
-  const localBaseUrl = window.location.origin;
-  const localAuthConfig = {
-    clientId: 'abcd', // dummy client id for now
-    responseType: 'code',
-    redirectUri: window.location.origin,
-    logoutUri: window.location.origin,
-    endpoints: {
-      login: `${localBaseUrl}/Login`,
-      logout: `${localBaseUrl}/logout`,
-      token: `${localBaseUrl}/API/oAuth2/token`,
-      authorize: `${localBaseUrl}/API/oAuth2/authorize`,
-      userinfo: `${localBaseUrl}/API/oAuth2/userinfo`
-    },
-  }
-
-  const cognitoBaseUrl = 'https://star.auth.us-east-1.amazoncognito.com'
-  const cognitoAuthConfig = {
-    clientId: '3j4jcchkffod8q1onipug0oqa4',
-    responseType: 'code',
-    redirectUri: window.location.origin,
-    logoutUri: window.location.origin,
-    endpoints: {
-      login: `${cognitoBaseUrl}/login`,
-      logout: `${cognitoBaseUrl}/logout`,
-      token: `${cognitoBaseUrl}/oauth2/token`,
-      authorize: `${cognitoBaseUrl}/oauth2/authorize`,
-      userinfo: `${cognitoBaseUrl}/oauth2/userinfo`
-    },
-  }
-
   // http://keycloak.6j0.org/auth/realms/STAR%20Voting/.well-known/openid-configuration
-  const keycloakBaseUrl = 'https://keycloak.6j0.org/auth/realms/STAR%20Voting/protocol/openid-connect'
+  let keycloakBaseUrl;
+  if(prodEndpoints.includes(window.location.origin)){
+    keycloakBaseUrl = 'https://keycloak.6j0.org/auth/realms/STAR%20Voting/protocol/openid-connect';
+  }else{
+    keycloakBaseUrl = 'https://keycloak.6j0.org/auth/realms/STAR%20Voting%20Dev/protocol/openid-connect';
+  }
+  
   const keycloakAuthConfig = {
     clientId: 'star_vote_web',
     responseType: 'code',
