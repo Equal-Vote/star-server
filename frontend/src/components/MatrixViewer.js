@@ -5,8 +5,7 @@ function CellViewer({ cell }) {
 
   return (
     <h3 className = 'cell'>
-      {cell.result}:<br />
-      {cell.supportVotes} vs {cell.opposeVotes}
+      {cell.supportVotes}
     </h3>
   );
 }
@@ -30,7 +29,12 @@ export default function MatrixViewer({ results }) {
             <tr className = 'matrix' key={`d${i}`}>
               <th className = 'matrix' key={`dh${i}`} >{results.candidates[i].name}</th>
               {row.map((col, j) => (
-                <td className = 'matrix' key={`c${i},${j}`}>
+                col?.result==='Win' ?
+                <td className = 'highlight' key={`c${i},${j}`}>
+                  <CellViewer cell={col} />
+                </td>
+                :
+                <td key={`c${i},${j}`}>
                   <CellViewer cell={col} />
                 </td>
               ))}

@@ -110,6 +110,11 @@ body {
   table-layout: fixed;  
 }
 */
+
+td.highlight {
+  background: #dadada;
+}
+
 .login-form {
   margin-bottom: 40px;
   padding-right: 30px;
