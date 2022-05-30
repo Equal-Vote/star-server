@@ -160,9 +160,21 @@ const ElectionHome = ({ authSession }) => {
                 <Typography align='center' gutterBottom variant="h6" component="h6">
                   Ballot Submitted
                 </Typography>}
+
               <Link to={`/Election/${data.election.election_id}/results`}>
                 <Typography align='center' gutterBottom variant="h6" component="h6">
                   View Results
+                </Typography>
+              </Link>
+
+              {
+                // Not sure about /DuplicateElection/{id} or /Election/{id}/duplicate
+                // /Election/{id}/duplicate feels more consistent, but we're not actually applying an operation to that election
+                // /DuplicateElection/{id} mirrors /CreateElection, that feels more accurate?
+              }
+              <Link to={`/DuplicateElection/${data.election.election_id}`}>
+                <Typography align='center' gutterBottom variant="h6" component="h6">
+                  Duplicate
                 </Typography>
               </Link>
 
