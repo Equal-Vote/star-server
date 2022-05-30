@@ -206,7 +206,7 @@ function splitCandidates(candidateOrder, candidates, matrix) {
   }
 
   if (candidateOrder.length === 1) {
-    return { winners: candidateOrder, losers: [], others: [] };
+    return { winners: candidateOrder, losers: [], others: [],winnersVotes:[], losersVotes:[] };
   }
 
   // Helper function to retrive total score for a candidate
@@ -615,7 +615,7 @@ function findSplitPoint(cand_df_sorted, quota) {
 }
 /******************************** Flatten Methods ******************************/
 
-function flatten(cvr, sections) {
+function flatten(cvr, sections,rounds) {
   // Create a new matrix based on the ordering of the candidates
   // in the sections
 
@@ -639,7 +639,26 @@ function flatten(cvr, sections) {
     );
     newSections.push({ title: section.title, candidates: candidates, votes: section.votes });
   });
-
+  var newRounds = [];
+  rounds.forEach((round) => {
+    var finalists = [];
+    round.finalists.forEach((candidate) =>
+    finalists.push(
+        newCandidates.findIndex(
+          (newCandidate) => candidate === newCandidate.index
+        )
+      )
+    );
+    var winners = [];
+    round.winners.forEach((candidate) =>
+    winners.push(
+        newCandidates.findIndex(
+          (newCandidate) => candidate === newCandidate.index
+        )
+      )
+    );
+    newRounds.push({ finalists: finalists, winners: winners, votes: round.votes });
+  });
   // Next, build a new matrix based on that ordering
   var newMatrix = [];
   order.forEach((i) => {
@@ -660,13 +679,21 @@ function flatten(cvr, sections) {
   return {
     candidates: newCandidates,
     sections: newSections,
-    matrix: newMatrix
+    matrix: newMatrix,
+    rounds: newRounds,
   };
 }
 
 function flattenSingle(cvr) {
   
   const data = cvr.singleResults;
+  const rounds = [
+    {
+      finalists: [...data.winners, ...data.losers],
+      votes: [...data.winnersVotes,...data.losersVotes],
+      winners: data.winners
+    }
+  ]
   const sections = [
     {
       title: data.winners.length > 1 ? "Winner (TIE)" : "Winner",
@@ -683,7 +710,7 @@ function flattenSingle(cvr) {
       candidates: data.others
     }
   ];
-  return flatten(cvr, sections);
+  return flatten(cvr, sections,rounds);
 }
 
 function flattenMulti(cvr) {
@@ -692,10 +719,20 @@ function flattenMulti(cvr) {
     return {
       title: `${position(n + 1)} Place${section.winners.length > 1 ? " (TIE)" : ""}`,
       candidates: section.winners,
-      votes: section.winnersVotes
+      votes: section.winnersVotes,
+      finalists: [...section.winners, ...section.losers]
     };
   });
-  return flatten(cvr, sections);
+  const rounds = data.map((section, n) => {
+    console.log(section)
+    return {
+      finalists: [...section.winners, ...section.losers],
+      votes: [...section.winnersVotes,...section.losersVotes],
+      winners: section.winners
+    }
+  });
+
+  return flatten(cvr, sections,rounds);
 }
 
 function position(number) {
