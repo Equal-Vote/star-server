@@ -45,6 +45,9 @@ app.use(express.json());
 app.use('/API',electionRouter)
 // app.use('/debug',debugRouter)
 
+const prodEndpoints : any = [
+  'https://star-vote.herokuapp.com/',
+];
 
 // TODO: This should probably be placed under a route as well. I considered putting it under elections.routes.js, but it doesn't seem like a good fit
 app.post('/API/Token', (req, res) => {
@@ -54,18 +57,17 @@ app.post('/API/Token', (req, res) => {
     //       this probably means I'm making my /API/Token call in a bad place?
     // TODO: load this from a shared config file
     //       Github Issue:  https://github.com/Equal-Vote/star-server/issues/14
-    const keycloakBaseUrl = 'https://keycloak.6j0.org/auth/realms/STAR%20Voting/protocol/openid-connect'
+
+    const keycloakBaseUrl = process.env.KEYCLOAK_URL;
     const keycloakAuthConfig = {
         clientId: 'star_vote_web',
         responseType: 'code',
-        // redirectUri: window.location.origin,
-        // logoutUri: window.location.origin,
         endpoints: {
-            login: `${keycloakBaseUrl}/auth`,
-            logout: `${keycloakBaseUrl}/logout`,
-            token: `${keycloakBaseUrl}/token`,
-            authorize: `${keycloakBaseUrl}/auth`,
-            userinfo: `${keycloakBaseUrl}/userinfo`
+            login: `${process.env.KEYCLOAK_URL}/auth`,
+            logout: `${process.env.KEYCLOAK_URL}/logout`,
+            token: `${process.env.KEYCLOAK_URL}/token`,
+            authorize: `${process.env.KEYCLOAK_URL}/auth`,
+            userinfo: `${process.env.KEYCLOAK_URL}/userinfo`
         },
     }
     const authConfig = keycloakAuthConfig;
