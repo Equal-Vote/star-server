@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 
 
-const useFetch = (url) => {
-const [isPending,setIsPending] = useState(true)
-const [error,setError] = useState(null)
-const [data,setData] = useState(null)
+const useFetch = (url,options) => {
+    const [isPending,setIsPending] = useState(true)
+    const [error,setError] = useState(null)
+    const [data,setData] = useState(null)
 
 
     useEffect(() => {
         setTimeout(() => {
-            fetch(url)
+            fetch(url,options)
             .then(res => {
                 if(!res.ok) {
                     throw Error('Could not fetch data')

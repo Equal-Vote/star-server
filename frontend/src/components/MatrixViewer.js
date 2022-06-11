@@ -4,9 +4,8 @@ function CellViewer({ cell }) {
   if (!cell) return "";
 
   return (
-    <h3 class = 'cell'>
-      {cell.result}:<br />
-      {cell.supportVotes} vs {cell.opposeVotes}
+    <h3 className = 'cell'>
+      {cell.supportVotes}
     </h3>
   );
 }
@@ -16,21 +15,26 @@ export default function MatrixViewer({ results }) {
   return (
     <div>
       <h2>Head-to-Head Voter Preferences</h2>
-      <table class = 'matrix'>
-        <thead class = 'matrix'>
-          <tr class = 'matrix'>
-            <th class = 'matrix'></th>
+      <table className = 'matrix'>
+        <thead className = 'matrix'>
+          <tr className = 'matrix'>
+            <th className = 'matrix'></th>
             {results.candidates.map((c, n) => (
-              <th class = 'matrix' key={`h${n}`} >{c.name} </th>
+              <th className = 'matrix' key={`h${n}`} >{c.name} </th>
             ))}
           </tr>
         </thead>
-        <tbody class = 'matrix'>
+        <tbody className = 'matrix'>
           {results.matrix.map((row, i) => (
-            <tr class = 'matrix' key={`d${i}`}>
-              <th class = 'matrix' key={`dh${i}`} >{results.candidates[i].name}</th>
+            <tr className = 'matrix' key={`d${i}`}>
+              <th className = 'matrix' key={`dh${i}`} >{results.candidates[i].name}</th>
               {row.map((col, j) => (
-                <td class = 'matrix' key={`c${i},${j}`}>
+                col?.result==='Win' ?
+                <td className = 'highlight' key={`c${i},${j}`}>
+                  <CellViewer cell={col} />
+                </td>
+                :
+                <td key={`c${i},${j}`}>
                   <CellViewer cell={col} />
                 </td>
               ))}

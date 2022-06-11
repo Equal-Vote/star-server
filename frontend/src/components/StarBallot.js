@@ -6,11 +6,13 @@ export default function StarBallot({
   candidates,
   onUpdate,
   defaultRankings,
-  readonly
+  readonly,
+  onSubmitBallot
 }) {
   const [rankings, setRankings] = useState(
     defaultRankings ? defaultRankings : Array(candidates.length).fill(0)
   );
+
 
   return (
     <StarBallotView
@@ -19,7 +21,7 @@ export default function StarBallot({
       candidates={candidates}
       rankings={rankings}
       onClick={(i, j) => {
-        console.log(`${candidates[i].CandidateName} = ${j - 1}`);
+        console.log(`${candidates[i].candidate_name} = ${j - 1}`);
         const newRankings = [...rankings];
         newRankings[i] = newRankings[i] === j ? 0 : j;
         setRankings(newRankings);
@@ -28,6 +30,7 @@ export default function StarBallot({
         onUpdate(newRankings.map((x) => (x > 0 ? x - 1 : 0)));
       }}
       readonly={readonly}
+      onSubmitBallot = {onSubmitBallot}
     />
   );
 }
