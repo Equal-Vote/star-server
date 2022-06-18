@@ -20,7 +20,7 @@ const Elections = ({authSession}) => {
     console.log(`fetch ${url}`)
     const { data, isPending, error } = useFetch(url)
     let elections = data as Election[];
-    console.log(elections)
+    console.log(JSON.stringify(elections));
     return (
         <ThemeProvider theme={theme}>
             <main>
