@@ -25,6 +25,7 @@ const App = () => {
    * openid.net: https://openid.net/specs/openid-connect-core-1_0.html
    */
 
+  console.log("trying to start app...");
   // http://keycloak.6j0.org/auth/realms/STAR%20Voting/.well-known/openid-configuration
   let keycloakBaseUrl;
   if(prodEndpoints.includes(window.location.origin)){
