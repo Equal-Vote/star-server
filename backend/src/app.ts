@@ -6,10 +6,13 @@ import axios from 'axios';
 import qs from 'qs';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import Logger from './Services/Logging/Logger';
+import {IRequest, iRequestMiddleware, reqIdSuffix} from './IRequest';
 
 export default function makeApp() {
 
 const app = express();
+const appInitContext = Logger.createContext("appInit");
 
 // CORS (Cross-origin resource sharing), allows for the backend to receive calls from the front end, even though they have different urls/origins
 //      (at least that's my understanding)
@@ -28,8 +31,9 @@ app.use(cors({
 // Set to trust proxy so we can resolve client IP address
 app.enable('trust proxy')
 
-app.use((req, res, next) => {
-    console.log(`--> NEW REQUEST: ${req.method} ${req.url} @ ${new Date(Date.now()).toISOString()}`);
+app.use(iRequestMiddleware);
+app.use((req:IRequest, res, next) => {
+    Logger.info(req, `--> NEW REQUEST: ${req.method} ${req.url} @ ${new Date(Date.now()).toISOString()}`)
     next();
 })
 
@@ -50,7 +54,7 @@ const prodEndpoints : any = [
 ];
 
 // TODO: This should probably be placed under a route as well. I considered putting it under elections.routes.js, but it doesn't seem like a good fit
-app.post('/API/Token', (req, res) => {
+app.post('/API/Token', (req:IRequest, res) => {
     // TODO: I was seeing issues where this API get's called twice
     //       this is a problem because code's can only be used once, and the other call with get 'invalid_grant'
     //       removing strict mode fixed it: https://stackoverflow.com/questions/50819162/why-is-my-function-being-called-twice-in-react
@@ -78,7 +82,7 @@ app.post('/API/Token', (req, res) => {
         client_id: authConfig.clientId,
         redirect_uri: req.query.redirect_uri,
     };
-    console.log(params);
+    Logger.debug(req, params);
 
     // either refresh_token, or authorization_code
     if(req.query.hasOwnProperty('code')){
@@ -90,7 +94,7 @@ app.post('/API/Token', (req, res) => {
         params.refresh_token = req.cookies.refresh_token;
     }
 
-    console.log(`GET TOKEN ${params.grant_type}`);
+    Logger.debug(req, `GET TOKEN ${params.grant_type}`);
 
     axios.post(
         authConfig.endpoints.token,
@@ -103,11 +107,11 @@ app.post('/API/Token', (req, res) => {
         }
     )
     .then(res => res.data)
-    .then(data => {console.log("success!"); res.json(data)})
+    .then(data => {Logger.debug(appInitContext, "success!"); res.json(data)})
     .catch((err) => {
-        console.error('Error while requesting a token', err.response.data);
+        Logger.error(req, 'Error while requesting a token', err.response.data);
         res.status(500).json({
-            error: err.message,
+            error: err.message + reqIdSuffix(req)
         });
     });
 });
@@ -118,5 +122,6 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, frontendPath + "index.html"));
 })
 
+Logger.debug(appInitContext, "app Init complete");
 return app;
 }
