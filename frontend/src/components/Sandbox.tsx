@@ -20,8 +20,8 @@ import { ElectionSettings } from "../../../domain_model/ElectionSettings"
 import { Box, Checkbox, InputLabel } from "@material-ui/core"
 
 const Sandbox = () => {
-    const [candidates, setCandidates] = useState('')
-    const [cvr, setCvr] = useState('')
+    const [candidates, setCandidates] = useState('A,B,C,D,E')
+    const [cvr, setCvr] = useState('10:0,1,3,4,5\n10:5,4,3,1,0\n0,2,5,4,1')
     const [nWinners, setNWinners] = useState(1)
     const [votingMethod, setVotingMethod] = useState('STAR')
     const [isPending, setIsPending] = useState(true)
@@ -37,7 +37,18 @@ const Sandbox = () => {
 
     const getResults = async () => {
         const cvrRows = cvr.split("\n")
-        const cvrSplit = cvrRows.map((row) => (row.split(/[\s,]+/).map((score) => parseInt(score))))
+        const cvrSplit = [];
+        cvrRows.forEach((row) => {
+            const data = row.split(':')
+            if (data.length == 2) {
+                const nBallots = parseInt(data[0]);
+                const vote = data[1].split(/[\s,]+/).map((score) => parseInt(score))
+                cvrSplit.push(...Array(nBallots).fill(vote))
+            } else {
+                const vote = data[0].split(/[\s,]+/).map((score) => parseInt(score))
+                cvrSplit.push(vote)
+            }
+        })
         console.log(cvrSplit)
         const res = await fetch('/API/Sandbox', {
             method: 'POST',
@@ -94,35 +105,44 @@ const Sandbox = () => {
                 </Box>
             </Grid>
             <Grid item xs={12}>
-                        <TextField
-                            id="num-winners"
-                            name="Number Of Winners"
-                            label="Number of Winners"
-                            type="number"
-                            value={nWinners}
-                            onChange={(e) => setNWinners(parseInt(e.target.value))}
-                        />
-                    </Grid>
+
+                <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                    Number of Winners
+                </InputLabel>
+                <TextField
+                    id="num-winners"
+                    name="Number Of Winners"
+                    type="number"
+                    value={nWinners}
+                    onChange={(e) => setNWinners(parseInt(e.target.value))}
+                />
+            </Grid>
             <Grid item xs={12}>
+                <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                    Candidates
+                </InputLabel>
                 <TextField
                     id="candidates"
                     name="candidates"
-                    label="Candidates"
                     multiline
                     type="text"
                     value={candidates}
+                    helperText = "Comma seperated list of candidates"
                     onChange={(e) => setCandidates(e.target.value)}
                 />
             </Grid>
             <Grid item xs={12}>
+                <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                    Votes
+                </InputLabel>
                 <TextField
                     id="cvr"
                     name="cvr"
-                    label="votes"
                     multiline
                     rows="5"
                     type="text"
                     value={cvr}
+                    helperText = "Comma seperated scores, one ballot per line, optional 'x:' in front of ballot to indicate x number of that ballot"
                     onChange={(e) => setCvr(e.target.value)}
                 />
             </Grid>
@@ -140,7 +160,7 @@ const Sandbox = () => {
                                 title: '',
                                 races: [
                                     {
-                                        candidates: candidates.split(',').map((candidate) => [{candidate_name: candidate}]),
+                                        candidates: candidates.split(',').map((candidate) => [{ candidate_name: candidate }]),
                                         voting_method: votingMethod,
                                         num_winners: nWinners,
                                     }

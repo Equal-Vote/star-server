@@ -89,19 +89,23 @@ const getElectionResults = async (req: any, res: any, next: any) => {
 }
 const getSandboxResults = async (req: any, res: any, next: any) => {
     console.log(`-> elections.getSandboxResults`)
+    try {
+        const candidateNames = req.body.candidates
+        const cvr = req.body.cvr
+        const num_winners = req.body.num_winners
+        console.log(candidateNames)
+        const results = StarResults(candidateNames, cvr, num_winners)
 
-    const candidateNames = req.body.candidates
-    const cvr = req.body.cvr
-    const num_winners = req.body.num_winners
-    console.log(candidateNames)
-    const results = StarResults(candidateNames, cvr, num_winners)
-
-    res.json(
-        {
-            Results: results
-        }
-    )
-
+        res.json(
+            {
+                Results: results
+            }
+        )
+    } catch (err) {
+        return res.status('400').json({
+            error: "Error calculating results"
+        })
+    }
 }
 
 const getElections = async (req: any, res: any, next: any) => {
