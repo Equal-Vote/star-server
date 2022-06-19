@@ -10,10 +10,36 @@ router.get('/Election/:id',
     authController.getUser,
     voterRollController.getVoterAuth,
     electionController.returnElection)
+router.delete('/Election/:id',
+    authController.getUser,
+    authController.canDeleteElection,
+    electionController.deleteElection)
 router.post('/Election/:id/ballot',
     authController.getUser,
     voterRollController.getVoterAuth,
     electionController.returnElection)
+router.get('/Election/:id/ballots',
+    authController.getUser,
+    authController.canViewBallots,
+    ballotController.getBallotsByElectionID,
+    ballotController.returnBallots)
+router.get('/Election/:id/rolls',
+    authController.getUser,
+    authController.canViewElectionRoll,
+    voterRollController.getRollsByElectionID,
+    voterRollController.returnRolls)
+router.get('/Election/:id/rolls/:voter_id',
+    authController.getUser,
+    authController.canViewElectionRoll,
+    voterRollController.getByVoterID)
+router.put('/Election/:id/rolls/',
+    authController.getUser,
+    authController.canEditElectionRoll,
+    voterRollController.editElectionRoll)
+router.post('/Election/:id/rolls/',
+    authController.getUser,
+    authController.canAddToElectionRoll,
+    voterRollController.addElectionRoll)
 router.get('/Elections',
     authController.getUser,
     electionController.getElections)
@@ -25,9 +51,8 @@ router.post('/Elections/',
 router.post('/Election/:id/edit',
     authController.getUser,
     authController.isLoggedIn,
-    authController.assertOwnership,
-    electionController.editElection,
-    voterRollController.editElectionRoll)
+    authController.canEditElection,
+    electionController.editElection)
 router.get('/ElectionResult/:id',
     ballotController.getBallotsByElectionID,
     electionController.getElectionResults)
@@ -36,13 +61,13 @@ router.post('/Election/:id/vote',
     voterRollController.getVoterAuth,
     ballotController.submitBallot,
     voterRollController.updateElectionRoll)
-    router.post('/Election/:id/finalize',
-        authController.getUser,
-        authController.isLoggedIn,
-        authController.assertOwnership,
-        electionController.finalize,
-        voterRollController.getRollsByElectionID,
-        voterRollController.sendInvitations)
+router.post('/Election/:id/finalize',
+    authController.getUser,
+    authController.isLoggedIn,
+    authController.assertOwnership,
+    electionController.finalize,
+    voterRollController.getRollsByElectionID,
+    voterRollController.sendInvitations)
 
 router.post('/Sandbox',
     electionController.getSandboxResults)
