@@ -9,4 +9,13 @@ export interface Ballot {
     date_submitted: Date; //date and time ballot was submitted
     ip_address?: string; // ip address if once_per_ip is enabled
     votes: Vote[];         // One per poll
+    history?: BallotAction[];
 }
+
+
+export interface BallotAction {
+    actionType:string;
+    actor:Uid;
+    timestamp:number;
+}
+

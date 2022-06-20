@@ -1,3 +1,5 @@
+import { randomUUID } from "crypto";
+
 const BallotsDB = require('../Models/Ballots')
 
 var BallotModel = new BallotsDB();
@@ -56,6 +58,9 @@ const submitBallot = async (req: any, res: any, next: any) => {
             error: "Voter already submitted ballot"
         })
     }
+
+    //ballot Ids should be server-authorative
+    var ballot = req.body.ballot;
 
     try {
         const Ballot = await BallotModel.submitBallot(req.body.ballot)

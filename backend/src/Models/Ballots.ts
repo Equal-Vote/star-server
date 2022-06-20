@@ -34,20 +34,27 @@ class BallotsDB {
             status          VARCHAR,
             date_submitted  VARCHAR,
             ip_address      VARCHAR, 
-            votes           json NOT NULL
+            votes           json NOT NULL,
+            history         json
           );
         `;
         console.log(query);
         var p = this._postgresClient.query(query);
         return p.then((_: any) => {
+            return 'foo';
+            // var historyQuery = `
+            // ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS history json
+            // `;
+            // return this._postgresClient.query(historyQuery);
+        }).then((_:any)=> {
             return this;
         });
     }
 
     submitBallot(ballot: Ballot): Promise<string> {
         console.log(`-> BallotsDB.submit`);
-        var sqlString = `INSERT INTO ${this._tableName} (election_id,user_id,status,date_submitted,ip_address,votes)
-        VALUES($1, $2, $3, $4, $5, $6);`;
+        var sqlString = `INSERT INTO ${this._tableName} (election_id,user_id,status,date_submitted,ip_address,votes,history)
+        VALUES($1, $2, $3, $4, $5, $6, $7);`;
         console.log(sqlString)
         var p = this._postgresClient.query({
             rowMode: 'array',
@@ -57,7 +64,8 @@ class BallotsDB {
             ballot.status,
             ballot.date_submitted,
             ballot.ip_address,
-            JSON.stringify(ballot.votes)]
+            JSON.stringify(ballot.votes),
+            JSON.stringify(ballot.history)]
         });
 
         return p.then((res: any) => {
