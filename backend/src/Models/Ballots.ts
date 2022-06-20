@@ -51,10 +51,10 @@ class BallotsDB {
         });
     }
 
-    submitBallot(ballot: Ballot): Promise<string> {
+    submitBallot(ballot: Ballot): Promise<Ballot> {
         console.log(`-> BallotsDB.submit`);
         var sqlString = `INSERT INTO ${this._tableName} (election_id,user_id,status,date_submitted,ip_address,votes,history)
-        VALUES($1, $2, $3, $4, $5, $6, $7);`;
+        VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING ballot_id;`;
         console.log(sqlString)
         var p = this._postgresClient.query({
             rowMode: 'array',
@@ -70,6 +70,7 @@ class BallotsDB {
 
         return p.then((res: any) => {
             console.log("set response rows: " + JSON.stringify(res));
+            ballot.ballot_id = res.rows[0][0];
             return ballot;
         });
     }
