@@ -1,6 +1,8 @@
+import ServiceLocator from "../ServiceLocator";
+
 const BallotsDB = require('../Models/Ballots')
 
-var BallotModel = new BallotsDB();
+var BallotModel = new BallotsDB(ServiceLocator.postgres());
 
 const ballotByID = async (req: any, res: any, next: any) => {
     try {

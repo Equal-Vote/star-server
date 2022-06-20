@@ -1,10 +1,11 @@
 import { Election } from '../../../domain_model/Election';
 import { Ballot } from '../../../domain_model/Ballot';
 import { Score } from '../../../domain_model/Score';
+import ServiceLocator from '../ServiceLocator';
 const ElectionsDB = require('../Models/Elections')
 const StarResults = require('../Tabulators/StarResults.js');
 
-var ElectionsModel = new ElectionsDB();
+var ElectionsModel = new ElectionsDB(ServiceLocator.postgres());
 
 const getElectionByID = async (req: any, res: any, next: any) => {
     console.log(`-> elections.getElectionByID ${req.params.id}`)
