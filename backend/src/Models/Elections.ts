@@ -38,8 +38,8 @@ class ElectionsDB {
             end_time      VARCHAR, 
             support_email VARCHAR,
             owner_id      VARCHAR,
-            audit_id      VARCHAR,
-            admin_id      VARCHAR,
+            audit_ids     json,
+            admin_ids     json,
             state         VARCHAR,
             races         json NOT NULL,
             settings      json
@@ -54,7 +54,7 @@ class ElectionsDB {
 
     createElection(election: Election): Promise<Election> {
         console.log(`-> ElectionDB.create`);
-        var sqlString = `INSERT INTO ${this._tableName} (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_id,admin_id,state,races,settings)
+        var sqlString = `INSERT INTO ${this._tableName} (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,state,races,settings)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *;`;
 
         var p = this._postgresClient.query({
@@ -66,8 +66,8 @@ class ElectionsDB {
             election.end_time,
             election.support_email,
             election.owner_id,
-            election.audit_id,
-            election.admin_id,
+            JSON.stringify(election.audit_ids),
+            JSON.stringify(election.admin_ids),
             election.state,
             JSON.stringify(election.races),
             JSON.stringify(election.settings)]
@@ -81,7 +81,7 @@ class ElectionsDB {
 
     updateElection(election: Election): Promise<Election> {
         console.log(`-> ElectionDB.update ${election.election_id}`);
-        var sqlString = `UPDATE ${this._tableName} SET (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_id,admin_id,state,races,settings) =
+        var sqlString = `UPDATE ${this._tableName} SET (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,state,races,settings) =
         ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) WHERE election_id = $1 RETURNING *;`;
 
         var p = this._postgresClient.query({
@@ -95,8 +95,8 @@ class ElectionsDB {
                 election.end_time,
                 election.support_email,
                 election.owner_id,
-                election.audit_id,
-                election.admin_id,
+                JSON.stringify(election.audit_ids),
+                JSON.stringify(election.admin_ids),
                 election.state,
                 JSON.stringify(election.races),
                 JSON.stringify(election.settings)

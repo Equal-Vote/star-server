@@ -37,6 +37,11 @@ const getBallotsByElectionID = async (req: any, res: any, next: any) => {
     }
 }
 
+const returnBallots = async (req: any, res: any, next: any) => {
+    console.log(`-> elections.returnBallots ${req.params.id}`)
+    res.json({ election: req.election, ballots: req.ballots })
+}
+
 const submitBallot = async (req: any, res: any, next: any) => {
     if (req.election.state!=='open'){
         console.log("-> Election not open")
@@ -64,6 +69,7 @@ const submitBallot = async (req: any, res: any, next: any) => {
                 error: "Ballots not found"
             })
         req.electionRollEntry.submitted = true
+        req.electionRollEntry.ballot_id = Ballot.ballot_id
         return next()
 
     } catch (err) {
@@ -75,6 +81,7 @@ const submitBallot = async (req: any, res: any, next: any) => {
 
 module.exports = {
     getBallotsByElectionID,
+    returnBallots,
     submitBallot,
     ballotByID
 }

@@ -11,8 +11,8 @@ export interface Election {
     end_time?:      Date;   // when the election ends
     support_email?: string; // email available to voters to request support
     owner_id:       Uid;  // user_id of owner of election
-    audit_id?:      Uid;  // user_id of account with audit access
-    admin_id?:      Uid;  // user_id of account with admin access
+    audit_ids?:      Uid[];  // user_id of account with audit access
+    admin_ids?:      Uid[];  // user_id of account with admin access
     state:          string; // State of election, In development, finalized, etc
     races:          Race[]; // one or more race definitions
     settings:      ElectionSettings;
