@@ -7,21 +7,9 @@ class ElectionsDB {
     _postgresClient;
     _tableName: string;
 
-    constructor() {
+    constructor(postgresClient:any) {
+        this._postgresClient = postgresClient;
         this._tableName = "electionDB";
-        if (process.env.DEV_DATABASE === 'TRUE') {
-            this._postgresClient = new Pool({
-                connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-                ssl: {
-                    rejectUnauthorized: false
-                }
-            });
-        } else {
-            this._postgresClient = new Pool({
-                connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-                ssl: false
-            });
-        }
         this.init()
     }
 

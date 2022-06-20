@@ -1,6 +1,8 @@
+import ServiceLocator from "../ServiceLocator";
+
 const ElectionRollDB = require('../Models/ElectionRolls')
 const EmailService = require('../Services/EmailService')
-var ElectionRollModel = new ElectionRollDB();
+var ElectionRollModel = new ElectionRollDB(ServiceLocator.postgres());
 
 const getRollsByElectionID = async (req: any, res: any, next: any) => {
     console.log(`-> electionRolls.getRollsByElectionID ${req.election.election_id}`)

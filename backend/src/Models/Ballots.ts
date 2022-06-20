@@ -1,4 +1,5 @@
 import { Ballot } from '../../../domain_model/Ballot';
+import Logger from '../Services/Logging/Logger';
 const { Pool } = require('pg');
 
 class BallotsDB {
@@ -6,26 +7,15 @@ class BallotsDB {
     _postgresClient;
     _tableName: string;
 
-    constructor() {
+    constructor(postgresClient:any) {
         this._tableName = "ballotDB";
-        if (process.env.DEV_DATABASE === 'TRUE') {
-            this._postgresClient = new Pool({
-                connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-                ssl: {
-                    rejectUnauthorized: false
-                }
-            });
-        } else {
-            this._postgresClient = new Pool({
-                connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres',
-                ssl: false
-            });
-        }
+        this._postgresClient = postgresClient;
         this.init();
     }
 
     init(): Promise<BallotsDB> {
-        console.log("-> BallotsDB.init");
+        var appInitContext = Logger.createContext("appInit");
+        Logger.debug(appInitContext, "-> BallotsDB.init");
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
             ballot_id       SERIAL PRIMARY KEY,
@@ -37,7 +27,7 @@ class BallotsDB {
             votes           json NOT NULL
           );
         `;
-        console.log(query);
+        Logger.debug(appInitContext, query);
         var p = this._postgresClient.query(query);
         return p.then((_: any) => {
             return this;
