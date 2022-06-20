@@ -1,4 +1,5 @@
 import { ElectionRoll } from '../../../domain_model/ElectionRoll';
+import Logger from '../Services/Logging/Logger';
 const { Pool } = require('pg');
 var format = require('pg-format');
 class ElectionRollDB {
@@ -13,7 +14,8 @@ class ElectionRollDB {
     }
 
     init(): Promise<ElectionRollDB> {
-        console.log("-> ElectionRollDB.init");
+        var appInitContext = Logger.createContext("appInit");
+        Logger.debug(appInitContext, "-> ElectionRollDB.init");
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
             election_id     INTEGER NOT NULL,
@@ -23,7 +25,7 @@ class ElectionRollDB {
             PRIMARY KEY(election_id,voter_id)
           );
         `;
-        console.log(query);
+        Logger.debug(appInitContext, query);
         var p = this._postgresClient.query(query);
         return p.then((_: any) => {
             return this;

@@ -1,4 +1,5 @@
 import { Ballot } from '../../../domain_model/Ballot';
+import Logger from '../Services/Logging/Logger';
 const { Pool } = require('pg');
 
 class BallotsDB {
@@ -13,7 +14,8 @@ class BallotsDB {
     }
 
     init(): Promise<BallotsDB> {
-        console.log("-> BallotsDB.init");
+        var appInitContext = Logger.createContext("appInit");
+        Logger.debug(appInitContext, "-> BallotsDB.init");
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
             ballot_id       SERIAL PRIMARY KEY,
@@ -25,7 +27,7 @@ class BallotsDB {
             votes           json NOT NULL
           );
         `;
-        console.log(query);
+        Logger.debug(appInitContext, query);
         var p = this._postgresClient.query(query);
         return p.then((_: any) => {
             return this;
