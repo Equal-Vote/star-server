@@ -1,4 +1,5 @@
 import { Ballot } from '../../../domain_model/Ballot';
+import Logger from '../Services/Logging/Logger';
 const { Pool } = require('pg');
 
 class BallotsDB {
@@ -41,11 +42,14 @@ class BallotsDB {
         console.log(query);
         var p = this._postgresClient.query(query);
         return p.then((_: any) => {
-            return 'foo';
-            // var historyQuery = `
-            // ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS history json
-            // `;
-            // return this._postgresClient.query(historyQuery);
+            //This will add the new field to the live DB in prod.  Once that's done we can remove this
+            var historyQuery = `
+            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS history json
+            `;
+            return this._postgresClient.query(historyQuery).catch((err:any) => {
+                console.log("err adding history column to DB: " + err.message);
+                return err;
+            });
         }).then((_:any)=> {
             return this;
         });
