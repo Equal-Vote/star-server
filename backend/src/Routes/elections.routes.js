@@ -5,6 +5,7 @@ const electionController = require('../Controllers/elections.controllers')
 const ballotController = require('../Controllers/ballots.controllers')
 const voterRollController = require('../Controllers/voterRolls.controller')
 const authController = require('../Controllers/auth.controllers')
+const permissions  = require('../auth/permissions')
 
 router.get('/Election/:id',
     authController.getUser,
@@ -12,7 +13,7 @@ router.get('/Election/:id',
     electionController.returnElection)
 router.delete('/Election/:id',
     authController.getUser,
-    authController.canDeleteElection,
+    authController.hasPermission(permissions.canDeleteElection),
     electionController.deleteElection)
 router.post('/Election/:id/ballot',
     authController.getUser,
@@ -20,25 +21,25 @@ router.post('/Election/:id/ballot',
     electionController.returnElection)
 router.get('/Election/:id/ballots',
     authController.getUser,
-    authController.canViewBallots,
+    authController.hasPermission(permissions.canViewBallots),
     ballotController.getBallotsByElectionID,
     ballotController.returnBallots)
 router.get('/Election/:id/rolls',
     authController.getUser,
-    authController.canViewElectionRoll,
+    authController.hasPermission(permissions.canViewElectionRoll),
     voterRollController.getRollsByElectionID,
     voterRollController.returnRolls)
 router.get('/Election/:id/rolls/:voter_id',
     authController.getUser,
-    authController.canViewElectionRoll,
+    authController.hasPermission(permissions.canViewElectionRoll),
     voterRollController.getByVoterID)
 router.put('/Election/:id/rolls/',
     authController.getUser,
-    authController.canEditElectionRoll,
+    authController.hasPermission(permissions.canEditElectionRoll),
     voterRollController.editElectionRoll)
 router.post('/Election/:id/rolls/',
     authController.getUser,
-    authController.canAddToElectionRoll,
+    authController.hasPermission(permissions.canAddToElectionRoll),
     voterRollController.addElectionRoll)
 router.get('/Elections',
     authController.getUser,
@@ -51,7 +52,7 @@ router.post('/Elections/',
 router.post('/Election/:id/edit',
     authController.getUser,
     authController.isLoggedIn,
-    authController.canEditElection,
+    authController.hasPermission(permissions.canEditElection),
     electionController.editElection)
 router.get('/ElectionResult/:id',
     ballotController.getBallotsByElectionID,

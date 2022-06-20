@@ -69,6 +69,7 @@ const submitBallot = async (req: any, res: any, next: any) => {
                 error: "Ballots not found"
             })
         req.electionRollEntry.submitted = true
+        req.electionRollEntry.ballot_id = Ballot.ballot_id
         return next()
 
     } catch (err) {
