@@ -36,9 +36,8 @@ const VotePage = ({ }) => {
       ballot_id: 0, //Defaults to zero but is assigned ballot id by server when submitted
       election_id: data.election.election_id,
       votes:votes,
-      date_submitted: new Date(),
+      date_submitted: Date.now(),
       status: 'submitted',
-
     }
     console.log(ballot)
     fetch(`/API/Election/${id}/vote`, {

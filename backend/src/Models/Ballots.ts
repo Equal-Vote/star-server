@@ -24,20 +24,30 @@ class BallotsDB {
             status          VARCHAR,
             date_submitted  VARCHAR,
             ip_address      VARCHAR, 
-            votes           json NOT NULL
+            votes           json NOT NULL,
+            history         json
           );
         `;
         Logger.debug(appInitContext, query);
         var p = this._postgresClient.query(query);
         return p.then((_: any) => {
+            //This will add the new field to the live DB in prod.  Once that's done we can remove this
+            var historyQuery = `
+            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS history json
+            `;
+            return this._postgresClient.query(historyQuery).catch((err:any) => {
+                console.log("err adding history column to DB: " + err.message);
+                return err;
+            });
+        }).then((_:any)=> {
             return this;
         });
     }
 
-    submitBallot(ballot: Ballot): Promise<string> {
+    submitBallot(ballot: Ballot): Promise<Ballot> {
         console.log(`-> BallotsDB.submit`);
-        var sqlString = `INSERT INTO ${this._tableName} (election_id,user_id,status,date_submitted,ip_address,votes)
-        VALUES($1, $2, $3, $4, $5, $6);`;
+        var sqlString = `INSERT INTO ${this._tableName} (election_id,user_id,status,date_submitted,ip_address,votes,history)
+        VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING ballot_id;`;
         console.log(sqlString)
         var p = this._postgresClient.query({
             rowMode: 'array',
@@ -47,11 +57,13 @@ class BallotsDB {
             ballot.status,
             ballot.date_submitted,
             ballot.ip_address,
-            JSON.stringify(ballot.votes)]
+            JSON.stringify(ballot.votes),
+            JSON.stringify(ballot.history)]
         });
 
         return p.then((res: any) => {
             console.log("set response rows: " + JSON.stringify(res));
+            ballot.ballot_id = res.rows[0][0];
             return ballot;
         });
     }

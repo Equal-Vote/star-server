@@ -73,7 +73,7 @@ const updateElectionRoll = async (req: any, res: any, next: any) => {
     console.log(`-> electionRolls.updateElectionRoll`)
     // Updates single entry of election roll
     if (req.election.settings.voter_id_type === 'None') {
-        res.status('200').json()
+        return next();
     }
     try {
         const electionRollEntry = await ElectionRollModel.update(req.electionRollEntry)
@@ -83,7 +83,7 @@ const updateElectionRoll = async (req: any, res: any, next: any) => {
             })
         req.electionRollEntry = electionRollEntry
         console.log('Voter Roll Updated')
-        res.status('200').json()
+        return next();
     } catch (err) {
         console.log(err)
         return res.status('400').json({

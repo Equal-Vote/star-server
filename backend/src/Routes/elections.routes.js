@@ -61,7 +61,22 @@ router.post('/Election/:id/vote',
     authController.getUser,
     voterRollController.getVoterAuth,
     ballotController.submitBallot,
-    voterRollController.updateElectionRoll)
+    voterRollController.updateElectionRoll,
+    (req, res, next) => {
+        res.json(
+            {
+                ballot: req.ballot
+            }
+        );
+    },
+    )
+router.post('/Election/:id/finalize',
+        authController.getUser,
+        authController.isLoggedIn,
+        authController.assertOwnership,
+        electionController.finalize,
+        voterRollController.getRollsByElectionID,
+        voterRollController.sendInvitations)
 router.post('/Election/:id/finalize',
     authController.getUser,
     authController.isLoggedIn,
