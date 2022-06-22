@@ -1,12 +1,10 @@
-import { randomInt, randomUUID } from "crypto";
 import { Ballot as BallotType } from '../../../domain_model/Ballot';
 import { reqIdSuffix } from "../IRequest";
 import Logger from "../Services/Logging/Logger";
+import ServiceLocator from "../ServiceLocator";
 
-const BallotsDB = require('../Models/Ballots')
-
-
-var BallotModel = new BallotsDB();
+const BallotsDB = require('../Models/Ballots');
+var BallotModel = new BallotsDB(ServiceLocator.postgres());
 
 const ballotByID = async (req: any, res: any, next: any) => {
     try {
@@ -41,6 +39,11 @@ const getBallotsByElectionID = async (req: any, res: any, next: any) => {
             error: "Could not retrieve ballots" + reqIdSuffix(req)
         });
     }
+}
+
+const returnBallots = async (req: any, res: any, next: any) => {
+    console.log(`-> elections.returnBallots ${req.params.id}`)
+    res.json({ election: req.election, ballots: req.ballots })
 }
 
 const submitBallot = async (req: any, res: any, next: any) => {
@@ -85,6 +88,7 @@ const submitBallot = async (req: any, res: any, next: any) => {
             });
         req.electionRollEntry.submitted = true
         req.ballot = savedBallot;
+        req.electionRollEntry.ballot_id = savedBallot.ballot_id;
         return next();
 
     } catch (err) {
@@ -96,6 +100,7 @@ const submitBallot = async (req: any, res: any, next: any) => {
 
 module.exports = {
     getBallotsByElectionID,
+    returnBallots,
     submitBallot,
     ballotByID
 }

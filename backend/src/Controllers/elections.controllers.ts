@@ -1,10 +1,11 @@
 import { Election } from '../../../domain_model/Election';
 import { Ballot } from '../../../domain_model/Ballot';
 import { Score } from '../../../domain_model/Score';
+import ServiceLocator from '../ServiceLocator';
 const ElectionsDB = require('../Models/Elections')
 const StarResults = require('../Tabulators/StarResults.js');
 
-var ElectionsModel = new ElectionsDB();
+var ElectionsModel = new ElectionsDB(ServiceLocator.postgres());
 
 const getElectionByID = async (req: any, res: any, next: any) => {
     console.log(`-> elections.getElectionByID ${req.params.id}`)
@@ -142,6 +143,22 @@ const createElection = async (req: any, res: any, next: any) => {
     }
 }
 
+const deleteElection = async (req: any, res: any, next: any) => {
+    console.log(`-> elections.deleteElection`)
+    try {
+        const success = await ElectionsModel.delete(req.election.election_id)
+        if (!success)
+            return res.status('400').json({
+                error: "Election not deleted"
+            })
+        return next()
+    } catch (err) {
+        return res.status('400').json({
+            error: (err as any).message
+        })
+    }
+}
+
 const editElection = async (req: any, res: any, next: any) => {
     if (req.body.Election == undefined) {
         return res.status('400').json({
@@ -202,6 +219,7 @@ module.exports = {
     getElectionResults,
     getElections,
     createElection,
+    deleteElection,
     getElectionByID,
     getSandboxResults,
     editElection,
