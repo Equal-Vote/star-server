@@ -28,6 +28,7 @@ class ElectionsDB {
             owner_id      VARCHAR,
             audit_ids     json,
             admin_ids     json,
+            credential_ids json,
             state         VARCHAR,
             races         json NOT NULL,
             settings      json
@@ -36,13 +37,22 @@ class ElectionsDB {
         Logger.debug(appInitContext, query);
         var p = this._postgresClient.query(query);
         return p.then((_: any) => {
+            //This will add the new field to the live DB in prod.  Once that's done we can remove this
+            var credentialQuery = `
+            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS credential_ids json
+            `;
+            return this._postgresClient.query(credentialQuery).catch((err:any) => {
+                console.log("err adding credential_ids column to DB: " + err.message);
+                return err;
+            });
+        }).then((_:any)=> {
             return this;
         });
     }
 
     createElection(election: Election): Promise<Election> {
         console.log(`-> ElectionDB.create`);
-        var sqlString = `INSERT INTO ${this._tableName} (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,state,races,settings)
+        var sqlString = `INSERT INTO ${this._tableName} (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *;`;
 
         var p = this._postgresClient.query({
@@ -56,6 +66,7 @@ class ElectionsDB {
             election.owner_id,
             JSON.stringify(election.audit_ids),
             JSON.stringify(election.admin_ids),
+            JSON.stringify(election.credential_ids),
             election.state,
             JSON.stringify(election.races),
             JSON.stringify(election.settings)]
@@ -69,7 +80,7 @@ class ElectionsDB {
 
     updateElection(election: Election): Promise<Election> {
         console.log(`-> ElectionDB.update ${election.election_id}`);
-        var sqlString = `UPDATE ${this._tableName} SET (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,state,races,settings) =
+        var sqlString = `UPDATE ${this._tableName} SET (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings) =
         ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) WHERE election_id = $1 RETURNING *;`;
 
         var p = this._postgresClient.query({
@@ -85,6 +96,7 @@ class ElectionsDB {
                 election.owner_id,
                 JSON.stringify(election.audit_ids),
                 JSON.stringify(election.admin_ids),
+                JSON.stringify(election.credential_ids),
                 election.state,
                 JSON.stringify(election.races),
                 JSON.stringify(election.settings)

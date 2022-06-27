@@ -5,7 +5,7 @@ const electionController = require('../Controllers/elections.controllers')
 const ballotController = require('../Controllers/ballots.controllers')
 const voterRollController = require('../Controllers/voterRolls.controller')
 const authController = require('../Controllers/auth.controllers')
-const permissions  = require('../auth/permissions')
+const {permissions} = require('../auth/permissions')
 
 router.get('/Election/:id',
     authController.getUser,
@@ -33,7 +33,10 @@ router.get('/Election/:id/rolls/:voter_id',
     authController.getUser,
     authController.hasPermission(permissions.canViewElectionRoll),
     voterRollController.getByVoterID)
-router.put('/Election/:id/rolls/',
+router.put('/Election/:id/rolls/state',
+    authController.getUser,
+    voterRollController.changeElectionRollState)
+router.post('/Election/:id/rolls/',
     authController.getUser,
     authController.hasPermission(permissions.canEditElectionRoll),
     voterRollController.editElectionRoll)
@@ -69,14 +72,7 @@ router.post('/Election/:id/vote',
             }
         );
     },
-    )
-router.post('/Election/:id/finalize',
-        authController.getUser,
-        authController.isLoggedIn,
-        authController.assertOwnership,
-        electionController.finalize,
-        voterRollController.getRollsByElectionID,
-        voterRollController.sendInvitations)
+)
 router.post('/Election/:id/finalize',
     authController.getUser,
     authController.isLoggedIn,

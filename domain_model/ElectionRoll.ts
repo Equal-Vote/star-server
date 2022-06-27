@@ -6,4 +6,14 @@ export interface ElectionRoll {
     voter_id: Uid; //ID of voter who cast ballot
     ballot_id?:  Uid; //ID of ballot, unsure if this is needed
     submitted: boolean; //has ballot been submitted
+    state: string;
+    history?: ElectionRollAction[];
 }
+
+export interface ElectionRollAction {
+    action_type:string;
+    actor:Uid;
+    timestamp:number;
+}
+
+export const ElectionStates = {}

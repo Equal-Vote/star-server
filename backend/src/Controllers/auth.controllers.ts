@@ -20,6 +20,9 @@ const getUser = (req: any, res: any, next: any) => {
     if (req.election.audit_ids && req.election.audit_ids.includes(req.user.email)){
       req.user_auth.roles.push(roles.auditor)
     }
+    if (req.election.credential_ids && req.election.credential_ids.includes(req.user.email)){
+      req.user_auth.roles.push(roles.credentialer)
+    }
   }
   next()
 }

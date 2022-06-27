@@ -1,13 +1,16 @@
 const roles = require('./roles')
 const permissions = {
-  canEditElectionAdmins:    [roles.system_admin, roles.owner],
-  canEditElectionAuditors:  [roles.system_admin, roles.owner],
-  canViewElection:          [roles.system_admin, roles.owner, roles.admin, roles.auditor],
+  canEditElectionRoles:     [roles.system_admin, roles.owner],
+  canViewElection:          [roles.system_admin, roles.owner, roles.admin, roles.auditor, roles.credentialer],
   canEditElection:          [roles.system_admin, roles.owner, roles.admin],
   canDeleteElection:        [roles.system_admin, roles.owner],
   canEditElectionRoll:      [roles.system_admin, roles.owner],
   canAddToElectionRoll:     [roles.system_admin, roles.owner, roles.admin],
-  canViewElectionRoll:      [roles.system_admin, roles.owner, roles.admin, roles.auditor],
+  canViewElectionRoll:      [roles.system_admin, roles.owner, roles.admin, roles.auditor, roles.credentialer],
+  canFlagElectionRoll:      [roles.system_admin, roles.owner, roles.admin, roles.auditor, roles.credentialer],
+  canApproveElectionRoll:   [roles.system_admin, roles.owner, roles.admin, roles.credentialer],
+  canUnflagElectionRoll:    [roles.system_admin, roles.owner, roles.admin],
+  canInvalidateElectionRoll:[roles.system_admin, roles.owner, roles.admin],
   canDeleteElectionRoll:    [roles.system_admin, roles.owner],
   canViewElectionRollIDs:   [roles.system_admin, roles.auditor],
   canViewBallots:           [roles.system_admin, roles.owner, roles.admin, roles.auditor],
@@ -18,4 +21,12 @@ const permissions = {
   canEditElectionState:     [roles.system_admin, roles.owner],
   canViewPreliminaryResults:[roles.system_admin, roles.owner, roles.admin, roles.auditor],
 }
-module.exports = permissions
+
+const hasPermission = (roles:string[],permission:string[]) => {
+  return roles.some( (role:any) => permission.includes(role))
+}
+
+module.exports = {
+  permissions,
+  hasPermission,
+}
