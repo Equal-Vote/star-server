@@ -172,11 +172,12 @@ const ElectionHome = ({ authSession }) => {
                 // /Election/{id}/duplicate feels more consistent, but we're not actually applying an operation to that election
                 // /DuplicateElection/{id} mirrors /CreateElection, that feels more accurate?
               }
+              {authSession.isLoggedIn() &&
               <Link to={`/DuplicateElection/${data.election.election_id}`}>
                 <Typography align='center' gutterBottom variant="h6" component="h6">
                   Duplicate
                 </Typography>
-              </Link>
+              </Link>}
 
               {data && data.election.state === 'draft' &&
                 <>

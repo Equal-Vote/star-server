@@ -1,26 +1,30 @@
 import React from 'react'
 import { useParams } from "react-router";
-import useFetchSetData from "../useFetchSetData";
+import useFetch from "../useFetch";
 import Container from '@material-ui/core/Container';
 import ElectionForm from "./ElectionForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const DuplicateElection = ({ authSession }) => {
     const { id } = useParams();
-    let { data, setData, isPending, error } = useFetchSetData(`/API/Election/${id}`,{
+
+    const [data, setData] = useState(null);
+
+    let { data: prevData, isPending, error } = useFetch(`/API/Election/${id}`,{
         method: 'GET',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         },
-    })
+    });
 
-    // TODO: This approach for adding copyOf feels messy, let me know if there's a better way
-    if(data && data.election && !data.copyOfAdded){
-        setData(oldData => {
-            return {...oldData, copyOfAdded: true, election: {...oldData.election, title: `Copy of ${oldData.election.title}`}}
-        })
-    }
+    useEffect(
+        () => {
+            if(prevData && prevData.election){
+                setData({...prevData, election: {...prevData.election, title: `Copy of ${prevData.election.title}`}});
+            } 
+        }, [prevData]
+    )
 
     const onCreateElection = async (election, voterIds) => {
         const res = await fetch('/API/Elections', {
