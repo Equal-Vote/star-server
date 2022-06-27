@@ -53,7 +53,7 @@ class ElectionsDB {
     createElection(election: Election): Promise<Election> {
         console.log(`-> ElectionDB.create`);
         var sqlString = `INSERT INTO ${this._tableName} (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *;`;
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,$13) RETURNING *;`;
 
         var p = this._postgresClient.query({
             text: sqlString,

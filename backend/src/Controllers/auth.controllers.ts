@@ -29,7 +29,7 @@ const getUser = (req: any, res: any, next: any) => {
 
 const hasPermission = (permission: any) => {
   return (req: any, res: any, next: any) => {
-    if (req.user_auth.roles.some( (role:any) => permission.includes(role))) {
+    if (!req.user_auth.roles.some( (role:any) => permission.includes(role))) {
       console.log("Does not have permission")
       return res.status('401').json({
         error: "Does not have permission"
