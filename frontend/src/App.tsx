@@ -3,6 +3,7 @@ import Header from './components/Header'
 import Elections from './components/Elections'
 import AddElection from './components/AddElection'
 import EditElection from './components/EditElection'
+import DuplicateElection from './components/DuplicateElection'
 import VotePage from './components/VotePage'
 import Login from './components/Login'
 import ViewElectionResults from './components/ViewElectionResults'
@@ -69,6 +70,7 @@ const App = () => {
           <Route path='/' element={<Elections authSession={authSession}/>} />
           <Route path='/Login' element={<Login />} />
           <Route path='/CreateElection' element={<AddElection authSession={authSession}/>} />
+          <Route path='/DuplicateElection/:id' element={<DuplicateElection authSession={authSession}/>} />
           <Route path='/Election/:id' element={<ElectionHome authSession={authSession}/>} />
           <Route path='/Election/:id/vote' element={<VotePage />} />
           <Route path='/Election/:id/results' element={<ViewElectionResults />} />
