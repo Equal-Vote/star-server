@@ -27,17 +27,6 @@ const ElectionCard = ({ election }: ElectionCardProps) => {
                     <Typography align='left' gutterBottom component="p">
                         {election.description}
                     </Typography>
-
-                    {/* <Link to={`/Election/${String(election.election_id)}/vote`}>
-                        <Typography align='center' gutterBottom variant="h6" component="h6">
-                            Vote
-                        </Typography>
-                    </Link>
-                    <Link to={`/Election/${election.election_id}/results`}>
-                        <Typography align='center' gutterBottom variant="h6" component="h6">
-                            View Results
-                        </Typography>
-                    </Link> */}
                 </CardContent>
             </CardActionArea>
         </Card>

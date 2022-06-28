@@ -143,6 +143,22 @@ const createElection = async (req: any, res: any, next: any) => {
     }
 }
 
+const deleteElection = async (req: any, res: any, next: any) => {
+    console.log(`-> elections.deleteElection`)
+    try {
+        const success = await ElectionsModel.delete(req.election.election_id)
+        if (!success)
+            return res.status('400').json({
+                error: "Election not deleted"
+            })
+        return next()
+    } catch (err) {
+        return res.status('400').json({
+            error: (err as any).message
+        })
+    }
+}
+
 const editElection = async (req: any, res: any, next: any) => {
     if (req.body.Election == undefined) {
         return res.status('400').json({
@@ -203,6 +219,7 @@ module.exports = {
     getElectionResults,
     getElections,
     createElection,
+    deleteElection,
     getElectionByID,
     getSandboxResults,
     editElection,
