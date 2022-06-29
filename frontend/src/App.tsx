@@ -12,6 +12,7 @@ import theme from './theme'
 import { ThemeProvider } from '@material-ui/styles'
 import ElectionHome from './components/ElectionHome'
 import Sandbox from './components/Sandbox'
+import Admin from './components/Admin'
 
 const prodEndpoints = [
   'https://star-vote.herokuapp.com/',
@@ -73,6 +74,7 @@ const App = () => {
           <Route path='/Election/:id/vote' element={<VotePage />} />
           <Route path='/Election/:id/results' element={<ViewElectionResults />} />
           <Route path='/Election/:id/edit' element={<EditElection authSession={authSession}/>} />
+          <Route path='/Election/:id/admin' element={<Admin authSession={authSession}/>} />
           <Route path='/Sandbox' element={<Sandbox />} />
         </Routes>
       </ThemeProvider>
