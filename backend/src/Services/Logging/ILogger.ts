@@ -3,7 +3,8 @@ import { IRequest } from '../../IRequest';
 export type ILoggingContext = ICustomContext | IRequest;
 
 export interface ICustomContext {
-    contextId?: String;
+    contextId?: string;
+    logPrefix?: string;
   };
 
 export interface ILogger {

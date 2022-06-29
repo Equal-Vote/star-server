@@ -3,6 +3,7 @@ import { Request } from 'express';
 
 export interface IRequest extends Request {
     contextId?: string;
+    logPrefix?: string;
 }
 
 export function reqIdSuffix(req:IRequest):string {
@@ -10,6 +11,6 @@ export function reqIdSuffix(req:IRequest):string {
 }
 
 export function iRequestMiddleware(req:IRequest, _res:any, next:any):void {
-    req.contextId = randomUUID();
+    req.contextId = randomUUID().slice(0,8);
     next();
 }

@@ -33,7 +33,7 @@ app.enable('trust proxy')
 
 app.use(iRequestMiddleware);
 app.use((req:IRequest, res, next) => {
-    Logger.info(req, `--> NEW REQUEST: ${req.method} ${req.url} @ ${new Date(Date.now()).toISOString()}`)
+    Logger.info(req, `REQUEST: ${req.method} ${req.url} @ ${new Date(Date.now()).toISOString()} ip:${req.ip}`);
     next();
 })
 

@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/Equal-Vote/star-server/issues"
   },
-  "homepage": "https://github.com/Equal-Vote/star-server#readme"
+  "homepage": "https://github.com/Equal-Vote/star-server#readme",
+  "dependencies": {
+    "crypto": "^1.0.1"
+  }
 }

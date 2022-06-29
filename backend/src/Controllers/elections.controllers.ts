@@ -2,21 +2,23 @@ import { Election } from '../../../domain_model/Election';
 import { Ballot } from '../../../domain_model/Ballot';
 import { Score } from '../../../domain_model/Score';
 import ServiceLocator from '../ServiceLocator';
+import Logger from '../Services/Logging/Logger';
+import { responseErr } from '../Util';
 const ElectionsDB = require('../Models/Elections')
 const StarResults = require('../Tabulators/StarResults.js');
 
 var ElectionsModel = new ElectionsDB(ServiceLocator.postgres());
+var className="Elections.Controllers";
 
 const getElectionByID = async (req: any, res: any, next: any) => {
-    console.log(`-> elections.getElectionByID ${req.params.id}`)
+    Logger.info(req, `${className}.getElectionByID ${req.params.id}`);
     try {
         var election = await ElectionsModel.getElectionByID(parseInt(req.params.id))
-        console.log(`get election ${req.params.id}`)
+        Logger.debug(req, `get election ${req.params.id}`);
+        var failMsg = "Election not found";
         if (!election) {
-            console.log('Error')
-            return res.status('400').json({
-                error: "Election not found"
-            })
+            Logger.info(req, `${failMsg} electionId=${req.params.id}}`);
+            return responseErr(res, req, 400, failMsg);
         }
         // Update Election State
         const currentTime = new Date();
@@ -25,15 +27,17 @@ const getElectionByID = async (req: any, res: any, next: any) => {
 
         }
         if (election.state === 'finalized') {
+            var openElection = false;
             if (election.start_time) {
                 const startTime = new Date(election.start_time);
                 if (currentTime.getTime() > startTime.getTime()) {
-                    console.log(`-> Election Transitioning To Open From ${election.state}`)
-                    stateChange = true;
-                    election.state = 'open';
+                    openElection = true;
                 }
             } else {
-                console.log(`-> Election Transitioning To Open From ${election.state}`)
+                openElection = true;
+            }
+            if (openElection){
+                Logger.info(req, `Election Transitioning to Open From ${election.state} (start time = ${election.start_time})`);
                 stateChange = true;
                 election.state = 'open';
             }
@@ -42,7 +46,7 @@ const getElectionByID = async (req: any, res: any, next: any) => {
             if (election.end_time) {
                 const endTime = new Date(election.end_time);
                 if (currentTime.getTime() > endTime.getTime()) {
-                    console.log(`-> Election Transitioning To Closed From ${election.state}`)
+                    Logger.info(req, `Election Transitioning to Closed From ${election.state} (end time = ${election.end_time})`)
                     stateChange = true;
                     election.state = 'closed';
                 }
@@ -53,25 +57,25 @@ const getElectionByID = async (req: any, res: any, next: any) => {
         }
         req.election = election
         return next()
-    } catch (err) {
-        return res.status('400').json({
-            error: "Could not retrieve election"
-        })
+    } catch (err:any) {
+        var failMsg = "Could not retrieve election";
+        Logger.error(req, `${failMsg} ${err.message}`);
+        return responseErr(res, req, 400, failMsg);
     }
 }
 
 const returnElection = async (req: any, res: any, next: any) => {
-    console.log(`-> elections.returnElection ${req.params.id}`)
+    Logger.info(req, `${className}.returnElection ${req.params.id}`)
     res.json({ election: req.election, voterAuth: { authorized_voter: req.authorized_voter, has_voted: req.has_voted } })
 }
 
 const getElectionResults = async (req: any, res: any, next: any) => {
-    console.log(`-> elections.getElectionResults ${req.params.id}`)
+    Logger.info(req, `${className}.getElectionResults: ${req.params.id}`);
 
     const ballots = req.ballots
     const election = req.election
     const candidateNames = election.races[0].candidates.map((Candidate: any) => (Candidate.candidate_name))
-    console.log(candidateNames)
+    Logger.debug(req, "Candidate names: " + JSON.stringify(candidateNames));
     const cvr = ballots.map((ballot: Ballot) => (
         ballot.votes[0].scores.map((score: Score) => (
             score.score
@@ -89,128 +93,120 @@ const getElectionResults = async (req: any, res: any, next: any) => {
 
 }
 const getSandboxResults = async (req: any, res: any, next: any) => {
-    console.log(`-> elections.getSandboxResults`)
+    Logger.info(req, `${className}.getSandboxResults`);
     try {
-        const candidateNames = req.body.candidates
-        const cvr = req.body.cvr
-        const num_winners = req.body.num_winners
-        console.log(candidateNames)
+        const candidateNames = req.body.candidates;
+        const cvr = req.body.cvr;
+        const num_winners = req.body.num_winners;
+        Logger.debug(req, "Candidate names:  "+JSON.stringify(candidateNames));
         const results = StarResults(candidateNames, cvr, num_winners)
-
         res.json(
             {
                 Results: results
             }
-        )
-    } catch (err) {
-        return res.status('400').json({
-            error: "Error calculating results"
-        })
+        );
+    } catch (err:any) {
+        Logger.error(req, `${className}.getSandboxResults error: ${err.message}.`);
+        return responseErr(res, req, 400, "Error calculating results");
     }
 }
 
 const getElections = async (req: any, res: any, next: any) => {
-    console.log(`-> elections.getElections`)
+    Logger.info(req, `${className}.getElections`);
+    var failMsg = "Could not retrieve elections";
     try {
         var filter = (req.query.filter == undefined) ? "" : req.query.filter;
         const Elections = await ElectionsModel.getElections(filter);
-        if (!Elections)
-            return res.status('400').json({
-                error: "Elections not found"
-            })
-        res.json(Elections)
-    } catch (err) {
-        return res.status('400').json({
-            error: "Could not retrieve elections"
-        })
+        if (!Elections){
+            Logger.error(req, failMsg);
+            return responseErr(res, req, 400, failMsg);
+        }
+        res.json(Elections);
+    } catch (err:any) {
+        Logger.error(req, failMsg+". "+err.message);
+        return responseErr(res, req, 400, failMsg);
     }
 }
 
 const createElection = async (req: any, res: any, next: any) => {
-    console.log(`-> elections.createElection`)
+    Logger.info(req, `${className}.createElection`)
+    var failMsg = "Election not created";
     try {
         const newElection = await ElectionsModel.createElection(req.body.Election)
-        if (!newElection)
-            return res.status('400').json({
-                error: "Election not found"
-            })
-        req.election = newElection
-        return next()
-    } catch (err) {
-        return res.status('400').json({
-            error: (err as any).message
-        })
+        if (!newElection){
+            Logger.error(req, failMsg);
+            return responseErr(res, req, 400, failMsg);
+        }
+        req.election = newElection;
+        return next();
+    } catch (err:any) {
+        Logger.error(req, failMsg+". "+err.message);
+        return responseErr(res, req, 400, failMsg);
     }
 }
 
 const deleteElection = async (req: any, res: any, next: any) => {
-    console.log(`-> elections.deleteElection`)
+    Logger.info(req, `${className}.deleteElection`)
+    var failMsg = "Election not deleted";
     try {
-        const success = await ElectionsModel.delete(req.election.election_id)
-        if (!success)
-            return res.status('400').json({
-                error: "Election not deleted"
-            })
-        return next()
-    } catch (err) {
-        return res.status('400').json({
-            error: (err as any).message
-        })
+        const success = await ElectionsModel.delete(req.election.election_id);
+        if (!success){
+            Logger.error(req, failMsg);
+            return responseErr(res, req, 400, failMsg);
+        }
+        return next();
+    } catch (err:any) {
+        Logger.error(req, failMsg + ". " + err.message);
+        return responseErr(res, req, 400, failMsg);
     }
 }
 
 const editElection = async (req: any, res: any, next: any) => {
+    Logger.info(req, `${className}.editElection`)
     if (req.body.Election == undefined) {
-        return res.status('400').json({
-            error: "Election not provided"
-        })
+        Logger.info(req, `Election undefined`);
+        return responseErr(res, req, 400, "Election not provided");
     }
     if (req.election.state !== 'draft') {
-        console.log(`--> Failed to Edit while in ${req.election.state}`)
-        return res.status('400').json({
-            error: "Election is not editable"
-        })
+        Logger.info(req, `Election is not editable, state=${req.election.state}`);
+        return responseErr(res, req, 400, "Election is not editable");
     }
-    console.log(`-> elections.editElection ${req.body.Election.election_id}`)
-
+    Logger.debug(req, `election ID = ${req.body.Election.election_id}`);
+    var failMsg = `Failed to update election`;
     try {
         const updatedElection = await ElectionsModel.updateElection(req.body.Election)
-        if (!updatedElection)
-            return res.status('400').json({
-                error: "Failed to update Election"
-            })
+        if (!updatedElection){
+            Logger.error(req, failMsg);
+            return responseErr(res, req, 400, failMsg);
+        }
         req.election = updatedElection
         return next()
-    } catch (err) {
-        return res.status('400').json({
-            error: (err as any).message
-        })
+    } catch (err:any) {
+        Logger.error(req, `${failMsg}: ${err.message}`);
+        return responseErr(res, req, 400, failMsg);
     }
 }
 
 const finalize = async (req: any, res: any, next: any) => {
+    Logger.info(req, `${className}.finalize ${req.election.election_id}`);
     if (req.election.state !== 'draft') {
-        console.log(`-> Already Finalized`)
-        return res.status('400').json({
-            error: "Election already finalized"
-        })
+        var msg = "Election already finalized";
+        Logger.info(req, msg);
+        return responseErr(res, req, 400, msg);
     }
-    console.log(`-> elections.finalize ${req.election.election_id}`)
-
+    var failMsg = "Failed to update Election";
     try {
         req.election.state = 'finalized'
         const updatedElection = await ElectionsModel.updateElection(req.election)
-        if (!updatedElection)
-            return res.status('400').json({
-                error: "Failed to update Election"
-            })
+        if (!updatedElection) {
+            Logger.info(req, failMsg);
+            return responseErr(res, req, 400, failMsg);
+        }
         req.election = updatedElection
-        // return  res.json({election: updatedElection})
         next()
-    } catch (err) {
-        return res.status('400').json({
-            error: (err as any).message
-        })
+    } catch (err:any) {
+        Logger.error(req, failMsg +". "+err.message);
+        return responseErr(res, req, 400, failMsg); 
     }
 }
 
