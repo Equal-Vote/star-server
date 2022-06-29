@@ -103,13 +103,13 @@ class ElectionRollDB {
     }
     update(election_roll: ElectionRoll): Promise<ElectionRoll | null> {
         console.log(`-> ElectionRollDB.updateRoll`);
-        var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state, history=$3  WHERE election_id = $3 AND voter_id=$4`;
+        var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state=$3, history=$4  WHERE election_id = $5 AND voter_id=$6`;
         console.log(sqlString);
         console.log(election_roll)
         var p = this._postgresClient.query({
             text: sqlString,
 
-            values: [election_roll.ballot_id, election_roll.submitted, election_roll.state, election_roll.history, election_roll.election_id, election_roll.voter_id]
+            values: [election_roll.ballot_id, election_roll.submitted, election_roll.state, JSON.stringify(election_roll.history), election_roll.election_id, election_roll.voter_id]
 
         });
         return p.then((response: any) => {

@@ -81,7 +81,7 @@ class ElectionsDB {
     updateElection(election: Election): Promise<Election> {
         console.log(`-> ElectionDB.update ${election.election_id}`);
         var sqlString = `UPDATE ${this._tableName} SET (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings) =
-        ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) WHERE election_id = $1 RETURNING *;`;
+        ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) WHERE election_id = $1 RETURNING *;`;
 
         var p = this._postgresClient.query({
             text: sqlString,
