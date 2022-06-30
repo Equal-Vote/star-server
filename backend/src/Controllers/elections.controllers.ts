@@ -11,7 +11,7 @@ var ElectionsModel = new ElectionsDB(ServiceLocator.postgres());
 var className="Elections.Controllers";
 
 const getElectionByID = async (req: any, res: any, next: any) => {
-    Logger.info(req, `${className}.getElectionByID ${req.params.id}`);
+    Logger.info(req, `${__filename}.getElectionByID ${req.params.id}`);
     try {
         var election = await ElectionsModel.getElectionByID(parseInt(req.params.id))
         Logger.debug(req, `get election ${req.params.id}`);
@@ -60,7 +60,7 @@ const getElectionByID = async (req: any, res: any, next: any) => {
     } catch (err:any) {
         var failMsg = "Could not retrieve election";
         Logger.error(req, `${failMsg} ${err.message}`);
-        return responseErr(res, req, 400, failMsg);
+        return responseErr(res, req, 500, failMsg);
     }
 }
 
@@ -107,7 +107,7 @@ const getSandboxResults = async (req: any, res: any, next: any) => {
         );
     } catch (err:any) {
         Logger.error(req, `${className}.getSandboxResults error: ${err.message}.`);
-        return responseErr(res, req, 400, "Error calculating results");
+        return responseErr(res, req, 500, "Error calculating results");
     }
 }
 
@@ -118,13 +118,14 @@ const getElections = async (req: any, res: any, next: any) => {
         var filter = (req.query.filter == undefined) ? "" : req.query.filter;
         const Elections = await ElectionsModel.getElections(filter);
         if (!Elections){
-            Logger.error(req, failMsg);
-            return responseErr(res, req, 400, failMsg);
+            var msg = "Election does not exist";
+            Logger.info(req, msg);
+            return responseErr(res, req, 400, msg);
         }
         res.json(Elections);
     } catch (err:any) {
         Logger.error(req, failMsg+". "+err.message);
-        return responseErr(res, req, 400, failMsg);
+        return responseErr(res, req, 500, failMsg);
     }
 }
 
@@ -141,7 +142,7 @@ const createElection = async (req: any, res: any, next: any) => {
         return next();
     } catch (err:any) {
         Logger.error(req, failMsg+". "+err.message);
-        return responseErr(res, req, 400, failMsg);
+        return responseErr(res, req, 500, failMsg);
     }
 }
 
@@ -151,13 +152,14 @@ const deleteElection = async (req: any, res: any, next: any) => {
     try {
         const success = await ElectionsModel.delete(req.election.election_id);
         if (!success){
-            Logger.error(req, failMsg);
-            return responseErr(res, req, 400, failMsg);
+            var msg = "Nothing to delete";
+            Logger.error(req, msg);
+            return responseErr(res, req, 400, msg);
         }
         return next();
     } catch (err:any) {
         Logger.error(req, failMsg + ". " + err.message);
-        return responseErr(res, req, 400, failMsg);
+        return responseErr(res, req, 500, failMsg);
     }
 }
 
@@ -183,7 +185,7 @@ const editElection = async (req: any, res: any, next: any) => {
         return next()
     } catch (err:any) {
         Logger.error(req, `${failMsg}: ${err.message}`);
-        return responseErr(res, req, 400, failMsg);
+        return responseErr(res, req, 500, failMsg);
     }
 }
 
@@ -206,7 +208,7 @@ const finalize = async (req: any, res: any, next: any) => {
         next()
     } catch (err:any) {
         Logger.error(req, failMsg +". "+err.message);
-        return responseErr(res, req, 400, failMsg); 
+        return responseErr(res, req, 500, failMsg); 
     }
 }
 
