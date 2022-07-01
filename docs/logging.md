@@ -8,7 +8,7 @@ nav_order: 6000
 
 When running on Heroku, you are able to pipe all [logs from your Heroku dyno](https://devcenter.heroku.com/articles/logging) to an external service (ex: New Relic, Data Dog, etc).
 
-Currently we are using New Relic, both for its ease of setup, and the attractive price ([$0 while under 100GB per month](9)https://newrelic.com/pricing))
+Currently we are using New Relic, both for its ease of setup, and the attractive price ([$0 while under 100GB per month](https://newrelic.com/pricing))
 
 Here are the steps for setting up logs from Heroku -> New Relic (basically copied from [the New Relic docs](https://docs.newrelic.com/docs/logs/forward-logs/heroku-log-forwarding/))
 
