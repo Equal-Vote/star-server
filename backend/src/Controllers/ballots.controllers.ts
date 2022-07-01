@@ -2,23 +2,26 @@ import { Ballot as BallotType } from '../../../domain_model/Ballot';
 import { reqIdSuffix } from "../IRequest";
 import Logger from "../Services/Logging/Logger";
 import ServiceLocator from "../ServiceLocator";
+import { responseErr } from '../Util';
 
 const BallotsDB = require('../Models/Ballots');
 var BallotModel = new BallotsDB(ServiceLocator.postgres());
+const className = 'Ballots.Controllers';
 
 const ballotByID = async (req: any, res: any, next: any) => {
     try {
-        const ballot = await BallotModel.getElectionByID(parseInt(req.params.id));
-        if (!ballot)
-            return res.status('400').json({
-                error: "Ballot not found"
-            });
-
+        const ballotId = req.params.id;
+        const ballot = await BallotModel.getElectionByID(parseInt(ballotId));
+        if (!ballot){
+            const msg = `Ballot ${ballotId} not found`;
+            Logger.info(req, msg);
+            return responseErr(res, req, 400, msg);
+        }
         req.ballot = ballot;
     } catch (err) {
-        return res.status('400').json({
-            error: "Could not retrieve ballot"
-        });
+        const msg = `Could not retrieve ballot`;
+        Logger.error(req, msg);
+        return responseErr(res, req, 500, msg);
     }
 }
 
@@ -27,45 +30,38 @@ const getBallotsByElectionID = async (req: any, res: any, next: any) => {
         var electionId = req.election.election_id;
         Logger.debug(req, "getBallotsByElectionID: "+electionId);
         const ballots = await BallotModel.getBallotsByElectionID(String(electionId));
-        if (!ballots)
-            return res.status('400').json({
-                error: "Ballots not found" + reqIdSuffix(req)
-            });
+        if (!ballots){
+            const msg = `Ballots not found for Election ${electionId}`;
+            Logger.info(req, msg);
+            return responseErr(res, req, 400, msg);
+        }
         Logger.debug(req, JSON.stringify(ballots));
         req.ballots = ballots;
         return next();
     } catch (err) {
-        return res.status('400').json({
-            error: "Could not retrieve ballots" + reqIdSuffix(req)
-        });
+        const msg = `Could not retrieve ballots`;
+        Logger.error(req, msg);
+        return responseErr(res, req, 500, msg);
     }
 }
 
 const returnBallots = async (req: any, res: any, next: any) => {
-    console.log(`-> elections.returnBallots ${req.params.id}`)
+    Logger.info(req, `${className}.returnBallots ${req.params.id}`);
     res.json({ election: req.election, ballots: req.ballots })
 }
 
 const submitBallot = async (req: any, res: any, next: any) => {
-
-
     if (req.election.state!=='open'){
-        Logger.debug(req, "Ballot Rejected. Election not open.  "+JSON.stringify(req));
-        return res.status('400').json({
-            error: "Election is not open" + reqIdSuffix(req)
-        });
+        Logger.info(req, "Ballot Rejected. Election not open.  "+JSON.stringify(req.election));
+        return responseErr(res, req, 400, "Election is not open");
     }
     if (!req.authorized_voter){
-        Logger.debug(req, "Ballot Rejected. Voter not authorized.  "+JSON.stringify(req));
-        return res.status('400').json({
-            error: "Voter not authorized" + reqIdSuffix(req)
-        });
+        Logger.info(req, "Ballot Rejected. Voter not authorized.  "+JSON.stringify(req.election));
+        return responseErr(res, req, 400, "Voter not authorized");
     }
     if (req.has_voted){
-        Logger.debug(req, "Ballot Rejected. Voter already submitted ballo.  "+JSON.stringify(req));
-        return res.status('400').json({
-            error: "Voter already submitted ballot" + reqIdSuffix(req)
-        });
+        Logger.info(req, "Ballot Rejected. Voter already submitted ballot.  "+JSON.stringify(req.election));
+        return responseErr(res, req, 400, " Voter already submitted ballot");
     }
 
     //some ballot info should be server-authorative
@@ -101,9 +97,7 @@ const submitBallot = async (req: any, res: any, next: any) => {
             error: err.message
         };
         Logger.error(req, "Submit Ballot Failure:  " + JSON.stringify(errData));
-        return res.status('400').json({
-            error: err.message
-        });
+        return responseErr(res, req, 500, " Failed to submit ballot");
     }
 }
 
