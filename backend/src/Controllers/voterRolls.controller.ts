@@ -19,7 +19,7 @@ const getRollsByElectionID = async (req: any, res: any, next: any) => {
             return responseErr(res, req, 400, msg);
         }
         
-        Logger.debug(req, `Got Election: ${req.params.id}: ${JSON.stringify(electionRoll)}`);
+        Logger.debug(req, `Got Election: ${req.params.id}`, electionRoll);
         req.electionRoll = electionRoll
         return next()
     } catch (err:any) {
@@ -56,7 +56,7 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
 
 const editElectionRoll = async (req: any, res: any, next: any) => {
     const electinoRollInput = req.body.electionRollEntry;
-    Logger.info(req, `${className}.editElectionRoll ${JSON.stringify(electinoRollInput)}`);
+    Logger.info(req, `${className}.editElectionRoll`, {electionRollEntry: electinoRollInput});
     try {
         const electionRollEntry = await ElectionRollModel.update(electinoRollInput);
         if (!electionRollEntry){
@@ -65,7 +65,7 @@ const editElectionRoll = async (req: any, res: any, next: any) => {
             return responseErr(res, req, 400, msg);
         }
         req.electionRollEntry = electionRollEntry
-        Logger.debug(req, `Voter Roll updated: ${JSON.stringify(electionRollEntry)}`);
+        Logger.debug(req, `Voter Roll updated:`, {electionRollEntry: electinoRollInput});
         res.status('200').json(electionRollEntry)
     } catch (err:any) {
         const msg = `Could not edit Election Roll`;
@@ -76,7 +76,7 @@ const editElectionRoll = async (req: any, res: any, next: any) => {
 
 const updateElectionRoll = async (req: any, res: any, next: any) => {
     const electinoRollInput = req.electionRollEntry;
-    Logger.info(req, `${className}.updateElectionRoll ${JSON.stringify(electinoRollInput)}`);
+    Logger.info(req, `${className}.updateElectionRoll`, {electionRollEntry: electinoRollInput});
 
     // Updates single entry of election roll
     if (req.election.settings.voter_id_type === 'None') {
@@ -91,7 +91,7 @@ const updateElectionRoll = async (req: any, res: any, next: any) => {
                 return responseErr(res, req, 400, msg);
         }
         req.electionRollEntry = electionRollEntry
-        Logger.debug(req, `Voter Roll Updated: ${JSON.stringify(electionRollEntry)}`);
+        Logger.debug(req, `Voter Roll Updated`, {electionRollEntry: electionRollEntry});
         return next();
     } catch (err:any) {
         const msg = `Could not update Election Roll`;
@@ -205,10 +205,10 @@ const sendInvitations = async (req: any, res: any, next: any) => {
         try {
             const url = req.protocol + '://'+req.get('host')
             EmailService.sendInvitations(req.election,req.electionRoll,url)
-        } catch (err) {
-            return res.status('400').json({
-                error: "Could not send invitations"
-            })
+        } catch (err:any) {
+            const msg = `Could not send invitations`;
+            Logger.error(req, `${msg}: ${err.message}`);
+            return responseErr(res, req, 500, msg);
         }
     }
     return  res.json({election: req.election})

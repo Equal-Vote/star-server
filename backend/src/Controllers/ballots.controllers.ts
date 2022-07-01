@@ -35,7 +35,7 @@ const getBallotsByElectionID = async (req: any, res: any, next: any) => {
             Logger.info(req, msg);
             return responseErr(res, req, 400, msg);
         }
-        Logger.debug(req, JSON.stringify(ballots));
+        Logger.debug(req, "ballots = ", ballots);
         req.ballots = ballots;
         return next();
     } catch (err) {
@@ -52,15 +52,15 @@ const returnBallots = async (req: any, res: any, next: any) => {
 
 const submitBallot = async (req: any, res: any, next: any) => {
     if (req.election.state!=='open'){
-        Logger.info(req, "Ballot Rejected. Election not open.  "+JSON.stringify(req.election));
+        Logger.info(req, "Ballot Rejected. Election not open.", req.election);
         return responseErr(res, req, 400, "Election is not open");
     }
     if (!req.authorized_voter){
-        Logger.info(req, "Ballot Rejected. Voter not authorized.  "+JSON.stringify(req.election));
+        Logger.info(req, "Ballot Rejected. Voter not authorized.", req.election);
         return responseErr(res, req, 400, "Voter not authorized");
     }
     if (req.has_voted){
-        Logger.info(req, "Ballot Rejected. Voter already submitted ballot.  "+JSON.stringify(req.election));
+        Logger.info(req, "Ballot Rejected. Voter already submitted ballot.", req.election);
         return responseErr(res, req, 400, " Voter already submitted ballot");
     }
 
@@ -78,25 +78,23 @@ const submitBallot = async (req: any, res: any, next: any) => {
         timestamp:ballot.date_submitted,
     });
 
-    Logger.info(req, "Submit Ballot: " + JSON.stringify(ballot));
+    Logger.info(req, "Submit Ballot:", ballot);
     try {
-        const savedBallot = await BallotModel.submitBallot(ballot)
-        if (!savedBallot)
-            return res.status('400').json({
-                error: "Ballots not found"
-            });
+        const savedBallot = await BallotModel.submitBallot(ballot);
+        if (!savedBallot){
+            return responseErr(res, req, 400, "Ballots not found");
+        }
         req.electionRollEntry.submitted = true
         req.ballot = savedBallot;
         req.electionRollEntry.ballot_id = savedBallot.ballot_id;
-        Logger.info(req, "Submit Ballot Success: " + JSON.stringify(savedBallot));
+        Logger.info(req, "Submit Ballot Success.", savedBallot);
         return next();
-
     } catch (err:any) {
         var errData = {
             ballot: ballot,
             error: err.message
         };
-        Logger.error(req, "Submit Ballot Failure:  " + JSON.stringify(errData));
+        Logger.error(req, "Submit Ballot Failure:", errData);
         return responseErr(res, req, 500, " Failed to submit ballot");
     }
 }
