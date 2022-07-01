@@ -12,7 +12,7 @@ Currently we are using New Relic, both for its ease of setup, and the attractive
 
 Here are the steps for setting up logs from Heroku -> New Relic (basically copied from [the New Relic docs](https://docs.newrelic.com/docs/logs/forward-logs/heroku-log-forwarding/))
 
-1. Sign up for a New Relic account [https://newrelic.com/signup]
+1. Sign up for a [New Relic account](https://newrelic.com/signup). Confirm your email and all that.
 
 2. In your Heroku CLI, run:
 ```
