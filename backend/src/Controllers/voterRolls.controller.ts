@@ -240,7 +240,12 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
         req.authorized_voter = true;
         if (req.electionRollEntry.length == 0) {
             //Adds voter to roll if they aren't currently
-            const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, [req.voter_id], false)
+            const history = [{
+                action_type: 'added',
+                actor: req.user?.email || req.voter_id,
+                timestamp: Date.now(),
+            }]
+            const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, [req.voter_id], false,'approved',history)
             if (!NewElectionRoll)
                 return res.status('400').json({
                     error: "Voter Roll not found"
