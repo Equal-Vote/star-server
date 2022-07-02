@@ -10,19 +10,16 @@ const DuplicateElection = ({ authSession }) => {
 
     const [data, setData] = useState(null);
 
-    let { data: prevData, isPending, error } = useFetch(`/API/Election/${id}`,{
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-    });
-
+    let { data: prevData, isPending, error, makeRequest: fetchElection } = useFetch(`/API/Election/${id}`, 'get');
+    useEffect(() => {
+        fetchElection()
+    }, [])
+    
     useEffect(
         () => {
-            if(prevData && prevData.election){
-                setData({...prevData, election: {...prevData.election, title: `Copy of ${prevData.election.title}`}});
-            } 
+            if (prevData && prevData.election) {
+                setData({ ...prevData, election: { ...prevData.election, title: `Copy of ${prevData.election.title}` } });
+            }
         }, [prevData]
     )
 
@@ -46,12 +43,12 @@ const DuplicateElection = ({ authSession }) => {
 
     return (
         <Container >
-        {error && <div> {error} </div>}
-        {isPending && <div> Loading Election... </div>}
-        {!authSession.isLoggedIn() && <div> Must be logged in to create elections </div>}
-        {authSession.isLoggedIn() && data && data.election &&
-            <ElectionForm authSession={authSession} onSubmitElection={onCreateElection} prevElectionData={data.election} submitText='Create Election'/>
-        }
+            {error && <div> {error} </div>}
+            {isPending && <div> Loading Election... </div>}
+            {!authSession.isLoggedIn() && <div> Must be logged in to create elections </div>}
+            {authSession.isLoggedIn() && data && data.election &&
+                <ElectionForm authSession={authSession} onSubmitElection={onCreateElection} prevElectionData={data.election} submitText='Create Election' />
+            }
         </Container>
     )
 }
