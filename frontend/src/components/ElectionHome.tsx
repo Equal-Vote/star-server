@@ -106,7 +106,19 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
                 </Typography>
               </Link>
 
-              {electionData && electionData.election.state === 'draft' &&
+              {
+                // Not sure about /DuplicateElection/{id} or /Election/{id}/duplicate
+                // /Election/{id}/duplicate feels more consistent, but we're not actually applying an operation to that election
+                // /DuplicateElection/{id} mirrors /CreateElection, that feels more accurate?
+              }
+              {authSession.isLoggedIn() &&
+              <Link to={`/DuplicateElection/${electionData.election_id}`}>
+                <Typography align='center' gutterBottom variant="h6" component="h6">
+                  Duplicate
+                </Typography>
+              </Link>}
+
+              {electionData.election.state === 'draft' &&
                 <>
                   <Link to={`/Election/${electionData.election.election_id}/edit`}>
                     <Typography align='center' gutterBottom variant="h6" component="h6">

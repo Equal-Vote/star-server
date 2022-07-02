@@ -80,6 +80,7 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
     const dateAsInputString = (date) => {
         // TODO: Using ISO create a bug with timezones
         //       ex. If I select April 20th late in the PDT timezone, that's April 21th in UTC/ISO, so it sets April 21
+        if(date == null) return ''
         if(isNaN(date.valueOf())) return ''
         var s = date.toISOString()
         // the timezone offset throws off the input component

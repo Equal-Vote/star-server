@@ -8,6 +8,7 @@ import Elections from './components/Elections'
 import Login from './components/Login'
 import AddElection from './components/AddElection'
 import Election from './components/Election'
+import DuplicateElection from './components/DuplicateElection'
 import Sandbox from './components/Sandbox'
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
           <Route path='/Login' element={<Login />} />
           <Route path='/CreateElection' element={<AddElection authSession={authSession}/>} />
           <Route path='/Election/:id/*' element={<Election authSession={authSession}/>} />
+          <Route path='/DuplicateElection/:id' element={<DuplicateElection authSession={authSession}/>} />
           <Route path='/Sandbox' element={<Sandbox />} />
         </Routes>
       </ThemeProvider>

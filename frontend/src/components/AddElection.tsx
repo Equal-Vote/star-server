@@ -1,6 +1,7 @@
 import React from 'react'
 import useFetch from '../useFetch';
 import ElectionForm from "./ElectionForm";
+import Container from '@material-ui/core/Container';
 
 const AddElection = ({ authSession }) => {
 
@@ -16,7 +17,14 @@ const AddElection = ({ authSession }) => {
         }
     }
 
-    return (<ElectionForm authSession={authSession} onSubmitElection={onAddElection} prevElectionData={null} submitText='Create Election' />);
+    return (
+        <Container >
+            {!authSession.isLoggedIn() && <div> Must be logged in to create elections </div>}
+            {authSession.isLoggedIn() &&
+                <ElectionForm authSession={authSession} onSubmitElection={onAddElection} prevElectionData={null} submitText='Create Election' />
+            }
+        </Container>
+    )
 }
 
 export default AddElection
