@@ -1,8 +1,9 @@
 import { Ballot } from '../../../domain_model/Ballot';
+import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
-const { Pool } = require('pg');
+const className = 'BallotsDB';
 
-class BallotsDB {
+export default class BallotsDB {
 
     _postgresClient;
     _tableName: string;
@@ -15,7 +16,7 @@ class BallotsDB {
 
     init(): Promise<BallotsDB> {
         var appInitContext = Logger.createContext("appInit");
-        Logger.debug(appInitContext, "-> BallotsDB.init");
+        Logger.debug(appInitContext, "BallotsDB.init");
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
             ballot_id       SERIAL PRIMARY KEY,
@@ -44,11 +45,11 @@ class BallotsDB {
         });
     }
 
-    submitBallot(ballot: Ballot): Promise<Ballot> {
-        console.log(`-> BallotsDB.submit`);
+    submitBallot(ballot: Ballot, ctx:ILoggingContext): Promise<Ballot> {
+        Logger.debug(ctx, `${className}.submit`, ballot);
         var sqlString = `INSERT INTO ${this._tableName} (election_id,user_id,status,date_submitted,ip_address,votes,history)
         VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING ballot_id;`;
-        console.log(sqlString)
+        Logger.debug(ctx, sqlString);
         var p = this._postgresClient.query({
             rowMode: 'array',
             text: sqlString,
@@ -62,16 +63,36 @@ class BallotsDB {
         });
 
         return p.then((res: any) => {
-            console.log("set response rows: " + JSON.stringify(res));
+            Logger.debug(ctx, `set response rows:`, res);
             ballot.ballot_id = res.rows[0][0];
             return ballot;
         });
     }
 
-    getBallotsByElectionID(election_id: string): Promise<Ballot[] | null> {
-        console.log(`-> BallotsDB.getByElectionID ${election_id}`);
+    getBallotByID(ballot_id: string, ctx:ILoggingContext): Promise<Ballot | null> {
+        Logger.debug(ctx, `${className}.getBallotByID ${ballot_id}`);
+        var sqlString = `SELECT * FROM ${this._tableName} WHERE ballot_id = $1`;
+        Logger.debug(ctx, sqlString);
+
+        var p = this._postgresClient.query({
+            text: sqlString,
+            values: [ballot_id]
+        });
+        return p.then((response: any) => {
+            var rows = response.rows;
+            if (rows.length == 0) {
+                Logger.debug(ctx, `.get null`);
+                return null;
+            }
+            return rows[0] as Ballot;
+        });
+    }
+
+
+    getBallotsByElectionID(election_id: string,  ctx:ILoggingContext): Promise<Ballot[] | null> {
+        Logger.debug(ctx, `${className}.getBallotsByElectionID ${election_id}`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1`;
-        console.log(sqlString);
+        Logger.debug(ctx, sqlString);
 
         var p = this._postgresClient.query({
             text: sqlString,
@@ -81,17 +102,17 @@ class BallotsDB {
             var rows = response.rows;
             console.log(rows[0])
             if (rows.length == 0) {
-                console.log(".get null");
+                Logger.debug(ctx, `.get null`);
                 return [] as Ballot[];
             }
             return rows
         });
     }
 
-    delete(ballot_id: string): Promise<boolean> {
-        console.log(`-> BallotsDB.delete ${ballot_id}`);
+    delete(ballot_id: string,  ctx:ILoggingContext): Promise<boolean> {
+        Logger.debug(ctx, `${className}.delete ${ballot_id}`);
         var sqlString = `DELETE FROM ${this._tableName} WHERE ballot_id = $1`;
-        console.log(sqlString);
+        Logger.debug(ctx, sqlString);
 
         var p = this._postgresClient.query({
             rowMode: 'array',
@@ -106,5 +127,3 @@ class BallotsDB {
         });
     }
 }
-
-module.exports = BallotsDB
