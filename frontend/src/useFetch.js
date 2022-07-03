@@ -18,9 +18,13 @@ const useFetch = (url, method) => {
         try {
             const res = await fetch(url, options)
             if (!res.ok) {
-                console.log(res)
-                const data = await res.json();
-                throw Error(`Error making request: ${res.status.toString()}: ${data.error}`)
+                if (res.json.length > 0) {
+                    console.log(res)
+                    const data = await res.json();
+                    throw Error(`Error making request: ${res.status.toString()}: ${data.error}`)
+                } else {
+                    throw Error(`Error making request: ${res.status.toString()}`)
+                }
             }
             const data = await res.json();
             setData(data);
