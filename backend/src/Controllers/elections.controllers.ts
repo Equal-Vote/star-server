@@ -8,7 +8,7 @@ const ElectionsDB = require('../Models/Elections')
 const StarResults = require('../Tabulators/StarResults.js');
 
 var ElectionsModel = new ElectionsDB(ServiceLocator.postgres());
-var className="Elections.Controllers";
+const className="Elections.Controllers";
 
 const getElectionByID = async (req: any, res: any, next: any) => {
     Logger.info(req, `${__filename}.getElectionByID ${req.params.id}`);
