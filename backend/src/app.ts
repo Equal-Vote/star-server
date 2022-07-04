@@ -8,6 +8,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import Logger from './Services/Logging/Logger';
 import {IRequest, iRequestMiddleware, reqIdSuffix} from './IRequest';
+import { responseErr } from './Util';
 
 export default function makeApp() {
 
@@ -33,7 +34,7 @@ app.enable('trust proxy')
 
 app.use(iRequestMiddleware);
 app.use((req:IRequest, res, next) => {
-    Logger.info(req, `--> NEW REQUEST: ${req.method} ${req.url} @ ${new Date(Date.now()).toISOString()}`)
+    Logger.info(req, `REQUEST: ${req.method} ${req.url} @ ${new Date(Date.now()).toISOString()} ip:${req.ip}`);
     next();
 })
 
@@ -110,13 +111,9 @@ app.post('/API/Token', (req:IRequest, res) => {
     .then(data => {Logger.debug(appInitContext, "success!"); res.json(data)})
     .catch((err) => {
         Logger.error(req, 'Error while requesting a token', err.response.data);
-        res.status(500).json({
-            error: err.message + reqIdSuffix(req)
-        });
+        responseErr(res, req, 500, "Error requesting token");
     });
 });
-
-
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, frontendPath + "index.html"));

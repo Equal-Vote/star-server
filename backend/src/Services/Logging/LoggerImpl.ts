@@ -8,33 +8,42 @@ export class LoggerImpl {
     }
 
     debug(context?:ILoggingContext,  message?: any, ...optionalParams: any[]):void{
-        this.log(context, "debug", message, ...optionalParams);
+        this.log(context, "", message, ...optionalParams);
     }
 
     info(context?:ILoggingContext,  message?: any, ...optionalParams: any[]):void{
-        this.log(context, "info", message, ...optionalParams);
+        this.log(context, "", message, ...optionalParams);
     }
 
     warn(context?:ILoggingContext,  message?: any, ...optionalParams: any[]):void{
-        this.log(context, "WARN", message, ...optionalParams);
+        this.log(context, "WARN ", message, ...optionalParams);
     }
 
     error(context?:ILoggingContext,  message?: any, ...optionalParams: any[]):void{
+        //TODO - put more structure to the data shared in request and spit it all out here
         this.log(context, "ERROR", message, ...optionalParams);
     }
 
     log(context?:ILoggingContext, levelStr?:string,  message?: any, ...optionalParams: any[]):void { 
-        var msg = new Date(Date.now()).toISOString();
+        var msg = "";
+        var lvlStr = "";
+        var ctxStr = "";
+        var prefix = "";
         if (context!= null){
-            if (context.contextId == null || context.contextId == undefined){
-                context.contextId = randomUUID();
+            ctxStr = "  ctx:" + context.contextId;
+            if (context.logPrefix == null){
+                context.logPrefix = "";
             }
-            msg += " - " + context.contextId;
+            prefix = context.logPrefix;
+            if (context.logPrefix == ""){
+                context.logPrefix = ". . ";
+            }
         }
-        if (levelStr != null){
-            msg += " - " + levelStr;
+        if (levelStr != null && lvlStr.length >0){
+            lvlStr = levelStr+"  ";
         }
-        var msg = `${msg}:\n  ${message}`;
+
+        var msg = `${prefix}${lvlStr}${message}${ctxStr}`;
         console.log(msg, ...optionalParams);
     }
 }
