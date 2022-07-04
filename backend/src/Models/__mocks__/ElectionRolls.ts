@@ -1,12 +1,12 @@
 import { Vote } from '../../../../domain_model/Vote';
-import { ElectionRoll, ElectionRollAction } from '../../../../domain_model/ElectionRoll';
+import { ElectionRoll, ElectionRollAction, ElectionRollState } from '../../../../domain_model/ElectionRoll';
 
 class ElectionRollDB {
 
     electionRolls: ElectionRoll[] = []
     constructor() {
     }
-    submitElectionRoll(election_id: string, voter_ids: string[],submitted:boolean,state: string, history: ElectionRollAction): Promise<boolean>{
+    submitElectionRoll(election_id: string, voter_ids: string[],submitted:boolean,state: ElectionRollState, history: ElectionRollAction): Promise<boolean>{
         for (var i = 0; i < voter_ids.length; i++){
             this.electionRolls.push({
                 election_roll_id: '0',

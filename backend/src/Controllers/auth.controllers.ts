@@ -1,6 +1,7 @@
 import { isConstructorDeclaration } from "typescript"
 import { Election } from "../../../domain_model/Election"
-const roles = require('../auth/roles')
+import { permission } from "../../../domain_model/permissions"
+import { roles } from "../../../domain_model/roles"
 
 var jwt = require('jsonwebtoken')
 
@@ -27,9 +28,11 @@ const getUser = (req: any, res: any, next: any) => {
   next()
 }
 
-const hasPermission = (permission: any) => {
+const hasPermission = (permission: permission) => {
   return (req: any, res: any, next: any) => {
-    if (!req.user_auth.roles.some( (role:any) => permission.includes(role))) {
+    console.log(permission)
+    console.log(req.user_auth.roles)
+    if (!req.user_auth.roles.some( (role:roles) => permission.includes(role))) {
       console.log("Does not have permission")
       return res.status('401').json({
         error: "Does not have permission"

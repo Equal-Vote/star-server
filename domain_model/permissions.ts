@@ -1,5 +1,8 @@
-const roles = require('./roles')
-const permissions = {
+import { roles} from "./roles"
+
+export type permission = roles[]
+
+export const permissions = {
   canEditElectionRoles:     [roles.system_admin, roles.owner],
   canViewElection:          [roles.system_admin, roles.owner, roles.admin, roles.auditor, roles.credentialer],
   canEditElection:          [roles.system_admin, roles.owner, roles.admin],
@@ -22,11 +25,6 @@ const permissions = {
   canViewPreliminaryResults:[roles.system_admin, roles.owner, roles.admin, roles.auditor],
 }
 
-const hasPermission = (roles:string[],permission:string[]) => {
-  return roles.some( (role:any) => permission.includes(role))
-}
-
-module.exports = {
-  permissions,
-  hasPermission,
+export const hasPermission = (roles:roles[],permission:permission) => {
+  return roles.some( (role) => permission.includes(role))
 }

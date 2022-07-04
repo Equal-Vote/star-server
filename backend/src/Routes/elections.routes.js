@@ -5,7 +5,7 @@ const electionController = require('../Controllers/elections.controllers')
 const ballotController = require('../Controllers/ballots.controllers')
 const voterRollController = require('../Controllers/voterRolls.controller')
 const authController = require('../Controllers/auth.controllers')
-const { permissions } = require('../auth/permissions');
+const { permissions } = require('../../../domain_model/permissions');
 const { ElectionRollState } = require('../../../domain_model/ElectionRoll');
 
 router.get('/Election/:id',
