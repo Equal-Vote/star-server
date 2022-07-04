@@ -39,8 +39,6 @@ const returnRolls = async (req: any, res: any, next: any) => {
 const addElectionRoll = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.addElectionRoll ${req.election.election_id}`);
     try {
-        // console.log(req)
-
         const history = [{
             action_type: 'added',
             actor: req.user.email,
@@ -92,7 +90,7 @@ const editElectionRoll = async (req: any, res: any, next: any) => {
 
 const changeElectionRollState = (newState: ElectionRollState) => {
     return async (req: any, res: any, next: any) => {
-        console.log(`-> electionRolls.changeElectionRollState ${req.election.election_id}`)
+        Logger.info(req, `${className}.changeElectionRollState`, {electionRollEntry: req.body.electionRollEntry, newState: newState});
 
         try {
             req.electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.body.electionRollEntry.voter_id)
@@ -146,11 +144,10 @@ const changeElectionRollState = (newState: ElectionRollState) => {
                 })
             req.electionRollEntry = updatedEntry
             res.status('200').json()
-        } catch (err) {
-            console.log(err)
-            return res.status('500').json({
-                error: "Could not change election roll state"
-            })
+        } catch (err:any) {
+            const msg = `Could not change election roll state`;
+            Logger.error(req, `${msg}: ${err.message}`);
+            return responseErr(res, req, 500, msg);
         }
     }
 }
@@ -288,7 +285,7 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
 const sendInvitations = async (req: any, res: any, next: any) => {
     //requires election data in req, adds entire election roll 
     if (req.election.settings.election_roll_type === 'Email') {
-        console.log(`-> electionRolls.sendInvitations ${req.election.election_id}`)
+        Logger.info(req, `${className}.sendInvitations`, {election_id: req.election.election_id});
         try {
             const url = req.protocol + '://'+req.get('host')
             EmailService.sendInvitations(req.election,req.electionRoll,url)
