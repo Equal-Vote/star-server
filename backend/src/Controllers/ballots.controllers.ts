@@ -47,20 +47,22 @@ const returnBallots = async (req: any, res: any, next: any) => {
 }
 
 const submitBallot = async (req: any, res: any, next: any) => {
+
+
     if (req.election.state!=='open'){
-        Logger.error(req, "-> Election not open. Have: "+JSON.stringify(req.election));
+        Logger.debug(req, "Ballot Rejected. Election not open.  "+JSON.stringify(req));
         return res.status('400').json({
             error: "Election is not open" + reqIdSuffix(req)
         });
     }
     if (!req.authorized_voter){
-        console.log("Voter not authorized");
+        Logger.debug(req, "Ballot Rejected. Voter not authorized.  "+JSON.stringify(req));
         return res.status('400').json({
             error: "Voter not authorized" + reqIdSuffix(req)
         });
     }
     if (req.has_voted){
-        console.log("Voter already submitted ballot");
+        Logger.debug(req, "Ballot Rejected. Voter already submitted ballo.  "+JSON.stringify(req));
         return res.status('400').json({
             error: "Voter already submitted ballot" + reqIdSuffix(req)
         });
@@ -80,6 +82,7 @@ const submitBallot = async (req: any, res: any, next: any) => {
         timestamp:ballot.date_submitted,
     });
 
+    Logger.info(req, "Submit Ballot: " + JSON.stringify(ballot));
     try {
         const savedBallot = await BallotModel.submitBallot(ballot)
         if (!savedBallot)
@@ -89,11 +92,17 @@ const submitBallot = async (req: any, res: any, next: any) => {
         req.electionRollEntry.submitted = true
         req.ballot = savedBallot;
         req.electionRollEntry.ballot_id = savedBallot.ballot_id;
+        Logger.info(req, "Submit Ballot Success: " + JSON.stringify(savedBallot));
         return next();
 
-    } catch (err) {
+    } catch (err:any) {
+        var errData = {
+            ballot: ballot,
+            error: err.message
+        };
+        Logger.error(req, "Submit Ballot Failure:  " + JSON.stringify(errData));
         return res.status('400').json({
-            error: (err as any).message
+            error: err.message
         });
     }
 }
