@@ -5,7 +5,8 @@ const electionController = require('../Controllers/elections.controllers')
 const ballotController = require('../Controllers/ballots.controllers')
 const voterRollController = require('../Controllers/voterRolls.controller')
 const authController = require('../Controllers/auth.controllers')
-const {permissions} = require('../auth/permissions')
+const { permissions } = require('../auth/permissions');
+const { ElectionRollState } = require('../../../domain_model/ElectionRoll');
 
 router.get('/Election/:id',
     authController.getUser,
@@ -33,13 +34,27 @@ router.get('/Election/:id/rolls/:voter_id',
     authController.getUser,
     authController.hasPermission(permissions.canViewElectionRoll),
     voterRollController.getByVoterID)
-router.put('/Election/:id/rolls/state',
-    authController.getUser,
-    voterRollController.changeElectionRollState)
 router.post('/Election/:id/rolls/',
     authController.getUser,
     authController.hasPermission(permissions.canEditElectionRoll),
     voterRollController.editElectionRoll)
+
+router.post('/Election/:id/rolls/approve',
+    authController.getUser,
+    authController.hasPermission(permissions.canApproveElectionRoll),
+    voterRollController.changeElectionRollState(ElectionRollState.approved))
+router.post('/Election/:id/rolls/flag',
+    authController.getUser,
+    authController.hasPermission(permissions.canFlagElectionRoll),
+    voterRollController.changeElectionRollState(ElectionRollState.flagged))
+router.post('/Election/:id/rolls/invalidate',
+    authController.getUser,
+    authController.hasPermission(permissions.canInvalidateElectionRoll),
+    voterRollController.changeElectionRollState(ElectionRollState.invalid))
+router.post('/Election/:id/rolls/unflag',
+    authController.getUser,
+    authController.hasPermission(permissions.canUnflagElectionRoll),
+    voterRollController.changeElectionRollState(ElectionRollState.invalid))
 router.post('/Election/:id/rolls/',
     authController.getUser,
     authController.hasPermission(permissions.canAddToElectionRoll),

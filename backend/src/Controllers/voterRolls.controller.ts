@@ -36,7 +36,7 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
 
     try {
         // console.log(req)
-        
+
         const history = [{
             action_type: 'added',
             actor: req.user.email,
@@ -61,7 +61,7 @@ const editElectionRoll = async (req: any, res: any, next: any) => {
     console.log(`-> electionRolls.editElectionRoll ${req.election.election_id}`)
 
     try {
-        if (req.body.electionRollEntry.history == null){
+        if (req.body.electionRollEntry.history == null) {
             req.body.electionRollEntry.history = [];
         }
         req.body.electionRollEntry.history.push([{
@@ -85,67 +85,68 @@ const editElectionRoll = async (req: any, res: any, next: any) => {
     }
 }
 
-const changeElectionRollState = async (req: any, res: any, next: any) => {
-    console.log(`-> electionRolls.changeElectionRollState ${req.election.election_id}`)
+const changeElectionRollState = (newState: ElectionRollState) => {
+    return async (req: any, res: any, next: any) => {
+        console.log(`-> electionRolls.changeElectionRollState ${req.election.election_id}`)
 
-    try {
-        req.electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.body.electionRollEntry.voter_id)
-        const newState = req.body.electionRollEntry.state;
-        // Logic to control election roll state change permissions is more complex so handled here
-        // Each state has valid transitions to other states and permissions associated with them
-        if (req.electionRollEntry.state === ElectionRollState.registered) {
-            if (!((newState === ElectionRollState.approved && hasPermission(req.user_auth.roles, permissions.canApproveElectionRoll)) ||
-                (newState === ElectionRollState.flagged && hasPermission(req.user_auth.roles, permissions.canFlagElectionRoll)))) {
+        try {
+            req.electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.body.electionRollEntry.voter_id)
+            // Logic to control election roll state change permissions is more complex so handled here
+            // Each state has valid transitions to other states and permissions associated with them
+            if (req.electionRollEntry.state === ElectionRollState.registered) {
+                if (!(newState === ElectionRollState.approved ||
+                    newState === ElectionRollState.flagged)) {
+                    return res.status('401').json({
+                        error: "Invalid voter roll state transition"
+                    })
+                }
+            } else if (req.electionRollEntry.state === ElectionRollState.approved) {
+                if (!(newState === ElectionRollState.flagged)) {
+                    return res.status('401').json({
+                        error: "Invalid voter roll state transition"
+                    })
+                }
+            } else if (req.electionRollEntry.state === ElectionRollState.flagged) {
+                if (!(newState === ElectionRollState.approved ||
+                    newState === ElectionRollState.invalid)) {
+                    return res.status('401').json({
+                        error: "Invalid voter roll state transition"
+                    })
+                }
+            } else if (req.electionRollEntry.state === ElectionRollState.invalid) {
+                if (!(newState === ElectionRollState.flagged)) {
+                    return res.status('401').json({
+                        error: "Invalid voter roll state transition"
+                    })
+                }
+            } else {
                 return res.status('401').json({
-                    error: "Does not have permission"
+                    error: "Invalid voter roll state transition"
                 })
             }
-        } else if (req.electionRollEntry.state === ElectionRollState.approved) {
-            if (!(newState === ElectionRollState.flagged && hasPermission(req.user_auth.roles, permissions.canFlagElectionRoll))) {
-                return res.status('401').json({
-                    error: "Does not have permission"
-                })
+
+            req.electionRollEntry.state = newState;
+            if (req.electionRollEntry.history == null) {
+                req.electionRollEntry.history = [];
             }
-        } else if (req.electionRollEntry.state === ElectionRollState.flagged) {
-            if (!((newState === ElectionRollState.approved && hasPermission(req.user_auth.roles, permissions.canUnflagElectionRoll)) ||
-                (newState === ElectionRollState.invalid && hasPermission(req.user_auth.roles, permissions.canInvalidateElectionRoll)))) {
-                return res.status('401').json({
-                    error: "Does not have permission"
+            req.electionRollEntry.history.push([{
+                action_type: newState,
+                actor: req.user.email,
+                timestamp: Date.now(),
+            }])
+            const updatedEntry = await ElectionRollModel.update(req.electionRollEntry)
+            if (!updatedEntry)
+                return res.status('400').json({
+                    error: "Voter Roll not found"
                 })
-            }
-        } else if (req.electionRollEntry.state === ElectionRollState.invalid) {
-            if (!(newState === ElectionRollState.flagged && hasPermission(req.user_auth.roles, permissions.canInvalidateElectionRoll))) {
-                return res.status('401').json({
-                    error: "Does not have permission"
-                })
-            }
-        } else {
-            return res.status('401').json({
-                error: "Does not have permission"
+            req.electionRollEntry = updatedEntry
+            res.status('200').json()
+        } catch (err) {
+            console.log(err)
+            return res.status('500').json({
+                error: "Could not change election roll state"
             })
         }
-
-        req.electionRollEntry.state = newState;
-        if (req.electionRollEntry.history == null){
-            req.electionRollEntry.history = [];
-        }
-        req.electionRollEntry.history.push([{
-            action_type: newState,
-            actor: req.user.email,
-            timestamp: Date.now(),
-        }])
-        const updatedEntry = await ElectionRollModel.update(req.electionRollEntry)
-        if (!updatedEntry)
-            return res.status('400').json({
-                error: "Voter Roll not found"
-            })
-        req.electionRollEntry = updatedEntry
-        res.status('200').json()
-    } catch (err) {
-        console.log(err)
-        return res.status('400').json({
-            error: "Could not change election roll state"
-        })
     }
 }
 
@@ -246,7 +247,7 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
                 actor: req.user?.email || req.voter_id,
                 timestamp: Date.now(),
             }]
-            const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, [req.voter_id], false,ElectionRollState.approved,history)
+            const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, [req.voter_id], false, ElectionRollState.approved, history)
             if (!NewElectionRoll)
                 return res.status('400').json({
                     error: "Voter Roll not found"
