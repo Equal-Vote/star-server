@@ -78,17 +78,16 @@ const submitBallot = async (req: any, res: any, next: any) => {
         timestamp:ballot.date_submitted,
     });
 
-    Logger.debug(req, "Submit Ballot:", ballot);
+    Logger.info(req, "Submit Ballot:", ballot);
     try {
         const savedBallot = await BallotModel.submitBallot(ballot);
         if (!savedBallot){
-            Logger.info(req, "Submit Ballot Failure: Ballot not found");
             return responseErr(res, req, 400, "Ballots not found");
         }
         req.electionRollEntry.submitted = true
         req.ballot = savedBallot;
         req.electionRollEntry.ballot_id = savedBallot.ballot_id;
-        Logger.info(req, "WRITE: Submit Ballot Success.", savedBallot);
+        Logger.info(req, "Submit Ballot Success.", savedBallot);
         return next();
     } catch (err:any) {
         var errData = {
