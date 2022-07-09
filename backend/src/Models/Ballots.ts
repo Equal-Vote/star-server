@@ -37,7 +37,7 @@ export default class BallotsDB {
             ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS history json
             `;
             return this._postgresClient.query(historyQuery).catch((err:any) => {
-                console.log("err adding history column to DB: " + err.message);
+                Logger.error(appInitContext, "err adding history column to DB: " + err.message);
                 return err;
             });
         }).then((_:any)=> {
@@ -45,7 +45,7 @@ export default class BallotsDB {
         });
     }
 
-    submitBallot(ballot: Ballot, ctx:ILoggingContext): Promise<Ballot> {
+    submitBallot(ballot: Ballot, ctx:ILoggingContext, reason:String): Promise<Ballot> {
         Logger.debug(ctx, `${className}.submit`, ballot);
         var sqlString = `INSERT INTO ${this._tableName} (election_id,user_id,status,date_submitted,ip_address,votes,history)
         VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING ballot_id;`;
@@ -65,6 +65,7 @@ export default class BallotsDB {
         return p.then((res: any) => {
             Logger.debug(ctx, `set response rows:`, res);
             ballot.ballot_id = res.rows[0][0];
+            Logger.state(ctx, `Ballot submitted`, { ballot: ballot, reason: reason});
             return ballot;
         });
     }
@@ -109,7 +110,7 @@ export default class BallotsDB {
         });
     }
 
-    delete(ballot_id: string,  ctx:ILoggingContext): Promise<boolean> {
+    delete(ballot_id: string,  ctx:ILoggingContext, reason:string): Promise<boolean> {
         Logger.debug(ctx, `${className}.delete ${ballot_id}`);
         var sqlString = `DELETE FROM ${this._tableName} WHERE ballot_id = $1`;
         Logger.debug(ctx, sqlString);
@@ -121,6 +122,7 @@ export default class BallotsDB {
         });
         return p.then((response: any) => {
             if (response.rowCount == 1) {
+                Logger.state(ctx, `Ballot ${ballot_id} deleted:`, {ballotId: ballot_id, reason: reason });
                 return true;
             }
             return false;

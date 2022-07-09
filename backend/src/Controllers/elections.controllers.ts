@@ -4,6 +4,8 @@ import ServiceLocator from '../ServiceLocator';
 import Logger from '../Services/Logging/Logger';
 import { responseErr } from '../Util';
 import ElectionsDB from '../Models/Elections';
+import { IRequest } from '../IRequest';
+import { Election } from '../../../domain_model/Election';
 
 const StarResults = require('../Tabulators/StarResults.js');
 
@@ -21,40 +23,8 @@ const getElectionByID = async (req: any, res: any, next: any) => {
             return responseErr(res, req, 400, failMsg);
         }
         // Update Election State
-        const currentTime = new Date();
-        var stateChange = false
-        if (election.state === 'draft') {
+        election = await updateElectionStateIfNeeded(req, election);
 
-        }
-        if (election.state === 'finalized') {
-            var openElection = false;
-            if (election.start_time) {
-                const startTime = new Date(election.start_time);
-                if (currentTime.getTime() > startTime.getTime()) {
-                    openElection = true;
-                }
-            } else {
-                openElection = true;
-            }
-            if (openElection){
-                Logger.info(req, `Election Transitioning to Open From ${election.state} (start time = ${election.start_time})`);
-                stateChange = true;
-                election.state = 'open';
-            }
-        }
-        if (election.state === 'open') {
-            if (election.end_time) {
-                const endTime = new Date(election.end_time);
-                if (currentTime.getTime() > endTime.getTime()) {
-                    Logger.info(req, `Election Transitioning to Closed From ${election.state} (end time = ${election.end_time})`)
-                    stateChange = true;
-                    election.state = 'closed';
-                }
-            }
-        }
-        if (stateChange) {
-            election = await ElectionsModel.updateElection(election, req)
-        }
         req.election = election
         return next()
     } catch (err:any) {
@@ -62,6 +32,48 @@ const getElectionByID = async (req: any, res: any, next: any) => {
         Logger.error(req, `${failMsg} ${err.message}`);
         return responseErr(res, req, 500, failMsg);
     }
+}
+
+async function updateElectionStateIfNeeded(req:IRequest, election:Election):Promise<Election> {
+    if (election.state === 'draft') {
+        return election;
+    }
+
+    const currentTime = new Date();
+    var stateChange = false;
+    var stateChangeMsg = "";
+
+    if (election.state === 'finalized') {
+        var openElection = false;
+        if (election.start_time) {
+            const startTime = new Date(election.start_time);
+            if (currentTime.getTime() > startTime.getTime()) {
+                openElection = true;
+            }
+        } else {
+            openElection = true;
+        }
+        if (openElection){
+            stateChange = true;
+            election.state = 'open';
+            stateChangeMsg = `Election ${election.election_id} Transitioning to Open From ${election.state} (start time = ${election.start_time})`;
+        }
+    }
+    if (election.state === 'open') {
+        if (election.end_time) {
+            const endTime = new Date(election.end_time);
+            if (currentTime.getTime() > endTime.getTime()) {
+                stateChange = true;
+                election.state = 'closed';
+                stateChangeMsg = `Election ${election.election_id} transitioning to Closed From ${election.state} (end time = ${election.end_time})`;
+            }
+        }
+    }
+    if (stateChange) {
+        election = await ElectionsModel.updateElection(election, req, stateChangeMsg);
+        Logger.info(req, stateChangeMsg);
+    }
+    return election;
 }
 
 const returnElection = async (req: any, res: any, next: any) => {
@@ -133,7 +145,7 @@ const createElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.createElection`)
     var failMsg = "Election not created";
     try {
-        const newElection = await ElectionsModel.createElection(req.body.Election, req)
+        const newElection = await ElectionsModel.createElection(req.body.Election, req, `User Creates new election`);
         if (!newElection){
             Logger.error(req, failMsg);
             return responseErr(res, req, 400, failMsg);
@@ -147,15 +159,17 @@ const createElection = async (req: any, res: any, next: any) => {
 }
 
 const deleteElection = async (req: any, res: any, next: any) => {
-    Logger.info(req, `${className}.deleteElection`)
+    const electionId = req.election.election_id;
+    Logger.info(req, `${className}.deleteElection ${electionId}`)
     var failMsg = "Election not deleted";
     try {
-        const success = await ElectionsModel.delete(req.election.election_id, req);
+        const success = await ElectionsModel.delete(electionId, req, `User manually deleting election`);
         if (!success){
             var msg = "Nothing to delete";
             Logger.error(req, msg);
             return responseErr(res, req, 400, msg);
         }
+        Logger.info(req, `Deleted election ${electionId}`);
         return next();
     } catch (err:any) {
         Logger.error(req, failMsg + ". " + err.message);
@@ -176,7 +190,7 @@ const editElection = async (req: any, res: any, next: any) => {
     Logger.debug(req, `election ID = ${req.body.Election.election_id}`);
     var failMsg = `Failed to update election`;
     try {
-        const updatedElection = await ElectionsModel.updateElection(req.body.Election, req)
+        const updatedElection = await ElectionsModel.updateElection(req.body.Election, req, `User editing draft Election`);
         if (!updatedElection){
             Logger.error(req, failMsg);
             return responseErr(res, req, 400, failMsg);
@@ -199,7 +213,7 @@ const finalize = async (req: any, res: any, next: any) => {
     var failMsg = "Failed to update Election";
     try {
         req.election.state = 'finalized'
-        const updatedElection = await ElectionsModel.updateElection(req.election, req)
+        const updatedElection = await ElectionsModel.updateElection(req.election, req, `Finalizing election`);
         if (!updatedElection) {
             Logger.info(req, failMsg);
             return responseErr(res, req, 400, failMsg);

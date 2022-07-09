@@ -19,6 +19,14 @@ function error(context?: ILoggingContext, message?: any, ...optionalParams: any[
   logger().error(context, message, ...optionalParams);
 }
 
+/** 
+* Use to log about a state change (ie write to a DB) 
+* Shortcut for Logger.info with a prefix
+**/
+function state(context?: ILoggingContext, message?: any, ...optionalParams: any[]): void {
+  logger().info(context, "STATE: " + message, ...optionalParams);
+}
+
 function logger(): ILogger {
   if (_loggerInstance == null) {
     _loggerInstance = new LoggerImpl();
@@ -32,4 +40,4 @@ function createContext(name:string):ILoggingContext {
       }
 }
 
-export  default { debug, info, warn, error, createContext };
+export  default { debug, info, warn, error, createContext, state };
