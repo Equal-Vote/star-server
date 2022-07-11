@@ -1,0 +1,25 @@
+{
+  "name": "star-server",
+  "version": "1.0.0",
+  "description": "star-server is built using Express (For now) for the back end server and React for the front end user interface",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd backend && npm start",
+    "heroku-postbuild": "cd frontend && npm install && npm run build && cd ../backend && npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Equal-Vote/star-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Equal-Vote/star-server/issues"
+  },
+  "homepage": "https://github.com/Equal-Vote/star-server#readme",
+  "dependencies": {
+    "crypto": "^1.0.1"
+  }
+}

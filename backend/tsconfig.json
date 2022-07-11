@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "target": "es6",
+    "module": "commonjs",
+    "rootDir": "../",
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "strict": true,
+    "types": [
+      "jest"
+    ]
+  },
+  "include": ["../domain_model/**/*", "./src/**/*"]
+}
