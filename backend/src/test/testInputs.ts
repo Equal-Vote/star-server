@@ -5,7 +5,7 @@ import { Race } from '../../../domain_model/Race';
 var jwt = require('jsonwebtoken')
 
 
-module.exports = {
+export default {
     user1token : jwt.sign({ 
         email: 'Alice@email.com',
         sub: 'Alice1234',
