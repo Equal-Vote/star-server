@@ -132,6 +132,7 @@ const getElections = async (req: any, res: any, next: any) => {
 const createElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.createElection`)
     var failMsg = "Election not created";
+
     try {
         const newElection = await ElectionsModel.createElection(req.body.Election)
         if (!newElection){
@@ -173,6 +174,10 @@ const editElection = async (req: any, res: any, next: any) => {
         Logger.info(req, `Election is not editable, state=${req.election.state}`);
         return responseErr(res, req, 400, "Election is not editable");
     }
+    if (req.election.election_id != req.params.id){
+        Logger.info(req, `Body Election ${req.election.election_id} != param ID ${req.params.id}`);
+        return responseErr(res, req, 400, "Election ID must match the URL Param");
+    }
     Logger.debug(req, `election ID = ${req.body.Election.election_id}`);
     var failMsg = `Failed to update election`;
     try {
@@ -182,6 +187,7 @@ const editElection = async (req: any, res: any, next: any) => {
             return responseErr(res, req, 400, failMsg);
         }
         req.election = updatedElection
+        Logger.debug(req, `editElection succeeds for ${updatedElection.election_id}`);
         return next()
     } catch (err:any) {
         Logger.error(req, `${failMsg}: ${err.message}`);
