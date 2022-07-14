@@ -7,6 +7,7 @@ class ElectionRollDB {
     constructor() {
     }
     submitElectionRoll(election_id: string, voter_ids: string[],submitted:boolean,state: ElectionRollState, history: ElectionRollAction): Promise<boolean>{
+        console.log("SUBMIT ELECTION ROLL:");
         for (var i = 0; i < voter_ids.length; i++){
             this.electionRolls.push({
                 election_roll_id: '0',
@@ -17,6 +18,8 @@ class ElectionRollDB {
                 history: [history]
             })
         }
+        console.log("electionRolls now looks like:");
+        console.log( this.electionRolls);
         return Promise.resolve(true)
     }
     getRollsByElectionID(election_id: string): Promise<ElectionRoll[] | null> {

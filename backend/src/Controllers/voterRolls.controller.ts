@@ -37,6 +37,7 @@ const returnRolls = async (req: any, res: any, next: any) => {
 }
 
 const addElectionRoll = async (req: any, res: any, next: any) => {
+    Logger.warn(req, `= = = = = \n POINTER \n = = = = = `);
     Logger.info(req, `${className}.addElectionRoll ${req.election.election_id}`);
     try {
         const history = [{
@@ -163,7 +164,7 @@ const updateElectionRoll = async (req: any, res: any, next: any) => {
     }
     try {
 
-        const electionRollEntry = await ElectionRollModel.update(req.electionRollEntry)
+        const electionRollEntry = await ElectionRollModel.update(electinoRollInput)
         if (!electionRollEntry){
                 const msg= "Voter Roll not found";
                 Logger.info(req, msg);
