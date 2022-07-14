@@ -86,6 +86,11 @@ const submitBallot = async (req: any, res: any, next: any) => {
         req.electionRollEntry.submitted = true
         req.ballot = savedBallot;
         req.electionRollEntry.ballot_id = savedBallot.ballot_id;
+        req.electionRollEntry.history.push({
+            action_type:"submit",
+            actor: ballot.user_id || "unknown",
+            timestamp:ballot.date_submitted,
+        })
         Logger.info(req, "Submit Ballot Success.", savedBallot);
         return next();
     } catch (err:any) {

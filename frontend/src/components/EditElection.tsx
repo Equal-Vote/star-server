@@ -4,44 +4,27 @@ import useFetch from "../useFetch";
 import Container from '@material-ui/core/Container';
 import ElectionForm from "./ElectionForm";
 
-const EditElection = ({ authSession }) => {
+const EditElection = ({ authSession, election }) => {
     const { id } = useParams();
-    const { data, isPending, error } = useFetch(`/API/Election/${id}`,{
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-    })
-
-    console.log(data);
-
+    const { isPending, error, makeRequest: editElection } = useFetch(`/API/Election/${election.election_id}/edit`,'post')
     const onEditElection = async (election, voterIds) => {
-        const res = await fetch(`/API/Election/${election.election_id}/edit`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+        if ((! await editElection(
+            {
                 Election: election,
                 VoterIDList: voterIds,
-            })
-        })
-        if (!res.ok) {
-            Error('Could not fetch data')
+            }))) {
+            throw Error("Error editing election");
         }
-        return res
     }
 
     return (
         <Container >
         <>
         {error && <div> {error} </div>}
-        {isPending && <div> Loading Election... </div>}
+        {isPending && <div> Submitting... </div>}
         {!authSession.isLoggedIn() && <div> Must be logged in to edit </div>}
-        {authSession.isLoggedIn() && data && data.election && authSession.getIdField('sub') == data.election.owner_id &&
-            <ElectionForm authSession={authSession} onSubmitElection={onEditElection} prevElectionData={data.election} submitText='Apply Updates'/>
+        {authSession.isLoggedIn() && authSession.getIdField('sub') == election.owner_id &&
+            <ElectionForm authSession={authSession} onSubmitElection={onEditElection} prevElectionData={election} submitText='Apply Updates'/>
         }
         </>
         </Container>

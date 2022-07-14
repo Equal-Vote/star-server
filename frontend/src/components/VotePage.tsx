@@ -9,73 +9,53 @@ import { Ballot } from "../../../domain_model/Ballot";
 import { Vote } from "../../../domain_model/Vote";
 import { Score } from "../../../domain_model/Score";
 import { Container } from "@material-ui/core";
-const VotePage = ({ }) => {
+const VotePage = ({ election }) => {
   const { id } = useParams();
-  const { data, isPending, error } = useFetch(`/API/Election/${id}`)
   const [rankings, setRankings] = useState([])
   const navigate = useNavigate();
-  const [submitError,setSubmitError] = useState('')
-  console.log(data)
+  const [submitError, setSubmitError] = useState('')
+
+  const { data, isPending, error, makeRequest: postBallot } = useFetch(`/API/Election/${id}/vote`, 'post')
   const onUpdate = (rankings) => {
     setRankings(rankings)
     console.log(rankings)
   }
-  const submit = () => {
-    console.log(data.election)
-    console.log(data.election.Candidates)
+  const submit = async () => {
     console.log(rankings)
 
-    const votes:Vote[] = [{
-        race_id: '0',
-        scores: data.election.races[0].candidates.map((candidate, i) =>
-          ({ 'candidate_id': data.election.races[0].candidates[i].candidate_id, 'score': rankings[i] } as Score)
-        )
-      }]
+    const votes: Vote[] = [{
+      race_id: '0',
+      scores: election.races[0].candidates.map((candidate, i) =>
+        ({ 'candidate_id': election.races[0].candidates[i].candidate_id, 'score': rankings[i] } as Score)
+      )
+    }]
 
-    const ballot:Ballot = {
+    const ballot: Ballot = {
       ballot_id: 0, //Defaults to zero but is assigned ballot id by server when submitted
-      election_id: data.election.election_id,
-      votes:votes,
+      election_id: election.election_id,
+      votes: votes,
       date_submitted: Date.now(),
       status: 'submitted',
     }
     console.log(ballot)
-    fetch(`/API/Election/${id}/vote`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ballot: ballot
-      })
-    }).then(res => {
-      if(!res.ok) {
-          console.log(res)
-          setSubmitError('Error Submitting Ballot')
-          throw Error('Could not submit ballot')
-      }
-      navigate(`/Election/${id}`)
-  })
-    
+    // post ballot, if response ok navigate back to election home
+    if (!(await postBallot({ ballot: ballot }))) {
+      return
+    }
+    navigate(`/Election/${id}`)
   }
   return (
-    <Container >
-      <>
-        {error && <div> {error} </div>}
-        {isPending && <div> Loading Election... </div>}
-        {data&& data.election &&
-          <StarBallot
-            race={data.election.races[0]}
-            candidates={data.election.races[0].candidates}
-            onUpdate={onUpdate}
-            defaultRankings={Array(data.election.races[0].candidates.length).fill(0)}
-            readonly={false}
-            onSubmitBallot={submit}
-          />}
-        {<div> {submitError} </div>}
-      </>
-    </Container>
+    <>
+      <StarBallot
+        race={election.races[0]}
+        candidates={election.races[0].candidates}
+        onUpdate={onUpdate}
+        defaultRankings={Array(election.races[0].candidates.length).fill(0)}
+        readonly={false}
+        onSubmitBallot={submit}
+      />
+      {<div> {error} </div>}
+    </>
   )
 }
 
