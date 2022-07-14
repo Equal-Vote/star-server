@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 import Logger from './Services/Logging/Logger';
 import {IRequest, iRequestMiddleware, reqIdSuffix} from './IRequest';
 import { responseErr } from './Util';
+import { loggerMiddleware } from './Services/Logging/LoggerMiddleware';
 
 export default function makeApp() {
 
@@ -33,10 +34,7 @@ app.use(cors({
 app.enable('trust proxy')
 
 app.use(iRequestMiddleware);
-app.use((req:IRequest, res, next) => {
-    Logger.info(req, `REQUEST: ${req.method} ${req.url} @ ${new Date(Date.now()).toISOString()} ip:${req.ip}`);
-    next();
-})
+app.use(loggerMiddleware);
 
 app.use(cookieParser())
 
