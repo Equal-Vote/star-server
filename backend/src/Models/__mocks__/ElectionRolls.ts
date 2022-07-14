@@ -1,4 +1,3 @@
-import { Vote } from '../../../../domain_model/Vote';
 import { ElectionRoll, ElectionRollAction, ElectionRollState } from '../../../../domain_model/ElectionRoll';
 
 class ElectionRollDB {
@@ -7,7 +6,6 @@ class ElectionRollDB {
     constructor() {
     }
     submitElectionRoll(election_id: string, voter_ids: string[],submitted:boolean,state: ElectionRollState, history: ElectionRollAction): Promise<boolean>{
-        console.log("SUBMIT ELECTION ROLL:");
         for (var i = 0; i < voter_ids.length; i++){
             this.electionRolls.push({
                 election_roll_id: '0',
@@ -18,8 +16,6 @@ class ElectionRollDB {
                 history: [history]
             })
         }
-        console.log("electionRolls now looks like:");
-        console.log( this.electionRolls);
         return Promise.resolve(true)
     }
     getRollsByElectionID(election_id: string): Promise<ElectionRoll[] | null> {
@@ -37,8 +33,12 @@ class ElectionRollDB {
         return Promise.resolve(ballots)
     }
     update(voter_roll: ElectionRoll): Promise<ElectionRoll | null> {
-        const index = this.electionRolls.findIndex(electionRoll => electionRoll.election_id===voter_roll.election_id && electionRoll.voter_id===voter_roll.voter_id)
-        if (!index){
+        const index = this.electionRolls.findIndex(electionRoll => {
+            var electionMatch = electionRoll.election_id===voter_roll.election_id;
+            var voterMatch = electionRoll.voter_id===voter_roll.voter_id;
+            return electionMatch && voterMatch
+        });
+        if (index < 0){
             return Promise.resolve(null)
         }
         this.electionRolls[index] = voter_roll

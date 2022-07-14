@@ -47,8 +47,6 @@ describe("Email Roll", () => {
             .set('Cookie', ['id_token=' + testInputs.user1token])
             .set('Accept', 'application/json')
             .send({ ballot: testInputs.Ballot1 });
-        console.log("= = = = = \n POINTER \n= = = = = ");
-        console.log(response.body)
         expect(response.statusCode).toBe(200)
     })
     test("Get voter auth, is authorized and has voted", async () => {
