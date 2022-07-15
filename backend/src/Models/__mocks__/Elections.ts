@@ -21,9 +21,7 @@ class ElectionsDB {
         if(election.election_id >= this.elections.length){
             return Promise.resolve(null);
         }
-
         this.elections[election.election_id] = election;
-
         return Promise.resolve(election);
     }
 

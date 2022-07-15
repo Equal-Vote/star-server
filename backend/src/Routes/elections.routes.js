@@ -71,7 +71,8 @@ router.post('/Election/:id/edit',
     authController.getUser,
     authController.isLoggedIn,
     authController.hasPermission(permissions.canEditElection),
-    electionController.editElection)
+    electionController.editElection,
+    electionController.returnElection)
 router.get('/ElectionResult/:id',
     ballotController.getBallotsByElectionID,
     electionController.getElectionResults)

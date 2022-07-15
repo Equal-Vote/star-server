@@ -12,15 +12,17 @@ class BallotsDB {
         } else{
             ballot.ballot_id = 0
         }
-        this.ballots.push(ballot)
-        return Promise.resolve(ballot)
+        const savedBallot = {...ballot};
+        this.ballots.push(savedBallot)
+        return Promise.resolve({...savedBallot})
     }
     getBallotsByElectionID(election_id:string): Promise<Ballot[] | null> {
         const ballots = this.ballots.filter(ballot => ballot.election_id===election_id)
         if (!ballots){
             return Promise.resolve(null)
         }
-        return Promise.resolve(ballots)
+        var resBallots = ballots.map(function(b){return {...b}});
+        return Promise.resolve(resBallots)
     }
     delete(ballot_id: number): Promise<Ballot | null> {
         const ballot = this.ballots.find(ballot => ballot.ballot_id===ballot_id)
