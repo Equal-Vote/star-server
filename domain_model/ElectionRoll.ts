@@ -27,6 +27,9 @@ export enum ElectionRollState {
 }
 
 export function electionRollValidation(obj:ElectionRoll): string | null {
+    if (!obj){
+        return "ElectionRoll is null";
+    }
     if (typeof obj.election_roll_id !== 'string'){
         return "Invalid Election Roll ID";
     }

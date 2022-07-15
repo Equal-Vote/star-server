@@ -24,7 +24,7 @@ export function electionValidation(obj:Election): string | null {
   if (!obj){
     return "Election is null";
   }
-  if (typeof obj.election_id !== 'string'){
+  if (typeof obj.election_id !== 'number'){
       return "Invalid Election ID";
   }
   if (typeof obj.title !== 'string'){

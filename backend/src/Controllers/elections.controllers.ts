@@ -132,9 +132,14 @@ const getElections = async (req: any, res: any, next: any) => {
 const createElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.createElection`)
     var failMsg = "Election not created";
-
+    const inputElection = req.body.Election;
+    const validationErr = electionValidation(inputElection);
+    if (validationErr){
+        Logger.info(req, "= = = = = \n Invalid Election: "+ validationErr + "\n = = = = = " + JSON.stringify(inputElection));
+        return responseErr(res, req, 400, "Invalid Election");
+    }
     try {
-        const newElection = await ElectionsModel.createElection(inputElection)
+        const newElection = await ElectionsModel.createElection(req.body.Election)
         if (!newElection){
             Logger.error(req, failMsg);
             return responseErr(res, req, 400, failMsg);
@@ -167,19 +172,19 @@ const deleteElection = async (req: any, res: any, next: any) => {
 const editElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.editElection`)
 
-    const inputElection = req.body.Election;
+    const inputElection = req.election;
     const validationErr = electionValidation(inputElection);
     if (validationErr){
         Logger.info(req, "Invalid Election: "+ validationErr);
         return responseErr(res, req, 400, "Invalid Election");
     }
 
-    if (req.election.state !== 'draft') {
-        Logger.info(req, `Election is not editable, state=${req.election.state}`);
+    if (inputElection.state !== 'draft') {
+        Logger.info(req, `Election is not editable, state=${inputElection.state}`);
         return responseErr(res, req, 400, "Election is not editable");
     }
-    if (req.election.election_id != req.params.id){
-        Logger.info(req, `Body Election ${req.election.election_id} != param ID ${req.params.id}`);
+    if (inputElection.election_id != req.params.id){
+        Logger.info(req, `Body Election ${inputElection.election_id} != param ID ${req.params.id}`);
         return responseErr(res, req, 400, "Election ID must match the URL Param");
     }
     Logger.debug(req, `election ID = ${req.body.Election.election_id}`);
