@@ -6,7 +6,6 @@ import { responseErr } from "../Util";
 const ElectionRollDB = require('../Models/ElectionRolls')
 const EmailService = require('../Services/EmailService')
 var ElectionRollModel = new ElectionRollDB(ServiceLocator.postgres());
-const { permissions, hasPermission } = require('../auth/permissions')
 const className="VoterRolls.Controllers";
 
 const getRollsByElectionID = async (req: any, res: any, next: any) => {

@@ -1,4 +1,4 @@
-import { Election } from '../../../domain_model/Election';
+import { Election, electionValidation } from '../../../domain_model/Election';
 import { Ballot } from '../../../domain_model/Ballot';
 import { Score } from '../../../domain_model/Score';
 import ServiceLocator from '../ServiceLocator';
@@ -132,8 +132,15 @@ const getElections = async (req: any, res: any, next: any) => {
 const createElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.createElection`)
     var failMsg = "Election not created";
+    const inputElection = req.body.Election;
+    const validationErr = electionValidation(inputElection);
+    if (validationErr){
+        Logger.info(req, "Invalid Election: "+ validationErr);
+        return responseErr(res, req, 400, "Invalid Election");
+    }
+
     try {
-        const newElection = await ElectionsModel.createElection(req.body.Election)
+        const newElection = await ElectionsModel.createElection(inputElection)
         if (!newElection){
             Logger.error(req, failMsg);
             return responseErr(res, req, 400, failMsg);
@@ -165,10 +172,14 @@ const deleteElection = async (req: any, res: any, next: any) => {
 
 const editElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.editElection`)
-    if (req.body.Election == undefined) {
-        Logger.info(req, `Election undefined`);
-        return responseErr(res, req, 400, "Election not provided");
+
+    const inputElection = req.body.Election;
+    const validationErr = electionValidation(inputElection);
+    if (validationErr){
+        Logger.info(req, "Invalid Election: "+ validationErr);
+        return responseErr(res, req, 400, "Invalid Election");
     }
+
     if (req.election.state !== 'draft') {
         Logger.info(req, `Election is not editable, state=${req.election.state}`);
         return responseErr(res, req, 400, "Election is not editable");

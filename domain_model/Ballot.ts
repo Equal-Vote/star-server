@@ -19,3 +19,17 @@ export interface BallotAction {
     timestamp:number;
 }
 
+
+export function ballotValidation(obj:Ballot): string | null {
+    if (typeof obj.election_id !== 'string'){
+        return "Invalid Election ID";
+    }
+    if (typeof obj.ballot_id !== 'number'){
+        return "Invalid Ballot ID";
+    }
+    if (!obj.votes){
+        return "Invalid Votes";
+    }
+    //TODO... etc
+    return null;
+  }

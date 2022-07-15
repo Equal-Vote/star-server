@@ -25,3 +25,17 @@ export enum ElectionRollState {
     registered = 'registered',
     invalid = 'invalid'
 }
+
+export function electionRollValidation(obj:ElectionRoll): string | null {
+    if (typeof obj.election_roll_id !== 'string'){
+        return "Invalid Election Roll ID";
+    }
+    if (typeof obj.election_id !== 'string'){
+        return "Invalid Election ID";
+    }
+    if (typeof obj.submitted !== 'boolean'){
+        return "Invalid Submitted";
+    }
+    //TODO... etc
+    return null;
+}
