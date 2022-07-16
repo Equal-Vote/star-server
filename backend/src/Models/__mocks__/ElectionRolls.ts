@@ -1,6 +1,6 @@
 import { ElectionRoll, ElectionRollAction, ElectionRollState } from '../../../../domain_model/ElectionRoll';
 
-class ElectionRollDB {
+export default class ElectionRollDB {
 
     electionRolls: ElectionRoll[] = []
     constructor() {
@@ -53,5 +53,3 @@ class ElectionRollDB {
         return Promise.resolve(true)
     }
 }
-
-module.exports = ElectionRollDB

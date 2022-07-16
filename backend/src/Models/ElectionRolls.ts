@@ -1,8 +1,8 @@
 import { ElectionRoll, ElectionRollAction } from '../../../domain_model/ElectionRoll';
 import Logger from '../Services/Logging/Logger';
-const { Pool } = require('pg');
 var format = require('pg-format');
-class ElectionRollDB {
+
+export default class ElectionRollDB {
 
     _postgresClient;
     _tableName: string;
@@ -44,7 +44,7 @@ class ElectionRollDB {
     }
 
 
-    submitElectionRoll(election_id: number, voter_ids: string[], submitted: Boolean, state: string, history: ElectionRollAction): Promise<boolean> {
+    submitElectionRoll(election_id: number, voter_ids: string[], submitted: Boolean, state: string, history: Array<ElectionRollAction>): Promise<boolean> {
         console.log(`-> ElectionRollDB.submit`);
         var values = voter_ids.map((voter_id) => ([election_id,
             voter_id,

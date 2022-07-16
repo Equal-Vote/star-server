@@ -1,6 +1,6 @@
 import { Ballot } from '../../../../domain_model/Ballot';
 
-class BallotsDB {
+export default class BallotsDB {
 
     ballots: Ballot[] = []
 
@@ -33,4 +33,3 @@ class BallotsDB {
         return Promise.resolve(ballot)
     }
 }
-module.exports = BallotsDB

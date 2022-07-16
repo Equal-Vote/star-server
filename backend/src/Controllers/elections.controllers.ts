@@ -1,9 +1,10 @@
 import { Ballot } from '../../../domain_model/Ballot';
 import { Score } from '../../../domain_model/Score';
+import ElectionsDB from '../Models/Elections';
 import ServiceLocator from '../ServiceLocator';
 import Logger from '../Services/Logging/Logger';
 import { responseErr } from '../Util';
-import ElectionsDB from '../Models/Elections';
+
 
 const StarResults = require('../Tabulators/StarResults.js');
 
