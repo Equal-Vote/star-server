@@ -28,7 +28,7 @@ describe("Create Election", () => {
                 .post('/API/Elections')
                 .set('Cookie', ['id_token=' + testInputs.user1token])
                 .set('Accept', 'application/json')
-                .send({ Election: testInputs.Election1, VoterIDList: [testInputs.] })
+                .send({ Election: testInputs.Election1, VoterIDList: [] })
 
             expect(response.statusCode).toBe(200);
             var resObj = response.body;

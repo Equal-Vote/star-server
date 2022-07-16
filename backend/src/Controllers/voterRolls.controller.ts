@@ -14,7 +14,7 @@ const getRollsByElectionID = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.getRollsByElectionID ${electionId}`);
     //requires election data in req, adds entire election roll 
     try {
-        const electionRoll = await ElectionRollModel.getRollsByElectionID(electionId)
+        const electionRoll = await ElectionRollModel.getRollsByElectionID(electionId, req)
         if (!electionRoll) {
             const msg = `Election roll for ${electionId} not found`;
             Logger.info(req, msg);
@@ -44,7 +44,7 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
             actor: req.user.email,
             timestamp: Date.now(),
         }]
-        const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, req.body.VoterIDList, false, ElectionRollState.approved, history)
+        const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, req.body.VoterIDList, false, ElectionRollState.approved, history, req)
         if (!NewElectionRoll){
             const msg= "Voter Roll not found";
             Logger.error(req, "= = = = = = \n = = = = = ");
@@ -73,7 +73,7 @@ const editElectionRoll = async (req: any, res: any, next: any) => {
             actor: req.user.email,
             timestamp: Date.now(),
         }])
-        const electionRollEntry = await ElectionRollModel.update(electinoRollInput);
+        const electionRollEntry = await ElectionRollModel.update(electinoRollInput, req);
         if (!electionRollEntry){
             const msg= "Election Roll not found";
             Logger.info(req, msg);
@@ -94,7 +94,7 @@ const changeElectionRollState = (newState: ElectionRollState) => {
         Logger.info(req, `${className}.changeElectionRollState`, {electionRollEntry: req.body.electionRollEntry, newState: newState});
 
         try {
-            req.electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.body.electionRollEntry.voter_id)
+            req.electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.body.electionRollEntry.voter_id, req)
             // Logic to control election roll state change permissions is more complex so handled here
             // Each state has valid transitions to other states and permissions associated with them
             if (req.electionRollEntry.state === ElectionRollState.registered) {
@@ -138,7 +138,7 @@ const changeElectionRollState = (newState: ElectionRollState) => {
                 actor: req.user.email,
                 timestamp: Date.now(),
             }])
-            const updatedEntry = await ElectionRollModel.update(req.electionRollEntry)
+            const updatedEntry = await ElectionRollModel.update(req.electionRollEntry, req)
             if (!updatedEntry)
                 return res.status('400').json({
                     error: "Voter Roll not found"
@@ -164,7 +164,7 @@ const updateElectionRoll = async (req: any, res: any, next: any) => {
     }
     try {
 
-        const electionRollEntry = await ElectionRollModel.update(electinoRollInput)
+        const electionRollEntry = await ElectionRollModel.update(electinoRollInput, req)
         if (!electionRollEntry){
                 const msg= "Voter Roll not found";
                 Logger.info(req, msg);
@@ -184,7 +184,7 @@ const getByVoterID = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.getByVoterID ${req.election.election_id} ${req.params.voter_id}`)
     
     try {
-        const electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.params.voter_id)
+        const electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.params.voter_id, req)
         if (!electionRollEntry){
             const msg= "Voter Roll not found";
             Logger.info(req, msg);
@@ -235,7 +235,7 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
         req.voter_id = req.cookies.voter_id
     }
     try {
-        const electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.voter_id)
+        const electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.voter_id, req)
         if (!electionRollEntry){
             const msg= "Voter not found";
             Logger.info(req, msg);
@@ -257,7 +257,7 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
                 actor: req.user?.email || req.voter_id,
                 timestamp: Date.now(),
             }]
-            const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, [req.voter_id], false, ElectionRollState.approved, history)
+            const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, [req.voter_id], false, ElectionRollState.approved, history, req)
             if (!NewElectionRoll){
                 const msg= "Voter Roll not found";
                 Logger.info(req, msg);
