@@ -47,6 +47,7 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
         const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, req.body.VoterIDList, false, ElectionRollState.approved, history)
         if (!NewElectionRoll){
             const msg= "Voter Roll not found";
+            Logger.error(req, "= = = = = = \n = = = = = ");
             Logger.info(req, msg);
             return responseErr(res, req, 400, msg);
         }
@@ -200,16 +201,17 @@ const getByVoterID = async (req: any, res: any, next: any) => {
 
 const getVoterAuth = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.getVoterAuth`);
-
-    if (req.election.settings.voter_id_type === 'None') {
+    const voterIdType = req.election.settings.voter_id_type;
+    Logger.debug(req, `ID type: ${voterIdType}`);
+    if (voterIdType === 'None') {
         req.authorized_voter = true
         req.has_voted = false
         req.electionRollEntry = {}
         return next()
-    } else if (req.election.settings.voter_id_type === 'IP Address') {
+    } else if (voterIdType === 'IP Address') {
         Logger.debug(req, `ip=${String(req.ip)}`);
         req.voter_id = String(req.ip)
-    } else if (req.election.settings.voter_id_type === 'Email') {
+    } else if (voterIdType === 'Email') {
         // If user isn't logged in, send response requesting log in
         if (!req.user) {
             return res.json({
@@ -220,7 +222,7 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
             })
         }
         req.voter_id = req.user.email
-    } else if (req.election.settings.voter_id_type === 'IDs') {
+    } else if (voterIdType === 'IDs') {
         // If voter ID not set, send response requesting voter ID to be entered
         if (!req.cookies.voter_id) {
             return res.json({
@@ -235,7 +237,7 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
     try {
         const electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.voter_id)
         if (!electionRollEntry){
-            const msg= "Voter Roll not found";
+            const msg= "Voter not found";
             Logger.info(req, msg);
             return responseErr(res, req, 400, msg);
         }
