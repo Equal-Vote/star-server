@@ -2,6 +2,7 @@ require('dotenv').config();
 const request = require('supertest');
 import { Election } from '../../../domain_model/Election';
 import makeApp from '../app';
+import { TestLoggerImpl } from '../Services/Logging/TestLoggerImpl';
 import testInputs from './testInputs';
 
 const app = makeApp()
@@ -12,8 +13,12 @@ jest.mock('./../Models/Ballots')
 jest.mock('./../Models/Elections')
 jest.mock('./../Models/ElectionRolls')
 
+var logger = new TestLoggerImpl().setup();
+
 afterEach(() => {
     jest.clearAllMocks();
+    logger.print();
+    logger.clear();
 });
 
 describe("Edit Election", () => {
@@ -52,7 +57,8 @@ describe("Edit Election", () => {
                 .set('Cookie', ['id_token=' + testInputs.user1token])
                 .set('Accept', 'application/json')
                 .send({ Election: testInputs.Election1, VoterIDList: [] })
-            expect(response.statusCode).toBe(200)
+            expect(response.statusCode).toBe(200);
+            logger.clear();
         })
     })
 
@@ -79,6 +85,7 @@ describe("Edit Election", () => {
                 .send({ Election: testInputs.Election1, VoterIDList: [] })
 
             expect(response.statusCode).toBe(401)
+            logger.clear();
         })
     })
 
@@ -93,6 +100,7 @@ describe("Edit Election", () => {
                 .send({ Election: testInputs.Election1, VoterIDList: [] })
 
             expect(response.statusCode).toBe(401)
+            logger.clear();
         })
     })
 
@@ -116,6 +124,7 @@ describe("Edit Election", () => {
 
             const reFetchedElection = await fetchElectionById(electionId);;
             expect(reFetchedElection.title).toEqual(newTitle);
+            logger.clear();
         })
 
         test("edits roll type", async () => {
@@ -135,6 +144,7 @@ describe("Edit Election", () => {
             // TODO: I couldn't figure out how to make this work, it kept saying that ElectionsDB.mock was undefined?
             // expect(ElectionsDB.mock.instances[0].elections[election1Copy.election_id].settings.election_roll_type).toBe(newRollType)
             expect(response.statusCode).toBe(200)
+            logger.clear();
         })
         test("edits voter ids", async () => {
             // TODO

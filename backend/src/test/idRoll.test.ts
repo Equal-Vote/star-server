@@ -1,6 +1,7 @@
 require('dotenv').config();
 const request = require('supertest');
 import makeApp from '../app';
+import { TestLoggerImpl } from '../Services/Logging/TestLoggerImpl';
 import testInputs from './testInputs';
 
 const app = makeApp()
@@ -11,8 +12,12 @@ jest.mock('./../Models/Ballots')
 jest.mock('./../Models/Elections')
 jest.mock('./../Models/ElectionRolls')
 
+var logger = new TestLoggerImpl().setup();
+
 afterEach(() => {
     jest.clearAllMocks();
+    logger.print();
+    logger.clear();
 });
 
 
@@ -30,6 +35,7 @@ describe("ID Roll", () => {
         expect(response.statusCode).toBe(200)
         const responseObject = response.body;
         ID = responseObject.election.election_id;
+        logger.clear();
     })
     test("Get voter auth, is authorized and hasn't voted", async () => {
         const response = await request(app)
@@ -40,6 +46,7 @@ describe("ID Roll", () => {
         expect(response.statusCode).toBe(200)
         expect(response.body.voterAuth.authorized_voter).toBe(true)
         expect(response.body.voterAuth.has_voted).toBe(false)
+        logger.clear();
     })
     test("Authorized voter submits ballot", async () => {
         const response = await request(app)
@@ -49,6 +56,7 @@ describe("ID Roll", () => {
             .send({ ballot: testInputs.Ballot2})
         // console.log(response)
         expect(response.statusCode).toBe(200)
+        logger.clear();
     })
     test("Get voter auth, is authorized and has voted", async () => {
         const response = await request(app)
@@ -59,6 +67,7 @@ describe("ID Roll", () => {
         expect(response.statusCode).toBe(200)
         expect(response.body.voterAuth.authorized_voter).toBe(true)
         expect(response.body.voterAuth.has_voted).toBe(true)
+        logger.clear();
     })
     test("Authorized voter re-submits ballot", async () => {
         const response = await request(app)
@@ -68,6 +77,7 @@ describe("ID Roll", () => {
             .send({ ballot: testInputs.Ballot2})
         // console.log(response)
         expect(response.statusCode).toBe(400)
+        logger.clear();
     })
     test("Get voter auth, isn't authorized and hasn't voted", async () => {
         const response = await request(app)
@@ -78,6 +88,7 @@ describe("ID Roll", () => {
         expect(response.statusCode).toBe(200)
         expect(response.body.voterAuth.authorized_voter).toBe(false)
         expect(response.body.voterAuth.has_voted).toBe(false)
+        logger.clear();
     })
     test("Unauthorized voter submits ballot", async () => {
         const response = await request(app)
@@ -87,5 +98,7 @@ describe("ID Roll", () => {
             .send({ ballot: testInputs.Ballot2})
         // console.log(response)
         expect(response.statusCode).toBe(400)
+        logger.clear();
     })
+    logger.clear();
 })
