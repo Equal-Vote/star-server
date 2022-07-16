@@ -3,7 +3,6 @@ import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
 import { responseErr } from "../Util";
 import ElectionRollDB from "../Models/ElectionRolls";
-import { Uid } from "../../../domain_model/Uid";
 
 const EmailService = require('../Services/EmailService')
 var ElectionRollModel = new ElectionRollDB(ServiceLocator.postgres());
