@@ -3,15 +3,15 @@ import { reqIdSuffix } from "../IRequest";
 import Logger from "../Services/Logging/Logger";
 import ServiceLocator from "../ServiceLocator";
 import { responseErr } from '../Util';
+import BallotsDB from '../Models/Ballots';
 
-const BallotsDB = require('../Models/Ballots');
 var BallotModel = new BallotsDB(ServiceLocator.postgres());
 const className = 'Ballots.Controllers';
 
 const ballotByID = async (req: any, res: any, next: any) => {
     try {
         const ballotId = req.params.id;
-        const ballot = await BallotModel.getElectionByID(parseInt(ballotId));
+        const ballot = await BallotModel.getBallotByID(ballotId, req);
         if (!ballot){
             const msg = `Ballot ${ballotId} not found`;
             Logger.info(req, msg);
@@ -29,7 +29,7 @@ const getBallotsByElectionID = async (req: any, res: any, next: any) => {
     try {
         var electionId = req.election.election_id;
         Logger.debug(req, "getBallotsByElectionID: "+electionId);
-        const ballots = await BallotModel.getBallotsByElectionID(String(electionId));
+        const ballots = await BallotModel.getBallotsByElectionID(String(electionId), req);
         if (!ballots){
             const msg = `Ballots not found for Election ${electionId}`;
             Logger.info(req, msg);
@@ -88,7 +88,7 @@ const submitBallot = async (req: any, res: any, next: any) => {
 
     Logger.info(req, "Submit Ballot:", ballot);
     try {
-        const savedBallot = await BallotModel.submitBallot(ballot);
+        const savedBallot = await BallotModel.submitBallot(ballot, req);
         if (!savedBallot){
             return responseErr(res, req, 400, "Ballots not found");
         }

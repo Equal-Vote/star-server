@@ -1,6 +1,7 @@
 require('dotenv').config();
 const request = require('supertest');
 import makeApp from '../app';
+import Logger from '../Services/Logging/Logger';
 import testInputs from './testInputs';
 
 const app = makeApp()
@@ -46,7 +47,8 @@ describe("Email Roll", () => {
             .post(`/API/Election/${electionId}/vote`)
             .set('Cookie', ['id_token=' + testInputs.user1token])
             .set('Accept', 'application/json')
-            .send({ ballot: testInputs.Ballot1 });
+            .send({ ballot: testInputs.Ballot1 }); 
+        // console.log(response)
         expect(response.statusCode).toBe(200)
     })
     test("Get voter auth, is authorized and has voted", async () => {

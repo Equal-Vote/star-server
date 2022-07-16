@@ -1,10 +1,12 @@
 import { Election, electionValidation } from '../../../domain_model/Election';
 import { Ballot } from '../../../domain_model/Ballot';
 import { Score } from '../../../domain_model/Score';
+import ElectionsDB from '../Models/Elections';
 import ServiceLocator from '../ServiceLocator';
 import Logger from '../Services/Logging/Logger';
 import { responseErr } from '../Util';
-const ElectionsDB = require('../Models/Elections')
+
+
 const StarResults = require('../Tabulators/StarResults.js');
 
 var ElectionsModel = new ElectionsDB(ServiceLocator.postgres());
@@ -13,7 +15,7 @@ const className="Elections.Controllers";
 const getElectionByID = async (req: any, res: any, next: any) => {
     Logger.info(req, `${__filename}.getElectionByID ${req.params.id}`);
     try {
-        var election = await ElectionsModel.getElectionByID(parseInt(req.params.id))
+        var election = await ElectionsModel.getElectionByID(req.params.id, req);
         Logger.debug(req, `get election ${req.params.id}`);
         var failMsg = "Election not found";
         if (!election) {
@@ -53,7 +55,7 @@ const getElectionByID = async (req: any, res: any, next: any) => {
             }
         }
         if (stateChange) {
-            election = await ElectionsModel.updateElection(election)
+            election = await ElectionsModel.updateElection(election, req)
         }
         req.election = election
         return next()
@@ -116,7 +118,7 @@ const getElections = async (req: any, res: any, next: any) => {
     var failMsg = "Could not retrieve elections";
     try {
         var filter = (req.query.filter == undefined) ? "" : req.query.filter;
-        const Elections = await ElectionsModel.getElections(filter);
+        const Elections = await ElectionsModel.getElections(filter, req);
         if (!Elections){
             var msg = "Election does not exist";
             Logger.info(req, msg);
@@ -135,11 +137,11 @@ const createElection = async (req: any, res: any, next: any) => {
     const inputElection = req.body.Election;
     const validationErr = electionValidation(inputElection);
     if (validationErr){
-        Logger.info(req, "= = = = = \n Invalid Election: "+ validationErr + "\n = = = = = " + JSON.stringify(inputElection));
+        Logger.info(req, "=Invalid Election: "+ validationErr, inputElection);
         return responseErr(res, req, 400, "Invalid Election");
     }
     try {
-        const newElection = await ElectionsModel.createElection(req.body.Election)
+        const newElection = await ElectionsModel.createElection(req.body.Election, req)
         if (!newElection){
             Logger.error(req, failMsg);
             return responseErr(res, req, 400, failMsg);
@@ -156,7 +158,7 @@ const deleteElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.deleteElection`)
     var failMsg = "Election not deleted";
     try {
-        const success = await ElectionsModel.delete(req.election.election_id);
+        const success = await ElectionsModel.delete(req.election.election_id, req);
         if (!success){
             var msg = "Nothing to delete";
             Logger.error(req, msg);
@@ -190,7 +192,7 @@ const editElection = async (req: any, res: any, next: any) => {
     Logger.debug(req, `election ID = ${req.body.Election.election_id}`);
     var failMsg = `Failed to update election`;
     try {
-        const updatedElection = await ElectionsModel.updateElection(req.body.Election)
+        const updatedElection = await ElectionsModel.updateElection(req.body.Election, req)
         if (!updatedElection){
             Logger.error(req, failMsg);
             return responseErr(res, req, 400, failMsg);
@@ -214,7 +216,7 @@ const finalize = async (req: any, res: any, next: any) => {
     var failMsg = "Failed to update Election";
     try {
         req.election.state = 'finalized'
-        const updatedElection = await ElectionsModel.updateElection(req.election)
+        const updatedElection = await ElectionsModel.updateElection(req.election, req)
         if (!updatedElection) {
             Logger.info(req, failMsg);
             return responseErr(res, req, 400, failMsg);
