@@ -2,10 +2,12 @@ import { ElectionRollState } from "../../../domain_model/ElectionRoll";
 import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
 import { responseErr } from "../Util";
+import ElectionRollDB from "../Models/ElectionRolls";
+import { Uid } from "../../../domain_model/Uid";
 
-const ElectionRollDB = require('../Models/ElectionRolls')
 const EmailService = require('../Services/EmailService')
 var ElectionRollModel = new ElectionRollDB(ServiceLocator.postgres());
+
 const className="VoterRolls.Controllers";
 
 const getRollsByElectionID = async (req: any, res: any, next: any) => {
@@ -50,7 +52,7 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
             return responseErr(res, req, 400, msg);
         }
         
-        res.status('200').json(JSON.stringify({ election: req.election, NewElectionRoll }))
+        res.status('200').json({ election: req.election, NewElectionRoll });
         return next()
     } catch (err:any) {
         const msg = `Could not add Election Roll`;
@@ -162,7 +164,7 @@ const updateElectionRoll = async (req: any, res: any, next: any) => {
     }
     try {
 
-        const electionRollEntry = await ElectionRollModel.update(req.electionRollEntry)
+        const electionRollEntry = await ElectionRollModel.update(electinoRollInput)
         if (!electionRollEntry){
                 const msg= "Voter Roll not found";
                 Logger.info(req, msg);

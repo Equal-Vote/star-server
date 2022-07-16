@@ -1,7 +1,6 @@
-import { Vote } from '../../../../domain_model/Vote';
 import { ElectionRoll, ElectionRollAction, ElectionRollState } from '../../../../domain_model/ElectionRoll';
 
-class ElectionRollDB {
+export default class ElectionRollDB {
 
     electionRolls: ElectionRoll[] = []
     constructor() {
@@ -34,8 +33,12 @@ class ElectionRollDB {
         return Promise.resolve(ballots)
     }
     update(voter_roll: ElectionRoll): Promise<ElectionRoll | null> {
-        const index = this.electionRolls.findIndex(electionRoll => electionRoll.election_id===voter_roll.election_id && electionRoll.voter_id===voter_roll.voter_id)
-        if (!index){
+        const index = this.electionRolls.findIndex(electionRoll => {
+            var electionMatch = electionRoll.election_id===voter_roll.election_id;
+            var voterMatch = electionRoll.voter_id===voter_roll.voter_id;
+            return electionMatch && voterMatch
+        });
+        if (index < 0){
             return Promise.resolve(null)
         }
         this.electionRolls[index] = voter_roll
@@ -50,5 +53,3 @@ class ElectionRollDB {
         return Promise.resolve(true)
     }
 }
-
-module.exports = ElectionRollDB
