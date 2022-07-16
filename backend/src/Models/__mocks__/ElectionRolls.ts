@@ -11,7 +11,6 @@ export default class ElectionRollDB {
     }
 
     submitElectionRoll(election_id: string, voter_ids: string[],submitted:boolean,state: ElectionRollState, history: ElectionRollAction, ctx:ILoggingContext): Promise<boolean>{
-        Logger.debug(ctx, "= = = = = \n SUBMIT ELECTION ROLL \n = = = = = ");
         for (var i = 0; i < voter_ids.length; i++){
             this.electionRolls.push({
                 election_roll_id: String(this.nextId),
@@ -55,8 +54,10 @@ export default class ElectionRollDB {
         if (index < 0){
             return Promise.resolve(null)
         }
-        this.electionRolls[index] = voter_roll
-        return Promise.resolve(voter_roll)
+        var copy = JSON.parse(JSON.stringify(voter_roll));
+        this.electionRolls[index] = copy;
+        var res = JSON.parse(JSON.stringify(copy));
+        return Promise.resolve(res);
     }
 
     delete(voter_roll: ElectionRoll, ctx:ILoggingContext): Promise<boolean> {

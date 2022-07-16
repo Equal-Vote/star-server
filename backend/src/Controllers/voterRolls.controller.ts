@@ -236,12 +236,6 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
     }
     try {
         const electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.voter_id, req)
-        if (!electionRollEntry){
-            const msg= "Voter not found";
-            Logger.info(req, msg);
-            return responseErr(res, req, 400, msg);
-        }
-
         req.electionRollEntry = electionRollEntry
     } catch (err:any) {
         const msg = `Could not find election roll entry`;
@@ -250,7 +244,7 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
     }
     if (req.election.settings.election_roll_type === 'None') {
         req.authorized_voter = true;
-        if (req.electionRollEntry.length == 0) {
+        if (req.electionRollEntry == null) {
             //Adds voter to roll if they aren't currently
             const history = [{
                 action_type: ElectionRollState.approved,
@@ -272,7 +266,7 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
             return next()
         }
     } else if (req.election.settings.election_roll_type === 'Email' || req.election.settings.election_roll_type === 'IDs') {
-        if (req.electionRollEntry.length == 0) {
+        if (req.electionRollEntry == null) {
             req.authorized_voter = false;
             req.has_voted = false
             return next()
@@ -283,6 +277,7 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
         }
     }
 }
+
 
 const sendInvitations = async (req: any, res: any, next: any) => {
     //requires election data in req, adds entire election roll 
