@@ -174,7 +174,7 @@ const deleteElection = async (req: any, res: any, next: any) => {
 const editElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.editElection`)
 
-    const inputElection = req.election;
+    const inputElection = req.body.Election;
     const validationErr = electionValidation(inputElection);
     if (validationErr){
         Logger.info(req, "Invalid Election: "+ validationErr);
@@ -189,10 +189,10 @@ const editElection = async (req: any, res: any, next: any) => {
         Logger.info(req, `Body Election ${inputElection.election_id} != param ID ${req.params.id}`);
         return responseErr(res, req, 400, "Election ID must match the URL Param");
     }
-    Logger.debug(req, `election ID = ${req.body.Election.election_id}`);
+    Logger.debug(req, `election ID = ${inputElection}`);
     var failMsg = `Failed to update election`;
     try {
-        const updatedElection = await ElectionsModel.updateElection(req.body.Election, req)
+        const updatedElection = await ElectionsModel.updateElection(inputElection, req)
         if (!updatedElection){
             Logger.error(req, failMsg);
             return responseErr(res, req, 400, failMsg);

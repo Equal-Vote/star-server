@@ -51,19 +51,18 @@ describe("Create Election", () => {
         })
     })
 
-    // describe("Election not provided/incorrect format", () => {
-    //      // TODO: Add validation in API inputs
-    //     test("responds with 400 status", async () => {
-    //         const response = await request(app)
-    //             .post('/API/Elections')
-    //             .set('Cookie', ['id_token=' + testInputs.user1token])
-    //             .set('Accept', 'application/json')
-    //             .send({ VoterIDList: [] })
+    describe("Election not provided/incorrect format", () => {
+        test("responds with 400 status", async () => {
+            const response = await request(app)
+                .post('/API/Elections')
+                .set('Cookie', ['id_token=' + testInputs.user1token])
+                .set('Accept', 'application/json')
+                .send({ VoterIDList: [] })
 
-    //         expect(response.statusCode).toBe(400)
-    //     })
-
-    // })
+            expect(response.statusCode).toBe(400)
+            logger.clear();
+        })
+    })
 
     describe("User is not logged in", () => {
         test("responds with 401 status", async () => {
