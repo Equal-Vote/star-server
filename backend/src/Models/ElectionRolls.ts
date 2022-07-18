@@ -1,4 +1,5 @@
 import { ElectionRoll, ElectionRollAction } from '../../../domain_model/ElectionRoll';
+import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
 var format = require('pg-format');
 
@@ -44,8 +45,8 @@ export default class ElectionRollDB {
     }
 
 
-    submitElectionRoll(election_id: number, voter_ids: string[], submitted: Boolean, state: string, history: Array<ElectionRollAction>): Promise<boolean> {
-        console.log(`-> ElectionRollDB.submit`);
+    submitElectionRoll(election_id: number, voter_ids: string[], submitted: Boolean, state: string, history: Array<ElectionRollAction>, ctx:ILoggingContext): Promise<boolean> {
+        Logger.debug(ctx, `ElectionRollDB.submit`);
         var values = voter_ids.map((voter_id) => ([election_id,
             voter_id,
             submitted,
@@ -53,16 +54,16 @@ export default class ElectionRollDB {
             JSON.stringify(history)]))
         var sqlString = format(`INSERT INTO ${this._tableName} (election_id,voter_id,submitted,state,history)
         VALUES %L;`, values);
-        console.log(sqlString)
-        console.log(values)
+        Logger.debug(ctx, sqlString)
+        Logger.debug(ctx, values)
         var p = this._postgresClient.query(sqlString);
         return p.then((res: any) => {
-            console.log("set response rows: " + JSON.stringify(res));
+            Logger.debug(ctx, "set response rows: " + JSON.stringify(res));
             return true;
         });
     }
 
-    getRollsByElectionID(election_id: string): Promise<ElectionRoll[] | null> {
+    getRollsByElectionID(election_id: string, ctx:ILoggingContext): Promise<ElectionRoll[] | null> {
         console.log(`-> ElectionRollDB.getByElectionID`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1`;
         console.log(sqlString);
@@ -82,10 +83,10 @@ export default class ElectionRollDB {
         });
     }
 
-    getByVoterID(election_id: string, voter_id: string): Promise<ElectionRoll | null> {
-        console.log(`-> ElectionRollDB.getByVoterID`);
+    getByVoterID(election_id: string, voter_id: string, ctx:ILoggingContext): Promise<ElectionRoll | null> {
+        Logger.debug(ctx, `ElectionRollDB.getByVoterID`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1 AND voter_id = $2`;
-        console.log(sqlString);
+        Logger.debug(ctx, sqlString);
 
         var p = this._postgresClient.query({
             text: sqlString,
@@ -93,19 +94,19 @@ export default class ElectionRollDB {
         });
         return p.then((response: any) => {
             var rows = response.rows;
-            console.log(rows[0])
+            Logger.debug(ctx, rows[0])
             if (rows.length == 0) {
-                console.log(".get null");
+                Logger.debug(ctx, ".get null");
                 return [];
             }
             return rows[0]
         });
     }
-    update(election_roll: ElectionRoll): Promise<ElectionRoll | null> {
-        console.log(`-> ElectionRollDB.updateRoll`);
+    update(election_roll: ElectionRoll, ctx:ILoggingContext): Promise<ElectionRoll | null> {
+        Logger.debug(ctx, `ElectionRollDB.updateRoll`);
         var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state=$3, history=$4  WHERE election_id = $5 AND voter_id=$6`;
-        console.log(sqlString);
-        console.log(election_roll)
+        Logger.debug(ctx, sqlString);
+        Logger.debug(ctx, election_roll)
         var p = this._postgresClient.query({
             text: sqlString,
 
@@ -114,19 +115,19 @@ export default class ElectionRollDB {
         });
         return p.then((response: any) => {
             var rows = response.rows;
-            console.log(response)
+            Logger.debug(ctx, response)
             if (rows.length == 0) {
-                console.log(".get null");
+                Logger.debug(ctx, ".get null");
                 return [] as ElectionRoll[];
             }
             return rows
         });
     }
 
-    delete(election_roll: ElectionRoll): Promise<boolean> {
-        console.log(`-> ElectionRollDB.delete`);
+    delete(election_roll: ElectionRoll, ctx:ILoggingContext): Promise<boolean> {
+        Logger.debug(ctx, `-> ElectionRollDB.delete`);
         var sqlString = `DELETE FROM ${this._tableName} WHERE election_id = $1 AND voter_id=$2`;
-        console.log(sqlString);
+        Logger.debug(ctx, sqlString);
 
         var p = this._postgresClient.query({
             rowMode: 'array',

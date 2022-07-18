@@ -62,18 +62,18 @@ describe("Edit Election", () => {
         })
     })
 
-    // describe("Election not provided/incorrect format", () => {
-    //     test("responds with 400 status", async () => {
-    //         const ID = await setupInitialElection()
+    describe("Election not provided/incorrect format", () => {
+        test("responds with 400 status", async () => {
+            const ID = await setupInitialElection()
 
-    //         const response = await request(app)
-    //             .post(`/API/Election/${ID}/edit`)
-    //             .set('Cookie', ['id_token=' + testInputs.user1token])
-    //             .set('Accept', 'application/json')
-    //             .send({ VoterIDList: [] })
-    //         expect(response.statusCode).toBe(400)
-    //     })
-    // })
+            const response = await request(app)
+                .post(`/API/Election/${ID}/edit`)
+                .set('Cookie', ['id_token=' + testInputs.user1token])
+                .set('Accept', 'application/json')
+                .send({ VoterIDList: [] })
+            expect(response.statusCode).toBe(400)
+        })
+    })
 
     describe("User is not logged in", () => {
         test("responds with 401 status", async () => {
@@ -133,7 +133,8 @@ describe("Edit Election", () => {
             // I wanted to use structuredClone here, but I had trouble getting it to work with jest :'(
             var election1Copy = {...testInputs.Election1, settings: {...testInputs.Election1.settings}}
             var newRollType = 'Some Other Roll Type'
-            election1Copy.settings.election_roll_type = newRollType
+            election1Copy.settings.election_roll_type = newRollType;
+            election1Copy.election_id = ID;
 
             const response = await request(app)
                 .post(`/API/Election/${ID}/edit`)

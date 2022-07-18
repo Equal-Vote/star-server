@@ -5,31 +5,34 @@ import Logger from '../../Services/Logging/Logger';
 export default class ElectionsDB {
 
     elections: Election[] = [];
+    nextId = 0;
 
     constructor() {
     }
 
     createElection(election: Election, ctx:ILoggingContext): Promise<Election>{
         Logger.debug(ctx, "Election Mock Creates Election");
-        if (this.elections.length>0){
-            election.election_id = this.elections[this.elections.length-1].election_id+1;
-        } else {
-            election.election_id = 0
-        }
-        this.elections.push(election)
-        return Promise.resolve(election)
+        var copy = JSON.parse(JSON.stringify(election));
+        copy.election_id = this.nextId;
+        this.nextId++;
+        this.elections.push(copy);
+        var res = JSON.parse(JSON.stringify(copy));
+        return Promise.resolve(res);
     }
     
     updateElection(election: Election, ctx:ILoggingContext): Promise<Election | null> {
-        if(election.election_id >= this.elections.length){
+        var foundIndex = this.elections.findIndex(dbElection => dbElection.election_id == election.election_id);
+        if(foundIndex == -1){
             return Promise.resolve(null);
         }
-        this.elections[election.election_id] = election;
-        return Promise.resolve(election);
+        var copy = JSON.parse(JSON.stringify(election));
+        this.elections[foundIndex] = copy;
+        var res = JSON.parse(JSON.stringify(copy));
+        return Promise.resolve(res);
     }
 
     getElections(filter: string, ctx:ILoggingContext): Promise<Election[] | null> {
-        var elections = [...this.elections]
+        var elections:Array<Election> = JSON.parse(JSON.stringify(this.elections));
         if(filter != ""){
             var filters = filter.split(',');
             
@@ -45,7 +48,7 @@ export default class ElectionsDB {
     }
 
     getElectionByID(election_id: number, ctx:ILoggingContext): Promise<Election | null>{
-        Logger.debug(ctx, `Mock Election DB getElection ${election_id}, with data = `);
+        Logger.debug(ctx, `Mock Election DB getElection ${election_id}`);
         const election = this.elections.find(election => {
             return election.election_id==election_id;
         });
@@ -58,7 +61,7 @@ export default class ElectionsDB {
     }
 
     delete(election_id: number, ctx:ILoggingContext): Promise<Election | null> {
-        const election = this.elections.find(ballot => ballot.election_id==election_id)
+        const election = this.elections.find(election => election.election_id==election_id)
         if (!election){
             return Promise.resolve(null)
         }
