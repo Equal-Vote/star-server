@@ -22,7 +22,7 @@ const Election = ({ authSession }) => {
   useEffect(() => {
     fetchData()
   }, [])
-
+  
   const navigate = useNavigate();
 
   return (
@@ -33,7 +33,7 @@ const Election = ({ authSession }) => {
       {data?.election &&
         <Grid container>
           <Grid item xs={2}>
-            <Sidebar electionData={data.election} />
+            <Sidebar electionData={data} />
           </Grid>
           <Grid xs={8}>
             <Routes>

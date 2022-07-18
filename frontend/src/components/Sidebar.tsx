@@ -17,14 +17,18 @@ const ListItem = ({ text, link }) => {
 }
 
 export default function Sidebar({ electionData }) {
-    const id = electionData.election_id;
+    const id = electionData.election.election_id;
     return (
-        <Box border={2} sx={{ display: 'flex', mt: 5, ml: 0, mr: 0, width: '100%' }}>
-            <Grid container justify="center" direction="column" >
-                <ListItem text = 'Edit Election' link = {`/Election/${id}/edit`} />
-                <ListItem text = 'Voter Rolls' link = {`/Election/${id}/admin`}  />
-            </Grid>
-        </Box>
-
+        <>
+            {electionData.voterAuth?.roles?.length > 0 &&
+                <Box border={2} sx={{ display: 'flex', mt: 5, ml: 0, mr: 0, width: '100%' }}>
+                    <Grid container justify="center" direction="column" >
+                        {electionData.election.state === 'draft' &&
+                            <ListItem text='Edit Election' link={`/Election/${id}/edit`} />}
+                        <ListItem text='Voter Rolls' link={`/Election/${id}/admin`} />
+                    </Grid>
+                </Box>
+            }
+        </>
     );
 }
