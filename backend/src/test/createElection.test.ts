@@ -1,78 +1,72 @@
-require('dotenv').config();
-const request = require('supertest');
-import makeApp from '../app';
-import { TestLoggerImpl } from '../Services/Logging/TestLoggerImpl';
-import testInputs from './testInputs';
+require("dotenv").config();
+const request = require("supertest");
 
-const app = makeApp()
+import { Election, electionValidation } from "../../../domain_model/Election";
+import testInputs from "./testInputs";
+import { TestHelper } from "./TestHelper";
+
+const th = new TestHelper();
 
 // Mocks databases for testing app
 // Uses mocks defined in ./../Models/__Mocks__/
-jest.mock('./../Models/Ballots')
-jest.mock('./../Models/Elections')
-jest.mock('./../Models/ElectionRolls')
-
-var logger = new TestLoggerImpl().setup();
+jest.mock("./../Models/Ballots");
+jest.mock("./../Models/Elections");
+jest.mock("./../Models/ElectionRolls");
 
 afterEach(() => {
-    jest.clearAllMocks();
-    logger.print();
-    logger.clear();
+  jest.clearAllMocks();
+  th.afterEach();
 });
 
 describe("Create Election", () => {
+  describe("Good Election data provided", () => {
+    var electionRes: Election;
+    test("responds with 200 status", async () => {
+      const response = await th.createElection(
+        testInputs.Election1,
+        [],
+        testInputs.user1token
+      );
 
-    describe("Good Election data provided", () => {
-        test("responds with 200 status", async () => {
-            const response = await request(app)
-                .post('/API/Elections')
-                .set('Cookie', ['id_token=' + testInputs.user1token])
-                .set('Accept', 'application/json')
-                .send({ Election: testInputs.Election1, VoterIDList: [] })
+      expect(response.statusCode).toBe(200);
+      expect(response.election).toBeTruthy();
 
-            expect(response.statusCode).toBe(200);
-            var resObj = response.body;
-            expect(resObj.election).toBeTruthy();
-            expect(resObj.election.title).toEqual(testInputs.Election1.title);
-            expect(resObj.election.election_id).toEqual(0);
-            logger.clear();
-        })
-        test("Get responds with 200 status", async () => {
-            const response = await request(app)
-                .get('/API/Election/0')
-                .set('Cookie', ['id_token=' + testInputs.user1token])
-                .set('Accept', 'application/json')
-                expect(response.statusCode).toBe(200);
+      electionRes = response.election;
+      expect(electionRes.title).toEqual(testInputs.Election1.title);
+      expect(electionValidation(electionRes)).toBeNull();
+      th.testComplete();
+    });
 
-            var resObj = response.body;
-            expect(resObj.election).toBeTruthy();
-            expect(resObj.election.title).toEqual(testInputs.Election1.title);
-            logger.clear();
-        })
-    })
+    test("Get responds with 200 status", async () => {
+      const response = await th.fetchElectionById(
+        electionRes.election_id.toString(),
+        testInputs.user1token
+      );
 
-    describe("Election not provided/incorrect format", () => {
-        test("responds with 400 status", async () => {
-            const response = await request(app)
-                .post('/API/Elections')
-                .set('Cookie', ['id_token=' + testInputs.user1token])
-                .set('Accept', 'application/json')
-                .send({ VoterIDList: [] })
+      expect(response.statusCode).toBe(200);
+      expect(response.election).toBeTruthy();
+      expect(response.election.title).toEqual(testInputs.Election1.title);
+      th.testComplete();
+    });
+  });
 
-            expect(response.statusCode).toBe(400)
-            logger.clear();
-        })
-    })
+  describe("Election not provided/incorrect format", () => {
+    test("responds with 400 status", async () => {
+      const response = await th.createElection(
+        {} as Election,
+        [],
+        testInputs.user1token
+      );
+      expect(response.statusCode).toBe(400);
+      th.testComplete();
+    });
+  });
 
-    describe("User is not logged in", () => {
-        test("responds with 401 status", async () => {
-            const response = await request(app)
-                .post('/API/Elections')
-                .set('Accept', 'application/json')
-                .send({ Election: testInputs.Election1, VoterIDList: [] })
-
-            expect(response.statusCode).toBe(401)
-            logger.clear();
-        })
-    })
-})
+  describe("User is not logged in", () => {
+    test("responds with 401 status", async () => {
+      const response = await th.createElection(testInputs.Election1, [], null);
+      expect(response.statusCode).toBe(401);
+      th.testComplete();
+    });
+  });
+});
