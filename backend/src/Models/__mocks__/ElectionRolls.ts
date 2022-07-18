@@ -1,47 +1,66 @@
-import { Vote } from '../../../../domain_model/Vote';
 import { ElectionRoll, ElectionRollAction, ElectionRollState } from '../../../../domain_model/ElectionRoll';
+import { ILoggingContext } from '../../Services/Logging/ILogger';
+import Logger from '../../Services/Logging/Logger';
 
-class ElectionRollDB {
+export default class ElectionRollDB {
 
     electionRolls: ElectionRoll[] = []
+    nextId = 0;
+
     constructor() {
     }
-    submitElectionRoll(election_id: string, voter_ids: string[],submitted:boolean,state: ElectionRollState, history: ElectionRollAction): Promise<boolean>{
+
+    submitElectionRoll(election_id: string, voter_ids: string[],submitted:boolean,state: ElectionRollState, history: ElectionRollAction, ctx:ILoggingContext): Promise<boolean>{
         for (var i = 0; i < voter_ids.length; i++){
             this.electionRolls.push({
-                election_roll_id: '0',
+                election_roll_id: String(this.nextId),
                 election_id: election_id,
                 voter_id: voter_ids[i],
                 submitted: submitted,
                 state: state,
                 history: [history]
-            })
+            });
+            this.nextId++;
         }
         return Promise.resolve(true)
     }
-    getRollsByElectionID(election_id: string): Promise<ElectionRoll[] | null> {
-        const electionRolls = this.electionRolls.filter(ballot => ballot.election_id===election_id)
+
+    getRollsByElectionID(election_id: string, ctx:ILoggingContext): Promise<ElectionRoll[] | null> {
+        const electionRolls = this.electionRolls.filter(roll => roll.election_id===election_id)
         if (!electionRolls){
             return Promise.resolve(null)
         }
-        return Promise.resolve(electionRolls)
+        const res:ElectionRoll[] = JSON.parse(JSON.stringify(electionRolls));
+        return Promise.resolve(res);
     }
-    getByVoterID(election_id: string,voter_id:string): Promise<ElectionRoll | [] | null> {
-        const ballots = this.electionRolls.find(electionRoll => electionRoll.election_id===election_id && electionRoll.voter_id===voter_id)
-        if (!ballots){
-            return Promise.resolve([])
-        }
-        return Promise.resolve(ballots)
-    }
-    update(voter_roll: ElectionRoll): Promise<ElectionRoll | null> {
-        const index = this.electionRolls.findIndex(electionRoll => electionRoll.election_id===voter_roll.election_id && electionRoll.voter_id===voter_roll.voter_id)
-        if (!index){
+
+    getByVoterID(election_id: string,voter_id:string, ctx:ILoggingContext): Promise<ElectionRoll | null> {
+        Logger.debug(ctx, `MockElectionRolls getByVoterID ${election_id}, voter:${voter_id}`);
+        const roll = this.electionRolls.find(electionRoll => electionRoll.election_id==election_id && electionRoll.voter_id==voter_id)
+        if (!roll){
+            Logger.debug(ctx, "Mock ElectionRoll DB could not match election and voter. Current data:\n"+JSON.stringify(this.electionRolls));
             return Promise.resolve(null)
         }
-        this.electionRolls[index] = voter_roll
-        return Promise.resolve(voter_roll)
+        const res:ElectionRoll = JSON.parse(JSON.stringify(roll));
+        return Promise.resolve(res)
     }
-    delete(voter_roll: ElectionRoll): Promise<boolean> {
+
+    update(voter_roll: ElectionRoll, ctx:ILoggingContext): Promise<ElectionRoll | null> {
+        const index = this.electionRolls.findIndex(electionRoll => {
+            var electionMatch = electionRoll.election_id===voter_roll.election_id;
+            var voterMatch = electionRoll.voter_id===voter_roll.voter_id;
+            return electionMatch && voterMatch
+        });
+        if (index < 0){
+            return Promise.resolve(null)
+        }
+        var copy = JSON.parse(JSON.stringify(voter_roll));
+        this.electionRolls[index] = copy;
+        var res = JSON.parse(JSON.stringify(copy));
+        return Promise.resolve(res);
+    }
+
+    delete(voter_roll: ElectionRoll, ctx:ILoggingContext): Promise<boolean> {
         const ballot = this.electionRolls.find(electionRoll => electionRoll.election_id===voter_roll.election_id && electionRoll.voter_id===voter_roll.voter_id)
         if (!ballot){
             return Promise.resolve(false)
@@ -50,5 +69,3 @@ class ElectionRollDB {
         return Promise.resolve(true)
     }
 }
-
-module.exports = ElectionRollDB

@@ -18,3 +18,21 @@ export interface Election {
     races:          Race[]; // one or more race definitions
     settings:      ElectionSettings;
   }
+
+  
+export function electionValidation(obj:Election): string | null {
+  if (!obj){
+    return "Election is null";
+  }
+  if (typeof obj.election_id !== 'number'){
+      return "Invalid Election ID";
+  }
+  if (typeof obj.title !== 'string'){
+      return "Invalid Title";
+  }
+  if (obj.title.length < 3 || obj.title.length > 256){
+    return "invalid Title length";
+  }
+  //TODO... etc
+  return null;
+}
