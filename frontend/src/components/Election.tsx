@@ -13,13 +13,14 @@ import Admin from './Admin'
 import ViewElectionResults from './ViewElectionResults'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Sidebar from "./Sidebar";
+import { Grid } from "@material-ui/core";
 
 const Election = ({ authSession }) => {
   const { id } = useParams();
   const { data, isPending, error, makeRequest: fetchData } = useFetch(`/API/Election/${id}`, 'get')
 
   useEffect(() => {
-      fetchData()
+    fetchData()
   }, [])
 
   const navigate = useNavigate();
@@ -30,16 +31,20 @@ const Election = ({ authSession }) => {
       {isPending && <div> Loading Election... </div>}
       <VoterAuth authSession={authSession} electionData={data} fetchElection={fetchData} />
       {data?.election &&
-        <>
-          <Sidebar />
-          <Routes>
-            <Route path='/' element={<ElectionHome authSession={authSession} electionData={data} fetchElection={fetchData} />} />
-            <Route path='/vote' element={<VotePage election={data.election} />} />
-            <Route path='/results' element={<ViewElectionResults election={data.election} />} />
-            <Route path='/edit' element={<EditElection authSession={authSession} election={data.election} />} />
-            <Route path='/admin' element={<Admin authSession={authSession} />} />
-          </Routes>
-        </>
+        <Grid container>
+          <Grid item xs={2}>
+            <Sidebar electionData={data.election} />
+          </Grid>
+          <Grid xs={8}>
+            <Routes>
+              <Route path='/' element={<ElectionHome authSession={authSession} electionData={data} fetchElection={fetchData} />} />
+              <Route path='/vote' element={<VotePage election={data.election} />} />
+              <Route path='/results' element={<ViewElectionResults election={data.election} />} />
+              <Route path='/edit' element={<EditElection authSession={authSession} election={data.election} />} />
+              <Route path='/admin' element={<Admin authSession={authSession} />} />
+            </Routes>
+          </Grid>
+        </Grid >
       }
     </>
   )

@@ -66,7 +66,7 @@ const getElectionByID = async (req: any, res: any, next: any) => {
 
 const returnElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.returnElection ${req.params.id}`)
-    res.json({ election: req.election, voterAuth: { authorized_voter: req.authorized_voter, has_voted: req.has_voted } })
+    res.json({ election: req.election, voterAuth: { authorized_voter: req.authorized_voter, has_voted: req.has_voted, roles: req.user_auth.roles} })
 }
 
 const getElectionResults = async (req: any, res: any, next: any) => {

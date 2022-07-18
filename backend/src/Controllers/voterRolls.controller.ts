@@ -59,7 +59,33 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
         return responseErr(res, req, 500, msg);
     }
 }
-
+const registerVoter = async (req: any, res: any, next: any) => {
+    Logger.info(req, `${className}.registerVoter ${req.election.election_id}`);
+    if (req.electionRollEntry.registration){
+        const msg= "Voter already registered";
+        Logger.info(req, msg);
+        return responseErr(res, req, 400, msg);}
+    try {
+        const history = [{
+            action_type: 'registered',
+            actor: req.user.email,
+            timestamp: Date.now(),
+        }]
+        const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, [req.voter_id], false, ElectionRollState.registered, history,req.body.registration)
+        if (!NewElectionRoll){
+            const msg= "Voter Roll not found";
+            Logger.info(req, msg);
+            return responseErr(res, req, 400, msg);
+        }
+        
+        res.status('200').json(JSON.stringify({ election: req.election, NewElectionRoll }))
+        return next()
+    } catch (err:any) {
+        const msg = `Could not add Election Roll`;
+        Logger.error(req, `${msg}: ${err.message}`);
+        return responseErr(res, req, 500, msg);
+    }
+}
 const editElectionRoll = async (req: any, res: any, next: any) => {
     const electinoRollInput = req.body.electionRollEntry;
     Logger.info(req, `${className}.editElectionRoll`, {electionRollEntry: electinoRollInput});
@@ -255,7 +281,7 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
                 actor: req.user?.email || req.voter_id,
                 timestamp: Date.now(),
             }]
-            const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, [req.voter_id], false, ElectionRollState.approved, history)
+            const NewElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, [req.voter_id], false, ElectionRollState.approved, history, null)
             if (!NewElectionRoll){
                 const msg= "Voter Roll not found";
                 Logger.info(req, msg);
@@ -307,5 +333,6 @@ module.exports = {
     getVoterAuth,
     editElectionRoll,
     sendInvitations,
-    changeElectionRollState
+    changeElectionRollState,
+    registerVoter
 }

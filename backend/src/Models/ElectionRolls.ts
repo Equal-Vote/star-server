@@ -24,7 +24,8 @@ class ElectionRollDB {
             submitted       BOOLEAN,
             PRIMARY KEY(election_id,voter_id),
             state           VARCHAR NOT NULL,
-            history         json
+            history         json,
+            registration    json
           );
         `;
         Logger.debug(appInitContext, query);
@@ -44,14 +45,15 @@ class ElectionRollDB {
     }
 
 
-    submitElectionRoll(election_id: number, voter_ids: string[], submitted: Boolean, state: string, history: ElectionRollAction): Promise<boolean> {
+    submitElectionRoll(election_id: number, voter_ids: string[], submitted: Boolean, state: string, history: ElectionRollAction, registration: any): Promise<boolean> {
         console.log(`-> ElectionRollDB.submit`);
         var values = voter_ids.map((voter_id) => ([election_id,
             voter_id,
             submitted,
             state,
-            JSON.stringify(history)]))
-        var sqlString = format(`INSERT INTO ${this._tableName} (election_id,voter_id,submitted,state,history)
+            JSON.stringify(history),
+            JSON.stringify(registration)]))
+        var sqlString = format(`INSERT INTO ${this._tableName} (election_id,voter_id,submitted,state,history,registration)
         VALUES %L;`, values);
         console.log(sqlString)
         console.log(values)
@@ -103,13 +105,13 @@ class ElectionRollDB {
     }
     update(election_roll: ElectionRoll): Promise<ElectionRoll | null> {
         console.log(`-> ElectionRollDB.updateRoll`);
-        var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state=$3, history=$4  WHERE election_id = $5 AND voter_id=$6`;
+        var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state=$3, history=$4 registration=$5 WHERE election_id = $6 AND voter_id=$7`;
         console.log(sqlString);
         console.log(election_roll)
         var p = this._postgresClient.query({
             text: sqlString,
 
-            values: [election_roll.ballot_id, election_roll.submitted, election_roll.state, JSON.stringify(election_roll.history), election_roll.election_id, election_roll.voter_id]
+            values: [election_roll.ballot_id, election_roll.submitted, election_roll.state, JSON.stringify(election_roll.history), JSON.stringify(election_roll.registration), election_roll.election_id, election_roll.voter_id]
 
         });
         return p.then((response: any) => {
