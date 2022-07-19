@@ -1,4 +1,5 @@
 
+import { Ballot } from '../../../domain_model/Ballot';
 import { Election } from '../../../domain_model/Election';
 import { ElectionSettings } from '../../../domain_model/ElectionSettings';
 import { Race } from '../../../domain_model/Race';
@@ -85,9 +86,9 @@ export default {
     ],
     Ballot1: {
         ballot_id: 0,
-        election_id: 7,
+        election_id: "7",
         status: 'Submitted',
-        date_submitted: new Date(),
+        date_submitted: Date.now(),
         votes: [{
             race_id:'0',
             scores: [{
@@ -105,7 +106,7 @@ export default {
             }
             ]
         }]
-    },
+    } as Ballot,
 
     IDRollElection : {
         election_id: 0,

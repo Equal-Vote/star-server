@@ -1,3 +1,4 @@
+import { Ballot } from "../../../domain_model/Ballot";
 import { Election } from "../../../domain_model/Election";
 import makeApp from "../app";
 import Logger from "../Services/Logging/Logger";
@@ -93,6 +94,14 @@ export class TestHelper {
   ): Promise<ElectionResponse> {
     const res = await this.getRequest(`/API/Election/${electionId}`, userToken);
     return this.electionResponse(res);
+  }
+
+  async submitBallot(
+    electionId: string | number,
+    ballot:Ballot,
+    userToken: string | null
+  ):Promise<any> {
+    return this.postRequest(`/API/Election/${electionId}/vote`, { ballot: ballot }, userToken);
   }
 
   afterEach() {
