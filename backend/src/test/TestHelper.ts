@@ -142,6 +142,66 @@ export class TestHelper {
         };
     }
 
+    async requestBallotWithId(
+        electionId: string | number,
+        userToken: string | null,
+        voterId: string | null
+    ): Promise<BallotResponse> {
+        var req = request(this.expressApp)
+            .post(`/API/Election/${electionId}/ballot`)
+            .set("Accept", "application/json");
+
+        req = this.addUserTokenVoterIdCookie(req, userToken, voterId);
+
+        const res = await req.send({});
+        var err = null;
+        if (res.statusCode != 200) {
+            err = res.body;
+        }
+        return {
+            statusCode: res.statusCode,
+            err: err,
+            election: res.body.election,
+            voterAuth: res.body.voterAuth,
+        };
+    }
+
+    async submitBallotWithId(
+        electionId: string | number,
+        ballot: Ballot,
+        userToken: string | null,
+        voterId: string | null
+    ): Promise<any> {
+        var r = request(this.expressApp)
+            .post(`/API/Election/${electionId}/vote`)
+            .set("Accept", "application/json");
+
+        r = this.addUserTokenVoterIdCookie(r, userToken, voterId);
+        return r.send({ ballot: ballot });
+    }
+
+    private addUserTokenVoterIdCookie(
+        req: any,
+        userToken: string | null,
+        voterId: string | null
+    ): any {
+        var cookies = "";
+        if (userToken != null) {
+            cookies = "id_token=" + userToken;
+        }
+        if (voterId != null) {
+            if (cookies.length > 0) {
+                cookies += "; ";
+            }
+            cookies += "voter_id=" + voterId;
+        }
+        console.log("cookies:  " + cookies);
+        if (cookies.length > 0) {
+            req = req.set("Cookie", [cookies]);
+        }
+        return req;
+    }
+
     afterEach() {
         this.logger.print();
         this.logger.clear();

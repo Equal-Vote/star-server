@@ -34,22 +34,16 @@ describe("ID Roll", () => {
         th.testComplete();
     })
     test("Get voter auth, is authorized and hasn't voted", async () => {
-        const response = await request(app)
-            .post(`/API/Election/${ID}/ballot`)
-            .set('Cookie', ['id_token=' + testInputs.user1token + '; voter_id=' + testInputs.IDRoll[0]])
-            .set('Accept', 'application/json')
-            .send({})
+        const response = await th.requestBallotWithId(ID, testInputs.user1token, testInputs.IDRoll[0]);
         expect(response.statusCode).toBe(200)
-        expect(response.body.voterAuth.authorized_voter).toBe(true)
-        expect(response.body.voterAuth.has_voted).toBe(false)
+        // expect(response.body.voterAuth.authorized_voter).toBe(true)
+        // expect(response.body.voterAuth.has_voted).toBe(false)
+        expect(response.voterAuth.authorized_voter).toBe(true)
+        expect(response.voterAuth.has_voted).toBe(false)
         th.testComplete();
     })
     test("Authorized voter submits ballot", async () => {
-        const response = await request(app)
-            .post(`/API/Election/${ID}/vote`)
-            .set('Cookie', ['id_token=' + testInputs.user1token + '; voter_id=' + testInputs.IDRoll[0]])
-            .set('Accept', 'application/json')
-            .send({ ballot: testInputs.Ballot2})
+        const response = await th.submitBallotWithId(ID, testInputs.Ballot2, testInputs.user1token, testInputs.IDRoll[0]);
         // console.log(response)
         expect(response.statusCode).toBe(200)
         th.testComplete();
@@ -76,14 +70,10 @@ describe("ID Roll", () => {
         th.testComplete();
     })
     test("Get voter auth, isn't authorized and hasn't voted", async () => {
-        const response = await request(app)
-            .post(`/API/Election/${ID}/ballot`)
-            .set('Cookie', ['id_token=' + testInputs.user3token + '; voter_id=' + 'FakeVoterID'])
-            .set('Accept', 'application/json')
-            .send({})
+        const response = await th.requestBallotWithId(ID, testInputs.user3token, "FakeVoterID");
         expect(response.statusCode).toBe(200)
-        expect(response.body.voterAuth.authorized_voter).toBe(false)
-        expect(response.body.voterAuth.has_voted).toBe(false)
+        expect(response.voterAuth.authorized_voter).toBe(false)
+        expect(response.voterAuth.has_voted).toBe(false)
         th.testComplete();
     })
     test("Unauthorized voter submits ballot", async () => {

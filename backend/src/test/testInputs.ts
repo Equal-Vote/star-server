@@ -148,9 +148,9 @@ export default {
     ],
     Ballot2: {
         ballot_id: 0,
-        election_id: 8,
+        election_id: "8",
         status: 'Submitted',
-        date_submitted: new Date(),
+        date_submitted: Date.now(),
         votes: [{
             race_id:'0',
             scores: [{
