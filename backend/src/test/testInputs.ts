@@ -51,6 +51,7 @@ export default {
         state: 'open',
         frontend_url: '',
         owner_id: '0',
+        credential_ids: ['Alice@email.com'],
         races: [
             {
                 race_id: '0',

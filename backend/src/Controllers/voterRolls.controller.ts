@@ -62,7 +62,7 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
 }
 const registerVoter = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.registerVoter ${req.election.election_id}`);
-    if (req.electionRollEntry.registration){
+    if (req.electionRollEntry?.registration){
         const msg= "Voter already registered";
         Logger.info(req, msg);
         return responseErr(res, req, 400, msg);}
