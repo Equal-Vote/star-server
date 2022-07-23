@@ -10,19 +10,8 @@ export default class ElectionRollDB {
     constructor() {
     }
 
-    submitElectionRoll(election_id: string, voter_ids: string[],submitted:boolean,state: ElectionRollState, history: ElectionRollAction, registration: any, ctx:ILoggingContext): Promise<boolean>{
-        for (var i = 0; i < voter_ids.length; i++){
-            this.electionRolls.push({
-                election_roll_id: String(this.nextId),
-                election_id: election_id,
-                voter_id: voter_ids[i],
-                submitted: submitted,
-                state: state,
-                history: [history],
-                registration: registration,
-            });
-            this.nextId++;
-        }
+    submitElectionRoll(electionRolls: ElectionRoll[], ctx:ILoggingContext): Promise<boolean>{
+        this.electionRolls = this.electionRolls.concat(electionRolls)
         return Promise.resolve(true)
     }
 

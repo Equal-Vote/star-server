@@ -46,14 +46,15 @@ export default class ElectionRollDB {
     }
 
 
-    submitElectionRoll(election_id: number, voter_ids: string[], submitted: Boolean, state: string, history: Array<ElectionRollAction>,registration: any, ctx:ILoggingContext): Promise<boolean> {
+    submitElectionRoll(electionRolls: ElectionRoll[], ctx:ILoggingContext): Promise<boolean> {
         Logger.debug(ctx, `ElectionRollDB.submit`);
-        var values = voter_ids.map((voter_id) => ([election_id,
-            voter_id,
-            submitted,
-            state,
-            JSON.stringify(history),
-            JSON.stringify(registration)]))
+        var values = electionRolls.map((electionRoll) => ([
+            electionRoll.election_id,
+            electionRoll.voter_id,
+            electionRoll.submitted,
+            electionRoll.state,
+            JSON.stringify(electionRoll.history),
+            JSON.stringify(electionRoll.registration)]))
         var sqlString = format(`INSERT INTO ${this._tableName} (election_id,voter_id,submitted,state,history,registration)
         VALUES %L;`, values);
         Logger.debug(ctx, sqlString)
