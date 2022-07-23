@@ -35,6 +35,7 @@ export default class ElectionsDB {
             settings      json
           );
         `;
+
         Logger.debug(appInitContext, query);
         var p = this._postgresClient.query(query);
         return p.then((_: any) => {
@@ -51,7 +52,7 @@ export default class ElectionsDB {
         });
     }
 
-    createElection(election: Election, ctx:ILoggingContext): Promise<Election> {
+    createElection(election: Election, ctx:ILoggingContext, reason:string): Promise<Election> {
         Logger.debug(ctx, `${className}.createElection`, election);
         var sqlString = `INSERT INTO ${this._tableName} (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,$13) RETURNING *;`;
@@ -75,12 +76,13 @@ export default class ElectionsDB {
         });
 
         return p.then((res: any) => {
-            // console.log(res);
-            return res.rows[0];
+            const newElection = res.rows[0];
+            Logger.state(ctx, `Election created:`, {reason: reason, election: newElection});
+            return newElection;
         });
     }
 
-    updateElection(election: Election, ctx:ILoggingContext): Promise<Election> {
+    updateElection(election: Election, ctx:ILoggingContext, reason:string): Promise<Election> {
         Logger.debug(ctx, `${className}.updateElection`, election);
         var sqlString = `UPDATE ${this._tableName} SET (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings) =
         ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) WHERE election_id = $1 RETURNING *;`;
@@ -107,8 +109,9 @@ export default class ElectionsDB {
         });
 
         return p.then((res: any) => {
-            // console.log(res);
-            return res.rows[0];
+            const updatedElection = res.rows[0];
+            Logger.state(ctx, `Election Updated:`, {reason: reason, election: updatedElection});
+            return updatedElection;
         });
     }
 
@@ -162,7 +165,7 @@ export default class ElectionsDB {
         });
     }
 
-    delete(election_id: string, ctx:ILoggingContext): Promise<boolean> {
+    delete(election_id: string, ctx:ILoggingContext, reason: string): Promise<boolean> {
         Logger.debug(ctx, `${className}.delete ${election_id}`);
         var sqlString = `DELETE FROM ${this._tableName} WHERE election_id = $1`;
         Logger.debug(ctx, sqlString);
@@ -174,6 +177,7 @@ export default class ElectionsDB {
         });
         return p.then((response: any) => {
             if (response.rowCount == 1) {
+                Logger.state(ctx, `Election Deleted:`, {reason: reason, electionId: election_id});
                 return true;
             }
             return false;
