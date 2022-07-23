@@ -233,11 +233,6 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
     }
     try {
         const electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.voter_id, req);
-        if (!electionRollEntry){
-            const msg= "Voter Roll not found";
-            Logger.info(req, msg);
-            return responseErr(res, req, 400, msg);
-        }
         req.electionRollEntry = electionRollEntry
     } catch (err:any) {
         const msg = `Could not find election roll entry`;
