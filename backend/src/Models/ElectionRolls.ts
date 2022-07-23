@@ -45,7 +45,7 @@ export default class ElectionRollDB {
     }
 
 
-    submitElectionRoll(election_id: number, voter_ids: string[], submitted: Boolean, state: string, history: Array<ElectionRollAction>, ctx:ILoggingContext): Promise<boolean> {
+    submitElectionRoll(election_id: number, voter_ids: string[], submitted: Boolean, state: string, history: Array<ElectionRollAction>, ctx:ILoggingContext, reason:string): Promise<boolean> {
         Logger.debug(ctx, `ElectionRollDB.submit`);
         var values = voter_ids.map((voter_id) => ([election_id,
             voter_id,
@@ -58,28 +58,29 @@ export default class ElectionRollDB {
         Logger.debug(ctx, values)
         var p = this._postgresClient.query(sqlString);
         return p.then((res: any) => {
-            Logger.debug(ctx, "set response rows: " + JSON.stringify(res));
-            return true;
+            const resElectionRoll = res.rows[0];
+            Logger.state(ctx, `Submit Election Roll: `, {reason: reason, electionRoll: resElectionRoll});
+            return resElectionRoll;
         });
     }
 
     getRollsByElectionID(election_id: string, ctx:ILoggingContext): Promise<ElectionRoll[] | null> {
-        console.log(`-> ElectionRollDB.getByElectionID`);
+        Logger.debug(ctx, `ElectionRollDB.getByElectionID`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1`;
-        console.log(sqlString);
+        Logger.debug(ctx, sqlString);
 
         var p = this._postgresClient.query({
             text: sqlString,
             values: [election_id]
         });
         return p.then((response: any) => {
-            var rows = response.rows;
-            console.log(rows[0])
-            if (rows.length == 0) {
-                console.log(".get null");
+            const resRolls = response.rows;
+            Logger.debug(ctx, "", resRolls);
+            if (resRolls.length == 0) {
+                Logger.debug(ctx, ".get null");
                 return [];
             }
-            return rows
+            return resRolls
         });
     }
 
@@ -102,11 +103,12 @@ export default class ElectionRollDB {
             return rows[0]
         });
     }
-    update(election_roll: ElectionRoll, ctx:ILoggingContext): Promise<ElectionRoll | null> {
+
+    update(election_roll: ElectionRoll, ctx:ILoggingContext, reason:string): Promise<ElectionRoll | null> {
         Logger.debug(ctx, `ElectionRollDB.updateRoll`);
         var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state=$3, history=$4  WHERE election_id = $5 AND voter_id=$6`;
         Logger.debug(ctx, sqlString);
-        Logger.debug(ctx, election_roll)
+        Logger.debug(ctx, "", election_roll)
         var p = this._postgresClient.query({
             text: sqlString,
 
@@ -115,17 +117,19 @@ export default class ElectionRollDB {
         });
         return p.then((response: any) => {
             var rows = response.rows;
-            Logger.debug(ctx, response)
+            Logger.debug(ctx, "", response);
             if (rows.length == 0) {
                 Logger.debug(ctx, ".get null");
                 return [] as ElectionRoll[];
             }
-            return rows
+            const newElectionRoll = rows;
+            Logger.state(ctx, `Update Election Roll: `, {reason: reason, electionRoll:newElectionRoll });
+            return newElectionRoll;
         });
     }
 
-    delete(election_roll: ElectionRoll, ctx:ILoggingContext): Promise<boolean> {
-        Logger.debug(ctx, `-> ElectionRollDB.delete`);
+    delete(election_roll: ElectionRoll, ctx:ILoggingContext, reason:string): Promise<boolean> {
+        Logger.debug(ctx, `ElectionRollDB.delete`);
         var sqlString = `DELETE FROM ${this._tableName} WHERE election_id = $1 AND voter_id=$2`;
         Logger.debug(ctx, sqlString);
 
@@ -136,11 +140,10 @@ export default class ElectionRollDB {
         });
         return p.then((response: any) => {
             if (response.rowCount == 1) {
+                Logger.state(ctx, `Delete ElectionRoll`, {reason:reason, electionId: election_roll.election_id});
                 return true;
             }
             return false;
         });
     }
 }
-
-module.exports = ElectionRollDB
