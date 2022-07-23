@@ -5,13 +5,8 @@ import ElectionsDB from '../Models/Elections';
 import ServiceLocator from '../ServiceLocator';
 import Logger from '../Services/Logging/Logger';
 import { responseErr } from '../Util';
-<<<<<<< HEAD
-import ElectionsDB from '../Models/Elections';
 import { IRequest } from '../IRequest';
-import { Election } from '../../../domain_model/Election';
-=======
 
->>>>>>> main
 
 const StarResults = require('../Tabulators/StarResults.js');
 
