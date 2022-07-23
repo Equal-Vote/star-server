@@ -19,3 +19,22 @@ export interface BallotAction {
     timestamp:number;
 }
 
+
+export function ballotValidation(obj:Ballot): string | null {
+    if (!obj){
+        return "Ballot is null";
+    }
+    //TODO - currently some disagreement on the type of the Election Id...
+    //technically Uid expects a string, but the DB currently using numbers
+    if (typeof obj.election_id !== 'string' && typeof obj.election_id !== 'number'){
+        return "Invalid Election ID";
+    }
+    if (typeof obj.ballot_id !== 'number'){
+        return "Invalid Ballot ID";
+    }
+    if (!obj.votes){
+        return "Invalid Votes";
+    }
+    //TODO... etc
+    return null;
+  }

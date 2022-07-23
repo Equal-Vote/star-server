@@ -1,0 +1,113 @@
+require('dotenv').config();
+const request = require('supertest');
+import { Election } from '../../../domain_model/Election';
+import { TestHelper } from './TestHelper';
+import testInputs from './testInputs';
+
+const th = new TestHelper();
+
+// Mocks databases for testing app
+// Uses mocks defined in ./../Models/__Mocks__/
+jest.mock('./../Models/Ballots')
+jest.mock('./../Models/Elections')
+jest.mock('./../Models/ElectionRolls')
+
+
+afterEach(() => {
+    jest.clearAllMocks();
+    th.afterEach();
+});
+
+const setupInitialElection = async () => {
+    const response = await th.createElection(testInputs.Election1, [], testInputs.user1token);
+    expect(response.statusCode).toBe(200);
+    return response.election.election_id;
+}
+
+const fetchElectionById = async (electionId:number):Promise<Election> => {
+    const response = await th.fetchElectionById(electionId, testInputs.user1token);
+    expect(response.election).toBeTruthy();
+    return response.election;
+}
+
+describe("Edit Election", () => {
+
+    describe("Election data provided", () => {
+        test("responds with 200 status", async () => {
+            const electionId = await setupInitialElection();
+            console.log("electionId = "+electionId);
+
+            const response = await th.editElection(testInputs.Election1, [], testInputs.user1token);
+            expect(response.statusCode).toBe(200);
+            th.testComplete();
+        })
+    })
+
+    describe("Election not provided/incorrect format", () => {
+        test("responds with 400 status", async () => {
+            const ID = await setupInitialElection()
+            const response = await th.postRequest(`/API/Election/${ID}/edit`, { VoterIDList: [] }, testInputs.user1token );
+            expect(response.statusCode).toBe(400);
+            th.testComplete();
+        })
+    })
+
+    describe("User is not logged in", () => {
+        test("responds with 401 status", async () => {
+            const ID = await setupInitialElection()
+
+            const response = await th.createElection(testInputs.Election1, [], null);
+            expect(response.statusCode).toBe(401);
+            th.testComplete();
+        })
+    })
+
+    describe("User is not owner", () => {
+        test("responds with 401 status", async () => {
+            const ID = await setupInitialElection()
+            const response = await th.editElection(testInputs.Election1, [], testInputs.user2token);
+            expect(response.statusCode).toBe(401);
+            th.testComplete();
+        })
+    })
+
+    describe("User edits election", () => {
+        test("edits title", async () => {
+            const electionId = await setupInitialElection()
+
+            var election1Copy = {...testInputs.Election1};
+            var newTitle = `${election1Copy.title} - Edited`;
+            election1Copy.election_id = electionId;
+            election1Copy.title = newTitle;
+
+            const response = await th.editElection(election1Copy, [], testInputs.user1token);
+
+            // expect(ElectionsDB.elections[election1Copy.election_id].title).toBe(newTitle)
+            expect(response.statusCode).toBe(200);
+
+            const reFetchedElection = await fetchElectionById(electionId);;
+            expect(reFetchedElection.title).toEqual(newTitle);
+            th.testComplete();
+        })
+
+        test("edits roll type", async () => {
+            // I'm testing roll type specifically to make sure nested fields are applied correctly        
+            const ID = await setupInitialElection()
+            // I wanted to use structuredClone here, but I had trouble getting it to work with jest :'(
+            var election1Copy = {...testInputs.Election1, settings: {...testInputs.Election1.settings}}
+            var newRollType = 'Some Other Roll Type'
+            election1Copy.settings.election_roll_type = newRollType;
+            election1Copy.election_id = ID;
+
+            const response = await th.editElection(election1Copy, [], testInputs.user1token);
+
+            // TODO: I couldn't figure out how to make this work, it kept saying that ElectionsDB.mock was undefined?
+            // expect(ElectionsDB.mock.instances[0].elections[election1Copy.election_id].settings.election_roll_type).toBe(newRollType)
+            expect(response.statusCode).toBe(200)
+            th.testComplete();
+        })
+        test("edits voter ids", async () => {
+            // TODO
+        })
+    })
+})

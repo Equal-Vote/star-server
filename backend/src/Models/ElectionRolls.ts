@@ -1,4 +1,4 @@
-import { ElectionRoll } from '../../../domain_model/ElectionRoll';
+import { ElectionRoll, ElectionRollAction } from '../../../domain_model/ElectionRoll';
 import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
 var format = require('pg-format');
@@ -23,31 +23,44 @@ export default class ElectionRollDB {
             voter_id        VARCHAR NOT NULL,
             ballot_id       INTEGER,
             submitted       BOOLEAN,
-            PRIMARY KEY(election_id,voter_id)
+            PRIMARY KEY(election_id,voter_id),
+            state           VARCHAR NOT NULL,
+            history         json
           );
         `;
         Logger.debug(appInitContext, query);
         var p = this._postgresClient.query(query);
         return p.then((_: any) => {
+            //This will add the new field to the live DB in prod.  Once that's done we can remove this
+            var historyQuery = `
+            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS history json
+            `;
+            return this._postgresClient.query(historyQuery).catch((err:any) => {
+                console.log("err adding history column to DB: " + err.message);
+                return err;
+            });
+        }).then((_:any)=> {
             return this;
         });
     }
 
 
-    submitElectionRoll(election_id: number, voter_ids: string[], submitted: Boolean, ctx:ILoggingContext, reason:string): Promise<boolean> {
+    submitElectionRoll(election_id: number, voter_ids: string[], submitted: Boolean, state: string, history: Array<ElectionRollAction>, ctx:ILoggingContext, reason:string): Promise<boolean> {
         Logger.debug(ctx, `ElectionRollDB.submit`);
         var values = voter_ids.map((voter_id) => ([election_id,
             voter_id,
-            submitted]))
-        var sqlString = format(`INSERT INTO ${this._tableName} (election_id,voter_id,submitted)
+            submitted,
+            state,
+            JSON.stringify(history)]))
+        var sqlString = format(`INSERT INTO ${this._tableName} (election_id,voter_id,submitted,state,history)
         VALUES %L;`, values);
-        Logger.debug(ctx, sqlString);
-        Logger.debug(ctx, values);
+        Logger.debug(ctx, sqlString)
+        Logger.debug(ctx, values)
         var p = this._postgresClient.query(sqlString);
         return p.then((res: any) => {
             const resElectionRoll = res.rows[0];
             Logger.state(ctx, `Submit Election Roll: `, {reason: reason, electionRoll: resElectionRoll});
-            return true;
+            return resElectionRoll;
         });
     }
 
@@ -82,6 +95,7 @@ export default class ElectionRollDB {
         });
         return p.then((response: any) => {
             var rows = response.rows;
+            Logger.debug(ctx, rows[0])
             if (rows.length == 0) {
                 Logger.debug(ctx, ".get null");
                 return [];
@@ -92,13 +106,13 @@ export default class ElectionRollDB {
 
     update(election_roll: ElectionRoll, ctx:ILoggingContext, reason:string): Promise<ElectionRoll | null> {
         Logger.debug(ctx, `ElectionRollDB.updateRoll`);
-        var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2  WHERE election_id = $3 AND voter_id=$4`;
+        var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state=$3, history=$4  WHERE election_id = $5 AND voter_id=$6`;
         Logger.debug(ctx, sqlString);
         Logger.debug(ctx, "", election_roll)
         var p = this._postgresClient.query({
             text: sqlString,
 
-            values: [election_roll.ballot_id, election_roll.submitted, election_roll.election_id, election_roll.voter_id]
+            values: [election_roll.ballot_id, election_roll.submitted, election_roll.state, JSON.stringify(election_roll.history), election_roll.election_id, election_roll.voter_id]
 
         });
         return p.then((response: any) => {
@@ -118,6 +132,7 @@ export default class ElectionRollDB {
         Logger.debug(ctx, `ElectionRollDB.delete`);
         var sqlString = `DELETE FROM ${this._tableName} WHERE election_id = $1 AND voter_id=$2`;
         Logger.debug(ctx, sqlString);
+
         var p = this._postgresClient.query({
             rowMode: 'array',
             text: sqlString,

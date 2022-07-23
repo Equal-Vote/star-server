@@ -1,13 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from "react-router";
 import useFetch from "../useFetch";
 import Results from './Results';
 import { Grid } from "@material-ui/core";
 import Box from '@material-ui/core/Box';
 
-const ViewElectionResults = () => {
+const ViewElectionResults = ({ election }) => {
     const {id} = useParams();
-    const {data, isPending, error} = useFetch(`/API/ElectionResult/${id}`)
+    const {data, isPending, error, makeRequest: getResults} = useFetch(`/API/ElectionResult/${id}`,'get')
+    useEffect(() => {getResults()},[])
+    
     console.log(data)
     return (
         //Using grid to force results into the center and fill screen on smaller screens.

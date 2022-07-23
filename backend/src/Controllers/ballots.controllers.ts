@@ -1,4 +1,5 @@
-import { Ballot as BallotType } from '../../../domain_model/Ballot';
+import { Ballot as BallotType, ballotValidation } from '../../../domain_model/Ballot';
+import { reqIdSuffix } from "../IRequest";
 import Logger from "../Services/Logging/Logger";
 import ServiceLocator from "../ServiceLocator";
 import { responseErr } from '../Util';
@@ -50,6 +51,14 @@ const returnBallots = async (req: any, res: any, next: any) => {
 }
 
 const submitBallot = async (req: any, res: any, next: any) => {
+
+    const inputBallot = req.body.ballot;
+    const validationErr = ballotValidation(inputBallot);
+    if (validationErr){
+        Logger.info(req, "Invalid Ballot: "+ validationErr);
+        return responseErr(res, req, 400, "Invalid Ballot");
+    }
+
     if (req.election.state!=='open'){
         Logger.info(req, "Ballot Rejected. Election not open.", req.election);
         return responseErr(res, req, 400, "Election is not open");
@@ -86,6 +95,12 @@ const submitBallot = async (req: any, res: any, next: any) => {
         req.electionRollEntry.submitted = true
         req.ballot = savedBallot;
         req.electionRollEntry.ballot_id = savedBallot.ballot_id;
+        req.electionRollEntry.history.push({
+            action_type:"submit",
+            actor: ballot.user_id || "unknown",
+            timestamp:ballot.date_submitted,
+        });
+        Logger.info(req, "Submit Ballot Success.", savedBallot);
         return next();
     } catch (err:any) {
         var errData = {

@@ -1,33 +1,43 @@
 import { useEffect, useState } from "react";
 
 
-const useFetch = (url,options) => {
-    const [isPending,setIsPending] = useState(true)
-    const [error,setError] = useState(null)
-    const [data,setData] = useState(null)
+const useFetch = (url, method) => {
+    const [isPending, setIsPending] = useState(true)
+    const [error, setError] = useState(null)
+    const [data, setData] = useState(null)
 
-
-    useEffect(() => {
-        setTimeout(() => {
-            fetch(url,options)
-            .then(res => {
-                if(!res.ok) {
-                    throw Error('Could not fetch data')
+    const makeRequest = async (data) => {
+        const options = {
+            method: method,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        }
+        try {
+            const res = await fetch(url, options)
+            if (!res.ok) {
+                if (res.json.length > 0) {
+                    console.log(res)
+                    const data = await res.json();
+                    throw Error(`Error making request: ${res.status.toString()}: ${data.error}`)
+                } else {
+                    throw Error(`Error making request: ${res.status.toString()}`)
                 }
-                return res.json();
-            })
-            .then(data=> {
-                setData(data);
-                setIsPending(false);
-                setError(null);
-            })
-            .catch(err => {
-                setIsPending(false);
-                setError(err.message);
-            })
-        },1000);
-    },[url])
-    return {data, isPending, error}
+            }
+            const data = await res.json();
+            setData(data);
+            setIsPending(false);
+            setError(null);
+            return true
+        } catch (err) {
+            setIsPending(false);
+            setError(err.message);
+            return false
+        }
+    }
+    return { data, isPending, error, makeRequest }
 }
 
 export default useFetch;

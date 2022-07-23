@@ -2,7 +2,8 @@ import { isConstructorDeclaration } from "typescript"
 import { Election } from "../../../domain_model/Election"
 import Logger from "../Services/Logging/Logger"
 import { responseErr } from "../Util"
-const roles = require('../auth/roles')
+import { permission } from "../../../domain_model/permissions"
+import { roles } from "../../../domain_model/roles"
 
 var jwt = require('jsonwebtoken')
 const className = 'Auth.Controllers';
@@ -23,13 +24,16 @@ const getUser = (req: any, res: any, next: any) => {
     if (req.election.audit_ids && req.election.audit_ids.includes(req.user.email)){
       req.user_auth.roles.push(roles.auditor)
     }
+    if (req.election.credential_ids && req.election.credential_ids.includes(req.user.email)){
+      req.user_auth.roles.push(roles.credentialer)
+    }
   }
   next()
 }
 
-const hasPermission = (permission: any) => {
+const hasPermission = (permission: permission) => {
   return (req: any, res: any, next: any) => {
-    if (req.user_auth.roles.some( (role:any) => permission.includes(role))) {
+    if (!req.user_auth.roles.some( (role:roles) => permission.includes(role))) {
       var msg = "Does not have permission";
       Logger.info(req, msg);
       return responseErr(res, req, 401, msg);

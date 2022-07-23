@@ -34,10 +34,14 @@ function logger(): ILogger {
   return _loggerInstance;
 }
 
+function setLoggerInstance(instance:ILogger){
+  _loggerInstance = instance;
+}
+
 function createContext(name:string):ILoggingContext {
     return {
         contextId: name
       }
 }
 
-export  default { debug, info, warn, error, createContext, state };
+export  default { debug, info, warn, error, createContext, state, setLoggerInstance};
