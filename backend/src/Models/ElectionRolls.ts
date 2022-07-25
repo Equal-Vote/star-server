@@ -25,7 +25,8 @@ export default class ElectionRollDB {
             submitted       BOOLEAN,
             PRIMARY KEY(election_id,voter_id),
             state           VARCHAR NOT NULL,
-            history         json
+            history         json,
+            registration    json
           );
         `;
         Logger.debug(appInitContext, query);
@@ -43,16 +44,17 @@ export default class ElectionRollDB {
             return this;
         });
     }
-
-
-    submitElectionRoll(election_id: number, voter_ids: string[], submitted: Boolean, state: string, history: Array<ElectionRollAction>, ctx:ILoggingContext, reason:string): Promise<boolean> {
+    
+    submitElectionRoll(electionRolls: ElectionRoll[], ctx:ILoggingContext,reason:string): Promise<boolean> {
         Logger.debug(ctx, `ElectionRollDB.submit`);
-        var values = voter_ids.map((voter_id) => ([election_id,
-            voter_id,
-            submitted,
-            state,
-            JSON.stringify(history)]))
-        var sqlString = format(`INSERT INTO ${this._tableName} (election_id,voter_id,submitted,state,history)
+        var values = electionRolls.map((electionRoll) => ([
+            electionRoll.election_id,
+            electionRoll.voter_id,
+            electionRoll.submitted,
+            electionRoll.state,
+            JSON.stringify(electionRoll.history),
+            JSON.stringify(electionRoll.registration)]))
+        var sqlString = format(`INSERT INTO ${this._tableName} (election_id,voter_id,submitted,state,history,registration)
         VALUES %L;`, values);
         Logger.debug(ctx, sqlString)
         Logger.debug(ctx, values)
@@ -106,13 +108,13 @@ export default class ElectionRollDB {
 
     update(election_roll: ElectionRoll, ctx:ILoggingContext, reason:string): Promise<ElectionRoll | null> {
         Logger.debug(ctx, `ElectionRollDB.updateRoll`);
-        var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state=$3, history=$4  WHERE election_id = $5 AND voter_id=$6`;
+        var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state=$3, history=$4, registration=$5 WHERE election_id = $6 AND voter_id=$7`;
         Logger.debug(ctx, sqlString);
         Logger.debug(ctx, "", election_roll)
         var p = this._postgresClient.query({
             text: sqlString,
 
-            values: [election_roll.ballot_id, election_roll.submitted, election_roll.state, JSON.stringify(election_roll.history), election_roll.election_id, election_roll.voter_id]
+            values: [election_roll.ballot_id, election_roll.submitted, election_roll.state, JSON.stringify(election_roll.history), JSON.stringify(election_roll.registration), election_roll.election_id, election_roll.voter_id]
 
         });
         return p.then((response: any) => {

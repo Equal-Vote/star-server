@@ -20,6 +20,10 @@ router.post('/Election/:id/ballot',
     authController.getUser,
     voterRollController.getVoterAuth,
     electionController.returnElection)
+router.post('/Election/:id/register',
+        authController.getUser,
+        voterRollController.getVoterAuth,
+        voterRollController.registerVoter)
 router.get('/Election/:id/ballots',
     authController.getUser,
     authController.hasPermission(permissions.canViewBallots),

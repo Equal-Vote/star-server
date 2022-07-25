@@ -9,8 +9,8 @@ import EditElectionRoll from "./EditElectionRoll";
 
 const ViewElectionRolls = () => {
     const { id } = useParams();
-    const { data, isPending, error, makeRequest } = useFetch(`/API/Election/${id}/rolls`,'get')
-    useEffect(() => {makeRequest()},[])
+    const { data, isPending, error, makeRequest: fetchRolls } = useFetch(`/API/Election/${id}/rolls`,'get')
+    useEffect(() => {fetchRolls()},[])
     const [isEditing, setIsEditing] = useState(false)
     const [editedRoll, setEditedRoll] = useState(null)
 
@@ -52,7 +52,7 @@ const ViewElectionRolls = () => {
                 </TableContainer>
             }
             {isEditing && editedRoll &&
-                <EditElectionRoll roll={editedRoll} onClose={onClose}/>
+                <EditElectionRoll roll={editedRoll} onClose={onClose} fetchRolls = {fetchRolls} id={id}/>
             }
         </Container>
     )

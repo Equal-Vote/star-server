@@ -120,11 +120,6 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
 
               {electionData.election.state === 'draft' &&
                 <>
-                  <Link to={`/Election/${electionData.election.election_id}/edit`}>
-                    <Typography align='center' gutterBottom variant="h6" component="h6">
-                      Edit
-                    </Typography>
-                  </Link>
                   <Tooltip title="Opens election for ballots to be submitted and prevents future edits" >
                     <Button variant='outlined' onClick={() => finalizeElection()} > Finalize </Button>
                   </Tooltip>
