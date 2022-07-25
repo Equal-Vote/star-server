@@ -9,6 +9,7 @@ export interface ElectionRoll {
     submitted: boolean; //has ballot been submitted
     state: ElectionRollState; //state of election roll 
     history?: ElectionRollAction[];// history of changes to election roll
+    registration?: any; //Registration data for voter
 }
 
 export interface ElectionRollAction {

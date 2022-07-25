@@ -1,4 +1,4 @@
-import { ElectionRollState } from "../../../domain_model/ElectionRoll";
+import { ElectionRoll, ElectionRollState } from "../../../domain_model/ElectionRoll";
 import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
 import { responseErr } from "../Util";
@@ -44,7 +44,14 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
             actor: req.user.email,
             timestamp: Date.now(),
         }]
-        const newElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, req.body.VoterIDList, false, ElectionRollState.approved, history, req, `User adding Election Roll??`);
+        const rolls: ElectionRoll[] = req.body.VoterIDList.map((id:string) => ({
+            election_id: req.election.election_id,
+            voter_id: id,
+            submitted: false,
+            state: ElectionRollState.approved,
+            history: history,
+        }))
+        const newElectionRoll = await ElectionRollModel.submitElectionRoll(rolls, req, `User adding Election Roll??`)
         if (!newElectionRoll){
             const msg= "Voter Roll not found";
             Logger.error(req, "= = = = = = \n = = = = = ");
@@ -60,7 +67,42 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
         return responseErr(res, req, 500, msg);
     }
 }
-
+const registerVoter = async (req: any, res: any, next: any) => {
+    Logger.info(req, `${className}.registerVoter ${req.election.election_id}`);
+    if (req.electionRollEntry?.registration){
+        const msg= "Voter already registered";
+        Logger.info(req, msg);
+        return responseErr(res, req, 400, msg);}
+    try {
+        const history = [{
+            action_type: 'registered',
+            actor: req.user.email,
+            timestamp: Date.now(),
+        }]
+        const roll:ElectionRoll[]= [{
+            election_roll_id: '',
+            election_id: req.election.election_id,
+            voter_id: req.voter_id,
+            submitted: false,
+            state: ElectionRollState.registered,
+            history: history,
+            registration: req.body.registration,
+        }] 
+        const NewElectionRoll = await ElectionRollModel.submitElectionRoll(roll, req, 'User Registered')
+        if (!NewElectionRoll){
+            const msg= "Voter Roll not found";
+            Logger.info(req, msg);
+            return responseErr(res, req, 400, msg);
+        }
+        
+        res.status('200').json(JSON.stringify({ election: req.election, NewElectionRoll }))
+        return next()
+    } catch (err:any) {
+        const msg = `Could not add Election Roll`;
+        Logger.error(req, `${msg}: ${err.message}`);
+        return responseErr(res, req, 500, msg);
+    }
+}
 const editElectionRoll = async (req: any, res: any, next: any) => {
     const electinoRollInput = req.body.electionRollEntry;
     Logger.info(req, `${className}.editElectionRoll`, {electionRollEntry: electinoRollInput});
@@ -248,7 +290,16 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
                 actor: req.user?.email || req.voter_id,
                 timestamp: Date.now(),
             }]
-            const newElectionRoll = await ElectionRollModel.submitElectionRoll(req.election.election_id, [req.voter_id], false, ElectionRollState.approved, history, req, `User requesting Roll and is authorized`);
+            const roll:ElectionRoll[]= [{
+                election_roll_id: '',
+                election_id: req.election.election_id,
+                voter_id: req.voter_id,
+                submitted: false,
+                state: ElectionRollState.approved,
+                history: history,
+            }]
+            const newElectionRoll = await ElectionRollModel.submitElectionRoll(roll, req, `User requesting Roll and is authorized`)
+
             if (!newElectionRoll){
                 const msg= "Voter Roll not found";
                 Logger.info(req, msg);
@@ -300,5 +351,6 @@ module.exports = {
     getVoterAuth,
     editElectionRoll,
     sendInvitations,
-    changeElectionRollState
+    changeElectionRollState,
+    registerVoter
 }
