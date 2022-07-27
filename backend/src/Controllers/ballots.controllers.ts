@@ -3,9 +3,8 @@ import { reqIdSuffix } from "../IRequest";
 import Logger from "../Services/Logging/Logger";
 import ServiceLocator from "../ServiceLocator";
 import { responseErr } from '../Util';
-import BallotsDB from '../Models/Ballots';
 
-var BallotModel = new BallotsDB(ServiceLocator.postgres());
+var BallotModel =  ServiceLocator.ballotsDb();
 const className = 'Ballots.Controllers';
 
 const ballotByID = async (req: any, res: any, next: any) => {
