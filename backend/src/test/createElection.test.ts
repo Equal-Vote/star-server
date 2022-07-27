@@ -4,6 +4,7 @@ const request = require("supertest");
 import { Election, electionValidation } from "../../../domain_model/Election";
 import testInputs from "./testInputs";
 import { TestHelper } from "./TestHelper";
+import Logger from "../Services/Logging/Logger";
 
 const th = new TestHelper();
 
@@ -34,7 +35,8 @@ describe("Create Election", () => {
       electionRes = response.election;
       expect(electionRes.title).toEqual(testInputs.Election1.title);
       expect(electionValidation(electionRes)).toBeNull();
-      th.testComplete();
+      Logger.info(Logger.createContext("foo"), "Election response:  " + electionRes.election_id);
+      //th.testComplete();
     });
 
     test("Get responds with 200 status", async () => {

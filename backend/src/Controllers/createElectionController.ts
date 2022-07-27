@@ -1,4 +1,5 @@
 import { Election, electionValidation } from "../../../domain_model/Election";
+import { ElectionRoll, ElectionRollState } from "../../../domain_model/ElectionRoll";
 import { IRequest } from "../IRequest";
 import ElectionsDB from "../Models/Elections";
 import ElectionRollDB from "../Models/ElectionRolls";
@@ -6,7 +7,6 @@ import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
 import { BadRequest, InternalServerError } from "@curveball/http-errors";
 import { ILoggingContext } from "../Services/Logging/ILogger";
-import { ElectionRollState } from "../../../domain_model/ElectionRoll";
 import {expectUserFromRequest, expectValidElectionFromRequest, catchAndRespondError} from "./controllerUtils";
 
 var ElectionsModel = new ElectionsDB(ServiceLocator.postgres());
@@ -14,8 +14,8 @@ var ElectionRollModel = new ElectionRollDB(ServiceLocator.postgres());
 
 const className = "createElectionController";
 
-const createElectionHandler = async (req: IRequest, res: any, next: any) => {
-
+async function createElectionController(req: IRequest, res: any, next: any) {
+        Logger.info(req, "Create Election Controller");
     try {
 
         const user = expectUserFromRequest(req);
@@ -31,12 +31,15 @@ const createElectionHandler = async (req: IRequest, res: any, next: any) => {
                 timestamp: Date.now(),
             },
         ];
+        const rolls: ElectionRoll[] = inputVoterIDList.map((id:string) => ({
+            election_id: inputElection.election_id,
+            voter_id: id,
+            submitted: false,
+            state: ElectionRollState.approved,
+            history: history,
+        }));
         const resElectionRoll = await ElectionRollModel.submitElectionRoll(
-            inputElection.election_id,
-            inputVoterIDList,
-            false,
-            ElectionRollState.approved,
-            history,
+            rolls,
             req,
             `User adding Election Roll??`
         );
@@ -49,6 +52,7 @@ const createElectionHandler = async (req: IRequest, res: any, next: any) => {
         //TODO - not sure what the intended response was here from voterRolls.addElectionRoll ??
         res.status("200").json({ election: resElection, resElectionRoll });
     } catch (err: any) {
+        Logger.error(req, "CATCH:  create error electio err: " + err.message);
         catchAndRespondError(req, res, err);
     }
 };
@@ -69,3 +73,7 @@ const createElection = async (
     }
     return newElection;
 };
+
+module.exports = {
+    createElectionController
+}
