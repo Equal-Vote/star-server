@@ -36,7 +36,7 @@ describe("Create Election", () => {
       expect(electionRes.title).toEqual(testInputs.Election1.title);
       expect(electionValidation(electionRes)).toBeNull();
       Logger.info(Logger.createContext("foo"), "Election response:  " + electionRes.election_id);
-      //th.testComplete();
+      th.testComplete();
     });
 
     test("Get responds with 200 status", async () => {

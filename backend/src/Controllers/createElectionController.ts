@@ -1,16 +1,14 @@
 import { Election, electionValidation } from "../../../domain_model/Election";
 import { ElectionRoll, ElectionRollState } from "../../../domain_model/ElectionRoll";
 import { IRequest } from "../IRequest";
-import ElectionsDB from "../Models/Elections";
-import ElectionRollDB from "../Models/ElectionRolls";
 import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
-import { BadRequest, InternalServerError } from "@curveball/http-errors";
+import { InternalServerError } from "@curveball/http-errors";
 import { ILoggingContext } from "../Services/Logging/ILogger";
 import {expectUserFromRequest, expectValidElectionFromRequest, catchAndRespondError} from "./controllerUtils";
 
-var ElectionsModel = new ElectionsDB(ServiceLocator.postgres());
-var ElectionRollModel = new ElectionRollDB(ServiceLocator.postgres());
+var ElectionsModel = ServiceLocator.electionsDb();
+var ElectionRollModel = ServiceLocator.electionRollDb();  
 
 const className = "createElectionController";
 
@@ -22,7 +20,7 @@ async function createElectionController(req: IRequest, res: any, next: any) {
         const inputElection = expectValidElectionFromRequest(req);
         const inputVoterIDList = req.body.VoterIDList;
         
-        const resElection = await createElection(inputElection, req);
+        const resElection = await createAndCheckElection(inputElection, req);
 
         const history = [
             {
@@ -57,7 +55,7 @@ async function createElectionController(req: IRequest, res: any, next: any) {
     }
 };
 
-const createElection = async (
+const createAndCheckElection = async (
     inputElection: Election,
     ctx: ILoggingContext
 ): Promise<Election> => {
@@ -69,7 +67,7 @@ const createElection = async (
     );
     if (!newElection) {
         Logger.error(ctx, failMsg);
-        throw new BadRequest(failMsg);
+        throw new InternalServerError(failMsg);
     }
     return newElection;
 };
