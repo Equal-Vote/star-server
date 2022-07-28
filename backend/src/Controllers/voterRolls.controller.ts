@@ -2,10 +2,9 @@ import { ElectionRoll, ElectionRollState } from "../../../domain_model/ElectionR
 import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
 import { responseErr } from "../Util";
-import ElectionRollDB from '../Models/ElectionRolls';
 
 const EmailService = require('../Services/EmailService')
-var ElectionRollModel = new ElectionRollDB(ServiceLocator.postgres());
+const ElectionRollModel = ServiceLocator.electionRollDb();
 
 const className="VoterRolls.Controllers";
 

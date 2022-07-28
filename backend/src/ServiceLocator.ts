@@ -1,9 +1,15 @@
 import Logger from "./Services/Logging/Logger";
+import BallotsDB from "./Models/Ballots";
+import ElectionsDB from "./Models/Elections";
+import ElectionRollDB from "./Models/ElectionRolls";
 
 const { Pool } = require('pg');
 
 var _postgresClient:any;
 var _appInitContext = Logger.createContext("appInit");
+var _ballotsDb:BallotsDB;
+var _electionsDb:ElectionsDB;
+var _electionRollDb:ElectionRollDB;
 
 function postgres():any {
     if (_postgresClient == null){
@@ -27,4 +33,26 @@ function postgres():any {
     return _postgresClient;
 }
 
-export  default { postgres };
+function ballotsDb():BallotsDB {
+    if (_ballotsDb == null){
+        _ballotsDb = new BallotsDB(postgres());
+    }
+    return _ballotsDb;
+}
+
+function electionsDb():ElectionsDB {
+    if (_electionsDb == null){
+        _electionsDb = new ElectionsDB(postgres());
+    }
+    return _electionsDb;
+}
+
+function electionRollDb():ElectionRollDB {
+    if (_electionRollDb == null){
+        _electionRollDb = new ElectionRollDB(postgres());
+    }
+    return _electionRollDb;
+}
+
+
+export  default { postgres, ballotsDb, electionsDb, electionRollDb };
