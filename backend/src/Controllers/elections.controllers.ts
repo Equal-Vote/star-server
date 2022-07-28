@@ -1,7 +1,6 @@
 import { Election, electionValidation } from '../../../domain_model/Election';
 import { Ballot } from '../../../domain_model/Ballot';
 import { Score } from '../../../domain_model/Score';
-import ElectionsDB from '../Models/Elections';
 import ServiceLocator from '../ServiceLocator';
 import Logger from '../Services/Logging/Logger';
 import { responseErr } from '../Util';
@@ -10,7 +9,7 @@ import { IRequest } from '../IRequest';
 
 const StarResults = require('../Tabulators/StarResults.js');
 
-var ElectionsModel = new ElectionsDB(ServiceLocator.postgres());
+var ElectionsModel =  ServiceLocator.electionsDb();
 const className="Elections.Controllers";
 
 const getElectionByID = async (req: any, res: any, next: any) => {
