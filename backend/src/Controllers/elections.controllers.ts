@@ -164,25 +164,6 @@ const createElection = async (req: any, res: any, next: any) => {
     }
 }
 
-const deleteElection = async (req: any, res: any, next: any) => {
-    const electionId = req.election.election_id;
-    Logger.info(req, `${className}.deleteElection ${electionId}`)
-    var failMsg = "Election not deleted";
-    try {
-        const success = await ElectionsModel.delete(electionId, req, `User manually deleting election`);
-        if (!success){
-            var msg = "Nothing to delete";
-            Logger.error(req, msg);
-            return responseErr(res, req, 400, msg);
-        }
-        Logger.info(req, `Deleted election ${electionId}`);
-        return next();
-    } catch (err:any) {
-        Logger.error(req, failMsg + ". " + err.message);
-        return responseErr(res, req, 500, failMsg);
-    }
-}
-
 const editElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.editElection`)
 
@@ -246,7 +227,6 @@ module.exports = {
     getElectionResults,
     getElections,
     createElection,
-    deleteElection,
     getElectionByID,
     getSandboxResults,
     editElection,
