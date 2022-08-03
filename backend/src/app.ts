@@ -10,7 +10,7 @@ import Logger from './Services/Logging/Logger';
 import {IRequest, iRequestMiddleware, reqIdSuffix} from './IRequest';
 import { responseErr } from './Util';
 import { loggerMiddleware } from './Services/Logging/LoggerMiddleware';
-
+import { errorCatch } from './errorCatchMiddleware'
 export default function makeApp() {
 
 const app = express();
@@ -43,7 +43,7 @@ const frontendPath = '../../../../frontend/build/';
 const path = require('path');
 app.use(express.static(path.join(__dirname, frontendPath)));
 app.use(express.json());
-
+app.use(errorCatch);
 //Routes
 app.use('/API',electionRouter)
 // app.use('/debug',debugRouter)

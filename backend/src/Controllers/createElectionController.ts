@@ -11,11 +11,9 @@ var ElectionsModel = ServiceLocator.electionsDb();
 var ElectionRollModel = ServiceLocator.electionRollDb();  
 
 const className = "createElectionController";
-
+const failMsgPrfx = "CATCH:  create error electio err: ";
 async function createElectionController(req: IRequest, res: any, next: any) {
         Logger.info(req, "Create Election Controller");
-    try {
-
         const user = expectUserFromRequest(req);
         const inputElection = expectValidElectionFromRequest(req);
         const inputVoterIDList = req.body.VoterIDList;
@@ -42,24 +40,20 @@ async function createElectionController(req: IRequest, res: any, next: any) {
             `User adding Election Roll??`
         );
         if (!resElectionRoll) {
-            const failMsg = "Voter Roll not created";
+            const failMsg = failMsgPrfx + "Voter Roll not created";
             Logger.error(req, failMsg);
             throw new InternalServerError(failMsg);
         }
 
         //TODO - not sure what the intended response was here from voterRolls.addElectionRoll ??
         res.status("200").json({ election: resElection, resElectionRoll });
-    } catch (err: any) {
-        Logger.error(req, "CATCH:  create error electio err: " + err.message);
-        catchAndRespondError(req, res, err);
-    }
 };
 
 const createAndCheckElection = async (
     inputElection: Election,
     ctx: ILoggingContext
 ): Promise<Election> => {
-    var failMsg = "Election not created";
+    var failMsg = failMsgPrfx + "Election not created";
     const newElection = await ElectionsModel.createElection(
         inputElection,
         ctx,
