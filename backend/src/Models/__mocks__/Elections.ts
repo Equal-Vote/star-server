@@ -11,7 +11,7 @@ export default class ElectionsDB {
     }
 
     createElection(election: Election, ctx:ILoggingContext): Promise<Election>{
-        Logger.debug(ctx, "Election Mock Creates Election");
+        Logger.debug(ctx, "Election Mock Creates Election: ", election);
         var copy = JSON.parse(JSON.stringify(election));
         copy.election_id = this.nextId;
         this.nextId++;

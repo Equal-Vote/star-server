@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@curveball/http-errors": "^0.4.1",
     "@sendgrid/mail": "^7.6.2",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.12",
