@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+
 const electionController = require('../Controllers/elections.controllers')
 const ballotController = require('../Controllers/ballots.controllers')
 const voterRollController = require('../Controllers/voterRolls.controller')
@@ -10,8 +11,7 @@ const changeElectionRollStateController = require('../Controllers/changeElection
 const { editElectionRoll } = require('../Controllers/editElectionRollController')
 const { addElectionRoll } = require('../Controllers/addElectionRollController')
 const { getRollsByElectionID, getByVoterID } = require('../Controllers/getElectionRollController')
-
-
+const createElectionController = require('../Controllers/createElectionController');
 const { permissions } = require('../../../domain_model/permissions');
 const { ElectionRollState } = require('../../../domain_model/ElectionRoll');
 
@@ -46,10 +46,9 @@ router.get('/Elections',
     authController.getUser,
     electionController.getElections)
 router.post('/Elections/',
-    authController.getUser,
-    authController.isLoggedIn,
-    electionController.createElection,
-    voterRollController.addElectionRoll)
+createElectionController.createElectionController
+)
+
 router.post('/Election/:id/edit',
     authController.getUser,
     authController.isLoggedIn,

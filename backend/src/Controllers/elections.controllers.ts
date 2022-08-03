@@ -141,29 +141,6 @@ const getElections = async (req: any, res: any, next: any) => {
     }
 }
 
-const createElection = async (req: any, res: any, next: any) => {
-    Logger.info(req, `${className}.createElection`)
-    var failMsg = "Election not created";
-    const inputElection = req.body.Election;
-    const validationErr = electionValidation(inputElection);
-    if (validationErr){
-        Logger.info(req, "=Invalid Election: "+ validationErr, inputElection);
-        return responseErr(res, req, 400, "Invalid Election");
-    }
-    try {
-        const newElection = await ElectionsModel.createElection(req.body.Election, req, `User Creates new election`);
-        if (!newElection){
-            Logger.error(req, failMsg);
-            return responseErr(res, req, 400, failMsg);
-        }
-        req.election = newElection;
-        return next();
-    } catch (err:any) {
-        Logger.error(req, failMsg+". "+err.message);
-        return responseErr(res, req, 500, failMsg);
-    }
-}
-
 const editElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.editElection`)
 
@@ -226,7 +203,6 @@ module.exports = {
     returnElection,
     getElectionResults,
     getElections,
-    createElection,
     getElectionByID,
     getSandboxResults,
     editElection,
