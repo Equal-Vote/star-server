@@ -5,7 +5,8 @@ import ServiceLocator from '../ServiceLocator';
 import Logger from '../Services/Logging/Logger';
 import { responseErr } from '../Util';
 import { IRequest } from '../IRequest';
-
+import { permission } from "../../../domain_model/permissions"
+import { roles } from "../../../domain_model/roles"
 
 const StarResults = require('../Tabulators/StarResults.js');
 
@@ -26,6 +27,24 @@ const getElectionByID = async (req: any, res: any, next: any) => {
         election = await updateElectionStateIfNeeded(req, election);
 
         req.election = election
+
+        req.user_auth = {}
+        req.user_auth.roles = []
+        if (req.user && req.election){
+          if (req.user.sub === req.election.owner_id){
+            req.user_auth.roles.push(roles.owner)
+          }
+          if (req.election.admin_ids && req.election.admin_ids.includes(req.user.email)){
+            req.user_auth.roles.push(roles.admin)
+          }
+          if (req.election.audit_ids && req.election.audit_ids.includes(req.user.email)){
+            req.user_auth.roles.push(roles.auditor)
+          }
+          if (req.election.credential_ids && req.election.credential_ids.includes(req.user.email)){
+            req.user_auth.roles.push(roles.credentialer)
+          }
+        }
+        Logger.debug(req,req.user_auth)
         return next()
     } catch (err:any) {
         var failMsg = "Could not retrieve election";

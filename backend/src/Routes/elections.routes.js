@@ -14,43 +14,34 @@ const { getRollsByElectionID, getByVoterID } = require('../Controllers/getElecti
 const createElectionController = require('../Controllers/createElectionController');
 const { permissions } = require('../../../domain_model/permissions');
 const { ElectionRollState } = require('../../../domain_model/ElectionRoll');
-
+const asyncHandler = require('express-async-handler')
 
 router.get('/Election/:id',
-    authController.getUser,
     voterRollController.getVoterAuth,
     electionController.returnElection)
-router.delete('/Election/:id', authController.getUser, deleteElection)
+router.delete('/Election/:id', asyncHandler(deleteElection))
 router.post('/Election/:id/ballot',
-    authController.getUser,
     voterRollController.getVoterAuth,
     electionController.returnElection)
 router.post('/Election/:id/register',
-    authController.getUser,
     voterRollController.getVoterAuth,
     voterRollController.registerVoter)
 router.get('/Election/:id/ballots',
-    authController.getUser,
     authController.hasPermission(permissions.canViewBallots),
     ballotController.getBallotsByElectionID,
     ballotController.returnBallots)
-router.get('/Election/:id/rolls', authController.getUser, getRollsByElectionID)
-router.get('/Election/:id/rolls/:voter_id', authController.getUser, getByVoterID)
-router.post('/Election/:id/rolls/', authController.getUser, editElectionRoll)
-router.post('/Election/:id/rolls/approve', authController.getUser, changeElectionRollStateController.approveElectionRoll)
-router.post('/Election/:id/rolls/flag', authController.getUser, changeElectionRollStateController.flagElectionRoll)
-router.post('/Election/:id/rolls/invalidate', authController.getUser, changeElectionRollStateController.invalidateElectionRoll)
-router.post('/Election/:id/rolls/unflag', authController.getUser, changeElectionRollStateController.uninvalidateElectionRoll)
-router.post('/Election/:id/rolls/', authController.getUser, addElectionRoll)
-router.get('/Elections',
-    authController.getUser,
-    electionController.getElections)
-router.post('/Elections/',
-createElectionController.createElectionController
-)
+router.get('/Election/:id/rolls', asyncHandler(getRollsByElectionID))
+router.get('/Election/:id/rolls/:voter_id',  asyncHandler(getByVoterID))
+router.post('/Election/:id/rolls/', asyncHandler(editElectionRoll))
+router.post('/Election/:id/rolls/approve', asyncHandler(changeElectionRollStateController.approveElectionRoll))
+router.post('/Election/:id/rolls/flag', asyncHandler(changeElectionRollStateController.flagElectionRoll))
+router.post('/Election/:id/rolls/invalidate', asyncHandler(changeElectionRollStateController.invalidateElectionRoll))
+router.post('/Election/:id/rolls/unflag', asyncHandler(changeElectionRollStateController.uninvalidateElectionRoll))
+router.post('/Election/:id/rolls/', asyncHandler(addElectionRoll))
+router.get('/Elections', asyncHandler(electionController.getElections))
+router.post('/Elections/', asyncHandler(createElectionController.createElectionController))
 
 router.post('/Election/:id/edit',
-    authController.getUser,
     authController.isLoggedIn,
     authController.hasPermission(permissions.canEditElection),
     electionController.editElection,
@@ -59,7 +50,6 @@ router.get('/ElectionResult/:id',
     ballotController.getBallotsByElectionID,
     electionController.getElectionResults)
 router.post('/Election/:id/vote',
-    authController.getUser,
     voterRollController.getVoterAuth,
     ballotController.submitBallot,
     voterRollController.updateElectionRoll,
@@ -72,7 +62,6 @@ router.post('/Election/:id/vote',
     },
 )
 router.post('/Election/:id/finalize',
-    authController.getUser,
     authController.isLoggedIn,
     authController.assertOwnership,
     electionController.finalize,
@@ -82,7 +71,7 @@ router.post('/Election/:id/finalize',
 router.post('/Sandbox',
     electionController.getSandboxResults)
 
-router.param('id', electionController.getElectionByID)
+router.param('id', asyncHandler(electionController.getElectionByID))
 
 module.exports = router
 
