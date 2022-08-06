@@ -30,11 +30,6 @@ const getRollsByElectionID = async (req: any, res: any, next: any) => {
     }
 }
 
-const returnRolls = async (req: any, res: any, next: any) => {
-    Logger.info(req, `${className}.returnRolls ${req.params.id}`);
-    res.json({ election: req.election, electionRoll: req.electionRoll });
-}
-
 const addElectionRoll = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.addElectionRoll ${req.election.election_id}`);
     try {
@@ -66,6 +61,7 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
         return responseErr(res, req, 500, msg);
     }
 }
+
 const registerVoter = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.registerVoter ${req.election.election_id}`);
     if (req.electionRollEntry?.registration){
@@ -102,96 +98,6 @@ const registerVoter = async (req: any, res: any, next: any) => {
         return responseErr(res, req, 500, msg);
     }
 }
-const editElectionRoll = async (req: any, res: any, next: any) => {
-    const electinoRollInput = req.body.electionRollEntry;
-    Logger.info(req, `${className}.editElectionRoll`, {electionRollEntry: electinoRollInput});
-    try {
-        if (electinoRollInput.history == null) {
-            electinoRollInput.history = [];
-        }
-        electinoRollInput.history.push([{
-            action_type: 'edited',
-            actor: req.user.email,
-            timestamp: Date.now(),
-        }])
-        const electionRollEntry = await ElectionRollModel.update(electinoRollInput, req, `User Editing Election Roll`);
-        if (!electionRollEntry){
-            const msg= "Election Roll not found";
-            Logger.info(req, msg);
-            return responseErr(res, req, 400, msg);
-        }
-        req.electionRollEntry = electionRollEntry
-        res.status('200').json(electionRollEntry)
-    } catch (err:any) {
-        const msg = `Could not edit Election Roll`;
-        Logger.error(req, `${msg}: ${err.message}`);
-        return responseErr(res, req, 500, msg);
-    }
-}
-
-const changeElectionRollState = (newState: ElectionRollState) => {
-    return async (req: any, res: any, next: any) => {
-        Logger.info(req, `${className}.changeElectionRollState`, {electionRollEntry: req.body.electionRollEntry, newState: newState});
-
-        try {
-            req.electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.body.electionRollEntry.voter_id, req)
-            // Logic to control election roll state change permissions is more complex so handled here
-            // Each state has valid transitions to other states and permissions associated with them
-            if (req.electionRollEntry.state === ElectionRollState.registered) {
-                if (!(newState === ElectionRollState.approved ||
-                    newState === ElectionRollState.flagged)) {
-                    return res.status('401').json({
-                        error: "Invalid voter roll state transition"
-                    })
-                }
-            } else if (req.electionRollEntry.state === ElectionRollState.approved) {
-                if (!(newState === ElectionRollState.flagged)) {
-                    return res.status('401').json({
-                        error: "Invalid voter roll state transition"
-                    })
-                }
-            } else if (req.electionRollEntry.state === ElectionRollState.flagged) {
-                if (!(newState === ElectionRollState.approved ||
-                    newState === ElectionRollState.invalid)) {
-                    return res.status('401').json({
-                        error: "Invalid voter roll state transition"
-                    })
-                }
-            } else if (req.electionRollEntry.state === ElectionRollState.invalid) {
-                if (!(newState === ElectionRollState.flagged)) {
-                    return res.status('401').json({
-                        error: "Invalid voter roll state transition"
-                    })
-                }
-            } else {
-                return res.status('401').json({
-                    error: "Invalid voter roll state transition"
-                })
-            }
-
-            req.electionRollEntry.state = newState;
-            if (req.electionRollEntry.history == null) {
-                req.electionRollEntry.history = [];
-            }
-            req.electionRollEntry.history.push([{
-                action_type: newState,
-                actor: req.user.email,
-                timestamp: Date.now(),
-            }])
-            const updatedEntry = await ElectionRollModel.update(req.electionRollEntry, req, "Changing Election Roll state to "+ newState);
-            if (!updatedEntry)
-                return res.status('400').json({
-                    error: "Voter Roll not found"
-                })
-            req.electionRollEntry = updatedEntry
-            res.status('200').json()
-        } catch (err:any) {
-            const msg = `Could not change election roll state`;
-            Logger.error(req, `${msg}: ${err.message}`);
-            return responseErr(res, req, 500, msg);
-        }
-    }
-}
 
 const updateElectionRoll = async (req: any, res: any, next: any) => {
     const electinoRollInput = req.electionRollEntry;
@@ -213,25 +119,6 @@ const updateElectionRoll = async (req: any, res: any, next: any) => {
         return next();
     } catch (err:any) {
         const msg = `Could not update Election Roll`;
-        Logger.error(req, `${msg}: ${err.message}`);
-        return responseErr(res, req, 500, msg);
-    }
-}
-
-const getByVoterID = async (req: any, res: any, next: any) => {
-    Logger.info(req, `${className}.getByVoterID ${req.election.election_id} ${req.params.voter_id}`)
-    
-    try {
-        const electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.params.voter_id, req)
-        if (!electionRollEntry){
-            const msg= "Voter Roll not found";
-            Logger.info(req, msg);
-            return responseErr(res, req, 400, msg);
-        }
-        res.json({electionRollEntry: electionRollEntry})
-        next()
-    } catch (err:any) {
-        const msg = `Could not find election roll entry`;
         Logger.error(req, `${msg}: ${err.message}`);
         return responseErr(res, req, 500, msg);
     }
@@ -324,7 +211,6 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
     }
 }
 
-
 const sendInvitations = async (req: any, res: any, next: any) => {
     //requires election data in req, adds entire election roll 
     if (req.election.settings.election_roll_type === 'Email') {
@@ -344,12 +230,8 @@ const sendInvitations = async (req: any, res: any, next: any) => {
 module.exports = {
     updateElectionRoll,
     getRollsByElectionID,
-    returnRolls,
     addElectionRoll,
-    getByVoterID,
     getVoterAuth,
-    editElectionRoll,
     sendInvitations,
-    changeElectionRollState,
     registerVoter
 }

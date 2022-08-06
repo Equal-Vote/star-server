@@ -1,10 +1,10 @@
 import { IRequest, reqIdSuffix } from "../IRequest"
-import { Unauthorized } from "@curveball/http-errors/dist"
 import { Election, electionValidation } from "../../../domain_model/Election";
 import Logger from "../Services/Logging/Logger"
-import { BadRequest, InternalServerError } from "@curveball/http-errors";
+import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-errors";
 import { Request, Response } from 'express';
-
+import { roles } from "../../../domain_model/roles";
+import { hasPermission, permission, permissions } from '../../../domain_model/permissions';
 var jwt = require('jsonwebtoken')
 
 export function expectUserFromRequest(req:IRequest ):any {
@@ -36,4 +36,10 @@ export function catchAndRespondError(req:IRequest, res:Response, err:any):Respon
     }
     msg += reqIdSuffix(req);
     return res.status(status).json({error:msg});
+}
+
+export function expectPermission(roles:roles[],permission:permission):any {
+        if (!roles.some( (role) => permission.includes(role))){
+            throw new Unauthorized("Does not have permission")
+      }
 }

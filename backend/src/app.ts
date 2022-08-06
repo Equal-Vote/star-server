@@ -10,7 +10,8 @@ import Logger from './Services/Logging/Logger';
 import {IRequest, iRequestMiddleware, reqIdSuffix} from './IRequest';
 import { responseErr } from './Util';
 import { loggerMiddleware } from './Services/Logging/LoggerMiddleware';
-
+import { errorCatch } from './errorCatchMiddleware'
+const authController = require('./Controllers/auth.controllers')
 export default function makeApp() {
 
 const app = express();
@@ -43,7 +44,7 @@ const frontendPath = '../../../../frontend/build/';
 const path = require('path');
 app.use(express.static(path.join(__dirname, frontendPath)));
 app.use(express.json());
-
+app.use(authController.getUser)
 //Routes
 app.use('/API',electionRouter)
 // app.use('/debug',debugRouter)
@@ -117,6 +118,7 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, frontendPath + "index.html"));
 })
 
+app.use(errorCatch);
 Logger.debug(appInitContext, "app Init complete");
 return app;
 }
