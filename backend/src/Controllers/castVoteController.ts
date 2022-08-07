@@ -7,10 +7,12 @@ import Logger from "../Services/Logging/Logger";
 import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-errors";
 import { ILoggingContext } from "../Services/Logging/ILogger";
 import {expectUserFromRequest, expectValidElectionFromRequest, catchAndRespondError} from "./controllerUtils";
+import { randomUUID } from "crypto";
 
-var ElectionsModel = ServiceLocator.electionsDb();
-var ElectionRollModel = ServiceLocator.electionRollDb();
-var BallotModel = ServiceLocator.ballotsDb(); 
+const ElectionsModel = ServiceLocator.electionsDb();
+const ElectionRollModel = ServiceLocator.electionRollDb();
+const BallotModel = ServiceLocator.ballotsDb();
+const CastVoteStore = ServiceLocator.castVoteStore();
 
 
 async function castVoteController(req: IRequest, res: any, next: any) {
@@ -51,6 +53,7 @@ async function castVoteController(req: IRequest, res: any, next: any) {
     if (inputBallot.history == null){
         inputBallot.history = [];
     }
+    inputBallot.ballot_id = randomUUID();
     //TODO, ensure the user ID is added to the ballot...
     //should server-authenticate the user id based on auth token
     inputBallot.history.push({
@@ -60,13 +63,8 @@ async function castVoteController(req: IRequest, res: any, next: any) {
     });
 
     Logger.debug(req, "Submit Ballot:", inputBallot);
-    const savedBallot = await BallotModel.submitBallot(inputBallot, req, `User submits a ballot`);
-    if (!savedBallot){
-        throw new InternalServerError("Failed to cast Ballot");
-    }
-
     if (roll != null){
-        roll.ballot_id = String(savedBallot.ballot_id);
+        roll.ballot_id = String(inputBallot.ballot_id);
         roll.submitted = true;
         if (roll.history == null){
             roll.history = [];
@@ -74,14 +72,27 @@ async function castVoteController(req: IRequest, res: any, next: any) {
         roll.history.push({
             action_type:"submit",
             actor: voterId,
-            timestamp:savedBallot.date_submitted,
+            timestamp:inputBallot.date_submitted,
         });
-
-        await ElectionRollModel.update(roll, req, `User Updating Election Roll after vote cast`);
     }
 
+    const savedBallot = await persistBallotToStore(inputBallot, roll, req);
     res.status("200").json({ ballot: savedBallot} );
 };
+
+
+async function persistBallotToStore(ballot:Ballot, roll:ElectionRoll|null, ctx:ILoggingContext):Promise<Ballot> {
+    var savedBallot;
+    if (roll == null){
+        savedBallot = await BallotModel.submitBallot(ballot, ctx, `User submits a ballot`);
+    } else {
+        savedBallot = await CastVoteStore.submitBallot(ballot, roll, ctx, 'User Submits a Ballot');
+    }
+    if (!savedBallot){
+        throw new InternalServerError("Failed to cast Ballot");
+    }
+    return savedBallot;
+}
 
 
 function getVoterID(req:IRequest, voterIdType:string, user:any):string {
