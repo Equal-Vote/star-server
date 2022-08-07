@@ -7,6 +7,7 @@ const ballotController = require('../Controllers/ballots.controllers')
 const voterRollController = require('../Controllers/voterRolls.controller')
 const authController = require('../Controllers/auth.controllers')
 const createElectionController = require('../Controllers/createElectionController');
+const castVoteController = require('../Controllers/castVoteController');
 const { permissions } = require('../../../domain_model/permissions');
 const { ElectionRollState } = require('../../../domain_model/ElectionRoll');
 
@@ -82,18 +83,21 @@ router.get('/ElectionResult/:id',
     ballotController.getBallotsByElectionID,
     electionController.getElectionResults)
 router.post('/Election/:id/vote',
-    authController.getUser,
-    voterRollController.getVoterAuth,
-    ballotController.submitBallot,
-    voterRollController.updateElectionRoll,
-    (req, res, next) => {
-        res.json(
-            {
-                ballot: req.ballot
-            }
-        );
-    },
-)
+    castVoteController.castVoteController
+)    
+// router.post('/Election/:id/vote',
+//     authController.getUser,
+//     voterRollController.getVoterAuth,
+//     ballotController.submitBallot,
+//     voterRollController.updateElectionRoll,
+//     (req, res, next) => {
+//         res.json(
+//             {
+//                 ballot: req.ballot
+//             }
+//         );
+//     },
+// )
 router.post('/Election/:id/finalize',
     authController.getUser,
     authController.isLoggedIn,
