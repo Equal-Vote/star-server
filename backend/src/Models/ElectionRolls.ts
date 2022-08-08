@@ -100,7 +100,7 @@ export default class ElectionRollDB {
             Logger.debug(ctx, rows[0])
             if (rows.length == 0) {
                 Logger.debug(ctx, ".get null");
-                return [];
+                return null;
             }
             return rows[0]
         });
