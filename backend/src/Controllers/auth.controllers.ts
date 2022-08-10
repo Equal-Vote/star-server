@@ -12,22 +12,6 @@ const getUser = (req: any, res: any, next: any) => {
   Logger.info(req, `${className}.getUser`);
   //TODO! - This will not verify whether the signature is valid, need to add verification
   req.user = jwt.decode(req.cookies.id_token)
-  req.user_auth = {}
-  req.user_auth.roles = []
-  if (req.user && req.election){
-    if (req.user.sub === req.election.owner_id){
-      req.user_auth.roles.push(roles.owner)
-    }
-    if (req.election.admin_ids && req.election.admin_ids.includes(req.user.email)){
-      req.user_auth.roles.push(roles.admin)
-    }
-    if (req.election.audit_ids && req.election.audit_ids.includes(req.user.email)){
-      req.user_auth.roles.push(roles.auditor)
-    }
-    if (req.election.credential_ids && req.election.credential_ids.includes(req.user.email)){
-      req.user_auth.roles.push(roles.credentialer)
-    }
-  }
   next()
 }
 
