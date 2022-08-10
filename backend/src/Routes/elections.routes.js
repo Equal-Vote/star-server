@@ -85,19 +85,6 @@ router.get('/ElectionResult/:id',
 router.post('/Election/:id/vote',
     castVoteController.castVoteController
 )    
-// router.post('/Election/:id/vote',
-//     authController.getUser,
-//     voterRollController.getVoterAuth,
-//     ballotController.submitBallot,
-//     voterRollController.updateElectionRoll,
-//     (req, res, next) => {
-//         res.json(
-//             {
-//                 ballot: req.ballot
-//             }
-//         );
-//     },
-// )
 router.post('/Election/:id/finalize',
     authController.getUser,
     authController.isLoggedIn,
