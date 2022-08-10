@@ -7,11 +7,9 @@ import testInputs from './testInputs';
 
 const app = makeApp()
 
-// Mocks databases for testing app
-// Uses mocks defined in ./../Models/__Mocks__/
-jest.mock('./../Models/Ballots')
-jest.mock('./../Models/Elections')
-jest.mock('./../Models/ElectionRolls')
+// Uses the mock service locator in place of the production one
+// Which users mock databases
+jest.mock("./../ServiceLocator");
 
 var logger = new TestLoggerImpl().setup();
 
