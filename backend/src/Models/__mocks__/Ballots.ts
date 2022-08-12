@@ -1,16 +1,14 @@
 import { Ballot } from '../../../../domain_model/Ballot';
+import { Uid } from '../../../../domain_model/Uid';
 
 export default class BallotsDB {
 
     ballots: Ballot[] = [];
-    nextId = 0;
 
     constructor() {
     }
     submitBallot(ballot: Ballot): Promise<Ballot>{
         var copy = JSON.parse(JSON.stringify(ballot));
-        copy.ballot_id = this.nextId;
-        this.nextId++;
         this.ballots.push(copy)
         return Promise.resolve(JSON.parse(JSON.stringify(copy)));
     }
@@ -22,7 +20,7 @@ export default class BallotsDB {
         var resBallots = JSON.parse(JSON.stringify(ballots));
         return Promise.resolve(resBallots)
     }
-    delete(ballot_id: number): Promise<Ballot | null> {
+    delete(ballot_id: Uid): Promise<Ballot | null> {
         const ballot = this.ballots.find(ballot => ballot.ballot_id===ballot_id)
         if (!ballot){
             return Promise.resolve(null)

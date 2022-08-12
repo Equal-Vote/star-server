@@ -3,7 +3,7 @@ import { Race } from "./Race";
 import { Uid } from "./Uid";
 
 export interface Election {
-    election_id:    number; // identifier assigned by the system
+    election_id:    Uid; // identifier assigned by the system
     title:          string; // one-line election title
     description?:   string; // mark-up text describing the election
     frontend_url:   string; // base URL for the frontend
@@ -24,7 +24,8 @@ export function electionValidation(obj:Election): string | null {
   if (!obj){
     return "Election is null";
   }
-  if (typeof obj.election_id !== 'number'){
+  const election_id = obj.election_id;
+  if (!election_id || typeof election_id !== 'string'){
       return "Invalid Election ID";
   }
   if (typeof obj.title !== 'string'){

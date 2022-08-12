@@ -22,7 +22,7 @@ describe("ID Roll", () => {
     beforeAll(() => {
         jest.resetAllMocks();
     });
-    var ID = 0;
+    var ID = "";
     test("Create election, responds 200", async () => {
         const response = await th.createElection(testInputs.IDRollElection,  testInputs.IDRoll, testInputs.user1token);
 

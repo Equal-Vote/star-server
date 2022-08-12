@@ -24,7 +24,7 @@ const setupInitialElection = async () => {
     return response.election.election_id;
 }
 
-const fetchElectionById = async (electionId:number):Promise<Election> => {
+const fetchElectionById = async (electionId:string):Promise<Election> => {
     const response = await th.fetchElectionById(electionId, testInputs.user1token);
     expect(response.election).toBeTruthy();
     return response.election;
@@ -36,8 +36,10 @@ describe("Edit Election", () => {
         test("responds with 200 status", async () => {
             const electionId = await setupInitialElection();
             console.log("electionId = "+electionId);
+            const election1Copy = { ...testInputs.Election1, election_id:electionId};
+            //election1Copy.election_id = electionId;
 
-            const response = await th.editElection(testInputs.Election1, [], testInputs.user1token);
+            const response = await th.editElection(election1Copy, [], testInputs.user1token);
             expect(response.statusCode).toBe(200);
             th.testComplete();
         })
@@ -64,8 +66,9 @@ describe("Edit Election", () => {
 
     describe("User is not owner", () => {
         test("responds with 401 status", async () => {
-            const ID = await setupInitialElection()
-            const response = await th.editElection(testInputs.Election1, [], testInputs.user2token);
+            const ID = await setupInitialElection();
+            const election1Copy = { ...testInputs.Election1, election_id:ID};
+            const response = await th.editElection(election1Copy, [], testInputs.user2token);
             expect(response.statusCode).toBe(401);
             th.testComplete();
         })

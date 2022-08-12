@@ -1,4 +1,5 @@
 import { Ballot } from '../../../domain_model/Ballot';
+import { Uid } from '../../../domain_model/Uid';
 import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
 const className = 'BallotsDB';
@@ -19,7 +20,7 @@ export default class BallotsDB {
         Logger.debug(appInitContext, "BallotsDB.init");
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
-            ballot_id       SERIAL PRIMARY KEY,
+            ballot_id       VARCHAR PRIMARY KEY,
             election_id     VARCHAR,
             user_id         VARCHAR,
             status          VARCHAR,
@@ -47,19 +48,21 @@ export default class BallotsDB {
 
     submitBallot(ballot: Ballot, ctx:ILoggingContext, reason:String): Promise<Ballot> {
         Logger.debug(ctx, `${className}.submit`, ballot);
-        var sqlString = `INSERT INTO ${this._tableName} (election_id,user_id,status,date_submitted,ip_address,votes,history)
+        var sqlString = `INSERT INTO ${this._tableName} (ballot_id,election_id,user_id,status,date_submitted,ip_address,votes,history)
         VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING ballot_id;`;
         Logger.debug(ctx, sqlString);
         var p = this._postgresClient.query({
             rowMode: 'array',
             text: sqlString,
-            values: [ballot.election_id,
-            ballot.user_id,
-            ballot.status,
-            ballot.date_submitted,
-            ballot.ip_address,
-            JSON.stringify(ballot.votes),
-            JSON.stringify(ballot.history)]
+            values: [
+                ballot.ballot_id,
+                ballot.election_id,
+                ballot.user_id,
+                ballot.status,
+                ballot.date_submitted,
+                ballot.ip_address,
+                JSON.stringify(ballot.votes),
+                JSON.stringify(ballot.history)]
         });
 
         return p.then((res: any) => {
@@ -110,7 +113,7 @@ export default class BallotsDB {
         });
     }
 
-    delete(ballot_id: string,  ctx:ILoggingContext, reason:string): Promise<boolean> {
+    delete(ballot_id: Uid,  ctx:ILoggingContext, reason:string): Promise<boolean> {
         Logger.debug(ctx, `${className}.delete ${ballot_id}`);
         var sqlString = `DELETE FROM ${this._tableName} WHERE ballot_id = $1`;
         Logger.debug(ctx, sqlString);
