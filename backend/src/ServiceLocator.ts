@@ -55,4 +55,4 @@ function electionRollDb():ElectionRollDB {
 }
 
 
-export  default { postgres, ballotsDb, electionsDb, electionRollDb };
+export  default { ballotsDb, electionsDb, electionRollDb };
