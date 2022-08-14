@@ -29,7 +29,7 @@ export default function MatrixViewer({ results }) {
             <tr className = 'matrix' key={`d${i}`}>
               <th className = 'matrix' key={`dh${i}`} >{results.candidates[i].name}</th>
               {row.map((col, j) => (
-                col?.result==='Win' ?
+                col && col.result==='Win' ?
                 <td className = 'highlight' key={`c${i},${j}`}>
                   <CellViewer cell={col} />
                 </td>

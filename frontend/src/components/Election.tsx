@@ -30,7 +30,7 @@ const Election = ({ authSession }) => {
       {error && <div> {error} </div>}
       {isPending && <div> Loading Election... </div>}
       <VoterAuth authSession={authSession} electionData={data} fetchElection={fetchData} />
-      {data?.election &&
+      {data && data.election &&
         <Grid container>
           <Grid item xs={2}>
             <Sidebar electionData={data} />

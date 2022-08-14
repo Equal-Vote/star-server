@@ -74,7 +74,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id}) => {
                     <Grid item sm={4}>
                         <Button variant='outlined' onClick={() => { onInvalidate() }} > Invalidate </Button>
                     </Grid>}
-                {updatedRoll?.history &&
+                {updatedRoll && updatedRoll.history &&
                     <TableContainer component={Paper}>
                         <Table style={{ width: '100%' }} aria-label="simple table">
                             <TableHead>

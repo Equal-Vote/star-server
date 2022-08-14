@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "jsx": "react",
+    "jsx": "preserve",
     "target": "es5",
     "module": "esnext",
     "strict": false,
@@ -18,8 +18,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
-  
-  "include": ["../domain_model/**/*", "./src/**/*"],
+  "include": [
+    "../domain_model/**/*",
+    "./src/**/*"
+  ]
 }

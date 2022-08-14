@@ -27,6 +27,12 @@ function CandidateViewer({ candidate, runoffScore }) {
 function RoundViewer({ Candidate, Round }) {
   const finalistIndex = Round.finalists.indexOf(Candidate)
   const winnerIndex = Round.winners.indexOf(Candidate)
+  if (Round.votes == null || Round.votes.length == 0){
+    return (
+      <td>No votes</td>
+    )
+  }
+
   const totalRunoffVotes = Round.votes.reduce((a, b) => a + b)
   const runoffPercentages = Round.votes.map(vote => (`${Math.round(vote * 1000 / totalRunoffVotes) / 10}%`))
 
