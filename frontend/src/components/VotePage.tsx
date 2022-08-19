@@ -31,7 +31,7 @@ const VotePage = ({ election }) => {
     }]
 
     const ballot: Ballot = {
-      ballot_id: 0, //Defaults to zero but is assigned ballot id by server when submitted
+      ballot_id: '0', //Defaults to zero but is assigned ballot id by server when submitted
       election_id: election.election_id,
       votes: votes,
       date_submitted: Date.now(),

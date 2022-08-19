@@ -37,7 +37,7 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
     if(prevElectionData == null){
         prevElectionData = {
             title: '',
-            election_id: 0,
+            election_id: '0',
             start_time: new Date(''),
             end_time: new Date(''),
             description: '',

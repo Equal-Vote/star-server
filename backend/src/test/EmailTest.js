@@ -2,7 +2,7 @@ const EmailService = require('../Services/EmailService')
 const Invitation = require('../Services/Invitation')
 const election = {
     title: 'Test Election',
-    election_id: 1
+    election_id: '1'
 }
 const voter = [{
     voter_id: 'mikefranze@gmail.com'
