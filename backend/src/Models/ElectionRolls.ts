@@ -19,9 +19,9 @@ export default class ElectionRollDB {
         Logger.debug(appInitContext, "-> ElectionRollDB.init");
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
-            election_id     INTEGER NOT NULL,
+            election_id     VARCHAR NOT NULL,
             voter_id        VARCHAR NOT NULL,
-            ballot_id       INTEGER,
+            ballot_id       VARCHAR,
             submitted       BOOLEAN,
             PRIMARY KEY(election_id,voter_id),
             state           VARCHAR NOT NULL,
