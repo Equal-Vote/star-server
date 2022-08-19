@@ -49,7 +49,7 @@ export default class BallotsDB {
     submitBallot(ballot: Ballot, ctx:ILoggingContext, reason:String): Promise<Ballot> {
         Logger.debug(ctx, `${className}.submit`, ballot);
         var sqlString = `INSERT INTO ${this._tableName} (ballot_id,election_id,user_id,status,date_submitted,ip_address,votes,history)
-        VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING ballot_id;`;
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING ballot_id;`;
         Logger.debug(ctx, sqlString);
         var p = this._postgresClient.query({
             rowMode: 'array',
