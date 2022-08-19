@@ -1,11 +1,11 @@
 import { Election } from '../../../../domain_model/Election';
+import { Uid } from '../../../../domain_model/Uid';
 import { ILoggingContext } from '../../Services/Logging/ILogger';
 import Logger from '../../Services/Logging/Logger';
 
 export default class ElectionsDB {
 
     elections: Election[] = [];
-    nextId = 0;
 
     constructor() {
     }
@@ -13,8 +13,6 @@ export default class ElectionsDB {
     createElection(election: Election, ctx:ILoggingContext): Promise<Election>{
         Logger.debug(ctx, "Election Mock Creates Election: ", election);
         var copy = JSON.parse(JSON.stringify(election));
-        copy.election_id = this.nextId;
-        this.nextId++;
         this.elections.push(copy);
         var res = JSON.parse(JSON.stringify(copy));
         return Promise.resolve(res);
@@ -47,7 +45,7 @@ export default class ElectionsDB {
         return Promise.resolve(elections)
     }
 
-    getElectionByID(election_id: number, ctx:ILoggingContext): Promise<Election | null>{
+    getElectionByID(election_id: Uid, ctx:ILoggingContext): Promise<Election | null>{
         Logger.debug(ctx, `Mock Election DB getElection ${election_id}`);
         const election = this.elections.find(election => {
             return election.election_id==election_id;
@@ -60,7 +58,7 @@ export default class ElectionsDB {
         return Promise.resolve(election)
     }
 
-    delete(election_id: number, ctx:ILoggingContext): Promise<Election | null> {
+    delete(election_id: Uid, ctx:ILoggingContext): Promise<Election | null> {
         const election = this.elections.find(election => election.election_id==election_id)
         if (!election){
             return Promise.resolve(null)

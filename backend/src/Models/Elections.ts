@@ -1,4 +1,5 @@
 import { Election } from '../../../domain_model/Election';
+import { Uid } from '../../../domain_model/Uid';
 import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
 const className = 'ElectionsDB';
@@ -19,11 +20,11 @@ export default class ElectionsDB {
         Logger.debug(appInitContext, "-> ElectionsDB.init")
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
-            election_id  SERIAL PRIMARY KEY,
+            election_id  VARCHAR PRIMARY KEY,
             title       VARCHAR,
             description TEXT,
             frontend_url VARCHAR,
-            start_time    VARCHAR, 
+            start_time    VARCHAR,
             end_time      VARCHAR, 
             support_email VARCHAR,
             owner_id      VARCHAR,
@@ -54,25 +55,28 @@ export default class ElectionsDB {
 
     createElection(election: Election, ctx:ILoggingContext, reason:string): Promise<Election> {
         Logger.debug(ctx, `${className}.createElection`, election);
-        var sqlString = `INSERT INTO ${this._tableName} (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings)
+        var sqlString = `INSERT INTO ${this._tableName} (election_id, title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,$13) RETURNING *;`;
         Logger.debug(ctx, sqlString);
         
         var p = this._postgresClient.query({
             text: sqlString,
-            values: [election.title,
-            election.description,
-            election.frontend_url,
-            election.start_time,
-            election.end_time,
-            election.support_email,
-            election.owner_id,
-            JSON.stringify(election.audit_ids),
-            JSON.stringify(election.admin_ids),
-            JSON.stringify(election.credential_ids),
-            election.state,
-            JSON.stringify(election.races),
-            JSON.stringify(election.settings)]
+            values: [
+                election.election_id,
+                election.title,
+                election.description,
+                election.frontend_url,
+                election.start_time,
+                election.end_time,
+                election.support_email,
+                election.owner_id,
+                JSON.stringify(election.audit_ids),
+                JSON.stringify(election.admin_ids),
+                JSON.stringify(election.credential_ids),
+                election.state,
+                JSON.stringify(election.races),
+                JSON.stringify(election.settings)
+            ]
         });
 
         return p.then((res: any) => {
@@ -146,7 +150,7 @@ export default class ElectionsDB {
         });
     }
 
-    getElectionByID(election_id: string, ctx:ILoggingContext): Promise<Election | null> {
+    getElectionByID(election_id: Uid, ctx:ILoggingContext): Promise<Election | null> {
         Logger.debug(ctx, `${className}.getElectionByID ${election_id}`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1`;
         Logger.debug(ctx, sqlString);
@@ -165,7 +169,7 @@ export default class ElectionsDB {
         });
     }
 
-    delete(election_id: string, ctx:ILoggingContext, reason: string): Promise<boolean> {
+    delete(election_id: Uid, ctx:ILoggingContext, reason: string): Promise<boolean> {
         Logger.debug(ctx, `${className}.delete ${election_id}`);
         var sqlString = `DELETE FROM ${this._tableName} WHERE election_id = $1`;
         Logger.debug(ctx, sqlString);

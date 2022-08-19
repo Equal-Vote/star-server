@@ -3,6 +3,7 @@ import { reqIdSuffix } from "../IRequest";
 import Logger from "../Services/Logging/Logger";
 import ServiceLocator from "../ServiceLocator";
 import { responseErr } from '../Util';
+import { randomUUID } from 'crypto';
 
 var BallotModel =  ServiceLocator.ballotsDb();
 const className = 'Ballots.Controllers';
@@ -52,6 +53,7 @@ const returnBallots = async (req: any, res: any, next: any) => {
 const submitBallot = async (req: any, res: any, next: any) => {
 
     const inputBallot = req.body.ballot;
+    inputBallot.ballot_id = randomUUID();
     const validationErr = ballotValidation(inputBallot);
     if (validationErr){
         Logger.info(req, "Invalid Ballot: "+ validationErr);

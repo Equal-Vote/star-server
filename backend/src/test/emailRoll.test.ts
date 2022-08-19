@@ -18,7 +18,7 @@ describe("Email Roll", () => {
     beforeAll(() => {
         jest.clearAllMocks();
     });
-    var electionId = 0;
+    var electionId = "";
     test("Create election, responds 200", async () => {
         const response = await th.createElection(
             testInputs.EmailRollElection,

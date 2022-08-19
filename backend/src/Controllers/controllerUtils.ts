@@ -5,6 +5,7 @@ import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-e
 import { Request, Response } from 'express';
 import { roles } from "../../../domain_model/roles";
 import { hasPermission, permission, permissions } from '../../../domain_model/permissions';
+import { randomUUID } from "crypto";
 var jwt = require('jsonwebtoken')
 
 export function expectUserFromRequest(req:IRequest ):any {
@@ -17,6 +18,7 @@ export function expectUserFromRequest(req:IRequest ):any {
 
 export function expectValidElectionFromRequest(req:IRequest):Election {
     const inputElection = req.body.Election;
+    inputElection.election_id = randomUUID();
     const validationErr = electionValidation(inputElection);
     if (validationErr) {
         Logger.info(req, "Invalid Election: " + validationErr, inputElection);
