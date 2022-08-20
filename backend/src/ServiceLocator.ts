@@ -2,7 +2,7 @@ import Logger from "./Services/Logging/Logger";
 import BallotsDB from "./Models/Ballots";
 import ElectionsDB from "./Models/Elections";
 import ElectionRollDB from "./Models/ElectionRolls";
-
+import EmailService from "./Services/Email/EmailService";
 const { Pool } = require('pg');
 
 var _postgresClient:any;
@@ -10,6 +10,7 @@ var _appInitContext = Logger.createContext("appInit");
 var _ballotsDb:BallotsDB;
 var _electionsDb:ElectionsDB;
 var _electionRollDb:ElectionRollDB;
+var _emailService:EmailService
 
 function postgres():any {
     if (_postgresClient == null){
@@ -54,5 +55,10 @@ function electionRollDb():ElectionRollDB {
     return _electionRollDb;
 }
 
-
-export  default { ballotsDb, electionsDb, electionRollDb };
+function emailService():EmailService {
+    if (_emailService == null){
+        _emailService = new EmailService();
+    }
+    return _emailService;
+}
+export  default { ballotsDb, electionsDb, electionRollDb, emailService };

@@ -3,9 +3,8 @@ import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
 import { responseErr } from "../Util";
 
-const EmailService = require('../Services/EmailService')
 const ElectionRollModel = ServiceLocator.electionRollDb();
-
+const EmailService = ServiceLocator.emailService();
 const className="VoterRolls.Controllers";
 
 const getRollsByElectionID = async (req: any, res: any, next: any) => {
