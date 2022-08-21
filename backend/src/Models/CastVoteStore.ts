@@ -10,7 +10,6 @@ export default class CastVoteStore {
     _ballotTableName:string;
     _rollTableName:string;
 
-
     constructor(postgresClient:any) {
         this._postgresClient = postgresClient;
         this._ballotTableName = "ballotDB";

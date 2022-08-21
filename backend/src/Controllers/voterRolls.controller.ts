@@ -2,10 +2,10 @@ import { ElectionRoll, ElectionRollState } from "../../../domain_model/ElectionR
 import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
 import { responseErr } from "../Util";
+import { Invites } from "../Services/Email/EmailTemplates"
 
-const EmailService = require('../Services/EmailService')
 const ElectionRollModel = ServiceLocator.electionRollDb();
-
+const EmailService = ServiceLocator.emailService();
 const className="VoterRolls.Controllers";
 
 const getRollsByElectionID = async (req: any, res: any, next: any) => {
@@ -217,7 +217,8 @@ const sendInvitations = async (req: any, res: any, next: any) => {
         Logger.info(req, `${className}.sendInvitations`, {election_id: req.election.election_id});
         try {
             const url = req.protocol + '://'+req.get('host')
-            EmailService.sendInvitations(req.election,req.electionRoll,url)
+            const invites = Invites(req.election,req.electionRoll,url)
+            EmailService.sendEmails(invites)
         } catch (err:any) {
             const msg = `Could not send invitations`;
             Logger.error(req, `${msg}: ${err.message}`);

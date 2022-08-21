@@ -20,7 +20,7 @@ describe("ID Roll", () => {
     beforeAll(() => {
         jest.resetAllMocks();
     });
-    var ID = 0;
+    var ID = "";
     test("Create election, responds 200", async () => {
         const response = await th.createElection(testInputs.IDRollElection,  testInputs.IDRoll, testInputs.user1token);
 
@@ -50,24 +50,24 @@ describe("ID Roll", () => {
         expect(response.voterAuth.has_voted).toBe(true)
         th.testComplete();
     })
-    test("Authorized voter re-submits ballot", async () => {
-        const response = await th.submitBallotWithId(ID, testInputs.Ballot2, testInputs.user1token,  testInputs.IDRoll[0]);
+    // test("Authorized voter re-submits ballot", async () => {
+    //     const response = await th.submitBallotWithId(ID, testInputs.Ballot2, testInputs.user1token,  testInputs.IDRoll[0]);
 
-        expect(response.statusCode).toBe(400)
-        th.testComplete();
-    })
-    test("Get voter auth, isn't authorized and hasn't voted", async () => {
-        const response = await th.requestBallotWithId(ID, testInputs.user3token, "FakeVoterID");
-        expect(response.statusCode).toBe(200)
-        expect(response.voterAuth.authorized_voter).toBe(false)
-        expect(response.voterAuth.has_voted).toBe(false)
-        th.testComplete();
-    })
-    test("Unauthorized voter submits ballot", async () => {
-        const response = await th.submitBallotWithId(ID, testInputs.Ballot2, testInputs.user3token,  'FakeVoterID');
+    //     expect(response.statusCode).toBe(400)
+    //     th.testComplete();
+    // })
+    // test("Get voter auth, isn't authorized and hasn't voted", async () => {
+    //     const response = await th.requestBallotWithId(ID, testInputs.user3token, "FakeVoterID");
+    //     expect(response.statusCode).toBe(200)
+    //     expect(response.voterAuth.authorized_voter).toBe(false)
+    //     expect(response.voterAuth.has_voted).toBe(false)
+    //     th.testComplete();
+    // })
+    // test("Unauthorized voter submits ballot", async () => {
+    //     const response = await th.submitBallotWithId(ID, testInputs.Ballot2, testInputs.user3token,  'FakeVoterID');
 
-        // console.log(response)
-        expect(response.statusCode).toBe(400)
-        th.testComplete();
-    })
+    //     // console.log(response)
+    //     expect(response.statusCode).toBe(400)
+    //     th.testComplete();
+    // })
 })

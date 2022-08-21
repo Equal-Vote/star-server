@@ -1,5 +1,6 @@
 import { Ballot } from "../../../domain_model/Ballot";
 import { Election } from "../../../domain_model/Election";
+import { Uid } from "../../../domain_model/Uid";
 import { VoterAuth } from "../../../domain_model/VoterAuth";
 import makeApp from "../app";
 import Logger from "../Services/Logging/Logger";
@@ -99,7 +100,7 @@ export class TestHelper {
     }
 
     async fetchElectionById(
-        electionId: string | number,
+        electionId: Uid,
         userToken: string | null
     ): Promise<ElectionResponse> {
         const res = await this.getRequest(
@@ -110,7 +111,7 @@ export class TestHelper {
     }
 
     async submitBallot(
-        electionId: string | number,
+        electionId: Uid,
         ballot: Ballot,
         userToken: string | null
     ): Promise<any> {
@@ -122,7 +123,7 @@ export class TestHelper {
     }
 
     async requestBallot(
-        electionId: string | number,
+        electionId: Uid,
         userToken: string | null
     ): Promise<BallotResponse> {
         const res = await this.postRequest(
@@ -143,7 +144,7 @@ export class TestHelper {
     }
 
     async requestBallotWithId(
-        electionId: string | number,
+        electionId: Uid,
         userToken: string | null,
         voterId: string | null
     ): Promise<BallotResponse> {
@@ -167,7 +168,7 @@ export class TestHelper {
     }
 
     async submitBallotWithId(
-        electionId: string | number,
+        electionId: Uid,
         ballot: Ballot,
         userToken: string | null,
         voterId: string | null

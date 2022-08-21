@@ -44,6 +44,7 @@ async function castVoteController(req: IRequest, res: any, next: any) {
     }
 
     const voterId = getVoterID(req, targetElection.settings.voter_id_type, user);
+    Logger.debug(req, "voterID = " + voterId);
     const roll = await getOrCreateElectionRoll(targetElection, voterId, req);
     assertVoterMayVote(targetElection, roll, req);
 
@@ -87,6 +88,7 @@ async function persistBallotToStore(ballot:Ballot, roll:ElectionRoll|null, ctx:I
         savedBallot = await BallotModel.submitBallot(ballot, ctx, `User submits a ballot`);
     } else {
         savedBallot = await CastVoteStore.submitBallot(ballot, roll, ctx, 'User Submits a Ballot');
+        Logger.debug(ctx, "\n= = = = =\n done saving ballot to cast vote store...");
     }
     if (!savedBallot){
         throw new InternalServerError("Failed to cast Ballot");
@@ -118,7 +120,7 @@ function getVoterID(req:IRequest, voterIdType:string, user:any):string {
 
 async function getOrCreateElectionRoll(election:Election, voterId:string, ctx:ILoggingContext ):Promise<ElectionRoll|null>{
     const voterIdType = election.settings.voter_id_type;
-    Logger.debug(ctx, `ID type: ${voterIdType}`);
+    Logger.debug(ctx, `getOrCreateElectionRoll: ID type: ${voterIdType}`);
 
     if (voterIdType === 'None') {
         return null;
@@ -158,6 +160,8 @@ async function getOrCreateElectionRoll(election:Election, voterId:string, ctx:IL
 
 async function assertVoterMayVote(election:Election, roll:ElectionRoll|null, ctx:ILoggingContext ):Promise<void> {
     const voterIdType = election.settings.voter_id_type;
+    Logger.debug(ctx, "assert voter may vote: " + voterIdType + " " + (roll == null));
+
     if (voterIdType === 'None') {
         return;
     }

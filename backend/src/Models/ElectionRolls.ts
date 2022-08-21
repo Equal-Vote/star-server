@@ -1,9 +1,10 @@
 import { ElectionRoll, ElectionRollAction } from '../../../domain_model/ElectionRoll';
 import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
+import { IElectionRollStore } from './IElectionRollStore';
 var format = require('pg-format');
 
-export default class ElectionRollDB {
+export default class ElectionRollDB implements IElectionRollStore{
 
     _postgresClient;
     _tableName: string;
@@ -19,9 +20,9 @@ export default class ElectionRollDB {
         Logger.debug(appInitContext, "-> ElectionRollDB.init");
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
-            election_id     INTEGER NOT NULL,
+            election_id     VARCHAR NOT NULL,
             voter_id        VARCHAR NOT NULL,
-            ballot_id       INTEGER,
+            ballot_id       VARCHAR,
             submitted       BOOLEAN,
             PRIMARY KEY(election_id,voter_id),
             state           VARCHAR NOT NULL,
@@ -100,7 +101,7 @@ export default class ElectionRollDB {
             Logger.debug(ctx, rows[0])
             if (rows.length == 0) {
                 Logger.debug(ctx, ".get null");
-                return [];
+                return null;
             }
             return rows[0]
         });

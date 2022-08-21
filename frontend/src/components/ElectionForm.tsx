@@ -26,6 +26,9 @@ import Container from '@material-ui/core/Container';
 import { ElectionSettings } from "../../../domain_model/ElectionSettings"
 import { Box, Checkbox, InputLabel } from "@material-ui/core"
 import { isReturnStatement } from "typescript"
+import IconButton from '@material-ui/core/IconButton'
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
 
 const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitText}) => {
     // I'm referencing 4th option here
@@ -34,7 +37,7 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
     if(prevElectionData == null){
         prevElectionData = {
             title: '',
-            election_id: 0,
+            election_id: '0',
             start_time: new Date(''),
             end_time: new Date(''),
             description: '',
@@ -60,6 +63,8 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
     // TODO: I need to figure out how to load previous voter ID list
     const [voterIDList, setVoterIDList] = useState('')
     const [titleError, setTitleError] = useState(false)
+    const [newCandidateName, setNewCandidateName] = useState('')
+    const [expandedSettings, setExpandedSettings] = useState(false)
 
     const applyElectionUpdate = (updateFunc) => {
         const electionCopy = structuredClone(election)
@@ -127,11 +132,12 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
             election.races[0].candidates.push(
                 {
                     candidate_id: String(election.races[0].candidates.length),
-                    candidate_name: '', // short mnemonic for the candidate
+                    candidate_name: newCandidateName, // short mnemonic for the candidate
                     full_name: '',
                 }
             )
         })
+        setNewCandidateName('')
     }
 
     const onSaveCandidate = (candidate: Candidate, index) => {
@@ -156,7 +162,7 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
     return (
         <form onSubmit={onSubmit}>
             <Container maxWidth='sm'>
-                <Grid container alignItems="center" justify="center" direction="column" >
+                <Grid container direction="column" >
                     <Grid item>
                         <TextField
                             error={titleError}
@@ -174,6 +180,26 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                             }}
                         />
                     </Grid>
+                    <Grid container alignItems="center">
+                        <Grid item sm={11}>
+                            <Typography gutterBottom variant="h6" component="h6">Election Settings</Typography>
+                        </Grid>
+                        {!expandedSettings &&
+                                <Grid item sm={1}>
+                                    <IconButton aria-label="Home" onClick={() => { setExpandedSettings(true) }}>
+                                        <ExpandMore />
+                                    </IconButton>
+                                </Grid>}
+                        {expandedSettings &&
+                            <Grid item sm={1}>
+                            <IconButton aria-label="Home" onClick={() => { setExpandedSettings(false) }}>
+                            <ExpandLess />
+                            </IconButton>
+                            </Grid>}
+                    </Grid>
+                    
+                    {expandedSettings &&
+                        <div>
                     <Grid item>
                         <TextField
                             id="election-description"
@@ -208,39 +234,6 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                             onChange={(e) => applyElectionUpdate(election => {election.end_time = new Date(e.target.value)})}
                         />
                     </div>
-                    <Grid item>
-                        <Box sx={{ minWidth: 120 }}>
-                            <FormControl fullWidth>
-                                <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                    Voting Method
-                                </InputLabel>
-                                <Select
-                                    name="Voting Method"
-                                    label="Voting Method"
-                                    value={election.races[0].voting_method}
-                                    onChange={(e) => applyElectionUpdate(election => {election.races[0].voting_method = e.target.value})}
-                                >
-                                    <MenuItem key="STAR" value="STAR">
-                                        STAR
-                                    </MenuItem>
-                                    <MenuItem key="STAR-PR" value="STAR-PR">
-                                        STAR-PR
-                                    </MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Box>
-                    </Grid>
-                    <Grid item>
-                        <TextField
-                            id="num-winners"
-                            name="Number Of Winners"
-                            label="Number of Winners"
-                            inputProps={getStyle('races', 0, 'num_winners')}
-                            type="number"
-                            value={election.races[0].num_winners}
-                            onChange={(e) => applyElectionUpdate(election => {election.races[0].num_winners = e.target.value})}
-                        />
-                    </Grid>
                     <Grid item>
                         <Box sx={{ minWidth: 120 }}>
                             <FormControl fullWidth>
@@ -364,7 +357,44 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                             label="Public Results"
                         />
                     </Grid>
-                    <Typography align='center' gutterBottom variant="h6" component="h6">
+                    </div>}
+                    <Divider light />
+                    <Typography gutterBottom variant="h6" component="h6">Race Settings</Typography>
+                    <Grid item>
+                        <Box sx={{ minWidth: 120 }}>
+                            <FormControl fullWidth>
+                                <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                                    Voting Method
+                                </InputLabel>
+                                <Select
+                                    name="Voting Method"
+                                    label="Voting Method"
+                                    value={election.races[0].voting_method}
+                                    onChange={(e) => applyElectionUpdate(election => {election.races[0].voting_method = e.target.value})}
+                                >
+                                    <MenuItem key="STAR" value="STAR">
+                                        STAR
+                                    </MenuItem>
+                                    <MenuItem key="STAR-PR" value="STAR-PR">
+                                        STAR-PR
+                                    </MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    </Grid>
+                    <Grid item>
+                        <TextField
+                            id="num-winners"
+                            name="Number Of Winners"
+                            label="Number of Winners"
+                            inputProps={getStyle('races', 0, 'num_winners')}
+                            type="number"
+                            value={election.races[0].num_winners}
+                            onChange={(e) => applyElectionUpdate(election => {election.races[0].num_winners = e.target.value})}
+                        />
+                    </Grid>
+                    <Divider light />
+                    <Typography gutterBottom variant="h6" component="h6">
                         Candidates
                     </Typography>
                     {election.races[0].candidates.map((candidate, index) => (
@@ -373,7 +403,30 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                             <Divider light />
                         </Grid>
                     ))}
-                    <Button variant='outlined' onClick={() => onAddCandidate()} > Add Candidate </Button>
+                    <Grid container>
+                    <Grid item sm={8}>
+                        <TextField
+                            id="new-candidate-name"
+                            name="new-candidate-name"
+                            label="New Candidate Name"
+                            type="text"
+                            value={newCandidateName}
+                            fullWidth
+                            onChange={(e) => {
+                                setNewCandidateName(e.target.value)
+                            }}
+                            onKeyPress={(ev) => {
+                                if (ev.key === 'Enter') {
+                                    onAddCandidate()
+                                    ev.preventDefault();
+                                }
+                              }}
+                        />
+                    </Grid>
+                    <Grid item sm={4}>
+                    <Button variant='outlined' onClick={() => onAddCandidate()} >Add</Button>
+                    </Grid>
+                    </Grid>
                     <input type='submit' value={submitText} className='btn btn-block' />
                 </Grid>
             </Container>

@@ -26,10 +26,10 @@ export function ballotValidation(obj:Ballot): string | null {
     }
     //TODO - currently some disagreement on the type of the Election Id...
     //technically Uid expects a string, but the DB currently using numbers
-    if (typeof obj.election_id !== 'string' && typeof obj.election_id !== 'number'){
+    if (!obj.election_id || typeof obj.election_id !== 'string'){
         return "Invalid Election ID";
     }
-    if (typeof obj.ballot_id !== 'number'){
+    if (!obj.ballot_id || typeof obj.ballot_id !== 'string'){
         return "Invalid Ballot ID";
     }
     if (!obj.votes){

@@ -1,8 +1,9 @@
 import { ElectionRoll, ElectionRollAction, ElectionRollState } from '../../../../domain_model/ElectionRoll';
 import { ILoggingContext } from '../../Services/Logging/ILogger';
 import Logger from '../../Services/Logging/Logger';
+import { IElectionRollStore } from '../IElectionRollStore';
 
-export default class ElectionRollDB {
+export default class ElectionRollDB implements IElectionRollStore{
 
     electionRolls: ElectionRoll[] = []
     nextId = 0;
@@ -11,7 +12,8 @@ export default class ElectionRollDB {
     }
 
     submitElectionRoll(electionRolls: ElectionRoll[], ctx:ILoggingContext): Promise<boolean>{
-        this.electionRolls = this.electionRolls.concat(electionRolls)
+        var copy = JSON.parse(JSON.stringify(electionRolls));
+        this.electionRolls = this.electionRolls.concat(copy);
         return Promise.resolve(true)
     }
 

@@ -3,7 +3,6 @@ import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
 import { responseErr } from "../Util";
 
-const EmailService = require('../Services/EmailService')
 const ElectionRollModel = ServiceLocator.electionRollDb();
 import { hasPermission, permission, permissions } from '../../../domain_model/permissions';
 import { expectPermission } from "./controllerUtils";

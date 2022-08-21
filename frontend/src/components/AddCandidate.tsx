@@ -37,7 +37,7 @@ const AddCandidate = ({ onSaveCandidate, candidate, index }: CandidateProps) => 
     const [partyUrl, setPartyUrl] = useState(candidate.partyUrl)
     const [bio, setBio] = useState(candidate.bio)
 
-    const [editCandidate, setEditCandidate] = useState(true)
+    const [editCandidate, setEditCandidate] = useState(false)
 
     const saveCandidate = () => {
         const newCandidate: Candidate = {
@@ -53,115 +53,92 @@ const AddCandidate = ({ onSaveCandidate, candidate, index }: CandidateProps) => 
         setEditCandidate(false)
         onSaveCandidate(newCandidate)
     }
-    
+
 
     return (
-      <div>
-        {/* <Card >
+        <div>
+            {/* <Card >
             <CardContent> */}
             {editCandidate &&
-            <div className="card">
-                <Grid container alignItems="center" justify="center" direction="column">
-                {/* <form className='add-form' onSubmit={onSubmit}> */}
-                <Grid item >
-                    <TextField
-                        id="short-name"
-                        name="short name"
-                        label="Short Name"
-                        type="text"
-                        value={candidateName}
-                        onChange={(e) => setCandidateName( e.target.value )}
-                    />
-                </Grid>
-                {/* <div className='form-control'>
-                    <label>Short Name</label>
-                    <input type='text' placeholder='Add Short name' value={shortName} onChange={(e) => setCandidateName(e.target.value)} />
-                </div> */}
-                <Grid item>
-                    <TextField
-                        id="bio"
-                        name="bio"
-                        label="Bio"
-                        type="text"
-                        multiline
-                        value={bio}
-                        onChange={(e) => setBio( e.target.value )}
-                    />
-                </Grid>
-                {/* <div className='form-control'>
-                    <label>Bio</label>
-                    <textarea placeholder='Add Bio' value={bio} onChange={(e) => setBio(e.target.value)} />
-                </div> */}
-                <Grid item>
-                    <TextField
-                        id="long-name"
-                        name="long name"
-                        label="Full Name"
-                        type="text"
-                        value={fullName}
-                        onChange={(e) => setFullName( e.target.value )}
-                    />
-                </Grid>
-                {/* <div className='form-control'>
-                    <label>Long Name</label>
-                    <input type='text' placeholder='Add Full name' value={fullName} onChange={(e) => setFullName(e.target.value)} />
-                </div> */}
-                <Grid item>
-                    <TextField
-                        id="candidate url"
-                        name="candidate url"
-                        label="Candidate URL"
-                        type="url"
-                        value={candidateUrl}
-                        onChange={(e) => setCandidateUrl( e.target.value )}
-                    />
-                </Grid>
-                <Grid item>
-                    <TextField
-                        id="Party"
-                        name="Party"
-                        label="Party"
-                        type="text"
-                        value={party}
-                        onChange={(e) => setParty( e.target.value )}
-                    />
-                </Grid>
-                {/* <div className='form-control'>
-                    <label>Party</label>
-                    <input type='text' placeholder='Add Party' value={party} onChange={(e) => setParty(e.target.value)} />
-                </div> */}
-                {/* <div className='form-control'>
-                    <label>Candidate URL</label>
-                    <input type='url' placeholder='Add Candidate URL' value={candidateUrl} onChange={(e) => setCandidateUrl(e.target.value)} />
-                </div> */}
-                <Grid item>
-                    <TextField
-                        id="party url"
-                        name="party url"
-                        label="Party URL"
-                        type="url"
-                        value={partyUrl}
-                        onChange={(e) => setPartyUrl( e.target.value )}
-                    />
-                </Grid>
-                {/* <div className='form-control'>
-                    <label>Party URL</label>
-                    <input type='url' placeholder='Add Party URL' value={partyUrl} onChange={(e) => setPartyUrl(e.target.value)} />
-                </div> */}
-                <Button variant = 'outlined' onClick= { () => saveCandidate() }>Save Candidate</Button>
-                </Grid>
-            </div>
-            }
-            {!editCandidate &&
-            <div >
-                <Typography align='center' gutterBottom variant="h5" component="h5"> {candidateName} </Typography>
-                <Box textAlign='center'>
-                <Button onClick= { () => setEditCandidate(true) }>Edit</Button>
-                </Box>
+                <div className="card">
+                    <Grid container direction="column">
+                        <Grid item >
+                            <TextField
+                                id="short-name"
+                                name="short name"
+                                label="Short Name"
+                                type="text"
+                                value={candidateName}
+                                onChange={(e) => setCandidateName(e.target.value)}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <TextField
+                                id="bio"
+                                name="bio"
+                                label="Bio"
+                                type="text"
+                                multiline
+                                value={bio}
+                                onChange={(e) => setBio(e.target.value)}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <TextField
+                                id="long-name"
+                                name="long name"
+                                label="Full Name"
+                                type="text"
+                                value={fullName}
+                                onChange={(e) => setFullName(e.target.value)}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <TextField
+                                id="candidate url"
+                                name="candidate url"
+                                label="Candidate URL"
+                                type="url"
+                                value={candidateUrl}
+                                onChange={(e) => setCandidateUrl(e.target.value)}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <TextField
+                                id="Party"
+                                name="Party"
+                                label="Party"
+                                type="text"
+                                value={party}
+                                onChange={(e) => setParty(e.target.value)}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <TextField
+                                id="party url"
+                                name="party url"
+                                label="Party URL"
+                                type="url"
+                                value={partyUrl}
+                                onChange={(e) => setPartyUrl(e.target.value)}
+                            />
+                        </Grid>
+                        <Button variant='outlined' onClick={() => saveCandidate()}>Save Candidate</Button>
+                    </Grid>
                 </div>
             }
-            {/* </CardContent>
-        </Card> */}
+            {!editCandidate &&
+                <Grid container>
+                    <Grid item xs={8}>
+                        <Typography gutterBottom variant="h5" component="h5"> {candidateName} </Typography>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Button onClick={() => setEditCandidate(true)}>
+                            <Typography variant="h6" component="h6"> Edit </Typography>
+                        </Button>
+                    </Grid>
+                </Grid>
+            }
         </div>
     )
 }

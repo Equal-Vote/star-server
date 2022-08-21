@@ -26,7 +26,7 @@ export default {
      }, "privateKey"),
     
      Election1 : {
-         election_id: 0,
+         election_id: "0",
          title: 'Election 1',
          state: 'draft',
          frontend_url: '',
@@ -39,7 +39,7 @@ export default {
      } as Election,
 
      IncompleteElection : {
-        election_id: 0,
+        election_id: "0",
         title: 'Election 1',
         state: 'draft',
         frontend_url: '',
@@ -47,7 +47,7 @@ export default {
     } as Election,
     
     EmailRollElection : {
-        election_id: 0,
+        election_id: "0",
         title: 'Election 1',
         state: 'open',
         frontend_url: '',
@@ -86,7 +86,7 @@ export default {
         'Bob@email.com'
     ],
     Ballot1: {
-        ballot_id: 0,
+        ballot_id: "0",
         election_id: "7",
         status: 'Submitted',
         date_submitted: Date.now(),
@@ -110,7 +110,7 @@ export default {
     } as Ballot,
 
     IDRollElection : {
-        election_id: 0,
+        election_id: "0",
         title: 'Election 1',
         state: 'open',
         frontend_url: '',
@@ -148,7 +148,7 @@ export default {
         'BobID'
     ],
     Ballot2: {
-        ballot_id: 0,
+        ballot_id: "0",
         election_id: "8",
         status: 'Submitted',
         date_submitted: Date.now(),
