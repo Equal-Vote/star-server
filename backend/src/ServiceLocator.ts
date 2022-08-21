@@ -64,4 +64,5 @@ function castVoteStore():CastVoteStore {
 }
 
 
-export  default { postgres, ballotsDb, electionsDb, electionRollDb, castVoteStore };
+export  default { ballotsDb, electionsDb, electionRollDb, castVoteStore };
+
