@@ -3,19 +3,17 @@ import { Election } from "../../../../domain_model/Election"
 import { ElectionRoll } from "../../../../domain_model/ElectionRoll"
 import { Imsg } from "./IEmail"
 
-
-
-function Invite(election: Election, voter: ElectionRoll, url: string):Imsg  {
-    return {
+export function Invites(election: Election, voters: ElectionRoll[], url: string):Imsg[]  {
+    return voters.map((voter) => <Imsg> {
         to: voter.voter_id, // Change to your recipient
         from: 'mike@equal.vote', // Change to your verified sender
         subject: `Invitation to Vote In ${election.title}`,
         text: `You have been invited to vote in ${election.title} ${url}/Election/${election.election_id}`,
         html: `<div> <h3> You have been invited to vote in ${election.title}</h3> <a clicktracking="off" href="${url}/Election/${election.election_id}" >Link to Election</a></div>`,
-    }
+    })
 }
 
-function Receipt(election: Election,email: string, ballot: Ballot, url: string):Imsg {
+export function Receipt(election: Election,email: string, ballot: Ballot, url: string):Imsg {
     return {
         to: email, // Change to your recipient
         from: 'mike@equal.vote', // Change to your verified sender
@@ -32,5 +30,3 @@ function Receipt(election: Election,email: string, ballot: Ballot, url: string):
                 </div>`,
     }
 }
-
-export default { Invite, Receipt }
