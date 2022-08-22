@@ -12,8 +12,8 @@ var EmailService = ServiceLocator.emailService();
 const className = "election.Controllers";
 
 const finalizeElection = async (req: any, res: any, next: any) => {
-    expectPermission(req.user_auth.roles, permissions.canEditElectionState)
     Logger.info(req, `${className}.finalize ${req.election.election_id}`);
+    expectPermission(req.user_auth.roles, permissions.canEditElectionState)
     if (req.election.state !== 'draft') {
         var msg = "Election already finalized";
         Logger.info(req, msg);
@@ -39,7 +39,7 @@ const finalizeElection = async (req: any, res: any, next: any) => {
         Logger.info(req, `${className}.sendInvitations`, { election_id: req.election.election_id });
         try {
             const url = req.protocol + '://' + req.get('host')
-            const invites = Invites(req.election, req.electionRoll, url)
+            const invites = Invites(req.election, electionRoll, url)
             EmailService.sendEmails(invites)
         } catch (err: any) {
             const msg = `Could not send invitations`;

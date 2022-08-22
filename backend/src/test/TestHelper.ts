@@ -5,6 +5,7 @@ import { VoterAuth } from "../../../domain_model/VoterAuth";
 import makeApp from "../app";
 import Logger from "../Services/Logging/Logger";
 import { TestLoggerImpl } from "../Services/Logging/TestLoggerImpl";
+import ServiceLocator  from "../__mocks__/ServiceLocator"
 const request = require("supertest");
 
 type ElectionResponse = {
@@ -23,10 +24,12 @@ type BallotResponse = {
 export class TestHelper {
     public expressApp;
     public logger: TestLoggerImpl;
+    public emailService: any
 
     private ctx = Logger.createContext("testHelper");
 
     constructor() {
+        this.emailService = ServiceLocator.emailService()
         this.expressApp = makeApp();
         this.logger = new TestLoggerImpl().setup();
     }
@@ -79,6 +82,18 @@ export class TestHelper {
                 Election: election,
                 VoterIDList: voterRoll,
             },
+            userToken
+        );
+        return this.electionResponse(res);
+    }
+
+    async finalizeElection(
+        election_id: Uid,
+        userToken: string | null
+    ): Promise<ElectionResponse> {
+        const res = await this.postRequest(
+            `/API/Election/${election_id}/finalize`,
+            {},
             userToken
         );
         return this.electionResponse(res);
@@ -206,9 +221,11 @@ export class TestHelper {
     afterEach() {
         this.logger.print();
         this.logger.clear();
+        // this.emailService.clear();
     }
 
     testComplete() {
         this.logger.clear();
+        // this.emailService.clear();
     }
 }

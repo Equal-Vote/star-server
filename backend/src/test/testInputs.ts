@@ -51,7 +51,7 @@ export default {
         title: 'Election 1',
         state: 'open',
         frontend_url: '',
-        owner_id: '0',
+        owner_id: 'Alice1234',
         credential_ids: ['Alice@email.com'],
         races: [
             {
