@@ -44,6 +44,7 @@ const getElectionByID = async (req: any, res: any, next: any) => {
             req.user_auth.roles.push(roles.credentialer)
           }
         }
+        Logger.debug(req, `done with getElectionById...`);
         Logger.debug(req,req.user_auth)
         return next()
     } catch (err:any) {

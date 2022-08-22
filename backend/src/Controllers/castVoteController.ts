@@ -88,7 +88,6 @@ async function persistBallotToStore(ballot:Ballot, roll:ElectionRoll|null, ctx:I
         savedBallot = await BallotModel.submitBallot(ballot, ctx, `User submits a ballot`);
     } else {
         savedBallot = await CastVoteStore.submitBallot(ballot, roll, ctx, 'User Submits a Ballot');
-        Logger.debug(ctx, "\n= = = = =\n done saving ballot to cast vote store...");
     }
     if (!savedBallot){
         throw new InternalServerError("Failed to cast Ballot");
@@ -158,7 +157,7 @@ async function getOrCreateElectionRoll(election:Election, voterId:string, ctx:IL
 }
 
 
-async function assertVoterMayVote(election:Election, roll:ElectionRoll|null, ctx:ILoggingContext ):Promise<void> {
+function assertVoterMayVote(election:Election, roll:ElectionRoll|null, ctx:ILoggingContext ): void{
     const voterIdType = election.settings.voter_id_type;
     Logger.debug(ctx, "assert voter may vote: " + voterIdType + " " + (roll == null));
 
@@ -171,6 +170,7 @@ async function assertVoterMayVote(election:Election, roll:ElectionRoll|null, ctx
     if (roll.submitted){
         throw new BadRequest("User has already voted");
     }
+    Logger.debug(ctx, "I guess authorized?");
 }
 
 

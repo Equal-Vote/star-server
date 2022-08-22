@@ -126,6 +126,7 @@ const updateElectionRoll = async (req: any, res: any, next: any) => {
 
 const getVoterAuth = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.getVoterAuth`);
+    Logger.debug(req, "\n= = = = = GET voter auth...");
     const voterIdType = req.election.settings.voter_id_type;
     Logger.debug(req, `ID type: ${voterIdType}`);
     if (voterIdType === 'None') {
@@ -159,14 +160,21 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
         }
         req.voter_id = req.cookies.voter_id
     }
+
+    Logger.debug(req, `Voter ID = ${req.voter_id}`);
+
     try {
         const electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.voter_id, req);
-        req.electionRollEntry = electionRollEntry
+        req.electionRollEntry = electionRollEntry;
+       
     } catch (err:any) {
         const msg = `Could not find election roll entry`;
         Logger.error(req, `${msg}: ${err.message}`);
         return responseErr(res, req, 500, msg);
     }
+    Logger.debug(req, `Election roll type = ${req.election.settings.election_roll_type}`);
+    Logger.debug(req, `Election Roll Entry = ${JSON.stringify(req.electionRollEntry)}`);
+
     if (req.election.settings.election_roll_type === 'None') {
         req.authorized_voter = true;
         if (req.electionRollEntry == null) {

@@ -17,7 +17,7 @@ export default class CastVoteStore {
     async submitBallot(ballot: Ballot, roll:ElectionRoll, ctx:ILoggingContext, reason:string): Promise<Ballot> {
 
         const savedBallot = await this._ballotStore.submitBallot(ballot, ctx, reason);
-        await this._rollStore.submitElectionRoll([roll], ctx, reason);
+        await this._rollStore.update(roll, ctx, reason);
         return savedBallot;
     }
 

@@ -50,8 +50,8 @@ router.post('/Election/:id/edit',
 router.get('/ElectionResult/:id',
     ballotController.getBallotsByElectionID,
     electionController.getElectionResults)
-router.post('/Election/:id/vote',
-    castVoteController.castVoteController
+router.post('/Election/:id/vote', asyncHandler(
+    castVoteController.castVoteController)
 )
 router.post('/Election/:id/finalize',
     authController.isLoggedIn,

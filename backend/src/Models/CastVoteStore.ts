@@ -29,15 +29,9 @@ export default class CastVoteStore {
         const ballotSQL = pgFormat(`INSERT INTO ${this._ballotTableName} (election_id,user_id,status,date_submitted,ip_address,votes,history)
         VALUES %L RETURNING ballot_id;`, ballotValues);
 
-        var rollValues = [
-            roll.election_id,
-            roll.voter_id,
-            roll.submitted,
-            roll.state,
-            JSON.stringify(roll.history),
-            JSON.stringify(roll.registration)];
-        var rollSql = pgFormat(`INSERT INTO ${this._rollTableName} (election_id,voter_id,submitted,state,history,registration)
-        VALUES %L;`, rollValues);
+        var rollValues = [roll.ballot_id, roll.submitted, roll.state, JSON.stringify(roll.history), JSON.stringify(roll.registration), roll.election_id, roll.voter_id]
+        var rollSql = pgFormat(`UPDATE ${this._rollTableName} SET ballot_id=%L, submitted=%L, state=%L, history=%L, registration=%L WHERE election_id = %I AND voter_id=%I`, rollValues);
+        Logger.debug(ctx, rollSql);
 
         const transactionSql = `BEGIN; ${ballotSQL} ${rollSql} COMMIT;`
         Logger.debug(ctx, transactionSql);
