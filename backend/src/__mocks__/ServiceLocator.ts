@@ -3,11 +3,13 @@ import BallotsDB from "../Models/__mocks__/Ballots";
 import ElectionsDB from "../Models/__mocks__/Elections";
 import ElectionRollDB from "../Models/__mocks__/ElectionRolls";
 import EmailService from "../Services/Email/__mocks__/EmailService";
+import AccountService from "../Services/Account/__mocks__/AccountService"
 
 var _ballotsDb:BallotsDB;
 var _electionsDb:ElectionsDB;
 var _electionRollDb:ElectionRollDB;
-var _emailService:EmailService
+var _emailService:EmailService;
+var _accountService:AccountService;
 
 function ballotsDb():BallotsDB {
     if (_ballotsDb == null){
@@ -37,4 +39,11 @@ function emailService():EmailService {
     return _emailService;
 }
 
-export  default { ballotsDb, electionsDb, electionRollDb, emailService };
+function accountService():AccountService {
+    if (_accountService == null){
+        _accountService = new AccountService();
+    }
+    return _accountService;
+}
+
+export  default { ballotsDb, electionsDb, electionRollDb, emailService, accountService };
