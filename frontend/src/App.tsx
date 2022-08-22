@@ -10,6 +10,7 @@ import AddElection from './components/AddElection'
 import Election from './components/Election'
 import DuplicateElection from './components/DuplicateElection'
 import Sandbox from './components/Sandbox'
+import DebugPage from './components/DebugPage'
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Elections authSession={authSession}/>} />
           <Route path='/Login' element={<Login />} />
+          <Route path='/Debug' element={<DebugPage authSession={authSession}/>} />
           <Route path='/CreateElection' element={<AddElection authSession={authSession}/>} />
           <Route path='/Election/:id/*' element={<Election authSession={authSession}/>} />
           <Route path='/DuplicateElection/:id' element={<DuplicateElection authSession={authSession}/>} />
