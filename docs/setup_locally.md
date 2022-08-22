@@ -475,6 +475,18 @@ The first time setup can take a while depending on your network bandwidth. Be pa
 > [!NOTE]
 > If you are using Apple Devices with M1 Chip to run the application locally, it is suggested to use Node v14.7 or above. You might run into issues with dependencies like Sharp otherwise.
 
+### Frontend Issues
+
+Your frontend may throw an error:
+
+Invalid options object. Dev Server has been initialized using an options object that does not match the API schema.
+ - options.allowedHosts[0] should be a non-empty string.
+
+This is discussed more thoroughly on [stack overflow](https://stackoverflow.com/questions/70374005/invalid-options-object-dev-server-has-been-initialized-using-an-options-object)
+
+To fix this, locate `./frontend/sample.env`, and copy it to a new file named  `./frontend/.env`
+
+
 ## Getting Help
 
 If you are stuck and need help, feel free to ask questions on the [#_software-dev slack channel](https://starvoting.slack.com/archives/C01EBAT283H).
