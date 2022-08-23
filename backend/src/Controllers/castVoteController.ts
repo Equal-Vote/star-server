@@ -83,15 +83,22 @@ async function castVoteController(req: IRequest, res: any, next: any) {
 
 
 async function persistBallotToStore(ballot:Ballot, roll:ElectionRoll|null, ctx:ILoggingContext):Promise<Ballot> {
+    Logger.debug(ctx, "persisteBallotToStore");
     var savedBallot;
-    if (roll == null){
-        savedBallot = await BallotModel.submitBallot(ballot, ctx, `User submits a ballot`);
-    } else {
-        savedBallot = await CastVoteStore.submitBallot(ballot, roll, ctx, 'User Submits a Ballot');
+    try {
+        if (roll == null){
+            savedBallot = await BallotModel.submitBallot(ballot, ctx, `User submits a ballot`);
+        } else {
+            savedBallot = await CastVoteStore.submitBallot(ballot, roll, ctx, 'User Submits a Ballot');
+        }
+        if (!savedBallot){
+            throw new InternalServerError("Failed to cast Ballot");
+        }
+    } catch (err:any){
+        Logger.error(ctx, 'Failed to cast Ballot:  '+err.message);
+        throw err;
     }
-    if (!savedBallot){
-        throw new InternalServerError("Failed to cast Ballot");
-    }
+
     return savedBallot;
 }
 
@@ -170,7 +177,7 @@ function assertVoterMayVote(election:Election, roll:ElectionRoll|null, ctx:ILogg
     if (roll.submitted){
         throw new BadRequest("User has already voted");
     }
-    Logger.debug(ctx, "I guess authorized?");
+    Logger.debug(ctx, "Voter authorized");
 }
 
 

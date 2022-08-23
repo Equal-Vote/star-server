@@ -48,7 +48,6 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
         const newElectionRoll = await ElectionRollModel.submitElectionRoll(rolls, req, `User adding Election Roll??`)
         if (!newElectionRoll){
             const msg= "Voter Roll not found";
-            Logger.error(req, "= = = = = = \n = = = = = ");
             Logger.info(req, msg);
             return responseErr(res, req, 400, msg);
         }
@@ -126,7 +125,6 @@ const updateElectionRoll = async (req: any, res: any, next: any) => {
 
 const getVoterAuth = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.getVoterAuth`);
-    Logger.debug(req, "\n= = = = = GET voter auth...");
     const voterIdType = req.election.settings.voter_id_type;
     Logger.debug(req, `ID type: ${voterIdType}`);
     if (voterIdType === 'None') {

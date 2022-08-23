@@ -16,9 +16,10 @@ export default class BallotsDB implements IBallotStore {
         this.init();
     }
 
-    init(): Promise<IBallotStore> {
+    async init(): Promise<IBallotStore> {
         var appInitContext = Logger.createContext("appInit");
         Logger.debug(appInitContext, "BallotsDB.init");
+        //await this.dropTable(appInitContext);
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
             ballot_id       VARCHAR PRIMARY KEY,
@@ -44,6 +45,16 @@ export default class BallotsDB implements IBallotStore {
             });
         }).then((_:any)=> {
             return this;
+        });
+    }
+
+    async dropTable(ctx:ILoggingContext):Promise<void>{
+        var query = `DROP TABLE IF EXISTS ${this._tableName};`;
+        var p = this._postgresClient.query({
+            text: query,
+        });
+        return p.then((_: any) => {
+            Logger.debug(ctx, `Dropped it (like its hot)`);
         });
     }
 

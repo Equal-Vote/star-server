@@ -15,9 +15,10 @@ export default class ElectionRollDB implements IElectionRollStore{
         this.init()
     }
 
-    init(): Promise<ElectionRollDB> {
+    async init(): Promise<ElectionRollDB> {
         var appInitContext = Logger.createContext("appInit");
         Logger.debug(appInitContext, "-> ElectionRollDB.init");
+        //await this.dropTable(appInitContext);
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
             election_id     VARCHAR NOT NULL,
@@ -45,6 +46,16 @@ export default class ElectionRollDB implements IElectionRollStore{
             return this;
         });
     }
+
+    async dropTable(ctx:ILoggingContext):Promise<void>{
+        var query = `DROP TABLE IF EXISTS ${this._tableName};`;
+        var p = this._postgresClient.query({
+            text: query,
+        });
+        return p.then((_: any) => {
+            Logger.debug(ctx, `Dropped it (like its hot)`);
+        });
+    }
     
     submitElectionRoll(electionRolls: ElectionRoll[], ctx:ILoggingContext,reason:string): Promise<boolean> {
         Logger.debug(ctx, `ElectionRollDB.submit`);
@@ -61,9 +72,10 @@ export default class ElectionRollDB implements IElectionRollStore{
         Logger.debug(ctx, values)
         var p = this._postgresClient.query(sqlString);
         return p.then((res: any) => {
-            const resElectionRoll = res.rows[0];
-            Logger.state(ctx, `Submit Election Roll: `, {reason: reason, electionRoll: resElectionRoll});
-            return resElectionRoll;
+            Logger.state(ctx, `Submit Election Roll: `, {reason: reason, electionRoll: electionRolls});
+            return true;
+        }).catch((err:any)=>{
+            Logger.error(ctx, `Error with postgres submitElectionRoll:  ${err.message}`);
         });
     }
 
@@ -88,7 +100,7 @@ export default class ElectionRollDB implements IElectionRollStore{
     }
 
     getByVoterID(election_id: string, voter_id: string, ctx:ILoggingContext): Promise<ElectionRoll | null> {
-        Logger.debug(ctx, `ElectionRollDB.getByVoterID`);
+        Logger.debug(ctx, `ElectionRollDB.getByVoterID election:${election_id}, voter:${voter_id}`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1 AND voter_id = $2`;
         Logger.debug(ctx, sqlString);
 
