@@ -26,20 +26,19 @@ const finalizeElection = async (req: any, res: any, next: any) => {
         Logger.info(req, failMsg);
         throw new BadRequest(failMsg)
     }
-    req.election = updatedElection
 
-    if (req.election.settings.election_roll_type === 'Email') {
-        const electionId = req.election.election_id;
+    if (updatedElection.settings.election_roll_type === 'Email') {
+        const electionId = updatedElection.election_id;
         const electionRoll = await ElectionRollModel.getRollsByElectionID(electionId, req);
         if (!electionRoll) {
             const msg = `Election roll for ${electionId} not found`;
             Logger.info(req, msg);
             throw new BadRequest(msg)
         }
-        Logger.info(req, `${className}.sendInvitations`, { election_id: req.election.election_id });
+        Logger.info(req, `${className}.sendInvitations`, { election_id: updatedElection.election_id });
         try {
             const url = req.protocol + '://' + req.get('host')
-            const invites = Invites(req.election, electionRoll, url)
+            const invites = Invites(updatedElection, electionRoll, url)
             EmailService.sendEmails(invites)
         } catch (err: any) {
             const msg = `Could not send invitations`;
@@ -48,7 +47,7 @@ const finalizeElection = async (req: any, res: any, next: any) => {
             throw new InternalServerError(failMsg)
         }
     }
-    return res.json({ election: req.election })
+    return res.json({ election: updatedElection })
 }
 
 module.exports = {
