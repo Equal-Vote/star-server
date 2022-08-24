@@ -5,7 +5,7 @@ import { VoterAuth } from "../../../domain_model/VoterAuth";
 import makeApp from "../app";
 import Logger from "../Services/Logging/Logger";
 import { TestLoggerImpl } from "../Services/Logging/TestLoggerImpl";
-import ServiceLocator  from "../__mocks__/ServiceLocator"
+import ServiceLocator  from "../ServiceLocator"
 const request = require("supertest");
 
 type ElectionResponse = {
