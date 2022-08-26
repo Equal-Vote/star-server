@@ -38,7 +38,7 @@ Having a high level understanding of OIDC will make the setup process more clear
 
 We deployed the service with the password set to password, let's change that
 
-1. Navigate to the keycloak endpoint (https://<allocated ip>:8443), and login using username: admin and password: password
+1. Navigate to the keycloak endpoint (https://auth.star.vote:8443), and login using username: admin and password: password
 1. Click "Users"
 1. Click "View all users" and open the first one
 1. Go to "Credentials" tab, and reset the password
@@ -90,12 +90,15 @@ Repeat all the the following steps for the STAR Voting realm and the STAR Voting
         * https://star-vote-review-3.herokuapp.com
         * http://localhost:3000 (this is useful for testing)
 1. Under "clients" > "star_vote_web" > "Credentials" set the following and hit "Save"
+    * Client Authenticator: Client Id and Secret
+
+
 
 ## Point website to new endpoint
 
 The dev and production environments need to be updated to point to the new keycloak service. You'll need the endpoint and secret for this
 
- * **endpoint**: The OIDC endpoint would be https://<allocated ip>:8443/realms/STAR%20Voting%20Dev/protocol/openid-connect (remove the %20Dev for the production environment)
+ * **endpoint**: The OIDC endpoint would be https://auth.star.vote:8443/realms/STAR%20Voting%20Dev/protocol/openid-connect (remove the %20Dev for the production environment)
  * **secret**: Copy this from "Clients" > "star_vote_web" > "Credentials" 
 
  > NOTE: Aside from the domain the endpoint structure is slightly different from the previous pattern due to a recent keycloak update [more info](https://stackoverflow.com/questions/48056418/keycloak-returns-404-not-found-page)

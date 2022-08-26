@@ -16,9 +16,9 @@ const prodEndpoints = [
   ];
 let keycloakBaseUrl;
 if (prodEndpoints.includes(window.location.origin)) {
-    keycloakBaseUrl = 'https://52.205.245.149:8443/realms/STAR%20Voting/protocol/openid-connect';
+    keycloakBaseUrl = 'https://auth.star.vote:8443/realms/STAR%20Voting/protocol/openid-connect';
 } else {
-    keycloakBaseUrl = 'https://52.205.245.149:8443/realms/STAR%20Voting%20Dev/protocol/openid-connect';
+    keycloakBaseUrl = 'https://auth.star.vote:8443/realms/STAR%20Voting%20Dev/protocol/openid-connect';
 }
 
 const keycloakAuthConfig = {
