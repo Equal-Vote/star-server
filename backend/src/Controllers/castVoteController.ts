@@ -18,7 +18,6 @@ const CastVoteStore = ServiceLocator.castVoteStore();
 async function castVoteController(req: IRequest, res: any, next: any) {
     Logger.info(req, "Cast Vote Controller");
 
-    const user = expectUserFromRequest(req);
     const inputBallot:Ballot = req.body.ballot;
     const validationErr = ballotValidation(inputBallot);
     if (validationErr){
@@ -27,11 +26,8 @@ async function castVoteController(req: IRequest, res: any, next: any) {
         throw new BadRequest(errMsg);
     }
 
-    //TODO: currently we have both a value on the input Ballot, and the route param.
-    //do we want to keep both?  enforce that they match?
-    const targetElectionId = req.params.id;
-    inputBallot.election_id = targetElectionId;
-    const targetElection = await ElectionsModel.getElectionByID(targetElectionId, req);
+    const targetElection = req.election;
+    //const targetElection = await ElectionsModel.getElectionByID(targetElectionId, req);
     if (targetElection == null){
         const errMsg = "Invalid Ballot: invalid election Id";
         Logger.info(req, errMsg);
@@ -42,7 +38,11 @@ async function castVoteController(req: IRequest, res: any, next: any) {
         Logger.info(req, "Ballot Rejected. Election not open.", targetElection);
         throw new BadRequest("Election is not open");
     }
+    //TODO: currently we have both a value on the input Ballot, and the route param.
+    //do we want to keep both?  enforce that they match?
+    inputBallot.election_id = targetElection.election_id;
 
+    const user = req.user;
     const voterId = getVoterID(req, targetElection.settings.voter_id_type, user);
     Logger.debug(req, "voterID = " + voterId);
     const roll = await getOrCreateElectionRoll(targetElection, voterId, req);
@@ -111,13 +111,13 @@ function getVoterID(req:IRequest, voterIdType:string, user:any):string {
         return String(req.ip)
     } else if (voterIdType === 'Email') {
         if (user == null){
-            throw new Unauthorized();
+            throw new Unauthorized("This Election requires an approved Email");
         }
         return user.email;
     } else if (voterIdType === 'IDs') {
         // If voter ID not set, send response requesting voter ID to be entered
         if (!req.cookies.voter_id) {
-            throw new Unauthorized();
+            throw new Unauthorized("This Election requires a Voter ID");
         }
         return req.cookies.voter_id
     }
