@@ -8,28 +8,6 @@ const ElectionRollModel = ServiceLocator.electionRollDb();
 const EmailService = ServiceLocator.emailService();
 const className="VoterRolls.Controllers";
 
-const getRollsByElectionID = async (req: any, res: any, next: any) => {
-    const electionId = req.election.election_id;
-    Logger.info(req, `${className}.getRollsByElectionID ${electionId}`);
-    //requires election data in req, adds entire election roll 
-    try {
-        const electionRoll = await ElectionRollModel.getRollsByElectionID(electionId, req);
-        if (!electionRoll) {
-            const msg = `Election roll for ${electionId} not found`;
-            Logger.info(req, msg);
-            return responseErr(res, req, 400, msg);
-        }
-        
-        Logger.debug(req, `Got Election: ${req.params.id}`, electionRoll);
-        req.electionRoll = electionRoll
-        return next()
-    } catch (err:any) {
-        const msg = `Could not retrieve election roll`;
-        Logger.error(req, `${msg}: ${err.message}`);
-        return responseErr(res, req, 500, msg);
-    }
-}
-
 const addElectionRoll = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.addElectionRoll ${req.election.election_id}`);
     try {
@@ -217,28 +195,9 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
     }
 }
 
-const sendInvitations = async (req: any, res: any, next: any) => {
-    //requires election data in req, adds entire election roll 
-    if (req.election.settings.election_roll_type === 'Email') {
-        Logger.info(req, `${className}.sendInvitations`, {election_id: req.election.election_id});
-        try {
-            const url = req.protocol + '://'+req.get('host')
-            const invites = Invites(req.election,req.electionRoll,url)
-            EmailService.sendEmails(invites)
-        } catch (err:any) {
-            const msg = `Could not send invitations`;
-            Logger.error(req, `${msg}: ${err.message}`);
-            return responseErr(res, req, 500, msg);
-        }
-    }
-    return res.json({ election: req.election })
-}
-
 module.exports = {
     updateElectionRoll,
-    getRollsByElectionID,
     addElectionRoll,
     getVoterAuth,
-    sendInvitations,
     registerVoter
 }

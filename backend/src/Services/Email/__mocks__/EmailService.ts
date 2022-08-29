@@ -2,7 +2,7 @@ import { Imsg } from "./../IEmail"
 
 export default class EmailService {
 
-  sentEmails:Imsg[];
+  public sentEmails:Imsg[];
 
   constructor() {
     this.sentEmails = []
@@ -10,6 +10,10 @@ export default class EmailService {
 
   sendEmails = async (msg: Imsg[]) => {
     this.sentEmails.push(...msg)
+  }
+
+  clear = () => {
+    this.sentEmails = []
   }
 
 }
