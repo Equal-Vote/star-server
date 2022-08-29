@@ -7,11 +7,9 @@ import { Score } from '../../../domain_model/Score';
 const StarResults = require('../Tabulators/StarResults.js');
 const BallotModel = ServiceLocator.ballotsDb();
 
-const className = "VoterRolls.Controllers";
-
 const getElectionResults = async (req: any, res: any, next: any) => {
     var electionId = req.election.election_id;
-    Logger.info(req, `${className}.getElectionResults: ${electionId}`);
+    Logger.info(req, `getElectionResults: ${electionId}`);
     const ballots = await BallotModel.getBallotsByElectionID(String(electionId), req);
     if (!ballots) {
         const msg = `Ballots not found for Election ${electionId}`;

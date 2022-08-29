@@ -23,9 +23,7 @@ const Elections = ({authSession}) => {
     useEffect(() => {
         fetchElections()
     },[url])
-
-    let elections = data as Election[];
-    console.log(JSON.stringify(elections));
+    console.log(JSON.stringify(data));
     return (
         <ThemeProvider theme={theme}>
             <main>
@@ -34,7 +32,7 @@ const Elections = ({authSession}) => {
                 {authSession.isLoggedIn() && <Link to='/CreateElection'> <Typography align='center' variant="h4" component="h3"> Create New Election</Typography></Link>}
                 <Container maxWidth="md">
                     <Grid container alignItems="stretch" spacing={4}>
-                        {elections && elections.map((election) => (
+                        {data?.elections && data.elections.map((election) => (
                             <Grid item xs={12} >
                                 <ElectionCard key={election.election_id} election={election}
                                 />

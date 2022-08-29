@@ -21,8 +21,7 @@ const getBallotsByElectionID = async (req: any, res: any, next: any) => {
         throw new BadRequest(msg)
     }
     Logger.debug(req, "ballots = ", ballots);
-    req.ballots = ballots;
-    res.json({ election: req.election, ballots: req.ballots })
+    res.json({ election: req.election, ballots: ballots })
 }
 
 module.exports = {

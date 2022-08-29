@@ -14,7 +14,7 @@ const getElections = async (req: any, res: any, next: any) => {
         Logger.info(req, msg);
         throw new BadRequest(msg);
     }
-    res.json(Elections);
+    res.json( { elections : Elections });
 }
 
 module.exports = {
