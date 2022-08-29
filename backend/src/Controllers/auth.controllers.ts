@@ -17,6 +17,7 @@ const getUser = (req: any, res: any, next: any) => {
 
 const hasPermission = (permission: permission) => {
   return (req: any, res: any, next: any) => {
+    Logger.debug(req, "\n= = = = =\n!!! hasPermission with: " + JSON.stringify(req.user_auth));
     if (!req.user_auth.roles.some( (role:roles) => permission.includes(role))) {
       var msg = "Does not have permission";
       Logger.info(req, msg);

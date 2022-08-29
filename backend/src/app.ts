@@ -11,6 +11,7 @@ import {IRequest, iRequestMiddleware, reqIdSuffix} from './IRequest';
 import { responseErr } from './Util';
 import { loggerMiddleware } from './Services/Logging/LoggerMiddleware';
 import { errorCatch } from './errorCatchMiddleware'
+
 const authController = require('./Controllers/auth.controllers')
 export default function makeApp() {
 

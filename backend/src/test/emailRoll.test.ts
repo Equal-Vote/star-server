@@ -92,7 +92,7 @@ describe("Email Roll", () => {
             testInputs.user3token
         );
         // console.log(response)
-        expect(response.statusCode).toBe(400);
+        expect(response.statusCode).toBe(401);
         th.testComplete();
     });
 });
