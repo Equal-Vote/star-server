@@ -8,12 +8,13 @@ import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-e
 import { ILoggingContext } from "../Services/Logging/ILogger";
 import {expectUserFromRequest, expectValidElectionFromRequest, catchAndRespondError} from "./controllerUtils";
 import { randomUUID } from "crypto";
+import { Receipt } from "../Services/Email/EmailTemplates"
 
 const ElectionsModel = ServiceLocator.electionsDb();
 const ElectionRollModel = ServiceLocator.electionRollDb();
 const BallotModel = ServiceLocator.ballotsDb();
 const CastVoteStore = ServiceLocator.castVoteStore();
-
+const EmailService = ServiceLocator.emailService();
 
 async function castVoteController(req: IRequest, res: any, next: any) {
     Logger.info(req, "Cast Vote Controller");
@@ -78,6 +79,12 @@ async function castVoteController(req: IRequest, res: any, next: any) {
     }
 
     const savedBallot = await persistBallotToStore(inputBallot, roll, req);
+
+    if (user.email){
+        const url = req.protocol + '://' + req.get('host')
+        const receipt = Receipt(targetElection, user.email,savedBallot, url)
+        EmailService.sendEmails([receipt])
+    }
     res.status("200").json({ ballot: savedBallot} );
 };
 
