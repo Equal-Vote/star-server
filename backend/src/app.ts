@@ -11,6 +11,7 @@ import {IRequest, iRequestMiddleware, reqIdSuffix} from './IRequest';
 import { responseErr } from './Util';
 import { loggerMiddleware } from './Services/Logging/LoggerMiddleware';
 import { errorCatch } from './errorCatchMiddleware'
+
 const authController = require('./Controllers/auth.controllers')
 export default function makeApp() {
 
@@ -109,7 +110,8 @@ app.post('/API/Token', (req:IRequest, res) => {
     .then(res => res.data)
     .then(data => {Logger.debug(appInitContext, "success!"); res.json(data)})
     .catch((err) => {
-        Logger.error(req, 'Error while requesting a token', err.response.data);
+        const errData = err.response ? err.response.data : err;
+        Logger.error(req, 'Error while requesting a token', errData);
         responseErr(res, req, 500, "Error requesting token");
     });
 });

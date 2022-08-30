@@ -12,6 +12,7 @@ const { editElectionRoll } = require('../Controllers/editElectionRollController'
 const { addElectionRoll } = require('../Controllers/addElectionRollController')
 const { getRollsByElectionID, getByVoterID } = require('../Controllers/getElectionRollController')
 const createElectionController = require('../Controllers/createElectionController');
+const { castVoteController } = require('../Controllers/castVoteController');
 const { finalizeElection } = require('../Controllers/finalizeElectionController')
 const { getElectionResults } = require('../Controllers/getElectionResultsController')
 const { getBallotsByElectionID } = require('../Controllers/getBallotsByElectionIDController')
@@ -34,7 +35,7 @@ router.post('/Election/:id/register',
     voterRollController.registerVoter)
 router.get('/Election/:id/ballots', asyncHandler(getBallotsByElectionID))
 router.get('/Election/:id/rolls', asyncHandler(getRollsByElectionID))
-router.get('/Election/:id/rolls/:voter_id',  asyncHandler(getByVoterID))
+router.get('/Election/:id/rolls/:voter_id', asyncHandler(getByVoterID))
 router.post('/Election/:id/rolls/', asyncHandler(editElectionRoll))
 router.post('/Election/:id/rolls/approve', asyncHandler(changeElectionRollStateController.approveElectionRoll))
 router.post('/Election/:id/rolls/flag', asyncHandler(changeElectionRollStateController.flagElectionRoll))
@@ -46,18 +47,7 @@ router.post('/Elections/', asyncHandler(createElectionController.createElectionC
 
 router.post('/Election/:id/edit', asyncHandler(editElection))
 router.get('/ElectionResult/:id', asyncHandler(getElectionResults))
-router.post('/Election/:id/vote',
-    voterRollController.getVoterAuth,
-    ballotController.submitBallot,
-    voterRollController.updateElectionRoll,
-    (req, res, next) => {
-        res.json(
-            {
-                ballot: req.ballot
-            }
-        );
-    },
-)
+router.post('/Election/:id/vote', asyncHandler(castVoteController))
 router.post('/Election/:id/finalize',asyncHandler(finalizeElection))
 
 router.post('/Sandbox',asyncHandler(getSandboxResults))

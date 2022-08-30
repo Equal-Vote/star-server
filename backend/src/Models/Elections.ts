@@ -15,9 +15,12 @@ export default class ElectionsDB {
         this.init()
     }
 
-    init(): Promise<ElectionsDB> {
+    async init(): Promise<ElectionsDB> {
         var appInitContext = Logger.createContext("appInit");
         Logger.debug(appInitContext, "-> ElectionsDB.init")
+
+        //await this.dropTable(appInitContext);
+
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
             election_id  VARCHAR PRIMARY KEY,
@@ -53,8 +56,19 @@ export default class ElectionsDB {
         });
     }
 
+    async dropTable(ctx:ILoggingContext):Promise<void>{
+        var query = `DROP TABLE IF EXISTS ${this._tableName};`;
+        var p = this._postgresClient.query({
+            text: query,
+        });
+        return p.then((_: any) => {
+            Logger.debug(ctx, `Dropped it (like its hot)`);
+        });
+    }
+
     createElection(election: Election, ctx:ILoggingContext, reason:string): Promise<Election> {
         Logger.debug(ctx, `${className}.createElection`, election);
+
         var sqlString = `INSERT INTO ${this._tableName} (election_id, title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *;`;
         Logger.debug(ctx, sqlString);
@@ -83,6 +97,9 @@ export default class ElectionsDB {
             const newElection = res.rows[0];
             Logger.state(ctx, `Election created:`, {reason: reason, election: newElection});
             return newElection;
+        }).catch((err:any)=>{
+            Logger.error(ctx, "Error with postgres createElection:  " + err.message);
+            throw err;
         });
     }
 
