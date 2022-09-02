@@ -25,31 +25,6 @@ const ballotByID = async (req: any, res: any, next: any) => {
     }
 }
 
-const getBallotsByElectionID = async (req: any, res: any, next: any) => {
-    try {
-        var electionId = req.election.election_id;
-        Logger.debug(req, "getBallotsByElectionID: "+electionId);
-        const ballots = await BallotModel.getBallotsByElectionID(String(electionId), req);
-        if (!ballots){
-            const msg = `Ballots not found for Election ${electionId}`;
-            Logger.info(req, msg);
-            return responseErr(res, req, 400, msg);
-        }
-        Logger.debug(req, "ballots = ", ballots);
-        req.ballots = ballots;
-        return next();
-    } catch (err) {
-        const msg = `Could not retrieve ballots`;
-        Logger.error(req, msg);
-        return responseErr(res, req, 500, msg);
-    }
-}
-
-const returnBallots = async (req: any, res: any, next: any) => {
-    Logger.info(req, `${className}.returnBallots ${req.params.id}`);
-    res.json({ election: req.election, ballots: req.ballots })
-}
-
 const submitBallot = async (req: any, res: any, next: any) => {
 
     const inputBallot = req.body.ballot;
@@ -114,8 +89,6 @@ const submitBallot = async (req: any, res: any, next: any) => {
 }
 
 module.exports = {
-    getBallotsByElectionID,
-    returnBallots,
     submitBallot,
     ballotByID
 }

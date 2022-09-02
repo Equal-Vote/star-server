@@ -14,6 +14,11 @@ const { getRollsByElectionID, getByVoterID } = require('../Controllers/getElecti
 const createElectionController = require('../Controllers/createElectionController');
 const { castVoteController } = require('../Controllers/castVoteController');
 const { finalizeElection } = require('../Controllers/finalizeElectionController')
+const { getElectionResults } = require('../Controllers/getElectionResultsController')
+const { getBallotsByElectionID } = require('../Controllers/getBallotsByElectionIDController')
+const { editElection } = require('../Controllers/editElectionController')
+const { getSandboxResults } = require('../Controllers/sandboxController')
+const { getElections } = require('../Controllers/getElectionsController')
 const { permissions } = require('../../../domain_model/permissions');
 const { ElectionRollState } = require('../../../domain_model/ElectionRoll');
 const asyncHandler = require('express-async-handler')
@@ -28,10 +33,7 @@ router.post('/Election/:id/ballot',
 router.post('/Election/:id/register',
     voterRollController.getVoterAuth,
     voterRollController.registerVoter)
-router.get('/Election/:id/ballots',
-    authController.hasPermission(permissions.canViewBallots),
-    ballotController.getBallotsByElectionID,
-    ballotController.returnBallots)
+router.get('/Election/:id/ballots', asyncHandler(getBallotsByElectionID))
 router.get('/Election/:id/rolls', asyncHandler(getRollsByElectionID))
 router.get('/Election/:id/rolls/:voter_id', asyncHandler(getByVoterID))
 router.post('/Election/:id/rolls/', asyncHandler(editElectionRoll))
@@ -40,24 +42,15 @@ router.post('/Election/:id/rolls/flag', asyncHandler(changeElectionRollStateCont
 router.post('/Election/:id/rolls/invalidate', asyncHandler(changeElectionRollStateController.invalidateElectionRoll))
 router.post('/Election/:id/rolls/unflag', asyncHandler(changeElectionRollStateController.uninvalidateElectionRoll))
 router.post('/Election/:id/rolls/', asyncHandler(addElectionRoll))
-router.get('/Elections', asyncHandler(electionController.getElections))
+router.get('/Elections', asyncHandler(getElections))
 router.post('/Elections/', asyncHandler(createElectionController.createElectionController))
 
-router.post('/Election/:id/edit',
-    authController.isLoggedIn,
-    authController.hasPermission(permissions.canEditElection),
-    electionController.editElection,
-    electionController.returnElection)
-router.get('/ElectionResult/:id',
-    ballotController.getBallotsByElectionID,
-    electionController.getElectionResults)
-router.post('/Election/:id/vote', asyncHandler(
-    castVoteController)
-)
+router.post('/Election/:id/edit', asyncHandler(editElection))
+router.get('/ElectionResult/:id', asyncHandler(getElectionResults))
+router.post('/Election/:id/vote', asyncHandler(castVoteController))
 router.post('/Election/:id/finalize',asyncHandler(finalizeElection))
 
-router.post('/Sandbox',
-    electionController.getSandboxResults)
+router.post('/Sandbox',asyncHandler(getSandboxResults))
 
 router.param('id', asyncHandler(electionController.getElectionByID))
 
