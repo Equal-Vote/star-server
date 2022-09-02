@@ -2,15 +2,18 @@ import Logger from "./Services/Logging/Logger";
 import BallotsDB from "./Models/Ballots";
 import ElectionsDB from "./Models/Elections";
 import ElectionRollDB from "./Models/ElectionRolls";
+import CastVoteStore from "./Models/CastVoteStore";
 import EmailService from "./Services/Email/EmailService";
+import { IBallotStore } from "./Models/IBallotStore";
 import AccountService from "./Services/Account/AccountService"
 const { Pool } = require('pg');
 
 var _postgresClient:any;
 var _appInitContext = Logger.createContext("appInit");
-var _ballotsDb:BallotsDB;
+var _ballotsDb:IBallotStore;
 var _electionsDb:ElectionsDB;
 var _electionRollDb:ElectionRollDB;
+var _castVoteStore:CastVoteStore;
 var _emailService:EmailService;
 var _accountService:AccountService;
 
@@ -36,7 +39,7 @@ function postgres():any {
     return _postgresClient;
 }
 
-function ballotsDb():BallotsDB {
+function ballotsDb():IBallotStore {
     if (_ballotsDb == null){
         _ballotsDb = new BallotsDB(postgres());
     }
@@ -57,6 +60,15 @@ function electionRollDb():ElectionRollDB {
     return _electionRollDb;
 }
 
+
+function castVoteStore():CastVoteStore {
+    if (_castVoteStore == null){
+        _castVoteStore = new CastVoteStore(postgres());
+    }
+    return _castVoteStore;
+}
+
+
 function emailService():EmailService {
     if (_emailService == null){
         _emailService = new EmailService();
@@ -71,4 +83,4 @@ function accountService():AccountService {
     return _accountService;
 }
 
-export  default { ballotsDb, electionsDb, electionRollDb, emailService, accountService };
+export  default { ballotsDb, electionsDb, electionRollDb, emailService, accountService, castVoteStore};

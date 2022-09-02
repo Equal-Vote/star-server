@@ -1,17 +1,21 @@
-import Logger from "../Services/Logging/Logger";
+
 import BallotsDB from "../Models/__mocks__/Ballots";
 import ElectionsDB from "../Models/__mocks__/Elections";
 import ElectionRollDB from "../Models/__mocks__/ElectionRolls";
 import EmailService from "../Services/Email/__mocks__/EmailService";
+import CastVoteStore from "../Models/__mocks__/CastVoteStore";
+import { IBallotStore } from "../Models/IBallotStore";
+import { IElectionRollStore } from "../Models/IElectionRollStore";
 import AccountService from "../Services/Account/__mocks__/AccountService"
 
-var _ballotsDb:BallotsDB;
+var _ballotsDb:IBallotStore;
 var _electionsDb:ElectionsDB;
-var _electionRollDb:ElectionRollDB;
+var _electionRollDb:IElectionRollStore;
 var _emailService:EmailService;
+var _castVoteStore:CastVoteStore;;
 var _accountService:AccountService;
 
-function ballotsDb():BallotsDB {
+function ballotsDb():IBallotStore {
     if (_ballotsDb == null){
         _ballotsDb = new BallotsDB();
     }
@@ -25,7 +29,7 @@ function electionsDb():ElectionsDB {
     return _electionsDb;
 }
 
-function electionRollDb():ElectionRollDB {
+function electionRollDb():IElectionRollStore {
     if (_electionRollDb == null){
         _electionRollDb = new ElectionRollDB();
     }
@@ -39,6 +43,14 @@ function emailService():EmailService {
     return _emailService;
 }
 
+function castVoteStore():CastVoteStore {
+    if (_castVoteStore == null){
+        _castVoteStore = new CastVoteStore(ballotsDb(), electionRollDb());
+    }
+    return _castVoteStore;
+}
+
+
 function accountService():AccountService {
     if (_accountService == null){
         _accountService = new AccountService();
@@ -46,4 +58,4 @@ function accountService():AccountService {
     return _accountService;
 }
 
-export  default { ballotsDb, electionsDb, electionRollDb, emailService, accountService };
+export  default { ballotsDb, electionsDb, electionRollDb, emailService, castVoteStore, accountService };

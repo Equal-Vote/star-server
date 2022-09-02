@@ -174,13 +174,11 @@ And as always, feel free to ask questions on the [#_software-dev slack channel](
 
 #### Step 1: Set up the environment variable file
 
-The default API keys and environment variables are stored in the file `sample.env`. This file needs to be copied to a new file named `.env` that is accessed dynamically during the installation step.
+The default environment variables are stored in the file `sample.env`. This file needs to be copied to a new file named `.env` that is accessed dynamically during the installation step.
 
 ```
 # Create a copy of the "sample.env" and name it ".env".
-# Populate it with the necessary API keys and secrets:
 ```
-
 
 <!-- Note: This tabs feature looks cool, we should look into it -->
 
@@ -199,6 +197,8 @@ copy sample.env .env
 ```
 
 <!-- tabs:end -->
+
+All the secret keys are left blank in `sample.env` but you can request access to [this](https://docs.google.com/document/d/1D4CJ9l6lnR39YYPUvw_HbeUVXNR-tAbNF6eT89oxEuk) google doc to see those
 
 The keys in the `.env` file are _not_ required to be changed to run the app locally. You can leave the default values copied over from `sample.env` as-is.
 
@@ -474,6 +474,18 @@ The first time setup can take a while depending on your network bandwidth. Be pa
 
 > [!NOTE]
 > If you are using Apple Devices with M1 Chip to run the application locally, it is suggested to use Node v14.7 or above. You might run into issues with dependencies like Sharp otherwise.
+
+### Frontend Issues
+
+Your frontend may throw an error:
+
+Invalid options object. Dev Server has been initialized using an options object that does not match the API schema.
+ - options.allowedHosts[0] should be a non-empty string.
+
+This is discussed more thoroughly on [stack overflow](https://stackoverflow.com/questions/70374005/invalid-options-object-dev-server-has-been-initialized-using-an-options-object)
+
+To fix this, locate `./frontend/sample.env`, and copy it to a new file named  `./frontend/.env`
+
 
 ## Getting Help
 

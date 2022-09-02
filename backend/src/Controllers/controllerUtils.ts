@@ -13,6 +13,7 @@ export function expectUserFromRequest(req:IRequest ):any {
     if (user == null || user == {}){
       throw new Unauthorized();
     }
+    Logger.debug(req, "Request User: "+JSON.stringify(user));
     return user;
   }
 

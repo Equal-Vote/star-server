@@ -2,9 +2,10 @@ import { Ballot } from '../../../domain_model/Ballot';
 import { Uid } from '../../../domain_model/Uid';
 import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
+import { IBallotStore } from './IBallotStore';
 const className = 'BallotsDB';
 
-export default class BallotsDB {
+export default class BallotsDB implements IBallotStore {
 
     _postgresClient;
     _tableName: string;
@@ -15,9 +16,10 @@ export default class BallotsDB {
         this.init();
     }
 
-    init(): Promise<BallotsDB> {
+    async init(): Promise<IBallotStore> {
         var appInitContext = Logger.createContext("appInit");
         Logger.debug(appInitContext, "BallotsDB.init");
+        //await this.dropTable(appInitContext);
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
             ballot_id       VARCHAR PRIMARY KEY,
@@ -46,7 +48,17 @@ export default class BallotsDB {
         });
     }
 
-    submitBallot(ballot: Ballot, ctx:ILoggingContext, reason:String): Promise<Ballot> {
+    async dropTable(ctx:ILoggingContext):Promise<void>{
+        var query = `DROP TABLE IF EXISTS ${this._tableName};`;
+        var p = this._postgresClient.query({
+            text: query,
+        });
+        return p.then((_: any) => {
+            Logger.debug(ctx, `Dropped it (like its hot)`);
+        });
+    }
+
+    submitBallot(ballot: Ballot, ctx:ILoggingContext, reason:string): Promise<Ballot> {
         Logger.debug(ctx, `${className}.submit`, ballot);
         var sqlString = `INSERT INTO ${this._tableName} (ballot_id,election_id,user_id,status,date_submitted,ip_address,votes,history)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING ballot_id;`;

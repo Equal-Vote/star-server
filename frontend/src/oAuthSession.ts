@@ -158,4 +158,9 @@ export class oAuthSession {
         const id_map = jwt_decode(this.getCookie('id_token'));
         return id_map[fieldName];
     }
+
+    debugLogin(access, id){
+        this.setCookie('access_token', access, REFRESH_HOURS);
+        this.setCookie('id_token', id, REFRESH_HOURS);
+    }
 }

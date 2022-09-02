@@ -1,5 +1,6 @@
 require('dotenv').config();
 const request = require('supertest');
+import { ElectionRoll, ElectionRollState } from '../../../domain_model/ElectionRoll';
 import { TestHelper } from './TestHelper';
 import testInputs from './testInputs';
 
@@ -67,7 +68,7 @@ describe("ID Roll", () => {
         const response = await th.submitBallotWithId(ID, testInputs.Ballot2, testInputs.user3token,  'FakeVoterID');
 
         // console.log(response)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
         th.testComplete();
     })
 })
