@@ -6,12 +6,14 @@ import EmailService from "../Services/Email/__mocks__/EmailService";
 import CastVoteStore from "../Models/__mocks__/CastVoteStore";
 import { IBallotStore } from "../Models/IBallotStore";
 import { IElectionRollStore } from "../Models/IElectionRollStore";
+import AccountService from "../Services/Account/__mocks__/AccountService"
 
 var _ballotsDb:IBallotStore;
 var _electionsDb:ElectionsDB;
 var _electionRollDb:IElectionRollStore;
 var _emailService:EmailService;
-var _castVoteStore:CastVoteStore;
+var _castVoteStore:CastVoteStore;;
+var _accountService:AccountService;
 
 function ballotsDb():IBallotStore {
     if (_ballotsDb == null){
@@ -49,4 +51,11 @@ function castVoteStore():CastVoteStore {
 }
 
 
-export  default { ballotsDb, electionsDb, electionRollDb, emailService, castVoteStore };
+function accountService():AccountService {
+    if (_accountService == null){
+        _accountService = new AccountService();
+    }
+    return _accountService;
+}
+
+export  default { ballotsDb, electionsDb, electionRollDb, emailService, castVoteStore, accountService };

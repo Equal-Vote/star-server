@@ -5,7 +5,7 @@ import ElectionRollDB from "./Models/ElectionRolls";
 import CastVoteStore from "./Models/CastVoteStore";
 import EmailService from "./Services/Email/EmailService";
 import { IBallotStore } from "./Models/IBallotStore";
-
+import AccountService from "./Services/Account/AccountService"
 const { Pool } = require('pg');
 
 var _postgresClient:any;
@@ -14,8 +14,8 @@ var _ballotsDb:IBallotStore;
 var _electionsDb:ElectionsDB;
 var _electionRollDb:ElectionRollDB;
 var _castVoteStore:CastVoteStore;
-var _emailService:EmailService
-
+var _emailService:EmailService;
+var _accountService:AccountService;
 
 function postgres():any {
     if (_postgresClient == null){
@@ -75,5 +75,12 @@ function emailService():EmailService {
     }
     return _emailService;
 }
-export  default { ballotsDb, electionsDb, electionRollDb, castVoteStore, emailService };
 
+function accountService():AccountService {
+    if (_accountService == null){
+        _accountService = new AccountService();
+    }
+    return _accountService;
+}
+
+export  default { ballotsDb, electionsDb, electionRollDb, emailService, accountService, castVoteStore};
