@@ -45,7 +45,7 @@ const finalizeElection = async (req: any, res: any, next: any) => {
         try {
             const url = req.protocol + '://' + req.get('host')
             const invites = Invites(updatedElection, electionRoll as ElectionRoll[], url)
-            EmailService.sendEmails(invites)
+            await EmailService.sendEmails(invites)
         } catch (err: any) {
             const msg = `Could not send invitations`;
             Logger.error(req, `${msg}: ${err.message}`);

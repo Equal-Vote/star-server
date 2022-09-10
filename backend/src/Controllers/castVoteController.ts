@@ -83,7 +83,7 @@ async function castVoteController(req: IRequest, res: any, next: any) {
     if (user.email){
         const url = req.protocol + '://' + req.get('host')
         const receipt = Receipt(targetElection, user.email,savedBallot, url)
-        EmailService.sendEmails([receipt])
+        await EmailService.sendEmails([receipt])
     }
     res.status("200").json({ ballot: savedBallot} );
 };
