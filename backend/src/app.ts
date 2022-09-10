@@ -11,6 +11,8 @@ import {IRequest, iRequestMiddleware, reqIdSuffix} from './IRequest';
 import { responseErr } from './Util';
 import { loggerMiddleware } from './Services/Logging/LoggerMiddleware';
 import { errorCatch } from './errorCatchMiddleware'
+import ServiceLocator from './ServiceLocator';
+import registerEvents from './Routes/registerEvents';
 
 const authController = require('./Controllers/auth.controllers')
 export default function makeApp() {
@@ -121,6 +123,10 @@ app.get('*', (req, res) => {
 })
 
 app.use(errorCatch);
+
+registerEvents();
+
 Logger.debug(appInitContext, "app Init complete");
+
 return app;
 }

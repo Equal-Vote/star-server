@@ -8,11 +8,23 @@ import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-e
 import { ILoggingContext } from "../Services/Logging/ILogger";
 import {expectUserFromRequest, expectValidElectionFromRequest, catchAndRespondError} from "./controllerUtils";
 import { randomUUID } from "crypto";
+import { Uid } from "../../../domain_model/Uid";
 
 const ElectionsModel = ServiceLocator.electionsDb();
 const ElectionRollModel = ServiceLocator.electionRollDb();
 const BallotModel = ServiceLocator.ballotsDb();
 const CastVoteStore = ServiceLocator.castVoteStore();
+const EventQueue = ServiceLocator.eventQueue();
+
+type CastVoteEvent = {
+    requestId:Uid,
+    inputBallot:Ballot,
+    roll?:ElectionRoll,
+}
+
+const castVoteEventQueue = "castVoteEvent";
+
+const pendingRequests:Map<string,any> = new Map();
 
 
 async function castVoteController(req: IRequest, res: any, next: any) {
@@ -63,6 +75,7 @@ async function castVoteController(req: IRequest, res: any, next: any) {
         timestamp:inputBallot.date_submitted,
     });
 
+
     Logger.debug(req, "Submit Ballot:", inputBallot);
     if (roll != null){
         roll.ballot_id = String(inputBallot.ballot_id);
@@ -77,29 +90,41 @@ async function castVoteController(req: IRequest, res: any, next: any) {
         });
     }
 
-    const savedBallot = await persistBallotToStore(inputBallot, roll, req);
-    res.status("200").json({ ballot: savedBallot} );
+    //const savedBallot = await persistBallotToStore(inputBallot, roll, req);
+    //res.status("200").json({ ballot: savedBallot} );
+
+    const reqId = req.contextId ? req.contextId : randomUUID();
+    const event = {
+        requestId:reqId,
+        inputBallot:inputBallot,
+        roll:roll,
+    }
+
+    pendingRequests.set(reqId, res);
+    await (await EventQueue).publish(castVoteEventQueue, event);
+    Logger.debug(req, "CastVoteController done, saved event to store", event);
 };
 
 
-async function persistBallotToStore(ballot:Ballot, roll:ElectionRoll|null, ctx:ILoggingContext):Promise<Ballot> {
-    Logger.debug(ctx, "persisteBallotToStore");
-    var savedBallot;
-    try {
-        if (roll == null){
-            savedBallot = await BallotModel.submitBallot(ballot, ctx, `User submits a ballot`);
-        } else {
-            savedBallot = await CastVoteStore.submitBallot(ballot, roll, ctx, 'User Submits a Ballot');
-        }
-        if (!savedBallot){
-            throw new InternalServerError("Failed to cast Ballot");
-        }
-    } catch (err:any){
-        Logger.error(ctx, 'Failed to cast Ballot:  '+err.message);
-        throw err;
+async function handleCastVoteEvent(job: { id: string; data: CastVoteEvent; }):Promise<void> {
+    const event = job.data;
+    const ctx = Logger.createContext(event.requestId);
+    var savedBallot = await BallotModel.getBallotByID(event.inputBallot.ballot_id, ctx);
+    if (!savedBallot){
+        savedBallot = await BallotModel.submitBallot(event.inputBallot, ctx, `User submits a ballot`);
+    }
+    if (event.roll != null){
+        await ElectionRollModel.update(event.roll, ctx, `User submits a ballot`);
     }
 
-    return savedBallot;
+    //TODO - send an email
+    var response = pendingRequests.get(event.requestId);
+    if (response == null){
+        Logger.error(ctx, "Processing CastVoteEvent completed, but no response found to reply to client", event);
+    } else {
+        response.status("200").json({ ballot: savedBallot} );
+        pendingRequests.delete(event.requestId);
+    }
 }
 
 
@@ -183,5 +208,6 @@ function assertVoterMayVote(election:Election, roll:ElectionRoll|null, ctx:ILogg
 
 
 module.exports = {
-    castVoteController
+    castVoteController,
+    handleCastVoteEvent
 }

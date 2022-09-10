@@ -5,6 +5,8 @@ import ElectionRollDB from "./Models/ElectionRolls";
 import CastVoteStore from "./Models/CastVoteStore";
 import EmailService from "./Services/Email/EmailService";
 import { IBallotStore } from "./Models/IBallotStore";
+import { IEventQueue } from "./Services/EventQueue/IEventQueue";
+import PGBossEventQueue from "./Services/EventQueue/PGBossEventQueue";
 
 const { Pool } = require('pg');
 
@@ -15,11 +17,12 @@ var _electionsDb:ElectionsDB;
 var _electionRollDb:ElectionRollDB;
 var _castVoteStore:CastVoteStore;
 var _emailService:EmailService
+var _eventQueue:IEventQueue;
 
 
 function postgres():any {
     if (_postgresClient == null){
-        var connectionStr = process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres';
+        var connectionStr = pgConnectionString();
         var devDB = process.env.DEV_DATABASE;
         Logger.debug(_appInitContext, `Postgres Config:  dev_db == ${devDB}, connectionString == ${connectionStr}`);
         if (devDB === 'TRUE') {
@@ -37,6 +40,20 @@ function postgres():any {
         }
     }
     return _postgresClient;
+}
+
+function pgConnectionString():string {
+    return process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres';
+}
+
+async function eventQueue():Promise<IEventQueue> {
+    if (_eventQueue == null){
+        const eq = new PGBossEventQueue();
+        await eq.init(pgConnectionString(), Logger.createContext("appInit"));
+        _eventQueue = eq;
+    }
+
+    return _eventQueue;
 }
 
 function ballotsDb():IBallotStore {
@@ -75,5 +92,5 @@ function emailService():EmailService {
     }
     return _emailService;
 }
-export  default { ballotsDb, electionsDb, electionRollDb, castVoteStore, emailService };
+export  default { ballotsDb, electionsDb, electionRollDb, castVoteStore, emailService, eventQueue };
 
