@@ -9,6 +9,7 @@ import { ILoggingContext } from "../Services/Logging/ILogger";
 import {expectUserFromRequest, expectValidElectionFromRequest, catchAndRespondError} from "./controllerUtils";
 import { randomUUID } from "crypto";
 import { Uid } from "../../../domain_model/Uid";
+import { Receipt } from "../Services/Email/EmailTemplates"
 
 const ElectionsModel = ServiceLocator.electionsDb();
 const ElectionRollModel = ServiceLocator.electionRollDb();
@@ -20,12 +21,14 @@ type CastVoteEvent = {
     requestId:Uid,
     inputBallot:Ballot,
     roll?:ElectionRoll,
+    userEmail?:String,
 }
 
 const castVoteEventQueue = "castVoteEvent";
 
 const pendingRequests:Map<string,any> = new Map();
 
+const EmailService = ServiceLocator.emailService();
 
 async function castVoteController(req: IRequest, res: any, next: any) {
     Logger.info(req, "Cast Vote Controller");
@@ -94,10 +97,12 @@ async function castVoteController(req: IRequest, res: any, next: any) {
     //res.status("200").json({ ballot: savedBallot} );
 
     const reqId = req.contextId ? req.contextId : randomUUID();
+    const userEmail = user.email;
     const event = {
         requestId:reqId,
         inputBallot:inputBallot,
         roll:roll,
+        userEmail:userEmail,
     }
 
     pendingRequests.set(reqId, res);
@@ -109,12 +114,20 @@ async function castVoteController(req: IRequest, res: any, next: any) {
 async function handleCastVoteEvent(job: { id: string; data: CastVoteEvent; }):Promise<void> {
     const event = job.data;
     const ctx = Logger.createContext(event.requestId);
+
     var savedBallot = await BallotModel.getBallotByID(event.inputBallot.ballot_id, ctx);
     if (!savedBallot){
         savedBallot = await BallotModel.submitBallot(event.inputBallot, ctx, `User submits a ballot`);
     }
     if (event.roll != null){
         await ElectionRollModel.update(event.roll, ctx, `User submits a ballot`);
+    }
+
+    if (event.userEmail){
+        const targetElection = await ElectionsModel.getElectionByID(event.inputBallot.election_id, ctx);
+        const url = req.protocol + '://' + req.get('host')
+        const receipt = Receipt(targetElection, event.userEmail, savedBallot, url)
+        await EmailService.sendEmails([receipt])
     }
 
     //TODO - send an email

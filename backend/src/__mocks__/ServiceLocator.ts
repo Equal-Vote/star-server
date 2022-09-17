@@ -7,6 +7,7 @@ import CastVoteStore from "../Models/__mocks__/CastVoteStore";
 import { IBallotStore } from "../Models/IBallotStore";
 import { IElectionRollStore } from "../Models/IElectionRollStore";
 import { MockEventQueue } from "../Services/EventQueue/MockEventQueue";
+import AccountService from "../Services/Account/__mocks__/AccountService"
 
 var _ballotsDb:IBallotStore;
 var _electionsDb:ElectionsDB;
@@ -14,6 +15,8 @@ var _electionRollDb:IElectionRollStore;
 var _emailService:EmailService;
 var _castVoteStore:CastVoteStore;
 var _eventQueue:MockEventQueue;
+var _castVoteStore:CastVoteStore;;
+var _accountService:AccountService;
 
 function ballotsDb():IBallotStore {
     if (_ballotsDb == null){
@@ -58,4 +61,11 @@ async function eventQueue():Promise<MockEventQueue> {
 }
 
 
-export  default { ballotsDb, electionsDb, electionRollDb, emailService, castVoteStore, eventQueue };
+function accountService():AccountService {
+    if (_accountService == null){
+        _accountService = new AccountService();
+    }
+    return _accountService;
+}
+
+export  default { ballotsDb, electionsDb, electionRollDb, emailService, castVoteStore, accountService, eventQueue };

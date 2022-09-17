@@ -8,6 +8,7 @@ import { IBallotStore } from "./Models/IBallotStore";
 import { IEventQueue } from "./Services/EventQueue/IEventQueue";
 import PGBossEventQueue from "./Services/EventQueue/PGBossEventQueue";
 
+import AccountService from "./Services/Account/AccountService"
 const { Pool } = require('pg');
 
 var _postgresClient:any;
@@ -19,6 +20,8 @@ var _castVoteStore:CastVoteStore;
 var _emailService:EmailService
 var _eventQueue:IEventQueue;
 
+var _emailService:EmailService;
+var _accountService:AccountService;
 
 function postgres():any {
     if (_postgresClient == null){
@@ -92,5 +95,12 @@ function emailService():EmailService {
     }
     return _emailService;
 }
-export  default { ballotsDb, electionsDb, electionRollDb, castVoteStore, emailService, eventQueue };
 
+function accountService():AccountService {
+    if (_accountService == null){
+        _accountService = new AccountService();
+    }
+    return _accountService;
+}
+
+export  default { ballotsDb, electionsDb, electionRollDb, emailService, accountService, castVoteStore, eventQueue};
