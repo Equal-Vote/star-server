@@ -6,7 +6,6 @@ import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
 import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-errors";
 import { ILoggingContext } from "../Services/Logging/ILogger";
-import {expectUserFromRequest, expectValidElectionFromRequest, catchAndRespondError} from "./controllerUtils";
 import { randomUUID } from "crypto";
 import { Uid } from "../../../domain_model/Uid";
 import { Receipt } from "../Services/Email/EmailTemplates"
@@ -14,14 +13,13 @@ import { Receipt } from "../Services/Email/EmailTemplates"
 const ElectionsModel = ServiceLocator.electionsDb();
 const ElectionRollModel = ServiceLocator.electionRollDb();
 const BallotModel = ServiceLocator.ballotsDb();
-const CastVoteStore = ServiceLocator.castVoteStore();
 const EventQueue = ServiceLocator.eventQueue();
 
 type CastVoteEvent = {
     requestId:Uid,
     inputBallot:Ballot,
     roll?:ElectionRoll,
-    userEmail?:String,
+    userEmail?:string,
 }
 
 const castVoteEventQueue = "castVoteEvent";
@@ -42,7 +40,6 @@ async function castVoteController(req: IRequest, res: any, next: any) {
     }
 
     const targetElection = req.election;
-    //const targetElection = await ElectionsModel.getElectionByID(targetElectionId, req);
     if (targetElection == null){
         const errMsg = "Invalid Ballot: invalid election Id";
         Logger.info(req, errMsg);
@@ -125,12 +122,14 @@ async function handleCastVoteEvent(job: { id: string; data: CastVoteEvent; }):Pr
 
     if (event.userEmail){
         const targetElection = await ElectionsModel.getElectionByID(event.inputBallot.election_id, ctx);
-        const url = req.protocol + '://' + req.get('host')
+        if (targetElection == null){
+            throw new InternalServerError("Target Election null: " + ctx.contextId);
+        }
+        const url = ServiceLocator.globalData().serviceUrl;
         const receipt = Receipt(targetElection, event.userEmail, savedBallot, url)
         await EmailService.sendEmails([receipt])
     }
 
-    //TODO - send an email
     var response = pendingRequests.get(event.requestId);
     if (response == null){
         Logger.error(ctx, "Processing CastVoteEvent completed, but no response found to reply to client", event);
