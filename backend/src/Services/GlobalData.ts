@@ -1,9 +1,8 @@
 export default class GlobalData {
 
-  serviceUrl:string;
+  mainUrl:string;
 
   constructor() {
-    this.serviceUrl = "https://star-vote.herokuapp.com/";
+    this.mainUrl = process.env.MAIN_URL || "https://star-vote.herokuapp.com/";
   }
-
 }
