@@ -7,6 +7,7 @@ import CastVoteStore from "../Models/__mocks__/CastVoteStore";
 import { IBallotStore } from "../Models/IBallotStore";
 import { IElectionRollStore } from "../Models/IElectionRollStore";
 import AccountService from "../Services/Account/__mocks__/AccountService"
+import GlobalData from "../Services/GlobalData";
 
 var _ballotsDb:IBallotStore;
 var _electionsDb:ElectionsDB;
@@ -14,6 +15,7 @@ var _electionRollDb:IElectionRollStore;
 var _emailService:EmailService;
 var _castVoteStore:CastVoteStore;;
 var _accountService:AccountService;
+var _globalData:GlobalData;
 
 function ballotsDb():IBallotStore {
     if (_ballotsDb == null){
@@ -58,4 +60,11 @@ function accountService():AccountService {
     return _accountService;
 }
 
-export  default { ballotsDb, electionsDb, electionRollDb, emailService, castVoteStore, accountService };
+function globalData():GlobalData {
+    if (_globalData == null){
+        _globalData = new GlobalData();
+    }
+    return _globalData;
+}
+
+export  default { ballotsDb, electionsDb, electionRollDb, emailService, castVoteStore, accountService, globalData };
