@@ -9,6 +9,7 @@ import { IEventQueue } from "./Services/EventQueue/IEventQueue";
 import PGBossEventQueue from "./Services/EventQueue/PGBossEventQueue";
 
 import AccountService from "./Services/Account/AccountService"
+import GlobalData from "./Services/GlobalData";
 const { Pool } = require('pg');
 
 var _postgresClient:any;
@@ -22,6 +23,7 @@ var _eventQueue:IEventQueue;
 
 var _emailService:EmailService;
 var _accountService:AccountService;
+var _globalData:GlobalData;
 
 function postgres():any {
     if (_postgresClient == null){
@@ -103,4 +105,11 @@ function accountService():AccountService {
     return _accountService;
 }
 
-export  default { ballotsDb, electionsDb, electionRollDb, emailService, accountService, castVoteStore, eventQueue};
+function globalData():GlobalData {
+    if (_globalData == null){
+        _globalData = new GlobalData();
+    }
+    return _globalData;
+}
+
+export  default { ballotsDb, electionsDb, electionRollDb, emailService, accountService, castVoteStore, globalData, eventQueue};
