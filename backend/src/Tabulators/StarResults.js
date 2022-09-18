@@ -1,759 +1,253 @@
-const minScore = 0;
-const maxScore = 5;
+const ParseData = require("./ParseData");
 
-function parseData(header, data, nWinners) {
-  // Inspect the data to determine the type of data in each column
-  const transforms = getTransforms(header, data);
-
-  // The list of candidates is based on the columns containing STAR scores
-  const candidates = [];
-  for (let i = 0; i < transforms.length; i++) {
-    if (transforms[i] === transformScore) {
-      const candidate = {
-        name: transformAny(header[i]),
-        index: candidates.length,
-        csvColumn: i,
-        totalScore: 0,
-        support: new Array(6).fill(0)
-      };
-      candidates.push(candidate);
+module.exports = function StarResults(candidates, votes, nWinners = 1) {
+  const parsedData = ParseData(votes)
+  const summaryData = getSummaryData(candidates, parsedData)
+  const results = {
+    elected: [],
+    other: [],
+    round_results: [],
+    summaryData: summaryData,
+  }
+  // get candidate indexes
+  var remainingCandidates = [...summaryData.candidates]
+  for (let round = 0; round < candidates.length; round++) {
+    const round_results = runStarRound(summaryData, remainingCandidates)
+    if (results.elected.length < nWinners) {
+      results.elected.push(...round_results.winners)
+      results.round_results.push(round_results)
     }
-  }
+    else {
+      results.other.push(...round_results.winners)
 
-  // Initialize arrays
-  const scores = Array(candidates.length);
-  for (let i = 0; i < candidates.length; i++) {
-    scores[i] = [];
-  }
-  const voters = [];
-  const undervotes = [];
-  const bulletvotes = [];
-
-  // Parse each row of data into voter, undervote, and score arrays
-  data.forEach((row, n) => {
-    const voter = { csvRow: n + 1 };
-    const score = [];
-    let total = 0;
-    let hasData = false;
-    let candidatesSupported = 0;
-    header.forEach((col, i) => {
-      const value = transforms[i](row[i]);
-      if (row[i] !== null && row[i] !== "") {
-        hasData = true;
-      }
-      if (transforms[i] === transformScore) {
-        score.push(value);
-        total += value;
-        if (value > 0) {
-          candidatesSupported++;
-        }
-      } else {
-        voter[col] = value;
-      }
-    });
-
-    // Check for blank lines and undervote
-    if (hasData) {
-      if (total > 0) {
-        for (let i = 0; i < score.length; i++) {
-          scores[i].push(score[i]);
-        }
-        voters.push(voter);
-        if (candidatesSupported === 1) {
-          bulletvotes.push(voters.length - 1);
-        }
-      } else {
-        undervotes.push(voter);
-      }
     }
-  });
-
-  // Calculate totalScore and averageScore for each candidate
-  voters.forEach((voter, v) => {
-    candidates.forEach((candidate, c) => {
-      candidate.totalScore += scores[c][v];
-      candidate.support[scores[c][v]]++;
-    });
-  });
-  if (voters.length > 0) {
-    candidates.forEach(
-      (candidate) =>
-        (candidate.averageScore = (
-          candidate.totalScore / voters.length
-        ).toFixed(2))
-    );
+    remainingCandidates = remainingCandidates.filter(c => !round_results.winners.includes(c))
   }
-
-  // Calculate head-to-head matrix of results
-  const matrix = calculateMatrix(candidates, voters, scores);
-
-  const candidateOrder = sortCandidates(candidates, matrix);
-  const singleResults = splitCandidates(candidateOrder, candidates, matrix);
-  const multiResults = splitMulti(singleResults, [...candidates], matrix);
-  // The splitPR method alters the candidate array it is passed
-  // so let's pass it a copy of the array
-  const prResults = splitPR([...candidates], scores, nWinners);
-
-  return {
-    header,
-    data,
-    candidates,
-    scores,
-    voters,
-    undervotes,
-    bulletvotes,
-    matrix,
-    candidateOrder,
-    singleResults,
-    multiResults,
-    prResults
-  };
+  results.summaryData = sortData(summaryData, results.elected.concat(results.other))
+  return results
 }
 
-function splitMulti(single, candidates, matrix) {
-  const multiResults = [];
-  multiResults.push(single);
-  var remaining = [...single.losers, ...single.others];
-  while (remaining.length > 0) {
-    const results = splitCandidates(remaining, candidates, matrix);
-    multiResults.push(results);
-    remaining = [...results.losers, ...results.others];
+function getSummaryData(candidates, parsedData) {
+  // Initialize summary data structures
+  const nCandidates = candidates.length
+  const totalScores = Array(nCandidates)
+  for (let i = 0; i < nCandidates; i++) {
+    totalScores[i] = { index: i, score: 0 };
   }
-  return multiResults;
-}
-
-// Calculate head-to-head matrix of results
-function calculateMatrix(candidates, voters, scores) {
-  const matrix = new Array(candidates.length);
-  candidates.forEach((c, n) => (matrix[n] = new Array(candidates.length)));
-
-  for (let a = 0; a < candidates.length - 1; a++) {
-    for (let b = a + 1; b < candidates.length; b++) {
-      const support = new Array(maxScore).fill(0);
-      const oppose = new Array(maxScore).fill(0);
-      let supportVotes = 0;
-      let opposeVotes = 0;
-      let noPrefVotes = 0;
-      let netVotes = 0;
-      let netSupport = 0;
-
-      voters.forEach((voter, v) => {
-        const delta = scores[a][v] - scores[b][v];
-        netSupport += delta;
-        if (delta === 0) {
-          noPrefVotes++;
-        } else if (delta > 0) {
-          supportVotes++;
-          netVotes++;
-          support[delta - 1] += 1;
-        } else {
-          opposeVotes++;
-          netVotes--;
-          oppose[delta * -1 - 1] += 1;
-        }
-      });
-
-      const totalScoreDelta =
-        candidates[a].totalScore - candidates[b].totalScore;
-      matrix[a][b] = {
-        result:
-          supportVotes > opposeVotes
-            ? "Win"
-            : supportVotes < opposeVotes
-            ? "Lose"
-            : totalScoreDelta > 0
-            ? "Win"
-            : totalScoreDelta < 0
-            ? "Lose"
-            : "TIE",
-        supportVotes: supportVotes,
-        support: support,
-        opposeVotes: opposeVotes,
-        oppose: oppose,
-        netVotes: netVotes,
-        netSupport: netSupport,
-        noPrefVotes: noPrefVotes
-      };
-
-      matrix[b][a] = {
-        result:
-          supportVotes < opposeVotes
-            ? "Win"
-            : supportVotes > opposeVotes
-            ? "Lose"
-            : totalScoreDelta < 0
-            ? "Win"
-            : totalScoreDelta > 0
-            ? "Lose"
-            : "TIE",
-        supportVotes: opposeVotes,
-        support: oppose,
-        opposeVotes: supportVotes,
-        oppose: support,
-        netVotes: -netVotes,
-        netSupport: -netSupport,
-        noPrefVotes: noPrefVotes
-      };
-    }
+  const scoreHist = Array(nCandidates);
+  for (let i = 0; i < nCandidates; i++) {
+    scoreHist[i] = Array(6).fill(0);
   }
-  return matrix;
-}
-
-function splitCandidates(candidateOrder, candidates, matrix) {
-  // Handle degenerate edge cases
-  if (!candidateOrder || candidateOrder.length === 0) {
-    return { winners: [], losers: [], others: [] };
+  const preferenceMatrix = Array(nCandidates);
+  const pairwiseMatrix = Array(nCandidates);
+  for (let i = 0; i < nCandidates; i++) {
+    preferenceMatrix[i] = Array(nCandidates).fill(0);
+    pairwiseMatrix[i] = Array(nCandidates).fill(0);
   }
-
-  if (candidateOrder.length === 1) {
-    return { winners: candidateOrder, losers: [], others: [],winnersVotes:[], losersVotes:[] };
-  }
-
-  // Helper function to retrive total score for a candidate
-  const getScore = (index) => candidates[candidateOrder[index]].totalScore;
-
-  // We know the first and second candidates in the sorted order are finalists
-  // But second may be tied with third, fourth, etc
-  const targetScore = getScore(1);
-  var count = 2;
-
-  for (let i = 2; i < candidateOrder.length; i++) {
-    if (getScore(i) >= targetScore) {
-      count++;
-    } else {
-      break;
-    }
-  }
-
-  const finalists = candidateOrder.slice(0, count);
-  const others = candidateOrder.slice(count);
-  const { winners, losers, winnersVotes, losersVotes } = splitWinners(finalists, candidates, matrix);
-  return { winners, losers, others, winnersVotes, losersVotes};
-}
-
-function splitWinners(finalists, candidates, matrix) {
-  const { candidateOrder, votes,votes_unsorted } = sortFinalists(
-    finalists,
-    candidates,
-    matrix
-  );
-  // Handle degenerate edge cases
-  if (!candidateOrder || candidateOrder.length === 0) {
-    return { winners: [], losers: [], winnersVotes:[], losersVotes: [] };
-  }
-  if (candidateOrder.length === 1) {
-    return { winners: candidateOrder, losers: [], winnersVotes:votes, losersVotes: []};
-  }
-
-  const targetVotes = votes[0];
-  const targetScore = candidates[finalists[0]].totalScore;
-  var count = 1;
-
-  for (let i = 1; i < candidateOrder.length; i++) {
-    if (
-      votes[i] === targetVotes &&
-      candidates[finalists[i]].totalScore === targetScore
-    ) {
-      count++;
-    } else {
-      break;
-    }
-  }
-
-  const winners = candidateOrder.slice(0, count);
-  const winnersVotes = votes.slice(0,count)
-  const losers = candidateOrder.slice(count);
-  const losersVotes = votes.slice(count)
-
-  return { winners, losers, winnersVotes, losersVotes };
-}
-
-function sortFinalists(finalists, candidates, matrix) {
-  // Handle degenerate cases
-  if (!finalists || finalists.length < 2)
-    return { candidateOrder: finalists, votes: [0] };
-
-  // Start by creating an array corresponding to total number of net votes each
-  // candidate received over each of the other finalists
-  const votes = new Array(finalists.length);
-
-  for (let i = 0; i < finalists.length; i++) {
-    let netVotes = 0;
-    for (let j = 0; j < finalists.length; j++) {
-      if (i === j) continue; // skip identity comparison
-      netVotes += matrix[finalists[i]][finalists[j]].supportVotes;
-    }
-    votes[i] = netVotes;
-  }
-
-  // sort by votes descending, tie-break by retaining original order from CSV
-  const compare = (a, b) =>
-    votes[a] !== votes[b]
-      ? votes[b] - votes[a]
-      : candidates[finalists[a]].totalScore !==
-        candidates[finalists[b]].totalScore
-      ? candidates[finalists[b]].totalScore -
-        candidates[finalists[a]].totalScore
-      : a - b;
-  let order = [];
-  for (let i = 0; i < finalists.length; i++) order.push(i);
-  order = order.sort(compare);
-  const result = {
-    candidateOrder: order.map((i) => finalists[i]),
-    votes: order.map((i) => votes[i]),
-    votes_unsorted: votes
-  };
-  return result;
-}
-
-function sortCandidates(candidates, matrix) {
-  // Start by creating an array corresponding to the index values
-  // of the candidates array
-  const order = [];
-  for (let i = 0; i < candidates.length; i++) order.push(i);
-
-  const sorted = order.sort((a, b) => {
-    // Sort first by totalScore
-    const aScore = candidates[a].totalScore;
-    const bScore = candidates[b].totalScore;
-    if (aScore > bScore) return -1;
-    if (aScore < bScore) return 1;
-
-    // Tie-break with head-to-head votes
-    let head2head = matrix[a][b];
-    if (head2head.supportVotes > head2head.opposeVotes) return -1;
-    if (head2head.supportVotes < head2head.opposeVotes) return 1;
-
-    // If it is a true tie, retain the ordering of the original CSV
-    // That way, the user can reorder the columns of the CSV based
-    // on their own tie-breaking rules and resubmit to have the
-    // results displayed in order based on those rules.
-    return a - b;
-  });
-
-  return sorted;
-}
-
-// Format a Timestamp value into a compact string for display;
-function formatTimestamp(value) {
-  const d = new Date(Date.parse(value));
-  const month = d.getMonth() + 1;
-  const date = d.getDate();
-  const year = d.getFullYear();
-  const currentYear = new Date().getFullYear();
-  const hour = d.getHours();
-  const minute = d.getMinutes();
-
-  const fullDate =
-    year === currentYear
-      ? `${month}/${date}`
-      : year >= 2000 && year < 2100
-      ? `${month}/${date}/${year - 2000}`
-      : `${month}/${date}/${year}`;
-
-  const timeStamp = `${fullDate} ${hour}:${minute}`;
-  return timeStamp;
-}
-
-// Functions to parse STAR scores
-const isScore = (value) =>
-  !isNaN(value) && (value === null || (value > -10 && value < 10));
-const transformScore = (value) =>
-  value ? Math.min(maxScore, Math.max(minScore, value)) : 0;
-
-// Functions to parse Timestamps
-const isTimestamp = (value) => !isNaN(Date.parse(value));
-const transformTimestamp = (value) => formatTimestamp(value);
-
-// Functions to parse everything else
-const isAny = (value) => true;
-const transformAny = (value) => (value ? value.toString().trim() : "");
-
-// Column types to recognize in Cast Vote Records passed as CSV data
-const columnTypes = [
-  { test: isScore, transform: transformScore },
-  { test: isTimestamp, transform: transformTimestamp },
-  // Last row MUST accept anything!
-  { test: isAny, transform: transformAny }
-];
-
-function getTransforms(header, data) {
-  const transforms = [];
-  const rowCount = Math.min(data.length, 3);
-  header.forEach((title, n) => {
-    var transformIndex = 0;
-    if (title === "Timestamp") {
-      transformIndex = 1;
-    } else {
-      for (let i = 0; i < rowCount; i++) {
-        const value = data[i][n];
-        const index = columnTypes.findIndex((element) => element.test(value));
-        if (index > transformIndex) {
-          transformIndex = index;
-        }
-        if (transformIndex >= columnTypes.length) {
-          break;
+  let nBulletVotes = 0
+  // Iterate through ballots, 
+  parsedData.scores.forEach((vote) => {
+    let nSupported = 0
+    for (let i = 0; i < nCandidates; i++) {
+      totalScores[i].score += vote[i]
+      scoreHist[i][vote[i]] += 1
+      for (let j = 0; j < nCandidates; j++) {
+        if (!(i == j)) {
+          if (vote[i] > vote[j]) {
+            preferenceMatrix[i][j] += 1
+          }
         }
       }
-    }
-    // We don't have to check for out-of-bound index because
-    // the last row in columnTypes accepts anything
-    transforms.push(columnTypes[transformIndex].transform);
-  });
-  return transforms;
-}
-
-function splitPR(candidates, scores, nWinners) {
-  // Handle degenerate edge cases
-  if (!candidates || candidates.length === 0) {
-    return { winners: [], losers: [], others: [] };
-  }
-  var num_candidates = candidates.length
-  if (num_candidates === 1) {
-    return { winners: candidates, losers: [], others: [] };
-  }
-
-  // Normalize scores array
-  var scoresNorm = normalizeArray(scores, maxScore);
-
-  // Find number of voters and quota size
-  const V = scoresNorm[0].length;
-  const quota = V / nWinners;
-
-  var ballot_weights = Array(V).fill(1);
-  // Initialize output arrays
-  var winners = [];
-  var losers = [];
-  var others = [];
-  var debuginfo = { splitPoints: [], spentAboves: [], weight_on_splits: [] };
-  var ties = [];
-  var weightedSumsByRound = []
-  var candidatesByRound = []
-  // run loop until specified number of winners are found
-  while (winners.length < nWinners) {
-    // weight the scores
-    var weighted_scores = Array(scoresNorm.length);
-    var weighted_sums = Array(scoresNorm.length);
-    scoresNorm.forEach((row, r) => {
-      weighted_scores[r] = [];
-      row.forEach((score, s) => {
-        weighted_scores[r][s] = score * ballot_weights[s];
-      });
-      // sum scores for each candidate
-      weighted_sums[r] = sumArray(weighted_scores[r]);
-    });
-    weightedSumsByRound.push(weighted_sums)
-    candidatesByRound.push([...candidates])
-    // get index of winner
-    var maxAndTies = indexOfMax(weighted_sums);
-    var w = maxAndTies.maxIndex;
-    var roundTies = [];
-    maxAndTies.ties.forEach((index, i) => {
-      roundTies.push(candidates[index]);
-    });
-    ties.push(roundTies);
-    // add winner to winner list, remove from ballots
-    winners.push(candidates[w]);
-    scoresNorm.splice(w, 1);
-    candidates.splice(w, 1);
-
-    // create arrays for sorting ballots
-    var cand_df = [];
-    var cand_df_sorted = [];
-
-    weighted_scores[w].forEach((weighted_score, i) => {
-      cand_df.push({
-        index: i,
-        ballot_weight: ballot_weights[i],
-        weighted_score: weighted_score
-      });
-      cand_df_sorted.push({
-        index: i,
-        ballot_weight: ballot_weights[i],
-        weighted_score: weighted_score
-      });
-    });
-    cand_df_sorted.sort((a, b) =>
-      a.weighted_score < b.weighted_score ? 1 : -1
-    );
-
-    var split_point = findSplitPoint(cand_df_sorted, quota);
-
-    debuginfo.splitPoints.push(split_point);
-
-    var spent_above = 0;
-    cand_df.forEach((c, i) => {
-      if (c.weighted_score > split_point) {
-        spent_above += c.ballot_weight;
+      if (vote[i] > 0) {
+        nSupported += 1
       }
-    });
-    debuginfo.spentAboves.push(spent_above);
-
-    if (spent_above > 0) {
-      cand_df.forEach((c, i) => {
-        if (c.weighted_score > split_point) {
-          cand_df[i].ballot_weight = 0;
-        }
-      });
     }
-
-    var weight_on_split = findWeightOnSplit(cand_df, split_point);
-
-    debuginfo.weight_on_splits.push(weight_on_split);
-    ballot_weights = updateBallotWeights(
-      cand_df,
-      ballot_weights,
-      weight_on_split,
-      quota,
-      spent_above,
-      split_point
-    );
-  }
-  //Moving weighted sum totals to matrix for easier plotting
-  var weightedSumsData = []
-  for (let c = 0; c < num_candidates; c++) {
-    weightedSumsData.push(Array(weightedSumsByRound.length).fill(0))
-  }
-  weightedSumsByRound.map((weightedSums,i) => {
-    weightedSums.map((weightedSum,j) => {
-      let candidate = candidatesByRound[i][j]
-      weightedSumsData[candidate.index][i] = weightedSum*5
-    })
+    if (nSupported === 1) {
+      nBulletVotes += 1
+    }
   })
-  losers = candidates;
-  return { winners, losers, others, ties, debuginfo,weightedSumsData };
-}
 
-function updateBallotWeights(
-  cand_df,
-  ballot_weights,
-  weight_on_split,
-  quota,
-  spent_above,
-  split_point
-) {
-  if (weight_on_split > 0) {
-    var spent_value = (quota - spent_above) / weight_on_split;
-    cand_df.forEach((c, i) => {
-      if (c.weighted_score === split_point) {
-        cand_df[i].ballot_weight = cand_df[i].ballot_weight * (1 - spent_value);
+  for (let i = 0; i < nCandidates; i++) {
+    for (let j = 0; j < nCandidates; j++) {
+      if (preferenceMatrix[i][j] > preferenceMatrix[j][i]) {
+        pairwiseMatrix[i][j] = 1
       }
-    });
-  }
-  cand_df.forEach((c, i) => {
-    if (c.ballot_weight > 1) {
-      ballot_weights[i] = 1;
-    } else if (c.ballot_weight < 0) {
-      ballot_weights[i] = 0;
-    } else {
-      ballot_weights[i] = c.ballot_weight;
-    }
-  });
+      else if (preferenceMatrix[i][j] < preferenceMatrix[j][i]) {
+        pairwiseMatrix[j][i] = 1
+      }
 
-  return ballot_weights;
-}
-
-function findWeightOnSplit(cand_df, split_point) {
-  var weight_on_split = 0;
-  cand_df.forEach((c, i) => {
-    if (c.weighted_score === split_point) {
-      weight_on_split += c.ballot_weight;
-    }
-  });
-  return weight_on_split;
-}
-
-function indexOfMax(arr) {
-  if (arr.length === 0) {
-    return -1;
-  }
-
-  var max = arr[0];
-  var maxIndex = 0;
-  var ties = [];
-  for (var i = 1; i < arr.length; i++) {
-    if (arr[i] > max) {
-      maxIndex = i;
-      max = arr[i];
-      ties = [];
-    } else if (arr[i] === max) {
-      ties.push(i);
     }
   }
 
-  return { maxIndex, ties };
-}
-
-function sumArray(arr) {
-  return arr.reduce((a, b) => a + b, 0);
-}
-
-function normalizeArray(scores, maxScore) {
-  // Normalize scores array
-  var scoresNorm = Array(scores.length);
-  scores.forEach((row, r) => {
-    scoresNorm[r] = [];
-    row.forEach((score, s) => {
-      scoresNorm[r][s] = score / maxScore;
-    });
-  });
-  return scoresNorm;
-}
-
-function findSplitPoint(cand_df_sorted, quota) {
-  var under_quota = [];
-  var under_quota_scores = [];
-  var cumsum = 0;
-  cand_df_sorted.forEach((c, i) => {
-    cumsum += c.ballot_weight;
-    if (cumsum < quota) {
-      under_quota.push(c);
-      under_quota_scores.push(c.weighted_score);
-    }
-  });
-  return Math.min(...under_quota_scores);
-}
-/******************************** Flatten Methods ******************************/
-
-function flatten(cvr, sections,rounds) {
-  // Create a new matrix based on the ordering of the candidates
-  // in the sections
-
-  // First, create an array containing array indexes for each candidate
-  var order = [];
-  sections.forEach((section) => {
-    section.candidates.forEach((candidate) => order.push(candidate));
-  });
-
-  var newCandidates = order.map((index) => cvr.candidates[index]);
-
-  var newSections = [];
-  sections.forEach((section) => {
-    var candidates = [];
-    section.candidates.forEach((candidate) =>
-      candidates.push(
-        newCandidates.findIndex(
-          (newCandidate) => candidate === newCandidate.index
-        )
-      )
-    );
-    newSections.push({ title: section.title, candidates: candidates, votes: section.votes });
-  });
-  var newRounds = [];
-  rounds.forEach((round) => {
-    var finalists = [];
-    round.finalists.forEach((candidate) =>
-    finalists.push(
-        newCandidates.findIndex(
-          (newCandidate) => candidate === newCandidate.index
-        )
-      )
-    );
-    var winners = [];
-    round.winners.forEach((candidate) =>
-    winners.push(
-        newCandidates.findIndex(
-          (newCandidate) => candidate === newCandidate.index
-        )
-      )
-    );
-    newRounds.push({ finalists: finalists, winners: winners, votes: round.votes });
-  });
-  // Next, build a new matrix based on that ordering
-  var newMatrix = [];
-  order.forEach((i) => {
-    var row = [];
-    order.forEach((j) => {
-      var rowIndex = newCandidates.findIndex(
-        (candidate) => candidate.index === order[i]
-      );
-      var columnIndex = newCandidates.findIndex(
-        (candidate) => candidate.index === order[j]
-      );
-      var cell = cvr.matrix[rowIndex][columnIndex];
-      row.push(cell);
-    });
-    newMatrix.push(row);
-  });
-
+  const candidatesWithIndexes = candidates.map((candidate, index) => ({ index: index, name: candidate }))
   return {
-    candidates: newCandidates,
-    sections: newSections,
-    matrix: newMatrix,
-    rounds: newRounds,
-  };
+    candidates: candidatesWithIndexes,
+    totalScores,
+    scoreHist,
+    preferenceMatrix,
+    pairwiseMatrix,
+    nValidVotes: parsedData.validVotes.length,
+    nInvalidVotes: parsedData.invalidVotes.length,
+    nUnderVotes: parsedData.underVotes.length,
+    nBulletVotes: nBulletVotes
+  }
 }
 
-function flattenSingle(cvr) {
-  
-  const data = cvr.singleResults;
-  const rounds = [
-    {
-      finalists: [...data.winners, ...data.losers],
-      votes: [...data.winnersVotes,...data.losersVotes],
-      winners: data.winners
-    }
-  ]
-  const sections = [
-    {
-      title: data.winners.length > 1 ? "Winner (TIE)" : "Winner",
-      candidates: data.winners,
-      votes: data.winnersVotes 
-    },
-    {
-      title: data.losers.length > 1 ? "Runner-Up (TIE)" : "Runner Up",
-      candidates: data.losers,
-      votes: data.losersVotes
-    },
-    {
-      title: "Other Candidates",
-      candidates: data.others
-    }
-  ];
-  return flatten(cvr, sections,rounds);
+function sortData(summaryData, order) {
+  const indexOrder = order.map(c => c.index)
+  const candidates = indexOrder.map(ind => (summaryData.candidates[ind]))
+  candidates.forEach((c,i) => {
+    c.index = i
+  })
+  const totalScores = indexOrder.map((ind, i) => ({index: i, score: summaryData.totalScores[ind].score}))
+  const scoreHist = indexOrder.map((ind) => summaryData.scoreHist[ind])
+  const preferenceMatrix = sortMatrix(summaryData.preferenceMatrix, indexOrder)
+  const pairwiseMatrix = sortMatrix(summaryData.pairwiseMatrix, indexOrder)
+  return {
+    candidates,
+    totalScores,
+    scoreHist,
+    preferenceMatrix,
+    pairwiseMatrix,
+    nValidVotes: summaryData.nValidVotes,
+    nInvalidVotes: summaryData.nInvalidVotes,
+    nUnderVotes: summaryData.nUnderVotes,
+    nBulletVotes: summaryData.nBulletVotes,
+  }
 }
 
-function flattenMulti(cvr) {
-  const data = cvr.multiResults;
-  const sections = data.map((section, n) => {
-    return {
-      title: `${position(n + 1)} Place${section.winners.length > 1 ? " (TIE)" : ""}`,
-      candidates: section.winners,
-      votes: section.winnersVotes,
-      finalists: [...section.winners, ...section.losers]
-    };
+function runStarRound(summaryData, remainingCandidates) {
+  const round_results = {
+    winners: [],
+    runner_up: [],
+    logs: [],
+  }
+  if (remainingCandidates.length === 1) {
+    round_results.winners.push(...remainingCandidates)
+    return round_results
+  }
+  const runoffCandidates = []
+  while (runoffCandidates.length < 2) {
+    const eligibleCandidates = remainingCandidates.filter(c => !runoffCandidates.includes(c))
+    const scoreWinners = getScoreWinners(summaryData, eligibleCandidates)
+    if (scoreWinners.length === 1) {
+      runoffCandidates.push(summaryData.candidates[scoreWinners[0].index])
+      round_results.logs.push(`${scoreWinners[0].name} advances to the runoff round with a score of ${summaryData.totalScores[scoreWinners[0].index].score}.`)
+    }
+    else {
+      round_results.logs.push(`${scoreWinners.map(c => summaryData.candidates[c.index].name).join(', ')} advances to score tiebreaker.`)
+      const scoreTieWinners = runScoreTiebreaker(summaryData, scoreWinners)
+      if (scoreTieWinners.length === 1) {
+        runoffCandidates.push(scoreTieWinners[0])
+        round_results.logs.push(`${scoreTieWinners[0].name} wins score tiebreaker and advances to the runoff round.`)
+      }
+      else {
+        if (scoreTieWinners.length === 2 && runoffCandidates.length === 0) {
+          runoffCandidates.push(...scoreTieWinners)
+          round_results.logs.push(`${scoreTieWinners[0].name} and ${scoreTieWinners[1].name} win score tiebreaker and advances to the runoff round.`)
+        }
+        else {
+          const randomWinner = scoreTieWinners[getRandomInt(scoreTieWinners.length)]
+          round_results.logs.push(`True tie, ${randomWinner.name} wins random tiebreaker and advances to the runoff round.`)
+          runoffCandidates.push(randomWinner)
+        }
+      }
+    }
+  }
+
+  if (summaryData.pairwiseMatrix[runoffCandidates[0].index][runoffCandidates[1].index] === 1) {
+    round_results.winners.push(runoffCandidates[0])
+    round_results.runner_up.push(runoffCandidates[1])
+    round_results.logs.push(`${runoffCandidates[0].name} defeats ${runoffCandidates[1].name} with ${summaryData.preferenceMatrix[runoffCandidates[0].index][runoffCandidates[1].index]} votes to ${summaryData.preferenceMatrix[runoffCandidates[1].index][runoffCandidates[0].index]}.`)
+  }
+  else if (summaryData.pairwiseMatrix[runoffCandidates[1].index][runoffCandidates[0].index] === 1) {
+    round_results.winners.push(runoffCandidates[1])
+    round_results.runner_up.push(runoffCandidates[0])
+    round_results.logs.push(`${runoffCandidates[1].name} defeats ${runoffCandidates[0].name} with ${summaryData.preferenceMatrix[runoffCandidates[1].index][runoffCandidates[0].index]} votes to ${summaryData.preferenceMatrix[runoffCandidates[0].index][runoffCandidates[1].index]}.`)
+  }
+  else {
+    const runoffTieWinner = runRunoffTiebreaker(summaryData, runoffCandidates)
+    if (runoffTieWinner === 0) {
+      round_results.winners = [runoffCandidates[0]]
+      round_results.runner_up = [runoffCandidates[1]]
+      round_results.logs.push(`${runoffCandidates[0].name} defeats ${runoffCandidates[1].name} in runoff tiebreaker with a score of ${summaryData.totalScores[runoffCandidates[0].index]} to ${summaryData.totalScores[runoffCandidates[1].index]}.`)
+    }
+    else if (runoffTieWinner === 1) {
+      round_results.winners = [runoffCandidates[1]]
+      round_results.runner_up = [runoffCandidates[0]]
+      round_results.logs.push(`${runoffCandidates[1].name} defeats ${runoffCandidates[0].name} in runoff tiebreaker with a score of ${summaryData.totalScores[runoffCandidates[1].index]} to ${summaryData.totalScores[runoffCandidates[0].index]}.`)
+    }
+    else {
+      const randomWinner = getRandomInt(2)
+      round_results.winners = [runoffCandidates[randomWinner]]
+      round_results.runner_up = [runoffCandidates[1 - randomWinner]]
+
+      round_results.logs.push(`True tie, ${runoffCandidates[randomWinner].name} defeats ${runoffCandidates[1 - randomWinner].name} in random tiebreaker.`)
+    }
+  }
+  return round_results
+}
+
+function getScoreWinners(summaryData, eligibleCandidates) {
+
+  const eligibleCandidateScores = []
+  eligibleCandidates.forEach((c) => eligibleCandidateScores.push(summaryData.totalScores[c.index]))
+  const sortedScores = eligibleCandidateScores.sort((a, b) => {
+    if (a.score > b.score) return -1
+    if (a.score < b.score) return 1
+  })
+
+  const topScore = sortedScores[0]
+  const scoreWinners = [summaryData.candidates[topScore.index]]
+  for (let i = 1; i < sortedScores.length; i++) {
+    if (sortedScores[i].score === topScore.score) {
+      scoreWinners.push(summaryData.candidates[sortedScores[i].index])
+    }
+  }
+  return scoreWinners
+}
+
+function runScoreTiebreaker(summaryData, scoreWinners) {
+  const condorcetWinners = [];
+  scoreWinners.forEach(a => {
+    let isWinner = true
+    scoreWinners.forEach(b => {
+      if (summaryData.pairwiseMatrix[b.index][a.index] === 1) {
+        isWinner = false
+      }
+    })
+    if (isWinner) condorcetWinners.push(a)
+  })
+  if (condorcetWinners.length === 1) return condorcetWinners
+  else if (condorcetWinners.length === 0) return scoreWinners
+  else return condorcetWinners
+}
+
+function runRunoffTiebreaker(summaryData, runoffCandidates) {
+  if (summaryData.totalScores[runoffCandidates[0].index].score > summaryData.totalScores[runoffCandidates[1].index].score) {
+    return 0
+  }
+  else if (summaryData.totalScores[runoffCandidates[0].index].score < summaryData.totalScores[runoffCandidates[1].index].score) {
+    return 1
+  }
+  else {
+    return null
+  }
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+function sortMatrix(matrix, order) {
+  var newMatrix = Array(order.length);
+  for (let i = 0; i < order.length; i++) {
+    newMatrix[i] = Array(order.length).fill(0);
+  }
+  order.forEach((i, iInd) => {
+    order.forEach((j, jInd) => {
+      newMatrix[iInd][jInd] = matrix[i][j];
+    });
   });
-  const rounds = data.map((section, n) => {
-    console.log(section)
-    return {
-      finalists: [...section.winners, ...section.losers],
-      votes: [...section.winnersVotes,...section.losersVotes],
-      winners: section.winners
-    }
-  });
-
-  return flatten(cvr, sections,rounds);
-}
-
-function position(number) {
-  const numberString = Number(number).toFixed(0).toString();
-  const lastDigit = numberString.substr(-1);
-  const suffix =
-    lastDigit === "1"
-      ? "st"
-      : lastDigit === "2"
-      ? "nd"
-      : lastDigit === "3"
-      ? "rd"
-      : "th";
-  return `${numberString}${suffix}`;
-}
-
-/***************************** Public API *****************************/
-
-module.exports = function StarResults(candidates, votes, nWinners = 3) {
-  const cvr = parseData(candidates, votes, nWinners);
-  const single = flattenSingle(cvr);
-  const multi = flattenMulti(cvr);
-  return { cvr: cvr, single: single, multi: multi, pr: cvr.prResults };
+  return newMatrix
 }

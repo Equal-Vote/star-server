@@ -49,113 +49,47 @@ function getTransforms(header, data) {
     return transforms;
 }
 
-function ParseData(header, data, minValue = 0, maxValue = 5, nAllowedSupport = Infinity, ranked = false) {
-    minScore = minValue;
-    maxScore = maxValue;
-    // Inspect the data to determine the type of data in each column
-    const transforms = getTransforms(header, data);
-    // The list of candidates is based on the columns containing STAR scores
-    const candidates = [];
-    for (let i = 0; i < transforms.length; i++) {
-        if (transforms[i] === transformScore) {
-            const candidate = {
-                name: transformAny(header[i]),
-                index: candidates.length,
-                csvColumn: i,
-                totalScore: 0,
-                support: new Array(6).fill(0)
-            };
-            candidates.push(candidate);
+function getStarBallotValidity(ballot) {
+    const minScore = 0
+    const maxScore = 5
+    let isUnderVote = true
+    for (let i = 0; i < ballot.length; i++) {
+        if (ballot[i] < minScore || ballot[i] > maxScore) {
+            return { isValid: false, isUnderVote: false }
+        }
+        if (ballot[i] > minScore) {
+            isUnderVote = false
         }
     }
+    return { isValid: true, isUnderVote: isUnderVote }
+}
 
+function ParseData(data, validityCheck = getStarBallotValidity) {
     // Initialize arrays
-    const scores = Array(candidates.length);
-    for (let i = 0; i < candidates.length; i++) {
-        scores[i] = [];
-    }
-    const voters = [];
-    const undervotes = [];
-    const bulletvotes = [];
-    const invalidvotes = []
+    const scores = [];
+    const validVotes = [];
+    const underVotes = [];
+    const invalidVotes = [];
     // Parse each row of data into voter, undervote, and score arrays
     data.forEach((row, n) => {
         const voter = { csvRow: n + 1 };
-        const score = [];
-        let total = 0;
-        let hasData = false;
-        let candidatesSupported = 0;
-        let scoresUsed = Array(maxValue - minValue + 1).fill(0);
-        let voteValid = true;
-        header.forEach((col, i) => {
-            const value = transforms[i](row[i]);
-            if (row[i] !== null && row[i] !== "") {
-                hasData = true;
-            }
-            if (transforms[i] === transformScore) {
-                scoresUsed[value - minValue]++
-                if (ranked && value>0 && scoresUsed[value - minValue]>1){
-                    voteValid = false;
-                }
-
-                score.push(value);
-                total += value;
-                if (value > 0) {
-                    candidatesSupported++;
-                    if (candidatesSupported>nAllowedSupport){
-                        voteValid=false;
-                    }
-                }
-            } else {
-                voter[col] = value;
-            }
-        });
-        console.log(scoresUsed)
-
-        // Check for blank lines and undervote
-        if (hasData) {
-            if (!voteValid){
-                invalidvotes.push(voter)
-            } else if (total > 0) {
-                for (let i = 0; i < score.length; i++) {
-                    scores[i].push(score[i]);
-                }
-                voters.push(voter);
-                if (candidatesSupported === 1) {
-                    bulletvotes.push(voters.length - 1);
-                }
-            } else {
-                undervotes.push(voter);
-            }
+        const ballotValidity = validityCheck(row)
+        if (!ballotValidity.isValid) {
+            invalidVotes.push(voter)
+        }
+        else if (ballotValidity.isUnderVote) {
+            underVotes.push(voter)
+        }
+        else {
+            scores.push(row)
+            validVotes.push(voter);
         }
     });
-
-    // Calculate totalScore and averageScore for each candidate
-    voters.forEach((voter, v) => {
-        candidates.forEach((candidate, c) => {
-            candidate.totalScore += scores[c][v];
-            candidate.support[scores[c][v]]++;
-        });
-    });
-    if (voters.length > 0) {
-        candidates.forEach(
-            (candidate) =>
-            (candidate.averageScore = (
-                candidate.totalScore / voters.length
-            ).toFixed(2))
-        );
-    }
-
-
-
     return {
-        header,
-        data,
-        candidates,
         scores,
-        undervotes,
-        bulletvotes,
-        voters
+        invalidVotes,
+        underVotes,
+        validVotes
     };
 }
 
