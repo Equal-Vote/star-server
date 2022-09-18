@@ -49,7 +49,6 @@ const Sandbox = () => {
                 cvrSplit.push(vote)
             }
         })
-        console.log(cvrSplit)
         const res = await fetch('/API/Sandbox', {
             method: 'POST',
             headers: {
@@ -77,7 +76,6 @@ const Sandbox = () => {
                 setError(err.message);
             })
     }
-    console.log(data)
     return (
         //Using grid to force results into the center and fill screen on smaller screens.
         //Using theme settings and css can probably replace the grids

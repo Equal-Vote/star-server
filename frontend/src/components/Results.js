@@ -24,19 +24,33 @@ function CandidateViewer({ candidate, runoffScore }) {
   );
 }
 
-function RoundViewer({ Candidate, Round }) {
-  const finalistIndex = Round.finalists.indexOf(Candidate)
-  const winnerIndex = Round.winners.indexOf(Candidate)
-  const totalRunoffVotes = Round.votes.reduce((a, b) => a + b)
-  const runoffPercentages = Round.votes.map(vote => (`${Math.round(vote * 1000 / totalRunoffVotes) / 10}%`))
-
+function RoundViewer({ summaryData, Candidate, Round }) {
+  const winnerIndex = Round.winners[0].index
+  const runnerUpIndex = Round.runner_up[0].index
+  const totalRunoffVotes = summaryData.nValidVotes
+  
+  var isFinalist = false
+  var runoffVotes = 0
+  // const isFinalist = Candidate.index===winnerIndex||Candidate.index===runnerUpIndex
+  if (Candidate.index===winnerIndex) {
+    isFinalist = true
+    runoffVotes = summaryData.preferenceMatrix[winnerIndex][runnerUpIndex]
+  }
+  else if (Candidate.index===runnerUpIndex) {
+    isFinalist = true
+    runoffVotes = summaryData.preferenceMatrix[runnerUpIndex][winnerIndex]
+  }
+  else {
+    isFinalist = false
+    runoffVotes = 0
+  }
   return (
     < >
-      {finalistIndex !== -1 ? <td className='highlight'> {Round.votes[finalistIndex]} </td> : <td>  </td>}
-      {finalistIndex !== -1 ?
-        winnerIndex !== -1 ?
-          <td className='highlight'> {`${Math.round(Round.votes[finalistIndex] * 1000 / totalRunoffVotes) / 10}%`}</td>
-          : <td> {`${Math.round(Round.votes[finalistIndex] * 1000 / totalRunoffVotes) / 10}%`} </td>
+      {isFinalist ? <td className='highlight'> {runoffVotes} </td> : <td>  </td>}
+      {isFinalist ?
+        Candidate.index===winnerIndex ?
+          <td className='highlight'> {`${Math.round(runoffVotes * 1000 / totalRunoffVotes) / 10}%`}</td>
+          : <td> {`${Math.round(runoffVotes * 1000 / totalRunoffVotes) / 10}%`} </td>
         : <td>  </td>}
 
     </>
@@ -56,7 +70,7 @@ function ResultViewer({ title, results, rounds }) {
             <>
               <th className='matrix'> </th>
               <th className='matrix'> </th>
-              {results.rounds.map((round, r) => (
+              {results.round_results.map((round, r) => (
                 r < rounds && <>
                   <th colspan="2"> {`Round ${r + 1}`} </th>
                 </>))}
@@ -65,19 +79,19 @@ function ResultViewer({ title, results, rounds }) {
           <tr>
             <th className='matrix'> Candidate</th>
             <th className='matrix'> Total Score</th>
-            {results.rounds.map((round, r) => (
+            {results.round_results.map((round, r) => (
               r < rounds && <>
                 <th className='matrix'> Runoff Votes</th>
                 <th className='matrix'> % Runoff Votes</th>
               </>))}
           </tr>
 
-          {results.candidates.map((c, n) => (
+          {results.summaryData.candidates.map((c, n) => (
             <>
               <tr className='matrix' key={`h${n}`} >{c.name}
-                <td> {c.totalScore} </td>
-                {results.rounds.map((round, r) => (
-                  r < rounds && <RoundViewer Candidate={n} Round={round} />))}
+                <td> {results.summaryData.totalScores[n].score} </td>
+                {results.round_results.map((round, r) => (
+                  r < rounds && <RoundViewer summaryData = {results.summaryData} Candidate={c} Round={round} />))}
 
               </tr>
 
@@ -105,21 +119,17 @@ function ResultViewer({ title, results, rounds }) {
   );
 }
 
-function SummaryViewer({ cvr }) {
-  const candidates = cvr.candidates.length;
-  const voters = cvr.voters.length;
-  const underVotes = cvr.undervotes.length;
-  const summaryMessage = `${candidates} candidates, ${voters} voters, ${underVotes} underVotes.`;
-  const instructions =
-    "STAR results for single-winner and multi-winner elections are shown below.";
-
+function SummaryViewer({ results }) {
+  //const summaryMessage = `${candidates} candidates, ${voters} voters, ${underVotes} underVotes.`;
+  console.log(results)
   return (
     <>
       <h2>Summary</h2>
+        {results.round_results.map((round,r) => (
       <p>
-        <b>{summaryMessage}</b>
+          <b>{`Round ${r+1}: ${round.logs[round.logs.length-1]}`}</b>
       </p>
-      {/* <p>{instructions}</p> */}
+        ))}
     </>
   );
 }
@@ -166,17 +176,18 @@ function PRResultsViewer({ data }) {
 }
 
 export default function Results({ data }) {
+  console.log(data.Results)
   return (
     <div>
-      <SummaryViewer cvr={data.Results.cvr} />
+      <SummaryViewer results={data.Results} />
       <div className="flexContainer">
         {data.Election.races[0].voting_method === "STAR" &&
-          data.Election.races[0].num_winners == 1 &&
-          <ResultViewer title="Single-Winner Results" results={data.Results.single} rounds={1} />}
+          data.Election.races[0].num_winners === 1 &&
+          <ResultViewer title="Single-Winner Results" results={data.Results} rounds={1} />}
 
         {data.Election.races[0].voting_method === "STAR" &&
           data.Election.races[0].num_winners > 1 &&
-          <ResultViewer title="Multi-Winner Results" results={data.Results.multi} rounds={data.Election.races[0].num_winners} />}
+          <ResultViewer title="Multi-Winner Results" results={data.Results} rounds={data.Election.races[0].num_winners} />}
 
         {data.Election.races[0].voting_method === "STAR-PR" &&
           <PRResultsViewer data={data} />}
