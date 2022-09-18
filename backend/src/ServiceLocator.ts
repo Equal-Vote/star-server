@@ -5,7 +5,11 @@ import ElectionRollDB from "./Models/ElectionRolls";
 import CastVoteStore from "./Models/CastVoteStore";
 import EmailService from "./Services/Email/EmailService";
 import { IBallotStore } from "./Models/IBallotStore";
+import { IEventQueue } from "./Services/EventQueue/IEventQueue";
+import PGBossEventQueue from "./Services/EventQueue/PGBossEventQueue";
+
 import AccountService from "./Services/Account/AccountService"
+import GlobalData from "./Services/GlobalData";
 const { Pool } = require('pg');
 
 var _postgresClient:any;
@@ -14,12 +18,16 @@ var _ballotsDb:IBallotStore;
 var _electionsDb:ElectionsDB;
 var _electionRollDb:ElectionRollDB;
 var _castVoteStore:CastVoteStore;
+var _emailService:EmailService
+var _eventQueue:IEventQueue;
+
 var _emailService:EmailService;
 var _accountService:AccountService;
+var _globalData:GlobalData;
 
 function postgres():any {
     if (_postgresClient == null){
-        var connectionStr = process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres';
+        var connectionStr = pgConnectionString();
         var devDB = process.env.DEV_DATABASE;
         Logger.debug(_appInitContext, `Postgres Config:  dev_db == ${devDB}, connectionString == ${connectionStr}`);
         if (devDB === 'TRUE') {
@@ -37,6 +45,20 @@ function postgres():any {
         }
     }
     return _postgresClient;
+}
+
+function pgConnectionString():string {
+    return process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/postgres';
+}
+
+async function eventQueue():Promise<IEventQueue> {
+    if (_eventQueue == null){
+        const eq = new PGBossEventQueue();
+        await eq.init(pgConnectionString(), Logger.createContext("appInit"));
+        _eventQueue = eq;
+    }
+
+    return _eventQueue;
 }
 
 function ballotsDb():IBallotStore {
@@ -83,4 +105,11 @@ function accountService():AccountService {
     return _accountService;
 }
 
-export  default { ballotsDb, electionsDb, electionRollDb, emailService, accountService, castVoteStore};
+function globalData():GlobalData {
+    if (_globalData == null){
+        _globalData = new GlobalData();
+    }
+    return _globalData;
+}
+
+export  default { ballotsDb, electionsDb, electionRollDb, emailService, accountService, castVoteStore, globalData, eventQueue};

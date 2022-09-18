@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Equal-Vote/star-server#readme",
   "dependencies": {
-    "crypto": "^1.0.1"
+    "crypto": "^1.0.1",
+    "pg-boss": "^8.0.0"
   }
 }

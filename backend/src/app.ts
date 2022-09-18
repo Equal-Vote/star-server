@@ -9,6 +9,8 @@ import Logger from './Services/Logging/Logger';
 import {IRequest, iRequestMiddleware, reqIdSuffix} from './IRequest';
 import { loggerMiddleware } from './Services/Logging/LoggerMiddleware';
 import { errorCatch } from './errorCatchMiddleware'
+import registerEvents from './Routes/registerEvents';
+
 const { getUserToken } = require('./Controllers/getUserTokenController')
 const authController = require('./Controllers/auth.controllers')
 const asyncHandler = require('express-async-handler')
@@ -61,6 +63,10 @@ app.get('*', (req, res) => {
 })
 
 app.use(errorCatch);
+
+registerEvents();
+
 Logger.debug(appInitContext, "app Init complete");
+
 return app;
 }
