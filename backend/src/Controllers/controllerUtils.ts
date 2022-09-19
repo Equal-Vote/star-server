@@ -6,11 +6,13 @@ import { Request, Response } from 'express';
 import { roles } from "../../../domain_model/roles";
 import { hasPermission, permission, permissions } from '../../../domain_model/permissions';
 import { randomUUID } from "crypto";
-var jwt = require('jsonwebtoken')
+import ServiceLocator from "../ServiceLocator";
+
+const accountService = ServiceLocator.accountService();
 
 export function expectUserFromRequest(req:IRequest ):any {
-    var user = jwt.decode(req.cookies.id_token);
-    if (user == null || user == {}){
+    var user = accountService.extractUserFromRequest(req);
+    if (!user){
       throw new Unauthorized();
     }
     Logger.debug(req, "Request User: "+JSON.stringify(user));
