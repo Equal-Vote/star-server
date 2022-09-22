@@ -58,7 +58,8 @@ const Sandbox = () => {
             body: JSON.stringify({
                 cvr: cvrSplit,
                 candidates: candidates.split(","),
-                num_winners: nWinners
+                num_winners: nWinners,
+                votingMethod: votingMethod,
             })
         }).then(res => {
             if (!res.ok) {

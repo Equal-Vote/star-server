@@ -79,10 +79,6 @@ function parseData(header, data, nWinners) {
     voters,
     undervotes,
     bulletvotes,
-    matrix,
-    candidateOrder,
-    singleResults,
-    multiResults,
     prResults
   };
 }
@@ -371,5 +367,5 @@ function findSplitPoint(cand_df_sorted, quota) {
 
 module.exports = function StarResults(candidates, votes, nWinners = 1) {
   const cvr = parseData(candidates, votes, nWinners);
-  return {pr: cvr.prResults };
+  return { cvr };
 }

@@ -4,10 +4,11 @@ import { BadRequest } from "@curveball/http-errors";
 import { Ballot } from '../../../domain_model/Ballot';
 import { Score } from '../../../domain_model/Score';
 
-const StarResults = require('../Tabulators/StarResults.js');
+import { Star } from "../Tabulators/Star";
+import { Approval } from "../Tabulators/Approval";
+import { Plurality } from "../Tabulators/Plurality";
 const AllocatedScoreResults = require('../Tabulators/AllocatedScore')
-const ApprovalResults = require('../Tabulators/ApprovalResults')
-const PluralityResults = require('../Tabulators/PluralityResults')
+
 const BallotModel = ServiceLocator.ballotsDb();
 
 const getElectionResults = async (req: any, res: any, next: any) => {
@@ -31,16 +32,16 @@ const getElectionResults = async (req: any, res: any, next: any) => {
     const voting_method = election.races[0].voting_method
     let results = {}
     if (voting_method==='STAR'){
-        results = StarResults(candidateNames, cvr, num_winners)
+        results = Star(candidateNames, cvr, num_winners)
     }
     else if (voting_method==='STAR-PR'){
         results = AllocatedScoreResults(candidateNames, cvr, num_winners)
     }
     else if (voting_method==='Approval'){
-        results = ApprovalResults(candidateNames, cvr, num_winners)
+        results = Approval(candidateNames, cvr, num_winners)
     }
     else if (voting_method==='Plurality'){
-        results = PluralityResults(candidateNames, cvr, num_winners)
+        results = Plurality(candidateNames, cvr, num_winners)
     }
     else {
         throw new Error('Invalid Voting Method')

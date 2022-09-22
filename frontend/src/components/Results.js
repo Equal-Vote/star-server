@@ -70,7 +70,7 @@ function ResultViewer({ title, results, rounds }) {
             <>
               <th className='matrix'> </th>
               <th className='matrix'> </th>
-              {results.round_results.map((round, r) => (
+              {results.roundResults.map((round, r) => (
                 r < rounds && <>
                   <th colspan="2"> {`Round ${r + 1}`} </th>
                 </>))}
@@ -79,7 +79,7 @@ function ResultViewer({ title, results, rounds }) {
           <tr>
             <th className='matrix'> Candidate</th>
             <th className='matrix'> Total Score</th>
-            {results.round_results.map((round, r) => (
+            {results.roundResults.map((round, r) => (
               r < rounds && <>
                 <th className='matrix'> Runoff Votes</th>
                 <th className='matrix'> % Runoff Votes</th>
@@ -90,7 +90,7 @@ function ResultViewer({ title, results, rounds }) {
             <>
               <tr className='matrix' key={`h${n}`} >{c.name}
                 <td> {results.summaryData.totalScores[n].score} </td>
-                {results.round_results.map((round, r) => (
+                {results.roundResults.map((round, r) => (
                   r < rounds && <RoundViewer summaryData = {results.summaryData} Candidate={c} Round={round} />))}
 
               </tr>
@@ -125,7 +125,7 @@ function SummaryViewer({ results }) {
   return (
     <>
       <h2>Summary</h2>
-        {results.round_results.map((round,r) => (
+        {results.roundResults.map((round,r) => (
       <p>
           <b>{`Round ${r+1}: ${round.logs[round.logs.length-1]}`}</b>
       </p>
@@ -139,26 +139,26 @@ function PRResultsViewer({ data }) {
   return (
     <div>
       <h2>Winners:</h2>
-      {data.Results.pr.winners.map((winner) => <h3> {winner.name}</h3>)}
+      {data.Results.cvr.prResults.winners.map((winner) => <h3> {winner.name}</h3>)}
       <h2>Losers:</h2>
-      {data.Results.pr.losers.map((loser) => <h3> {loser.name}</h3>)}
+      {data.Results.cvr.prResults.losers.map((loser) => <h3> {loser.name}</h3>)}
       <h2>Scores By Round</h2>
       <table className='matrix'>
         <thead className='matrix'>
           <tr className='matrix'>
             <th className='matrix'> Candidate</th>
-            {data.Results.pr.winners.map((c, n) => (
+            {data.Results.cvr.prResults.winners.map((c, n) => (
               <th className='matrix' key={`h${n}`} >Round {n + 1} </th>
             ))}
           </tr>
         </thead>
         <tbody className='matrix'>
-          {console.log(data.Results.pr.weightedSumsData)}
-          {data.Results.pr.weightedSumsData.map((row, i) => (
+          {console.log(data.Results.cvr.prResults.weightedSumsData)}
+          {data.Results.cvr.prResults.weightedSumsData.map((row, i) => (
             <tr className='matrix' key={`d${i}`}>
               <th className='matrix' key={`dh${i}`} >{data.Results.cvr.candidates[i].name}</th>
               {row.map((col, j) => (
-                data.Results.pr.winners[j].index === data.Results.cvr.candidates[i].index ?
+                data.Results.cvr.prResults.winners[j].index === data.Results.cvr.candidates[i].index ?
                   <td className='highlight' key={`c${i},${j}`}>
                     <h3>{Math.round(col * 10) / 10}</h3>
                   </td>
@@ -179,15 +179,19 @@ export default function Results({ data }) {
   console.log(data.Results)
   return (
     <div>
-      <SummaryViewer results={data.Results} />
       <div className="flexContainer">
         {data.Election.races[0].voting_method === "STAR" &&
           data.Election.races[0].num_winners === 1 &&
-          <ResultViewer title="Single-Winner Results" results={data.Results} rounds={1} />}
+            <>
+            <SummaryViewer results={data.Results} />
+            <ResultViewer title="Single-Winner Results" results={data.Results} rounds={1} />
+          </>}
 
-        {data.Election.races[0].voting_method === "STAR" &&
-          data.Election.races[0].num_winners > 1 &&
-          <ResultViewer title="Multi-Winner Results" results={data.Results} rounds={data.Election.races[0].num_winners} />}
+        {data.Election.races[0].voting_method === "STAR" && data.Election.races[0].num_winners > 1 &&
+          <>
+            <SummaryViewer results={data.Results} />
+            <ResultViewer title="Multi-Winner Results" results={data.Results} rounds={data.Election.races[0].num_winners} />
+          </>}
 
         {data.Election.races[0].voting_method === "STAR-PR" &&
           <PRResultsViewer data={data} />}

@@ -1,39 +1,52 @@
+import { approvalResults, approvalSummaryData, ballot, candidate, pluralityResults, pluralitySummaryData, totalScore } from "./ITabulators";
+
+import { IparsedData } from './ParseData'
 const ParseData = require("./ParseData");
 
-module.exports = function PluralityResults(candidates, votes, nWinners = 1) {
+export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, breakTiesRandomly = true) {
   const parsedData = ParseData(votes, getPluralityBallotValidity)
   const summaryData = getSummaryData(candidates, parsedData)
-  const results = {
+  const results: pluralityResults = {
     elected: [],
+    tied: [],
+    other: [],
+    roundResults: [],
     summaryData: summaryData,
   }
-  const sortedScores = summaryData.totalScores.sort((a, b) => {
+  const sortedScores = summaryData.totalScores.sort((a: totalScore, b: totalScore) => {
     if (a.score > b.score) return -1
     if (a.score < b.score) return 1
+    return 0
   })
   
-  while (results.elected.length < nWinners) {
+  var remainingCandidates = [...summaryData.candidates]
+  while (remainingCandidates.length>0) {
     const topScore = sortedScores[results.elected.length]
-    const scoreWinners = [summaryData.candidates[topScore.index]]
-    for (let i = results.elected.length+1; i < sortedScores.length; i++) {
+    let scoreWinners = [summaryData.candidates[topScore.index]]
+    for (let i = sortedScores.length-remainingCandidates.length+1; i < sortedScores.length; i++) {
       if (sortedScores[i].score === topScore.score) {
         scoreWinners.push(summaryData.candidates[sortedScores[i].index])
       }
     }
-    if ((scoreWinners.length+results.elected.length)<=nWinners) {
+    if (breakTiesRandomly && scoreWinners.length>1) {
+      scoreWinners = [scoreWinners[getRandomInt(scoreWinners.length)]]
+    }
+    if ((results.elected.length + results.tied.length + scoreWinners.length)<=nWinners) {
       results.elected.push(...scoreWinners)
     }
-    else {
-      const randomShuffled = scoreWinners.sort(() => 0.5 - Math.random());
-      results.elected.push(...randomShuffled.slice(0, nWinners - results.elected.length))
+    else if (results.tied.length===0 && results.elected.length<nWinners){
+      results.tied.push(...scoreWinners)
     }
-
+    else {
+      results.other.push(...scoreWinners)
+    }
+    remainingCandidates = remainingCandidates.filter(c => !scoreWinners.includes(c))
   }
   
   return results;
 }
 
-function getSummaryData(candidates, parsedData) {
+function getSummaryData(candidates: string[], parsedData: IparsedData): pluralitySummaryData{
   // Initialize summary data structures
   const nCandidates = candidates.length
   const totalScores = Array(nCandidates)
@@ -56,7 +69,7 @@ function getSummaryData(candidates, parsedData) {
   }
 }
 
-function getPluralityBallotValidity(ballot) {
+function getPluralityBallotValidity(ballot: ballot) {
   const minScore = 0
   const maxScore = 1
   let isUnderVote = true
@@ -76,3 +89,6 @@ function getPluralityBallotValidity(ballot) {
   return { isValid: true, isUnderVote: isUnderVote }
 }
 
+function getRandomInt(max: number) {
+  return Math.floor(Math.random() * max);
+}
