@@ -52,7 +52,7 @@ export function RankedRobin(candidates: string[], votes: ballot[], nWinners = 1,
   }
 
   // Sort data in order of candidate placements
-  // results.summaryData = sortData(summaryData, results.elected.concat(results.tied).concat(results.other))
+  results.summaryData = sortData(summaryData, results.elected.concat(results.tied).concat(results.other))
   return results
 }
 

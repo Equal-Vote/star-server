@@ -119,9 +119,52 @@ function ResultViewer({ title, results, rounds }) {
   );
 }
 
+function RankedRobinViewer({ title, results }) {
+  const [viewMatrix, setViewMatrix] = useState(false)
+  return (
+    <div key={title} className="resultViewer">
+      <h2>{title}</h2>
+      <table className='matrix'>
+        <thead className='matrix'>
+          <tr>
+            <th className='matrix'> Candidate</th>
+            <th className='matrix'> # of wins</th>
+          </tr>
+
+          {results.summaryData.candidates.map((c, n) => (
+            <>
+              <tr className='matrix' key={`h${n}`} >{c.name}
+                <td> {results.summaryData.totalScores[n].score} </td>
+              </tr>
+
+            </>
+          ))}
+        </thead>
+      </table>
+      <Grid container alignItems="center" >
+        <Grid item xs={1}>
+          {!viewMatrix &&
+            <IconButton aria-label="Home" onClick={() => { setViewMatrix(true) }}>
+              <ExpandMore />
+            </IconButton>}
+          {viewMatrix &&
+            <IconButton aria-label="Home" onClick={() => { setViewMatrix(false) }}>
+              <ExpandLess />
+            </IconButton>}
+        </Grid>
+        <Grid item xs={2}>
+          <h3> View Matrix</h3>
+        </Grid>
+      </Grid>
+      {viewMatrix && <MatrixViewer results={results} />}
+    </div>
+  );
+}
+
+
 function SummaryViewer({ results }) {
   //const summaryMessage = `${candidates} candidates, ${voters} voters, ${underVotes} underVotes.`;
-  console.log(results)
+  // console.log(results)
   return (
     <>
       <h2>Summary</h2>
@@ -153,7 +196,7 @@ function PRResultsViewer({ data }) {
           </tr>
         </thead>
         <tbody className='matrix'>
-          {console.log(data.Results.cvr.prResults.weightedSumsData)}
+          {/* {console.log(data.Results.cvr.prResults.weightedSumsData)} */}
           {data.Results.cvr.prResults.weightedSumsData.map((row, i) => (
             <tr className='matrix' key={`d${i}`}>
               <th className='matrix' key={`dh${i}`} >{data.Results.cvr.candidates[i].name}</th>
@@ -176,7 +219,7 @@ function PRResultsViewer({ data }) {
 }
 
 export default function Results({ data }) {
-  console.log(data.Results)
+  console.log(data)
   return (
     <div>
       <div className="flexContainer">
@@ -195,6 +238,12 @@ export default function Results({ data }) {
 
         {data.Election.races[0].voting_method === "STAR-PR" &&
           <PRResultsViewer data={data} />}
+          
+        {data.Election.races[0].voting_method === "Ranked-Robin" &&
+          <>
+          <SummaryViewer results={data.Results} />
+          <RankedRobinViewer title="Ranked Robin Results" results={data.Results} />
+        </>}
       </div>
     </div>
   );
