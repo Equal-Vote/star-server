@@ -1,5 +1,9 @@
 import Logger from '../Services/Logging/Logger';
-const StarResults = require('../Tabulators/StarResults.js');
+import { Star } from "../Tabulators/Star";
+import { Approval } from "../Tabulators/Approval";
+import { Plurality } from "../Tabulators/Plurality";
+import { RankedRobin } from '../Tabulators/RankedRobin';
+const AllocatedScoreResults = require('../Tabulators/AllocatedScore')
 const className = "Elections.Controllers";
 
 const getSandboxResults = async (req: any, res: any, next: any) => {
@@ -8,11 +12,30 @@ const getSandboxResults = async (req: any, res: any, next: any) => {
     const candidateNames = req.body.candidates;
     const cvr = req.body.cvr;
     const num_winners = req.body.num_winners;
-    Logger.debug(req, "Candidate names:  " + JSON.stringify(candidateNames));
-    const results = StarResults(candidateNames, cvr, num_winners)
+    const voting_method = req.body.votingMethod
+    let results = {}
+    if (voting_method==='STAR'){
+        results = Star(candidateNames, cvr, num_winners)
+    }
+    else if (voting_method==='STAR-PR'){
+        results = AllocatedScoreResults(candidateNames, cvr, num_winners)
+    }
+    else if (voting_method==='Approval'){
+        results = Approval(candidateNames, cvr, num_winners)
+    }
+    else if (voting_method==='Plurality'){
+        results = Plurality(candidateNames, cvr, num_winners)
+    }
+    else if (voting_method==='Ranked-Robin'){
+        results = RankedRobin(candidateNames, cvr, num_winners)
+    }
+    else {
+        throw new Error('Invalid Voting Method')
+    }
     res.json(
         {
-            Results: results
+            Results: results,
+            voting_method: voting_method
         }
     );
 }

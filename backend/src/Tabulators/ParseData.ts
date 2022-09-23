@@ -1,0 +1,54 @@
+import { ballot, voter } from "./ITabulators";
+
+// Functions to parse STAR scores
+export interface IparsedData {
+    scores: ballot[],
+    invalidVotes: voter[],
+    underVotes: voter[],
+    validVotes: voter[]
+} 
+function getStarBallotValidity(ballot: ballot) {
+    const minScore = 0
+    const maxScore = 5
+    let isUnderVote = true
+    for (let i = 0; i < ballot.length; i++) {
+        if (ballot[i] < minScore || ballot[i] > maxScore) {
+            return { isValid: false, isUnderVote: false }
+        }
+        if (ballot[i] > minScore) {
+            isUnderVote = false
+        }
+    }
+    return { isValid: true, isUnderVote: isUnderVote }
+}
+
+module.exports = function ParseData(data: ballot[], validityCheck = getStarBallotValidity): IparsedData {
+    // Initialize arrays
+    const scores: ballot[] = [];
+    const validVotes: voter[] = [];
+    const underVotes: voter[]  = [];
+    const invalidVotes: voter[]  = [];
+    // Parse each row of data into voter, undervote, and score arrays
+    data.forEach((row, n) => {
+        const voter: voter = { csvRow: n + 1 };
+        const ballotValidity = validityCheck(row)
+        if (!ballotValidity.isValid) {
+            invalidVotes.push(voter)
+        }
+        else if (ballotValidity.isUnderVote) {
+            underVotes.push(voter)
+        }
+        else {
+            scores.push(row)
+            validVotes.push(voter);
+        }
+    });
+    return {
+        scores,
+        invalidVotes,
+        underVotes,
+        validVotes
+    };
+}
+
+// module.exports = ParseData

@@ -111,6 +111,15 @@ body {
 }
 */
 
+.matrix th {
+  min-width:60px;
+  text-align: center;
+}
+.matrix td {
+  text-align: center;
+}
+
+
 td.highlight {
   background: #dadada;
 }

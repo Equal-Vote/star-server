@@ -21,7 +21,7 @@ import { Box, Checkbox, InputLabel } from "@material-ui/core"
 
 const Sandbox = () => {
     const [candidates, setCandidates] = useState('A,B,C,D,E')
-    const [cvr, setCvr] = useState('10:0,1,3,4,5\n10:5,4,3,1,0\n0,2,5,4,1')
+    const [cvr, setCvr] = useState('10:2,1,3,4,5\n10:5,4,3,1,2\n3,2,5,4,1')
     const [nWinners, setNWinners] = useState(1)
     const [votingMethod, setVotingMethod] = useState('STAR')
     const [isPending, setIsPending] = useState(true)
@@ -49,7 +49,6 @@ const Sandbox = () => {
                 cvrSplit.push(vote)
             }
         })
-        console.log(cvrSplit)
         const res = await fetch('/API/Sandbox', {
             method: 'POST',
             headers: {
@@ -59,7 +58,8 @@ const Sandbox = () => {
             body: JSON.stringify({
                 cvr: cvrSplit,
                 candidates: candidates.split(","),
-                num_winners: nWinners
+                num_winners: nWinners,
+                votingMethod: votingMethod,
             })
         }).then(res => {
             if (!res.ok) {
@@ -77,7 +77,6 @@ const Sandbox = () => {
                 setError(err.message);
             })
     }
-    console.log(data)
     return (
         //Using grid to force results into the center and fill screen on smaller screens.
         //Using theme settings and css can probably replace the grids
@@ -99,6 +98,9 @@ const Sandbox = () => {
                             </MenuItem>
                             <MenuItem key="STAR-PR" value="STAR-PR">
                                 STAR-PR
+                            </MenuItem>
+                            <MenuItem key="Ranked-Robin" value="Ranked-Robin">
+                                Ranked Robin
                             </MenuItem>
                         </Select>
                     </FormControl>
@@ -161,7 +163,7 @@ const Sandbox = () => {
                                 races: [
                                     {
                                         candidates: candidates.split(',').map((candidate) => [{ candidate_name: candidate }]),
-                                        voting_method: votingMethod,
+                                        voting_method: data.voting_method,
                                         num_winners: nWinners,
                                     }
                                 ]
