@@ -13,7 +13,12 @@ export default class PGBossEventQueue implements IEventQueue {
 
     public async init(pgConnection:string, ctx:ILoggingContext):Promise<PGBossEventQueue> {
         const PgBoss = require('pg-boss');
-        this._boss = new PgBoss(pgConnection);
+        this._boss = new PgBoss({
+            connectionString: pgConnection,
+            ssl: {
+                rejectUnauthorized: false
+            }
+        });
         this._boss.on('error', (error: any) => Logger.error(ctx, error));
         
         await this._boss.start();
