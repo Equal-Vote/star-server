@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import StarBallot from "./StarBallot";
-import Button from "./Button";
 import useFetch from "../useFetch";
 import { useParams } from "react-router";
 import React from 'react'
@@ -9,11 +8,11 @@ import { Ballot } from "../../../domain_model/Ballot";
 import { Vote } from "../../../domain_model/Vote";
 import { Score } from "../../../domain_model/Score";
 import { Container } from "@material-ui/core";
-const VotePage = ({ election }) => {
+import Button from "@material-ui/core/Button";
+const VotePage = ({ election, fetchElection}) => {
   const { id } = useParams();
   const [rankings, setRankings] = useState([])
   const navigate = useNavigate();
-  const [submitError, setSubmitError] = useState('')
 
   const { data, isPending, error, makeRequest: postBallot } = useFetch(`/API/Election/${id}/vote`, 'post')
   const onUpdate = (rankings) => {
@@ -42,20 +41,27 @@ const VotePage = ({ election }) => {
     if (!(await postBallot({ ballot: ballot }))) {
       return
     }
+    await fetchElection() // refetch election to update voter auth
     navigate(`/Election/${id}`)
   }
   return (
-    <>
+    <Container disableGutters={true} maxWidth="sm">
       <StarBallot
         race={election.races[0]}
         candidates={election.races[0].candidates}
         onUpdate={onUpdate}
         defaultRankings={Array(election.races[0].candidates.length).fill(0)}
-        readonly={false}
-        onSubmitBallot={submit}
       />
+
+      <Button
+        variant='outlined'
+        onClick={submit}
+        disabled={isPending}>
+        Submit Ballot
+      </Button>
       {<div> {error} </div>}
-    </>
+      {isPending && <div> Submitting... </div>}
+    </Container>
   )
 }
 

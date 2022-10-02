@@ -26,7 +26,6 @@ import VoterAuth from "./VoterAuth";
 const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
   const { id } = useParams();
 
-  const navigate = useNavigate();
   const { data, isPending, error, makeRequest: postData } = useFetch(`/API/Election/${id}/finalize`, 'post')
   const finalizeElection = async () => {
     console.log("finalizing election")
@@ -112,7 +111,7 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
                 // /DuplicateElection/{id} mirrors /CreateElection, that feels more accurate?
               }
               {authSession.isLoggedIn() &&
-              <Link to={`/DuplicateElection/${electionData.election_id}`}>
+              <Link to={`/DuplicateElection/${electionData.election.election_id}`}>
                 <Typography align='center' gutterBottom variant="h6" component="h6">
                   Duplicate
                 </Typography>

@@ -226,13 +226,9 @@ export default function StarBallotView({
   race,
   candidates,
   rankings,
-  onClick,
-  readonly,
-  onSubmitBallot
+  onClick
 }) {
   return (
-    <Container disableGutters={true} maxWidth="sm">
-
       <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }}>
         <Grid container alignItems="center" justify="center" direction="column">
 
@@ -271,8 +267,5 @@ export default function StarBallotView({
 
         </Grid>
       </Box>
-      <Button variant='outlined' onClick={onSubmitBallot}>Submit Ballot</Button>
-
-    </Container>
   );
 }
