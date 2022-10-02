@@ -36,7 +36,8 @@ export default class ElectionsDB {
             credential_ids json,
             state         VARCHAR,
             races         json NOT NULL,
-            settings      json
+            settings      json,
+            auth_key      VARCHAR
           );
         `;
 
@@ -45,7 +46,7 @@ export default class ElectionsDB {
         return p.then((_: any) => {
             //This will add the new field to the live DB in prod.  Once that's done we can remove this
             var credentialQuery = `
-            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS credential_ids json
+            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS auth_key VARCHAR
             `;
             return this._postgresClient.query(credentialQuery).catch((err:any) => {
                 console.log("err adding credential_ids column to DB: " + err.message);
@@ -70,7 +71,7 @@ export default class ElectionsDB {
         Logger.debug(ctx, `${className}.createElection`, election);
 
         var sqlString = `INSERT INTO ${this._tableName} (election_id, title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *;`;
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING *;`;
         Logger.debug(ctx, sqlString);
         
         var p = this._postgresClient.query({
@@ -89,7 +90,8 @@ export default class ElectionsDB {
                 JSON.stringify(election.credential_ids),
                 election.state,
                 JSON.stringify(election.races),
-                JSON.stringify(election.settings)
+                JSON.stringify(election.settings),
+                election.auth_key
             ]
         });
 
@@ -106,7 +108,7 @@ export default class ElectionsDB {
     updateElection(election: Election, ctx:ILoggingContext, reason:string): Promise<Election> {
         Logger.debug(ctx, `${className}.updateElection`, election);
         var sqlString = `UPDATE ${this._tableName} SET (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings) =
-        ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) WHERE election_id = $1 RETURNING *;`;
+        ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) WHERE election_id = $1 RETURNING *;`;
         Logger.debug(ctx, sqlString);
 
         var p = this._postgresClient.query({
@@ -125,7 +127,8 @@ export default class ElectionsDB {
                 JSON.stringify(election.credential_ids),
                 election.state,
                 JSON.stringify(election.races),
-                JSON.stringify(election.settings)
+                JSON.stringify(election.settings),
+                election.auth_key
             ]
         });
 

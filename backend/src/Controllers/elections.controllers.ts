@@ -7,10 +7,14 @@ import { roles } from "../../../domain_model/roles"
 
 
 var ElectionsModel =  ServiceLocator.electionsDb();
+var accountService = ServiceLocator.accountService();
 const className="Elections.Controllers";
 
 const getElectionByID = async (req: any, res: any, next: any) => {
-    Logger.info(req, `${__filename}.getElectionByID ${req.params.id}`);
+    Logger.info(req, `${className}.getElectionByID ${req.params.id}`);
+    if (!req.params.id){
+        return next();
+    }
     try {
         var election = await ElectionsModel.getElectionByID(req.params.id, req);
         Logger.debug(req, `get election ${req.params.id}`);
@@ -19,10 +23,43 @@ const getElectionByID = async (req: any, res: any, next: any) => {
             Logger.info(req, `${failMsg} electionId=${req.params.id}}`);
             return responseErr(res, req, 400, failMsg);
         }
+
+        req.election = election;
+        return next();
+
+    } catch (err:any) {
+        var failMsg = "Could not retrieve election";
+        Logger.error(req, `${failMsg} ${err.message}`);
+        return responseErr(res, req, 500, failMsg);
+    }
+}
+
+const electionSpecificAuth = async (req: IRequest, res: any, next: any) => {
+    if (!req.election){
+        return next();
+    }
+    const electionKey = req.election.auth_key;
+    if (electionKey == null || electionKey == ""){
+        return next();
+    }
+    var user = accountService.extractUserFromRequest(req, electionKey);
+    req.user = user;
+    return next();
+}
+
+const electionPostAuthMiddleware = async (req: any, res: any, next: any) => {
+    Logger.info(req, `${className}.electionPostAuthMiddleware ${req.params.id}`);
+    try {
         // Update Election State
+        var election = req.election;
+        if (!election){
+            var failMsg = "Election not found";
+            Logger.info(req, `${failMsg} electionId=${req.params.id}}`);
+            return responseErr(res, req, 400, failMsg);
+        }
         election = await updateElectionStateIfNeeded(req, election);
 
-        req.election = election
+        req.election = election;
 
         req.user_auth = {}
         req.user_auth.roles = []
@@ -40,11 +77,11 @@ const getElectionByID = async (req: any, res: any, next: any) => {
             req.user_auth.roles.push(roles.credentialer)
           }
         }
-        Logger.debug(req, `done with getElectionById...`);
-        Logger.debug(req,req.user_auth)
-        return next()
+        Logger.debug(req, `done with electionPostAuthMiddleware...`);
+        Logger.debug(req,req.user_auth);
+        return next();
     } catch (err:any) {
-        var failMsg = "Could not retrieve election";
+        var failMsg = "Could not modify election";
         Logger.error(req, `${failMsg} ${err.message}`);
         return responseErr(res, req, 500, failMsg);
     }
@@ -100,4 +137,6 @@ const returnElection = async (req: any, res: any, next: any) => {
 module.exports = {
     returnElection,
     getElectionByID,
+    electionSpecificAuth,
+    electionPostAuthMiddleware
 }

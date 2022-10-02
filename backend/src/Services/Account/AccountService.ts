@@ -3,6 +3,8 @@ import axios from 'axios';
 import qs from 'qs';
 import { InternalServerError, Unauthorized } from "@curveball/http-errors";
 import { IRequest } from '../../IRequest';
+import { Election } from '../../../../domain_model/Election';
+import AccountServiceUtils from './AccountServiceUtils';
 
 var jwt = require('jsonwebtoken');
 
@@ -68,13 +70,9 @@ export default class AccountService {
         };
     }
 
-    extractUserFromRequest = (req:IRequest) => {
+    extractUserFromRequest = (req:IRequest, customKey?:string) => {
         const token = req.cookies.id_token;
-        try {
-            return jwt.verify(token, this.privateKey);
-        } catch (e:any){
-            Logger.warn(req, "Invalid JWT signature");
-            return null;
-        }
+        const key = customKey ? customKey : this.privateKey;
+        return AccountServiceUtils.extractUserFromRequest(req, token, key);
     }
 }

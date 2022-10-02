@@ -16,7 +16,8 @@ export interface Election {
     credential_ids?:Uid[];  // user_id of account with credentialling access
     state:          string; // State of election, In development, finalized, etc
     races:          Race[]; // one or more race definitions
-    settings:      ElectionSettings;
+    settings:       ElectionSettings;
+    auth_key?:      string;
   }
 
   
