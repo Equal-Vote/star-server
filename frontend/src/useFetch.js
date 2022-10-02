@@ -15,6 +15,7 @@ const useFetch = (url, method) => {
             },
             body: JSON.stringify(data)
         }
+        setIsPending(true);
         try {
             const res = await fetch(url, options)
             if (!res.ok) {
