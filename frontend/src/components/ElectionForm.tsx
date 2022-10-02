@@ -1,7 +1,5 @@
 import { useState } from "react"
 import React from 'react'
-import { Election } from '../../../domain_model/Election'
-import { Race } from "../../../domain_model/Race"
 import { Candidate } from "../../../domain_model/Candidate"
 import AddCandidate from "./AddCandidate"
 // import Button from "./Button"
@@ -9,22 +7,16 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
 // https://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-deep-clone-an-object-in-javascript
 // https://web.dev/structured-clone/
 import structuredClone from '@ungap/structured-clone';
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import Slider from "@material-ui/core/Slider";
 import Button from "@material-ui/core/Button";
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
-import { ElectionSettings } from "../../../domain_model/ElectionSettings"
 import { Box, Checkbox, InputLabel } from "@material-ui/core"
-import { isReturnStatement } from "typescript"
 import IconButton from '@material-ui/core/IconButton'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'

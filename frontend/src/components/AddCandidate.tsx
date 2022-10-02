@@ -1,26 +1,11 @@
 // import Button from "./Button"
-import { Link } from "react-router-dom"
 import { useState } from 'react'
 import { Candidate } from "../../../domain_model/Candidate"
 import React from 'react'
-import { MouseEventHandler } from 'react'
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import Slider from "@material-ui/core/Slider";
 import Button from "@material-ui/core/Button";
 import Typography from '@material-ui/core/Typography';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Box from '@material-ui/core/Box'
 
 type CandidateProps = {
     onSaveCandidate: Function,

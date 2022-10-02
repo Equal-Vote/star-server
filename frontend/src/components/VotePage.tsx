@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import StarBallot from "./StarBallot";
 import useFetch from "../useFetch";
 import { useParams } from "react-router";
