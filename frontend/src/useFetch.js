@@ -30,7 +30,7 @@ const useFetch = (url, method) => {
             setData(data);
             setIsPending(false);
             setError(null);
-            return true
+            return data
         } catch (err) {
             setIsPending(false);
             setError(err.message);

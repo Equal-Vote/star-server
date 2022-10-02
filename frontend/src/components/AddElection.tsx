@@ -2,27 +2,34 @@ import React from 'react'
 import useFetch from '../useFetch';
 import ElectionForm from "./ElectionForm";
 import Container from '@material-ui/core/Container';
+import { useNavigate } from "react-router"
 
 const AddElection = ({ authSession }) => {
 
-    const { makeRequest: postElection } = useFetch('/API/Elections', 'post')
+    const navigate = useNavigate()
+    const { error, isPending, makeRequest: postElection } = useFetch('/API/Elections', 'post')
     const onAddElection = async (election, voterIds) => {
         // calls post election api, throws error if response not ok
-        if ((! await postElection(
+        const newElection = await postElection(
             {
                 Election: election,
                 VoterIDList: voterIds,
-            }))) {
+            })
+        if ((!newElection)) {
             throw Error("Error submitting election");
         }
+        
+        navigate(`/Election/${newElection.election.election_id}`)
     }
 
     return (
         <Container >
             {!authSession.isLoggedIn() && <div> Must be logged in to create elections </div>}
             {authSession.isLoggedIn() &&
-                <ElectionForm authSession={authSession} onSubmitElection={onAddElection} prevElectionData={null} submitText='Create Election' />
+                <ElectionForm authSession={authSession} onSubmitElection={onAddElection} prevElectionData={null} submitText='Create Election' disableSubmit={isPending} />
             }
+            {isPending && <div> Submitting... </div>}
+            {error && <div> {error} </div>}
         </Container>
     )
 }

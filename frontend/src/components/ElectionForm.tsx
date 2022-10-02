@@ -1,6 +1,5 @@
 import { useState } from "react"
 import React from 'react'
-import { useNavigate } from "react-router"
 import { Election } from '../../../domain_model/Election'
 import { Race } from "../../../domain_model/Race"
 import { Candidate } from "../../../domain_model/Candidate"
@@ -30,7 +29,7 @@ import IconButton from '@material-ui/core/IconButton'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 
-const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitText}) => {
+const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitText, disableSubmit}) => {
     // I'm referencing 4th option here
     // https://daveceddia.com/usestate-hook-examples/
 
@@ -93,8 +92,6 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
         return s
     }
 
-    const navigate = useNavigate()
-
     const onSubmit = (e) => {
         e.preventDefault()
 
@@ -121,7 +118,6 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
 
         try {
             onSubmitElection(newElection, voterIDList.split('\n'))
-            navigate('/')
         } catch (error) {
             console.log(error)
         }
@@ -427,7 +423,11 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                     <Button variant='outlined' onClick={() => onAddCandidate()} >Add</Button>
                     </Grid>
                     </Grid>
-                    <input type='submit' value={submitText} className='btn btn-block' />
+                    <input 
+                        type='submit' 
+                        value={submitText} 
+                        className='btn btn-block'
+                        disabled = {disableSubmit} />
                 </Grid>
             </Container>
         </form>
