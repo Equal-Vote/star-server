@@ -2,10 +2,13 @@ import Logger from '../Logging/Logger';
 import axios from 'axios';
 import qs from 'qs';
 import { InternalServerError, Unauthorized } from "@curveball/http-errors";
+import { IRequest } from '../../IRequest';
+
+var jwt = require('jsonwebtoken');
 
 export default class AccountService {
     authConfig;
-
+    private privateKey:string;
 
     constructor() {
         const keycloakAuthConfig = {
@@ -20,6 +23,11 @@ export default class AccountService {
             },
         }
         this.authConfig = keycloakAuthConfig;
+        if (!process.env.KEYCLOAK_SECRET){
+            throw new Error("AccountService missing process.env.KEYCLOAK_SECRET");
+        } else {
+            this.privateKey = process.env.KEYCLOAK_SECRET;
+        }
     }
 
     getToken = async (req: any) => {
@@ -58,5 +66,15 @@ export default class AccountService {
             Logger.error(req, 'Error while requesting a token', err.response.data);
             throw new InternalServerError("Error requesting token");
         };
+    }
+
+    extractUserFromRequest = (req:IRequest) => {
+        const token = req.cookies.id_token;
+        try {
+            return jwt.verify(token, this.privateKey);
+        } catch (e:any){
+            Logger.warn(req, "Invalid JWT signature");
+            return null;
+        }
     }
 }

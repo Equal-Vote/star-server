@@ -4,14 +4,17 @@ import Logger from "../Services/Logging/Logger"
 import { responseErr } from "../Util"
 import { permission } from "../../../domain_model/permissions"
 import { roles } from "../../../domain_model/roles"
+import ServiceLocator from "../ServiceLocator"
 
-var jwt = require('jsonwebtoken')
 const className = 'Auth.Controllers';
+const accountService = ServiceLocator.accountService();
 
 const getUser = (req: any, res: any, next: any) => {
   Logger.info(req, `${className}.getUser`);
-  //TODO! - This will not verify whether the signature is valid, need to add verification
-  req.user = jwt.decode(req.cookies.id_token)
+  const user = accountService.extractUserFromRequest(req);
+  if (user){
+    req.user = user;
+  }
   next()
 }
 
