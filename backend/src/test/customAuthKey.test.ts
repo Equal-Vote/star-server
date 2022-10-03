@@ -68,7 +68,7 @@ describe("Election with custom auth key", () => {
       th.testComplete();
     });
 
-    test("User canNOT request ballot with app key", async () => {
+    test("User with app key canNOT request ballot", async () => {
         const response = await th.requestBallot(
             electionId,
             testInputs.user1token  //standard test input token with app signature
@@ -78,7 +78,7 @@ describe("Election with custom auth key", () => {
         th.testComplete();
     });
 
-    test("User can request ballot with custom key", async () => {
+    test("User with custom key CAN request ballot", async () => {
         const response = await th.requestBallot(
             electionId,
             user1TokenCustomSigned
@@ -87,6 +87,7 @@ describe("Election with custom auth key", () => {
         expect(response.statusCode).toBe(200);
         expect(response.voterAuth.authorized_voter).toBe(true);
         expect(response.voterAuth.has_voted).toBe(false);
+        expect(response.election.auth_key).toBeUndefined();
         th.testComplete();
     });
 });

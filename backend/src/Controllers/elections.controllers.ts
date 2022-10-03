@@ -1,4 +1,4 @@
-import { Election, electionValidation } from '../../../domain_model/Election';
+import { Election, removeHiddenFields } from '../../../domain_model/Election';
 import ServiceLocator from '../ServiceLocator';
 import Logger from '../Services/Logging/Logger';
 import { responseErr } from '../Util';
@@ -131,7 +131,9 @@ async function updateElectionStateIfNeeded(req:IRequest, election:Election):Prom
 
 const returnElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.returnElection ${req.params.id}`)
-    res.json({ election: req.election, voterAuth: { authorized_voter: req.authorized_voter, has_voted: req.has_voted, roles: req.user_auth.roles} })
+    var election = req.election;
+    removeHiddenFields(election);
+    res.json({ election: election, voterAuth: { authorized_voter: req.authorized_voter, has_voted: req.has_voted, roles: req.user_auth.roles} })
 }
 
 module.exports = {

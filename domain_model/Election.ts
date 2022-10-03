@@ -38,3 +38,7 @@ export function electionValidation(obj:Election): string | null {
   //TODO... etc
   return null;
 }
+
+export function removeHiddenFields(obj:Election):void {
+  obj.auth_key = undefined;
+}
