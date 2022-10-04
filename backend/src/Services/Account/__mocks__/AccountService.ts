@@ -1,6 +1,7 @@
 import { InternalServerError, Unauthorized } from "@curveball/http-errors";
 import { IRequest } from '../../../IRequest';
 import Logger from "../../Logging/Logger";
+import AccountServiceUtils from "../AccountServiceUtils";
 
 var jwt = require('jsonwebtoken');
 
@@ -16,15 +17,13 @@ export default class AccountService {
         return {}
     }
 
-    extractUserFromRequest = (req:IRequest) => {
+    extractUserFromRequest  = (req:IRequest, customKey?:string) => {
         const token = req.cookies.id_token;
         if (!this.verify){
             return jwt.decode(token);
         }
-        try {
-            return jwt.verify(token, this.privateKey);
-        } catch (e:any){
-            return null;
-        }
+
+        const key = customKey ? customKey : this.privateKey;
+        return AccountServiceUtils.extractUserFromRequest(req, token, key);
     }
 }

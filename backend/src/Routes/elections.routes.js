@@ -52,7 +52,10 @@ router.post('/Election/:id/finalize',asyncHandler(finalizeElection))
 
 router.post('/Sandbox',asyncHandler(getSandboxResults))
 
+//router.param('id', asyncHandler(electionController.getElectionByID))
 router.param('id', asyncHandler(electionController.getElectionByID))
+router.param('id', asyncHandler(electionController.electionSpecificAuth))
+router.param('id', asyncHandler(electionController.electionPostAuthMiddleware))
 
 module.exports = router
 
