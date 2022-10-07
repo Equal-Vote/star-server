@@ -15,19 +15,19 @@ const VotePage = ({ election, fetchElection}) => {
   const navigate = useNavigate();
 
   const { data, isPending, error, makeRequest: postBallot } = useFetch(`/API/Election/${id}/vote`, 'post')
-  const onUpdate = (rankings) => {
-    setRankings(rankings)
-    console.log(rankings)
+  const onUpdate = (race_index, newRaceRankings) => {
+    var newRankings = [...rankings]
+    newRankings[race_index] = newRaceRankings
+    setRankings(newRankings)
   }
   const submit = async () => {
-    console.log(rankings)
-
-    const votes: Vote[] = [{
-      race_id: '0',
-      scores: election.races[0].candidates.map((candidate, i) =>
-        ({ 'candidate_id': election.races[0].candidates[i].candidate_id, 'score': rankings[i] } as Score)
+    const votes: Vote[] = 
+      election.races.map((race, race_index) => (
+      {race_id: '0',
+      scores: election.races[race_index].candidates.map((candidate, i) =>
+        ({ 'candidate_id': election.races[race_index].candidates[i].candidate_id, 'score': rankings[race_index][i] } as Score)
       )
-    }]
+      }))
 
     const ballot: Ballot = {
       ballot_id: '0', //Defaults to zero but is assigned ballot id by server when submitted
@@ -36,7 +36,6 @@ const VotePage = ({ election, fetchElection}) => {
       date_submitted: Date.now(),
       status: 'submitted',
     }
-    console.log(ballot)
     // post ballot, if response ok navigate back to election home
     if (!(await postBallot({ ballot: ballot }))) {
       return
@@ -46,13 +45,14 @@ const VotePage = ({ election, fetchElection}) => {
   }
   return (
     <Container disableGutters={true} maxWidth="sm">
+      {election.races.map((race, race_index)=> (
       <StarBallot
-        race={election.races[0]}
-        candidates={election.races[0].candidates}
-        onUpdate={onUpdate}
-        defaultRankings={Array(election.races[0].candidates.length).fill(0)}
+        race={election.races[race_index]}
+        candidates={election.races[race_index].candidates}
+        onUpdate={newRankings => {onUpdate(race_index, newRankings)}}
+        defaultRankings={Array(election.races[race_index].candidates.length).fill(0)}
       />
-
+      ))}
       <Button
         variant='outlined'
         onClick={submit}

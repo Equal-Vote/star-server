@@ -19,7 +19,6 @@ export default function StarBallot({
       candidates={candidates}
       rankings={rankings}
       onClick={(i, j) => {
-        console.log(`${candidates[i].candidate_name} = ${j - 1}`);
         const newRankings = [...rankings];
         newRankings[i] = newRankings[i] === j ? 0 : j;
         setRankings(newRankings);
