@@ -118,7 +118,7 @@ const Sandbox = () => {
                     multiline
                     type="text"
                     value={candidates}
-                    helperText = "Comma seperated list of candidates"
+                    helperText="Comma seperated list of candidates"
                     onChange={(e) => setCandidates(e.target.value)}
                 />
             </Grid>
@@ -133,7 +133,7 @@ const Sandbox = () => {
                     rows="5"
                     type="text"
                     value={cvr}
-                    helperText = "Comma seperated scores, one ballot per line, optional 'x:' in front of ballot to indicate x number of that ballot"
+                    helperText="Comma seperated scores, one ballot per line, optional 'x:' in front of ballot to indicate x number of that ballot"
                     onChange={(e) => setCvr(e.target.value)}
                 />
             </Grid>
@@ -145,19 +145,14 @@ const Sandbox = () => {
                     {error && <div> {error} </div>}
                     {isPending && <div> Loading Results... </div>}
                     {data && (
-                        <Results data={{
-                            Results: data.Results,
-                            Election: {
-                                title: '',
-                                races: [
-                                    {
-                                        candidates: candidates.split(',').map((candidate) => [{ candidate_name: candidate }]),
-                                        voting_method: data.voting_method,
-                                        num_winners: nWinners,
-                                    }
-                                ]
-                            }
-                        }} />)}
+                        <Results
+                            result={data.Results}
+                            race={{
+                                candidates: candidates.split(',').map((candidate) => [{ candidate_name: candidate }]),
+                                voting_method: data.voting_method,
+                                num_winners: nWinners,
+                            }}
+                        />)}
                 </Box>
             </Grid>
             <Grid item xs={12} sm={2}>
