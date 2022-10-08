@@ -11,6 +11,7 @@ var jwt = require('jsonwebtoken');
 export default class AccountService {
     authConfig;
     private privateKey:string;
+    private publicKey: string;
 
     constructor() {
         const keycloakAuthConfig = {
@@ -29,6 +30,11 @@ export default class AccountService {
             throw new Error("AccountService missing process.env.KEYCLOAK_SECRET");
         } else {
             this.privateKey = process.env.KEYCLOAK_SECRET;
+        }
+        if (!process.env.KEYCLOAK_PUBLIC_KEY){
+            throw new Error("AccountService missing process.env.KEYCLOAK_PUBLIC_KEY");
+        } else {
+            this.publicKey = ['-----BEGIN PUBLIC KEY-----',process.env.KEYCLOAK_PUBLIC_KEY,'-----END PUBLIC KEY-----',].join('\n');;
         }
     }
 
@@ -72,7 +78,7 @@ export default class AccountService {
 
     extractUserFromRequest = (req:IRequest, customKey?:string) => {
         const token = req.cookies.id_token;
-        const key = customKey ? customKey : this.privateKey;
+        const key = customKey ? customKey : this.publicKey;
         return AccountServiceUtils.extractUserFromRequest(req, token, key);
     }
 }
