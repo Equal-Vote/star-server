@@ -30,21 +30,22 @@ const EmailService = ServiceLocator.emailService();
 
 async function castVoteController(req: IRequest, res: any, next: any) {
     Logger.info(req, "Cast Vote Controller");
-
+    
+    const targetElection = req.election;
+    if (targetElection == null){
+            const errMsg = "Invalid Ballot: invalid election Id";
+            Logger.info(req, errMsg);
+            throw new BadRequest(errMsg);
+        }
     const inputBallot:Ballot = req.body.ballot;
-    const validationErr = ballotValidation(inputBallot);
+    const validationErr = ballotValidation(targetElection, inputBallot);
     if (validationErr){
         const errMsg = "Invalid Ballot: "+ validationErr
         Logger.info(req, errMsg);
         throw new BadRequest(errMsg);
     }
 
-    const targetElection = req.election;
-    if (targetElection == null){
-        const errMsg = "Invalid Ballot: invalid election Id";
-        Logger.info(req, errMsg);
-        throw new BadRequest(errMsg);
-    }
+    
 
     if (targetElection.state!=='open'){
         Logger.info(req, "Ballot Rejected. Election not open.", targetElection);
