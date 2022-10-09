@@ -14,12 +14,12 @@ console.log("trying to start app...");
 const prodEndpoints = [
     'https://star-vote.herokuapp.com/',
   ];
-let keycloakBaseUrl;
-if (prodEndpoints.includes(window.location.origin)) {
-    keycloakBaseUrl = 'https://auth.star.vote:8443/realms/STAR%20Voting/protocol/openid-connect';
-} else {
-    keycloakBaseUrl = 'https://auth.star.vote:8443/realms/STAR%20Voting%20Dev/protocol/openid-connect';
-}
+let keycloakBaseUrl = 'https://auth.star.vote:8443/realms/STAR%20Voting%20Dev/protocol/openid-connect';
+// if (prodEndpoints.includes(window.location.origin)) {
+//     keycloakBaseUrl = 'https://auth.star.vote:8443/realms/STAR%20Voting/protocol/openid-connect';
+// } else {
+//     keycloakBaseUrl = 'https://auth.star.vote:8443/realms/STAR%20Voting%20Dev/protocol/openid-connect';
+// }
 
 const keycloakAuthConfig = {
     clientId: 'star_vote_web',

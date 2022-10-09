@@ -2,10 +2,16 @@ import Logger from '../Logging/Logger';
 import axios from 'axios';
 import qs from 'qs';
 import { InternalServerError, Unauthorized } from "@curveball/http-errors";
+import { IRequest } from '../../IRequest';
+import { Election } from '../../../../domain_model/Election';
+import AccountServiceUtils from './AccountServiceUtils';
+
+var jwt = require('jsonwebtoken');
 
 export default class AccountService {
     authConfig;
-
+    private privateKey:string;
+    private publicKey: string;
 
     constructor() {
         const keycloakAuthConfig = {
@@ -20,6 +26,16 @@ export default class AccountService {
             },
         }
         this.authConfig = keycloakAuthConfig;
+        if (!process.env.KEYCLOAK_SECRET){
+            throw new Error("AccountService missing process.env.KEYCLOAK_SECRET");
+        } else {
+            this.privateKey = process.env.KEYCLOAK_SECRET;
+        }
+        if (!process.env.KEYCLOAK_PUBLIC_KEY){
+            throw new Error("AccountService missing process.env.KEYCLOAK_PUBLIC_KEY");
+        } else {
+            this.publicKey = ['-----BEGIN PUBLIC KEY-----',process.env.KEYCLOAK_PUBLIC_KEY,'-----END PUBLIC KEY-----',].join('\n');;
+        }
     }
 
     getToken = async (req: any) => {
@@ -58,5 +74,11 @@ export default class AccountService {
             Logger.error(req, 'Error while requesting a token', err.response.data);
             throw new InternalServerError("Error requesting token");
         };
+    }
+
+    extractUserFromRequest = (req:IRequest, customKey?:string) => {
+        const token = req.cookies.id_token;
+        const key = customKey ? customKey : this.publicKey;
+        return AccountServiceUtils.extractUserFromRequest(req, token, key);
     }
 }
