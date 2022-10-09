@@ -169,5 +169,237 @@ export default {
             }
             ]
         }]
-    }
+    },
+    MultiRaceElection : {
+        election_id: "0",
+        title: 'Election 1',
+        state: 'open',
+        frontend_url: '',
+        owner_id: 'Alice1234',
+        credential_ids: ['Alice@email.com'],
+        races: [
+            {
+                race_id: '0',
+                title:'Race 0',
+                num_winners: 1,
+                voting_method:'STAR',
+                candidates:[
+                    {
+                        candidate_id:'0',
+                        candidate_name: 'A',
+                    },
+                    {
+                        candidate_id:'1',
+                        candidate_name: 'B',
+                    },
+                    {
+                        candidate_id:'2',
+                        candidate_name: 'C',
+                    }
+                ]
+            },
+            {
+                race_id: '1',
+                title:'Race 1',
+                num_winners: 1,
+                voting_method:'STAR',
+                candidates:[
+                    {
+                        candidate_id:'0',
+                        candidate_name: 'D',
+                    },
+                    {
+                        candidate_id:'1',
+                        candidate_name: 'E',
+                    },
+                    {
+                        candidate_id:'2',
+                        candidate_name: 'F',
+                    }
+                ]
+            }
+        ] as Race[],
+        settings: {
+           election_roll_type: 'None',
+           voter_id_type: 'None'
+        } as ElectionSettings
+    } as Election,
+    MultiRaceBallotValid1: {
+        ballot_id: "0",
+        election_id: "0",
+        status: 'Submitted',
+        date_submitted: Date.now(),
+        votes: [{
+            race_id:'0',
+            scores: [{
+                candidate_id: 'A',
+                score: 5,
+            },
+            {
+                candidate_id: 'B',
+                score: 0,
+
+            },
+            {
+                candidate_id: 'C',
+                score: 4,
+            }
+            ]
+        }]
+    } as Ballot,
+    MultiRaceBallotValid2: {
+        ballot_id: "1",
+        election_id: "0",
+        status: 'Submitted',
+        date_submitted: Date.now(),
+        votes: [{
+            race_id:'0',
+            scores: [{
+                candidate_id: '0',
+                score: 5,
+            },
+            {
+                candidate_id: '1',
+                score: 0,
+
+            },
+            {
+                candidate_id: '2',
+                score: 4,
+            }
+            ]
+        },
+        {
+            race_id:'1',
+            scores: [{
+                candidate_id: '0',
+                score: 5,
+            },
+            {
+                candidate_id: '1',
+                score: 0,
+
+            },
+            {
+                candidate_id: '2',
+                score: 4,
+            }
+            ]
+        }]
+    } as Ballot,
+    MultiRaceBallotInvalid1: {
+        ballot_id: "2",
+        election_id: "0",
+        status: 'Submitted',
+        date_submitted: Date.now(),
+        votes: [{
+            race_id:'0',
+            scores: [{
+                candidate_id: '0',
+                score: 5,
+            },
+            {
+                candidate_id: '1',
+                score: 0,
+
+            },
+            {
+                candidate_id: '2',
+                score: 4,
+            }
+            ]
+        },
+        {
+            race_id:'1',
+            scores: [{
+                candidate_id: '0',
+                score: 5,
+            },
+            {
+                candidate_id: '1',
+                score: 0,
+
+            },
+            {
+                candidate_id: '2',
+                score: 4,
+            }
+            ]
+        },
+        {
+            race_id:'1',
+            scores: [{
+                candidate_id: '0',
+                score: 5,
+            },
+            {
+                candidate_id: '1',
+                score: 0,
+
+            },
+            {
+                candidate_id: '2',
+                score: 4,
+            }
+            ]
+        }]
+    } as Ballot,
+    MultiRaceBallotInvalid2: {
+        ballot_id: "3",
+        election_id: "0",
+        status: 'Submitted',
+        date_submitted: Date.now(),
+        votes: [{
+            race_id:'0',
+            scores: [{
+                candidate_id: '0',
+                score: 5,
+            },
+            {
+                candidate_id: '1',
+                score: 0,
+
+            },
+            {
+                candidate_id: '2',
+                score: 4,
+            }
+            ]
+        },
+        {
+            race_id:'1',
+            scores: [{
+                candidate_id: '0',
+                score: 5,
+            },
+            {
+                candidate_id: '1',
+                score: 0,
+
+            },
+            {
+                candidate_id: '2',
+                score: 4,
+            }
+            ]
+        },
+        {
+            race_id:'2',
+            scores: [{
+                candidate_id: '0',
+                score: 5,
+            },
+            {
+                candidate_id: '1',
+                score: 0,
+
+            },
+            {
+                candidate_id: '2',
+                score: 4,
+            }
+            ]
+        }]
+    } as Ballot,
 }
+
