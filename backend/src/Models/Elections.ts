@@ -70,7 +70,7 @@ export default class ElectionsDB {
     createElection(election: Election, ctx:ILoggingContext, reason:string): Promise<Election> {
         Logger.debug(ctx, `${className}.createElection`, election);
 
-        var sqlString = `INSERT INTO ${this._tableName} (election_id, title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings)
+        var sqlString = `INSERT INTO ${this._tableName} (election_id, title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings,auth_key)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING *;`;
         Logger.debug(ctx, sqlString);
         
@@ -107,7 +107,7 @@ export default class ElectionsDB {
 
     updateElection(election: Election, ctx:ILoggingContext, reason:string): Promise<Election> {
         Logger.debug(ctx, `${className}.updateElection`, election);
-        var sqlString = `UPDATE ${this._tableName} SET (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings) =
+        var sqlString = `UPDATE ${this._tableName} SET (title,description,frontend_url,start_time,end_time,support_email,owner_id,audit_ids,admin_ids,credential_ids,state,races,settings,auth_key) =
         ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) WHERE election_id = $1 RETURNING *;`;
         Logger.debug(ctx, sqlString);
 

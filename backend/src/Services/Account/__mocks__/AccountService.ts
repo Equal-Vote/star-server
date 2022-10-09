@@ -8,6 +8,7 @@ var jwt = require('jsonwebtoken');
 export default class AccountService {
 
     privateKey = "privateKey";
+    publicKey = "publicKey"
     verify = false;
 
     constructor() {
