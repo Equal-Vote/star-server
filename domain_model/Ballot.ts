@@ -1,3 +1,5 @@
+import { Election } from "./Election";
+import { Race } from "./Race";
 import { Uid } from "./Uid";
 import { Vote } from "./Vote";
 
@@ -20,7 +22,7 @@ export interface BallotAction {
 }
 
 
-export function ballotValidation(obj:Ballot): string | null {
+export function ballotValidation(election: Election, obj:Ballot): string | null {
     if (!obj){
         return "Ballot is null";
     }
@@ -35,6 +37,16 @@ export function ballotValidation(obj:Ballot): string | null {
     if (!obj.votes){
         return "Invalid Votes";
     }
-    //TODO... etc
+    const race_ids = election.races.map((race: Race) => race.race_id)
+    const ballot_race_ids = obj.votes.map((vote: Vote) => vote.race_id)
+    const hasDuplicates = new Set(ballot_race_ids).size !== ballot_race_ids.length
+    if (hasDuplicates) {
+        return "Duplicate votes";
+    }
+    const validIds = ballot_race_ids.every(id => race_ids.includes(id))
+    if (!validIds) {
+        return "Invalid IDs";
+    }
+
     return null;
   }

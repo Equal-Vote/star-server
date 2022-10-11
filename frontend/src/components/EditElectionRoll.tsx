@@ -3,11 +3,9 @@ import React from 'react'
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@material-ui/core";
 import useFetch from "../useFetch";
-import { ElectionRollState } from "../../../domain_model/ElectionRoll";
 
 const EditElectionRoll = ({ roll, onClose, fetchRolls, id}) => {
     const [updatedRoll, setUpdatedRoll] = useState(roll)

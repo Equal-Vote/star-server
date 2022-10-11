@@ -15,6 +15,7 @@ const useFetch = (url, method) => {
             },
             body: JSON.stringify(data)
         }
+        setIsPending(true);
         try {
             const res = await fetch(url, options)
             if (!res.ok) {
@@ -30,7 +31,7 @@ const useFetch = (url, method) => {
             setData(data);
             setIsPending(false);
             setError(null);
-            return true
+            return data
         } catch (err) {
             setIsPending(false);
             setError(err.message);

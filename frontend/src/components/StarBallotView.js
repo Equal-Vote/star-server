@@ -1,17 +1,13 @@
 import React from "react";
 import { useState } from 'react'
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import ProfilePic from '../images/blank-profile.png'
 import { Link } from "@material-ui/core";
-import { createTheme } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/styles';
 import Box from '@material-ui/core/Box';
 
 function RowHeading({ candidate, party, className }) {
@@ -226,13 +222,9 @@ export default function StarBallotView({
   race,
   candidates,
   rankings,
-  onClick,
-  readonly,
-  onSubmitBallot
+  onClick
 }) {
   return (
-    <Container disableGutters={true} maxWidth="sm">
-
       <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }}>
         <Grid container alignItems="center" justify="center" direction="column">
 
@@ -271,8 +263,5 @@ export default function StarBallotView({
 
         </Grid>
       </Box>
-      <Button variant='outlined' onClick={onSubmitBallot}>Submit Ballot</Button>
-
-    </Container>
   );
 }

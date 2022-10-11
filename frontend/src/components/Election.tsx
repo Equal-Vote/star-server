@@ -38,7 +38,7 @@ const Election = ({ authSession }) => {
           <Grid xs={8}>
             <Routes>
               <Route path='/' element={<ElectionHome authSession={authSession} electionData={data} fetchElection={fetchData} />} />
-              <Route path='/vote' element={<VotePage election={data.election} />} />
+              <Route path='/vote' element={<VotePage election={data.election} fetchElection={fetchData}/>} />
               <Route path='/results' element={<ViewElectionResults election={data.election} />} />
               <Route path='/edit' element={<EditElection authSession={authSession} election={data.election} />} />
               <Route path='/admin' element={<Admin authSession={authSession} />} />

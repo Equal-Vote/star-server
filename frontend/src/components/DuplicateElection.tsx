@@ -4,13 +4,16 @@ import useFetch from "../useFetch";
 import Container from '@material-ui/core/Container';
 import ElectionForm from "./ElectionForm";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router"
 
 const DuplicateElection = ({ authSession }) => {
+    const navigate = useNavigate()
     const { id } = useParams();
 
     const [data, setData] = useState(null);
 
     let { data: prevData, isPending, error, makeRequest: fetchElection } = useFetch(`/API/Election/${id}`, 'get');
+    const { isPending: postIsPending, error: postError, makeRequest: postElection } = useFetch('/API/Elections', 'post')
     useEffect(() => {
         fetchElection()
     }, [])
@@ -24,21 +27,17 @@ const DuplicateElection = ({ authSession }) => {
     )
 
     const onCreateElection = async (election, voterIds) => {
-        const res = await fetch('/API/Elections', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+        // calls post election api, throws error if response not ok
+        const newElection = await postElection(
+            {
                 Election: election,
                 VoterIDList: voterIds,
             })
-        })
-        if (!res.ok) {
-            Error('Could not fetch data')
+        if ((!newElection)) {
+            throw Error("Error submitting election");
         }
-        return res
+        
+        navigate(`/Election/${newElection.election.election_id}`)
     }
 
     return (
@@ -47,8 +46,10 @@ const DuplicateElection = ({ authSession }) => {
             {isPending && <div> Loading Election... </div>}
             {!authSession.isLoggedIn() && <div> Must be logged in to create elections </div>}
             {authSession.isLoggedIn() && data && data.election &&
-                <ElectionForm authSession={authSession} onSubmitElection={onCreateElection} prevElectionData={data.election} submitText='Create Election' />
+                <ElectionForm authSession={authSession} onSubmitElection={onCreateElection} prevElectionData={data.election} submitText='Create Election' disableSubmit={postIsPending}/>
             }
+            {postIsPending && <div> Submitting... </div>}
+            {postError && <div> {postError} </div>}
         </Container>
     )
 }
