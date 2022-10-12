@@ -33,7 +33,8 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
             end_time: new Date(''),
             description: '',
             races: [
-                {
+                {   
+                    race_id: '0',
                     title: '',
                     description: '',
                     num_winners: 1,
