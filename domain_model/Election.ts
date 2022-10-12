@@ -1,3 +1,4 @@
+import { ElectionRoll } from "./ElectionRoll";
 import { ElectionSettings } from "./ElectionSettings";
 import { Race } from "./Race";
 import { Uid } from "./Uid";
@@ -39,6 +40,27 @@ export function electionValidation(obj:Election): string | null {
   return null;
 }
 
-export function removeHiddenFields(obj:Election):void {
+export function removeHiddenFields(obj:Election, electionRoll: ElectionRoll|null):void {
   obj.auth_key = undefined;
+  if (obj.state==='open' && electionRoll?.precinct){
+    // If election is open and precinct is defined, remove races that don't include precinct
+    obj.races = getApprovedRaces(obj, electionRoll.precinct)
+    
+  }
+}
+// Where should this belong..
+export function getApprovedRaces(election:Election, precinct:string|undefined) {
+  let approvedRaces:Race[] = [];
+  election.races.forEach((race:Race) => {
+    if (!race.precincts) {
+      // If precincts aren't defined, open to all voters
+      approvedRaces.push(race)
+      return
+    }
+    if (precinct && race.precincts.has(precinct)){
+      // If race precinct list contains voter's precinct
+      approvedRaces.push(race)
+    }
+  })
+  return approvedRaces
 }

@@ -11,6 +11,7 @@ export interface ElectionRoll {
     state: ElectionRollState; //state of election roll 
     history?: ElectionRollAction[];// history of changes to election roll
     registration?: any; //Registration data for voter
+    precinct?: string; // Precint of voter
 }
 
 export interface ElectionRollAction {

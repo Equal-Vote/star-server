@@ -28,7 +28,8 @@ export default class ElectionRollDB implements IElectionRollStore{
             PRIMARY KEY(election_id,voter_id),
             state           VARCHAR NOT NULL,
             history         json,
-            registration    json
+            registration    json,
+            pricinct        VARCHAR,
           );
         `;
         Logger.debug(appInitContext, query);
@@ -36,10 +37,10 @@ export default class ElectionRollDB implements IElectionRollStore{
         return p.then((_: any) => {
             //This will add the new field to the live DB in prod.  Once that's done we can remove this
             var historyQuery = `
-            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS history json
+            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS pricinct VARCHAR
             `;
             return this._postgresClient.query(historyQuery).catch((err:any) => {
-                console.log("err adding history column to DB: " + err.message);
+                console.log("err adding precinct column to DB: " + err.message);
                 return err;
             });
         }).then((_:any)=> {
@@ -65,8 +66,9 @@ export default class ElectionRollDB implements IElectionRollStore{
             electionRoll.submitted,
             electionRoll.state,
             JSON.stringify(electionRoll.history),
-            JSON.stringify(electionRoll.registration)]))
-        var sqlString = format(`INSERT INTO ${this._tableName} (election_id,voter_id,submitted,state,history,registration)
+            JSON.stringify(electionRoll.registration),
+            electionRoll.precinct]))
+        var sqlString = format(`INSERT INTO ${this._tableName} (election_id,voter_id,submitted,state,history,registration,pricinct)
         VALUES %L;`, values);
         Logger.debug(ctx, sqlString)
         Logger.debug(ctx, values)

@@ -17,7 +17,7 @@ const getElections = async (req: any, res: any, next: any) => {
         throw new BadRequest(msg);
     }
     elections.forEach((elec:Election)=> {
-        removeHiddenFields(elec);
+        removeHiddenFields(elec, null);
     })
     res.json( { elections : elections });
 }
