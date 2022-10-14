@@ -57,7 +57,7 @@ export function getApprovedRaces(election:Election, precinct:string|undefined) {
       approvedRaces.push(race)
       return
     }
-    if (precinct && race.precincts.has(precinct)){
+    if (precinct && race.precincts.includes(precinct)){
       // If race precinct list contains voter's precinct
       approvedRaces.push(race)
     }

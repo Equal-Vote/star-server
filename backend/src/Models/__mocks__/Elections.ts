@@ -55,7 +55,7 @@ export default class ElectionsDB {
             Logger.debug(ctx, JSON.stringify(this.elections));
             return Promise.resolve(null)
         }
-        return Promise.resolve(election)
+        return Promise.resolve(JSON.parse(JSON.stringify(election)))//Simple deep copy
     }
 
     delete(election_id: Uid, ctx:ILoggingContext): Promise<Election | null> {
