@@ -40,6 +40,7 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                     num_winners: 1,
                     voting_method: 'STAR',
                     candidates: [] as Candidate[],
+                    precincts: undefined,
                 }
             ],
             settings: {
@@ -102,6 +103,11 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
             owner_id: authSession.getIdField('sub'),
             state: 'draft',
         }
+        if (newElection.races.length===1) {
+            // If only one race, use main eleciton title and description
+            newElection.races[0].title = newElection.title
+            newElection.races[0].description = newElection.description
+        }
 
         try {
             onSubmitElection(newElection)
@@ -131,6 +137,7 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                         num_winners: 1,
                         voting_method: 'STAR',
                         candidates: [] as Candidate[],
+                        precincts: undefined,
                     }
             )
         })
@@ -379,6 +386,26 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                                     onChange={(e) => applyElectionUpdate(election => {election.races[race_index].description = e.target.value})}
                                     />
                                 </Grid>
+                                
+                                {election.settings.election_roll_type!=='None' && 
+                                <Grid item>
+                                <TextField
+                                    id={`race-precincts-${String(race_index)}`}
+                                    name="precincts"
+                                    label="Precincts"
+                                    inputProps={getStyle('description')}
+                                    multiline
+                                    type="text"
+                                    value={race.precincts ? election.races[race_index].precincts.join('\n') : ''}
+                                    onChange={(e) => applyElectionUpdate(election => {
+                                        if (e.target.value===''){
+                                            election.races[race_index].precincts = undefined
+                                        }
+                                        else {
+                                        election.races[race_index].precincts = e.target.value.split('\n')
+                                    }})}
+                                    />
+                                </Grid>}
                                 </>}
                             <Grid item>
                             <Box sx={{ minWidth: 120 }}>

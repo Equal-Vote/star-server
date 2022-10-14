@@ -23,6 +23,7 @@ export default function Sidebar({ electionData }) {
             {electionData.voterAuth?.roles?.length > 0 &&
                 <Box border={2} sx={{ display: 'flex', mt: 5, ml: 0, mr: 0, width: '100%' }}>
                     <Grid container justify="center" direction="column" >
+                        <ListItem text='Home' link={`/Election/${id}/`} />
                         {electionData.election.state === 'draft' &&
                             <ListItem text='Edit Election' link={`/Election/${id}/edit`} />}
                         <ListItem text='Voter Rolls' link={`/Election/${id}/admin`} />

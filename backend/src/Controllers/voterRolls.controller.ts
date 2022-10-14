@@ -130,8 +130,10 @@ const getVoterAuth = async (req: any, res: any, next: any) => {
             return res.json({
                 voterAuth: {
                     authorized_voter: false,
-                    required: "Voter ID"
-                }
+                    required: "Voter ID",
+                    roles: req.user_auth.roles
+                },
+                election: ((req.user_auth.roles.length>0) ? req.election : undefined) ,// Quick fix to frontend bug 
             })
         }
         req.voter_id = req.cookies.voter_id

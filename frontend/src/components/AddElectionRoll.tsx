@@ -47,7 +47,6 @@ const AddElectionRoll = ({ election, onClose }) => {
                         precinct: csvSplit[1],
                         state: 'approved',
                     })
-
                 }
             })
             const newRolls = await postRoll.makeRequest({electionRoll: rolls})
@@ -75,9 +74,11 @@ const AddElectionRoll = ({ election, onClose }) => {
                                 name="email-list"
                                 label="Email List"
                                 multiline
+                                fullWidth
                                 type="text"
                                 value={voterIDList}
                                 onChange={(e) => setVoterIDList(e.target.value)}
+                                helperText="One email per line, to specify precint write email and precint separated by comma (joe@email.com,precintA)"
                             />
                         </Grid>
                     }
@@ -88,9 +89,11 @@ const AddElectionRoll = ({ election, onClose }) => {
                                 name="id-list"
                                 label="Voter ID List"
                                 multiline
+                                fullWidth
                                 type="text"
                                 value={voterIDList}
                                 onChange={(e) => setVoterIDList(e.target.value)}
+                                helperText="One ID per line, to specify precint write ID and precint separated by comma (ID1234,precintA)"
                             />
                         </Grid>
                     }

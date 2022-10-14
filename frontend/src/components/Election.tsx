@@ -24,18 +24,18 @@ const Election = ({ authSession }) => {
   }, [])
   
   const navigate = useNavigate();
-
+  
   return (
     <>
       {error && <div> {error} </div>}
       {isPending && <div> Loading Election... </div>}
-      <VoterAuth authSession={authSession} electionData={data} fetchElection={fetchData} />
       {data?.election &&
         <Grid container>
           <Grid item xs={2}>
             <Sidebar electionData={data} />
           </Grid>
           <Grid xs={8}>
+            <VoterAuth authSession={authSession} electionData={data} fetchElection={fetchData} />
             <Routes>
               <Route path='/' element={<ElectionHome authSession={authSession} electionData={data} fetchElection={fetchData} />} />
               <Route path='/vote' element={<VotePage election={data.election} fetchElection={fetchData}/>} />
