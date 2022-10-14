@@ -21,7 +21,6 @@ describe("Multi Race Election", () => {
   test("responds with 200 status", async () => {
     const response = await th.createElection(
       testInputs.MultiRaceElection,
-      [],
       testInputs.user1token
     );
 

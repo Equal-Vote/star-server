@@ -18,11 +18,12 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
         actor: req.user.email,
         timestamp: Date.now(),
     }]
-    const rolls: ElectionRoll[] = req.body.VoterIDList.map((id: string) => ({
+    const rolls: ElectionRoll[] = req.body.electionRoll.map((roll: ElectionRoll) => ({
         election_id: req.election.election_id,
-        voter_id: id,
+        voter_id: roll.voter_id,
+        precinct: roll.precinct,
         submitted: false,
-        state: ElectionRollState.approved,
+        state: roll.state || ElectionRollState.approved,
         history: history,
     }))
     const newElectionRoll = await ElectionRollModel.submitElectionRoll(rolls, req, `User adding Election Roll??`)

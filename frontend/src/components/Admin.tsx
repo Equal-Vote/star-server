@@ -1,10 +1,10 @@
 import React from 'react'
 import Container from '@material-ui/core/Container';
 import ViewElectionRolls from "./ViewElectionRolls";
-const Admin = ({ authSession }) => {
+const Admin = ({ authSession, election}) => {
     return (
         <Container >
-            <ViewElectionRolls />
+            <ViewElectionRolls election={election}/>
         </Container>
     )
 }

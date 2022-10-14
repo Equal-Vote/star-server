@@ -82,8 +82,12 @@ export default {
     } as Election,
 
     EmailRoll:[
-        'Alice@email.com',
-        'Bob@email.com'
+        { 
+            voter_id:'Alice@email.com',
+        },
+        {
+            voter_id:'Bob@email.com',
+        }
     ],
     Ballot1: {
         ballot_id: "0",
@@ -114,7 +118,7 @@ export default {
         title: 'Election 1',
         state: 'open',
         frontend_url: '',
-        owner_id: '0',
+        owner_id: 'Alice1234',
         races: [
             {
                 race_id: '0',
@@ -144,8 +148,12 @@ export default {
     } as Election,
 
     IDRoll:[
-        'AliceID',
-        'BobID'
+        { 
+            voter_id:'AliceID',
+        },
+        { 
+            voter_id:'BobID',
+        },
     ],
     Ballot2: {
         ballot_id: "0",

@@ -29,7 +29,6 @@ describe("User with correct signature creates election", () => {
     test("responds with 200 status", async () => {
         const response = await th.createElection(
             testInputs.Election1,
-            [],
             goodToken
         );
 
@@ -44,7 +43,6 @@ describe("User with wrong signature creates election", () => {
     test("responds with 401 status", async () => {
         const response = await th.createElection(
             testInputs.Election1,
-            [],
             badToken
         );
 

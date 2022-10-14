@@ -8,12 +8,11 @@ const AddElection = ({ authSession }) => {
 
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = useFetch('/API/Elections', 'post')
-    const onAddElection = async (election, voterIds) => {
+    const onAddElection = async (election) => {
         // calls post election api, throws error if response not ok
         const newElection = await postElection(
             {
                 Election: election,
-                VoterIDList: voterIds,
             })
         if ((!newElection)) {
             throw Error("Error submitting election");

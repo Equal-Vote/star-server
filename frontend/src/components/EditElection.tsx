@@ -9,11 +9,10 @@ const EditElection = ({ authSession, election }) => {
     const navigate = useNavigate()
     const { id } = useParams();
     const { isPending, error, makeRequest: editElection } = useFetch(`/API/Election/${election.election_id}/edit`,'post')
-    const onEditElection = async (election, voterIds) => {
+    const onEditElection = async (election) => {
         const newElection = await editElection(
             {
                 Election: election,
-                VoterIDList: voterIds,
             })
 
         if ((!newElection )) {

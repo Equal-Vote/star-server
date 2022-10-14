@@ -57,7 +57,6 @@ describe("Election with custom auth key", () => {
     test("User can create election with custom key", async () => {
         const response = await th.createElection(
             election,
-            testInputs.EmailRoll,
             user1TokenCustomSigned
           );
 
@@ -66,6 +65,15 @@ describe("Election with custom auth key", () => {
       expect(response.election.auth_key).toEqual(customKey.publicKey);
       electionId = response.election.election_id;
       th.testComplete();
+    });
+    test("Add Voter Roll", async () => {
+        const response = await th.submitElectionRoll(
+            electionId,
+            testInputs.EmailRoll,
+            user1TokenCustomSigned
+        );
+        expect(response.statusCode).toBe(200);
+        th.testComplete();
     });
 
     test("User with app key canNOT request ballot", async () => {

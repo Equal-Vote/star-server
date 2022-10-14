@@ -30,7 +30,7 @@ export default class BallotsDB implements IBallotStore {
             ip_address      VARCHAR, 
             votes           json NOT NULL,
             history         json,
-            precinct        VARCHAR,
+            precinct        VARCHAR
           );
         `;
         Logger.debug(appInitContext, query);
@@ -38,7 +38,7 @@ export default class BallotsDB implements IBallotStore {
         return p.then((_: any) => {
             //This will add the new field to the live DB in prod.  Once that's done we can remove this
             var historyQuery = `
-            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS pricinct VARCHAR
+            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS precinct VARCHAR
             `;
             return this._postgresClient.query(historyQuery).catch((err:any) => {
                 Logger.error(appInitContext, "err adding precinct column to DB: " + err.message);
@@ -62,7 +62,7 @@ export default class BallotsDB implements IBallotStore {
     submitBallot(ballot: Ballot, ctx:ILoggingContext, reason:string): Promise<Ballot> {
         Logger.debug(ctx, `${className}.submit`, ballot);
         var sqlString = `INSERT INTO ${this._tableName} (ballot_id,election_id,user_id,status,date_submitted,ip_address,votes,history,precinct)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING ballot_id;`;
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING ballot_id;`;
         Logger.debug(ctx, sqlString);
         var p = this._postgresClient.query({
             rowMode: 'array',

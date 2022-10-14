@@ -3,6 +3,7 @@ const request = require('supertest');
 import { ElectionRollState } from '../../../domain_model/ElectionRoll';
 import makeApp from '../app';
 import { TestLoggerImpl } from '../Services/Logging/TestLoggerImpl';
+import { TestHelper } from './TestHelper';
 import testInputs from './testInputs';
 
 const app = makeApp()
@@ -12,6 +13,7 @@ const app = makeApp()
 jest.mock("./../ServiceLocator");
 
 var logger = new TestLoggerImpl().setup();
+const th = new TestHelper();
 
 afterEach(() => {
     jest.clearAllMocks();
@@ -23,19 +25,28 @@ describe("Registration", () => {
     beforeAll(() => {
         jest.clearAllMocks();
     });
-    var electionId = 0;
+    var electionId = '0';
     var electionRoll = {}
     test("Create election, responds 200", async () => {
         const response = await request(app)
             .post('/API/Elections')
             .set('Cookie', ['id_token=' + testInputs.user1token])
             .set('Accept', 'application/json')
-            .send({ Election: testInputs.EmailRollElection, VoterIDList: testInputs.EmailRoll });
+            .send({ Election: testInputs.EmailRollElection });
         expect(response.statusCode).toBe(200)
         const responseObject = response.body;
         electionId = responseObject.election.election_id
         logger.clear();
     })
+    test("Add Voter Roll", async () => {
+        const response = await th.submitElectionRoll(
+            electionId,
+            testInputs.EmailRoll,
+            testInputs.user1token
+        );
+        expect(response.statusCode).toBe(200);
+        th.testComplete();
+    });
     test("Get voter auth, isn't authorized and hasn't voted", async () => {
         const response = await request(app)
             .post(`/API/Election/${electionId}/ballot`)

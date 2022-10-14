@@ -26,12 +26,11 @@ const DuplicateElection = ({ authSession }) => {
         }, [prevData]
     )
 
-    const onCreateElection = async (election, voterIds) => {
+    const onCreateElection = async (election) => {
         // calls post election api, throws error if response not ok
         const newElection = await postElection(
             {
                 Election: election,
-                VoterIDList: voterIds,
             })
         if ((!newElection)) {
             throw Error("Error submitting election");

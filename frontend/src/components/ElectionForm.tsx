@@ -54,8 +54,6 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
     }
 
     const [election, setElectionData] = useState(prevElectionData)
-    // TODO: I need to figure out how to load previous voter ID list
-    const [voterIDList, setVoterIDList] = useState('')
     const [titleError, setTitleError] = useState(false)
     const [newCandidateName, setNewCandidateName] = useState('')
     const [expandedSettings, setExpandedSettings] = useState(false)
@@ -106,7 +104,7 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
         }
 
         try {
-            onSubmitElection(newElection, voterIDList.split('\n'))
+            onSubmitElection(newElection)
         } catch (error) {
             console.log(error)
         }
@@ -148,7 +146,6 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
             election.settings.election_roll_type = voterRoll;
             if (voterRoll === 'None') {
                 election.settings.voter_id_type = 'IP Address';
-                setVoterIDList('')
             } else if (voterRoll === 'Email') {
                 election.settings.voter_id_type = 'Email';
             } else if (voterRoll === 'IDs') {
@@ -285,32 +282,6 @@ const ElectionForm = ({authSession, onSubmitElection, prevElectionData, submitTe
                             </Grid>
                             
                         }
-                    {election.settings.election_roll_type === 'Email' &&
-                        <Grid item>
-                        <TextField
-                            id="email-list"
-                            name="email-list"
-                            label="Email List"
-                            multiline
-                            type="text"
-                            value={voterIDList}
-                            onChange={(e) => setVoterIDList(e.target.value)}
-                        />
-                    </Grid>
-                    }
-                    {election.settings.election_roll_type === 'IDs' &&
-                        <Grid item>
-                        <TextField
-                            id="id-list"
-                            name="id-list"
-                            label="Voter ID List"
-                            multiline
-                            type="text"
-                            value={voterIDList}
-                            onChange={(e) => setVoterIDList(e.target.value)}
-                        />
-                    </Grid>
-                    }
                     <Grid item>
                         <FormControlLabel disabled control={
                             <Checkbox

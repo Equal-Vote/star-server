@@ -16,7 +16,7 @@ afterEach(() => {
 });
 
 const setupInitialElection = async () => {
-    const response = await th.createElection(testInputs.Election1, [], testInputs.user1token);
+    const response = await th.createElection(testInputs.Election1, testInputs.user1token);
     expect(response.statusCode).toBe(200);
     return response.election.election_id;
 }
@@ -36,7 +36,7 @@ describe("Edit Election", () => {
             const election1Copy = { ...testInputs.Election1, election_id:electionId};
             //election1Copy.election_id = electionId;
 
-            const response = await th.editElection(election1Copy, [], testInputs.user1token);
+            const response = await th.editElection(election1Copy, testInputs.user1token);
             expect(response.statusCode).toBe(200);
             th.testComplete();
         })
@@ -55,7 +55,7 @@ describe("Edit Election", () => {
         test("responds with 401 status", async () => {
             const ID = await setupInitialElection()
 
-            const response = await th.createElection(testInputs.Election1, [], null);
+            const response = await th.createElection(testInputs.Election1, null);
             expect(response.statusCode).toBe(401);
             th.testComplete();
         })
@@ -65,7 +65,7 @@ describe("Edit Election", () => {
         test("responds with 401 status", async () => {
             const ID = await setupInitialElection();
             const election1Copy = { ...testInputs.Election1, election_id:ID};
-            const response = await th.editElection(election1Copy, [], testInputs.user2token);
+            const response = await th.editElection(election1Copy, testInputs.user2token);
             expect(response.statusCode).toBe(401);
             th.testComplete();
         })
@@ -80,7 +80,7 @@ describe("Edit Election", () => {
             election1Copy.election_id = electionId;
             election1Copy.title = newTitle;
 
-            const response = await th.editElection(election1Copy, [], testInputs.user1token);
+            const response = await th.editElection(election1Copy, testInputs.user1token);
 
             // expect(ElectionsDB.elections[election1Copy.election_id].title).toBe(newTitle)
             expect(response.statusCode).toBe(200);
@@ -99,7 +99,7 @@ describe("Edit Election", () => {
             election1Copy.settings.election_roll_type = newRollType;
             election1Copy.election_id = ID;
 
-            const response = await th.editElection(election1Copy, [], testInputs.user1token);
+            const response = await th.editElection(election1Copy, testInputs.user1token);
 
             // TODO: I couldn't figure out how to make this work, it kept saying that ElectionsDB.mock was undefined?
             // expect(ElectionsDB.mock.instances[0].elections[election1Copy.election_id].settings.election_roll_type).toBe(newRollType)

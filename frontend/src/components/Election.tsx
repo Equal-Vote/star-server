@@ -41,7 +41,7 @@ const Election = ({ authSession }) => {
               <Route path='/vote' element={<VotePage election={data.election} fetchElection={fetchData}/>} />
               <Route path='/results' element={<ViewElectionResults election={data.election} />} />
               <Route path='/edit' element={<EditElection authSession={authSession} election={data.election} />} />
-              <Route path='/admin' element={<Admin authSession={authSession} />} />
+              <Route path='/admin' element={<Admin authSession={authSession} election={data.election} />} />
             </Routes>
           </Grid>
         </Grid >

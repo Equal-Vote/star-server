@@ -57,14 +57,12 @@ export class TestHelper {
 
     async createElection(
         election: Election,
-        voterRoll: string[],
         userToken: string | null
     ): Promise<ElectionResponse> {
         const res = await this.postRequest(
             "/API/Elections",
             {
                 Election: election,
-                VoterIDList: voterRoll,
             },
             userToken
         );
@@ -73,14 +71,12 @@ export class TestHelper {
 
     async editElection(
         election: Election,
-        voterRoll: string[],
         userToken: string | null
     ): Promise<ElectionResponse> {
         const res = await this.postRequest(
             `/API/Election/${election.election_id}/edit`,
             {
                 Election: election,
-                VoterIDList: voterRoll,
             },
             userToken
         );
@@ -194,6 +190,19 @@ export class TestHelper {
 
         r = this.addUserTokenVoterIdCookie(r, userToken, voterId);
         return r.send({ ballot: ballot });
+    }
+
+    async submitElectionRoll(
+        electionId: Uid,
+        electionRoll: any[],
+        userToken: string | null,
+    ): Promise<any> {
+        var r = request(this.expressApp)
+            .post(`/API/Election/${electionId}/rolls`)
+            .set("Accept", "application/json");
+
+        r = this.addUserTokenVoterIdCookie(r, userToken, null);
+        return r.send({ electionRoll: electionRoll });
     }
 
     private addUserTokenVoterIdCookie(
