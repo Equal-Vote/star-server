@@ -49,7 +49,7 @@ export function removeHiddenFields(obj:Election, electionRoll: ElectionRoll|null
   }
 }
 // Where should this belong..
-export function getApprovedRaces(election:Election, precinct:string|undefined) {
+export function getApprovedRaces(election:Election, voterPrecinct:string|undefined): Race[] {
   let approvedRaces:Race[] = [];
   election.races.forEach((race:Race) => {
     if (!race.precincts) {
@@ -57,7 +57,7 @@ export function getApprovedRaces(election:Election, precinct:string|undefined) {
       approvedRaces.push(race)
       return
     }
-    if (precinct && race.precincts.includes(precinct)){
+    if (voterPrecinct && race.precincts.includes(voterPrecinct)){
       // If race precinct list contains voter's precinct
       approvedRaces.push(race)
     }

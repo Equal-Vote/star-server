@@ -43,9 +43,12 @@ export function ballotValidation(election: Election, obj:Ballot): string | null 
     const approvedRaceIds = approvedRaces.map((race: Race) => race.race_id)
     const ballotRaceIds = obj.votes.map((vote: Vote) => vote.race_id)
     const hasDuplicates = new Set(ballotRaceIds).size !== ballotRaceIds.length
+    // Checks if ballot has duplicate votes for the same race
     if (hasDuplicates) {
         return "Duplicate votes";
     }
+
+    // Checks that all race ids on voter's ballot are in list of races that voter is allowed to vote in
     const validIds = ballotRaceIds.every(id => approvedRaceIds.includes(id))
     if (!validIds) {
         return "Invalid IDs";
