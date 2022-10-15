@@ -11,6 +11,7 @@ import Election from './components/Election'
 import DuplicateElection from './components/DuplicateElection'
 import Sandbox from './components/Sandbox'
 import DebugPage from './components/DebugPage'
+import LandingPage from './components/LandingPage'
 
 const App = () => {
   return (
@@ -18,7 +19,8 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <Header authSession={authSession} />
         <Routes>
-          <Route path='/' element={<Elections authSession={authSession}/>} />
+          {/* <Route path='/' element={<Elections authSession={authSession}/>} /> */}
+          <Route path='/' element={<LandingPage/>} />
           <Route path='/Login' element={<Login />} />
           <Route path='/Debug' element={<DebugPage authSession={authSession}/>} />
           <Route path='/CreateElection' element={<AddElection authSession={authSession}/>} />
