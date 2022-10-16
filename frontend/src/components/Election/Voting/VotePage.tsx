@@ -1,12 +1,12 @@
 import { useState } from "react"
 import StarBallot from "./StarBallot";
-import useFetch from "../useFetch";
+import useFetch from "../../../useFetch";
 import { useParams } from "react-router";
 import React from 'react'
 import { useNavigate } from "react-router";
-import { Ballot } from "../../../domain_model/Ballot";
-import { Vote } from "../../../domain_model/Vote";
-import { Score } from "../../../domain_model/Score";
+import { Ballot } from "../../../../../domain_model/Ballot";
+import { Vote } from "../../../../../domain_model/Vote";
+import { Score } from "../../../../../domain_model/Score";
 import { Container } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 const VotePage = ({ election, fetchElection}) => {

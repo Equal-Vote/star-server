@@ -6,7 +6,7 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
-import ProfilePic from '../images/blank-profile.png'
+import ProfilePic from '../../../images/blank-profile.png'
 import { Link } from "@material-ui/core";
 import Box from '@material-ui/core/Box';
 

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useParams } from "react-router";
-import useFetch from "../useFetch";
+import useFetch from "../../../useFetch";
 import Results from './Results';
 import { Grid } from "@material-ui/core";
 import Box from '@material-ui/core/Box';

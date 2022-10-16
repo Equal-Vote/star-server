@@ -1,7 +1,7 @@
 import { useState } from "react"
 import React from 'react'
-import { Candidate } from "../../../domain_model/Candidate"
-import AddCandidate from "./AddCandidate"
+import { Candidate } from "../../../../../domain_model/Candidate"
+import AddCandidate from "../../ElectionForm/AddCandidate"
 // import Button from "./Button"
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
@@ -20,7 +20,7 @@ import { Box, Checkbox, InputLabel } from "@material-ui/core"
 import IconButton from '@material-ui/core/IconButton'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
-import useFetch from "../useFetch";
+import useFetch from "../../../useFetch";
 
 const AddElectionRoll = ({ election, onClose }) => {
 

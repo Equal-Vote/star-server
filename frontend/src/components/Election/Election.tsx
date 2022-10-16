@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import useFetch from "../useFetch";
+import useFetch from "../../useFetch";
 import { useParams } from "react-router";
 import React from 'react'
 import { useNavigate } from "react-router";
@@ -7,10 +7,10 @@ import { useNavigate } from "react-router";
 import Container from '@material-ui/core/Container';
 import VoterAuth from "./VoterAuth";
 import ElectionHome from "./ElectionHome";
-import EditElection from './EditElection'
-import VotePage from './VotePage'
-import Admin from './Admin'
-import ViewElectionResults from './ViewElectionResults'
+import EditElection from '../ElectionForm/EditElection'
+import VotePage from './Voting/VotePage'
+import Admin from './Admin/Admin'
+import ViewElectionResults from './Results/ViewElectionResults'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Sidebar from "./Sidebar";
 import { Grid } from "@material-ui/core";

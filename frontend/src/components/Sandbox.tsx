@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Results from './Results';
+import Results from './Election/Results/Results';
 import { Grid } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";

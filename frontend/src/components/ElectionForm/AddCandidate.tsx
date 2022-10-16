@@ -1,6 +1,6 @@
 // import Button from "./Button"
 import { useState } from 'react'
-import { Candidate } from "../../../domain_model/Candidate"
+import { Candidate } from "../../../../domain_model/Candidate"
 import React from 'react'
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
