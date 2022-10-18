@@ -27,24 +27,28 @@ var _globalData:GlobalData;
 
 function postgres():any {
     if (_postgresClient == null){
-        var connectionStr = pgConnectionString();
-        var devDB = process.env.DEV_DATABASE;
-        Logger.debug(_appInitContext, `Postgres Config:  dev_db == ${devDB}, connectionString == ${connectionStr}`);
-        if (devDB === 'TRUE') {
-            _postgresClient = new Pool({
-                connectionString: connectionStr,
-                ssl: {
-                    rejectUnauthorized: false
-                }
-            });
-        } else {
-            _postgresClient = new Pool({
-                connectionString: connectionStr,
-                ssl: false
-            });
-        }
+        var connectionConfig = pgConnectionObject();
+        Logger.debug(_appInitContext, `Postgres Config:  ${JSON.stringify(connectionConfig)}}`);
+        _postgresClient  = new Pool(connectionConfig);
     }
     return _postgresClient;
+}
+
+function pgConnectionObject():any {
+    var connectionStr = pgConnectionString();
+    var devDB = process.env.DEV_DATABASE;
+    if (devDB === 'TRUE') {
+        return {
+            connectionString: connectionStr,
+            ssl: {
+                rejectUnauthorized: false
+            }
+        };
+    }
+    return {
+        connectionString: connectionStr,
+        ssl: false
+    };
 }
 
 function pgConnectionString():string {
@@ -54,7 +58,7 @@ function pgConnectionString():string {
 async function eventQueue():Promise<IEventQueue> {
     if (_eventQueue == null){
         const eq = new PGBossEventQueue();
-        await eq.init(pgConnectionString(), Logger.createContext("appInit"));
+        await eq.init(pgConnectionObject(), Logger.createContext("appInit"));
         _eventQueue = eq;
     }
 
