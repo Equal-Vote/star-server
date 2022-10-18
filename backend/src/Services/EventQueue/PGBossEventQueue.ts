@@ -11,14 +11,9 @@ export default class PGBossEventQueue implements IEventQueue {
     constructor() {
     }
 
-    public async init(pgConnection:string, ctx:ILoggingContext):Promise<PGBossEventQueue> {
+    public async init(pgConnection:object, ctx:ILoggingContext):Promise<PGBossEventQueue> {
         const PgBoss = require('pg-boss');
-        this._boss = new PgBoss({
-            connectionString: pgConnection,
-            ssl: {
-                rejectUnauthorized: false
-            }
-        });
+        this._boss = new PgBoss(pgConnection);
         this._boss.on('error', (error: any) => Logger.error(ctx, error));
         
         await this._boss.start();
@@ -31,7 +26,8 @@ export default class PGBossEventQueue implements IEventQueue {
     }
 
     public subscribe(queue:QueueName, handler:EventHandler):void {
-        this._boss.work(queue, handler);
+        const options = { newJobCheckInterval: 500, batchSize: 5 };
+        this._boss.work(queue, options, handler);
     }
 
     async debugInfo():Promise<string> {
