@@ -1,4 +1,4 @@
-import useFetch from "../../useFetch";
+import useFetch from "../../hooks/useFetch";
 import { useParams } from "react-router";
 import React from 'react'
 import Grid from "@material-ui/core/Grid";

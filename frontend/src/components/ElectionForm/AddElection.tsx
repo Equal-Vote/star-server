@@ -1,5 +1,5 @@
 import React from 'react'
-import useFetch from '../../useFetch';
+import useFetch from '../../hooks/useFetch';
 import ElectionForm from "./ElectionForm";
 import Container from '@material-ui/core/Container';
 import { useNavigate } from "react-router"

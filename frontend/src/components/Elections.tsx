@@ -1,6 +1,6 @@
 import ElectionCard from "./ElectionCard"
 import Button from "./Button"
-import useFetch from "../useFetch"
+import useFetch from "../hooks/useFetch"
 import { Link } from "react-router-dom"
 import React, { useEffect } from 'react'
 import { Election } from "../../../domain_model/Election"
@@ -23,7 +23,6 @@ const Elections = ({authSession}) => {
     useEffect(() => {
         fetchElections()
     },[url])
-    console.log(JSON.stringify(data));
     return (
         <ThemeProvider theme={theme}>
             <main>

@@ -20,7 +20,7 @@ import { Box, Checkbox, InputLabel } from "@material-ui/core"
 import IconButton from '@material-ui/core/IconButton'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
-import useFetch from "../../../useFetch";
+import useFetch from "../../../hooks/useFetch";
 
 const AddElectionRoll = ({ election, onClose }) => {
 
