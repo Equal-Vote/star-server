@@ -14,6 +14,7 @@ const ElectionsModel = ServiceLocator.electionsDb();
 const ElectionRollModel = ServiceLocator.electionRollDb();
 const BallotModel = ServiceLocator.ballotsDb();
 const EventQueue = ServiceLocator.eventQueue();
+const EmailService = ServiceLocator.emailService();
 
 type CastVoteEvent = {
     requestId:Uid,
@@ -23,10 +24,6 @@ type CastVoteEvent = {
 }
 
 const castVoteEventQueue = "castVoteEvent";
-
-const pendingRequests:Map<string,any> = new Map();
-
-const EmailService = ServiceLocator.emailService();
 
 async function castVoteController(req: IRequest, res: any, next: any) {
     Logger.info(req, "Cast Vote Controller");
@@ -45,8 +42,6 @@ async function castVoteController(req: IRequest, res: any, next: any) {
         throw new BadRequest(errMsg);
     }
 
-    
-
     if (targetElection.state!=='open'){
         Logger.info(req, "Ballot Rejected. Election not open.", targetElection);
         throw new BadRequest("Election is not open");
@@ -60,7 +55,6 @@ async function castVoteController(req: IRequest, res: any, next: any) {
     Logger.debug(req, "voterID = " + voterId);
     const roll = await getOrCreateElectionRoll(targetElection, voterId, req);
     assertVoterMayVote(targetElection, roll, req);
-
 
     //some ballot info should be server-authorative
     inputBallot.date_submitted = Date.now();
@@ -76,7 +70,6 @@ async function castVoteController(req: IRequest, res: any, next: any) {
         timestamp:inputBallot.date_submitted,
     });
 
-
     Logger.debug(req, "Submit Ballot:", inputBallot);
     if (roll != null){
         roll.ballot_id = String(inputBallot.ballot_id);
@@ -91,9 +84,6 @@ async function castVoteController(req: IRequest, res: any, next: any) {
         });
     }
 
-    //const savedBallot = await persistBallotToStore(inputBallot, roll, req);
-    //res.status("200").json({ ballot: savedBallot} );
-
     const reqId = req.contextId ? req.contextId : randomUUID();
     const userEmail = user.email;
     const event = {
@@ -103,8 +93,8 @@ async function castVoteController(req: IRequest, res: any, next: any) {
         userEmail:userEmail,
     }
 
-    pendingRequests.set(reqId, res);
     await (await EventQueue).publish(castVoteEventQueue, event);
+    res.status("200").json({ ballot: inputBallot} );
     Logger.debug(req, "CastVoteController done, saved event to store", event);
 };
 
@@ -129,14 +119,6 @@ async function handleCastVoteEvent(job: { id: string; data: CastVoteEvent; }):Pr
         const url = ServiceLocator.globalData().mainUrl;
         const receipt = Receipt(targetElection, event.userEmail, savedBallot, url)
         await EmailService.sendEmails([receipt])
-    }
-
-    var response = pendingRequests.get(event.requestId);
-    if (response == null){
-        Logger.error(ctx, "Processing CastVoteEvent completed, but no response found to reply to client", event);
-    } else {
-        response.status("200").json({ ballot: savedBallot} );
-        pendingRequests.delete(event.requestId);
     }
 }
 

@@ -6,6 +6,7 @@ import makeApp from "../app";
 import Logger from "../Services/Logging/Logger";
 import { TestLoggerImpl } from "../Services/Logging/TestLoggerImpl";
 import ServiceLocator  from "../ServiceLocator"
+import { MockEventQueue } from "../Services/EventQueue/MockEventQueue";
 const request = require("supertest");
 
 type ElectionResponse = {
@@ -24,12 +25,14 @@ type BallotResponse = {
 export class TestHelper {
     public expressApp;
     public logger: TestLoggerImpl;
-    public emailService: any
+    public emailService: any;
+    public eventQueue:any;
 
     private ctx = Logger.createContext("testHelper");
 
     constructor() {
-        this.emailService = ServiceLocator.emailService()
+        this.emailService = ServiceLocator.emailService();
+        this.eventQueue = ServiceLocator.eventQueue();
         this.expressApp = makeApp();
         this.logger = new TestLoggerImpl().setup();
     }
