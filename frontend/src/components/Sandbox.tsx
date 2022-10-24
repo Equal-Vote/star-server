@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import Results from './Election/Results/Results';
-import { Grid } from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import Button from "@material-ui/core/Button";
-import { Box, InputLabel } from "@material-ui/core";
+import { Grid } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import { Box, InputLabel } from "@mui/material";
 
 const Sandbox = () => {
     const [candidates, setCandidates] = useState('A,B,C,D,E')

@@ -1,24 +1,27 @@
 import React from 'react'
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-const LandingPage = () => {
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import QuickPoll from './ElectionForm/QuickPoll';
+import { Paper } from '@mui/material';
+import { styled } from "@mui/material"
+import { StyledTextField } from './styles'
+
+const LandingPage = ({ authSession }) => {
     return (
-        <Box style={{
+        <Box sx={{
             width: '100%',
             display: 'flex',
             minHeight: '600px',
-            alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            pt: { xs: 0, md: '0' },
         }}>
-            <Grid container spacing={6} style={{
-                display: 'flex',
-                alignItems: 'center',
+            <Grid container spacing={5} sx={{
                 maxWidth: '1300px',
-                padding: '50px',
+                p: { xs: 0, md: 2 },
             }}>
-                <Grid item xs={12} md={7}>
+                <Grid item xs={12} md={7} sx={{ pt: 0 }}>
                     <Typography variant="h3" style={{ fontWeight: 700, paddingBottom: '15px' }} >
                         STAR Voting Election Hosting
                     </Typography>
@@ -38,17 +41,9 @@ const LandingPage = () => {
                     }}>
                         Voting methods approved by the Equal Vote Coalition
                     </Typography>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        style={{ width: '200px', fontSize: '16px' }}
-                        href= '/CreateElection'
-                    >
-                        Create Election
-                    </Button>
                 </Grid>
                 <Grid item xs={12} md={5}>
-                    <img src={require('../images/ballot.png')} alt="Sample" width={'300px'} />
+                        <QuickPoll authSession={authSession} />
                 </Grid>
             </Grid>
         </Box>

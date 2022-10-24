@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from "react-router";
 import useFetch from "../../hooks/useFetch";
-import Container from '@material-ui/core/Container';
+import Container from '@mui/material/Container';
 import ElectionForm from "./ElectionForm";
 import { useNavigate } from "react-router"
 
@@ -19,6 +19,7 @@ const EditElection = ({ authSession, election }) => {
             throw Error("Error editing election");
         }
         
+        localStorage.removeItem('Election')
         navigate(`/Election/${election.election_id}`)
     }
 

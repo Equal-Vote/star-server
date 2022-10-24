@@ -8,7 +8,7 @@ import { Ballot } from "../../../../../domain_model/Ballot";
 import { Vote } from "../../../../../domain_model/Vote";
 import { Score } from "../../../../../domain_model/Score";
 import { Box, Container } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 const VotePage = ({ election, fetchElection }) => {
   const { id } = useParams();
   const [scores, setScores] = useState(election.races.map((race) =>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from "react-router";
 import useFetch from "../../hooks/useFetch";
-import Container from '@material-ui/core/Container';
+import Container from '@mui/material/Container';
 import ElectionForm from "./ElectionForm";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router"
@@ -36,6 +36,7 @@ const DuplicateElection = ({ authSession }) => {
             throw Error("Error submitting election");
         }
         
+        localStorage.removeItem('Election')
         navigate(`/Election/${newElection.election.election_id}`)
     }
 

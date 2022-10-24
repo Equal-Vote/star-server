@@ -1,14 +1,14 @@
 import React from "react";
 import { useState } from 'react'
-import Grid from "@material-ui/core/Grid";
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton'
-import ExpandLess from '@material-ui/icons/ExpandLess'
-import ExpandMore from '@material-ui/icons/ExpandMore'
+import Grid from "@mui/material/Grid";
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton'
+import ExpandLess from '@mui/icons-material/ExpandLess'
+import ExpandMore from '@mui/icons-material/ExpandMore'
 import ProfilePic from '../../../images/blank-profile.png'
 import { Link } from "@material-ui/core";
-import Box from '@material-ui/core/Box';
+import Box from '@mui/material/Box';
 
 function RowHeading({ candidate, party, className }) {
   return (

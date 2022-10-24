@@ -5,9 +5,6 @@ export const useLocalStorage = (key, defaultValue, updateRate = null) => {
     // If the value in local storage doesn't exist it is set to defaultValue
     // The optional input updateRate allows for periodic checking to see if the value in local storage has changed
     // to allow multiple components using the same key to be updated
-    const [value, setStoredValue] = useState(() => {
-        return getStoredValue(key, defaultValue);
-    });
     const getStoredValue = (key, defaultValue) => {
         // getting stored value
         const saved = localStorage.getItem(key);
@@ -18,6 +15,9 @@ export const useLocalStorage = (key, defaultValue, updateRate = null) => {
         }
         return initial;
     }
+    const [value, setStoredValue] = useState(() => {
+        return getStoredValue(key, defaultValue);
+    });
 
     const setValue = (newValue) => {
         localStorage.setItem(key, JSON.stringify(newValue));

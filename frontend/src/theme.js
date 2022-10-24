@@ -1,24 +1,21 @@
-import { createTheme } from '@material-ui/core/styles'
-import { teal, orange } from '@material-ui/core/colors'
+import { createTheme } from '@mui/material/styles'
+import { teal, orange } from '@mui/material/colors'
 
 const theme = createTheme({
-    palette: {
-      primary: {
-      light: '#52c7b8',
-      main: '#000000',
-      dark: '#00675b',
-      contrastText: '#fff',
+  palette: {
+    primary: {
+      light: '#8eacbb',
+      main: '#607d8b',
+      dark: '#34515e',
+      contrastText: '#000000',
     },
     secondary: {
-      light: '#ffd95b',
-      main: '#ffa726',
-      dark: '#c77800',
+      light: '#f4511e',
+      main: '#f4511e',
+      dark: '#b91400',
       contrastText: '#000',
-    },
-      openTitle: teal['700'],
-      protectedTitle: orange['700'],
-      type: 'light'
     }
-  })
+  },
+})
 
-  export default theme  
+export default theme  

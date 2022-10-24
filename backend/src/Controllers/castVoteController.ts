@@ -97,7 +97,7 @@ async function castVoteController(req: IRequest, res: any, next: any) {
     //res.status("200").json({ ballot: savedBallot} );
 
     const reqId = req.contextId ? req.contextId : randomUUID();
-    const userEmail = user.email;
+    const userEmail = user?.email;
     const event = {
         requestId:reqId,
         inputBallot:inputBallot,

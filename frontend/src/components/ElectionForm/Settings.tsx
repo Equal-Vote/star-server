@@ -1,23 +1,24 @@
 import React from 'react'
 import { useState } from "react"
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
 // https://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-deep-clone-an-object-in-javascript
 // https://web.dev/structured-clone/
 import structuredClone from '@ungap/structured-clone';
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import Typography from '@material-ui/core/Typography';
-import { Box, Checkbox, InputLabel } from "@material-ui/core"
-import IconButton from '@material-ui/core/IconButton'
-import ExpandLess from '@material-ui/icons/ExpandLess'
-import ExpandMore from '@material-ui/icons/ExpandMore'
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Typography from '@mui/material/Typography';
+import { Box, Checkbox, InputLabel } from "@mui/material"
+import IconButton from '@mui/material/IconButton'
+import ExpandLess from '@mui/icons-material/ExpandLess'
+import ExpandMore from '@mui/icons-material/ExpandMore'
+import { Input } from '@mui/material';
 
 export default function Settings({ election, applyElectionUpdate, getStyle }) {
     const [expandedSettings, setExpandedSettings] = useState(false)
-    
+
     const dateAsInputString = (date) => {
         // TODO: Using ISO create a bug with timezones
         //       ex. If I select April 20th late in the PDT timezone, that's April 21th in UTC/ISO, so it sets April 21
@@ -42,114 +43,134 @@ export default function Settings({ election, applyElectionUpdate, getStyle }) {
     }
     return (
         <>
-            <Grid container alignItems="center">
-                <Grid item sm={11}>
-                    <Typography gutterBottom variant="h6" component="h6">Election Settings</Typography>
-                </Grid>
-                {!expandedSettings &&
-                    <Grid item sm={1}>
-                        <IconButton aria-label="Home" onClick={() => { setExpandedSettings(true) }}>
-                            <ExpandMore />
-                        </IconButton>
-                    </Grid>}
-                {expandedSettings &&
-                    <Grid item sm={1}>
-                        <IconButton aria-label="Home" onClick={() => { setExpandedSettings(false) }}>
-                            <ExpandLess />
-                        </IconButton>
-                    </Grid>}
+            <Grid item xs={11}>
+                <Typography gutterBottom variant="h6" component="h6">Election Settings</Typography>
             </Grid>
+            {!expandedSettings &&
+                <Grid item xs={1}>
+                    <IconButton aria-label="Home" onClick={() => { setExpandedSettings(true) }}>
+                        <ExpandMore />
+                    </IconButton>
+                </Grid>}
+            {expandedSettings &&
+                <Grid item xs={1}>
+                    <IconButton aria-label="Home" onClick={() => { setExpandedSettings(false) }}>
+                        <ExpandLess />
+                    </IconButton>
+                </Grid>}
 
             {expandedSettings &&
-                <div>
-                    <Grid item>
+                <>
+                    <Grid item xs={12} >
                         <TextField
                             id="election-description"
                             name="description"
                             label="Description"
-                            inputProps={getStyle('description')}
                             multiline
+                            fullWidth
                             type="text"
                             value={election.description}
+                            sx={{
+                                mx: { xs: 0, },
+                                my: { xs: 1 },
+                                boxShadow: 2,
+                            }}
                             onChange={(e) => applyElectionUpdate(election => { election.description = e.target.value })}
                         />
                     </Grid>
-                    <div>
-                        <label>Start Date</label>
-                    </div>
-                    <div>
-                        <input
+                    <Grid item xs={6} sm={6}>
+                        <FormControl fullWidth>
+                            <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                                Start Date
+                            </InputLabel>
+                        </FormControl>
+                        <Input
                             type='datetime-local'
-                            placeholder='Add Name'
                             value={dateAsInputString(election.start_time)}
                             onChange={(e) => applyElectionUpdate(election => election.start_time = new Date(e.target.value))}
+                            sx={{
+                                mx: { xs: 0, },
+                                my: { xs: 1 },
+                                py: 1,
+                            }}
                         />
-                    </div>
-                    <div >
-                        <label>Stop Date</label>
-                    </div>
-                    <div>
-                        <input
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth>
+                            <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                                Stop Date
+                            </InputLabel>
+                        </FormControl>
+                        <Input
                             type='datetime-local'
-                            placeholder='Add Name'
                             value={dateAsInputString(election.end_time)}
                             onChange={(e) => applyElectionUpdate(election => { election.end_time = new Date(e.target.value) })}
+                            sx={{
+                                mx: { xs: 0, },
+                                my: { xs: 1 },
+                                py: 1,
+                            }}
                         />
-                    </div>
-                    <Grid item>
-                        <Box sx={{ minWidth: 120 }}>
-                            <FormControl fullWidth>
-                                <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                    Election Roll
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth sx={{
+                            mx: { xs: 0, },
+                            my: { xs: 1 },
+                            boxShadow: 2,
+                        }}>
+                            <InputLabel htmlFor="uncontrolled-native">
+                                Election Roll
+                            </InputLabel>
+                            <Select
+                                name="Election Roll"
+                                label="Election Roll"
+                                value={election.settings.election_roll_type}
+                                onChange={(e) => onUpdateElectionRoll(e.target.value as string)}
+                            >
+                                <MenuItem key="None" value="None">
+                                    None
+                                </MenuItem>
+                                <MenuItem key="Email" value="Email">
+                                    Email
+                                </MenuItem>
+                                <MenuItem key="IDs" value="IDs">
+                                    IDs
+                                </MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    {election.settings.election_roll_type === 'None' &&
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth sx={{
+                                mx: { xs: 0, },
+                                my: { xs: 1 },
+                                boxShadow: 2,
+                            }}>
+                                <InputLabel htmlFor="uncontrolled-native">
+                                    Voter ID Type
                                 </InputLabel>
                                 <Select
-                                    name="Election Roll"
-                                    label="Election Roll"
-                                    value={election.settings.election_roll_type}
-                                    onChange={(e) => onUpdateElectionRoll(e.target.value as string)}
+                                    name="Voter ID"
+                                    label="Voter ID Type"
+                                    value={election.settings.voter_id_type}
+                                    onChange={(e) => applyElectionUpdate(election => { election.settings.voter_id_type = e.target.value })}
                                 >
                                     <MenuItem key="None" value="None">
                                         None
                                     </MenuItem>
-                                    <MenuItem key="Email" value="Email">
-                                        Email
+                                    <MenuItem key="IP Address" value="IP Address">
+                                        IP Address
                                     </MenuItem>
-                                    <MenuItem key="IDs" value="IDs">
-                                        IDs
+                                    <MenuItem key="Email" value="Email">
+                                        Email (Requires Login)
                                     </MenuItem>
                                 </Select>
                             </FormControl>
-                        </Box>
-                    </Grid>
-                    {election.settings.election_roll_type === 'None' &&
-                        <Grid item>
-                            <Box sx={{ minWidth: 120 }}>
-                                <FormControl fullWidth>
-                                    <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                        Voter ID Type
-                                    </InputLabel>
-                                    <Select
-                                        name="Voter ID"
-                                        label="Voter ID"
-                                        value={election.settings.voter_id_type}
-                                        onChange={(e) => applyElectionUpdate(election => { election.settings.voter_id_type = e.target.value })}
-                                    >
-                                        <MenuItem key="None" value="None">
-                                            None
-                                        </MenuItem>
-                                        <MenuItem key="IP Address" value="IP Address">
-                                            IP Address
-                                        </MenuItem>
-                                        <MenuItem key="Email" value="Email">
-                                            Email (Requires Login)
-                                        </MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Box>
                         </Grid>
 
                     }
-                    <Grid item>
+                    <Grid item xs={12}>
                         <FormControlLabel disabled control={
                             <Checkbox
                                 id="email-verification"
@@ -160,7 +181,7 @@ export default function Settings({ election, applyElectionUpdate, getStyle }) {
                             label="Email Verification"
                         />
                     </Grid>
-                    <Grid item>
+                    <Grid item xs={12}>
                         <FormControlLabel disabled control={
                             <Checkbox
                                 id="two-factor-auth"
@@ -171,7 +192,7 @@ export default function Settings({ election, applyElectionUpdate, getStyle }) {
                             label="Two Factor Auth"
                         />
                     </Grid>
-                    <Grid item>
+                    <Grid item xs={12}>
                         <FormControlLabel disabled control={
                             <Checkbox
                                 id="ballot-updates"
@@ -182,7 +203,7 @@ export default function Settings({ election, applyElectionUpdate, getStyle }) {
                             label="Ballot Updates"
                         />
                     </Grid>
-                    <Grid item>
+                    <Grid item xs={12}>
                         <FormControlLabel disabled control={
                             <Checkbox
                                 id="public-results"
@@ -193,7 +214,7 @@ export default function Settings({ election, applyElectionUpdate, getStyle }) {
                             label="Public Results"
                         />
                     </Grid>
-                </div>
+                </>
             }
         </>
     )

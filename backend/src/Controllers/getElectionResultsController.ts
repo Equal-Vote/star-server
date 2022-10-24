@@ -30,12 +30,11 @@ const getElectionResults = async (req: any, res: any, next: any) => {
         ballots.forEach((ballot: Ballot) => {
             const vote = ballot.votes.find((vote) => vote.race_id===race_id)
             if (vote){
-                vote.scores.map((score: Score) => (
+                cvr.push(vote.scores.map((score: Score) => (
                     score.score
-                ))
+                )))
             }
         })
-
         const num_winners = election.races[race_index].num_winners
         const voting_method = election.races[race_index].voting_method
         if (voting_method === 'STAR') {

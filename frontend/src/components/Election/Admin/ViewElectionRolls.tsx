@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 import useFetch from "../../../hooks/useFetch";
 import { useParams } from "react-router";
 import React from 'react'
-import Button from "@material-ui/core/Button";
-import Container from '@material-ui/core/Container';
+import Button from "@mui/material/Button";
+import Container from '@mui/material/Container';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@material-ui/core";
 import EditElectionRoll from "./EditElectionRoll";
 import AddElectionRoll from "./AddElectionRoll";

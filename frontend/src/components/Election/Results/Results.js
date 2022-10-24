@@ -1,11 +1,11 @@
 import { Grid } from "@material-ui/core";
 import React from "react";
 import MatrixViewer from "./MatrixViewer";
-import IconButton from '@material-ui/core/IconButton'
-import ExpandLess from '@material-ui/icons/ExpandLess'
-import ExpandMore from '@material-ui/icons/ExpandMore'
+import IconButton from '@mui/material/IconButton'
+import ExpandLess from '@mui/icons-material/ExpandLess'
+import ExpandMore from '@mui/icons-material/ExpandMore'
 import { useState } from 'react'
-// import Grid from "@material-ui/core/Grid";
+// import Grid from "@mui/material/Grid";
 
 function CandidateViewer({ candidate, runoffScore }) {
   return (
