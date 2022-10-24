@@ -1,5 +1,6 @@
 require("dotenv").config();
 const request = require("supertest");
+import { MockEventQueue } from "../Services/EventQueue/MockEventQueue";
 import { TestHelper } from "./TestHelper";
 import testInputs from "./testInputs";
 
@@ -50,6 +51,8 @@ describe("Email Roll", () => {
 
         // console.log(response)
         expect(response.statusCode).toBe(200);
+        const eventQueue:MockEventQueue = await th.eventQueue;
+        await eventQueue.waitUntilJobsFinished();
         th.testComplete();
     });
     test("Get voter auth, is authorized and has voted", async () => {

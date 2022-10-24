@@ -96,5 +96,11 @@ export class MockEventQueue implements IEventQueue {
         return "MEQ Debug:  " + JSON.stringify(this._pendingJobs);
     }
 
+    public async waitUntilJobsFinished():Promise<void> {
+        while(this._pendingJobs.length > 0){
+            await new Promise(r => setTimeout(r, this._delay));
+        }
+    }
+
 
 }
