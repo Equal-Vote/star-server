@@ -29,7 +29,7 @@ export default class CastVoteStore {
             ballot.date_submitted,
             ballot.ip_address,
             JSON.stringify(ballot.votes),
-            JSON.stringify(ballot.history),,
+            JSON.stringify(ballot.history),
             ballot.precinct,
         ];
 
