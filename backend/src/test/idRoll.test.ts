@@ -1,6 +1,7 @@
 require('dotenv').config();
 const request = require('supertest');
 import { ElectionRoll, ElectionRollState } from '../../../domain_model/ElectionRoll';
+import { MockEventQueue } from '../Services/EventQueue/MockEventQueue';
 import { TestHelper } from './TestHelper';
 import testInputs from './testInputs';
 
@@ -19,6 +20,7 @@ afterEach(() => {
 
 describe("ID Roll", () => {
     beforeAll(() => {
+        
         jest.resetAllMocks();
     });
     var ID = "";
@@ -50,6 +52,9 @@ describe("ID Roll", () => {
         const response = await th.submitBallotWithId(ID, testInputs.Ballot2, testInputs.user1token, testInputs.IDRoll[0].voter_id);
         // console.log(response)
         expect(response.statusCode).toBe(200)
+
+        const eventQueue:MockEventQueue = await th.eventQueue;
+        await eventQueue.waitUntilJobsFinished();
         th.testComplete();
     })
     test("Get voter auth, is authorized and has voted", async () => {
