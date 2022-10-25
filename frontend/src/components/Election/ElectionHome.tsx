@@ -57,7 +57,7 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
           alignItems="center"
           sx={{ width: '100%' }}>
           <Paper elevation={3} sx={{ width: 600 }} >
-            
+
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <ShareButton />
             </div>
@@ -86,10 +86,12 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
               </Typography>
             }
 
-            {electionData.election.state === 'open' && electionData.election.end_time && <>
-              < Typography align='center' gutterBottom variant="h6" component="h6">
-                {`Election ends on ${new Date(electionData.election.end_time).toLocaleDateString()} at ${new Date(electionData.election.end_time).toLocaleTimeString()} `}
-              </Typography>
+            {electionData.election.state === 'open' && <>
+
+              {electionData.election.end_time &&
+                < Typography align='center' gutterBottom variant="h6" component="h6">
+                  {`Election ends on ${new Date(electionData.election.end_time).toLocaleDateString()} at ${new Date(electionData.election.end_time).toLocaleTimeString()} `}
+                </Typography>}
               {
                 electionData.voterAuth.has_voted == false && electionData.voterAuth.authorized_voter && !electionData.voterAuth.required &&
 
