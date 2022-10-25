@@ -26,7 +26,7 @@ export default class PGBossEventQueue implements IEventQueue {
     }
 
     public subscribe(queue:QueueName, handler:EventHandler):void {
-        const options = { newJobCheckInterval: 500, batchSize: 5 };
+        const options = { newJobCheckInterval: 500, teamSize: 5 };
         this._boss.work(queue, options, handler);
     }
 
