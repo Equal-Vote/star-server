@@ -1,14 +1,14 @@
 import React from "react";
 import { useState } from 'react'
-import Grid from "@material-ui/core/Grid";
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton'
-import ExpandLess from '@material-ui/icons/ExpandLess'
-import ExpandMore from '@material-ui/icons/ExpandMore'
-import ProfilePic from '../images/blank-profile.png'
+import Grid from "@mui/material/Grid";
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton'
+import ExpandLess from '@mui/icons-material/ExpandLess'
+import ExpandMore from '@mui/icons-material/ExpandMore'
+import ProfilePic from '../../../images/blank-profile.png'
 import { Link } from "@material-ui/core";
-import Box from '@material-ui/core/Box';
+import Box from '@mui/material/Box';
 
 function RowHeading({ candidate, party, className }) {
   return (
@@ -24,7 +24,7 @@ function RowHeading({ candidate, party, className }) {
   );
 }
 
-// Represents a single ranking of a single candidate
+// Represents a single score of a single candidate
 const Choice = ({ divKey, score, filled, onClick }) => (
   <div
     key={divKey}
@@ -35,8 +35,8 @@ const Choice = ({ divKey, score, filled, onClick }) => (
   </div>
 );
 
-// Represents the set of possible rankings for a single candidate
-const Choices = ({ rowIndex, onClick, ranking }) =>
+// Represents the set of possible scores for a single candidate
+const Choices = ({ rowIndex, onClick, score }) =>
   Array(6)
     .fill(0)
     .map((elem, n) => (
@@ -45,15 +45,15 @@ const Choices = ({ rowIndex, onClick, ranking }) =>
           key={`starChoice${rowIndex}-${n}`}
           divKey={`starDiv${rowIndex}-${n}`}
           score={n}
-          filled={n + 1 === ranking}
-          onClick={() => onClick(n + 1)}
+          filled={n === score}
+          onClick={() => onClick(n)}
 
         />
       </Grid>
     ));
 
 // Represents the row of all data for a single candidate
-const Row = ({ rowIndex, candidate, party, ranking, onClick }) => {
+const Row = ({ rowIndex, candidate, party, score, onClick }) => {
 
   const [expanded, setExpanded] = useState(false)
   var rowColor = 'white'
@@ -83,7 +83,7 @@ const Row = ({ rowIndex, candidate, party, ranking, onClick }) => {
         <Choices
           key={`starChoices${rowIndex}`}
           rowIndex={rowIndex}
-          ranking={ranking}
+          score={score}
           onClick={onClick}
         />
 
@@ -141,7 +141,7 @@ const Row = ({ rowIndex, candidate, party, ranking, onClick }) => {
 };
 
 // Represents the list of rows corresponding to the list of candidates
-const Rows = ({ candidates, rankings, onClick }) =>
+const Rows = ({ candidates, scores, onClick }) =>
   candidates.map((row, n) => (
     <>
 
@@ -150,14 +150,14 @@ const Rows = ({ candidates, rankings, onClick }) =>
         key={`starRow${n}`}
         candidate={row}
         party={row.party}
-        ranking={rankings[n]}
-        onClick={(ranking) => onClick(n, ranking)}
+        score={scores[n]}
+        onClick={(score) => onClick(n, score)}
       />
       <Divider style={{ width: '100%' }} />
     </>
   ));
 
-// Represents the list of column headings for all possible rankings
+// Represents the list of column headings for all possible scores
 const ColumnHeadings = () => (
   <>
     <Grid container alignItems="stretch">
@@ -221,7 +221,7 @@ const SingleWinnerInstructions = () => (
 export default function StarBallotView({
   race,
   candidates,
-  rankings,
+  scores,
   onClick
 }) {
   return (
@@ -245,7 +245,7 @@ export default function StarBallotView({
 
           <ColumnHeadings />
           <Divider style={{ width: '100%' }} />
-          <Rows candidates={candidates} rankings={rankings} onClick={onClick} />
+          <Rows candidates={candidates} scores={scores} onClick={onClick} />
 
 
           <Grid item xs={10} style={{ padding: '0.4cm 0cm' }}>

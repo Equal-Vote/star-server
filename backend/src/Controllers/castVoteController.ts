@@ -34,27 +34,32 @@ async function castVoteController(req: IRequest, res: any, next: any) {
             Logger.info(req, errMsg);
             throw new BadRequest(errMsg);
         }
-    const inputBallot:Ballot = req.body.ballot;
-    const validationErr = ballotValidation(targetElection, inputBallot);
-    if (validationErr){
-        const errMsg = "Invalid Ballot: "+ validationErr
-        Logger.info(req, errMsg);
-        throw new BadRequest(errMsg);
-    }
-
+ 
     if (targetElection.state!=='open'){
         Logger.info(req, "Ballot Rejected. Election not open.", targetElection);
         throw new BadRequest("Election is not open");
     }
-    //TODO: currently we have both a value on the input Ballot, and the route param.
-    //do we want to keep both?  enforce that they match?
-    inputBallot.election_id = targetElection.election_id;
+    
 
     const user = req.user;
     const voterId = getVoterID(req, targetElection.settings.voter_id_type, user);
     Logger.debug(req, "voterID = " + voterId);
     const roll = await getOrCreateElectionRoll(targetElection, voterId, req);
     assertVoterMayVote(targetElection, roll, req);
+
+   const inputBallot:Ballot = req.body.ballot;
+   //TODO: currently we have both a value on the input Ballot, and the route param.
+    //do we want to keep both?  enforce that they match?
+    inputBallot.election_id = targetElection.election_id;
+    if (roll) {
+        inputBallot.precinct = roll.precinct
+    }
+    const validationErr = ballotValidation(targetElection, inputBallot);
+    if (validationErr){
+        const errMsg = "Invalid Ballot: "+ validationErr
+        Logger.info(req, errMsg);
+        throw new BadRequest(errMsg);
+    }
 
     //some ballot info should be server-authorative
     inputBallot.date_submitted = Date.now();
@@ -85,7 +90,7 @@ async function castVoteController(req: IRequest, res: any, next: any) {
     }
 
     const reqId = req.contextId ? req.contextId : randomUUID();
-    const userEmail = user.email;
+    const userEmail = user?.email;
     const event = {
         requestId:reqId,
         inputBallot:inputBallot,

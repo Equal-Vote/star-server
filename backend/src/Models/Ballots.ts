@@ -29,7 +29,8 @@ export default class BallotsDB implements IBallotStore {
             date_submitted  VARCHAR,
             ip_address      VARCHAR, 
             votes           json NOT NULL,
-            history         json
+            history         json,
+            precinct        VARCHAR
           );
         `;
         Logger.debug(appInitContext, query);
@@ -37,10 +38,10 @@ export default class BallotsDB implements IBallotStore {
         return p.then((_: any) => {
             //This will add the new field to the live DB in prod.  Once that's done we can remove this
             var historyQuery = `
-            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS history json
+            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS precinct VARCHAR
             `;
             return this._postgresClient.query(historyQuery).catch((err:any) => {
-                Logger.error(appInitContext, "err adding history column to DB: " + err.message);
+                Logger.error(appInitContext, "err adding precinct column to DB: " + err.message);
                 return err;
             });
         }).then((_:any)=> {
@@ -60,8 +61,8 @@ export default class BallotsDB implements IBallotStore {
 
     submitBallot(ballot: Ballot, ctx:ILoggingContext, reason:string): Promise<Ballot> {
         Logger.debug(ctx, `${className}.submit`, ballot);
-        var sqlString = `INSERT INTO ${this._tableName} (ballot_id,election_id,user_id,status,date_submitted,ip_address,votes,history)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING ballot_id;`;
+        var sqlString = `INSERT INTO ${this._tableName} (ballot_id,election_id,user_id,status,date_submitted,ip_address,votes,history,precinct)
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING ballot_id;`;
         Logger.debug(ctx, sqlString);
         var p = this._postgresClient.query({
             rowMode: 'array',
@@ -74,7 +75,8 @@ export default class BallotsDB implements IBallotStore {
                 ballot.date_submitted,
                 ballot.ip_address,
                 JSON.stringify(ballot.votes),
-                JSON.stringify(ballot.history)]
+                JSON.stringify(ballot.history),
+                ballot.precinct]
         });
 
         return p.then((res: any) => {

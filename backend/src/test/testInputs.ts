@@ -82,8 +82,12 @@ export default {
     } as Election,
 
     EmailRoll:[
-        'Alice@email.com',
-        'Bob@email.com'
+        { 
+            voter_id:'Alice@email.com',
+        },
+        {
+            voter_id:'Bob@email.com',
+        }
     ],
     Ballot1: {
         ballot_id: "0",
@@ -114,7 +118,7 @@ export default {
         title: 'Election 1',
         state: 'open',
         frontend_url: '',
-        owner_id: '0',
+        owner_id: 'Alice1234',
         races: [
             {
                 race_id: '0',
@@ -144,8 +148,12 @@ export default {
     } as Election,
 
     IDRoll:[
-        'AliceID',
-        'BobID'
+        { 
+            voter_id:'AliceID',
+        },
+        { 
+            voter_id:'BobID',
+        },
     ],
     Ballot2: {
         ballot_id: "0",
@@ -396,6 +404,137 @@ export default {
             },
             {
                 candidate_id: '2',
+                score: 4,
+            }
+            ]
+        }]
+    } as Ballot,
+
+    
+    PrecinctElection : {
+        election_id: "0",
+        title: 'Precinct Election',
+        state: 'open',
+        frontend_url: '',
+        owner_id: 'Alice1234',
+        credential_ids: ['Alice@email.com'],
+        races: [
+            {
+                race_id: '0',
+                title:'Race 0',
+                num_winners: 1,
+                voting_method:'STAR',
+                candidates:[
+                    {
+                        candidate_id:'0',
+                        candidate_name: 'A',
+                    },
+                    {
+                        candidate_id:'1',
+                        candidate_name: 'B',
+                    },
+                    {
+                        candidate_id:'2',
+                        candidate_name: 'C',
+                    }
+                ]
+            },
+            {
+                race_id: '1',
+                title:'Race 1',
+                num_winners: 1,
+                voting_method:'STAR',
+                precincts: ['0'],
+                candidates:[
+                    {
+                        candidate_id:'0',
+                        candidate_name: 'D',
+                    },
+                    {
+                        candidate_id:'1',
+                        candidate_name: 'E',
+                    },
+                    {
+                        candidate_id:'2',
+                        candidate_name: 'F',
+                    }
+                ]
+            }
+        ] as Race[],
+        settings: {
+            election_roll_type: 'Email',
+            voter_id_type: 'Email'
+        } as ElectionSettings
+    } as Election,
+    EmailWithPrecinctRoll:[
+        { 
+            voter_id:'Alice@email.com',
+            precinct:'0'
+        },
+        {
+            voter_id:'Bob@email.com',
+            precinct:'1'
+        }
+    ],
+    
+    Precinct0Ballot: {
+        ballot_id: "1",
+        election_id: "0",
+        status: 'Submitted',
+        date_submitted: Date.now(),
+        votes: [{
+            race_id:'0',
+            scores: [{
+                candidate_id: '0',
+                score: 5,
+            },
+            {
+                candidate_id: '1',
+                score: 0,
+
+            },
+            {
+                candidate_id: '2',
+                score: 4,
+            }
+            ]
+        },
+        {
+            race_id:'1',
+            scores: [{
+                candidate_id: '0',
+                score: 5,
+            },
+            {
+                candidate_id: '1',
+                score: 0,
+
+            },
+            {
+                candidate_id: '2',
+                score: 4,
+            }
+            ]
+        }]
+    } as Ballot,
+    Precinct1Ballot: {
+        ballot_id: "0",
+        election_id: "0",
+        status: 'Submitted',
+        date_submitted: Date.now(),
+        votes: [{
+            race_id:'0',
+            scores: [{
+                candidate_id: 'A',
+                score: 5,
+            },
+            {
+                candidate_id: 'B',
+                score: 0,
+
+            },
+            {
+                candidate_id: 'C',
                 score: 4,
             }
             ]

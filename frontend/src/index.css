@@ -564,7 +564,7 @@ h2.selected {
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   cursor: pointer;
-  margin: 0em;
+  margin: 1em;
 }
 
 .circle.filled,
@@ -589,8 +589,8 @@ h2.selected {
 }
 
 .circle p {
-  margin-top: -0.1em;
-  margin-left: 0.1em;
+  margin-top: -0.3em;
+  margin-left: 0.05em;
   text-align: center;
   vertical-align: middle;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;

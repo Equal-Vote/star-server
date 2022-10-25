@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from "react-router";
-import useFetch from "../useFetch";
-import Container from '@material-ui/core/Container';
+import useFetch from "../../hooks/useFetch";
+import Container from '@mui/material/Container';
 import ElectionForm from "./ElectionForm";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router"
@@ -26,17 +26,17 @@ const DuplicateElection = ({ authSession }) => {
         }, [prevData]
     )
 
-    const onCreateElection = async (election, voterIds) => {
+    const onCreateElection = async (election) => {
         // calls post election api, throws error if response not ok
         const newElection = await postElection(
             {
                 Election: election,
-                VoterIDList: voterIds,
             })
         if ((!newElection)) {
             throw Error("Error submitting election");
         }
         
+        localStorage.removeItem('Election')
         navigate(`/Election/${newElection.election.election_id}`)
     }
 

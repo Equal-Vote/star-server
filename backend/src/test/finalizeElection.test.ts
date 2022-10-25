@@ -24,12 +24,20 @@ describe("Finalize Election", () => {
         EmailRollElection.state = 'draft'
         const response = await th.createElection(
             EmailRollElection,
-            testInputs.EmailRoll,
             testInputs.user1token
         );
 
         expect(response.statusCode).toBe(200);
         electionId = response.election.election_id;
+        th.testComplete();
+    });
+    test("Add Voter Roll", async () => {
+        const response = await th.submitElectionRoll(
+            electionId,
+            testInputs.EmailRoll,
+            testInputs.user1token
+        );
+        expect(response.statusCode).toBe(200);
         th.testComplete();
     });
     test("Finalize Election", async () => {

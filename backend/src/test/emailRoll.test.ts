@@ -23,12 +23,19 @@ describe("Email Roll", () => {
     test("Create election, responds 200", async () => {
         const response = await th.createElection(
             testInputs.EmailRollElection,
+            testInputs.user1token
+        );
+        expect(response.statusCode).toBe(200);
+        electionId = response.election.election_id;
+        th.testComplete();
+    });
+    test("Add Voter Roll", async () => {
+        const response = await th.submitElectionRoll(
+            electionId,
             testInputs.EmailRoll,
             testInputs.user1token
         );
-
         expect(response.statusCode).toBe(200);
-        electionId = response.election.election_id;
         th.testComplete();
     });
     test("Get voter auth, is authorized and hasn't voted", async () => {

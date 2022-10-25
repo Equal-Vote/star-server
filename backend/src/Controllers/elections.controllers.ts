@@ -132,7 +132,7 @@ async function updateElectionStateIfNeeded(req:IRequest, election:Election):Prom
 const returnElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.returnElection ${req.params.id}`)
     var election = req.election;
-    removeHiddenFields(election);
+    removeHiddenFields(election, req.electionRollEntry);
     res.json({ election: election, voterAuth: { authorized_voter: req.authorized_voter, has_voted: req.has_voted, roles: req.user_auth.roles} })
 }
 

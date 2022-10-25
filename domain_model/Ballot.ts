@@ -1,4 +1,5 @@
-import { Election } from "./Election";
+import { Election, getApprovedRaces } from "./Election";
+import { ElectionRoll } from "./ElectionRoll";
 import { Race } from "./Race";
 import { Uid } from "./Uid";
 import { Vote } from "./Vote";
@@ -12,6 +13,7 @@ export interface Ballot {
     ip_address?: string; // ip address if once_per_ip is enabled
     votes: Vote[];         // One per poll
     history?: BallotAction[];
+    precinct?: string; // Precint of voter
 }
 
 
@@ -37,13 +39,17 @@ export function ballotValidation(election: Election, obj:Ballot): string | null 
     if (!obj.votes){
         return "Invalid Votes";
     }
-    const race_ids = election.races.map((race: Race) => race.race_id)
-    const ballot_race_ids = obj.votes.map((vote: Vote) => vote.race_id)
-    const hasDuplicates = new Set(ballot_race_ids).size !== ballot_race_ids.length
+    const approvedRaces = getApprovedRaces(election, obj.precinct)
+    const approvedRaceIds = approvedRaces.map((race: Race) => race.race_id)
+    const ballotRaceIds = obj.votes.map((vote: Vote) => vote.race_id)
+    const hasDuplicates = new Set(ballotRaceIds).size !== ballotRaceIds.length
+    // Checks if ballot has duplicate votes for the same race
     if (hasDuplicates) {
         return "Duplicate votes";
     }
-    const validIds = ballot_race_ids.every(id => race_ids.includes(id))
+
+    // Checks that all race ids on voter's ballot are in list of races that voter is allowed to vote in
+    const validIds = ballotRaceIds.every(id => approvedRaceIds.includes(id))
     if (!validIds) {
         return "Invalid IDs";
     }

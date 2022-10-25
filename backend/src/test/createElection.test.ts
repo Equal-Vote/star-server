@@ -22,7 +22,6 @@ describe("Create Election", () => {
     test("responds with 200 status", async () => {
       const response = await th.createElection(
         testInputs.Election1,
-        [],
         testInputs.user1token
       );
 
@@ -52,7 +51,6 @@ describe("Create Election", () => {
     test("responds with 400 status", async () => {
       const response = await th.createElection(
         {} as Election,
-        [],
         testInputs.user1token
       );
       expect(response.statusCode).toBe(400);
@@ -62,7 +60,7 @@ describe("Create Election", () => {
 
   describe("User is not logged in", () => {
     test("responds with 401 status", async () => {
-      const response = await th.createElection(testInputs.Election1, [], null);
+      const response = await th.createElection(testInputs.Election1, null);
       expect(response.statusCode).toBe(401);
       th.testComplete();
     });
