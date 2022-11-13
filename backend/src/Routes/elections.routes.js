@@ -18,6 +18,7 @@ const { getBallotsByElectionID } = require('../Controllers/getBallotsByElectionI
 const { editElection } = require('../Controllers/editElectionController')
 const { getSandboxResults } = require('../Controllers/sandboxController')
 const { getElections } = require('../Controllers/getElectionsController')
+const { editElectionRoles } = require('../Controllers/editElectionRolesController')
 const { permissions } = require('../../../domain_model/permissions');
 const { ElectionRollState } = require('../../../domain_model/ElectionRoll');
 const asyncHandler = require('express-async-handler')
@@ -45,6 +46,7 @@ router.get('/Elections', asyncHandler(getElections))
 router.post('/Elections/', asyncHandler(createElectionController.createElectionController))
 
 router.post('/Election/:id/edit', asyncHandler(editElection))
+router.put('/Election/:id/roles', asyncHandler(editElectionRoles))
 router.get('/ElectionResult/:id', asyncHandler(getElectionResults))
 router.post('/Election/:id/vote', asyncHandler(castVoteController))
 router.post('/Election/:id/finalize',asyncHandler(finalizeElection))

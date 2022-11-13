@@ -39,7 +39,7 @@ const editElection = async (req: any, res: any, next: any) => {
     req.election = updatedElection
     Logger.debug(req, `editElection succeeds for ${updatedElection.election_id}`);
 
-    res.json({ election: req.election, voterAuth: { authorized_voter: req.authorized_voter, has_voted: req.has_voted, roles: req.user_auth.roles } })
+    res.json({ election: req.election, voterAuth: { authorized_voter: req.authorized_voter, has_voted: req.has_voted, roles: req.user_auth.roles, permissions: req.user_auth.permissions  } })
 }
 
 module.exports = {

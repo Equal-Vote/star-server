@@ -7,8 +7,9 @@ import Container from '@mui/material/Container';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@material-ui/core";
 import EditElectionRoll from "./EditElectionRoll";
 import AddElectionRoll from "./AddElectionRoll";
+import PermissionHandler from "../../PermissionHandler";
 
-const ViewElectionRolls = ({election}) => {
+const ViewElectionRolls = ({election,permissions}) => {
     const { id } = useParams();
     const { data, isPending, error, makeRequest: fetchRolls } = useFetch(`/API/Election/${id}/rolls`,'get')
     useEffect(() => {fetchRolls()},[])
@@ -33,7 +34,9 @@ const ViewElectionRolls = ({election}) => {
             {isPending && <div> Loading Data... </div>}
             {data && data.electionRoll && !isEditing && !addRollPage &&
                 <>
-                <Button variant='outlined' onClick={() => setAddRollPage(true)} > Add Rolls </Button>
+                <PermissionHandler permissions={permissions} requiredPermission={'canAddToElectionRoll'}>
+                    <Button variant='outlined' onClick={() => setAddRollPage(true)} > Add Rolls </Button>
+                </PermissionHandler>
                 <TableContainer component={Paper}>
                     <Table style={{ width: '100%' }} aria-label="simple table">
                         <TableHead>
@@ -61,7 +64,7 @@ const ViewElectionRolls = ({election}) => {
                 </>
             }
             {isEditing && editedRoll &&
-                <EditElectionRoll roll={editedRoll} onClose={onClose} fetchRolls = {fetchRolls} id={id}/>
+                <EditElectionRoll roll={editedRoll} onClose={onClose} fetchRolls = {fetchRolls} id={id} permissions={permissions}/>
             }
             {addRollPage &&
                 <AddElectionRoll election = {election} onClose={onClose} />

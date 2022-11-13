@@ -43,8 +43,7 @@ const VotePage = ({ election, fetchElection }) => {
     if (!(await postBallot({ ballot: ballot }))) {
       return
     }
-    await fetchElection() // refetch election to update voter auth
-    navigate(`/Election/${id}`)
+    navigate(`/Election/${id}/thanks`)
   }
   console.log(scores)
   return (

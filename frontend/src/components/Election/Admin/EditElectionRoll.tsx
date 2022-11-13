@@ -6,29 +6,30 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@material-ui/core";
 import useFetch from "../../../hooks/useFetch";
+import PermissionHandler from "../../PermissionHandler";
 
-const EditElectionRoll = ({ roll, onClose, fetchRolls, id}) => {
+const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
     const [updatedRoll, setUpdatedRoll] = useState(roll)
 
-    const approve = useFetch(`/API/Election/${id}/rolls/approve`,'post')
-    const flag = useFetch(`/API/Election/${id}/rolls/flag`,'post')
-    const unflag = useFetch(`/API/Election/${id}/rolls/unflag`,'post')
-    const invalidate = useFetch(`/API/Election/${id}/rolls/invalidate`,'post')
+    const approve = useFetch(`/API/Election/${id}/rolls/approve`, 'post')
+    const flag = useFetch(`/API/Election/${id}/rolls/flag`, 'post')
+    const unflag = useFetch(`/API/Election/${id}/rolls/unflag`, 'post')
+    const invalidate = useFetch(`/API/Election/${id}/rolls/invalidate`, 'post')
 
     const onApprove = async () => {
-        if (!await approve.makeRequest({electionRollEntry: roll})) {return}
+        if (!await approve.makeRequest({ electionRollEntry: roll })) { return }
         await fetchRolls()
     }
     const onFlag = async () => {
-        if (!await flag.makeRequest({electionRollEntry: roll})) {return}
+        if (!await flag.makeRequest({ electionRollEntry: roll })) { return }
         await fetchRolls()
     }
     const onUnflag = async () => {
-        if (!await unflag.makeRequest({electionRollEntry: roll})) {return}
+        if (!await unflag.makeRequest({ electionRollEntry: roll })) { return }
         await fetchRolls()
     }
     const onInvalidate = async () => {
-        if (!await invalidate.makeRequest({electionRollEntry: roll})) {return}
+        if (!await invalidate.makeRequest({ electionRollEntry: roll })) { return }
         await fetchRolls()
     }
 
@@ -41,10 +42,10 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id}) => {
         <Container>
             {(approve.isPending || flag.isPending || unflag.isPending || invalidate.isPending) &&
                 <div> Sending Request... </div>}
-            {approve.error &&  <div> {approve.error} </div>}
-            {flag.error &&  <div> {flag.error} </div>}
-            {unflag.error &&  <div> {unflag.error} </div>}
-            {invalidate.error &&  <div> {invalidate.error} </div>}
+            {approve.error && <div> {approve.error} </div>}
+            {flag.error && <div> {flag.error} </div>}
+            {unflag.error && <div> {unflag.error} </div>}
+            {invalidate.error && <div> {invalidate.error} </div>}
             <Grid container direction="column" >
                 <Grid item sm={12}>
                     <Typography align='left' gutterBottom variant="h6" component="h6">
@@ -58,19 +59,28 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id}) => {
                 </Grid>
                 {updatedRoll.state === 'registered' &&
                     <Grid item sm={4}>
-                        <Button variant='outlined' onClick={() => { onApprove() }} > Approve </Button>
+                        <PermissionHandler permissions={permissions} requiredPermission={'canApproveElectionRoll'}>
+                            <Button variant='outlined' onClick={() => { onApprove() }} > Approve </Button>
+                        </PermissionHandler>
                     </Grid>}
                 {updatedRoll.state !== 'flagged' &&
                     <Grid item sm={4}>
-                        <Button variant='outlined' onClick={() => { onFlag() }} > Flag </Button>
+
+                        <PermissionHandler permissions={permissions} requiredPermission={'canFlagElectionRoll'}>
+                            <Button variant='outlined' onClick={() => { onFlag() }} > Flag </Button>
+                        </PermissionHandler>
                     </Grid>}
                 {updatedRoll.state === 'flagged' &&
                     <Grid item sm={4}>
-                        <Button variant='outlined' onClick={() => { onUnflag() }} > Unflag </Button>
+                        <PermissionHandler permissions={permissions} requiredPermission={'canUnflagElectionRoll'}>
+                            <Button variant='outlined' onClick={() => { onUnflag() }} > Unflag </Button>
+                        </PermissionHandler>
                     </Grid>}
                 {updatedRoll.state === 'flagged' &&
                     <Grid item sm={4}>
-                        <Button variant='outlined' onClick={() => { onInvalidate() }} > Invalidate </Button>
+                        <PermissionHandler permissions={permissions} requiredPermission={'canInvalidateElectionRoll'}>
+                            <Button variant='outlined' onClick={() => { onInvalidate() }} > Invalidate </Button>
+                        </PermissionHandler>
                     </Grid>}
                 {updatedRoll?.history &&
                     <TableContainer component={Paper}>

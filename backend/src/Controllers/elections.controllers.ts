@@ -4,6 +4,7 @@ import Logger from '../Services/Logging/Logger';
 import { responseErr } from '../Util';
 import { IRequest } from '../IRequest';
 import { roles } from "../../../domain_model/roles"
+import { getPermissions } from '../../../domain_model/permissions';
 
 
 var ElectionsModel =  ServiceLocator.electionsDb();
@@ -77,6 +78,7 @@ const electionPostAuthMiddleware = async (req: any, res: any, next: any) => {
             req.user_auth.roles.push(roles.credentialer)
           }
         }
+        req.user_auth.permissions = getPermissions(req.user_auth.roles)
         Logger.debug(req, `done with electionPostAuthMiddleware...`);
         Logger.debug(req,req.user_auth);
         return next();
@@ -133,7 +135,7 @@ const returnElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.returnElection ${req.params.id}`)
     var election = req.election;
     removeHiddenFields(election, req.electionRollEntry);
-    res.json({ election: election, voterAuth: { authorized_voter: req.authorized_voter, has_voted: req.has_voted, roles: req.user_auth.roles} })
+    res.json({ election: election, voterAuth: { authorized_voter: req.authorized_voter, has_voted: req.has_voted, roles: req.user_auth.roles, permissions: req.user_auth.permissions } })
 }
 
 module.exports = {
