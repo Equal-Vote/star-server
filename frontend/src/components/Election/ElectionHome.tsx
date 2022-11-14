@@ -64,7 +64,7 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
             <Typography align='center' gutterBottom variant="h4" component="h4">
               {electionData.election.title}
             </Typography>
-            <Typography align='center' gutterBottom component="p">
+            <Typography align='center' gutterBottom component="p" style={{whiteSpace: 'pre-line'}}>
               {electionData.election.description}
             </Typography>
             {electionData.election.state === 'draft' &&

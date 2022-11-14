@@ -126,7 +126,7 @@ const Row = ({ rowIndex, candidate, party, score, onClick }) => {
           <Grid item xs={1}>
           </Grid>
           <Grid item xs={8}>
-            <Typography align='left' s component="p">
+            <Typography align='left' s component="p" style={{whiteSpace: 'pre-line'}}>
               {candidate.bio}
             </Typography>
 
@@ -234,7 +234,7 @@ export default function StarBallotView({
             </Typography>
           </Grid>
           <Grid item>
-            <Typography align='center' gutterBottom variant="h6" component="h6">
+            <Typography align='center' gutterBottom variant="h6" component="h6" style={{whiteSpace: 'pre-line'}}>
               {race.description}
             </Typography>
           </Grid>
