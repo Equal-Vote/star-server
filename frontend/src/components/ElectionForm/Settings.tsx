@@ -20,12 +20,10 @@ export default function Settings({ election, applyElectionUpdate, getStyle }) {
     const [expandedSettings, setExpandedSettings] = useState(false)
 
     const dateAsInputString = (date) => {
-        // TODO: Using ISO create a bug with timezones
-        //       ex. If I select April 20th late in the PDT timezone, that's April 21th in UTC/ISO, so it sets April 21
         if (date == null) return ''
         if (isNaN(date.valueOf())) return ''
-        var s = date.toISOString()
-        // the timezone offset throws off the input component
+        // Remove time zone offset before switching to ISO
+        var s = (new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString());
         s = s.replace(':00.000Z', '')
         return s
     }
