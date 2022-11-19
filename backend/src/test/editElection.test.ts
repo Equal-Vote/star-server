@@ -51,16 +51,6 @@ describe("Edit Election", () => {
         })
     })
 
-    describe("User is not logged in", () => {
-        test("responds with 401 status", async () => {
-            const ID = await setupInitialElection()
-
-            const response = await th.createElection(testInputs.Election1, null);
-            expect(response.statusCode).toBe(401);
-            th.testComplete();
-        })
-    })
-
     describe("User is not owner", () => {
         test("responds with 401 status", async () => {
             const ID = await setupInitialElection();

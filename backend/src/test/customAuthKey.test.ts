@@ -57,6 +57,7 @@ describe("Election with custom auth key", () => {
     test("User can create election with custom key", async () => {
         const response = await th.createElection(
             election,
+            null,
             user1TokenCustomSigned
           );
 
@@ -70,6 +71,7 @@ describe("Election with custom auth key", () => {
         const response = await th.submitElectionRoll(
             electionId,
             testInputs.EmailRoll,
+            null,
             user1TokenCustomSigned
         );
         expect(response.statusCode).toBe(200);
@@ -89,6 +91,7 @@ describe("Election with custom auth key", () => {
     test("User with custom key CAN request ballot", async () => {
         const response = await th.requestBallot(
             electionId,
+            null,
             user1TokenCustomSigned
         );
         

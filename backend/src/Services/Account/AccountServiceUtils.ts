@@ -2,6 +2,7 @@ import { Election } from "../../../../domain_model/Election";
 import { IRequest } from "../../IRequest";
 import Logger from "../Logging/Logger";
 
+import { Unauthorized } from "@curveball/http-errors";
 const jwt = require("jsonwebtoken");
 
 export default class AccountServiceUtils {
@@ -23,7 +24,7 @@ export default class AccountServiceUtils {
             return jwt.verify(token, key);
         } catch (e: any) {
             Logger.warn(req, "Invalid JWT signature");
-            return null;
+            throw new Unauthorized();
         }
     };
 
