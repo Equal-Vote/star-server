@@ -30,6 +30,7 @@
     "jsonwebtoken": "^8.5.1",
     "node-fetch": "^3.2.3",
     "pg": "^8.7.3",
+    "pg-boss": "^8.2.0",
     "pg-format": "^1.0.4",
     "qs": "^6.10.3",
     "star-tabulator": "^1.0.2",
