@@ -42,7 +42,7 @@ const Thanks = ({ election }) => {
                             Share:
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <ShareButton url={`${window.location.origin}/Election/${election.election_id}`}/>
+                            <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} />
                         </div>
                         {(election.state === 'open' || election.state === 'closed') &&
                             <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -51,7 +51,16 @@ const Thanks = ({ election }) => {
                                 </Button>
                             </div>
                         }
-
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Typography align='center' gutterBottom variant="h6" component="h6">
+                                Want to help support STAR Voting campaigns?
+                            </Typography>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button variant='outlined' href={'https://www.starvoting.org/donate'} >
+                                Donate
+                            </Button>
+                        </div>
                     </Paper>
                 </Box>
             }
