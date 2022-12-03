@@ -15,7 +15,7 @@ import RedditIcon from "@mui/icons-material/Reddit"
 import LinkIcon from "@mui/icons-material/Link"
 import { IconButton, Menu, Tooltip, Typography } from "@mui/material";
 
-export default function ShareButton() {
+export default function ShareButton({url}) {
     const [anchorElNav, setAnchorElNav] = useState(null)
 
     const handleOpenNavMenu = (event) => {
@@ -29,7 +29,7 @@ export default function ShareButton() {
     const handleShare = e => {
         e.preventDefault()
 
-        const ahref = window.location.href
+        const ahref = url
         const encodedAhref = encodeURIComponent(ahref)
         var link
 

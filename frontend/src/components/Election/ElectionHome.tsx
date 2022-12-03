@@ -59,12 +59,12 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
           <Paper elevation={3} sx={{ width: 600 }} >
 
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <ShareButton />
+              <ShareButton url={`${window.location.origin}/Election/${electionData.election.election_id}`}/>
             </div>
             <Typography align='center' gutterBottom variant="h4" component="h4">
               {electionData.election.title}
             </Typography>
-            <Typography align='center' gutterBottom component="p">
+            <Typography align='center' gutterBottom component="p" style={{whiteSpace: 'pre-line'}}>
               {electionData.election.description}
             </Typography>
             {electionData.election.state === 'draft' &&

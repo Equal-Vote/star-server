@@ -28,3 +28,16 @@ export const permissions = {
 export const hasPermission = (roles:roles[],permission:permission) => {
   return roles.some( (role) => permission.includes(role))
 }
+
+export const getPermissions = (roles:roles[]) => {
+  //Will likely rework permissions and roles in the future so that each role has list of permissions instead
+  //This is a temp workaround to get all permissions to send to frontend so it can control what users can see/do
+  const userPermissions:any = []
+  let p: keyof typeof permissions
+  for(p in permissions ){
+    if (roles.some( (role) => permissions[p].includes(role))){
+      userPermissions.push(p)
+    }
+  }
+  return userPermissions
+}

@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import { Button, Grid } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paper } from '@mui/material';
+import PermissionHandler from '../PermissionHandler';
 
 const ListItem = ({ text, link }) => {
     return (
@@ -32,8 +33,17 @@ export default function Sidebar({ electionData }) {
                         <Grid direction="column" >
                             <ListItem text='Home' link={`/Election/${id}/`} />
                             {electionData.election.state === 'draft' &&
-                                <ListItem text='Edit Election' link={`/Election/${id}/edit`} />}
-                            <ListItem text='Voter Rolls' link={`/Election/${id}/admin`} />
+                                <>
+                                    <PermissionHandler permissions={electionData.voterAuth.permissions} requiredPermission={'canEditElectionRoles'}>
+                                        <ListItem text='Edit Election Roles' link={`/Election/${id}/admin/roles`} />
+                                    </PermissionHandler>
+                                    <PermissionHandler permissions={electionData.voterAuth.permissions} requiredPermission={'canEditElection'}>
+                                        <ListItem text='Edit Election' link={`/Election/${id}/edit`} />
+                                    </PermissionHandler>
+                                </>}
+                            <PermissionHandler permissions={electionData.voterAuth.permissions} requiredPermission={'canViewElectionRoll'}>
+                                <ListItem text='Voter Rolls' link={`/Election/${id}/admin/rolls`} />
+                            </PermissionHandler>
                         </Grid>
                     </Paper>
                 </Box>
