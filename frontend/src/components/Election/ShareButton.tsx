@@ -15,7 +15,7 @@ import RedditIcon from "@mui/icons-material/Reddit"
 import LinkIcon from "@mui/icons-material/Link"
 import { IconButton, Menu, Tooltip, Typography } from "@mui/material";
 
-export default function ShareButton({url}) {
+export default function ShareButton({ url, text }) {
     const [anchorElNav, setAnchorElNav] = useState(null)
 
     const handleOpenNavMenu = (event) => {
@@ -65,15 +65,23 @@ export default function ShareButton({url}) {
     return (
         <>
             <Tooltip title="Share">
-                <IconButton
-                    size="large"
-                    aria-label="account of current user"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    onClick={handleOpenNavMenu}
-                    color="inherit">
-                    <ShareIcon />
-                </IconButton>
+                {text !== null ?
+                    <Button
+                        variant='outlined'
+                        onClick={handleOpenNavMenu}>
+                        {text}
+                    </Button>
+                    :
+                    <IconButton
+                        size="large"
+                        aria-label="account of current user"
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        onClick={handleOpenNavMenu}
+                        color="inherit">
+                        <ShareIcon />
+                    </IconButton>
+                }
             </Tooltip>
             <Fade timeout={350}>
                 <Paper >
