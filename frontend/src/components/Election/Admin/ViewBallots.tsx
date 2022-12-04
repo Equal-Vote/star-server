@@ -8,7 +8,7 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 import PermissionHandler from "../../PermissionHandler";
 import ViewBallot from "./ViewBallot";
 
-const ViewElectionRolls = ({ election, permissions }) => {
+const ViewBallots = ({ election, permissions }) => {
     const { id } = useParams();
     const { data, isPending, error, makeRequest: fetchBallots } = useFetch(`/API/Election/${id}/ballots`, 'get')
     useEffect(() => { fetchBallots() }, [])
@@ -26,7 +26,6 @@ const ViewElectionRolls = ({ election, permissions }) => {
         setSelectedBallot(null)
         fetchBallots()
     }
-    console.log(data)
     return (
         <Container >
             {error && <div> {error} </div>}
@@ -62,4 +61,4 @@ const ViewElectionRolls = ({ election, permissions }) => {
     )
 }
 
-export default ViewElectionRolls
+export default ViewBallots
