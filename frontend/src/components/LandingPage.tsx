@@ -15,14 +15,14 @@ const LandingPage = ({ authSession }) => {
             display: 'flex',
             minHeight: '600px',
             justifyContent: 'center',
-            pt: { xs: 0, md: '0' },
+            pt: { xs: 0, md: 0 },
         }}>
-            <Grid container spacing={5} sx={{
+            <Grid container sx={{
                 maxWidth: '1300px',
-                p: { xs: 0, md: 2 },
+                p: { xs: 2, md: 2 },
             }}>
-                <Grid item xs={12} md={7} sx={{ pt: 0 }}>
-                    <Typography variant="h3" style={{ fontWeight: 700, paddingBottom: '15px' }} >
+                <Grid item xs={12} md={7}>
+                    <Typography variant="h3" style={{ fontWeight: 700 }} >
                         STAR Voting Election Hosting
                     </Typography>
                     <Typography variant="h6" style={{

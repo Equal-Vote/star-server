@@ -44,6 +44,9 @@ export default function Sidebar({ electionData }) {
                             <PermissionHandler permissions={electionData.voterAuth.permissions} requiredPermission={'canViewElectionRoll'}>
                                 <ListItem text='Voter Rolls' link={`/Election/${id}/admin/rolls`} />
                             </PermissionHandler>
+                            <PermissionHandler permissions={electionData.voterAuth.permissions} requiredPermission={'canViewBallots'}>
+                                <ListItem text='Ballots' link={`/Election/${id}/admin/ballots`} />
+                            </PermissionHandler>
                         </Grid>
                     </Paper>
                 </Box>

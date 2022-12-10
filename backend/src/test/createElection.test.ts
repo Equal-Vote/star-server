@@ -57,12 +57,4 @@ describe("Create Election", () => {
       th.testComplete();
     });
   });
-
-  describe("User is not logged in", () => {
-    test("responds with 401 status", async () => {
-      const response = await th.createElection(testInputs.Election1, null);
-      expect(response.statusCode).toBe(401);
-      th.testComplete();
-    });
-  });
 });

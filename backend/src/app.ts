@@ -22,15 +22,9 @@ const appInitContext = Logger.createContext("appInit");
 
 // CORS (Cross-origin resource sharing), allows for the backend to receive calls from the front end, even though they have different urls/origins
 //      (at least that's my understanding)
+const prodEndpoints : any = process.env.ALLOWED_URLS?.split(',') || 'https://star-vote.herokuapp.com/';
 app.use(cors({
-    origin: [
-        'https://star-vote.herokuapp.com/',
-        'http://localhost:3000', // since this is the server side I can't use window.location.href :'(
-        // these are to verify that it works during the PR phase
-        'https://star-vote-review-1.herokuapp.com/',
-        'https://star-vote-review-2.herokuapp.com/',
-        'https://star-vote-review-3.herokuapp.com/',
-    ],
+    origin: prodEndpoints,
     credentials: true, // allow the backend to receive cookies from the frontend
 }))
 
@@ -51,10 +45,6 @@ app.use(authController.getUser)
 //Routes
 app.use('/API',electionRouter)
 // app.use('/debug',debugRouter)
-
-const prodEndpoints : any = [
-  'https://star-vote.herokuapp.com/',
-];
 
 app.post('/API/Token', asyncHandler(getUserToken));
 

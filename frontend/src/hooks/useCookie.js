@@ -39,13 +39,12 @@ export const useCookie = (key, defaultValue, expiration = null, updateRate = nul
     const getStoredValue = (key, defaultValue) => {
         // getting stored value
         const saved = getCookie(key);
-        const initial = JSON.parse(saved);
-        if (!initial && defaultValue!==null) { 
+        if (!saved && defaultValue!==null) { 
             // If cookie doesn't exist and default value is set, 
-            setCookie(key, JSON.stringify(defaultValue), expiration);
+            setCookie(key, defaultValue, expiration);
             return defaultValue
         }
-        return initial;
+        return saved;
     } 
     
     const [value, setStoredValue] = useState(() => {
@@ -53,7 +52,11 @@ export const useCookie = (key, defaultValue, expiration = null, updateRate = nul
     });
 
     const setValue = (newValue) => {
-        setCookie(key, JSON.stringify(newValue), expiration);
+        if (newValue === null) {
+            deleteCookie(key)
+            return
+        }
+        setCookie(key, newValue, expiration);
         setStoredValue(newValue)
     }
 

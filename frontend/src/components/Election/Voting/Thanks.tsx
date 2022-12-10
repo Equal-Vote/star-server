@@ -21,12 +21,11 @@ const Thanks = ({ election }) => {
                 <Box
                     display='flex'
                     justifyContent="center"
-                    alignItems="center"
-                    sx={{ width: '100%' }}>
-                    <Paper elevation={3} sx={{ width: 600 }} >
+                    alignItems="center">
+                    <Paper elevation={3} sx={{p:1}}>
 
                         <Typography align='center' gutterBottom variant="h3" component="h3">
-                            Balot Submitted
+                            Ballot Submitted
                         </Typography>
                         <Typography align='center' gutterBottom variant="h4" component="h4">
                             Thank you for voting!
@@ -39,19 +38,25 @@ const Thanks = ({ election }) => {
                         }
 
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            Share:
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <ShareButton url={`${window.location.origin}/Election/${election.election_id}`}/>
+                            <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} text={'Share'}/>
                         </div>
                         {(election.state === 'open' || election.state === 'closed') &&
                             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                <Button variant='outlined' href={`/Election/${election.election_id}/results`} >
+                                <Button variant='outlined' href={`/Election/${election.election_id}/results`} sx={{m:1}}>
                                     View Results
                                 </Button>
                             </div>
                         }
-
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Typography align='center' gutterBottom variant="h6" component="h6">
+                                Want to help support STAR Voting campaigns?
+                            </Typography>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button variant='outlined' target="_blank" href={'https://www.starvoting.org/donate'} >
+                                Donate
+                            </Button>
+                        </div>
                     </Paper>
                 </Box>
             }

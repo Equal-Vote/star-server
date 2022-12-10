@@ -70,7 +70,6 @@ describe("Multi Race Precinct Election", () => {
             testInputs.Precinct0Ballot,
             testInputs.user1token
         );
-        console.log(response)
         expect(response.statusCode).toBe(200);
         th.testComplete();
     });

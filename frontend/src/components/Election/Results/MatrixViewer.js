@@ -1,47 +1,80 @@
 import React from "react";
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import { Paper } from "@mui/material";
 
 function CellViewer({ cell }) {
-  if (!cell) return "";
+  if (cell === null) return "";
 
   return (
-    <h3 className = 'cell'>
+    <h3 className='cell'>
       {cell}
     </h3>
   );
 }
 
 export default function MatrixViewer({ results }) {
-  //const matrix = results.matrix;
   return (
-    <div>
-      <h2>Head-to-Head Voter Preferences</h2>
-      <table className = 'matrix'>
-        <thead className = 'matrix'>
-          <tr className = 'matrix'>
-            <th className = 'matrix'></th>
-            {results.summaryData.candidates.map((c, n) => (
-              <th className = 'matrix' key={`h${n}`} >{c.name} </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className = 'matrix'>
-          {results.summaryData.preferenceMatrix.map((row, i) => (
-            <tr className = 'matrix' key={`d${i}`}>
-              <th className = 'matrix' key={`dh${i}`} >{results.summaryData.candidates[i].name}</th>
-              {row.map((col, j) => (
-                results.summaryData.pairwiseMatrix[i][j]===1 ?
-                <td className = 'highlight' key={`c${i},${j}`}>
-                  <CellViewer cell={col} />
-                </td>
-                :
-                <td key={`c${i},${j}`}>
-                  <CellViewer cell={col} />
-                </td>
+    <Paper elevation={0} sx={{ width:'100%' }}>
+      <TableContainer sx={{ maxHeight: 600, maxWidth: {xs:400, sm: 500, md: 600}}}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              <TableCell
+                style={{
+                  position: 'sticky',
+                  left: 0,
+                  background: 'white',
+                  zIndex: 900,
+                  minWidth: 100
+                }}
+                align='center'
+                key={``}> </TableCell>
+              {results.summaryData.candidates.map((c, n) => (
+                <TableCell
+                  align='center'
+                  key={`h${n}`}
+                  style={{
+                    minWidth: 100 ,
+                    zIndex: 800,}}
+                >
+                  {c.name}
+                </TableCell>
               ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+            </TableRow>
+          </TableHead>
+          <TableBody >
+            {results.summaryData.preferenceMatrix.map((row, i) => (
+              <TableRow>
+                <TableCell
+                  style={{
+                    position: 'sticky',
+                    left: 0,
+                    background: 'white',
+                    zIndex: 700,
+                  }}
+                  align='center'>
+                  {results.summaryData.candidates[i].name}
+                </TableCell>
+                {row.map((col, j) => (
+                  results.summaryData.pairwiseMatrix[i][j] === 1 ?
+                    <TableCell
+                      className='highlight'
+                      key={`c${i},${j}`}
+                      align='center'>
+                      <CellViewer cell={col} />
+                    </TableCell>
+                    :
+                    <TableCell
+                      key={`c${i},${j}`}
+                      align='center'>
+                      <CellViewer cell={col} />
+                    </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
   );
 }

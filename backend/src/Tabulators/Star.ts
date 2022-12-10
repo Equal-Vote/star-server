@@ -221,6 +221,7 @@ function runStarRound(summaryData: summaryData, remainingCandidates: candidate[]
       const randomWinner = scoreTieWinners[getRandomInt(scoreTieWinners.length)]
       roundResults.logs.push(`${randomWinner.name} wins random tiebreaker and advances to the runoff round.`)
       runoffCandidates.push(randomWinner)
+      continue
     }
     // Tie could not be resolved, select all tied candidates as winners of round
     roundResults.winners.push(...runoffCandidates)
