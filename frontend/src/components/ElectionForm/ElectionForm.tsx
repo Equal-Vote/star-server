@@ -15,16 +15,21 @@ import { useSessionStorage } from "../../hooks/useSessionStorage";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { StyledButton } from '../styles';
 import { Box, Paper } from "@mui/material";
+import { authentication, ElectionSettings } from "../../../../domain_model/ElectionSettings";
+import { Election } from "../../../../domain_model/Election";
 
 const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitText, disableSubmit }) => {
     // I'm referencing 4th option here
     // https://daveceddia.com/usestate-hook-examples/
-    const defaultElection = {
+    const defaultElection: Election= {
         title: '',
         election_id: '0',
         start_time: new Date(''),
         end_time: new Date(''),
         description: '',
+        state: 'draft',
+        frontend_url: '',
+        owner_id: '',
         races: [
             {
                 race_id: '0',
@@ -45,17 +50,17 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                         candidate_id: '2',
                         candidate_name: '',
                     }
-                ] as Candidate[],
+                ],
                 precincts: undefined,
             }
         ],
         settings: {
-            voter_id_type: 'IP Address',
-            email_verification: false,
-            two_factor_auth: false,
+            voter_access: 'open',
+            voter_authentication: {
+                ip_address: true,
+            },
             ballot_updates: false,
             public_results: true,
-            election_roll_type: 'None'
         }
     }
     if (prevElectionData == null) {

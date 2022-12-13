@@ -3,7 +3,7 @@ const router = express.Router();
 
 
 const electionController = require('../Controllers/elections.controllers')
-const voterRollController = require('../Controllers/voterRolls.controller')
+const { registerVoter } = require('../Controllers/registerVoterController')
 const authController = require('../Controllers/auth.controllers')
 const { deleteElection } = require('../Controllers/deleteElectionController')
 const changeElectionRollStateController = require('../Controllers/changeElectionRollController')
@@ -23,16 +23,10 @@ const { permissions } = require('../../../domain_model/permissions');
 const { ElectionRollState } = require('../../../domain_model/ElectionRoll');
 const asyncHandler = require('express-async-handler')
 
-router.get('/Election/:id',
-    voterRollController.getVoterAuth,
-    electionController.returnElection)
+router.get('/Election/:id', asyncHandler(electionController.returnElection))
 router.delete('/Election/:id', asyncHandler(deleteElection))
-router.post('/Election/:id/ballot',
-    voterRollController.getVoterAuth,
-    electionController.returnElection)
-router.post('/Election/:id/register',
-    voterRollController.getVoterAuth,
-    voterRollController.registerVoter)
+router.post('/Election/:id/ballot', asyncHandler(electionController.returnElection))
+router.post('/Election/:id/register',asyncHandler(registerVoter))
 router.get('/Election/:id/ballots', asyncHandler(getBallotsByElectionID))
 router.get('/Election/:id/rolls', asyncHandler(getRollsByElectionID))
 router.get('/Election/:id/rolls/:voter_id', asyncHandler(getByVoterID))

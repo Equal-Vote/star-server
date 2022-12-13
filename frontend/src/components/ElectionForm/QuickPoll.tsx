@@ -53,12 +53,12 @@ const QuickPoll = ({ authSession }) => {
             }
         ],
         settings: {
-            voter_id_type: 'IP Address',
-            email_verification: false,
-            two_factor_auth: false,
+            voter_access: 'open',
+            voter_authentication: {
+                ip_address: true,
+            },
             ballot_updates: false,
             public_results: true,
-            election_roll_type: 'None'
         }
     }
 

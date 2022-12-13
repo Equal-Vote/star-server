@@ -19,10 +19,11 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
         timestamp: Date.now(),
     }]
     const rolls: ElectionRoll[] = req.body.electionRoll.map((roll: ElectionRoll) => ({
-        election_id: req.election.election_id,
         voter_id: roll.voter_id,
-        precinct: roll.precinct,
+        election_id: req.election.election_id,
+        email: roll.email,
         submitted: false,
+        precinct: roll.precinct,
         state: roll.state || ElectionRollState.approved,
         history: history,
     }))

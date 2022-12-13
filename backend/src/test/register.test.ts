@@ -32,7 +32,7 @@ describe("Registration", () => {
             .post('/API/Elections')
             .set('Cookie', ['id_token=' + testInputs.user1token])
             .set('Accept', 'application/json')
-            .send({ Election: testInputs.EmailRollElection });
+            .send({ Election: testInputs.RegistrationElection });
         expect(response.statusCode).toBe(200)
         const responseObject = response.body;
         electionId = responseObject.election.election_id

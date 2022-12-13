@@ -15,8 +15,15 @@ import IconButton from '@mui/material/IconButton'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import { Input } from '@mui/material';
+import { Election } from '../../../../domain_model/Election';
 
-export default function Settings({ election, applyElectionUpdate, getStyle }) {
+type SettingsProps = {
+    election: Election,
+    applyElectionUpdate: Function,
+    getStyle: any
+}
+
+export default function Settings({ election, applyElectionUpdate, getStyle }: SettingsProps) {
     const [expandedSettings, setExpandedSettings] = useState(false)
 
     const dateAsInputString = (date) => {
@@ -27,18 +34,17 @@ export default function Settings({ election, applyElectionUpdate, getStyle }) {
         s = s.replace(':00.000Z', '')
         return s
     }
-    const onUpdateElectionRoll = (voterRoll: string) => {
+
+    const updateVoterAccess = (voter_access) => {
         applyElectionUpdate(election => {
-            election.settings.election_roll_type = voterRoll;
-            if (voterRoll === 'None') {
-                election.settings.voter_id_type = 'IP Address';
-            } else if (voterRoll === 'Email') {
-                election.settings.voter_id_type = 'Email';
-            } else if (voterRoll === 'IDs') {
-                election.settings.voter_id_type = 'IDs';
-            }
-        })
+            election.settings.voter_access = voter_access
+            if (voter_access === 'open') {
+                election.settings.voter_authentication.voter_id = false
+                election.settings.invitations = undefined
+            }})
     }
+
+
     return (
         <>
             <Grid item xs={11}>
@@ -118,76 +124,64 @@ export default function Settings({ election, applyElectionUpdate, getStyle }) {
                             boxShadow: 2,
                         }}>
                             <InputLabel htmlFor="uncontrolled-native">
-                                Election Roll
+                                Voter Access
                             </InputLabel>
                             <Select
-                                name="Election Roll"
-                                label="Election Roll"
-                                value={election.settings.election_roll_type}
-                                onChange={(e) => onUpdateElectionRoll(e.target.value as string)}
-                            >
-                                <MenuItem key="None" value="None">
-                                    None
+                                name="Voter Access"
+                                label="Voter Access"
+                                value={election.settings.voter_access}
+                                onChange={(e) => updateVoterAccess(e.target.value)}
+                                >
+                                <MenuItem key="open" value="open">
+                                    Open
                                 </MenuItem>
-                                <MenuItem key="Email" value="Email">
-                                    Email
+                                <MenuItem key="closed" value="closed">
+                                    Closed
                                 </MenuItem>
-                                <MenuItem key="IDs" value="IDs">
-                                    IDs
+                                <MenuItem key="registration" value="registration">
+                                    Registration
                                 </MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
-                    {election.settings.election_roll_type === 'None' &&
-                        <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth sx={{
-                                mx: { xs: 0, },
-                                my: { xs: 1 },
-                                boxShadow: 2,
-                            }}>
-                                <InputLabel htmlFor="uncontrolled-native">
-                                    Voter ID Type
-                                </InputLabel>
-                                <Select
-                                    name="Voter ID"
-                                    label="Voter ID Type"
-                                    value={election.settings.voter_id_type}
-                                    onChange={(e) => applyElectionUpdate(election => { election.settings.voter_id_type = e.target.value })}
-                                >
-                                    <MenuItem key="None" value="None">
-                                        None
-                                    </MenuItem>
-                                    <MenuItem key="IP Address" value="IP Address">
-                                        IP Address
-                                    </MenuItem>
-                                    <MenuItem key="Email" value="Email">
-                                        Email (Requires Login)
-                                    </MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
 
-                    }
                     <Grid item xs={12}>
-                        <FormControlLabel disabled control={
+                        <FormControlLabel 
+                            disabled = {election.settings.voter_access!=='closed'}
+                            control={
                             <Checkbox
-                                id="email-verification"
-                                name="Email Verification"
-                                checked={election.settings.email_verification}
-                                onChange={(e) => applyElectionUpdate(election => { election.settings.email_verification = e.target.value })}
+                                id="voter-id"
+                                name="Voter ID"
+                                checked={election.settings.invitation !== undefined}
+                                onChange={(e) => applyElectionUpdate(election => { election.settings.invitation = e.target.value ? 'email' : undefined })}
                             />}
-                            label="Email Verification"
+                            label="Voter ID"
+                        />
+                    </Grid>
+                    
+
+                    <Grid item xs={12}>
+                        <FormControlLabel 
+                            disabled = {election.settings.voter_access==='open'}
+                            control={
+                            <Checkbox
+                                id="voter-id"
+                                name="Voter ID"
+                                checked={election.settings.voter_authentication.voter_id}
+                                onChange={(e) => applyElectionUpdate(election => { election.settings.voter_authentication.voter_id = e.target.value })}
+                            />}
+                            label="Voter ID"
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <FormControlLabel disabled control={
+                        <FormControlLabel control={
                             <Checkbox
-                                id="two-factor-auth"
-                                name="Two Factor Auth"
-                                checked={election.settings.two_factor_auth}
+                                id="email"
+                                name="Email"
+                                checked={election.settings.voter_authentication.email}
                                 onChange={(e) => applyElectionUpdate(election => { election.settings.two_factor_auth = e.target.value })}
                             />}
-                            label="Two Factor Auth"
+                            label="Email"
                         />
                     </Grid>
                     <Grid item xs={12}>
