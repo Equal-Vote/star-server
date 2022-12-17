@@ -36,7 +36,6 @@ const Election = ({ authSession }) => {
             <Sidebar electionData={data} />
           </Grid>
           <Grid xs={12} sm={8}>
-            <VoterAuth authSession={authSession} electionData={data} fetchElection={fetchData} />
             <Routes>
               <Route path='/' element={<ElectionHome authSession={authSession} electionData={data} fetchElection={fetchData} />} />
               <Route path='/vote' element={<VotePage election={data.election} fetchElection={fetchData}/>} />

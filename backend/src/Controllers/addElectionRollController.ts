@@ -5,6 +5,7 @@ import { responseErr } from "../Util";
 import { hasPermission, permission, permissions } from '../../../domain_model/permissions';
 import { expectPermission } from "./controllerUtils";
 import { InternalServerError } from "@curveball/http-errors";
+import { randomUUID } from "crypto";
 
 const ElectionRollModel = ServiceLocator.electionRollDb();
 
@@ -19,7 +20,7 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
         timestamp: Date.now(),
     }]
     const rolls: ElectionRoll[] = req.body.electionRoll.map((roll: ElectionRoll) => ({
-        voter_id: roll.voter_id,
+        voter_id: roll.voter_id || randomUUID(),
         election_id: req.election.election_id,
         email: roll.email,
         submitted: false,

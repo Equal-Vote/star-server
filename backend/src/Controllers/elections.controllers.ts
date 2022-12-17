@@ -144,7 +144,7 @@ const returnElection = async (req: any, res: any, next: any) => {
     }
     const voterAuthorization = getVoterAuthorization(roll,missingAuthData)
     removeHiddenFields(election, roll);
-    res.json({ election: election, voterAuth: { authorized_voter: voterAuthorization.authorized_voter, has_voted: voterAuthorization.has_voted, roles: req.user_auth.roles, permissions: req.user_auth.permissions } })
+    res.json({ election: election, voterAuth: { authorized_voter: voterAuthorization.authorized_voter, has_voted: voterAuthorization.has_voted, required: voterAuthorization.required, roles: req.user_auth.roles, permissions: req.user_auth.permissions } })
 }
 
 module.exports = {

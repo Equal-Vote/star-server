@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import { IconButton, Paper, Tooltip } from "@mui/material";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ShareButton from "./ShareButton";
+import VoterAuth from "./VoterAuth";
 
 const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
   const { id } = useParams();
@@ -50,7 +51,7 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
   return (
     <>
       {error && <div> {error} </div>}
-      {electionData && (electionData.voterAuth.authorized_voter || electionData.voterAuth.roles.length > 0) && electionData.election &&
+      {electionData && electionData.election && electionData.voterAuth &&
         <Box
           display='flex'
           justifyContent="center"
@@ -58,17 +59,19 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
           sx={{ width: '100%' }}>
           <Paper elevation={3} sx={{ width: 600 }} >
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Box sx={{m:1, display: 'flex', justifyContent: 'flex-end'}}>
               <ShareButton url={`${window.location.origin}/Election/${electionData.election.election_id}`} text={null}/>
-            </div>
+            </Box>
             <Typography align='center' gutterBottom variant="h4" component="h4">
               {electionData.election.title}
             </Typography>
+            
+            <VoterAuth authSession={authSession} electionData={electionData} fetchElection={fetchElection} />
             <Typography align='center' gutterBottom component="p" style={{whiteSpace: 'pre-line'}}>
               {electionData.election.description}
             </Typography>
             {electionData.election.state === 'draft' &&
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Box sx={{m:1, display: 'flex', justifyContent: 'center'}}>
                 <Button variant='outlined' href={`/Election/${String(electionData.election.election_id)}/vote`} >
                   Preview Ballot
                 </Button>
@@ -77,7 +80,7 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
                     Finalize
                   </Button>
                 </Tooltip>
-              </div>
+              </Box>
             }
 
             {electionData.election.state === 'finalized' && electionData.election.start_time &&
@@ -95,11 +98,11 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
               {
                 electionData.voterAuth.has_voted == false && electionData.voterAuth.authorized_voter && !electionData.voterAuth.required &&
 
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Box sx={{m:1, display: 'flex', justifyContent: 'center'}}>
                   <Button variant='outlined' href={`/Election/${String(electionData?.election?.election_id)}/vote`} >
                     Vote
                   </Button>
-                </div>
+                </Box>
               }
             </>}
 
@@ -117,14 +120,14 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
               </Typography>
             }
             {(electionData.election.state === 'open' || electionData.election.state === 'closed') &&
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Button variant='outlined' href={`/Election/${electionData.election.election_id}/results`} >
+              <Box sx={{p:1, display: 'flex', justifyContent: 'center'}}>
+                <Button  variant='outlined' href={`/Election/${electionData.election.election_id}/results`} >
                   View Results
                 </Button>
-              </div>
+              </Box>
             }
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Box sx={{p:1, display: 'flex', justifyContent: 'flex-end'}}>
               {authSession.isLoggedIn() &&
                 <Tooltip title="Create copy of this election" >
                   <IconButton component={Link} to={`/DuplicateElection/${electionData.election.election_id}`}>
@@ -132,7 +135,7 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
                   </IconButton>
                 </Tooltip>
               }
-            </div>
+            </Box>
 
           </Paper>
         </Box>

@@ -8,14 +8,17 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import TextField from "@mui/material/TextField";
 import Box from '@mui/material/Box';
+import { useCookie } from "../../hooks/useCookie";
 const VoterAuth = ({ authSession, electionData, fetchElection }) => {
   const { id } = useParams();
-  const [voterID, setVoterID] = useState('')
-
-  const navigate = useNavigate();
+  const [voterID, setVoterID] = useCookie('voter_id', null, 1)
 
   const submitVoterID = () => {
-    authSession.setCookie('voter_id', voterID, 1)
+    fetchElection()
+  }
+
+  const clearVoterID = () => {
+    setVoterID(null)
     fetchElection()
   }
 
@@ -23,25 +26,22 @@ const VoterAuth = ({ authSession, electionData, fetchElection }) => {
     <Container >
       <>
         {electionData && !electionData.voterAuth.authorized_voter && !electionData.voterAuth.required &&
-          <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }}>
-              <Typography align='center' gutterBottom variant="h4" component="h4">
-                You are not authorized to vote in this election
-              </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Typography align='center' gutterBottom variant="h5" component="h5">
+              You are not authorized to vote in this election
+            </Typography>
           </Box>
         }
-        {electionData && !electionData.voterAuth.authorized_voter && electionData.voterAuth.required && electionData.voterAuth.required === "Log In" &&
-          <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }}>
-              <Typography align='center' gutterBottom variant="h4" component="h4">
-                You must log in to access this election
-              </Typography>
+        {electionData && !electionData.voterAuth.authorized_voter && electionData.voterAuth.required && electionData.voterAuth.required === "Email Validation Required" &&
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Typography align='center' gutterBottom variant="h5" component="h5">
+              You must log in to access this election
+            </Typography>
           </Box>
         }
-        {electionData && !electionData.voterAuth.authorized_voter && electionData.voterAuth.required && electionData.voterAuth.required === "Voter ID" &&
-          <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }}>
-              <Typography align='center' gutterBottom variant="h4" component="h4">
-                Enter Voter ID
-              </Typography>
-
+        {electionData && !electionData.voterAuth.authorized_voter && electionData.voterAuth.required && electionData.voterAuth.required === "Voter ID Required" &&
+          <>
+            <Box sx={{ p:1, display: 'flex', justifyContent: 'center' }}>
               <TextField
                 id="voter-id"
                 name="voterid"
@@ -52,13 +52,19 @@ const VoterAuth = ({ authSession, electionData, fetchElection }) => {
                   setVoterID(e.target.value)
                 }}
               />
-
+            </Box>
+            <Box sx={{ p:1, display: 'flex', justifyContent: 'center' }}>
               <Button variant='outlined' onClick={() => submitVoterID()} > Submit </Button>
+            </Box>
+          </>
+        }
+        {electionData?.election?.settings?.voter_authentication?.voter_id && !electionData.voterAuth.required&& voterID &&
+          <Box sx={{ p:1, display: 'flex', justifyContent: 'center' }}>
+            <Button variant='outlined' onClick={() => clearVoterID()} > Clear Voter ID </Button>
           </Box>
-
         }
       </>
-    </Container>
+    </Container >
   )
 }
 

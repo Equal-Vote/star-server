@@ -150,12 +150,12 @@ export default function Settings({ election, applyElectionUpdate, getStyle }: Se
                             disabled = {election.settings.voter_access!=='closed'}
                             control={
                             <Checkbox
-                                id="voter-id"
-                                name="Voter ID"
+                                id="invitation"
+                                name="Invitation"
                                 checked={election.settings.invitation !== undefined}
                                 onChange={(e) => applyElectionUpdate(election => { election.settings.invitation = e.target.value ? 'email' : undefined })}
                             />}
-                            label="Voter ID"
+                            label="Email Invitations"
                         />
                     </Grid>
                     
@@ -179,7 +179,7 @@ export default function Settings({ election, applyElectionUpdate, getStyle }: Se
                                 id="email"
                                 name="Email"
                                 checked={election.settings.voter_authentication.email}
-                                onChange={(e) => applyElectionUpdate(election => { election.settings.two_factor_auth = e.target.value })}
+                                onChange={(e) => applyElectionUpdate(election => { election.settings.voter_authentication.email = e.target.value })}
                             />}
                             label="Email"
                         />

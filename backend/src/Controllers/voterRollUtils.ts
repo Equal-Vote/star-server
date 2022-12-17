@@ -100,6 +100,7 @@ export function checkForMissingAuthenticationData(req: IRequest, election: Elect
 export function getVoterAuthorization(roll: ElectionRoll | null, missingAuthData: string | null) {
     Logger.info(undefined, `getVoterAuthorization`)
     if (missingAuthData !== null) {
+        Logger.info(undefined, missingAuthData)
         return {
             authorized_voter: false,
             required: missingAuthData,

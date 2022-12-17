@@ -37,13 +37,13 @@ const AddElectionRoll = ({ election, onClose }) => {
                 console.log(csvSplit)
                 if (csvSplit.length === 1) {
                     rolls.push({
-                        voter_id: csvSplit[0],
+                        email: csvSplit[0],
                         state: 'approved',
                     })
                 }
                 else if (csvSplit.length >= 2) {
                     rolls.push({
-                        voter_id: csvSplit[0],
+                        email: csvSplit[0],
                         precinct: csvSplit[1],
                         state: 'approved',
                     })
