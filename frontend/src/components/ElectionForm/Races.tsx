@@ -141,7 +141,7 @@ export default function Races({ election, applyElectionUpdate, getStyle }) {
                                         />
                                     </Grid>
 
-                                    {election.settings.election_roll_type !== 'None' &&
+                                    {election.settings.voter_access !== 'open' &&
                                         <Grid item xs={12}>
                                             <TextField
                                                 id={`race-precincts-${String(race_index)}`}

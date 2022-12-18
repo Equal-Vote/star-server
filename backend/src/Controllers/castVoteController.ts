@@ -9,6 +9,7 @@ import { ILoggingContext } from "../Services/Logging/ILogger";
 import { randomUUID } from "crypto";
 import { Uid } from "../../../domain_model/Uid";
 import { Receipt } from "../Services/Email/EmailTemplates"
+import { getOrCreateElectionRoll, checkForMissingAuthenticationData, getVoterAuthorization } from "./voterRollUtils"
 
 const ElectionsModel = ServiceLocator.electionsDb();
 const ElectionRollModel = ServiceLocator.electionRollDb();
@@ -40,12 +41,16 @@ async function castVoteController(req: IRequest, res: any, next: any) {
         throw new BadRequest("Election is not open");
     }
     
-
     const user = req.user;
-    const voterId = getVoterID(req, targetElection.settings.voter_id_type, user);
-    Logger.debug(req, "voterID = " + voterId);
-    const roll = await getOrCreateElectionRoll(targetElection, voterId, req);
-    assertVoterMayVote(targetElection, roll, req);
+    
+    const missingAuthData = checkForMissingAuthenticationData(req,targetElection, req)
+    if (missingAuthData !== null) {
+        throw new Unauthorized(missingAuthData);
+    }
+
+    const roll = await getOrCreateElectionRoll(req, targetElection, req);
+    const voterAuthorization = getVoterAuthorization(roll,missingAuthData)
+    assertVoterMayVote(voterAuthorization, req);
 
    const inputBallot:Ballot = req.body.ballot;
    //TODO: currently we have both a value on the input Ballot, and the route param.
@@ -71,7 +76,7 @@ async function castVoteController(req: IRequest, res: any, next: any) {
     //should server-authenticate the user id based on auth token
     inputBallot.history.push({
         action_type:"submit",
-        actor: voterId,
+        actor: roll===null ? '' : roll.voter_id ,
         timestamp:inputBallot.date_submitted,
     });
 
@@ -84,7 +89,7 @@ async function castVoteController(req: IRequest, res: any, next: any) {
         }
         roll.history.push({
             action_type:"submit",
-            actor: voterId,
+            actor: roll===null ? '' : roll.voter_id ,
             timestamp:inputBallot.date_submitted,
         });
     }
@@ -127,85 +132,16 @@ async function handleCastVoteEvent(job: { id: string; data: CastVoteEvent; }):Pr
     }
 }
 
-
-function getVoterID(req:IRequest, voterIdType:string, user:any):string {
-    if (voterIdType === 'None') {
-        return "";
-    } else if (voterIdType === 'IP Address') {
-        Logger.debug(req, `ip=${String(req.ip)}`);
-        return String(req.ip)
-    } else if (voterIdType === 'Email') {
-        if (user == null){
-            throw new Unauthorized("This Election requires an approved Email");
-        }
-        return user.email;
-    } else if (voterIdType === 'IDs') {
-        // If voter ID not set, send response requesting voter ID to be entered
-        if (!req.cookies.voter_id) {
-            throw new Unauthorized("This Election requires a Voter ID");
-        }
-        return req.cookies.voter_id
+function assertVoterMayVote(voterAuthorization:any, ctx:ILoggingContext ): void{
+    Logger.debug(ctx, "assert voter may vote");
+    if (voterAuthorization.authorized_voter === false){
+        throw new Unauthorized("User not authorized to vote");
     }
-    throw new Unauthorized();
-}
-
-async function getOrCreateElectionRoll(election:Election, voterId:string, ctx:ILoggingContext ):Promise<ElectionRoll|null>{
-    const voterIdType = election.settings.voter_id_type;
-    Logger.debug(ctx, `getOrCreateElectionRoll: ID type: ${voterIdType}`);
-
-    if (voterIdType === 'None') {
-        return null;
-    }
-
-    const electionRollEntry = await ElectionRollModel.getByVoterID(String(election.election_id), voterId, ctx);
-
-    if (election.settings.election_roll_type === 'None') {
-        //req.authorized_voter = true;
-        if (electionRollEntry == null) {
-            //Adds voter to roll if they aren't currently
-            const history = [{
-                action_type: ElectionRollState.approved,
-                actor: voterId,
-                timestamp: Date.now(),
-            }]
-            const roll:ElectionRoll[]= [{
-                election_roll_id: '',
-                election_id: String(election.election_id),
-                voter_id: voterId,
-                submitted: false,
-                state: ElectionRollState.approved,
-                history: history,
-            }]
-
-            const newElectionRoll = await ElectionRollModel.submitElectionRoll(roll, ctx, `User requesting Roll and is authorized`)
-            if (!newElectionRoll){
-                Logger.error(ctx, "Failed to update ElectionRoll");
-                throw new InternalServerError();
-            }
-            return roll[0];
-        } 
-    }
-    return electionRollEntry;
-}
-
-
-function assertVoterMayVote(election:Election, roll:ElectionRoll|null, ctx:ILoggingContext ): void{
-    const voterIdType = election.settings.voter_id_type;
-    Logger.debug(ctx, "assert voter may vote: " + voterIdType + " " + (roll == null));
-
-    if (voterIdType === 'None') {
-        return;
-    }
-    if (roll == null) {
-        throw new Unauthorized();
-    }
-    if (roll.submitted){
+    if (voterAuthorization.has_voted === true){
         throw new BadRequest("User has already voted");
     }
     Logger.debug(ctx, "Voter authorized");
 }
-
-
 
 module.exports = {
     castVoteController,

@@ -21,11 +21,13 @@ export default class ElectionRollDB implements IElectionRollStore{
         //await this.dropTable(appInitContext);
         var query = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
+            voter_id        VARCHAR NOT NULL PRIMARY KEY,
             election_id     VARCHAR NOT NULL,
-            voter_id        VARCHAR NOT NULL,
+            email           VARCHAR,
+            submitted       BOOLEAN NOT NULL,
             ballot_id       VARCHAR,
-            submitted       BOOLEAN,
-            PRIMARY KEY(election_id,voter_id),
+            ip_address      VARCHAR,
+            address         VARCHAR,
             state           VARCHAR NOT NULL,
             history         json,
             registration    json,
@@ -61,14 +63,16 @@ export default class ElectionRollDB implements IElectionRollStore{
     submitElectionRoll(electionRolls: ElectionRoll[], ctx:ILoggingContext,reason:string): Promise<boolean> {
         Logger.debug(ctx, `ElectionRollDB.submit`);
         var values = electionRolls.map((electionRoll) => ([
-            electionRoll.election_id,
             electionRoll.voter_id,
+            electionRoll.election_id,
+            electionRoll.email,
+            electionRoll.ip_address,
             electionRoll.submitted,
             electionRoll.state,
             JSON.stringify(electionRoll.history),
             JSON.stringify(electionRoll.registration),
             electionRoll.precinct]))
-        var sqlString = format(`INSERT INTO ${this._tableName} (election_id,voter_id,submitted,state,history,registration,precinct)
+        var sqlString = format(`INSERT INTO ${this._tableName} (voter_id,election_id,email,ip_address,submitted,state,history,registration,precinct)
         VALUES %L;`, values);
         Logger.debug(ctx, sqlString)
         Logger.debug(ctx, values)
@@ -118,6 +122,46 @@ export default class ElectionRollDB implements IElectionRollStore{
                 return null;
             }
             return rows[0]
+        });
+    }
+
+    getElectionRoll(election_id: string, voter_id: string|null, email: string|null, ip_address: string|null, ctx:ILoggingContext): Promise<[ElectionRoll] | null> {
+        Logger.debug(ctx, `ElectionRollDB.get election:${election_id}, voter:${voter_id}`);
+        let sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1 AND ( `;
+        let values = [election_id]
+        if (voter_id) {
+            values.push(voter_id)
+            sqlString += `voter_id = $${values.length}`
+        }
+        if (email) {
+            if (voter_id) {
+                sqlString += ' OR '
+            }
+            values.push(email)
+            sqlString += `email = $${values.length}`
+        }
+        if (ip_address) {
+            if (voter_id || email) {
+                sqlString += ' OR '
+            }
+            values.push(ip_address)
+            sqlString += `ip_address = $${values.length}`
+        }
+        sqlString += ')'
+        Logger.debug(ctx, sqlString);
+
+        var p = this._postgresClient.query({
+            text: sqlString,
+            values: values
+        });
+        return p.then((response: any) => {
+            var rows = response.rows;
+            Logger.debug(ctx, rows[0])
+            if (rows.length == 0) {
+                Logger.debug(ctx, ".get null");
+                return null;
+            }
+            return rows
         });
     }
 

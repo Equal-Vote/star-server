@@ -37,19 +37,19 @@ const AddElectionRoll = ({ election, onClose }) => {
                 console.log(csvSplit)
                 if (csvSplit.length === 1) {
                     rolls.push({
-                        voter_id: csvSplit[0],
+                        email: csvSplit[0],
                         state: 'approved',
                     })
                 }
                 else if (csvSplit.length >= 2) {
                     rolls.push({
-                        voter_id: csvSplit[0],
+                        email: csvSplit[0],
                         precinct: csvSplit[1],
                         state: 'approved',
                     })
                 }
             })
-            const newRolls = await postRoll.makeRequest({electionRoll: rolls})
+            const newRolls = await postRoll.makeRequest({ electionRoll: rolls })
             console.log(rolls)
             if (!newRolls) {
                 throw Error("Error submitting rolls");
@@ -67,36 +67,35 @@ const AddElectionRoll = ({ election, onClose }) => {
             <Container maxWidth='sm'>
                 <Grid container direction="column" >
 
-                    {election.settings.election_roll_type === 'Email' &&
-                        <Grid item>
-                            <TextField
-                                id="email-list"
-                                name="email-list"
-                                label="Email List"
-                                multiline
-                                fullWidth
-                                type="text"
-                                value={voterIDList}
-                                onChange={(e) => setVoterIDList(e.target.value)}
-                                helperText="One email per line, to specify precint write email and precint separated by comma (joe@email.com,precintA)"
-                            />
-                        </Grid>
-                    }
-                    {election.settings.election_roll_type === 'IDs' &&
-                        <Grid item>
-                            <TextField
-                                id="id-list"
-                                name="id-list"
-                                label="Voter ID List"
-                                multiline
-                                fullWidth
-                                type="text"
-                                value={voterIDList}
-                                onChange={(e) => setVoterIDList(e.target.value)}
-                                helperText="One ID per line, to specify precint write ID and precint separated by comma (ID1234,precintA)"
-                            />
-                        </Grid>
-                    }
+                    <Grid item>
+                        <TextField
+                            id="email-list"
+                            name="email-list"
+                            label="Email List"
+                            multiline
+                            fullWidth
+                            type="text"
+                            value={voterIDList}
+                            onChange={(e) => setVoterIDList(e.target.value)}
+                            helperText="One email per line, to specify precint write email and precint separated by comma (joe@email.com,precintA)"
+                        />
+                    </Grid>
+
+                    {/* 
+                        // <Grid item>
+                        //     <TextField
+                        //         id="id-list"
+                        //         name="id-list"
+                        //         label="Voter ID List"
+                        //         multiline
+                        //         fullWidth
+                        //         type="text"
+                        //         value={voterIDList}
+                        //         onChange={(e) => setVoterIDList(e.target.value)}
+                        //         helperText="One ID per line, to specify precint write ID and precint separated by comma (ID1234,precintA)"
+                        //     />
+                        // </Grid> 
+                        */}
 
                     <input
                         type='submit'

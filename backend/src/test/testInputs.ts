@@ -33,8 +33,8 @@ export default {
          owner_id: 'Alice1234',
          races: [] as Race[],
          settings: {
-            election_roll_type: 'None',
-            voter_id_type: 'IP Address'
+            voter_access: 'open',
+            voter_authentication: {ip_address: true},
          } as ElectionSettings
      } as Election,
 
@@ -76,17 +76,53 @@ export default {
             }
         ] as Race[],
         settings: {
-           election_roll_type: 'Email',
-           voter_id_type: 'Email'
+            voter_access: 'closed',
+            voter_authentication: {email: true},
+            invitation: 'email',
+        } as ElectionSettings
+    } as Election,
+
+    RegistrationElection : {
+        election_id: "0",
+        title: 'Election 1',
+        state: 'open',
+        frontend_url: '',
+        owner_id: 'Alice1234',
+        credential_ids: ['Alice@email.com'],
+        races: [
+            {
+                race_id: '0',
+                title:'Race 0',
+                num_winners: 1,
+                voting_method:'STAR',
+                candidates:[
+                    {
+                        candidate_id:'0',
+                        candidate_name: 'A',
+                    },
+                    {
+                        candidate_id:'1',
+                        candidate_name: 'B',
+                    },
+                    {
+                        candidate_id:'2',
+                        candidate_name: 'C',
+                    }
+                ]
+            }
+        ] as Race[],
+        settings: {
+            voter_access: 'registration',
+            voter_authentication: {email: true},
         } as ElectionSettings
     } as Election,
 
     EmailRoll:[
         { 
-            voter_id:'Alice@email.com',
+            email:'Alice@email.com',
         },
         {
-            voter_id:'Bob@email.com',
+            email:'Bob@email.com',
         }
     ],
     Ballot1: {
@@ -142,8 +178,8 @@ export default {
             }
         ] as Race[],
         settings: {
-           election_roll_type: 'IDs',
-           voter_id_type: 'IDs'
+            voter_access: 'closed',
+            voter_authentication: {voter_id: true},
         } as ElectionSettings
     } as Election,
 
@@ -228,8 +264,8 @@ export default {
             }
         ] as Race[],
         settings: {
-           election_roll_type: 'None',
-           voter_id_type: 'None'
+            voter_access: 'open',
+            voter_authentication: {},
         } as ElectionSettings
     } as Election,
     MultiRaceBallotValid1: {
@@ -462,17 +498,17 @@ export default {
             }
         ] as Race[],
         settings: {
-            election_roll_type: 'Email',
-            voter_id_type: 'Email'
+            voter_access: 'closed',
+            voter_authentication: {email: true},
         } as ElectionSettings
     } as Election,
     EmailWithPrecinctRoll:[
         { 
-            voter_id:'Alice@email.com',
+            email:'Alice@email.com',
             precinct:'0'
         },
         {
-            voter_id:'Bob@email.com',
+            email:'Bob@email.com',
             precinct:'1'
         }
     ],

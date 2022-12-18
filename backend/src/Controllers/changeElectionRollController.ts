@@ -36,21 +36,26 @@ const uninvalidateElectionRoll = async (req: any, res: any, next: any) => {
 
 const changeElectionRollState = async (req: any, newState: ElectionRollState, validStates: ElectionRollState[], permission: permission) => {
     expectPermission(req.user_auth.roles, permission)
-    req.electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.body.electionRollEntry.voter_id, req)
-    const currentState = req.electionRollEntry.state
+    const roll = await ElectionRollModel.getByVoterID(req.election.election_id, req.body.electionRollEntry.voter_id, req)
+    if (!roll) {
+        const msg = "Could not find election roll";
+        Logger.info(req, msg);
+        throw new InternalServerError(msg);
+        }
+    const currentState = roll.state
     if (!validStates.includes(currentState)) {
         throw new Unauthorized('Invalid election roll state transition')
     }
-    req.electionRollEntry.state = newState;
-    if (req.electionRollEntry.history == null) {
-        req.electionRollEntry.history = [];
+    roll.state = newState;
+    if (roll.history == null) {
+        roll.history = [];
     }
-    req.electionRollEntry.history.push([{
+    roll.history.push({
         action_type: newState,
         actor: req.user.email,
         timestamp: Date.now(),
-    }])
-    const updatedEntry = await ElectionRollModel.update(req.electionRollEntry, req, "Changing Election Roll state to " + newState);
+    })
+    const updatedEntry = await ElectionRollModel.update(roll, req, "Changing Election Roll state to " + newState);
     if (!updatedEntry) {
         const msg = "Could not change election roll state";
         Logger.error(req, "= = = = = = \n = = = = = ");

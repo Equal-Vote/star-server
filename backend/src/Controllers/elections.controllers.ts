@@ -5,6 +5,8 @@ import { responseErr } from '../Util';
 import { IRequest } from '../IRequest';
 import { roles } from "../../../domain_model/roles"
 import { getPermissions } from '../../../domain_model/permissions';
+import { getOrCreateElectionRoll, checkForMissingAuthenticationData, getVoterAuthorization } from "./voterRollUtils"
+import { ElectionRoll } from '../../../domain_model/ElectionRoll';
 
 
 var ElectionsModel =  ServiceLocator.electionsDb();
@@ -134,8 +136,15 @@ async function updateElectionStateIfNeeded(req:IRequest, election:Election):Prom
 const returnElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.returnElection ${req.params.id}`)
     var election = req.election;
-    removeHiddenFields(election, req.electionRollEntry);
-    res.json({ election: election, voterAuth: { authorized_voter: req.authorized_voter, has_voted: req.has_voted, roles: req.user_auth.roles, permissions: req.user_auth.permissions } })
+    
+    const missingAuthData = checkForMissingAuthenticationData(req, election, req)
+    let roll:ElectionRoll|null = null
+    if (missingAuthData === null) {
+        roll = await getOrCreateElectionRoll(req, election, req);
+    }
+    const voterAuthorization = getVoterAuthorization(roll,missingAuthData)
+    removeHiddenFields(election, roll);
+    res.json({ election: election, voterAuth: { authorized_voter: voterAuthorization.authorized_voter, has_voted: voterAuthorization.has_voted, required: voterAuthorization.required, roles: req.user_auth.roles, permissions: req.user_auth.permissions } })
 }
 
 module.exports = {

@@ -23,7 +23,7 @@ const finalizeElection = async (req: any, res: any, next: any) => {
 
     const electionId = req.election.election_id;
     let electionRoll:ElectionRoll[]|null = null
-    if (req.election.settings.election_roll_type === 'Email') {
+    if (req.election.settings.voter_access === 'closed' &&  req.election.settings.invitation === 'email') {
         electionRoll = await ElectionRollModel.getRollsByElectionID(electionId, req);
         if (!electionRoll) {
             const msg = `Election roll for ${electionId} not found`;
@@ -40,7 +40,7 @@ const finalizeElection = async (req: any, res: any, next: any) => {
         throw new BadRequest(failMsg)
     }
 
-    if (updatedElection.settings.election_roll_type === 'Email') {
+    if (updatedElection.settings.voter_access === 'closed' &&  updatedElection.settings.invitation === 'email') {
         Logger.info(req, `${className}.sendInvitations`, { election_id: updatedElection.election_id });
         try {
             const url = req.protocol + '://' + req.get('host')

@@ -5,7 +5,7 @@ import { Imsg } from "./IEmail"
 
 export function Invites(election: Election, voters: ElectionRoll[], url: string):Imsg[]  {
     return voters.map((voter) => <Imsg> {
-        to: voter.voter_id, // Change to your recipient
+        to: voter.email, // Change to your recipient
         from: 'elections@star.vote', // Change to your verified sender
         subject: `Invitation to Vote In ${election.title}`,
         text: `You have been invited to vote in ${election.title} ${url}/Election/${election.election_id}`,

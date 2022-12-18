@@ -28,7 +28,6 @@ const editElectionRoll = async (req: any, res: any, next: any) => {
         Logger.info(req, msg);
         throw new BadRequest(msg)
     }
-    req.electionRollEntry = electionRollEntry
     res.status('200').json(electionRollEntry)
 }
 

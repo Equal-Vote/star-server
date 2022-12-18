@@ -2,12 +2,13 @@ import { Uid } from "./Uid";
 // Election roll contains information about the voter's ID and ballot status to ensure only
 // authorized voters submit a single ballot
 export interface ElectionRoll {
-    election_roll_id: Uid; //unique primary key
+    voter_id: Uid; //Unique ID of voter who cast ballot
     election_id: Uid; //ID of election ballot is cast in
-    voter_id: Uid; //ID of voter who cast ballot
+    email?: string; // Email address of voter
     submitted: boolean; //has ballot been submitted
     ballot_id?:  Uid; //ID of ballot, unsure if this is needed
-    
+    ip_address?: string; //IP Address of voter
+    address?: string; // Address of voter
     state: ElectionRollState; //state of election roll 
     history?: ElectionRollAction[];// history of changes to election roll
     registration?: any; //Registration data for voter
@@ -33,7 +34,7 @@ export function electionRollValidation(obj:ElectionRoll): string | null {
     if (!obj){
         return "ElectionRoll is null";
     }
-    if (typeof obj.election_roll_id !== 'string'){
+    if (typeof obj.voter_id !== 'string'){
         return "Invalid Election Roll ID";
     }
     if (typeof obj.election_id !== 'string'){

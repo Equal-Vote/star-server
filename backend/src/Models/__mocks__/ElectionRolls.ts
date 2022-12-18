@@ -48,6 +48,25 @@ export default class ElectionRollDB implements IElectionRollStore{
         return Promise.resolve(res)
     }
 
+    getElectionRoll(election_id: string, voter_id: string|null, email: string|null, ip_address: string|null, ctx:ILoggingContext): Promise<[ElectionRoll] | null> {
+        Logger.debug(ctx, `MockElectionRolls get election:${election_id}, voter_id:${voter_id}, email: ${email}, ip_address: ${ip_address}`);
+        let roll = this._electionRolls.filter(electionRolls => {
+            if (electionRolls.election_id!==election_id) return false
+            if (ip_address && electionRolls.ip_address===ip_address) return true
+            if (voter_id && electionRolls.voter_id ===voter_id) return true
+            if (email && electionRolls.email === email) return true
+            return false
+        })
+        
+        if (!roll || roll.length===0){
+            Logger.debug(ctx, "Mock ElectionRoll DB could not match election and voter. Current data:\n"+JSON.stringify(this._electionRolls));
+            return Promise.resolve(null)
+        }
+        Logger.debug(ctx, `MockElectionRolls returns ${JSON.stringify(roll)}`);
+        const res:[ElectionRoll] = JSON.parse(JSON.stringify(roll));
+        return Promise.resolve(res)
+    }
+
     update(voter_roll: ElectionRoll, ctx:ILoggingContext): Promise<ElectionRoll | null> {
         Logger.debug(ctx, `MockElectionRolls update ${JSON.stringify(voter_roll)}`);
         const index = this._electionRolls.findIndex(electionRoll => {

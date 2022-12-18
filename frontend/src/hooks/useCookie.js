@@ -54,6 +54,7 @@ export const useCookie = (key, defaultValue, expiration = null, updateRate = nul
     const setValue = (newValue) => {
         if (newValue === null) {
             deleteCookie(key)
+            setStoredValue(newValue)
             return
         }
         setCookie(key, newValue, expiration);

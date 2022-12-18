@@ -84,16 +84,16 @@ describe("Edit Election", () => {
             // I'm testing roll type specifically to make sure nested fields are applied correctly        
             const ID = await setupInitialElection()
             // I wanted to use structuredClone here, but I had trouble getting it to work with jest :'(
-            var election1Copy = {...testInputs.Election1, settings: {...testInputs.Election1.settings}}
-            var newRollType = 'Some Other Roll Type'
-            election1Copy.settings.election_roll_type = newRollType;
+            var election1Copy = JSON.parse(JSON.stringify(testInputs.Election1))
+            election1Copy.settings.voter_authentication.phone = true;
             election1Copy.election_id = ID;
 
             const response = await th.editElection(election1Copy, testInputs.user1token);
 
-            // TODO: I couldn't figure out how to make this work, it kept saying that ElectionsDB.mock was undefined?
-            // expect(ElectionsDB.mock.instances[0].elections[election1Copy.election_id].settings.election_roll_type).toBe(newRollType)
             expect(response.statusCode).toBe(200)
+            
+            const reFetchedElection = await fetchElectionById(ID);
+            expect(election1Copy.settings.voter_authentication.phone).toEqual(true);
             th.testComplete();
         })
         test("edits voter ids", async () => {
