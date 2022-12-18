@@ -28,7 +28,8 @@
     "react-router-dom": "6.0.2",
     "react-scripts": "^5.0.1",
     "typescript": "^3.9.10",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^1.1.2",
+    "react-easy-crop": "4.6.3"
   },
   "scripts": {
     "start": "react-scripts start",

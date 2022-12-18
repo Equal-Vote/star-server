@@ -129,7 +129,7 @@ const Row = ({ rowIndex, candidate, party, score, onClick }) => {
           </Grid>
           {candidate.photo_filename &&
           <Grid item xs={6}>
-            <img src={ProfilePic} style={{ width: 200, height: 200 }} />
+            <img src={candidate.photo_filename} style={{ width: 200, height: 200 }} />
           </Grid>}
           </Grid>
           
@@ -140,8 +140,6 @@ const Row = ({ rowIndex, candidate, party, score, onClick }) => {
             <Typography align='left' s component="p" style={{whiteSpace: 'pre-line'}}>
               {candidate.bio}
             </Typography>
-
-
           </Grid>
         </Grid>
         </>
