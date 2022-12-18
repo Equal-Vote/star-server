@@ -556,15 +556,17 @@ h2.selected {
 
 .circle {
   display: inline-flex;
-  flex-direction: row;
+  flex-direction:column;
   height: 1.2em;
   width: 1.2em;
-  border: 2px solid #808080;
+  border: 0.15em solid #808080;
   border-radius: 50%;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   cursor: pointer;
-  margin: 1em;
+  margin: 0em;
+  text-align: center;
+  justify-content: center;
 }
 
 .circle.filled,
@@ -589,12 +591,10 @@ h2.selected {
 }
 
 .circle p {
-  margin-top: -0.3em;
-  margin-left: 0.05em;
+  display: flex;
   text-align: center;
-  vertical-align: middle;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 1.35em;
+  justify-content: center;
+  font-size: 1.2em;
   font-weight: bold;
   transform: scale(1, 0.75);
   -webkit-transform: scale(1, 0.75); /* Safari and Chrome */

@@ -55,7 +55,7 @@ const ViewBallots = ({ election, permissions }) => {
                 </TableContainer>
             }
             {isViewing && selectedBallot &&
-                <ViewBallot election={election} ballot={selectedBallot} onClose={onClose} fetchRolls={fetchBallots} id={id} permissions={permissions} />
+                <ViewBallot election={election} ballot={selectedBallot} onClose={onClose} fetchBallot={fetchBallots}permissions={permissions} />
             }
         </Container>
     )

@@ -7,6 +7,8 @@ import { Score } from '../../../domain_model/Score';
 import { Star } from "../Tabulators/Star";
 import { Approval } from "../Tabulators/Approval";
 import { Plurality } from "../Tabulators/Plurality";
+import { expectPermission } from "./controllerUtils";
+import { permissions } from '../../../domain_model/permissions';
 const AllocatedScoreResults = require('../Tabulators/AllocatedScore')
 
 const BallotModel = ServiceLocator.ballotsDb();
@@ -14,6 +16,11 @@ const BallotModel = ServiceLocator.ballotsDb();
 const getElectionResults = async (req: any, res: any, next: any) => {
     var electionId = req.election.election_id;
     Logger.info(req, `getElectionResults: ${electionId}`);
+
+    if (!req.election.settings.public_results) {
+        expectPermission(req.user_auth.roles, permissions.canViewPreliminaryResults)
+    }
+
     const ballots = await BallotModel.getBallotsByElectionID(String(electionId), req);
     if (!ballots) {
         const msg = `Ballots not found for Election ${electionId}`;

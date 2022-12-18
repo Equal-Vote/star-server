@@ -11,11 +11,13 @@ import { IconButton, Paper, Tooltip } from "@mui/material";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ShareButton from "./ShareButton";
 import VoterAuth from "./VoterAuth";
+import PermissionHandler from "../PermissionHandler";
 
 const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
   const { id } = useParams();
 
   const { data, isPending, error, makeRequest: postData } = useFetch(`/API/Election/${id}/finalize`, 'post')
+  const { makeRequest: publishResults } = useFetch(`/API/Election/${id}/setPublicResults`, 'post')
   const finalizeElection = async () => {
     console.log("finalizing election")
     try {
@@ -59,19 +61,19 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
           sx={{ width: '100%' }}>
           <Paper elevation={3} sx={{ width: 600 }} >
 
-            <Box sx={{m:1, display: 'flex', justifyContent: 'flex-end'}}>
-              <ShareButton url={`${window.location.origin}/Election/${electionData.election.election_id}`} text={null}/>
+            <Box sx={{ m: 1, display: 'flex', justifyContent: 'flex-end' }}>
+              <ShareButton url={`${window.location.origin}/Election/${electionData.election.election_id}`} text={null} />
             </Box>
             <Typography align='center' gutterBottom variant="h4" component="h4">
               {electionData.election.title}
             </Typography>
-            
+
             <VoterAuth authSession={authSession} electionData={electionData} fetchElection={fetchElection} />
-            <Typography align='center' gutterBottom component="p" style={{whiteSpace: 'pre-line'}}>
+            <Typography align='center' gutterBottom component="p" style={{ whiteSpace: 'pre-line' }}>
               {electionData.election.description}
             </Typography>
             {electionData.election.state === 'draft' &&
-              <Box sx={{m:1, display: 'flex', justifyContent: 'center'}}>
+              <Box sx={{ m: 1, display: 'flex', justifyContent: 'center' }}>
                 <Button variant='outlined' href={`/Election/${String(electionData.election.election_id)}/vote`} >
                   Preview Ballot
                 </Button>
@@ -98,7 +100,7 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
               {
                 electionData.voterAuth.has_voted == false && electionData.voterAuth.authorized_voter && !electionData.voterAuth.required &&
 
-                <Box sx={{m:1, display: 'flex', justifyContent: 'center'}}>
+                <Box sx={{ m: 1, display: 'flex', justifyContent: 'center' }}>
                   <Button variant='outlined' href={`/Election/${String(electionData?.election?.election_id)}/vote`} >
                     Vote
                   </Button>
@@ -119,15 +121,37 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
                 Ballot Submitted
               </Typography>
             }
-            {(electionData.election.state === 'open' || electionData.election.state === 'closed') &&
-              <Box sx={{p:1, display: 'flex', justifyContent: 'center'}}>
-                <Button  variant='outlined' href={`/Election/${electionData.election.election_id}/results`} >
+            {(electionData.election.state === 'open' || electionData.election.state === 'closed') && electionData.election.settings.public_results === true &&
+              <Box sx={{ p: 1, display: 'flex', justifyContent: 'center' }}>
+                <Button variant='outlined' href={`/Election/${electionData.election.election_id}/results`} >
                   View Results
                 </Button>
               </Box>
             }
+            {(electionData.election.state === 'open' || electionData.election.state === 'closed') && electionData.election.settings.public_results === false &&
+              <PermissionHandler permissions={electionData.voterAuth.permissions} requiredPermission={'canViewPreliminaryResults'}>
+                <Box sx={{ p: 1, display: 'flex', justifyContent: 'center' }}>
+                  <Button variant='outlined' href={`/Election/${electionData.election.election_id}/results`} >
+                    View Preliminary Results
+                  </Button>
+                </Box>
+              </PermissionHandler>
+            }
+            { electionData.election.pubic_results === false &&
+              <PermissionHandler permissions={electionData.voterAuth.permissions} requiredPermission={'canEditElectionState'}>
+                <Box sx={{ p: 1, display: 'flex', justifyContent: 'center' }}>
+                <Button variant='outlined' 
+                  onClick={async () => {
+                    await publishResults({public_results: true})
+                    fetchElection()
+                  }}>
+                  Make Results Public
+                </Button>
+              </Box>
+            </PermissionHandler>
+            }
 
-            <Box sx={{p:1, display: 'flex', justifyContent: 'flex-end'}}>
+            <Box sx={{ p: 1, display: 'flex', justifyContent: 'flex-end' }}>
               {authSession.isLoggedIn() &&
                 <Tooltip title="Create copy of this election" >
                   <IconButton component={Link} to={`/DuplicateElection/${electionData.election.election_id}`}>

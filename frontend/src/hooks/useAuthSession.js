@@ -11,7 +11,7 @@ let keycloakBaseUrl = 'https://auth.star.vote:8443/realms/STAR%20Voting%20Dev/pr
 const keycloakAuthConfig = {
     clientId: 'star_vote_web',
     responseType: 'code',
-    redirectUri: window.location.origin,
+    redirectUri: window.location.href.split('?')[0],
     logoutUri: window.location.origin,
     endpoints: {
         login: `${keycloakBaseUrl}/auth`,

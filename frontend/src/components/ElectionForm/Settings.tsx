@@ -153,7 +153,7 @@ export default function Settings({ election, applyElectionUpdate, getStyle }: Se
                                 id="invitation"
                                 name="Invitation"
                                 checked={election.settings.invitation !== undefined}
-                                onChange={(e) => applyElectionUpdate(election => { election.settings.invitation = e.target.value ? 'email' : undefined })}
+                                onChange={(e) => applyElectionUpdate(election => { election.settings.invitation = e.target.checked ? 'email' : undefined })}
                             />}
                             label="Email Invitations"
                         />
@@ -168,7 +168,7 @@ export default function Settings({ election, applyElectionUpdate, getStyle }: Se
                                 id="voter-id"
                                 name="Voter ID"
                                 checked={election.settings.voter_authentication.voter_id}
-                                onChange={(e) => applyElectionUpdate(election => { election.settings.voter_authentication.voter_id = e.target.value })}
+                                onChange={(e) => applyElectionUpdate(election => { election.settings.voter_authentication.voter_id = e.target.checked })}
                             />}
                             label="Voter ID"
                         />
@@ -179,7 +179,7 @@ export default function Settings({ election, applyElectionUpdate, getStyle }: Se
                                 id="email"
                                 name="Email"
                                 checked={election.settings.voter_authentication.email}
-                                onChange={(e) => applyElectionUpdate(election => { election.settings.voter_authentication.email = e.target.value })}
+                                onChange={(e) => applyElectionUpdate(election => { election.settings.voter_authentication.email = e.target.checked })}
                             />}
                             label="Email"
                         />
@@ -190,18 +190,18 @@ export default function Settings({ election, applyElectionUpdate, getStyle }: Se
                                 id="ballot-updates"
                                 name="Ballot Updates"
                                 checked={election.settings.ballot_updates}
-                                onChange={(e) => applyElectionUpdate(election => { election.settings.ballot_updates = e.target.value })}
+                                onChange={(e) => applyElectionUpdate(election => { election.settings.ballot_updates = e.target.checked })}
                             />}
                             label="Ballot Updates"
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <FormControlLabel disabled control={
+                        <FormControlLabel control={
                             <Checkbox
                                 id="public-results"
                                 name="Public Results"
                                 checked={election.settings.public_results}
-                                onChange={(e) => applyElectionUpdate(election => { election.settings.public_results = e.target.value })}
+                                onChange={(e) => applyElectionUpdate(election => { election.settings.public_results = e.target.checked })}
                             />}
                             label="Public Results"
                         />

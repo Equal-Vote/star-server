@@ -24,6 +24,16 @@ function RowHeading({ candidate, party, className }) {
   );
 }
 
+function HasExpandedData(candidate) {
+  if (candidate.full_name) return true
+  if (candidate.candidate_url) return true
+  if (candidate.party) return true
+  if (candidate.partyUrl) return true
+  if (candidate.photo_filename) return true
+  if (candidate.bio) return true
+  return false
+}
+
 // Represents a single score of a single candidate
 const Choice = ({ divKey, score, filled, onClick }) => (
   <div
@@ -56,6 +66,7 @@ const Choices = ({ rowIndex, onClick, score }) =>
 const Row = ({ rowIndex, candidate, party, score, onClick }) => {
 
   const [expanded, setExpanded] = useState(false)
+  const hasExpandedData = HasExpandedData(candidate)
   var rowColor = 'white'
   if (rowIndex % 2 == 0) {
     rowColor = '#f8f8f8';
@@ -66,11 +77,11 @@ const Row = ({ rowIndex, candidate, party, score, onClick }) => {
     <>
       <Grid container alignItems="center" style={{ backgroundColor: rowColor }}>
         <Grid item xs={1}>
-          {!expanded &&
+          {!expanded && hasExpandedData &&
             <IconButton aria-label="Home" onClick={() => { setExpanded(true) }}>
               <ExpandMore />
             </IconButton>}
-          {expanded &&
+          {expanded &&  hasExpandedData &&
             <IconButton aria-label="Home" onClick={() => { setExpanded(false) }}>
               <ExpandLess />
             </IconButton>}
@@ -88,7 +99,7 @@ const Row = ({ rowIndex, candidate, party, score, onClick }) => {
         />
 
       </Grid>
-      {expanded &&
+      {expanded && hasExpandedData &&
       <>
         <Grid container style={{ backgroundColor: rowColor }}>
           <Grid item xs={1}>
