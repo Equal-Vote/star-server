@@ -15,6 +15,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Sidebar from "./Sidebar";
 import { Grid } from "@mui/material";
 import Thanks from "./Voting/Thanks";
+import ViewBallot from "./Admin/ViewBallot";
 
 const Election = ({ authSession }) => {
   const { id } = useParams();
@@ -43,6 +44,7 @@ const Election = ({ authSession }) => {
               <Route path='/results' element={<ViewElectionResults election={data.election} />} />
               <Route path='/edit' element={<EditElection authSession={authSession} election={data.election} />} />
               <Route path='/admin/*' element={<Admin authSession={authSession} election={data.election} permissions={data.voterAuth.permissions} />} />
+              <Route path='/ballot/:ballot_id' element={<ViewBallot election={data.election} ballot={null} onClose={null} fetchBallot={null} permissions={data.voterAuth.permissions} />} />
             </Routes>
           </Grid>
         </Grid >

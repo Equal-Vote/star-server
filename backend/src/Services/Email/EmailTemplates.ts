@@ -18,10 +18,10 @@ export function Receipt(election: Election,email: string, ballot: Ballot, url: s
         to: email, // Change to your recipient
         from: 'elections@star.vote', // Change to your verified sender
         subject: `Ballot Receipt For ${election.title}`,
-        text: `Thank you for voting in ${election.title}, you can view your ballot and ballot status at ${url}/Election/${election.election_id}/verify_ballot and enter your ballot ID: ${ballot.ballot_id}`,
+        text: `Thank you for voting in ${election.title}, you can view your ballot and ballot status at ${url}/Election/${election.election_id}/ballot/${ballot.ballot_id}`,
         html: `<div> 
                     <h3> 
-                        Thank you for voting in ${election.title}, you can verify your ballot and ballot status <a clicktracking="off" href="${url}/Election/${election.election_id}/verify_ballot" >here</a> and enter your ballot ID: ${ballot.ballot_id}
+                        Thank you for voting in ${election.title}, you can verify your ballot and ballot status <a clicktracking="off" href="${url}/Election/${election.election_id}/ballot/${ballot.ballot_id}" >here</a>  
                     </h3> 
                 </div>`,
     }
