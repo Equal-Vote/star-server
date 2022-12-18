@@ -40,7 +40,7 @@ const Thanks = ({ election }) => {
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} text={'Share'}/>
                         </div>
-                        {(election.state === 'open' || election.state === 'closed') &&
+                        {(election.state === 'open' || election.state === 'closed') &&  election.settings.public_results===true &&
                             <div style={{ display: 'flex', justifyContent: 'center' }}>
                                 <Button variant='outlined' href={`/Election/${election.election_id}/results`} sx={{m:1}}>
                                     View Results

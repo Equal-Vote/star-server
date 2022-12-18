@@ -13,6 +13,7 @@ const { getRollsByElectionID, getByVoterID } = require('../Controllers/getElecti
 const createElectionController = require('../Controllers/createElectionController');
 const { castVoteController } = require('../Controllers/castVoteController');
 const { finalizeElection } = require('../Controllers/finalizeElectionController')
+const { setPublicResults } = require('../Controllers/setPublicResultsController')
 const { getElectionResults } = require('../Controllers/getElectionResultsController')
 const { getBallotsByElectionID } = require('../Controllers/getBallotsByElectionIDController')
 const { getBallotByBallotID } = require('../Controllers/getBallotByBallotID')
@@ -46,6 +47,7 @@ router.put('/Election/:id/roles', asyncHandler(editElectionRoles))
 router.get('/ElectionResult/:id', asyncHandler(getElectionResults))
 router.post('/Election/:id/vote', asyncHandler(castVoteController))
 router.post('/Election/:id/finalize',asyncHandler(finalizeElection))
+router.post('/Election/:id/setPublicResults',asyncHandler(setPublicResults))
 
 router.post('/Sandbox',asyncHandler(getSandboxResults))
 
