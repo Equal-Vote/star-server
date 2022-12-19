@@ -99,11 +99,12 @@ function castVoteStore():CastVoteStore {
 function emailService():IEmailService {
     if (_emailService == null){
         const sgApiKey = process.env.SENDGRID_API_KEY;
-        if (sgApiKey != null){
+        if (sgApiKey == null){
+            Logger.warn(_appInitContext, `No SendGrid API Key.  Using Mock Email Service`);
+            _emailService = new MockEmailService();
+        } else {
             _emailService = new EmailService(sgApiKey);
         }
-        Logger.warn(_appInitContext, `No SendGrid API Key.  Using Mock Email Service`);
-        _emailService = new MockEmailService();
     }
     return _emailService;
 }
