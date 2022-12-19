@@ -1,10 +1,11 @@
 import { Imsg } from "./IEmail"
+import { IEmailService } from "./IEmailService";
 
-export default class EmailService {
+export default class EmailService implements IEmailService {
 
   sgMail;
 
-  constructor() {
+  constructor(sendGrigApiKey:string) {
     this.sgMail = require('@sendgrid/mail')
     require('dotenv').config()
     this.sgMail.setApiKey(process.env.SENDGRID_API_KEY)

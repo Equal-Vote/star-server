@@ -178,7 +178,6 @@ export default class ElectionRollDB implements IElectionRollStore{
         });
         return p.then((response: any) => {
             var rows = response.rows;
-            Logger.debug(ctx, "", response);
             if (rows.length == 0) {
                 Logger.debug(ctx, ".get null");
                 return [] as ElectionRoll[];

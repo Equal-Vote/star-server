@@ -4,12 +4,14 @@ import ElectionsDB from "./Models/Elections";
 import ElectionRollDB from "./Models/ElectionRolls";
 import CastVoteStore from "./Models/CastVoteStore";
 import EmailService from "./Services/Email/EmailService";
+import MockEmailService from "./Services/Email/__mocks__/MockEmailService";
 import { IBallotStore } from "./Models/IBallotStore";
 import { IEventQueue } from "./Services/EventQueue/IEventQueue";
 import PGBossEventQueue from "./Services/EventQueue/PGBossEventQueue";
 
 import AccountService from "./Services/Account/AccountService"
 import GlobalData from "./Services/GlobalData";
+import { IEmailService } from "./Services/Email/IEmailService";
 const { Pool } = require('pg');
 
 var _postgresClient:any;
@@ -18,10 +20,9 @@ var _ballotsDb:IBallotStore;
 var _electionsDb:ElectionsDB;
 var _electionRollDb:ElectionRollDB;
 var _castVoteStore:CastVoteStore;
-var _emailService:EmailService
+var _emailService:IEmailService;
 var _eventQueue:IEventQueue;
 
-var _emailService:EmailService;
 var _accountService:AccountService;
 var _globalData:GlobalData;
 
@@ -95,9 +96,14 @@ function castVoteStore():CastVoteStore {
 }
 
 
-function emailService():EmailService {
+function emailService():IEmailService {
     if (_emailService == null){
-        _emailService = new EmailService();
+        const sgApiKey = process.env.SENDGRID_API_KEY;
+        if (sgApiKey != null){
+            return _emailService = new EmailService(sgApiKey);
+        }
+        Logger.warn(_appInitContext, `No SendGrid API Key.  Using Mock Email Service`);
+        return new MockEmailService();
     }
     return _emailService;
 }
