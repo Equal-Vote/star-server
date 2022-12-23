@@ -20,6 +20,7 @@ import { Box, Checkbox, InputLabel } from "@mui/material"
 import IconButton from '@mui/material/IconButton'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
+import { StyledButton } from '../styles';
 
 export default function Races({ election, applyElectionUpdate, getStyle }) {
     const [openRace, setOpenRace] = useState(0)
@@ -75,41 +76,24 @@ export default function Races({ election, applyElectionUpdate, getStyle }) {
                     candidate_name: '',
                 })
             }
-    })
+        })
     }
 
     return (
         <>
-            <Grid item xs={12}>
-                <Typography gutterBottom variant="h6" component="h6">Race Settings</Typography>
+            <Grid item xs={12} sx={{ m: 0, p: 1 }}>
+                <Typography gutterBottom variant="h4" component="h4">Race Settings</Typography>
             </Grid>
             {election.races?.map((race, race_index) => (
                 <>
-                    {election.races.length > 1 &&
-                        <>
-                            <Grid item xs={11}>
-                                <Typography gutterBottom variant="h6" component="h6">{`Race ${race_index + 1}`}</Typography>
-                            </Grid>
-                            {!(openRace === race_index) &&
-                                <Grid item xs={1}>
-                                    <IconButton aria-label="Home" onClick={() => { setOpenRace(race_index) }}>
-                                        <ExpandMore />
-                                    </IconButton>
-                                </Grid>}
-                            {openRace === race_index &&
-                                <Grid item xs={1}>
-                                    <IconButton aria-label="Home" onClick={() => { setOpenRace(-1) }}>
-                                        <ExpandLess />
-                                    </IconButton>
-                                </Grid>}
-                        </>
-                    }
-
                     {openRace === race_index &&
                         <>
                             {election.races.length > 1 &&
                                 <>
-                                    <Grid item xs={12}>
+                                    <Grid item xs={11} sx={{ m: 0, p: 1 }}>
+                                        <Typography gutterBottom variant="h6" component="h6">{`Race ${race_index + 1}`}</Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                                         <TextField
                                             id={`race-title-${String(race_index)}`}
                                             name="title"
@@ -118,8 +102,7 @@ export default function Races({ election, applyElectionUpdate, getStyle }) {
                                             type="text"
                                             value={election.races[race_index].title}
                                             sx={{
-                                                mx: { xs: 0, },
-                                                my: { xs: 1 },
+                                                m: 0,
                                                 boxShadow: 2,
                                             }}
                                             fullWidth
@@ -127,7 +110,7 @@ export default function Races({ election, applyElectionUpdate, getStyle }) {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12}>
+                                    <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                                         <TextField
                                             id={`race-description-${String(race_index)}`}
                                             name="description"
@@ -137,20 +120,29 @@ export default function Races({ election, applyElectionUpdate, getStyle }) {
                                             fullWidth
                                             type="text"
                                             value={election.races[race_index].description}
+                                            sx={{
+                                                m: 0,
+                                                boxShadow: 2,
+                                            }}
                                             onChange={(e) => applyElectionUpdate(election => { election.races[race_index].description = e.target.value })}
                                         />
                                     </Grid>
 
-                                    {election.settings.voter_access !== 'open' &&
+                                    {/* {election.settings.voter_access !== 'open' &&
                                         <Grid item xs={12}>
                                             <TextField
                                                 id={`race-precincts-${String(race_index)}`}
                                                 name="precincts"
                                                 label="Precincts"
                                                 inputProps={getStyle('description')}
+                                                fullWidth
                                                 multiline
                                                 type="text"
                                                 value={race.precincts ? election.races[race_index].precincts.join('\n') : ''}
+                                                sx={{
+                                                    m: 1,
+                                                    boxShadow: 2,
+                                                }}
                                                 onChange={(e) => applyElectionUpdate(election => {
                                                     if (e.target.value === '') {
                                                         election.races[race_index].precincts = undefined
@@ -160,13 +152,28 @@ export default function Races({ election, applyElectionUpdate, getStyle }) {
                                                     }
                                                 })}
                                             />
-                                        </Grid>}
+                                        </Grid>} */}
                                 </>}
-                            <Grid item xs={6} sm={4}>
+                            <Grid item xs={12} sx={{ m: 0, p: 1 }}>
+                                <TextField
+                                    id={`num-winners-${String(race_index)}`}
+                                    name="Number Of Winners"
+                                    label="Number of Winners"
+                                    inputProps={getStyle('races', 0, 'num_winners')}
+                                    type="number"
+                                    fullWidth
+                                    value={election.races[race_index].num_winners}
+                                    sx={{
+                                        p: 0,
+                                        boxShadow: 2,
+                                    }}
+                                    onChange={(e) => applyElectionUpdate(election => { election.races[race_index].num_winners = e.target.value })}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                                 <Box sx={{ minWidth: 120 }}>
                                     <FormControl fullWidth sx={{
-                                        mx: { xs: 0, },
-                                        my: { xs: 1 },
+                                        m: 0,
                                         boxShadow: 2,
                                     }}>
                                         <InputLabel >
@@ -188,73 +195,56 @@ export default function Races({ election, applyElectionUpdate, getStyle }) {
                                     </FormControl>
                                 </Box>
                             </Grid>
-                            <Grid item xs={6} sm={3}>
-                                <TextField
-                                    id={`num-winners-${String(race_index)}`}
-                                    name="Number Of Winners"
-                                    label="Number of Winners"
-                                    inputProps={getStyle('races', 0, 'num_winners')}
-                                    type="number"
-                                    fullWidth
-                                    value={election.races[race_index].num_winners}
-                                    sx={{
-                                        mx: { xs: 0, },
-                                        my: { xs: 1 },
-                                        boxShadow: 2,
-                                    }}
-                                    onChange={(e) => applyElectionUpdate(election => { election.races[race_index].num_winners = e.target.value })}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
+                            <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                                 <Typography gutterBottom variant="h6" component="h6">
                                     Candidates
                                 </Typography>
                             </Grid>
                             {election.races[race_index].candidates?.map((candidate, index) => (
                                 <>
-                                    <AddCandidate 
-                                        onEditCandidate={(newCandidate) => onEditCandidate(race_index, newCandidate, index)} 
-                                        candidate={candidate} 
+                                    <AddCandidate
+                                        onEditCandidate={(newCandidate) => onEditCandidate(race_index, newCandidate, index)}
+                                        candidate={candidate}
                                         index={index} />
                                 </>
                             ))}
-                                {/* <Grid item sm={10}>
-                                    <TextField
-                                        id={`new-candidate-name-${String(race_index)}`}
-                                        name="new-candidate-name"
-                                        label="New Candidate Name"
-                                        type="text"
-                                        value={newCandidateName}
-                                        fullWidth
-                                        sx={{
-                                            my: { sm: 0, md: 1 },
-                                            p: 0,
-                                            background: '#ffffff',
-                                            boxShadow: 2,
-                                        }}
-                                        onChange={(e) => {
-                                            setNewCandidateName(e.target.value)
-                                        }}
-                                        onKeyPress={(ev) => {
-                                            if (ev.key === 'Enter') {
-                                                onAddCandidate(race_index)
-                                                ev.preventDefault();
-                                            }
-                                        }}
-                                    />
-                                </Grid> */}
-                                {/* <Grid item sm={2}>
-                                    <Button onClick={() => onAddCandidate(race_index)} sx={{
-                                            my: 2,
-                                            p: 0}}>
-                                        <Typography variant="h6" component="h6"> Edit </Typography>
-                                    </Button>
-                                </Grid> */}
                         </>}
                 </>
             ))}
 
-            <Button variant='outlined' onClick={() => onAddRace()} >Add Race</Button>
+            {election.races.length > 1 &&
+                <>
+                    <Grid item xs={3} sx={{ m: 0, p: 1 }}>
+                        <StyledButton
+                            type='button'
+                            variant="contained"
+                            disabled={openRace < 1}
+                            onClick={() => { setOpenRace(openRace - 1) }}>
+                            Previous
+                        </StyledButton>
+                    </Grid>
+                    <Grid xs={6}></Grid>
+                    <Grid item xs={3} sx={{ m: 0, p: 1 }}>
+                        <StyledButton
+                            type='button'
+                            variant="contained"
+                            disabled={openRace >= election.races.length - 1}
+                            onClick={() => { setOpenRace(openRace + 1) }}>
+                            Next Race
+                        </StyledButton>
+                    </Grid>
+                    <Grid xs={6}></Grid>
+                </>
+            }
+            <Grid xs={9}></Grid>
+            <Grid item xs={3} sx={{ m: 0, p: 1 }}>
+                <StyledButton
+                    type='button'
+                    variant="contained"
+                    onClick={() => onAddRace()} >
+                    Add Race
+                </StyledButton>
+            </Grid>
         </>
     )
 }
