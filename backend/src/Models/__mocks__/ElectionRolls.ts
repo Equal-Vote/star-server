@@ -12,7 +12,7 @@ export default class ElectionRollDB implements IElectionRollStore{
         this._electionRolls = [];
     }
 
-    submitElectionRoll(electionRolls: ElectionRoll[], ctx:ILoggingContext): Promise<boolean>{
+    submitElectionRoll(electionRolls: ElectionRoll[], ctx:ILoggingContext,reason:string): Promise<boolean>{
         const self = this;
         electionRolls.forEach(function(roll){
             Logger.debug(ctx, `Mock Election Roll Store:  submit:  ${JSON.stringify(roll)}`);
@@ -67,7 +67,7 @@ export default class ElectionRollDB implements IElectionRollStore{
         return Promise.resolve(res)
     }
 
-    update(voter_roll: ElectionRoll, ctx:ILoggingContext): Promise<ElectionRoll | null> {
+    update(voter_roll: ElectionRoll, ctx:ILoggingContext,reason:string): Promise<ElectionRoll | null> {
         Logger.debug(ctx, `MockElectionRolls update ${JSON.stringify(voter_roll)}`);
         const index = this._electionRolls.findIndex(electionRoll => {
             var electionMatch = electionRoll.election_id===voter_roll.election_id;
@@ -83,7 +83,7 @@ export default class ElectionRollDB implements IElectionRollStore{
         return Promise.resolve(res);
     }
 
-    delete(voter_roll: ElectionRoll, ctx:ILoggingContext): Promise<boolean> {
+    delete(voter_roll: ElectionRoll, ctx:ILoggingContext,reason:string): Promise<boolean> {
         const ballot = this._electionRolls.find(electionRoll => electionRoll.election_id===voter_roll.election_id && electionRoll.voter_id===voter_roll.voter_id)
         if (!ballot){
             return Promise.resolve(false)
