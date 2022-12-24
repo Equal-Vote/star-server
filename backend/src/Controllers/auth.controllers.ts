@@ -10,9 +10,10 @@ const className = 'Auth.Controllers';
 const accountService = ServiceLocator.accountService();
 
 const getUser = (req: any, res: any, next: any) => {
-  Logger.info(req, `${className}.getUser`);
+  Logger.debug(req, `${className}.getUser`);
   const user = accountService.extractUserFromRequest(req);
   if (user){
+    Logger.debug(req, `${className} setting user into request`);
     req.user = user;
   }
   next()

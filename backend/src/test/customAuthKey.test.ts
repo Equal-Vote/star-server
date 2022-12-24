@@ -101,4 +101,35 @@ describe("Election with custom auth key", () => {
         expect(response.election.auth_key).toBeUndefined();
         th.testComplete();
     });
+
+    test("Custom Auth can add additional voter roll", async() => {
+        const additional_voters = [
+            { 
+               email:'Charles@email.com',
+            }
+        ]
+        const r1 = await th.submitElectionRoll(
+            electionId,
+            additional_voters,
+            null,
+            user1TokenCustomSigned
+        );
+        expect(r1.statusCode).toBe(200);
+
+        const charlesToken = jwt.sign({ 
+            email: 'Charles@email.com',
+            sub: 'Charles1234',
+         }, customKey.privateKey, { algorithm: 'RS256' });
+         const r2 = await th.requestBallot(
+            electionId,
+            null,
+            charlesToken
+        );
+       
+        expect(r2.statusCode).toBe(200);
+        expect(r2.voterAuth.authorized_voter).toBe(true);
+        expect(r2.voterAuth.has_voted).toBe(false);
+
+        th.testComplete();
+    });
 });

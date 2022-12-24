@@ -11,7 +11,8 @@ export default class AccountServiceUtils {
         token: string,
         key: string
     ) => {
-        const inputElection: Election | undefined = req.body.Election;
+        Logger.debug(req, "AccountServiceUtils.extractUserFromRequest");
+        const inputElection = req.election ? req.election : req.body.Election;
         if (inputElection && inputElection.auth_key && inputElection.auth_key != "") {
             Logger.debug(
                 req,

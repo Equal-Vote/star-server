@@ -28,9 +28,11 @@ export class TestLoggerImpl {
     }
 
     print():void{
+        var str = ""
         this.logs.forEach(l => {
-            console.log(l);
-        })
+            str+= l+"\n";
+        });
+        console.log(str);
     }
 
     setup():TestLoggerImpl {
