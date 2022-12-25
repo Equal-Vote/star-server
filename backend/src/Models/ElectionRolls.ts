@@ -32,6 +32,7 @@ export default class ElectionRollDB implements IElectionRollStore {
             ip_address      VARCHAR,
             address         VARCHAR,
             state           VARCHAR NOT NULL,
+            history         json,
             registration    json,
             precinct        VARCHAR
           );
