@@ -3,6 +3,7 @@ import { Uid } from '../../../domain_model/Uid';
 import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
 import { IBallotStore } from './IBallotStore';
+import ModelUtils from './ModelUtils';
 const className = 'BallotsDB';
 
 export default class BallotsDB implements IBallotStore {
@@ -11,7 +12,7 @@ export default class BallotsDB implements IBallotStore {
     _tableName: string;
 
     constructor(postgresClient:any) {
-        this._tableName = "ballotDB";
+        this._tableName = "ballotdb";
         this._postgresClient = postgresClient;
         this.init();
     }
@@ -20,7 +21,7 @@ export default class BallotsDB implements IBallotStore {
         var appInitContext = Logger.createContext("appInit");
         Logger.debug(appInitContext, "BallotsDB.init");
         //await this.dropTable(appInitContext);
-        var query = `
+        var createQuery = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
             ballot_id       VARCHAR PRIMARY KEY,
             election_id     VARCHAR,
@@ -33,8 +34,8 @@ export default class BallotsDB implements IBallotStore {
             precinct        VARCHAR
           );
         `;
-        Logger.debug(appInitContext, query);
-        var p = this._postgresClient.query(query);
+        Logger.debug(appInitContext, createQuery);
+        var p = this._postgresClient.query(createQuery);
         return p.then((_: any) => {
             //This will add the new field to the live DB in prod.  Once that's done we can remove this
             var historyQuery = `
@@ -45,7 +46,11 @@ export default class BallotsDB implements IBallotStore {
                 return err;
             });
         }).then((_:any)=> {
-            return this;
+            return ModelUtils.assertTableCorrect(
+                this._postgresClient,
+                this._tableName,
+                createQuery
+            );
         });
     }
 

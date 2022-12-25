@@ -11,8 +11,8 @@ export default class CastVoteStore {
 
     constructor(postgresClient: any) {
         this._postgresClient = postgresClient;
-        this._ballotTableName = "ballotDB";
-        this._rollTableName = "electionRollDB";
+        this._ballotTableName = "ballotdb";
+        this._rollTableName = "electionrolldb";
     }
 
     submitBallot(

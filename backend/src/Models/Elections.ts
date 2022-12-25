@@ -2,6 +2,7 @@ import { Election } from '../../../domain_model/Election';
 import { Uid } from '../../../domain_model/Uid';
 import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
+import ModelUtils from './ModelUtils';
 const className = 'ElectionsDB';
 
 export default class ElectionsDB {
@@ -11,7 +12,7 @@ export default class ElectionsDB {
 
     constructor(postgresClient:any) {
         this._postgresClient = postgresClient;
-        this._tableName = "electionDB";
+        this._tableName = "electiondb";
         this.init()
     }
 
@@ -21,7 +22,7 @@ export default class ElectionsDB {
 
         //await this.dropTable(appInitContext);
 
-        var query = `
+        var createQuery = `
         CREATE TABLE IF NOT EXISTS ${this._tableName} (
             election_id  VARCHAR PRIMARY KEY,
             title       VARCHAR,
@@ -41,8 +42,8 @@ export default class ElectionsDB {
           );
         `;
 
-        Logger.debug(appInitContext, query);
-        var p = this._postgresClient.query(query);
+        Logger.debug(appInitContext, createQuery);
+        var p = this._postgresClient.query(createQuery);
         return p.then((_: any) => {
             //This will add the new field to the live DB in prod.  Once that's done we can remove this
             var credentialQuery = `
@@ -53,7 +54,11 @@ export default class ElectionsDB {
                 return err;
             });
         }).then((_:any)=> {
-            return this;
+            return ModelUtils.assertTableCorrect(
+                this._postgresClient,
+                this._tableName,
+                createQuery
+            );
         });
     }
 
