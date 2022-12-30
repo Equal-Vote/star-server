@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-
+import { SnackbarContext } from "../components/SnackbarContext";
 
 const useFetch = (url, method) => {
     const [isPending, setIsPending] = useState(false)
     const [error, setError] = useState(null)
     const [data, setData] = useState(null)
+    const { snack, setSnack } = useContext(SnackbarContext)
 
     const makeRequest = async (data) => {
         const options = {
@@ -33,6 +34,10 @@ const useFetch = (url, method) => {
             setError(null);
             return data
         } catch (err) {
+            setSnack({
+                message: err,
+                color: 'red',
+                open: true})
             setIsPending(false);
             setError(err.message);
             return false

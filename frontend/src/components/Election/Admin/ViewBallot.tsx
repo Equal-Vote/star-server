@@ -23,7 +23,7 @@ const ViewBallot = ({ election, ballot, onClose, fetchBallot, permissions }) => 
         }
     }, [ballot_id])
 
-    let myballot = ballot===null ? data?.ballot : ballot;
+    let myballot = ballot === null ? data?.ballot : ballot;
 
     const getDateString = (dateNum) => {
         const event = new Date(dateNum);
@@ -31,6 +31,13 @@ const ViewBallot = ({ election, ballot, onClose, fetchBallot, permissions }) => 
     }
     return (
         <Container>
+
+            <Typography align='center' gutterBottom variant="h4" component="h4">
+                {election.title}
+            </Typography>
+            <Typography align='center' gutterBottom variant="h5" component="h5">
+                Ballot
+            </Typography>
             {error && <div> {error} </div>}
             {isPending && <div> Loading Data... </div>}
             {myballot &&

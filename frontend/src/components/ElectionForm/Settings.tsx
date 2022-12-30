@@ -14,6 +14,7 @@ import { Box, Checkbox, FormGroup, FormHelperText, FormLabel, InputLabel, Radio,
 import IconButton from '@mui/material/IconButton'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
+import InfoIcon from '@mui/icons-material/Info';
 import { Input } from '@mui/material';
 import { Election } from '../../../../domain_model/Election';
 
@@ -38,10 +39,10 @@ export default function Settings({ election, applyElectionUpdate, getStyle }: Se
 
     return (
         <>
-            <Grid item xs={11} sx={{ m: 0, p: 1}}>
+            <Grid item xs={11} sx={{ m: 0, p: 1 }}>
                 <Typography gutterBottom variant="h4" component="h4">Election Settings</Typography>
             </Grid>
-            <Grid item xs={12} sx={{ m: 0, p: 1}}>
+            <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <FormControl component="fieldset" variant="standard">
                     <FormLabel id="voter-access">
                         Voter Access
@@ -55,21 +56,27 @@ export default function Settings({ election, applyElectionUpdate, getStyle }: Se
                         value={election.settings.voter_access}
                         onChange={(e) => updateVoterAccess(e.target.value)}
                     >
-                        <Tooltip title="Open to all authenticated voters">
-                            <FormControlLabel value="open" control={<Radio />} label="Open" />
-                        </Tooltip>
-                        <Tooltip title="Closed to only a predefined list of voters">
+                        <FormControlLabel value="open" control={<Radio/>} label="Open" sx={{mb:0,pb:0}}/>
+                        <FormHelperText sx={{pl:4, mt:-1}}>
+                            Open to all authenticated voters
+                        </FormHelperText>
                             <FormControlLabel value="closed" control={<Radio />} label="Closed" />
-                        </Tooltip>
+                        <FormHelperText sx={{pl:4, mt:-1}}>
+                            Closed to only a predefined list of voters
+                        </FormHelperText>
                         <Tooltip title="Voters must first register to cast a provisional ballot and credentialer must approve each voter">
                             <FormControlLabel value="registration" control={<Radio />} label="Registration" />
+
                         </Tooltip>
+                        <FormHelperText sx={{pl:4, mt:-1}}>
+                            Voters must first register to cast a provisional ballot and credentialer must approve each voter
+                        </FormHelperText>
                     </RadioGroup>
                 </FormControl>
 
 
             </Grid>
-            <Grid item xs={12} sx={{ m: 0, p: 1}}>
+            <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <FormControl component="fieldset" variant="standard">
                     <FormLabel component="legend">Voter Authentication</FormLabel>
                     <FormHelperText>
@@ -117,7 +124,7 @@ export default function Settings({ election, applyElectionUpdate, getStyle }: Se
                 </FormControl>
 
             </Grid>
-            <Grid item xs={12} sx={{ m: 0, p: 1}}>
+            <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <FormControl component="fieldset" variant="standard">
                     <FormLabel component="legend">Miscellaneous Settings</FormLabel>
                     <FormGroup>

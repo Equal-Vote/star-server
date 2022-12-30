@@ -209,7 +209,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                                 <Grid item xs={6} sx={{ m: 0, p: 1 }} justifyContent='center' >
 
                                     <FormControl fullWidth>
-                                        <InputLabel>
+                                        <InputLabel shrink>
                                             Start Date
                                         </InputLabel>
                                         <Input
@@ -217,8 +217,8 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                                             value={dateAsInputString(election.start_time)}
                                             onChange={(e) => applyElectionUpdate(election => election.start_time = new Date(e.target.value))}
                                             sx={{
-                                                m: 1,
-                                                p: 1,
+                                                m: 0,
+                                                p: 0,
                                             }}
                                         />
                                     </FormControl>
@@ -226,7 +226,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
 
                                 <Grid item xs={6} sx={{ m: 0, p: 1 }} justifyContent='center'>
                                     <FormControl fullWidth>
-                                        <InputLabel>
+                                        <InputLabel shrink>
                                             Stop Date
                                         </InputLabel>
                                         <Input
@@ -234,8 +234,8 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                                             value={dateAsInputString(election.end_time)}
                                             onChange={(e) => applyElectionUpdate(election => { election.end_time = new Date(e.target.value) })}
                                             sx={{
-                                                m: 1,
-                                                p: 1,
+                                                m: 0,
+                                                p: 0,
                                             }}
                                         />
                                     </FormControl>

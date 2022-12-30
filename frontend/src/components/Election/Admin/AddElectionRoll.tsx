@@ -67,6 +67,12 @@ const AddElectionRoll = ({ election, onClose }) => {
             <Container maxWidth='sm'>
                 <Grid container direction="column" >
 
+                    <Typography align='center' gutterBottom variant="h4" component="h4">
+                        {election.title}
+                    </Typography>
+                    <Typography align='center' gutterBottom variant="h5" component="h5">
+                        Add Election Roll
+                    </Typography>
                     <Grid item>
                         <TextField
                             id="email-list"
