@@ -34,7 +34,7 @@ export default class BallotsDB implements IBallotStore {
         return Promise.resolve(resBallots);
     }
 
-    delete(ballot_id: Uid, ctx:ILoggingContext): Promise<boolean> {
+    delete(ballot_id: Uid, ctx:ILoggingContext,reason:string): Promise<boolean> {
         const ballot = this.ballots.find(
             (ballot) => ballot.ballot_id === ballot_id
         );

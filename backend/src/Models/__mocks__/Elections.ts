@@ -10,7 +10,7 @@ export default class ElectionsDB {
     constructor() {
     }
 
-    createElection(election: Election, ctx:ILoggingContext): Promise<Election>{
+    createElection(election: Election, ctx:ILoggingContext, reason:string): Promise<Election>{
         Logger.debug(ctx, "Election Mock Creates Election: ", election);
         var copy = JSON.parse(JSON.stringify(election));
         this.elections.push(copy);
@@ -18,10 +18,10 @@ export default class ElectionsDB {
         return Promise.resolve(res);
     }
     
-    updateElection(election: Election, ctx:ILoggingContext): Promise<Election | null> {
+    updateElection(election: Election, ctx:ILoggingContext, reason:string): Promise<Election> {
         var foundIndex = this.elections.findIndex(dbElection => dbElection.election_id == election.election_id);
         if(foundIndex == -1){
-            return Promise.resolve(null);
+            throw new Error("Election Not Found")
         }
         var copy = JSON.parse(JSON.stringify(election));
         this.elections[foundIndex] = copy;
@@ -58,7 +58,7 @@ export default class ElectionsDB {
         return Promise.resolve(JSON.parse(JSON.stringify(election)))//Simple deep copy
     }
 
-    delete(election_id: Uid, ctx:ILoggingContext): Promise<Election | null> {
+    delete(election_id: Uid, ctx:ILoggingContext, reason:string): Promise<Election | null> {
         const election = this.elections.find(election => election.election_id==election_id)
         if (!election){
             return Promise.resolve(null)

@@ -5,8 +5,8 @@ export const StyledButton = (props) => (
     <Button
         fullWidth
         sx={{
-            p: { xs: 1, sm: 1 },
-            m: { xs: 0, sm: 1 },
+            p: 1,
+            m: 0,
             boxShadow: 2,
             backgroundColor: 'primary.light'
         }}
@@ -20,7 +20,8 @@ export const StyledTextField = (props) => (
     <TextField
         fullWidth
         sx={{
-            m: { xs: 0, sm: 1 },
+            m: 0,
+            p: 0,
             boxShadow: 2,
         }}
         {...props}

@@ -16,6 +16,13 @@ export interface IElectionRollStore {
         voter_id: string,
         ctx: ILoggingContext
     ) => Promise<ElectionRoll | null>;
+    getElectionRoll: (
+        election_id: string, 
+        voter_id: string|null, 
+        email: string|null, 
+        ip_address: string|null, 
+        ctx:ILoggingContext
+        ) => Promise<[ElectionRoll] | null>;
     update: (
         election_roll: ElectionRoll,
         ctx: ILoggingContext,
