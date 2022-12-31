@@ -4,15 +4,15 @@ import { teal, orange } from '@mui/material/colors'
 const theme = createTheme({
   palette: {
     primary: {
-      light: '#8eacbb',
-      main: '#607d8b',
-      dark: '#34515e',
+      light: '#5ac7d6',
+      main: '#2aa2b3',
+      dark: '#02627c',
       contrastText: '#000000',
     },
     secondary: {
-      light: '#f4511e',
-      main: '#f4511e',
-      dark: '#b91400',
+      light: '#ffca47',
+      main: '#ff9900',
+      dark: '#c66a00',
       contrastText: '#000',
     }
   },

@@ -27,9 +27,9 @@ const keycloakAuthConfig = {
 const authConfig = keycloakAuthConfig;
 
 export const useAuthSession = () => {
-    const [accessToken, setAccessToken] = useCookie('access_token', null, 1)
-    const [idToken, setIdToken] = useCookie('id_token', null, 1)
-    const [refreshToken, setRefreshToken] = useCookie('refresh_token', null, 1)
+    const [accessToken, setAccessToken] = useCookie('access_token', null, 24*5)
+    const [idToken, setIdToken] = useCookie('id_token', null, 24*5)
+    const [refreshToken, setRefreshToken] = useCookie('refresh_token', null, 24*5)
 
     const isLoggedIn = () => {
         return accessToken !== null

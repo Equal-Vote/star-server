@@ -32,12 +32,6 @@ const ViewBallot = ({ election, ballot, onClose, fetchBallot, permissions }) => 
     return (
         <Container>
 
-            <Typography align='center' gutterBottom variant="h4" component="h4">
-                {election.title}
-            </Typography>
-            <Typography align='center' gutterBottom variant="h5" component="h5">
-                Ballot
-            </Typography>
             {isPending && <div> Loading Data... </div>}
             {myballot &&
                 <Grid container direction="column" >

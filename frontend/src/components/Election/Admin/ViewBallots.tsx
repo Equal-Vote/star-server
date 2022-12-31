@@ -26,6 +26,11 @@ const ViewBallots = ({ election, permissions }) => {
         setSelectedBallot(null)
         fetchBallots()
     }
+    const getDateString = (dateNum) => {
+        const event = new Date(dateNum);
+        return event.toLocaleString();
+    }
+
     return (
         <Container>
             <Typography align='center' gutterBottom variant="h4" component="h4">
@@ -41,29 +46,29 @@ const ViewBallots = ({ election, permissions }) => {
                         <TableHead>
                             <TableCell> ID </TableCell>
                             <TableCell> Precinct </TableCell>
-                            <TableCell align="right"> Date Submitted </TableCell>
-                            <TableCell align="right"> Status </TableCell>
+                            <TableCell> Date Submitted </TableCell>
+                            <TableCell> Status </TableCell>
                             {election.races.map((race) => (
                                 race.candidates.map((candidate) => (
-                                    <TableCell align="right">
-                                        {candidate.name}
+                                    <TableCell>
+                                        {candidate.candidate_name}
                                     </TableCell>
                                 ))
                             ))}
-                            <TableCell align="right"> View </TableCell>
+                            <TableCell> View </TableCell>
                         </TableHead>
                         <TableBody>
                             {data.ballots.map((ballot) => (
                                 <TableRow key={ballot.ballot_id} >
                                     <TableCell component="th" scope="row">{ballot.ballot_id}</TableCell>
-                                    <TableCell align="right" >{ballot.precinct || ''}</TableCell>
-                                    <TableCell align="right" >{ballot.date_submitted.toString()}</TableCell>
-                                    <TableCell align="right" >{ballot.status.toString()}</TableCell>
+                                    <TableCell >{ballot.precinct || ''}</TableCell>
+                                    <TableCell >{getDateString(Number(ballot.date_submitted))}</TableCell>
+                                    <TableCell >{ballot.status.toString()}</TableCell>
                                     {ballot.votes.map((vote) => (
                                         vote.scores.map((score) => (
-                                            <TableCell align="right" >{score.score || ''}</TableCell>
+                                            <TableCell >{score.score || ''}</TableCell>
                                         ))))}
-                                    <TableCell align="right" ><Button variant='outlined' onClick={() => onOpen(ballot)} > View </Button></TableCell>
+                                    <TableCell ><Button variant='outlined' onClick={() => onOpen(ballot)} > View </Button></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

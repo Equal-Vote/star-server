@@ -41,7 +41,7 @@ const Election = ({ authSession }) => {
               <Route path='/vote' element={<VotePage election={data.election} fetchElection={fetchData}/>} />
               <Route path='/thanks' element={<Thanks election={data.election} />} />
               <Route path='/results' element={<ViewElectionResults election={data.election} />} />
-              <Route path='/edit' element={<EditElection authSession={authSession} election={data.election} />} />
+              <Route path='/edit' element={<EditElection authSession={authSession} election={data.election} fetchElection={fetchData} />} />
               <Route path='/admin/*' element={<Admin authSession={authSession} election={data.election} permissions={data.voterAuth.permissions} />} />
               <Route path='/ballot/:ballot_id' element={<ViewBallot election={data.election} ballot={null} onClose={null} fetchBallot={null} permissions={data.voterAuth.permissions} />} />
             </Routes>

@@ -50,9 +50,9 @@ const ViewElectionRolls = ({ election, permissions }) => {
                                 <TableCell> Email </TableCell>
                                 <TableCell> IP Address </TableCell>
                                 <TableCell> Precinct </TableCell>
-                                <TableCell align="right"> Has Voted </TableCell>
-                                <TableCell align="right"> State </TableCell>
-                                <TableCell align="right"> View </TableCell>
+                                <TableCell> Has Voted </TableCell>
+                                <TableCell> State </TableCell>
+                                <TableCell> View </TableCell>
                             </TableHead>
                             <TableBody>
                                 {data.electionRoll.map((roll) => (
@@ -60,12 +60,12 @@ const ViewElectionRolls = ({ election, permissions }) => {
                                         <TableCell component="th" scope="row">
                                             {roll.voter_id}
                                         </TableCell>
-                                        <TableCell align="right" >{roll.email || ''}</TableCell>
-                                        <TableCell align="right" >{roll.ip_address || ''}</TableCell>
-                                        <TableCell align="right" >{roll.precinct || ''}</TableCell>
-                                        <TableCell align="right" >{roll.submitted.toString()}</TableCell>
-                                        <TableCell align="right" >{roll.state.toString()}</TableCell>
-                                        <TableCell align="right" ><Button variant='outlined' onClick={() => onOpen(roll)} > View </Button></TableCell>
+                                        <TableCell >{roll.email || ''}</TableCell>
+                                        <TableCell >{roll.ip_address || ''}</TableCell>
+                                        <TableCell >{roll.precinct || ''}</TableCell>
+                                        <TableCell >{roll.submitted.toString()}</TableCell>
+                                        <TableCell >{roll.state.toString()}</TableCell>
+                                        <TableCell ><Button variant='outlined' onClick={() => onOpen(roll)} > View </Button></TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
