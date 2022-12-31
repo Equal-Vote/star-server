@@ -7,7 +7,7 @@ import { useNavigate } from "react-router";
 import { Ballot } from "../../../../../domain_model/Ballot";
 import { Vote } from "../../../../../domain_model/Vote";
 import { Score } from "../../../../../domain_model/Score";
-import { Box, Container } from "@material-ui/core";
+import { Box, Container } from "@mui/material";
 import Button from "@mui/material/Button";
 const VotePage = ({ election, fetchElection }) => {
   const { id } = useParams();

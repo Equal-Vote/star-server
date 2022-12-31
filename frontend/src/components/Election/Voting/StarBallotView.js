@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import ProfilePic from '../../../images/blank-profile.png'
-import { Link } from "@material-ui/core";
+import { Link } from "@mui/material";
 import Box from '@mui/material/Box';
 
 function RowHeading({ candidate, party, className }) {

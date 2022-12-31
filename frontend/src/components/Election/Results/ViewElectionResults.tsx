@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { useParams } from "react-router";
 import useFetch from "../../../hooks/useFetch";
 import Results from './Results';
-import { Grid } from "@material-ui/core";
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import { Paper, Typography } from "@mui/material";
