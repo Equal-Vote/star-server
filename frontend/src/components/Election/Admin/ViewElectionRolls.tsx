@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import React from 'react'
 import Button from "@mui/material/Button";
 import Container from '@mui/material/Container';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@material-ui/core";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
 import EditElectionRoll from "./EditElectionRoll";
 import AddElectionRoll from "./AddElectionRoll";
 import PermissionHandler from "../../PermissionHandler";
