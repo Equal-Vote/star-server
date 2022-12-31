@@ -52,7 +52,6 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
 
   return (
     <>
-      {error && <div> {error} </div>}
       {electionData && electionData.election && electionData.voterAuth &&
         <Box
           display='flex'
@@ -62,7 +61,7 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
           <Paper elevation={3} sx={{ width: 600 }} >
 
             <Box sx={{ m: 1, display: 'flex', justifyContent: 'flex-end' }}>
-              <ShareButton url={`${window.location.origin}/Election/${electionData.election.election_id}`} text={null} />
+              <ShareButton url={`${window.location.origin}/Election/${electionData.election.election_id}`} text={'Share'} />
             </Box>
             <Typography align='center' gutterBottom variant="h4" component="h4">
               {electionData.election.title}

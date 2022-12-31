@@ -5,7 +5,7 @@ import Container from '@mui/material/Container';
 import ElectionForm from "./ElectionForm";
 import { useNavigate } from "react-router"
 
-const EditElection = ({ authSession, election }) => {
+const EditElection = ({ authSession, election, fetchElection}) => {
     const navigate = useNavigate()
     const { id } = useParams();
     const { isPending, error, makeRequest: editElection } = useFetch(`/API/Election/${election.election_id}/edit`,'post')
@@ -20,6 +20,7 @@ const EditElection = ({ authSession, election }) => {
         }
         
         localStorage.removeItem('Election')
+        fetchElection()
         navigate(`/Election/${election.election_id}`)
     }
 
@@ -30,7 +31,6 @@ const EditElection = ({ authSession, election }) => {
         {authSession.isLoggedIn() && authSession.getIdField('sub') == election.owner_id &&
             <ElectionForm authSession={authSession} onSubmitElection={onEditElection} prevElectionData={election} submitText='Apply Updates' disableSubmit={isPending}/>
         }
-        {error && <div> {error} </div>}
         {isPending && <div> Submitting... </div>}
         </>
         </Container>

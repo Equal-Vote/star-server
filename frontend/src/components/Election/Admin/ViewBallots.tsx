@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import React from 'react'
 import Button from "@mui/material/Button";
 import Container from '@mui/material/Container';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
 import PermissionHandler from "../../PermissionHandler";
 import ViewBallot from "./ViewBallot";
 
@@ -26,9 +26,19 @@ const ViewBallots = ({ election, permissions }) => {
         setSelectedBallot(null)
         fetchBallots()
     }
+    const getDateString = (dateNum) => {
+        const event = new Date(dateNum);
+        return event.toLocaleString();
+    }
+
     return (
-        <Container >
-            {error && <div> {error} </div>}
+        <Container>
+            <Typography align='center' gutterBottom variant="h4" component="h4">
+                {election.title}
+            </Typography>
+            <Typography align='center' gutterBottom variant="h5" component="h5">
+                View Ballots
+            </Typography>
             {isPending && <div> Loading Data... </div>}
             {data && data.ballots && !isViewing && !addRollPage &&
                 <TableContainer component={Paper}>
@@ -36,18 +46,29 @@ const ViewBallots = ({ election, permissions }) => {
                         <TableHead>
                             <TableCell> ID </TableCell>
                             <TableCell> Precinct </TableCell>
-                            <TableCell align="right"> Date Submitted </TableCell>
-                            <TableCell align="right"> Status </TableCell>
-                            <TableCell align="right"> View </TableCell>
+                            <TableCell> Date Submitted </TableCell>
+                            <TableCell> Status </TableCell>
+                            {election.races.map((race) => (
+                                race.candidates.map((candidate) => (
+                                    <TableCell>
+                                        {candidate.candidate_name}
+                                    </TableCell>
+                                ))
+                            ))}
+                            <TableCell> View </TableCell>
                         </TableHead>
                         <TableBody>
                             {data.ballots.map((ballot) => (
                                 <TableRow key={ballot.ballot_id} >
                                     <TableCell component="th" scope="row">{ballot.ballot_id}</TableCell>
-                                    <TableCell align="right" >{ballot.precinct || ''}</TableCell>
-                                    <TableCell align="right" >{ballot.date_submitted.toString()}</TableCell>
-                                    <TableCell align="right" >{ballot.status.toString()}</TableCell>
-                                    <TableCell align="right" ><Button variant='outlined' onClick={() => onOpen(ballot)} > View </Button></TableCell>
+                                    <TableCell >{ballot.precinct || ''}</TableCell>
+                                    <TableCell >{getDateString(Number(ballot.date_submitted))}</TableCell>
+                                    <TableCell >{ballot.status.toString()}</TableCell>
+                                    {ballot.votes.map((vote) => (
+                                        vote.scores.map((score) => (
+                                            <TableCell >{score.score || ''}</TableCell>
+                                        ))))}
+                                    <TableCell ><Button variant='outlined' onClick={() => onOpen(ballot)} > View </Button></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -55,7 +76,7 @@ const ViewBallots = ({ election, permissions }) => {
                 </TableContainer>
             }
             {isViewing && selectedBallot &&
-                <ViewBallot election={election} ballot={selectedBallot} onClose={onClose} fetchBallot={fetchBallots}permissions={permissions} />
+                <ViewBallot election={election} ballot={selectedBallot} onClose={onClose} fetchBallot={fetchBallots} permissions={permissions} />
             }
         </Container>
     )

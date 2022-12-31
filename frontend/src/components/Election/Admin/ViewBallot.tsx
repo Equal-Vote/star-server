@@ -23,7 +23,7 @@ const ViewBallot = ({ election, ballot, onClose, fetchBallot, permissions }) => 
         }
     }, [ballot_id])
 
-    let myballot = ballot===null ? data?.ballot : ballot;
+    let myballot = ballot === null ? data?.ballot : ballot;
 
     const getDateString = (dateNum) => {
         const event = new Date(dateNum);
@@ -31,7 +31,7 @@ const ViewBallot = ({ election, ballot, onClose, fetchBallot, permissions }) => 
     }
     return (
         <Container>
-            {error && <div> {error} </div>}
+
             {isPending && <div> Loading Data... </div>}
             {myballot &&
                 <Grid container direction="column" >

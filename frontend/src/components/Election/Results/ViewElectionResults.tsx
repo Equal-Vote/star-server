@@ -25,7 +25,6 @@ const ViewElectionResults = ({ election }) => {
                 <Typography variant="h4" component="h4">
                     {election.title}
                 </Typography>
-                {error && <div> {error} </div>}
                 {isPending && <div> Loading Election... </div>}
                 {data?.Results.map((result, race_index) => (
                     <>

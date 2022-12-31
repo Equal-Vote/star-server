@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import React from 'react'
 import { Candidate } from "../../../../domain_model/Candidate"
 // import Button from "./Button"
@@ -28,8 +28,6 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
     const defaultElection: Election = {
         title: '',
         election_id: '0',
-        start_time: new Date(''),
-        end_time: new Date(''),
         description: '',
         state: 'draft',
         frontend_url: '',
@@ -72,6 +70,15 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
     }
 
     const [election, setElectionData] = useLocalStorage('Election', prevElectionData)
+    useEffect(() => {
+        prevElectionData.races.forEach((race) => {
+            race.candidates.push({
+                candidate_id: String(race.candidates.length),
+                candidate_name: '',
+            })
+        })
+        setElectionData(prevElectionData)
+    }, [])
     const [titleError, setTitleError] = useState(false)
 
     const [pageNumber, setPageNumber] = useState(0)
@@ -138,7 +145,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
 
     const dateAsInputString = (date) => {
         if (date == null) return ''
-        if (isNaN(date.valueOf())) return ''
+        date = new Date(date)
         // Remove time zone offset before switching to ISO
         var s = (new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString());
         s = s.replace(':00.000Z', '')
@@ -209,34 +216,26 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                                 <Grid item xs={6} sx={{ m: 0, p: 1 }} justifyContent='center' >
 
                                     <FormControl fullWidth>
-                                        <InputLabel>
+                                        <InputLabel shrink>
                                             Start Date
                                         </InputLabel>
                                         <Input
                                             type='datetime-local'
                                             value={dateAsInputString(election.start_time)}
                                             onChange={(e) => applyElectionUpdate(election => election.start_time = new Date(e.target.value))}
-                                            sx={{
-                                                m: 1,
-                                                p: 1,
-                                            }}
                                         />
                                     </FormControl>
                                 </Grid>
 
                                 <Grid item xs={6} sx={{ m: 0, p: 1 }} justifyContent='center'>
                                     <FormControl fullWidth>
-                                        <InputLabel>
+                                        <InputLabel shrink>
                                             Stop Date
                                         </InputLabel>
                                         <Input
                                             type='datetime-local'
                                             value={dateAsInputString(election.end_time)}
                                             onChange={(e) => applyElectionUpdate(election => { election.end_time = new Date(e.target.value) })}
-                                            sx={{
-                                                m: 1,
-                                                p: 1,
-                                            }}
                                         />
                                     </FormControl>
                                 </Grid>

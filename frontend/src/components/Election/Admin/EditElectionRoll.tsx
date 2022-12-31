@@ -42,10 +42,6 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
         <Container>
             {(approve.isPending || flag.isPending || unflag.isPending || invalidate.isPending) &&
                 <div> Sending Request... </div>}
-            {approve.error && <div> {approve.error} </div>}
-            {flag.error && <div> {flag.error} </div>}
-            {unflag.error && <div> {unflag.error} </div>}
-            {invalidate.error && <div> {invalidate.error} </div>}
             <Grid container direction="column" >
                 <Grid item sm={12}>
                     <Typography align='left' gutterBottom variant="h6" component="h6">

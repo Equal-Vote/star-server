@@ -25,7 +25,7 @@ const VoterAuth = ({ authSession, electionData, fetchElection }) => {
   return (
     <Container >
       <>
-        {electionData && !electionData.voterAuth.authorized_voter && !electionData.voterAuth.required &&
+        {electionData && electionData.election.state === "open" && !electionData.voterAuth.authorized_voter && !electionData.voterAuth.required &&
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Typography align='center' gutterBottom variant="h5" component="h5">
               You are not authorized to vote in this election

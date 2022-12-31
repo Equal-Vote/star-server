@@ -42,7 +42,6 @@ const DuplicateElection = ({ authSession }) => {
 
     return (
         <Container >
-            {error && <div> {error} </div>}
             {isPending && <div> Loading Election... </div>}
             {!authSession.isLoggedIn() && <div> Must be logged in to create elections </div>}
             {authSession.isLoggedIn() && data && data.election &&

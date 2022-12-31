@@ -27,7 +27,6 @@ const AddElection = ({ authSession }) => {
                 <ElectionForm authSession={authSession} onSubmitElection={onAddElection} prevElectionData={null} submitText='Create Election' disableSubmit={isPending} />
             }
             {isPending && <div> Submitting... </div>}
-            {error && <div> {error} </div>}
         </>
     )
 }
