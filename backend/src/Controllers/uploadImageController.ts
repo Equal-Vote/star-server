@@ -1,6 +1,6 @@
 import { InternalServerError } from "@curveball/http-errors";
 import { randomUUID } from "crypto";
-const S3 = require("aws-sdk/clients/S3");
+const S3 = require("aws-sdk/clients/s3");
 const ID = process.env.S3_ID;
 const SECRET = process.env.S3_SECRET;
 
