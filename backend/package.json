@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --forceExit --detectOpenHandles",
     "start": "npm run-script build && node ./build/backend/src/index.js",
     "dev": "nodemon ./src/index.ts",
     "build": "tsc --project ./"
