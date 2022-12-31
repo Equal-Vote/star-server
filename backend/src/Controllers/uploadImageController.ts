@@ -1,6 +1,6 @@
 import { InternalServerError } from "@curveball/http-errors";
 import { randomUUID } from "crypto";
-import AWS from 'aws-sdk'
+const S3 = require("aws-sdk/clients/S3");
 const ID = process.env.S3_ID;
 const SECRET = process.env.S3_SECRET;
 
@@ -10,7 +10,7 @@ const storage = multer.memoryStorage();
 
 // The name of the bucket that you have created
 const BUCKET_NAME = 'starcandidatephotos';
-const s3 = new AWS.S3({
+const s3 = new S3({
     accessKeyId: ID,
     secretAccessKey: SECRET
 });
@@ -30,11 +30,10 @@ const upload = multer({
     limits: { fileSize: 1000000000, files: 1 },
   });
 
+
 const uploadImageController = async (req: any, res: any, next: any) => {
-    console.log('help')
-    console.log(req.file)
     const file = req.file
-    
+
     const params = {
         Bucket: BUCKET_NAME,
         Key: `${randomUUID()}.jpg`, // File name you want to save as in S3
