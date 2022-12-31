@@ -4,7 +4,7 @@
   "description": "star-server is built using Express (For now) for the back end server and React for the front end user interface",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cd backend && npm test",
     "start": "cd backend && npm start",
     "heroku-postbuild": "cd frontend && npm install && npm run build && cd ../backend && npm install"
   },
