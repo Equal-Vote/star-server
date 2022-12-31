@@ -142,7 +142,6 @@ const Sandbox = () => {
             </Grid>
             <Grid item xs={12}>
                 <Box border={2} sx={{ mt: 5, width: '100%', p: 2 }}>
-                    {error && <div> {error} </div>}
                     {isPending && <div> Loading Results... </div>}
                     {data && (
                         <Results

@@ -29,7 +29,6 @@ const Election = ({ authSession }) => {
   
   return (
     <>
-      {error && <div> {error} </div>}
       {isPending && <div> Loading Election... </div>}
       {data?.election &&
         <Grid container sx={{ mt: {xs:0, sm: 5}}}>

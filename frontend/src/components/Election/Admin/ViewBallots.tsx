@@ -34,7 +34,6 @@ const ViewBallots = ({ election, permissions }) => {
             <Typography align='center' gutterBottom variant="h5" component="h5">
                 View Ballots
             </Typography>
-            {error && <div> {error} </div>}
             {isPending && <div> Loading Data... </div>}
             {data && data.ballots && !isViewing && !addRollPage &&
                 <TableContainer component={Paper}>

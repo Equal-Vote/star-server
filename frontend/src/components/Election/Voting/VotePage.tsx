@@ -82,7 +82,6 @@ const VotePage = ({ election, fetchElection }) => {
           Submit Ballot
         </Button>
       </Box>
-      {<div> {error} </div>}
       {isPending && <div> Submitting... </div>}
     </Container>
   )

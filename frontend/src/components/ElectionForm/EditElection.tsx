@@ -30,7 +30,6 @@ const EditElection = ({ authSession, election }) => {
         {authSession.isLoggedIn() && authSession.getIdField('sub') == election.owner_id &&
             <ElectionForm authSession={authSession} onSubmitElection={onEditElection} prevElectionData={election} submitText='Apply Updates' disableSubmit={isPending}/>
         }
-        {error && <div> {error} </div>}
         {isPending && <div> Submitting... </div>}
         </>
         </Container>

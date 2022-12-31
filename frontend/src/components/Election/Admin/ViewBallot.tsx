@@ -38,7 +38,6 @@ const ViewBallot = ({ election, ballot, onClose, fetchBallot, permissions }) => 
             <Typography align='center' gutterBottom variant="h5" component="h5">
                 Ballot
             </Typography>
-            {error && <div> {error} </div>}
             {isPending && <div> Loading Data... </div>}
             {myballot &&
                 <Grid container direction="column" >

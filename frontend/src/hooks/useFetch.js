@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { SnackbarContext } from "../components/SnackbarContext";
 
-const useFetch = (url, method) => {
+const useFetch = (url, method, successMessage = null) => {
     const [isPending, setIsPending] = useState(false)
     const [error, setError] = useState(null)
     const [data, setData] = useState(null)
@@ -20,8 +20,9 @@ const useFetch = (url, method) => {
         try {
             const res = await fetch(url, options)
             if (!res.ok) {
-                if (res.json.length > 0) {
-                    console.log(res)
+                var contentType = res.headers.get('content-type')
+
+                if (contentType && contentType.indexOf('application/json') !== -1) {
                     const data = await res.json();
                     throw Error(`Error making request: ${res.status.toString()}: ${data.error}`)
                 } else {
@@ -32,12 +33,20 @@ const useFetch = (url, method) => {
             setData(data);
             setIsPending(false);
             setError(null);
+            if (successMessage !== null){
+                setSnack({
+                    message: successMessage,
+                    severity: 'success',
+                    open: true,
+                    autoHideDuration: 6000,})
+            }
             return data
         } catch (err) {
             setSnack({
-                message: err,
-                color: 'red',
-                open: true})
+                message: err.message,
+                severity: "error",
+                open: true,
+                autoHideDuration: null})
             setIsPending(false);
             setError(err.message);
             return false

@@ -37,7 +37,6 @@ const ViewElectionRolls = ({ election, permissions }) => {
             <Typography align='center' gutterBottom variant="h5" component="h5">
                 Election Rolls
             </Typography>
-            {error && <div> {error} </div>}
             {isPending && <div> Loading Data... </div>}
             {data && data.electionRoll && !isEditing && !addRollPage &&
                 <>

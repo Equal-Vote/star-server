@@ -52,7 +52,6 @@ const ElectionHome2 = ({ authSession, electionData, fetchElection }) => {
 
   return (
     <>
-      {error && <div> {error} </div>}
       {electionData && electionData.election && electionData.voterAuth &&
         <Box
           display='flex'

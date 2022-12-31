@@ -18,15 +18,27 @@ const App = () => {
   const authSession = useAuthSession()
   const [snack, setSnack] = useState({
     message: '',
-    color: '',
-    open: false
+    severity: "info",
+    open: false,
+    autoHideDuration: null,
+  } as {
+    message: string,
+    severity: 'error' | 'info' | 'success' | 'warning',
+    open: boolean,
+    autoHideDuration: number | null,
   })
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnack({...snack, open: false})
+  }
   return (
     <Router>
       <ThemeProvider theme={theme}>
         <SnackbarContext.Provider value={{ snack, setSnack }}>
-          <Snackbar open={snack.open}>
-            <Alert>
+          <Snackbar open={snack.open} autoHideDuration={snack.autoHideDuration} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+            <Alert severity={snack.severity} onClose={handleClose}>
               {snack.message}
             </Alert>
           </Snackbar>

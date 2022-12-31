@@ -30,7 +30,6 @@ const Elections = ({ authSession }) => {
             justifyContent: 'center',
             pt: { xs: 0, md: '0' },
         }}>
-            {error && <div> {error} </div>}
             {isPending && <Typography align='center' variant="h3" component="h2"> Loading Elections... </Typography>}
             <Container sx={{ m: 0, p: 0 }}>
                 <Grid container sx={{ m: 0, p: 0 }}>
