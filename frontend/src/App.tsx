@@ -14,6 +14,7 @@ import LandingPage from './components/LandingPage'
 import { Alert, CssBaseline, Snackbar } from '@mui/material'
 import { useAuthSession } from './hooks/useAuthSession'
 import { SnackbarContext } from './components/SnackbarContext'
+import Demo from './components/Demo'
 const App = () => {
   const authSession = useAuthSession()
   const [snack, setSnack] = useState({
@@ -53,6 +54,7 @@ const App = () => {
             <Route path='/Election/:id/*' element={<Election authSession={authSession} />} />
             <Route path='/DuplicateElection/:id' element={<DuplicateElection authSession={authSession} />} />
             <Route path='/Sandbox' element={<Sandbox />} />
+            <Route path='/Demo' element={<Demo />} />
           </Routes>
         </SnackbarContext.Provider>
       </ThemeProvider>
