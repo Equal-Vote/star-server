@@ -72,6 +72,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
     console.log(errors)
     const onAddRace = () => {
         if (election.races.length === 1 && !multipleRaces) {
+            // If there is only one race currently and this is the first time being run, set title required error because that field hasn't been shown yet.
             setMultipleRaces(true)
             setErrors(errors => ({ ...errors, raceTitle: 'Race title required' }))
             validatePage()

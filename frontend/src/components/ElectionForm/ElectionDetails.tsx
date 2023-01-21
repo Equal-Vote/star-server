@@ -79,8 +79,6 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                 <TextField
                     inputProps={{ pattern: "[a-z]{1,15}" }}
                     error={errors.title !== ''}
-                    // helperText={errors.title}
-                    // error={!election.title ? true : false}
                     required
                     id="election-name"
                     name="name"
@@ -113,7 +111,6 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                     fullWidth
                     type="text"
                     error={errors.description !== ''}
-                    // helperText={errors.description}
                     value={election.description}
                     sx={{
                         mx: { xs: 0, },
