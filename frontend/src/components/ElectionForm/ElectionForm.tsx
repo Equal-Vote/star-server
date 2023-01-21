@@ -1,26 +1,13 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import React from 'react'
-import { Candidate } from "../../../../domain_model/Candidate"
-// import Button from "./Button"
 import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-// https://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-deep-clone-an-object-in-javascript
-// https://web.dev/structured-clone/
 import structuredClone from '@ungap/structured-clone';
-import Divider from '@mui/material/Divider';
-import Container from '@mui/material/Container';
 import Settings from "./Settings";
 import Races from "./Races";
-import { useSessionStorage } from "../../hooks/useSessionStorage";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
-import { StyledButton } from '../styles';
 import { Box, Paper } from "@mui/material";
-import { authentication, ElectionSettings } from "../../../../domain_model/ElectionSettings";
 import { Election } from "../../../../domain_model/Election";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import { Checkbox, InputLabel } from "@mui/material"
-import { Input } from '@mui/material';
+import ElectionDetails from "./ElectionDetails";
 
 const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitText, disableSubmit }) => {
     // I'm referencing 4th option here
@@ -79,11 +66,9 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
         })
         setElectionData(prevElectionData)
     }, [])
-    const [titleError, setTitleError] = useState(false)
 
     const [pageNumber, setPageNumber] = useState(0)
 
-    console.log(election)
     const applyElectionUpdate = (updateFunc) => {
         const electionCopy = structuredClone(election)
         updateFunc(electionCopy)
@@ -100,18 +85,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
         return { style: { fontWeight: (cur == prev) ? 'normal' : 'bold' } }
     }
 
-    const onSubmit = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            return
-        }
-        e.preventDefault()
-
-        if (!election.title) {
-            setTitleError(true);
-            return;
-        }
-
+    const onSubmit = () => {
         // This assigns only the new fields, but otherwise keeps the existing election fields
 
         const newElection = structuredClone(election)
@@ -143,14 +117,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
         }
     }
 
-    const dateAsInputString = (date) => {
-        if (date == null) return ''
-        date = new Date(date)
-        // Remove time zone offset before switching to ISO
-        var s = (new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString());
-        s = s.replace(':00.000Z', '')
-        return s
-    }
+
 
     return (
         <Box
@@ -164,7 +131,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                 flexWrap: 'wrap',
             }}>
             <Paper elevation={3} sx={{ maxWidth: 600 }} >
-                <form onSubmit={onSubmit}>
+                <form id={'electionForm'} onSubmit={(e) => e.preventDefault()}>
                     <Grid container
                         sx={{
                             m: 0,
@@ -172,113 +139,15 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                         }}
                     >
                         {pageNumber === 0 &&
-                            <>
-                                <Grid item xs={12} sx={{ m: 0, p: 1 }}>
-                                    <TextField
-                                        error={titleError}
-                                        helperText={titleError ? "Election name is required" : ""}
-                                        id="election-name"
-                                        name="name"
-                                        // TODO: This bolding method only works for the text fields, if we like it we should figure out a way to add it to other fields as well
-                                        inputProps={getStyle('title')}
-                                        label="Election Title"
-                                        type="text"
-                                        value={election.title}
-                                        sx={{
-                                            m: 0,
-                                            p: 0,
-                                            boxShadow: 2,
-                                        }}
-                                        fullWidth
-                                        onChange={(e) => {
-                                            setTitleError(false)
-                                            applyElectionUpdate(election => { election.title = e.target.value })
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sx={{ m: 0, p: 1 }}>
-                                    <TextField
-                                        id="election-description"
-                                        name="description"
-                                        label="Description"
-                                        multiline
-                                        fullWidth
-                                        type="text"
-                                        value={election.description}
-                                        sx={{
-                                            mx: { xs: 0, },
-                                            my: { xs: 0 },
-                                            boxShadow: 2,
-                                        }}
-                                        onChange={(e) => applyElectionUpdate(election => { election.description = e.target.value })}
-                                    />
-                                </Grid>
-                                <Grid item xs={6} sx={{ m: 0, p: 1 }} justifyContent='center' >
-
-                                    <FormControl fullWidth>
-                                        <InputLabel shrink>
-                                            Start Date
-                                        </InputLabel>
-                                        <Input
-                                            type='datetime-local'
-                                            value={dateAsInputString(election.start_time)}
-                                            onChange={(e) => applyElectionUpdate(election => election.start_time = new Date(e.target.value))}
-                                        />
-                                    </FormControl>
-                                </Grid>
-
-                                <Grid item xs={6} sx={{ m: 0, p: 1 }} justifyContent='center'>
-                                    <FormControl fullWidth>
-                                        <InputLabel shrink>
-                                            Stop Date
-                                        </InputLabel>
-                                        <Input
-                                            type='datetime-local'
-                                            value={dateAsInputString(election.end_time)}
-                                            onChange={(e) => applyElectionUpdate(election => { election.end_time = new Date(e.target.value) })}
-                                        />
-                                    </FormControl>
-                                </Grid>
-                            </>
+                            <ElectionDetails election={election} applyElectionUpdate={applyElectionUpdate} getStyle={getStyle} setPageNumber={setPageNumber} />
                         }
 
                         {pageNumber === 1 &&
-                            <Settings election={election} applyElectionUpdate={applyElectionUpdate} getStyle={getStyle} />
+                            <Settings election={election} applyElectionUpdate={applyElectionUpdate} getStyle={getStyle} setPageNumber={setPageNumber} />
                         }
 
                         {pageNumber === 2 &&
-                            <Races election={election} applyElectionUpdate={applyElectionUpdate} getStyle={getStyle} />
-                        }
-                        <Grid item xs={3} sx={{ m: 0, p: 1, pt: 2 }}>
-                            <StyledButton
-                                type='button'
-                                variant="contained"
-                                width="100%"
-                                disabled={pageNumber === 0}
-                                onClick={() => { setPageNumber(pageNumber - 1) }}>
-                                Back
-                            </StyledButton>
-                        </Grid>
-                        <Grid item xs={6}></Grid>
-                        <Grid item xs={3} sx={{ m: 0, p: 1, pt: 2 }}>
-                            <StyledButton
-                                type='button'
-                                variant="contained"
-                                fullWidth
-                                disabled={pageNumber === 2}
-                                onClick={() => { setPageNumber(pageNumber + 1) }}>
-                                Next
-                            </StyledButton>
-                        </Grid>
-                        {pageNumber >= 2 &&
-                            <Grid item xs={12} sx={{ m: 0, p: 1 }}>
-                                <StyledButton
-                                    type='submit'
-                                    variant="contained"
-                                    disabled={disableSubmit} >
-                                    {submitText}
-                                </StyledButton>
-                            </Grid>
+                            <Races election={election} applyElectionUpdate={applyElectionUpdate} getStyle={getStyle} setPageNumber={setPageNumber} submitText={submitText} onSubmit={onSubmit}/>
                         }
                     </Grid>
                 </form>

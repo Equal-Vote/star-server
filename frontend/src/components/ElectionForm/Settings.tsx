@@ -1,30 +1,20 @@
 import React from 'react'
-import { useState } from "react"
 import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-// https://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-deep-clone-an-object-in-javascript
-// https://web.dev/structured-clone/
-import structuredClone from '@ungap/structured-clone';
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import Typography from '@mui/material/Typography';
-import { Box, Checkbox, FormGroup, FormHelperText, FormLabel, InputLabel, Radio, RadioGroup, Tooltip } from "@mui/material"
-import IconButton from '@mui/material/IconButton'
-import ExpandLess from '@mui/icons-material/ExpandLess'
-import ExpandMore from '@mui/icons-material/ExpandMore'
-import InfoIcon from '@mui/icons-material/Info';
-import { Input } from '@mui/material';
+import { Checkbox, FormGroup, FormHelperText, FormLabel, InputLabel, Radio, RadioGroup, Tooltip } from "@mui/material"
 import { Election } from '../../../../domain_model/Election';
+import { StyledButton } from '../styles';
 
 type SettingsProps = {
     election: Election,
     applyElectionUpdate: Function,
-    getStyle: any
+    getStyle: any,
+    setPageNumber: Function
 }
 
-export default function Settings({ election, applyElectionUpdate, getStyle }: SettingsProps) {
+export default function Settings({ election, applyElectionUpdate, getStyle, setPageNumber }: SettingsProps) {
 
     const updateVoterAccess = (voter_access) => {
         applyElectionUpdate(election => {
@@ -36,6 +26,10 @@ export default function Settings({ election, applyElectionUpdate, getStyle }: Se
         })
     }
 
+    const validatePage = () => {
+        // Placeholder function
+        return true
+    }
 
     return (
         <>
@@ -172,6 +166,33 @@ export default function Settings({ election, applyElectionUpdate, getStyle }: Se
                     </FormGroup>
                 </FormControl>
             </Grid >
+            <Grid item xs={3} sx={{ m: 0, p: 1, pt: 2 }}>
+                <StyledButton
+                    type='button'
+                    variant="contained"
+                    width="100%"
+                    onClick={() => {
+                        if (validatePage()) {
+                            setPageNumber(pageNumber => pageNumber - 1)
+                        }
+                    }}>
+                    Back
+                </StyledButton>
+            </Grid>
+            <Grid item xs={6}></Grid>
+            <Grid item xs={3} sx={{ m: 0, p: 1, pt: 2 }}>
+                <StyledButton
+                    type='button'
+                    variant="contained"
+                    fullWidth
+                    onClick={() => {
+                        if (validatePage()) {
+                            setPageNumber(pageNumber => pageNumber + 1)
+                        }
+                    }}>
+                    Next
+                </StyledButton>
+            </Grid>
         </>
     )
 }
