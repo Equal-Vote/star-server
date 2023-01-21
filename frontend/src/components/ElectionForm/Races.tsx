@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import { Box, FormHelperText, InputLabel } from "@mui/material"
 import { StyledButton } from '../styles';
 
-export default function Races({ election, applyElectionUpdate, getStyle, submitText, onSubmit }) {
+export default function Races({ election, applyElectionUpdate, getStyle, setPageNumber, submitText, onSubmit }) {
     const [openRace, setOpenRace] = useState(0)
     const [newCandidateName, setNewCandidateName] = useState('')
     const onAddCandidate = (race_index) => {
@@ -78,6 +78,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, submitT
             return
         }
         if (validatePage()) {
+            const currentCount = election.races.length
             applyElectionUpdate(election => {
                 election.races.push(
                     {
@@ -102,6 +103,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, submitT
                     }
                 )
             })
+            setOpenRace(currentCount)
         }
 
     }
@@ -320,6 +322,29 @@ export default function Races({ election, applyElectionUpdate, getStyle, submitT
                     variant="contained"
                     onClick={() => onAddRace()} >
                     Add Race
+                </StyledButton>
+            </Grid>
+            <Grid item xs={3} sx={{ m: 0, p: 1, pt: 2 }}>
+                <StyledButton
+                    type='button'
+                    variant="contained"
+                    width="100%"
+                    onClick={() => {
+                        if (validatePage()) {
+                            setPageNumber(pageNumber => pageNumber - 1)
+                        }
+                    }}>
+                    Back
+                </StyledButton>
+            </Grid>
+            <Grid item xs={6}></Grid>
+            <Grid item xs={3} sx={{ m: 0, p: 1, pt: 2 }}>
+                <StyledButton
+                    type='button'
+                    variant="contained"
+                    fullWidth
+                    disabled>
+                    Next
                 </StyledButton>
             </Grid>
             <Grid item xs={12} sx={{ m: 0, p: 1 }}>

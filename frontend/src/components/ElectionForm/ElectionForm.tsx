@@ -147,7 +147,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                         }
 
                         {pageNumber === 2 &&
-                            <Races election={election} applyElectionUpdate={applyElectionUpdate} getStyle={getStyle} submitText={submitText} onSubmit={onSubmit}/>
+                            <Races election={election} applyElectionUpdate={applyElectionUpdate} getStyle={getStyle} setPageNumber={setPageNumber} submitText={submitText} onSubmit={onSubmit}/>
                         }
                     </Grid>
                 </form>
