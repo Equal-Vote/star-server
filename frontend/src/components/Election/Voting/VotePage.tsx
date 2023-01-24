@@ -26,12 +26,11 @@ const VotePage = ({ election, fetchElection }) => {
     const votes: Vote[] =
       election.races.map((race, race_index) => (
         {
-          race_id: '0',
+          race_id: race.race_id,
           scores: election.races[race_index].candidates.map((candidate, i) =>
             ({ 'candidate_id': election.races[race_index].candidates[i].candidate_id, 'score': scores[race_index][i]===null ? 0 : scores[race_index][i] } as Score)
           )
         }))
-
     const ballot: Ballot = {
       ballot_id: '0', //Defaults to zero but is assigned ballot id by server when submitted
       election_id: election.election_id,

@@ -60,6 +60,7 @@ export const useAuthSession = () => {
     }
 
     const getIdField = (fieldName) => {
+        if (!idToken) return null
         const id_map = jwt_decode(idToken);
         return id_map[fieldName];
     }
