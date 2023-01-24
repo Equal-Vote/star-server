@@ -140,7 +140,7 @@ const QuickPoll = ({ authSession }) => {
     return (
         <form onSubmit={onSubmit} >
             <Grid container >
-                <Grid item xs={12}>
+                <Grid item xs={12} sx={{p:1}}>
                     <StyledTextField
                         autoFocus
                         error={titleError}
@@ -164,7 +164,7 @@ const QuickPoll = ({ authSession }) => {
                 </Grid>
 
                 {election.races[0].candidates?.map((candidate, index) => (
-                    <Grid item xs={12}>
+                    <Grid item xs={12} sx={{p:1}}>
                         <StyledTextField
                             id={`candidate-name-${String(index)}`}
                             name="candidate-name"
@@ -182,7 +182,7 @@ const QuickPoll = ({ authSession }) => {
                         />
                     </Grid>
                 ))}
-                <Grid item xs={12}>
+                <Grid item xs={12} sx={{p:1}}>
                     <StyledButton
                         type='submit'
                         variant="contained"
@@ -190,7 +190,7 @@ const QuickPoll = ({ authSession }) => {
                         Create Quick Poll
                     </StyledButton>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} sx={{p:1}}>
                     {!authSession.isLoggedIn() ?
                         <StyledButton
                             variant="contained"
@@ -209,7 +209,7 @@ const QuickPoll = ({ authSession }) => {
                 </Grid>
                 <Grid item xs={11}>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={1} sx={{p:1}}>
                     <IconButton
                         type="button"
                         onClick={() => setElectionData(QuickPollTemplate)} >
