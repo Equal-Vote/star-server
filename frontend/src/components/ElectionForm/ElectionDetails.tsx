@@ -23,7 +23,9 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
         endTime: '',
     })
     const isValidDate = (d) => {
-        return d instanceof Date && !isNaN(d.valueOf())
+        if (d instanceof Date) return !isNaN(d.valueOf())
+        if (typeof(d) === 'string')  return !isNaN(new Date(d).valueOf())
+        return false
     }
     const validatePage = () => {
         let isValid = 1
