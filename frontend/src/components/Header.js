@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button'
 import { Box, IconButton, Link, Menu, MenuItem } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { v4 } from 'uuid'
 
@@ -27,13 +28,21 @@ const Header = ({ authSession }) => {
         setAnchorElNav(null);
     };
 
+    const handleOpenUserMenu = (event) => {
+        setAnchorElUser(event.currentTarget);
+    };
+
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
+    };
+
     return (
-        <AppBar position="sticky" sx={{backgroundColor:"primary.main"}}>
+        <AppBar position="sticky" sx={{ backgroundColor: "primary.main" }}>
             <Toolbar>
-                <Box sx={{ flexGrow: 1.5, display: { xs: 'flex', md: 'none' } }}>
+                <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
                     <IconButton
                         size="large"
-                        aria-label="account of current user"
+                        aria-label="nav-menu"
                         aria-controls="menu-appbar"
                         aria-haspopup="true"
                         onClick={handleOpenNavMenu}
@@ -97,14 +106,15 @@ const Header = ({ authSession }) => {
                     </Menu>
                 </Box>
 
-                <Box sx={{ flexGrow: 1, display: 'flex' }}>
+                <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: "center" }}
+                >
                     <Button color='inherit' href="/">
-                        <Typography variant="h6" color="inherit">
+                        <Typography align='center' variant="h6" color="inherit">
                             STAR Vote 2.0
                         </Typography>
                     </Button>
                 </Box>
-                <Box 
+                <Box
                     sx={{ flexGrow: 100, display: { xs: 'none', md: 'flex' } }}>
                     <Button color='inherit' href='https://www.starvoting.us' target="_blank">
                         About
@@ -137,15 +147,20 @@ const Header = ({ authSession }) => {
                     </Button>
                 </Box>
 
-                <Box sx={{ flexGrow: 0 }}>
-                    {authSession.isLoggedIn() ?
-                        <Button
-                            color='inherit'
+                <Box sx={{ alignItems: 'center', flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
 
-                            onClick={() => authSession.openLogout()}
-                        >
-                            Logout
-                        </Button>
+                    {authSession.isLoggedIn() ?
+                        <>
+                            <Typography color="inherit">
+                                {authSession.getIdField('email')}
+                            </Typography>
+                            <Button
+                                color='inherit'
+                                onClick={() => authSession.openLogout()}
+                            >
+                                Logout
+                            </Button>
+                        </>
                         :
                         <Button
                             color='inherit'
@@ -155,9 +170,62 @@ const Header = ({ authSession }) => {
                         </Button>
                     }
                 </Box>
+                <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
+                    <IconButton
+                        size="large"
+                        aria-label="account of current user"
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        onClick={handleOpenUserMenu}
+                        color="inherit">
+                        <AccountCircleIcon />
+                    </IconButton>
+                    <Menu
+                        id="menu-appbar"
+                        anchorEl={anchorElUser}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                        }}
+                        open={Boolean(anchorElUser)}
+                        onClose={handleCloseUserMenu}
+                        sx={{
+                            display: { xs: 'block', md: 'none' },
+                        }}
+                    >
+                        {authSession.isLoggedIn() ?
+                            <>
+                                <MenuItem>
+                                    {authSession.getIdField('email')}
+                                </MenuItem>
+                                <MenuItem
+                                    color='inherit'
+                                    onClick={() => authSession.openLogout()}
+                                >
+                                    Logout
+                                </MenuItem>
+                            </>
+                            :
+                            <>
+                                <MenuItem
+                                    color='inherit'
+                                    onClick={() => authSession.openLogin()}
+                                >
+                                    Login
+                                </MenuItem>
+                            </>
+                        }
+
+                    </Menu>
+                </Box>
 
             </Toolbar>
-        </AppBar>
+        </AppBar >
     )
 }
 
