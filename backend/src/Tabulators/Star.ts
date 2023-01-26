@@ -10,7 +10,7 @@ export function Star(candidates: string[], votes: ballot[], nWinners = 1, breakT
   // votes: Array of votes, size nVoters x Candidates
   // nWiners: Number of winners in election, defaulted to 1
   // breakTiesRandomly: In the event of a true tie, should a winner be selected at random, defaulted to true
-  // enablefiveStarTiebreaker: In the event of a true tie, should the five-star tiebreaker be used (select candidate with the most 5 star votes), defaulted to true
+  // enablefiveStarTiebreaker: In the event of a true tie in the runoff round, should the five-star tiebreaker be used (select candidate with the most 5 star votes), defaulted to true
 
   // Parse the votes for valid, invalid, and undervotes, and identifies bullet votes
   const parsedData = ParseData(votes)
@@ -204,7 +204,7 @@ export function runStarRound(summaryData: summaryData, remainingCandidates: cand
       if (nCandidatesNeeded === 2 && tiedCandidates.length === 2) {
         // Tie between two candidates, but both can advance to runoff
         runoffCandidates.push(...tiedCandidates)
-        roundResults.logs.push(`${tiedCandidates[0].name} and ${tiedCandidates[1].name} advance to the runoff round.`)
+        roundResults.logs.push(`${tiedCandidates[0].name} and ${tiedCandidates[1].name} win score tiebreaker and advance to the runoff round.`)
         continue scoreLoop
       }
       // Proceed to five star tiebreaker
