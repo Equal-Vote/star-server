@@ -2,6 +2,14 @@ import { ballot, candidate, fiveStarCount, results, roundResults, summaryData, t
 
 import { IparsedData } from './ParseData'
 const ParseData = require("./ParseData");
+declare namespace Intl {
+  class ListFormat {
+    constructor(locales?: string | string[], options?: {});
+    public format: (items: string[]) => string;
+  }
+}
+// converts list of strings to string with correct grammar ([a,b,c] => 'a, b, and c')
+const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
 export function Star(candidates: string[], votes: ballot[], nWinners = 1, breakTiesRandomly = true, enablefiveStarTiebreaker = true) {
   // Determines STAR winners for given election
@@ -189,14 +197,14 @@ export function runStarRound(summaryData: summaryData, remainingCandidates: cand
       continue scoreLoop
     }
     // Multiple candidates have top score, proceed to score tiebreaker
-    roundResults.logs.push(`${scoreWinners.map(c => c.name).join(', ')} advance to score tiebreaker.`)
+    roundResults.logs.push(`${formatter.format(scoreWinners.map(c => c.name))} advance to score tiebreaker.`)
     let tiedCandidates = scoreWinners
     tieLoop: while (tiedCandidates.length > 1) {
       // Get candidates with the most head to head losses
       let headToHeadLosers = getHeadToHeadLosers(summaryData, tiedCandidates)
       if (headToHeadLosers.length < tiedCandidates.length) {
         // Some candidates have more head to head losses than others, remove them from the tied candidate pool
-        roundResults.logs.push(`${headToHeadLosers.map(c => c.name).join(', ')} removed from score tiebreaker with the most losses.`)
+        roundResults.logs.push(`${formatter.format(headToHeadLosers.map(c => c.name))} removed from score tiebreaker with the most losses.`)
         tiedCandidates = tiedCandidates.filter(c => !headToHeadLosers.includes(c))
         continue tieLoop
       }
@@ -208,7 +216,7 @@ export function runStarRound(summaryData: summaryData, remainingCandidates: cand
         continue scoreLoop
       }
       // Proceed to five star tiebreaker
-      roundResults.logs.push(`${tiedCandidates.map(c => c.name).join(', ')} have same number of losses, advance to five star tiebreaker.`)
+      roundResults.logs.push(`${formatter.format(tiedCandidates.map(c => c.name))} have same number of losses, advance to five star tiebreaker.`)
       let fiveStarCounts = getFiveStarCounts(summaryData, tiedCandidates)
       if (nCandidatesNeeded === 2 && fiveStarCounts[1].counts > fiveStarCounts[2].counts) {
         // Two candidates needed and first two have more five star counts than the rest, advance them both to runoff
@@ -228,7 +236,7 @@ export function runStarRound(summaryData: summaryData, remainingCandidates: cand
       let fiveStarLosers = getFiveStarLosers(fiveStarCounts)
       if (fiveStarLosers.length < tiedCandidates.length) {
         // Some candidates have fewer five star votes than others, remove them from the tie breaker pool
-        roundResults.logs.push(`${fiveStarLosers.map(c => c.name).join(', ')} removed from score tiebreaker with the least five star votes.`)
+        roundResults.logs.push(`${formatter.format(fiveStarLosers.map(c => c.name))} removed from score tiebreaker with the least five star votes.`)
         tiedCandidates = tiedCandidates.filter(c => !fiveStarLosers.includes(c))
         continue tieLoop
       }
