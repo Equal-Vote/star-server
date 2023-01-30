@@ -486,6 +486,11 @@ This is discussed more thoroughly on [stack overflow](https://stackoverflow.com/
 
 To fix this, locate `./frontend/sample.env`, and copy it to a new file named  `./frontend/.env`
 
+### Backend: too many connections for role "abcd..."
+
+This happens when the development database exceeds it's limit of 10k rows. This mainly happens because our pgboss cron job fills up the database over time. Those jobs are supposed to expire but that's an issue we're working on. This issue is not present with production becasue the row limit is much higher (10 million)
+
+For now we've been fixing the issue by clearing the dev database periodically. Ping @mikefraze on slack if it needs to be cleared
 
 ## Getting Help
 
