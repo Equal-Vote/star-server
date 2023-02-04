@@ -52,18 +52,18 @@ export default function Settings({ election, applyElectionUpdate, getStyle, setP
                     >
                         <FormControlLabel value="open" control={<Radio />} label="Open" sx={{ mb: 0, pb: 0 }} />
                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                            Open to all authenticated voters
+                            Open to authenticated voters
                         </FormHelperText>
                         <FormControlLabel value="closed" control={<Radio />} label="Closed" />
                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                            Closed to only a predefined list of voters
+                            Restricted to a predefined list of voters
                         </FormHelperText>
                         <Tooltip title="Voters must first register to cast a provisional ballot and credentialer must approve each voter">
                             <FormControlLabel value="registration" control={<Radio />} label="Registration" />
 
                         </Tooltip>
                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                            Voters must first register to cast a provisional ballot and credentialer must approve each voter
+                            Registered and approved
                         </FormHelperText>
                     </RadioGroup>
                 </FormControl>
@@ -135,7 +135,7 @@ export default function Settings({ election, applyElectionUpdate, getStyle, setP
                             label="Ballot Updates"
                         />
                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                            Allow voters to update their ballot while election is still open, currently not supported
+                            Allow voters to update their ballots while election is still open (currently not supported)
                         </FormHelperText>
                         <FormControlLabel control={
                             <Checkbox
@@ -147,7 +147,7 @@ export default function Settings({ election, applyElectionUpdate, getStyle, setP
                             label="Public Results"
                         />
                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                            Allow voters to view preliminary results. If disabled, admin will have option to make results public at any time
+                            Allow voters to view preliminary results. (Administrators can make results public at any time.)
                         </FormHelperText>
                         <FormControlLabel
                             disabled={election.settings.voter_access !== 'closed'}
@@ -161,7 +161,7 @@ export default function Settings({ election, applyElectionUpdate, getStyle, setP
                             label="Email Invitations"
                         />
                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                            If email address's are provided, email invitations will be sent once election is finalized
+                            If email addresses are provided, voters will be invited once election is open.
                         </FormHelperText>
                     </FormGroup>
                 </FormControl>
