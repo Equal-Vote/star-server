@@ -15,7 +15,7 @@ export interface Election {
     audit_ids?:     Uid[];  // user_id of account with audit access
     admin_ids?:     Uid[];  // user_id of account with admin access
     credential_ids?:Uid[];  // user_id of account with credentialling access
-    state:          string; // State of election, In development, finalized, etc
+    state:          'draft' | 'finalized' | 'open' | 'closed' | 'archived'; // State of election, In development, finalized, etc
     races:          Race[]; // one or more race definitions
     settings:       ElectionSettings;
     auth_key?:      string;

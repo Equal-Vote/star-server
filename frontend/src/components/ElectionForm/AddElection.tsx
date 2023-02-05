@@ -17,7 +17,7 @@ const AddElection = ({ authSession }) => {
             throw Error("Error submitting election");
         }
         localStorage.removeItem('Election')
-        navigate(`/Election/${newElection.election.election_id}`)
+        navigate(`/Election/${newElection.election.election_id}/admin`)
     }
 
     return (

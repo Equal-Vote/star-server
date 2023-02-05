@@ -21,7 +21,7 @@ const EditElection = ({ authSession, election, fetchElection}) => {
         
         localStorage.removeItem('Election')
         fetchElection()
-        navigate(`/Election/${election.election_id}`)
+        navigate(`/Election/${election.election_id}/admin`)
     }
 
     return (
