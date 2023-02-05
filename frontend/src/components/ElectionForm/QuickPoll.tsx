@@ -150,13 +150,9 @@ const QuickPoll = ({ authSession }) => {
                         name="name"
                         type="text"
                         value={election.title}
-                        placeholder="What is your poll question?"
+                        label="What is your poll question?"
                         sx={{
-                            input: {
-                                "&::placeholder": {    // <----- Add this.
-                                    opacity: 0.7,
-                                },
-                            }
+                            label: {fontWeight: 600,}
                         }}
                         required
                         onChange={(e) => {
@@ -178,13 +174,9 @@ const QuickPoll = ({ authSession }) => {
                             name="candidate-name"
                             type="text"
                             value={candidate.candidate_name}
-                            placeholder={`Option ${index + 1}`}
+                            label={`Option ${index + 1}`}
                             sx={{
-                                input: {
-                                    "&::placeholder": {    // <----- Add this.
-                                        opacity: 0.7,
-                                    },
-                                }
+                                label: {fontWeight: 600,}
                             }}
                             onChange={(e) => {
                                 onUpdateCandidate(index, e.target.value)
