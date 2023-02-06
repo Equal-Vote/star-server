@@ -14,9 +14,6 @@ const ViewBallot = ({ election, ballot, onClose, fetchBallot, permissions }) => 
 
     const { data, isPending, error, makeRequest: fetchBallots } = useFetch(`/API/Election/${election.election_id}/ballot/${ballot_id}`, 'get')
 
-    console.log(ballot)
-    console.log(data)
-
     useEffect(() => {
         if (ballot_id) {
             fetchBallots()

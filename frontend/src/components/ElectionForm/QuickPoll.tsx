@@ -5,10 +5,11 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router"
 import structuredClone from '@ungap/structured-clone';
-import {StyledButton, StyledTextField} from '../styles.js'
+import { StyledButton, StyledTextField } from '../styles.js'
 import { Button, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
+import Typography from '@mui/material/Typography';
 
 const QuickPoll = ({ authSession }) => {
     const [tempID, setTempID] = useLocalStorage('tempID', '0')
@@ -140,7 +141,7 @@ const QuickPoll = ({ authSession }) => {
     return (
         <form onSubmit={onSubmit} >
             <Grid container >
-                <Grid item xs={12} sx={{p:1}}>
+                <Grid item xs={12} sx={{ p: 1 }}>
                     <StyledTextField
                         autoFocus
                         error={titleError}
@@ -149,7 +150,10 @@ const QuickPoll = ({ authSession }) => {
                         name="name"
                         type="text"
                         value={election.title}
-                        placeholder="What is your poll question?"
+                        label="What is your poll question?"
+                        sx={{
+                            label: {fontWeight: 600,}
+                        }}
                         required
                         onChange={(e) => {
                             setTitleError(false)
@@ -164,13 +168,16 @@ const QuickPoll = ({ authSession }) => {
                 </Grid>
 
                 {election.races[0].candidates?.map((candidate, index) => (
-                    <Grid item xs={12} sx={{p:1}}>
+                    <Grid item xs={12} sx={{ p: 1 }}>
                         <StyledTextField
                             id={`candidate-name-${String(index)}`}
                             name="candidate-name"
                             type="text"
                             value={candidate.candidate_name}
-                            placeholder={`Option ${index + 1}`}
+                            label={`Option ${index + 1}`}
+                            sx={{
+                                label: {fontWeight: 600,}
+                            }}
                             onChange={(e) => {
                                 onUpdateCandidate(index, e.target.value)
                             }}
@@ -182,34 +189,42 @@ const QuickPoll = ({ authSession }) => {
                         />
                     </Grid>
                 ))}
-                <Grid item xs={12} sx={{p:1}}>
+                <Grid item xs={12} sx={{ p: 1 }}>
                     <StyledButton
                         type='submit'
                         variant="contained"
                         disabled={isPending} >
-                        Create Quick Poll
+
+                        <Typography sx={{ fontWeight: 'bold' }} >
+                            Create Quick Poll
+                        </Typography>
+
                     </StyledButton>
                 </Grid>
-                <Grid item xs={12} sx={{p:1}}>
+                <Grid item xs={12} sx={{ p: 1 }}>
                     {!authSession.isLoggedIn() ?
                         <StyledButton
                             variant="contained"
                             disabled={isPending}
                             onClick={() => authSession.openLogin()}>
-                            Log in for more settings
+                            <Typography sx={{ fontWeight: 'bold' }} >
+                                Log in for more settings
+                            </Typography>
                         </StyledButton>
                         :
                         <StyledButton
                             variant="contained"
                             disabled={isPending}
                             href='/CreateElection'>
-                            Explore more settings
+                            <Typography sx={{ fontWeight: 'bold' }} >
+                                Explore more settings
+                            </Typography>
                         </StyledButton>
                     }
                 </Grid>
                 <Grid item xs={11}>
                 </Grid>
-                <Grid item xs={1} sx={{p:1}}>
+                <Grid item xs={1} sx={{ p: 1 }}>
                     <IconButton
                         type="button"
                         onClick={() => setElectionData(QuickPollTemplate)} >

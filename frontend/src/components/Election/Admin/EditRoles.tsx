@@ -41,7 +41,7 @@ const EditRoles = ({ election, permissions }) => {
             if (!newRoles) {
                 throw Error("Error submitting rolls");
             }
-            navigate(`/Election/${election.election_id}`)
+            navigate(`/Election/${election.election_id}/admin`)
         } catch (error) {
             console.log(error)
         }

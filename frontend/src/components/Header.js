@@ -13,7 +13,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { v4 } from 'uuid'
 
-
+const headerTextColor = 'primary.contrastText'
 const Header = ({ authSession }) => {
     const navigate = useNavigate()
     const [tempID, setTempID] = useLocalStorage('tempID', v4())
@@ -89,7 +89,8 @@ const Header = ({ authSession }) => {
                                 <MenuItem
                                     onClick={
                                         () => {
-                                            navigate({ pathname: '/Elections', search: `?filter=owner_id:${authSession.getIdField('sub')}` });
+                                            navigate({ pathname: '/Elections'});
+                                            // navigate({ pathname: '/Elections', search: `?filter=owner_id:${authSession.getIdField('sub')}` });
                                             window.location.reload();
                                         }
                                     } >
@@ -109,7 +110,7 @@ const Header = ({ authSession }) => {
                 <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: "center" }}
                 >
                     <Button color='inherit' href="/">
-                        <Typography align='center' variant="h6" color="inherit">
+                        <Typography align='center' variant="h6" color={headerTextColor} sx={{ fontWeight: 'bold' }}>
                             STAR Vote 2.0
                         </Typography>
                     </Button>
@@ -117,16 +118,22 @@ const Header = ({ authSession }) => {
                 <Box
                     sx={{ flexGrow: 100, display: { xs: 'none', md: 'flex' } }}>
                     <Button color='inherit' href='https://www.starvoting.us' target="_blank">
-                        About
+                        <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                            About
+                        </Typography>
                     </Button>
                     {authSession.isLoggedIn() &&
                         <Button color='inherit' href='/CreateElection'>
-                            Quick Poll
+                            <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                                Quick Poll
+                            </Typography>
                         </Button>
                     }
                     {authSession.isLoggedIn() &&
                         <Button color='inherit' href='/CreateElection'>
-                            New Election
+                            <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                                New Election
+                            </Typography>
                         </Button>
                     }
                     {authSession.isLoggedIn() &&
@@ -134,16 +141,22 @@ const Header = ({ authSession }) => {
                             color='inherit'
                             onClick={
                                 () => {
-                                    navigate({ pathname: '/Elections', search: `?filter=owner_id:${authSession.getIdField('sub')}` });
+                                    navigate({ pathname: '/Elections'});
+                                    // navigate({ pathname: '/Elections', search: `?filter=owner_id:${authSession.getIdField('sub')}` });
                                     window.location.reload();
                                 }
                             }
                         >
-                            My Elections
+                            <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                                My Elections
+                            </Typography>
                         </Button>
                     }
                     <Button color='inherit' href='/sandbox' >
-                        Sandbox
+                        <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                            Sandbox
+                        </Typography>
+
                     </Button>
                 </Box>
 
@@ -151,14 +164,16 @@ const Header = ({ authSession }) => {
 
                     {authSession.isLoggedIn() ?
                         <>
-                            <Typography color="inherit">
+                            <Typography sx={{ fontWeight: 'medium' }} color={headerTextColor}>
                                 {authSession.getIdField('email')}
                             </Typography>
                             <Button
                                 color='inherit'
                                 onClick={() => authSession.openLogout()}
                             >
-                                Logout
+                                <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                                    Log Out
+                                </Typography>
                             </Button>
                         </>
                         :
@@ -166,7 +181,10 @@ const Header = ({ authSession }) => {
                             color='inherit'
                             onClick={() => authSession.openLogin()}
                         >
-                            Login
+
+                            <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                                Log In
+                            </Typography>
                         </Button>
                     }
                 </Box>

@@ -26,17 +26,17 @@ const LandingPage = ({ authSession }) => {
                         STAR Voting Election Hosting
                     </Typography>
                     <Typography variant="h6" style={{
-                        opacity: '0.4',
+                        opacity: '0.7',
                     }}>
                         Open source election software
                     </Typography>
                     <Typography variant="h6" style={{
-                        opacity: '0.4',
+                        opacity: '0.7',
                     }}>
                         From quick polls to highly secure elections
                     </Typography>
                     <Typography variant="h6" style={{
-                        opacity: '0.4',
+                        opacity: '0.7',
                         paddingBottom: '30px',
                     }}>
                         Voting methods approved by the Equal Vote Coalition

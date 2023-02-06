@@ -65,6 +65,11 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
             newErrors.candidates = 'Must have at least 2 candidates';
             isValid = 0;
         }
+        const uniqueCandidates = new Set(race.candidates.filter(candidate => candidate.candidate_name !== '').map(candidate => candidate.candidate_name))
+        if (numCandidates !== uniqueCandidates.size) {
+            newErrors.candidates = 'Candidates must have unique names';
+            isValid = 0;
+        }
         setErrors(errors => ({ ...errors, ...newErrors }))
 
         return isValid
