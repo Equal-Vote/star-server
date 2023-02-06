@@ -16,6 +16,11 @@ export interface totalScore {
     index: number,
     score: number,
 }
+
+export interface fiveStarCount {
+    candidate: candidate,
+    counts: number
+}
 export interface summaryData {
     candidates: candidate[],
     totalScores: totalScore[],
