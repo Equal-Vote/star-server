@@ -6,20 +6,32 @@ import { Election, removeHiddenFields } from '../../../domain_model/Election';
 
 
 var ElectionsModel = ServiceLocator.electionsDb();
+var ElectionRollModel = ServiceLocator.electionRollDb();
 
 const getElections = async (req: any, res: any, next: any) => {
     Logger.info(req, `getElections`);
-    var filter = (req.query.filter == undefined) ? "" : req.query.filter;
-    var elections = await ElectionsModel.getElections(filter, req);
-    if (!elections) {
+    // var filter = (req.query.filter == undefined) ? "" : req.query.filter;
+    const email = req.user?.email || ''
+    const id = req.user?.sub || ''
+    var elections_as_official = await ElectionsModel.getElections(id, email, req);
+    if (!elections_as_official) {
         var msg = "Election does not exist";
         Logger.info(req, msg);
         throw new BadRequest(msg);
     }
-    elections.forEach((elec:Election)=> {
+    elections_as_official.forEach((elec: Election) => {
         removeHiddenFields(elec, null);
     })
-    res.json( { elections : elections });
+    var elections_as_voter = null
+    if (email !== '') {
+        let myRolls = await ElectionRollModel.getByEmail(email, req)
+        let election_ids = myRolls?.map(election => election.election_id)
+        if (election_ids) {
+            elections_as_voter = await ElectionsModel.getElectionByIDs(election_ids,req)
+            console.log(elections_as_voter)
+        }
+    }
+    res.json({ elections_as_official: elections_as_official, elections_as_voter: elections_as_voter});
 }
 
 module.exports = {

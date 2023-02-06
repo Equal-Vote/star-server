@@ -37,14 +37,13 @@ export default class ElectionRollDB implements IElectionRollStore{
         Logger.debug(appInitContext, query);
         var p = this._postgresClient.query(query);
         return p.then((_: any) => {
-            //This will add the new field to the live DB in prod.  Once that's done we can remove this
-            var historyQuery = `
-            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS precinct VARCHAR
-            `;
-            return this._postgresClient.query(historyQuery).catch((err:any) => {
-                console.log("err adding precinct column to DB: " + err.message);
-                return err;
-            });
+            //removes pgboss archive, only use in dev 
+            // var cleanupQuerry = `
+            // DROP TABLE IF EXISTS archive`;
+            // return this._postgresClient.query(cleanupQuerry).catch((err:any) => {
+            //     console.log("err cleaning up db: " + err.message);
+            //     return err;
+            // });
         }).then((_:any)=> {
             return this;
         });
@@ -122,6 +121,25 @@ export default class ElectionRollDB implements IElectionRollStore{
                 return null;
             }
             return rows[0]
+        });
+    }
+    getByEmail(email: string, ctx:ILoggingContext): Promise<ElectionRoll[] | null> {
+        Logger.debug(ctx, `ElectionRollDB.getByEmail email:${email}`);
+        var sqlString = `SELECT * FROM ${this._tableName} WHERE email = $1`;
+        Logger.debug(ctx, sqlString);
+
+        var p = this._postgresClient.query({
+            text: sqlString,
+            values: [email]
+        });
+        return p.then((response: any) => {
+            var rows = response.rows;
+            Logger.debug(ctx, rows[0])
+            if (rows.length == 0) {
+                Logger.debug(ctx, ".get null");
+                return null;
+            }
+            return rows
         });
     }
 

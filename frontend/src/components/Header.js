@@ -89,7 +89,8 @@ const Header = ({ authSession }) => {
                                 <MenuItem
                                     onClick={
                                         () => {
-                                            navigate({ pathname: '/Elections', search: `?filter=owner_id:${authSession.getIdField('sub')}` });
+                                            navigate({ pathname: '/Elections'});
+                                            // navigate({ pathname: '/Elections', search: `?filter=owner_id:${authSession.getIdField('sub')}` });
                                             window.location.reload();
                                         }
                                     } >
@@ -140,7 +141,8 @@ const Header = ({ authSession }) => {
                             color='inherit'
                             onClick={
                                 () => {
-                                    navigate({ pathname: '/Elections', search: `?filter=owner_id:${authSession.getIdField('sub')}` });
+                                    navigate({ pathname: '/Elections'});
+                                    // navigate({ pathname: '/Elections', search: `?filter=owner_id:${authSession.getIdField('sub')}` });
                                     window.location.reload();
                                 }
                             }
