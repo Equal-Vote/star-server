@@ -21,7 +21,10 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
     // Get all election roll entries that match any of the voter authentication fields
     // This is an odd way of going about this, rather than getting a roll that matches all three we get all that match any of the fields and
     // check the output for a number of edge cases.
-    const electionRollEntries = await ElectionRollModel.getElectionRoll(String(election.election_id), voter_id, email, ip_address, ctx);
+    var electionRollEntries = null
+    if ((ip_address || email || voter_id)) {
+        electionRollEntries = await ElectionRollModel.getElectionRoll(String(election.election_id), voter_id, email, ip_address, ctx);
+    }
 
 
     if (electionRollEntries == null) {
@@ -33,28 +36,32 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
             return null
         }
         Logger.info(req, "Creating new roll");
-        voter_id = randomUUID()
+        const new_voter_id = randomUUID()
         const history = [{
             action_type: ElectionRollState.approved,
-            actor: voter_id,
+            actor: new_voter_id,
             timestamp: Date.now(),
         }]
         const roll: ElectionRoll[] = [{
             election_id: String(election.election_id),
             email: req.user?.email ? req.user.email : undefined,
-            voter_id: voter_id,
+            voter_id: new_voter_id,
             ip_address: req.ip,
             submitted: false,
             state: ElectionRollState.approved,
             history: history,
         }]
-
-        const newElectionRoll = await ElectionRollModel.submitElectionRoll(roll, ctx, `User requesting Roll and is authorized`)
-        if (!newElectionRoll) {
-            Logger.error(ctx, "Failed to update ElectionRoll");
-            throw new InternalServerError();
+        if ((ip_address || email || voter_id)) {
+            const newElectionRoll = await ElectionRollModel.submitElectionRoll(roll, ctx, `User requesting Roll and is authorized`)
+            if (!newElectionRoll) {
+                Logger.error(ctx, "Failed to update ElectionRoll");
+                throw new InternalServerError();
+            }
+            return roll[0];
         }
-        return roll[0];
+        else {
+            return roll[0]
+        }
     }
 
 
