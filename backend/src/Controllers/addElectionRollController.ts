@@ -4,7 +4,7 @@ import Logger from "../Services/Logging/Logger";
 import { responseErr } from "../Util";
 import { hasPermission, permission, permissions } from '../../../domain_model/permissions';
 import { expectPermission } from "./controllerUtils";
-import { InternalServerError } from "@curveball/http-errors";
+import { BadRequest, InternalServerError } from "@curveball/http-errors";
 import { randomUUID } from "crypto";
 
 const ElectionRollModel = ServiceLocator.electionRollDb();
@@ -28,6 +28,22 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
         state: roll.state || ElectionRollState.approved,
         history: history,
     }))
+    // Check if rolls already exist
+    // TODO: move this to a dedicated database querry
+    const existingRolls = await ElectionRollModel.getRollsByElectionID(req.election.election_id, req)
+    if (existingRolls) {
+        const duplicateRolls = req.body.electionRoll.filter((roll: ElectionRoll) => {
+            return existingRolls.some(existingRoll => {
+                if (existingRoll.email && roll.email && existingRoll.email === roll.email) return true
+                if (existingRoll.voter_id && roll.voter_id && existingRoll.voter_id === roll.voter_id) return true
+                return false
+            })
+        })
+        if (duplicateRolls.length > 0) {
+            throw new BadRequest(`Some submitted voters already exist: ${duplicateRolls.map( (roll: ElectionRoll) => `${roll.voter_id ? roll.voter_id : ''} ${roll.email ? roll.email : ''}`).join(',')}`)
+        }
+    }
+
     const newElectionRoll = await ElectionRollModel.submitElectionRoll(rolls, req, `User adding Election Roll??`)
     if (!newElectionRoll) {
         const msg = "Voter Roll not found";
