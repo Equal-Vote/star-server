@@ -59,6 +59,17 @@ export interface rankedRobinSummaryData {
     nUnderVotes: number,
     nBulletVotes: number
 }
+export interface irvSummaryData {
+    candidates: candidate[],
+    totalScores: totalScore[],
+    rankHist: number[][],
+    preferenceMatrix: number[][],
+    pairwiseMatrix: number[][],
+    nValidVotes: number,
+    nInvalidVotes: number,
+    nUnderVotes: number,
+    nBulletVotes: number
+}
 export interface roundResults {
     winners: candidate[],
     runner_up: candidate[],
@@ -93,4 +104,14 @@ export interface rankedRobinResults {
     other: candidate[],
     roundResults: roundResults[],
     summaryData: rankedRobinSummaryData,
+}
+export interface irvResults {
+    elected: candidate[],
+    tied: candidate[],
+    other: candidate[],
+    summaryData: rankedRobinSummaryData,
+    logs: string[],
+    voteCounts: number[][],
+    exhaustedVoteCounts: number[],
+    overVoteCounts: number[]
 }
