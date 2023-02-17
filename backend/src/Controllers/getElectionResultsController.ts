@@ -9,6 +9,7 @@ import { Approval } from "../Tabulators/Approval";
 import { Plurality } from "../Tabulators/Plurality";
 import { expectPermission } from "./controllerUtils";
 import { permissions } from '../../../domain_model/permissions';
+import { IRV } from "../Tabulators/IRV";
 const AllocatedScoreResults = require('../Tabulators/AllocatedScore')
 
 const BallotModel = ServiceLocator.ballotsDb();
@@ -55,6 +56,9 @@ const getElectionResults = async (req: any, res: any, next: any) => {
         }
         else if (voting_method === 'Plurality') {
             results[race_index] = Plurality(candidateNames, cvr, num_winners)
+        }
+        else if (voting_method === 'IRV') {
+            results[race_index] = IRV(candidateNames, cvr, num_winners)
         }
         else {
             throw new Error('Invalid Voting Method')

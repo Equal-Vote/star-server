@@ -3,6 +3,7 @@ import { Star } from "../Tabulators/Star";
 import { Approval } from "../Tabulators/Approval";
 import { Plurality } from "../Tabulators/Plurality";
 import { RankedRobin } from '../Tabulators/RankedRobin';
+import { IRV } from '../Tabulators/IRV';
 const AllocatedScoreResults = require('../Tabulators/AllocatedScore')
 const className = "Elections.Controllers";
 
@@ -28,6 +29,9 @@ const getSandboxResults = async (req: any, res: any, next: any) => {
     }
     else if (voting_method==='Ranked-Robin'){
         results = RankedRobin(candidateNames, cvr, num_winners)
+    }
+    else if (voting_method==='IRV'){
+        results = IRV(candidateNames, cvr, num_winners)
     }
     else {
         throw new Error('Invalid Voting Method')
