@@ -295,10 +295,10 @@ export default function Results({ race, result }) {
             <ResultViewer title="Detailed Results" results={result} rounds={race.num_winners} />
           </>}
 
-        {race.voting_method === "STAR-PR" &&
+        {race.voting_method === "STAR_PR" &&
           <PRResultsViewer result={result} />}
 
-        {race.voting_method === "Ranked-Robin" &&
+        {race.voting_method === "RankedRobin" &&
           <>
             <SummaryViewer race={race} results={result} />
             <RankedRobinViewer title="Ranked Robin Results" results={result} />
