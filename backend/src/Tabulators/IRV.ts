@@ -83,7 +83,7 @@ export function IRV(candidates: string[], votes: ballot[], nWinners = 1, breakTi
         results.exhaustedVoteCounts.push(exhaustedVoteCount)
         results.overVoteCounts.push(overVoteCount)
         let voteThreshold = activeVotes.length / 2
-        
+
         // get max number of votes
         let remainingCandidatesIndexes = remainingCandidates.map(c => c.index)
         let maxVotes = Math.max(...roundVoteCounts.filter((c, i) => remainingCandidatesIndexes.includes(i)))
@@ -161,7 +161,7 @@ function getSummaryData(candidates: string[], parsedData: IparsedData): irvSumma
                 if (jRank === 0) {
                     jRank = nCandidates
                 }
-                if (!(i == j)) {
+                if (i !== j) {
                     if (iRank < jRank) {
                         preferenceMatrix[i][j] += 1
                     }
