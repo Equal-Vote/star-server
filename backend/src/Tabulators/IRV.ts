@@ -87,7 +87,7 @@ export function IRV(candidates: string[], votes: ballot[], nWinners = 1, breakTi
         // get max number of votes
         let remainingCandidatesIndexes = remainingCandidates.map(c => c.index)
         let maxVotes = Math.max(...roundVoteCounts.filter((c, i) => remainingCandidatesIndexes.includes(i)))
-        if (maxVotes >= voteThreshold) {
+        if (maxVotes > voteThreshold || remainingCandidates.length <= 2) {
             // candidate meets the threshold
             // get index of winning candidate
             let winningCandidateIndex = roundVoteCounts.indexOf(maxVotes)
