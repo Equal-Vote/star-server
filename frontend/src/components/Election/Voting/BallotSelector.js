@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import GenericBallotView from "./GenericBallotView";
+import StarBallotView from "./StarBallotView";
+import PluralityBallotView from "./PluralityBallotView.js";
 
 export default function BallotSelector({
   race,
@@ -9,17 +10,23 @@ export default function BallotSelector({
 }) {
 
   return (
-    // In the future if we add more ballot types we can select the appropriate one here
-    <GenericBallotView
-      key="starBallot"
-      race={race}
-      candidates={candidates}
-      scores={scores}
-      onClick={(i, j) => {
-        const newScores = [...scores];
-        newScores[i] = newScores[i] === j ? null : j;
-        onUpdate(newScores);
-      }}
-    />
+    <>
+    {race.voting_method == 'STAR' &&
+      <StarBallotView
+        race={race}
+        candidates={candidates}
+        scores={scores}
+        onUpdate={onUpdate}
+        />
+    }
+    {race.voting_method == 'Plurality' && 
+      <PluralityBallotView
+        race={race}
+        candidates={candidates}
+        scores={scores}
+        onUpdate={onUpdate}
+        />
+    }
+    </>
   );
 }

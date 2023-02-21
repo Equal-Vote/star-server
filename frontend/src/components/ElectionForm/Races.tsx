@@ -265,6 +265,9 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                                             <MenuItem key="STAR_PR" value="STAR_PR">
                                                 STAR-PR
                                             </MenuItem>
+                                            <MenuItem key="Plurality" value="Plurality">
+                                                Plurality
+                                            </MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Box>
