@@ -58,7 +58,7 @@ const Row = ({ rowIndex, candidate, score, onClick, columns }) => {
   return (
     <>
       <Grid container alignItems="center" style={{ backgroundColor: rowColor }}>
-        <Grid item xs={1}>
+        <Grid item xs={1} style={{paddingLeft: (columns.length == 1)? '25%' : '0%'}}>
           {!expanded && hasExpandedData &&
             <IconButton aria-label="Home" onClick={() => { setExpanded(true) }}>
               <ExpandMore />
