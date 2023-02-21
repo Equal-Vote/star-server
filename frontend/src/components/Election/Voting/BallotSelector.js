@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import StarBallotView from "./StarBallotView";
 import PluralityBallotView from "./PluralityBallotView.js";
 import RankedBallotView from "./RankedBallotView.js";
+import ApprovalBallotView from "./ApprovalBallotView.js";
 
 export default function BallotSelector({
   race,
@@ -30,6 +31,14 @@ export default function BallotSelector({
     }
     {(race.voting_method == 'Ranked-Robin' || race.voting_method == "IRV") && 
       <RankedBallotView
+        race={race}
+        candidates={candidates}
+        scores={scores}
+        onUpdate={onUpdate}
+        />
+    }
+    {(race.voting_method == 'Approval') && 
+      <ApprovalBallotView
         race={race}
         candidates={candidates}
         scores={scores}

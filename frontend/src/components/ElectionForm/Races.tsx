@@ -268,6 +268,15 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                                             <MenuItem key="Plurality" value="Plurality">
                                                 Plurality
                                             </MenuItem>
+                                            <MenuItem key="IRV" value="IRV">
+                                                IRV
+                                            </MenuItem>
+                                            <MenuItem key="Ranked-Robin" value="Ranked-Robin">
+                                                Ranked-Robin
+                                            </MenuItem>
+                                            <MenuItem key="Approval" value="Approval">
+                                                Approval
+                                            </MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Box>
