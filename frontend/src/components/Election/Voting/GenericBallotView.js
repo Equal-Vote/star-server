@@ -10,20 +10,6 @@ import ProfilePic from '../../../images/blank-profile.png'
 import { Link } from "@mui/material";
 import Box from '@mui/material/Box';
 
-function RowHeading({ candidate, party, className }) {
-  return (
-    <td className={`rowHeading ${className}`}>
-      <span className="candidate">{candidate}</span>
-      {party && (
-        <>
-          <br />
-          {party}
-        </>
-      )}
-    </td>
-  );
-}
-
 function HasExpandedData(candidate) {
   if (candidate.full_name) return true
   if (candidate.candidate_url) return true
@@ -46,25 +32,21 @@ const Choice = ({ divKey, score, filled, onClick }) => (
 );
 
 // Represents the set of possible scores for a single candidate
-const Choices = ({ rowIndex, onClick, score }) =>
-  Array(6)
-    .fill(0)
-    .map((elem, n) => (
+const Choices = ({ rowIndex, onClick, score, columns }) =>
+  columns.map((columnValue, n) => (
       <Grid item xs={1} align='center'>
         <Choice
           key={`starChoice${rowIndex}-${n}`}
           divKey={`starDiv${rowIndex}-${n}`}
-          score={n}
-          filled={n === score}
-          onClick={() => onClick(n)}
-
+          score={columns.length == 1 ? ' ' : columnValue}
+          filled={columnValue === score}
+          onClick={() => onClick(columnValue)}
         />
       </Grid>
     ));
 
 // Represents the row of all data for a single candidate
-const Row = ({ rowIndex, candidate, party, score, onClick }) => {
-
+const Row = ({ rowIndex, candidate, score, onClick, columns }) => {
   const [expanded, setExpanded] = useState(false)
   const hasExpandedData = HasExpandedData(candidate)
   var rowColor = 'white'
@@ -96,6 +78,7 @@ const Row = ({ rowIndex, candidate, party, score, onClick }) => {
           rowIndex={rowIndex}
           score={score}
           onClick={onClick}
+          columns={columns}
         />
 
       </Grid>
@@ -150,10 +133,9 @@ const Row = ({ rowIndex, candidate, party, score, onClick }) => {
 };
 
 // Represents the list of rows corresponding to the list of candidates
-const Rows = ({ candidates, scores, onClick }) =>
+const Rows = ({ candidates, scores, onClick, columns }) =>
   candidates.map((row, n) => (
     <>
-
       <Row
         rowIndex={n}
         key={`starRow${n}`}
@@ -161,77 +143,41 @@ const Rows = ({ candidates, scores, onClick }) =>
         party={row.party}
         score={scores[n]}
         onClick={(score) => onClick(n, score)}
+        columns={columns}
       />
       <Divider style={{ width: '100%' }} />
     </>
   ));
 
 // Represents the list of column headings for all possible scores
-const ColumnHeadings = () => (
+const ColumnHeadings = ({columns}) => (
   <>
     <Grid container alignItems="stretch">
-      <Grid item xs={5}>
-
-      </Grid>
-      <Grid item xs={1}>
-        <Typography align='center' variant="h6" component="h6">
-          0
-        </Typography>
-      </Grid>
-      <Grid item xs={1}>
-        <Typography align='center' variant="h6" component="h6">
-          1
-        </Typography>
-      </Grid>
-      <Grid item xs={1}>
-        <Typography align='center' variant="h6" component="h6">
-          2
-        </Typography>
-      </Grid>
-      <Grid item xs={1}>
-        <Typography align='center' variant="h6" component="h6">
-          3
-        </Typography>
-      </Grid>
-      <Grid item xs={1}>
-        <Typography align='center' variant="h6" component="h6">
-          4
-        </Typography>
-      </Grid>
-      <Grid item xs={1}>
-        <Typography align='center' variant="h6" component="h6">
-          5
-        </Typography>
-      </Grid>
+      <Grid item xs={5}></Grid>
+      <ScoreColumnHeadings columns={columns}/>
     </Grid>
   </>
 );
-const SingleWinnerInstructions = () => (
-  <>
-    <Typography align='left' component="li">
-      Give your favorite(s) five stars.
-    </Typography>
-    <Typography align='left' component="li">
-      Give your last choice(s) zero stars.
-    </Typography>
-    <Typography align='left' component="li">
-      Show preference order and level of support.
-    </Typography>
-    <Typography align='left' component="li">
-      Equal scores indicate no preference.
-    </Typography>
-    <Typography align='left' component="li">
-      Those left blank receive zero stars.
-    </Typography>
-  </>
-)
+
+const ScoreColumnHeadings = ({columns}) =>
+  columns.map((columnValue, n) => (
+    <Grid item xs={1}>
+      <Typography align='center' variant="h6" component="h6">
+        {columns.length == 1? ' ' : columnValue}
+      </Typography>
+    </Grid>
+  ));
+
+
 
 // Renders a complete RCV ballot for a single race
 export default function GenericBallotView({
   race,
   candidates,
   scores,
-  onClick
+  onClick,
+  columns,
+  instructions
 }) {
   return (
       <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }}>
@@ -249,13 +195,12 @@ export default function GenericBallotView({
           </Grid>
 
           <Grid item xs={8} style={{ padding: '0cm 0cm 1cm 0cm' }}>
-            <SingleWinnerInstructions />
+            {instructions}
           </Grid>
 
-          <ColumnHeadings />
+          <ColumnHeadings columns={columns}/>
           <Divider style={{ width: '100%' }} />
-          <Rows candidates={candidates} scores={scores} onClick={onClick} />
-
+          <Rows candidates={candidates} scores={scores} onClick={onClick} columns={columns}/>
 
           <Grid item xs={10} style={{ padding: '0.4cm 0cm' }}>
             {race.num_winners == 1 && race.voting_method == 'STAR' &&
