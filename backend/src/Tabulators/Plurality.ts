@@ -13,24 +13,26 @@ export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, b
     roundResults: [],
     summaryData: summaryData,
   }
-  const sortedScores = summaryData.totalScores.sort((a: totalScore, b: totalScore) => {
+  let sortedScores = summaryData.totalScores.sort((a: totalScore, b: totalScore) => {
     if (a.score > b.score) return -1
     if (a.score < b.score) return 1
     return 0
   })
-  
+
   var remainingCandidates = [...summaryData.candidates]
+  let prevRemainingCount = remainingCandidates.length;
   while (remainingCandidates.length>0) {
-    const topScore = sortedScores[results.elected.length]
-    let scoreWinners = [summaryData.candidates[topScore.index]]
-    for (let i = sortedScores.length-remainingCandidates.length+1; i < sortedScores.length; i++) {
-      if (sortedScores[i].score === topScore.score) {
+    let scoreWinners : candidate[] = []
+    for (let i = 0; i < sortedScores.length; i++) {
+      if (sortedScores[i].score === sortedScores[0].score) {
         scoreWinners.push(summaryData.candidates[sortedScores[i].index])
       }
     }
+
     if (breakTiesRandomly && scoreWinners.length>1) {
       scoreWinners = [scoreWinners[getRandomInt(scoreWinners.length)]]
     }
+
     if ((results.elected.length + results.tied.length + scoreWinners.length)<=nWinners) {
       results.elected.push(...scoreWinners)
     }
@@ -41,8 +43,20 @@ export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, b
       results.other.push(...scoreWinners)
     }
     remainingCandidates = remainingCandidates.filter(c => !scoreWinners.includes(c))
+
+    // NOTE: there's probably a cleaner way to do this filter operation
+    let remainingIndexes : number[] = []
+    for(var i = 0; i < remainingCandidates.length; i++){
+      remainingIndexes.push(remainingCandidates[i].index) 
+    }
+    sortedScores = sortedScores.filter(c => remainingIndexes.includes(c.index))
+
+    if(remainingCandidates.length == prevRemainingCount){
+      throw new Error("Infinite loop detected")
+    }
+    prevRemainingCount  = remainingCandidates.length
   }
-  
+
   return results;
 }
 
