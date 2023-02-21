@@ -168,9 +168,6 @@ const ScoreColumnHeadings = ({columns}) =>
     </Grid>
   ));
 
-
-
-// Renders a complete RCV ballot for a single race
 export default function GenericBallotView({
   race,
   candidates,
