@@ -38,6 +38,7 @@ export default function PluralityBallotView({
         }
         onUpdate(newScores);
       }}
+      footer="The candidate with the most votes wins"
     />
   );
 }

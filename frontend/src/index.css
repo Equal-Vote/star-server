@@ -466,105 +466,67 @@ h2.selected {
   background-color: white;
 }
 
-/* STAR Ballot */
+/* Ballot */
 .ballot {
-  padding: 0.5em;
   text-align: center;
   font-size: 1em;
   background-color: white;
   color: black;
-  max-width: 500px;
 }
 
-.ballot table {
-  border-collapse: collapse;
-  border: 0.2em solid #000000;
-}
-
-.ballot th {
-  border-collapse: collapse;
-  padding: 0em 0em 0em 0em;
-  vertical-align: bottom;
-  border-style: none;
-}
-
-.ballot td {
-  border-collapse: collapse;
-  border-top: 0.125em solid #808080;
-  border-style: none;
-}
-
-.ballot .title {
-  background-color: black;
-  color: white;
-  text-align: left;
-  font-size: 1em;
-  font-weight: 700;
-  padding: 0.4em;
-  border-bottom-style: hidden;
-}
 .ballot .instructions {
-  background-color: white;
-  color: black;
-  font-weight: normal;
-  font-style: normal;
-  font-size: 0.9em;
-  text-align: center;
-  padding: 0em 0.5em;
-  min-width: 20em;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 12px;
+  padding: 0cm 0cm .2cm 0cm;
 }
 
-.ballot .columnHeading p {
-  font-weight: 400;
-  text-align: left;
-  padding: 0em;
-}
-.ballot .columnHeading div {
-  font-weight: 400;
-  text-align: center;
-  font-weight: 700;
-  margin: 0em 0em 0.5em 0em;
-}
-.ballot .columnHeading.error,
-.ballot td.error {
-  background-color: #f7cbcb;
-  color: red;
-}
-.ballot td.error > div {
-  border: 1px solid #000000;
-  background-color: red;
-}
-.error {
-  color: red;
-}
 
-.ballot .rowHeading {
-  font-weight: 400;
-  text-align: left;
-  padding: 0.5em 1em 0.5em 0.5em;
-  font-size: 0.8em;
-  border-bottom: 0.1em solid #808080;
-  border-right: 0.1em none white;
-  min-width: 12em;
-}
-
-.rowHeading .candidate {
+.ballot .columnDescriptor{
+  font-family: Verdana, Geneva, sans-serif;
   font-weight: bold;
-  font-size: 1.25em;
-  text-align: right;
+  font-size: 13px;
 }
 
+.ballot .scoreColumnHeading {
+  font-family: 'Archivo Black';
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.ballot .rowDivider {
+  width: 100%;
+  height: 2px;
+  background-color: #999999;
+}
+
+.ballot .row{
+  padding: 5px;
+}
+
+.ballot .rowHeading{
+  font-weight: bold;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 13px;
+}
+
+.submit {
+  margin: 0.5em;
+  cursor: pointer;
+}
+
+/* Ballot Bubbles*/
 .circle {
   display: inline-flex;
   flex-direction:column;
-  height: 1.2em;
-  width: 1.2em;
-  border: 0.15em solid #808080;
+  height: 1.9em;
+  width: 1.9em;
+  font-size: .8em;
+  border: 2px solid #666666;
   border-radius: 50%;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   cursor: pointer;
-  margin: 0em;
+  margin-left: .4em; /* Added some margin to make it align a bit better with the column headings */ 
   text-align: center;
   justify-content: center;
 }
@@ -594,101 +556,9 @@ h2.selected {
   display: flex;
   text-align: center;
   justify-content: center;
-  font-size: 1.2em;
-  font-weight: bold;
-  transform: scale(1, 0.75);
-  -webkit-transform: scale(1, 0.75); /* Safari and Chrome */
-  -moz-transform: scale(1, 0.75); /* Firefox */
-  -ms-transform: scale(1, 0.75); /* IE 9+ */
-  -o-transform: scale(1, 0.75); /* Opera */
-}
-
-td.starLabel {
-  font-size: 0.75em;
-  text-align: right;
-}
-.starHeading p {
-  font-size: 1.75em;
-  font-weight: 700;
-  margin: 0em;
-  margin-left: 0em;
-  padding: 0em;
-  max-height: 1.2em;
-  vertical-align: bottom;
-  transform: scale(1, 0.7);
-  -webkit-transform: scale(1, 0.7); /* Safari and Chrome */
-  -moz-transform: scale(1, 0.7); /* Firefox */
-  -ms-transform: scale(1, 0.7); /* IE 9+ */
-  -o-transform: scale(1, 0.7); /* Opera */
-}
-
-.rowheading .starScore td {
-  text-align: right;
-}
-
-td.starScore {
-  border-style: none;
-  border-top: 0.1em solid #808080;
-  border-bottom: 0.1em solid #808080;
-}
-.starWorst {
-  height: 0.75em;
-  float: left;
-  margin-left: 0.5em;
-  bottom: 0em;
-  font-size: 0.75em;
-  vertical-align: bottom;
-}
-.starBest {
-  height: 0.75em;
-  float: right;
-  margin-right: 0.5em;
-  bottom: 0em;
-  font-size: 0.75em;
-  vertical-align: bottom;
-}
-.submit {
-  margin: 0.5em;
-  cursor: pointer;
-}
-/*
-.wrapper .classic {
-  color: black;
-  background: white;
-  padding: 0.5em 0.5em;
-  margin-right: 2em;
-  border-radius: 3px;
-}
-.wrapper .classic > div {
-  background: white;
-  margin: 0em 0.5em 1em 0.5em;
-  padding: 0em 0em 0em 0em;
-  margin-bottom: 0.5em;
-  color: black;
+  font-family: 'Archivo Black';
+  font-size: .93em;
   font-weight: bold;
 }
 
-div.election {
-  border: 2px solid rgb(0, 0, 0);
-  max-width: 500px;
-  background-color: rgb(83, 83, 83);
-}
-.card {
-  display: flex;
-  flex-direction: column;
-  margin:10px;
-  border: 1px solid rgb(0, 0, 0);
-  border-radius: 5px;
-  padding: 5px;
-  max-width: 500px;
-}
 
-.card__cover {
-  /* height: 150px; 
-  width: 100%;
-}
-
-.card__content {
-  /* Take available height 
-  flex: 1;
-} */
