@@ -28,6 +28,20 @@ export default function PluralityBallotView({
       </Typography>
     </>
   )
+  const footer = (
+    <>
+    {race.num_winners == 1 &&
+      <Typography align='center' component="p">
+        The two highest scoring candidates are finalists.<br/>Your full vote goes to the finalist you prefer.
+      </Typography>
+    }
+    {race.num_winners > 1 && 
+      <Typography align='center' component="p">
+        {`This election uses STAR Voting and will elect ${race.num_winners} winners. In STAR Voting the two highest scoring candidates are finalists and the finalist preferred by more voters wins.`}
+      </Typography>
+    }
+    </>
+  )
   return (
     <GenericBallotView
       key="starBallot"
@@ -36,11 +50,15 @@ export default function PluralityBallotView({
       scores={scores}
       columns={[0, 1, 2, 3, 4, 5]}
       instructions={instructions}
+      leftTitle='Worst'
+      rightTitle='Best'
       onClick={(i, j) => {
         const newScores = [...scores];
         newScores[i] = newScores[i] === j ? null : j;
         onUpdate(newScores);
       }}
+      footer={footer}
+      starHeadings={true}
     />
   );
 }

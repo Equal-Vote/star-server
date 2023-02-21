@@ -3,10 +3,10 @@ import { useState } from 'react'
 import Grid from "@mui/material/Grid";
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton'
-import ExpandLess from '@mui/icons-material/ExpandLess'
-import ExpandMore from '@mui/icons-material/ExpandMore'
-import ProfilePic from '../../../images/blank-profile.png'
+import IconButton from '@mui/material/IconButton';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import {FaStar} from 'react-icons/fa';
 import { Link } from "@mui/material";
 import Box from '@mui/material/Box';
 
@@ -51,13 +51,13 @@ const Row = ({ rowIndex, candidate, score, onClick, columns }) => {
   const hasExpandedData = HasExpandedData(candidate)
   var rowColor = 'white'
   if (rowIndex % 2 == 0) {
-    rowColor = '#f8f8f8';
+    rowColor = '#EDEDED';
   } else {
     rowColor = 'white';
   }
   return (
     <>
-      <Grid container alignItems="center" style={{ backgroundColor: rowColor }}>
+      <Grid container alignItems="center" style={{ backgroundColor: rowColor }} className="row">
         <Grid item xs={1} >
           {!expanded && hasExpandedData &&
             <IconButton aria-label="Home" onClick={() => { setExpanded(true) }}>
@@ -69,7 +69,7 @@ const Row = ({ rowIndex, candidate, score, onClick, columns }) => {
             </IconButton>}
         </Grid>
         <Grid item xs={4}>
-          <Typography wrap sx={{wordwrap: "break-word"}} align={columns.length==1? 'right' : 'left'} variant="h6" component="h6">
+          <Typography wrap className="rowHeading" sx={{wordwrap: "break-word"}} align={columns.length==1? 'right' : 'left'} variant="h6" component="h6">
             {candidate.candidate_name}
           </Typography>
         </Grid>
@@ -106,8 +106,6 @@ const Row = ({ rowIndex, candidate, score, onClick, columns }) => {
                   Party URL
                 </Typography>
               </Link>}
-
-
           </Grid>
           {candidate.photo_filename &&
           <Grid item xs={6}>
@@ -144,26 +142,56 @@ const Rows = ({ candidates, scores, onClick, columns }) =>
         onClick={(score) => onClick(n, score)}
         columns={columns}
       />
-      <Divider style={{ width: '100%' }} />
+      <Divider className="rowDivider"/>
     </>
   ));
 
 // Represents the list of column headings for all possible scores
-const ColumnHeadings = ({columns}) => (
+const ColumnHeadings = ({starHeadings, columns, leftTitle, rightTitle, headingPrefix}) => (
   <>
-    <Grid container alignItems="stretch">
+  { leftTitle != '' &&
+    <Grid container alignItems="stretch" >
       <Grid item xs={5}></Grid>
-      <ScoreColumnHeadings columns={columns}/>
+      <Typography align='center' className="columnDescriptor">
+        {leftTitle}
+      </Typography>
+      <Grid item xs={columns.length-2}></Grid>
+      <Typography align='center' className="columnDescriptor">
+        {rightTitle}
+      </Typography>
+    </Grid>
+  }
+    <Grid container alignItems="stretch">
+      <Grid item xs={5}>
+        { headingPrefix != '' &&
+          <Typography align='right' className="columnDescriptor">
+            {headingPrefix}
+          </Typography>
+        }
+      </Grid>
+      {columns.length > 1 &&
+        <ScoreColumnHeadings starHeadings={starHeadings} columns={columns}/>
+      }
     </Grid>
   </>
 );
 
-const ScoreColumnHeadings = ({columns}) =>
+const ScoreIcon = ({color, value}) => (
+  <div align='center'>
+    <FaStar style={{color: color, fontSize: '2.1em', transform:'translate(0%,15%)'}}/>
+    <Typography style={{position: 'absolute', transform:'translate(155%,-110%)'}} variant="h6" component="h6" className="scoreColumnHeading">
+      {value}
+    </Typography>
+  </div>
+)
+
+const ScoreColumnHeadings = ({starHeadings, columns}) =>
   columns.map((columnValue, n) => (
     <Grid item xs={1}>
-      <Typography align='center' variant="h6" component="h6">
-        {columns.length == 1? ' ' : columnValue}
-      </Typography>
+      <ScoreIcon
+        color={(starHeadings && n != 0)? '#CCCCCC' : '#FFFFFF'}
+        value={columnValue}
+      />
     </Grid>
   ));
 
@@ -173,14 +201,19 @@ export default function GenericBallotView({
   scores,
   onClick,
   columns,
-  instructions
+  instructions,
+  leftTitle='',
+  rightTitle='',
+  headingPrefix='',
+  footer='',
+  starHeadings=false,
 }) {
   return (
-      <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }}>
+      <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }} className="ballot">
         <Grid container alignItems="center" justify="center" direction="column">
 
           <Grid item style={{ padding: '0.8cm 0cm 0cm 0cm' }}>
-            <Typography align='center' gutterBottom variant="h2" component="h6">
+            <Typography align='center' gutterBottom variant="h2" component="h6" className="title">
               {race.title}
             </Typography>
           </Grid>
@@ -190,25 +223,22 @@ export default function GenericBallotView({
             </Typography>
           </Grid>
 
-          <Grid item xs={8} style={{ padding: '0cm 0cm 1cm 0cm' }}>
+          <Grid item xs={8} className="instructions">
             {instructions}
           </Grid>
 
-          <ColumnHeadings columns={columns}/>
-          <Divider style={{ width: '100%' }} />
+          <ColumnHeadings
+            starHeadings={starHeadings}
+            columns={columns}
+            leftTitle={leftTitle}
+            rightTitle={rightTitle}
+            headingPrefix={headingPrefix}
+          />
+          <Divider className="rowDivider"/>
           <Rows candidates={candidates} scores={scores} onClick={onClick} columns={columns}/>
 
           <Grid item xs={10} style={{ padding: '0.4cm 0cm' }}>
-            {race.num_winners == 1 && race.voting_method == 'STAR' &&
-              <Typography align='center' component="p">
-                This election uses STAR Voting and will elect 1 winner. In STAR Voting the two highest scoring candidates are finalists and the finalist preferred by more voters wins.
-              </Typography>
-            }
-            {race.num_winners > 1 && race.voting_method == 'STAR' &&
-              <Typography align='center' component="p">
-                {`This election uses STAR Voting and will elect ${race.num_winners} winners. In STAR Voting the two highest scoring candidates are finalists and the finalist preferred by more voters wins.`}
-              </Typography>
-            }
+            {footer}
           </Grid>
 
         </Grid>
