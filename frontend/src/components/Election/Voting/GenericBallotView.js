@@ -227,7 +227,7 @@ const SingleWinnerInstructions = () => (
 )
 
 // Renders a complete RCV ballot for a single race
-export default function StarBallotView({
+export default function GenericBallotView({
   race,
   candidates,
   scores,
