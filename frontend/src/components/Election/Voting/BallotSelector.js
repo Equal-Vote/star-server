@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import StarBallotView from "./StarBallotView";
+import GenericBallotView from "./GenericBallotView";
 
 export default function BallotSelector({
   race,
@@ -10,7 +10,7 @@ export default function BallotSelector({
 
   return (
     // In the future if we add more ballot types we can select the appropriate one here
-    <StarBallotView
+    <GenericBallotView
       key="starBallot"
       race={race}
       candidates={candidates}
