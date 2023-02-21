@@ -44,7 +44,6 @@ const VotePage = ({ election, fetchElection }) => {
     }
     navigate(`/Election/${id}/thanks`)
   }
-  console.log(scores)
   return (
     <Container disableGutters={true} maxWidth="sm">
       <BallotSelector
@@ -77,7 +76,7 @@ const VotePage = ({ election, fetchElection }) => {
           variant='outlined'
           onClick={submit}
           disabled={isPending||currentRace !== election.races.length-1 || scores[currentRace].every(score => score===null)}//disable unless on last page and at least one candidate scored
-          style={{ marginLeft: "auto", minWidth:"150px" }}>
+          style={{ marginLeft: "auto", minWidth:"150px", marginTop:"20px"}}>
           Submit Ballot
         </Button>
       </Box>

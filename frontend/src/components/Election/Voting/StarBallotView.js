@@ -2,8 +2,20 @@ import React from "react";
 import GenericBallotView from "./GenericBallotView.js";
 import Typography from '@mui/material/Typography';
 
+function scoresAreUnderVote({scores}){
+  let five_selected = false
+  let zero_selected = false
+  let all_null = true
+  for(let i = 0; i < scores.length; i++){
+    if(scores[i] != null) all_null = false
+    if(scores[i] == null || scores[i] == 0) zero_selected = true
+    if(scores[i] == 5) five_selected = true
+  }
+  return !(all_null || (five_selected && zero_selected))
+}
+
 // Renders a complete RCV ballot for a single race
-export default function PluralityBallotView({
+export default function StarBallotView({
   race,
   candidates,
   scores,
@@ -42,6 +54,17 @@ export default function PluralityBallotView({
     }
     </>
   )
+  let warning = null;
+
+  // disabling warnings until we have a better solution, see slack convo
+  // https://starvoting.slack.com/archives/C01EBAT283H/p1677023113477139
+  //if(scoresAreUnderVote({scores: scores})){
+  //  warning=(
+  //    <>
+  //    Under STAR voting it's recommended to leverage the full voting scale in order to maximize the power of your vote
+  //    </>
+  //  )
+  //}
   return (
     <GenericBallotView
       key="starBallot"
@@ -59,6 +82,7 @@ export default function PluralityBallotView({
       }}
       footer={footer}
       starHeadings={true}
+      warning={warning}
     />
   );
 }
