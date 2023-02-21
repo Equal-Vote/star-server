@@ -85,10 +85,10 @@ const Sandbox = () => {
                             <MenuItem key="STAR" value="STAR">
                                 STAR
                             </MenuItem>
-                            <MenuItem key="STAR-PR" value="STAR-PR">
+                            <MenuItem key="STAR_PR" value="STAR_PR">
                                 STAR-PR
                             </MenuItem>
-                            <MenuItem key="Ranked-Robin" value="Ranked-Robin">
+                            <MenuItem key="RankedRobin" value="RankedRobin">
                                 Ranked Robin
                             </MenuItem>
                         </Select>

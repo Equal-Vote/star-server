@@ -110,7 +110,7 @@ function getSummaryData(candidates: string[], parsedData: IparsedData): rankedRo
         if (jRank === 0) {
           jRank = nCandidates
         }
-        if (!(i == j)) {
+        if (i !== j) {
           if (iRank < jRank) {
             preferenceMatrix[i][j] += 1
           }

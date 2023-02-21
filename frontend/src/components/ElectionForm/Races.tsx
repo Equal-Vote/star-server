@@ -262,7 +262,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                                             <MenuItem key="STAR" value="STAR">
                                                 STAR
                                             </MenuItem>
-                                            <MenuItem key="STAR-PR" value="STAR-PR">
+                                            <MenuItem key="STAR_PR" value="STAR_PR">
                                                 STAR-PR
                                             </MenuItem>
                                         </Select>

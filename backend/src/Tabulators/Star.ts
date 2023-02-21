@@ -96,7 +96,7 @@ function getSummaryData(candidates: string[], parsedData: IparsedData): summaryD
       totalScores[i].score += vote[i]
       scoreHist[i][vote[i]] += 1
       for (let j = 0; j < nCandidates; j++) {
-        if (!(i == j)) {
+        if (i !== j) {
           if (vote[i] > vote[j]) {
             preferenceMatrix[i][j] += 1
           }
