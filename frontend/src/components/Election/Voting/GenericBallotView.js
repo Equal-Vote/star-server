@@ -58,7 +58,7 @@ const Row = ({ rowIndex, candidate, score, onClick, columns }) => {
   return (
     <>
       <Grid container alignItems="center" style={{ backgroundColor: rowColor }}>
-        <Grid item xs={1} style={{paddingLeft: (columns.length == 1)? '25%' : '0%'}}>
+        <Grid item xs={1} >
           {!expanded && hasExpandedData &&
             <IconButton aria-label="Home" onClick={() => { setExpanded(true) }}>
               <ExpandMore />
@@ -69,7 +69,7 @@ const Row = ({ rowIndex, candidate, score, onClick, columns }) => {
             </IconButton>}
         </Grid>
         <Grid item xs={4}>
-          <Typography wrap sx={{wordwrap: "break-word"}} align='left' variant="h6" component="h6">
+          <Typography wrap sx={{wordwrap: "break-word"}} align={columns.length==1? 'right' : 'left'} variant="h6" component="h6">
             {candidate.candidate_name}
           </Typography>
         </Grid>
@@ -80,7 +80,6 @@ const Row = ({ rowIndex, candidate, score, onClick, columns }) => {
           onClick={onClick}
           columns={columns}
         />
-
       </Grid>
       {expanded && hasExpandedData &&
       <>
