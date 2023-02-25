@@ -99,7 +99,19 @@ Follow the steps [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-
 
 Keep track of the fullchain.pem and privkey.pem files, you'll need these later when running keycloak
 
-3. Update permissions
+3. Automate certificate renewal
+
+The [guide](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-on-amazon-linux-2.html#letsencrypt) also covers certificate renewal. You add a certificate rewewal command to your cron, and then restart system ctl
+
+The only change we make is to add a post-hook so that keycloak will restart and use the new ceritifcate. You may need to reference "docker container ls" and replace c17... accordingly to restart your corresponding container
+
+```
+39    1,13       *       *       * root certbot renew --no-self-upgrade --post-hook "docker restart c17de7f51dbc"
+```
+
+This command will run at 1:39 am/pm everyday (as recommended by certbot), but it'll only renew the certificate if it expires within 30 days
+
+4. Update permissions
 
 ```
 sudo chmod 755 /etc/letsencrypt/live/auth.star.vote/fullchain.pem
