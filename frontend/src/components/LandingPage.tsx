@@ -1,12 +1,8 @@
 import React from 'react'
 import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import QuickPoll from './ElectionForm/QuickPoll';
-import { Paper } from '@mui/material';
-import { styled } from "@mui/material"
-import { StyledTextField } from './styles'
 
 const LandingPage = ({ authSession }) => {
     return (
@@ -39,11 +35,11 @@ const LandingPage = ({ authSession }) => {
                         opacity: '0.7',
                         paddingBottom: '30px',
                     }}>
-                        Voting methods approved by the Equal Vote Coalition
+                        Voting methods approved by the <a target="_blank" href={'https://www.equal.vote'} style={{ color: 'inherit', textDecoration: 'underline' }}>Equal Vote Coalition</a>
                     </Typography>
                 </Grid>
                 <Grid item xs={12} md={5}>
-                        <QuickPoll authSession={authSession} />
+                    <QuickPoll authSession={authSession} />
                 </Grid>
             </Grid>
         </Box>
