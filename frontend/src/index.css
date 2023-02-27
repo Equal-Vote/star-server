@@ -508,17 +508,21 @@ h2.selected {
   cursor: pointer;
 }
 
-.ballot .scoreColumnHeading {
+.ballot .scoreColumnHeading{
   position: absolute;
-  transform: translate(155%,-110%);
+  transform: translate(155%,38%);
   font-family: 'Archivo Black';
   font-size: 1.1em;
   font-weight: bold;
+
+  /*text-align: left;*/
+  justify-content: right;
 }
 
 .ballot .starIcon {
+  position: absolute;
+  transform: translate(-50%,15%);
   font-size: 2.1em;
-  transform: translate(0%,15%);
 }
 
 /* Ballot Bubbles*/

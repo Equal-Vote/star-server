@@ -177,9 +177,9 @@ const ColumnHeadings = ({starHeadings, columns, leftTitle, rightTitle, headingPr
 );
 
 const ScoreIcon = ({color, value}) => (
-  <div align='center'>
+  <div align='center' style={{width: '50px', height: '50px'}}>
     <FaStar style={{color: color}} className="starIcon"/>
-    <Typography variant="h6" component="h6" className="scoreColumnHeading">
+    <Typography className="scoreColumnHeading">
       {value}
     </Typography>
   </div>
