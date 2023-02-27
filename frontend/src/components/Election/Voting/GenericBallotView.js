@@ -152,13 +152,17 @@ const ColumnHeadings = ({starHeadings, columns, leftTitle, rightTitle, headingPr
   { leftTitle != '' &&
     <Grid container alignItems="stretch" >
       <Grid item xs={5}></Grid>
-      <Typography align='center' className="columnDescriptor">
-        {leftTitle}
-      </Typography>
+      <Grid item xs={1}>
+        <Typography align='center' className="columnDescriptor">
+          {leftTitle}
+        </Typography>
+      </Grid>
       <Grid item xs={columns.length-2}></Grid>
-      <Typography align='center' className="columnDescriptor">
-        {rightTitle}
-      </Typography>
+      <Grid item xs={1}>
+        <Typography align='center' className="columnDescriptor">
+          {rightTitle}
+        </Typography>
+      </Grid>
     </Grid>
   }
     <Grid container alignItems="stretch">
