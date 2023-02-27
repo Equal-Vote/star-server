@@ -487,12 +487,6 @@ h2.selected {
   font-size: 13px;
 }
 
-.ballot .scoreColumnHeading {
-  font-family: 'Archivo Black';
-  font-size: 1.1em;
-  font-weight: bold;
-}
-
 .ballot .rowDivider {
   width: 100%;
   height: 2px;
@@ -512,6 +506,19 @@ h2.selected {
 .submit {
   margin: 0.5em;
   cursor: pointer;
+}
+
+.ballot .scoreColumnHeading {
+  position: absolute;
+  transform: translate(155%,-110%);
+  font-family: 'Archivo Black';
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.ballot .starIcon {
+  font-size: 2.1em;
+  transform: translate(0%,15%);
 }
 
 /* Ballot Bubbles*/
