@@ -98,8 +98,9 @@ export function IRV(candidates: string[], votes: ballot[], nWinners = 1, breakTi
         }
         else {
             // find candidate with least votes and remove from remaining candidates
-            let lastPlaceCandidateIndex = roundVoteCounts.indexOf(Math.min(...roundVoteCounts.filter((c, i) => remainingCandidatesIndexes.includes(i))))
-            remainingCandidates = remainingCandidates.filter(c => c !== summaryData.candidates[lastPlaceCandidateIndex])
+            let remainingVoteCounts = roundVoteCounts.filter((c, i) => remainingCandidatesIndexes.includes(i))
+            let lastPlaceCandidateIndex = remainingVoteCounts.indexOf(Math.min(...remainingVoteCounts))
+            remainingCandidates = remainingCandidates.filter(c => c !== summaryData.candidates[remainingCandidatesIndexes[lastPlaceCandidateIndex]])
         }
     }
     // Sort data in order of candidate placements

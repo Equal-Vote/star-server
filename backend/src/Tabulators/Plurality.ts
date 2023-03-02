@@ -21,7 +21,7 @@ export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, b
   
   var remainingCandidates = [...summaryData.candidates]
   while (remainingCandidates.length>0) {
-    const topScore = sortedScores[results.elected.length]
+    const topScore = sortedScores[results.elected.length + results.tied.length + results.other.length]
     let scoreWinners = [summaryData.candidates[topScore.index]]
     for (let i = sortedScores.length-remainingCandidates.length+1; i < sortedScores.length; i++) {
       if (sortedScores[i].score === topScore.score) {

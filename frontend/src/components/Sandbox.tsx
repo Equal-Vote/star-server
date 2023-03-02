@@ -91,6 +91,15 @@ const Sandbox = () => {
                             <MenuItem key="RankedRobin" value="RankedRobin">
                                 Ranked Robin
                             </MenuItem>
+                            <MenuItem key="Approval" value="Approval">
+                                Approval
+                            </MenuItem>
+                            <MenuItem key="Plurality" value="Plurality">
+                                Plurality
+                            </MenuItem>
+                            <MenuItem key="IRV" value="IRV">
+                                Ranked Choice Voting (IRV)
+                            </MenuItem>
                         </Select>
                     </FormControl>
                 </Box>

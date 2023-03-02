@@ -58,15 +58,15 @@ function RoundViewer({ summaryData, Candidate, Round }) {
 
 }
 
-function ResultViewer({ title, results, rounds }) {
+function STARResultViewer({ results, rounds }) {
   const [viewDetails, setViewDetails] = useState(false)
   const [viewMatrix, setViewMatrix] = useState(false)
   const [viewHist, setViewHist] = useState(false)
   return (
-    <div key={title} className="resultViewer">
+    <div className="resultViewer">
       <Grid container alignItems="center" >
         <Grid item xs={11}>
-          <h2>{title}</h2>
+          <h2>Detailed Results</h2>
         </Grid>
         <Grid item xs={1}>
           {!viewDetails &&
@@ -120,22 +120,22 @@ function ResultViewer({ title, results, rounds }) {
 
           <table className='matrix'>
             <thead className='matrix'>
-                <tr className='matrix'> 
-                  Number of Valid Votes
-                  <td className='matrix'> {results.summaryData.nValidVotes}</td>
-                </tr>
-                <tr className='matrix'>
-                  Number of Invalid Votes
-                  <td className='matrix'> {results.summaryData.nInvalidVotes}</td>
-                </tr>
-                <tr className='matrix'> 
-                  Number of Bullet Votes
-                  <td className='matrix'> {results.summaryData.nBulletVotes}</td>
-                </tr>
-                <tr className='matrix'>
-                  Number of Under Votes
-                  <td className='matrix'> {results.summaryData.nUnderVotes}</td>
-                </tr>
+              <tr className='matrix'>
+                Number of Valid Votes
+                <td className='matrix'> {results.summaryData.nValidVotes}</td>
+              </tr>
+              <tr className='matrix'>
+                Number of Invalid Votes
+                <td className='matrix'> {results.summaryData.nInvalidVotes}</td>
+              </tr>
+              <tr className='matrix'>
+                Number of Bullet Votes
+                <td className='matrix'> {results.summaryData.nBulletVotes}</td>
+              </tr>
+              <tr className='matrix'>
+                Number of Under Votes
+                <td className='matrix'> {results.summaryData.nUnderVotes}</td>
+              </tr>
 
             </thead>
           </table>
@@ -159,8 +159,8 @@ function ResultViewer({ title, results, rounds }) {
           <h3>Additional Election Data</h3>
           {results.roundResults.map((round, r) => (
             <>
-              {rounds > 1 && <h4>{`Winner ${r+1}`}</h4>}
-              {round.logs.map(log=> (<p>{log}</p>))}
+              {rounds > 1 && <h4>{`Winner ${r + 1}`}</h4>}
+              {round.logs.map(log => (<p>{log}</p>))}
             </>
           ))}
         </>}
@@ -168,11 +168,11 @@ function ResultViewer({ title, results, rounds }) {
   );
 }
 
-function RankedRobinViewer({ title, results }) {
+function RankedRobinViewer({ results }) {
   const [viewMatrix, setViewMatrix] = useState(false)
   return (
-    <div key={title} className="resultViewer">
-      <h2>{title}</h2>
+    <div className="resultViewer">
+      <h2>Detailed Results</h2>
       <table className='matrix'>
         <thead className='matrix'>
           <tr>
@@ -210,21 +210,128 @@ function RankedRobinViewer({ title, results }) {
   );
 }
 
+function IRVResultsViewer({ results }) {
+  const [viewMatrix, setViewMatrix] = useState(false)
+  return (
+    <div className="resultViewer">
+      <h2>Detailed Results</h2>
 
-function SummaryViewer({ race, results }) {
-  //const summaryMessage = `${candidates} candidates, ${voters} voters, ${underVotes} underVotes.`;
-  // console.log(results)
+      <table className='matrix'>
+        <thead className='matrix'>
+          <tr>
+            <th className='matrix'> Candidate</th>
+            {results.voteCounts.map((roundVoteCounts, i) => <th className='matrix'> {`Round ${i + 1}`}</th>)}
+          </tr>
+
+          {results.summaryData.candidates.map((c, n) => (
+            <tr className='matrix' key={`h${n}`} >{c.name}
+              {results.voteCounts.map((roundVoteCounts, i) =>
+                <td> {roundVoteCounts[n]} </td>
+              )}
+            </tr>
+          ))}
+          <tr>
+            <tr className='matrix'> Exhausted Ballots</tr>
+            {results.exhaustedVoteCounts.map((exhaustedVoteCount, i) => <td className='matrix'> {exhaustedVoteCount} </td>)}
+          </tr>
+
+        </thead>
+      </table>
+      <table className='matrix'>
+        <thead className='matrix'>
+          <tr>
+            <th className='matrix'> Candidate</th>
+            <th className='matrix'> # of wins head to head wins</th>
+          </tr>
+
+          {results.summaryData.candidates.map((c, n) => (
+            <>
+              <tr className='matrix' key={`h${n}`} >{c.name}
+                <td> {results.summaryData.totalScores[n].score} </td>
+              </tr>
+
+            </>
+          ))}
+        </thead>
+      </table>
+      <Grid container alignItems="center" >
+        <Grid item xs={1}>
+          {!viewMatrix &&
+            <IconButton aria-label="Home" onClick={() => { setViewMatrix(true) }}>
+              <ExpandMore />
+            </IconButton>}
+          {viewMatrix &&
+            <IconButton aria-label="Home" onClick={() => { setViewMatrix(false) }}>
+              <ExpandLess />
+            </IconButton>}
+        </Grid>
+        <Grid item xs={2}>
+          <h3> View Matrix</h3>
+        </Grid>
+      </Grid>
+      {viewMatrix && <MatrixViewer results={results} />}
+    </div>
+  );
+}
+
+function PluralityResultsViewer({ results }) {
+  return (
+    <div className="resultViewer">
+      <h2>Detailed Results</h2>
+      <table className='matrix'>
+        <thead className='matrix'>
+          <tr>
+            <th className='matrix'> Candidate</th>
+            <th className='matrix'> Votes </th>
+          </tr>
+
+          {results.summaryData.candidates.map((c, n) => (
+            <>
+              <tr className='matrix' key={`h${n}`} >{c.name}
+                <td> {results.summaryData.totalScores[n].score} </td>
+              </tr>
+
+            </>
+          ))}
+        </thead>
+      </table>
+    </div>
+  );
+}
+function ApprovalResultsViewer({ results }) {
+  return (
+    <div className="resultViewer">
+      <h2>Detailed Results</h2>
+      <table className='matrix'>
+        <thead className='matrix'>
+          <tr>
+            <th className='matrix'> Candidate</th>
+            <th className='matrix'> Votes </th>
+          </tr>
+
+          {results.summaryData.candidates.map((c, n) => (
+            <>
+              <tr className='matrix' key={`h${n}`} >{c.name}
+                <td> {results.summaryData.totalScores[n].score} </td>
+              </tr>
+
+            </>
+          ))}
+        </thead>
+      </table>
+    </div>
+  );
+}
+
+function SummaryViewer({ votingMethod, results, }) {
   return (
     <>
       <h2>Summary</h2>
-
-      <h3>{`Voting Method: ${race.voting_method}`}</h3>
-
-      {/* {results.roundResults.map((round,r) => (
-      <p>
-          <b>{`Round ${r+1}: ${round.logs[round.logs.length-1]}`}</b>
-      </p>
-        ))} */}
+      <p>{`Voting Method: ${votingMethod}`}</p>
+      <p>{`${results.elected.length > 1 ? 'Winners' : 'Winner'}: ${results.elected.map(c => c.name).join(', ')}`}</p>
+      {results.tied?.length > 0 &&
+        <p>{`Tied: ${results.tied.map(c => c.name).join(', ')}`}</p>}
+      <p>{`Number of voters: ${results.summaryData.nValidVotes}`}</p>
     </>
   );
 }
@@ -233,11 +340,12 @@ function PRResultsViewer({ result }) {
 
   return (
     <div>
-      <h2>Winners:</h2>
-      {result.cvr.prResults.winners.map((winner) => <h3> {winner.name}</h3>)}
-      <h2>Losers:</h2>
-      {result.cvr.prResults.losers.map((loser) => <h3> {loser.name}</h3>)}
-      <h2>Scores By Round</h2>
+      <h2>Summary</h2>
+      <p>Voting Method: Proportional STAR Voting</p>
+      <p>{`Winners: ${result.cvr.prResults.winners.map((winner) => winner.name).join(', ')}`}</p>
+      <p>{`Number of voters: ${result.cvr.voters.length}`}</p>
+      <h2>Detailed Results</h2>
+      <h3>Scores By Round</h3>
       <table className='matrix'>
         <thead className='matrix'>
           <tr className='matrix'>
@@ -275,33 +383,48 @@ export default function Results({ race, result }) {
   return (
     <div>
       <div className="flexContainer">
-        <h2>Summary</h2>
-
         {race.voting_method === "STAR" &&
           race.num_winners === 1 &&
           <>
-            <p>Voting Method: STAR Voting</p>
-            <p>{`Winner: ${result.elected[0].name}`}</p>
-            <p>{`Number of voters: ${result.summaryData.nValidVotes}`}</p>
-            <ResultViewer title="Detailed Results" results={result} rounds={1} />
+            <SummaryViewer votingMethod='STAR Voting' results={result} />
+            <STARResultViewer results={result} rounds={1} />
           </>}
 
         {race.voting_method === "STAR" && race.num_winners > 1 &&
           <>
-            <p>Voting Method: Multi-Winner STAR Voting</p>
-            <p>{`Winners: ${result.elected.map(c => c.name).join(', ')}`}</p>
-            <p>{`Number of voters: ${result.summaryData.nValidVotes}`}</p>
-            {/* <SummaryViewer race={race} results={result} /> */}
-            <ResultViewer title="Detailed Results" results={result} rounds={race.num_winners} />
+            <SummaryViewer votingMethod='Multi-Winner STAR Voting' results={result} />
+            <STARResultViewer results={result} rounds={race.num_winners} />
           </>}
 
         {race.voting_method === "STAR_PR" &&
-          <PRResultsViewer result={result} />}
+          <>
+            {/* PR tabulator needs to be refactored to match interface of other methods */}
+            {/* <SummaryViewer votingMethod='Proportional STAR' results={result} /> */}
+            <PRResultsViewer result={result} />
+          </>}
 
         {race.voting_method === "RankedRobin" &&
           <>
-            <SummaryViewer race={race} results={result} />
-            <RankedRobinViewer title="Ranked Robin Results" results={result} />
+            <SummaryViewer votingMethod='Ranked Robin' results={result} />
+            <RankedRobinViewer results={result} />
+          </>}
+
+        {race.voting_method === "Plurality" &&
+          <>
+            <SummaryViewer votingMethod='Plurality' results={result} />
+            <PluralityResultsViewer results={result} />
+          </>}
+
+        {race.voting_method === "Approval" &&
+          <>
+            <SummaryViewer votingMethod='Approval' results={result} />
+            <ApprovalResultsViewer results={result} />
+          </>}
+
+        {race.voting_method === "IRV" &&
+          <>
+            <SummaryViewer votingMethod='Ranked Choice Voting' results={result} />
+            <IRVResultsViewer results={result} />
           </>}
       </div>
     </div>
