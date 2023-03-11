@@ -29,7 +29,7 @@ export default function BallotSelector({
         onUpdate={onUpdate}
         />
     }
-    {(race.voting_method == 'Ranked-Robin' || race.voting_method == "IRV") && 
+    {(race.voting_method == 'RankedRobin' || race.voting_method == "IRV") && 
       <RankedBallotView
         race={race}
         candidates={candidates}

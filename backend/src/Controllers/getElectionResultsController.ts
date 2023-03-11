@@ -42,8 +42,10 @@ const getElectionResults = async (req: any, res: any, next: any) => {
         const voting_method = election.races[race_index].voting_method
 
         if (!VotingMethods[voting_method]) {
-            throw new Error('Invalid Voting Method')
+            throw new Error(`Invalid Voting Method: ${voting_method}`)
         }
+        const msg = `Tabulating results for ${voting_method} election`
+        Logger.info(req, msg);
         results[race_index] = VotingMethods[voting_method](candidateNames, cvr, num_winners)
     }
     res.json(

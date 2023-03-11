@@ -271,7 +271,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                                             <MenuItem key="IRV" value="IRV">
                                                 IRV
                                             </MenuItem>
-                                            <MenuItem key="Ranked-Robin" value="Ranked-Robin">
+                                            <MenuItem key="Ranked-Robin" value="RankedRobin">
                                                 Ranked-Robin
                                             </MenuItem>
                                             <MenuItem key="Approval" value="Approval">
