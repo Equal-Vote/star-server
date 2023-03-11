@@ -168,7 +168,7 @@ const ColumnHeadings = ({starHeadings, columns, leftTitle, rightTitle, headingPr
     <Grid container alignItems="stretch">
       <Grid item xs={5}>
         { headingPrefix != '' &&
-          <Typography align='right' className="columnDescriptor">
+          <Typography className="headingPrefix">
             {headingPrefix}
           </Typography>
         }
@@ -190,12 +190,19 @@ const ScoreIcon = ({color, value}) => (
 )
 
 const ScoreColumnHeadings = ({starHeadings, columns}) =>
-  columns.map((columnValue, n) => (
+  columns.map((columnTitle, n) => (
     <Grid item xs={1}>
-      <ScoreIcon
-        color={(starHeadings && n != 0)? '#CCCCCC' : '#FFFFFF'}
-        value={columnValue}
-      />
+      { starHeadings &&
+        <ScoreIcon
+          color={(n != 0)? '#CCCCCC' : '#FFFFFF'}
+          value={columnTitle}
+        />
+      }
+      { !starHeadings && 
+        <Typography align='center' variant="h6" component="h6">
+          <b>{columnTitle}</b>
+        </Typography>
+      }
     </Grid>
   ));
 
@@ -206,12 +213,17 @@ export default function GenericBallotView({
   onClick,
   columns,
   instructions,
+  columnValues=null,
   leftTitle='',
   rightTitle='',
   headingPrefix='',
   footer='',
   starHeadings=false,
+  warning=null,
 }) {
+  if(columnValues == null){
+    columnValues = columns
+  }
   return (
       <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }} className="ballot">
         <Grid container alignItems="center" justify="center" direction="column">
@@ -239,12 +251,18 @@ export default function GenericBallotView({
             headingPrefix={headingPrefix}
           />
           <Divider className="rowDivider"/>
-          <Rows candidates={candidates} scores={scores} onClick={onClick} columns={columns}/>
+          <Rows candidates={candidates} scores={scores} onClick={onClick} columns={columnValues}/>
 
-          <Grid item xs={10} style={{ padding: '0.4cm 0cm' }}>
+          <Grid item xs={10} className="footer">
             {footer}
           </Grid>
 
+          { warning !== null &&
+            <Box style={{backgroundColor: '#FFFF88', marginLeft:'10%', marginRight:'10%', marginBottom:'.4cm', padding: '.2cm'}}>
+              <Typography>⚠️</Typography>
+              <Typography style={{paddingLeft:'30px'}}>{warning}</Typography>
+            </Box>
+          }
         </Grid>
       </Box>
   );

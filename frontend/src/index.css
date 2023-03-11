@@ -477,7 +477,13 @@ h2.selected {
 .ballot .instructions {
   font-family: Verdana, Geneva, sans-serif;
   font-size: 12px;
-  padding: 0cm 0cm .2cm 0cm;
+  padding: 0cm 2cm .2cm 2cm;
+}
+
+.ballot .footer {
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 12px;
+  padding: .4cm 2cm 0cm 2cm;
 }
 
 
@@ -485,6 +491,12 @@ h2.selected {
   font-family: Verdana, Geneva, sans-serif;
   font-weight: bold;
   font-size: 13px;
+}
+.ballot .headingPrefix {
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 13px;
+  text-align: right;
+  transform: translate(0%, 25%);
 }
 
 .ballot .rowDivider {
@@ -514,9 +526,6 @@ h2.selected {
   font-family: 'Archivo Black';
   font-size: 1.1em;
   font-weight: bold;
-
-  /*text-align: left;*/
-  justify-content: right;
 }
 
 .ballot .starIcon {
