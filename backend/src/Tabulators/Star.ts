@@ -277,13 +277,13 @@ export function runStarRound(summaryData: summaryData, remainingCandidates: cand
   if (runoffTieWinner === 0) {
     roundResults.winners = [runoffCandidates[0]]
     roundResults.runner_up = [runoffCandidates[1]]
-    roundResults.logs.push(`${runoffCandidates[0].name} defeats ${runoffCandidates[1].name} in runoff tiebreaker with a score of ${summaryData.totalScores[runoffCandidates[0].index]} to ${summaryData.totalScores[runoffCandidates[1].index]}.`)
+    roundResults.logs.push(`${runoffCandidates[0].name} defeats ${runoffCandidates[1].name} in runoff tiebreaker with a score of ${summaryData.totalScores[runoffCandidates[0].index].score} to ${summaryData.totalScores[runoffCandidates[1].index].score}.`)
     return roundResults
   }
   if (runoffTieWinner === 1) {
     roundResults.winners = [runoffCandidates[1]]
     roundResults.runner_up = [runoffCandidates[0]]
-    roundResults.logs.push(`${runoffCandidates[1].name} defeats ${runoffCandidates[0].name} in runoff tiebreaker with a score of ${summaryData.totalScores[runoffCandidates[1].index]} to ${summaryData.totalScores[runoffCandidates[0].index]}.`)
+    roundResults.logs.push(`${runoffCandidates[1].name} defeats ${runoffCandidates[0].name} in runoff tiebreaker with a score of ${summaryData.totalScores[runoffCandidates[1].index].score} to ${summaryData.totalScores[runoffCandidates[0].index].score}.`)
     return roundResults
   }
   // True tie, other tiebreaker needed to resolve
