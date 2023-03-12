@@ -57,7 +57,7 @@ export function RankedRobin(candidates: string[], votes: ballot[], nWinners = 1,
 }
 
 function getRankedRobinBallotValidity(ballot: ballot) {
-  const minScore = 1
+  const minScore = 0
   const maxScore = ballot.length
   let isUnderVote = true
   for (let i = 0; i < ballot.length; i++) {

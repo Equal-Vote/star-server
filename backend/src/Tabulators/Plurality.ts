@@ -16,9 +16,8 @@ export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, b
   const sortedScores = summaryData.totalScores.sort((a: totalScore, b: totalScore) => {
     if (a.score > b.score) return -1
     if (a.score < b.score) return 1
-    return 0
+    return 0.5 - Math.random()
   })
-  
   var remainingCandidates = [...summaryData.candidates]
   while (remainingCandidates.length>0) {
     const topScore = sortedScores[results.elected.length + results.tied.length + results.other.length]
@@ -29,7 +28,7 @@ export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, b
       }
     }
     if (breakTiesRandomly && scoreWinners.length>1) {
-      scoreWinners = [scoreWinners[getRandomInt(scoreWinners.length)]]
+      scoreWinners = [scoreWinners[0]]
     }
     if ((results.elected.length + results.tied.length + scoreWinners.length)<=nWinners) {
       results.elected.push(...scoreWinners)
