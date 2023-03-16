@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    networks:
+      - star-net
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@my-db:5432/postgres
+  my-db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - star-net
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    restart:
+      on-failure
+networks:
+  star-net: {}
