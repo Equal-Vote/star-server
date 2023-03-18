@@ -5,10 +5,11 @@ import AddCandidate from "./AddCandidate"
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from '@mui/material/Typography';
-import { Box, FormHelperText, InputLabel } from "@mui/material"
+import { Box, Checkbox, FormGroup, FormHelperText, FormLabel, InputLabel, Radio, RadioGroup, Tooltip } from "@mui/material"
 import { StyledButton } from '../styles';
 
 export default function Races({ election, applyElectionUpdate, getStyle, setPageNumber, submitText, onSubmit }) {
@@ -115,7 +116,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
     }
 
     const onEditCandidate = (race_index, candidate: Candidate, index) => {
-        setErrors({ ...errors, candidates: '', raceNumWinners: ''})
+        setErrors({ ...errors, candidates: '', raceNumWinners: '' })
         applyElectionUpdate(election => {
             election.races[race_index].candidates[index] = candidate
             const candidates = election.races[openRace].candidates
@@ -244,42 +245,51 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                                     {errors.raceNumWinners}
                                 </FormHelperText>
                             </Grid>
-                            <Grid item xs={12} sx={{ m: 0, p: 1 }}>
-                                <Box sx={{ minWidth: 120 }}>
-                                    <FormControl fullWidth sx={{
-                                        m: 0,
-                                        boxShadow: 2,
-                                    }}>
-                                        <InputLabel >
-                                            Voting Method
-                                        </InputLabel>
-                                        <Select
-                                            name="Voting Method"
-                                            label="Voting Method"
-                                            value={election.races[race_index].voting_method}
-                                            onChange={(e) => applyElectionUpdate(election => { election.races[race_index].voting_method = e.target.value })}
-                                        >
-                                            <MenuItem key="STAR" value="STAR">
-                                                STAR
-                                            </MenuItem>
-                                            <MenuItem key="STAR_PR" value="STAR_PR">
-                                                STAR-PR
-                                            </MenuItem>
-                                            <MenuItem key="Plurality" value="Plurality">
-                                                Plurality
-                                            </MenuItem>
-                                            <MenuItem key="IRV" value="IRV">
-                                                IRV
-                                            </MenuItem>
-                                            <MenuItem key="Ranked-Robin" value="RankedRobin">
-                                                Ranked-Robin
-                                            </MenuItem>
-                                            <MenuItem key="Approval" value="Approval">
-                                                Approval
-                                            </MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </Box>
+
+                            <Grid item xs={12} sx={{ m: 0, my: 1, p: 1 }}>
+                                <FormControl component="fieldset" variant="standard">
+                                    <FormLabel id="voter-access">
+                                        Voting Method
+                                    </FormLabel>
+                                    <RadioGroup
+                                        aria-labelledby="voting-method-radio-group"
+                                        name="voter-access-radio-buttons-group"
+                                        value={election.races[race_index].voting_method}
+                                        onChange={(e) => applyElectionUpdate(election => { election.races[race_index].voting_method = e.target.value })}
+                                    >
+                                        <FormControlLabel value="STAR" control={<Radio />} label="STAR" sx={{ mb: 0, pb: 0 }} />
+                                        <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                            Score-Than-Automatic-Runoff, recommended by the Equal Vote Coalition
+                                        </FormHelperText>
+
+                                        <FormControlLabel value="STAR_PR" control={<Radio />} label="Proportional STAR" />
+                                        <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                            A proportional multiwinner version of STAR voting
+                                        </FormHelperText>
+
+                                        <FormControlLabel value="RankedRobin" control={<Radio />} label="Ranked Robin" />
+                                        <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                            Ranked method, candidate that wins the most head to head matchups wins
+                                        </FormHelperText>
+
+                                        <FormControlLabel value="Approval" control={<Radio />} label="Approval" />
+                                        <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                            Candidate with the highest approval wins
+                                        </FormHelperText>
+                                        
+                                        <FormControlLabel value="Plurality" control={<Radio />} label="Plurality" />
+                                        <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                            Choose one only voting, candidate with most votes wins. Not recommended with more than 2 candidates.
+                                        </FormHelperText>
+                                        
+                                        <FormControlLabel value="IRV" control={<Radio />} label="Ranked Choice" />
+                                        <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                            Eliminate candidates until majority winner is found. Only recommended for educational purposes.
+                                        </FormHelperText>
+                                    </RadioGroup>
+                                </FormControl>
+
+
                             </Grid>
                             <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                                 <Typography gutterBottom variant="h6" component="h6">
