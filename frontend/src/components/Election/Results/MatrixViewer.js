@@ -15,7 +15,7 @@ function CellViewer({ cell }) {
 export default function MatrixViewer({ results }) {
   return (
     <Paper elevation={0} sx={{ width:'100%' }}>
-      <TableContainer sx={{ maxHeight: 600, maxWidth: {xs:400, sm: 500, md: 600}}}>
+      <TableContainer sx={{ maxHeight: 600, maxWidth: {xs:300, sm: 500, md: 600, lg: 1000}}}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
