@@ -259,32 +259,32 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                                     >
                                         <FormControlLabel value="STAR" control={<Radio />} label="STAR" sx={{ mb: 0, pb: 0 }} />
                                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                            Score-Than-Automatic-Runoff, recommended by the Equal Vote Coalition
+                                            Score candidates 0-5, single winner or multi-winner
                                         </FormHelperText>
 
                                         <FormControlLabel value="STAR_PR" control={<Radio />} label="Proportional STAR" />
                                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                            A proportional multiwinner version of STAR voting
+                                            Score candidates 0-5, proportional multi-winner
                                         </FormHelperText>
 
                                         <FormControlLabel value="RankedRobin" control={<Radio />} label="Ranked Robin" />
                                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                            Ranked method, candidate that wins the most head to head matchups wins
+                                            Rank candidates in order of preference, single winner or multi-winner
                                         </FormHelperText>
 
                                         <FormControlLabel value="Approval" control={<Radio />} label="Approval" />
                                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                            Candidate with the highest approval wins
+                                            Mark all candidates you approve of, single winner or multi-winner
                                         </FormHelperText>
                                         
                                         <FormControlLabel value="Plurality" control={<Radio />} label="Plurality" />
                                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                            Choose one only voting, candidate with most votes wins. Not recommended with more than 2 candidates.
+                                            Mark one candidate only. Not recommended with more than 2 candidates.
                                         </FormHelperText>
                                         
                                         <FormControlLabel value="IRV" control={<Radio />} label="Ranked Choice" />
                                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                            Eliminate candidates until majority winner is found. Only recommended for educational purposes.
+                                            Rank candidates in order of preference, single winner, only recommended for educational purposes
                                         </FormHelperText>
                                     </RadioGroup>
                                 </FormControl>
