@@ -1,25 +1,29 @@
-// const IRV = require('./IRV.ts')
 import { IRV } from './IRV'
 
 describe("IRV Tests", () => {
-    test("IRV Test", () => {
-        // Simple test to elect the candidate that is the highest scoring and condorcet winner
+    test("First round majority", () => {
+        // Simple test to elect the candidate with most votes in first round
         const candidates = ['Alice', 'Bob', 'Carol', 'Dave']
 
         const votes = [
             [1, 2, 3, 4],
             [1, 2, 3, 4],
+            [1, 2, 3, 4],
+            [1, 2, 3, 4],
+            [1, 2, 3, 4],
             [2, 1, 3, 4],
             [2, 1, 3, 4],
             [2, 3, 1, 4],
+            [2, 3, 4, 1],
         ]
         const results = IRV(candidates, votes)
-        console.log(results.voteCounts)
         expect(results.elected[0].name).toBe('Alice');
-        // expect(results.runner_up[0].name).toBe('Carmen');
+        expect(results.voteCounts.length).toBe(1);  //only single round
+        expect(results.voteCounts[0]).toStrictEqual([5,2,1,1]);  
+        
     })
-    test("Center Squeeze", () => {
-        // Simple test to elect the candidate that is the highest scoring and condorcet winner
+    test("2 round test", () => {
+        // Majority can't be found in first round
         const candidates = ['Alice', 'Bob', 'Carol']
 
         const votes = [
@@ -30,12 +34,13 @@ describe("IRV Tests", () => {
             [2, 1, 3],
         ]
         const results = IRV(candidates, votes)
-        console.log(results.voteCounts)
         expect(results.elected[0].name).toBe('Alice');
-        // expect(results.runner_up[0].name).toBe('Carmen');
+        expect(results.voteCounts.length).toBe(2);  //Two rounds
+        expect(results.voteCounts[0]).toStrictEqual([2,1,2]);  
+        expect(results.voteCounts[1]).toStrictEqual([3,0,2]); 
     })
     test("Exhausted Ballots", () => {
-        // Simple test to elect the candidate that is the highest scoring and condorcet winner
+        // Exhaust ballot if no remaining candidates
         const candidates = ['Alice', 'Bob', 'Carol']
 
         const votes = [
@@ -47,15 +52,17 @@ describe("IRV Tests", () => {
             [3, 2, 1],
             [3, 2, 1],
             [3, 2, 1],
-            [2, 1, 1],
-            [2, 1, 0],
-            [0, 1, 0],
+            [2, 1, 1],//overvote
+            [3, 2, 0],//no first rank
+            [2, 1, 2],//second round overvote
+            [0, 1, 0],//second round exhausted vote
         ]
         const results = IRV(candidates, votes)
-        console.log(results)
-        console.log(results.exhaustedVoteCounts)
-        console.log(results.overVoteCounts)
         expect(results.elected[0].name).toBe('Alice');
-        // expect(results.runner_up[0].name).toBe('Carmen');
+        expect(results.voteCounts.length).toBe(2);  //Two rounds
+        expect(results.voteCounts[0]).toStrictEqual([4,3,4]);  
+        expect(results.voteCounts[1]).toStrictEqual([5,0,4]);  
+        expect(results.overVoteCounts).toStrictEqual([1,2]);   
+        expect(results.exhaustedVoteCounts).toStrictEqual([1,3]); 
     })
 })
