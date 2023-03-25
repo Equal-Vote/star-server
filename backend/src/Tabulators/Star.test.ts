@@ -101,7 +101,7 @@ describe("STAR Tests", () => {
             [0, 0, 5],
         ]
         const results = Star(candidates, votes, 1, false, false)
-        expect(results.summaryData.nValidVotes).toBe(6);
+        expect(results.summaryData.nValidVotes).toBe(8);
         expect(results.summaryData.nInvalidVotes).toBe(2);
         expect(results.summaryData.nUnderVotes).toBe(2);
         expect(results.summaryData.nBulletVotes).toBe(3);

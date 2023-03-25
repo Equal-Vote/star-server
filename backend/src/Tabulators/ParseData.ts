@@ -4,7 +4,7 @@ import { ballot, voter } from "./ITabulators";
 export interface IparsedData {
     scores: ballot[],
     invalidVotes: voter[],
-    underVotes: voter[],
+    underVotes: number,
     validVotes: voter[]
 } 
 function getStarBallotValidity(ballot: ballot) {
@@ -26,7 +26,7 @@ module.exports = function ParseData(data: ballot[], validityCheck = getStarBallo
     // Initialize arrays
     const scores: ballot[] = [];
     const validVotes: voter[] = [];
-    const underVotes: voter[]  = [];
+    let underVotes: number = 0;
     const invalidVotes: voter[]  = [];
     // Parse each row of data into voter, undervote, and score arrays
     data.forEach((row, n) => {
@@ -36,7 +36,9 @@ module.exports = function ParseData(data: ballot[], validityCheck = getStarBallo
             invalidVotes.push(voter)
         }
         else if (ballotValidity.isUnderVote) {
-            underVotes.push(voter)
+            underVotes += 1
+            scores.push(row)
+            validVotes.push(voter);
         }
         else {
             scores.push(row)
