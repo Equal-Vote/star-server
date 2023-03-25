@@ -54,9 +54,10 @@ describe("Plurality Tests", () => {
             [0, 0, 0, 1],
             [0, 0, 0, 1],
         ]
-        const results = Plurality(candidates, votes)
-        expect(results.elected.length).toBe(1);
+        const results = Plurality(candidates, votes,2)
+        expect(results.elected.length).toBe(2);
         expect(results.elected[0].name).toBe('Dave');
+        expect(results.elected[1].name).toBe('Carol');
         expect(results.summaryData.totalScores[0].score).toBe(5)
         expect(results.summaryData.totalScores[0].index).toBe(3)
         expect(results.summaryData.totalScores[1].score).toBe(3)
