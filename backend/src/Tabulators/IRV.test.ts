@@ -52,9 +52,9 @@ describe("IRV Tests", () => {
             [3, 2, 1],
             [3, 2, 1],
             [3, 2, 1],
-            [2, 1, 1],//overvote
-            [3, 2, 0],//no first rank
-            [2, 1, 2],//second round overvote
+            [2, 1, 1],//first round overvote & exhausted
+            [3, 2, 0],//no first rank, not exhausted
+            [2, 1, 2],//second round overvote & exhausted
             [0, 1, 0],//second round exhausted vote
         ]
         const results = IRV(candidates, votes)

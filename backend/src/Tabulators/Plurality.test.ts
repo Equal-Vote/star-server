@@ -95,9 +95,9 @@ describe("Plurality Tests", () => {
         expect(results.summaryData.totalScores[0].score).toBe(5)
         expect(results.summaryData.totalScores[0].index).toBe(3)
         expect(results.summaryData.totalScores[1].score).toBe(3)
-        expect([1,2]).toContain(results.summaryData.totalScores[1].index)
+        expect([1,2]).toContain(results.summaryData.totalScores[1].index)// random tiebreaker, second place can either be 1 or 2
         expect(results.summaryData.totalScores[2].score).toBe(3)
-        expect([1,2]).toContain(results.summaryData.totalScores[2].index)
+        expect([1,2]).toContain(results.summaryData.totalScores[2].index)// random tiebreaker, third place can either be 1 or 2
         expect(results.summaryData.totalScores[3].score).toBe(0)
         expect(results.summaryData.totalScores[3].index).toBe(0)
         
