@@ -30,7 +30,7 @@ describe("Approval Tests", () => {
         expect(results.summaryData.totalScores[3].index).toBe(0)
         
         expect(results.summaryData.nUnderVotes).toBe(1)
-        expect(results.summaryData.nValidVotes).toBe(7)
+        expect(results.summaryData.nValidVotes).toBe(8)
         expect(results.summaryData.nInvalidVotes).toBe(2)
     })
 

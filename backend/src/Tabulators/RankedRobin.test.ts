@@ -40,7 +40,7 @@ describe("Ranked Robin Tests", () => {
         expect(results.summaryData.totalScores[3].score).toBe(0); 
 
         expect(results.summaryData.nUnderVotes).toBe(1)
-        expect(results.summaryData.nValidVotes).toBe(9)
+        expect(results.summaryData.nValidVotes).toBe(10)
         expect(results.summaryData.nInvalidVotes).toBe(2)
     })    
     test("Muilti winner test", () => {

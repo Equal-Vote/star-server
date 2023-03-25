@@ -195,7 +195,7 @@ function getSummaryData(candidates: string[], parsedData: IparsedData): irvSumma
         pairwiseMatrix,
         nValidVotes: parsedData.validVotes.length,
         nInvalidVotes: parsedData.invalidVotes.length,
-        nUnderVotes: parsedData.underVotes.length,
+        nUnderVotes: parsedData.underVotes,
         nBulletVotes: nBulletVotes
     }
 }
