@@ -19,6 +19,7 @@
     "url": "https://github.com/Equal-Vote/star-server/issues"
   },
   "homepage": "https://github.com/Equal-Vote/star-server#readme",
-  "dependencies": {
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0"
   }
 }
