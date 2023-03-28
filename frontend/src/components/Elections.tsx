@@ -16,7 +16,6 @@ const Elections = ({ authSession }) => {
     // if (url_params.has('filter')) {
     //     url = `${url}?filter=${url_params.get('filter')}`
     // }
-    console.log(`fetch ${url}`)
     const { data, isPending, error, makeRequest: fetchElections } = useFetch(url, 'get')
 
     useEffect(() => {

@@ -20,7 +20,6 @@ const ListItem = ({ text, link }) => {
 
 export default function Sidebar({ electionData }) {
     const id = electionData.election.election_id;
-    console.log(electionData)
     return (
         <>
             {electionData.voterAuth?.roles?.length > 0 &&
