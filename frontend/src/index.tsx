@@ -4,15 +4,21 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { makeServer } from "./server";
+import { BrowserRouter as Router } from 'react-router-dom';
+import { useAuthSession } from './hooks/useAuthSession'
 
 // I added USE_MIRAGE=true to the .env file, not sure why it's not working?
 //if(process.env.USE_MIRAGE == 'true'){
   makeServer({environment: 'development'})
 //}
 
+
+const authSession = useAuthSession()
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <App authSession={authSession}/>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );

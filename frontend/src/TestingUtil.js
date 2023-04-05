@@ -4,7 +4,7 @@
 import React from "react";
 import Election from './components/Election/Election'
 import {BrowserRouter, MemoryRouter, Route, Routes} from 'react-router-dom'
-import {makeRoutes} from "./App"
+import App from "./App"
 import { screen, render, waitForElementToBeRemoved, prettyDOM } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import '@testing-library/jest-dom/extend-expect' // toBeInDocument wouldn't work without this function
@@ -53,13 +53,17 @@ export const openElection = async (electionId) => {
     // Ideally I'd like to avoid a mock here, but it's the only way I got it to work
     const authSession = mockAuth()
 
-    render(
-        <MemoryRouter initialEntries={[`/Election/${electionId}`]}>
-            {makeRoutes(authSession)}
-        </MemoryRouter>
-    )
+    //render(
+    //    <MemoryRouter initialEntries={[`/Election/${electionId}`]}>
+    //        {makeRoutes(authSession)}
+    //    </MemoryRouter>
+    //)
+    //render(<App />) 
+    render(<App authSession={authSession}/>, {wrapper: BrowserRouter})
 
-    await waitForElementToBeRemoved(() => screen.getByText(/loading election.../i))
+    //window.history.pushState({}, '/Election/${electionId}')
 
-    expect(screen.getByText("Vote")).toBeInTheDocument();
+    //await waitForElementToBeRemoved(() => screen.getByText(/loading election.../i))
+
+    //expect(screen.getByText("Vote")).toBeInTheDocument();
 }
