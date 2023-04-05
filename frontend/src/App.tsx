@@ -14,8 +14,25 @@ import LandingPage from './components/LandingPage'
 import { Alert, CssBaseline, Snackbar } from '@mui/material'
 import { useAuthSession } from './hooks/useAuthSession'
 import { SnackbarContext } from './components/SnackbarContext'
+
+export function makeRoutes(authSession){ // exporting this so that the testing can access it
+  return (
+    <Routes>
+      <Route path='/' element={<LandingPage authSession={authSession} />} />
+      <Route path='/Elections' element={<Elections authSession={authSession} />} />
+      <Route path='/Login' element={<Login />} />
+      <Route path='/Debug' element={<DebugPage authSession={authSession} />} />
+      <Route path='/CreateElection' element={<AddElection authSession={authSession} />} />
+      <Route path='/Election/:id/*' element={<Election authSession={authSession} />} />
+      <Route path='/DuplicateElection/:id' element={<DuplicateElection authSession={authSession} />} />
+      <Route path='/Sandbox' element={<Sandbox />} />
+    </Routes>
+  )
+}
+
 const App = () => {
   const authSession = useAuthSession()
+
   const [snack, setSnack] = useState({
     message: '',
     severity: "info",
@@ -44,16 +61,7 @@ const App = () => {
           </Snackbar>
           <CssBaseline />
           <Header authSession={authSession} />
-          <Routes>
-            <Route path='/' element={<LandingPage authSession={authSession} />} />
-            <Route path='/Elections' element={<Elections authSession={authSession} />} />
-            <Route path='/Login' element={<Login />} />
-            <Route path='/Debug' element={<DebugPage authSession={authSession} />} />
-            <Route path='/CreateElection' element={<AddElection authSession={authSession} />} />
-            <Route path='/Election/:id/*' element={<Election authSession={authSession} />} />
-            <Route path='/DuplicateElection/:id' element={<DuplicateElection authSession={authSession} />} />
-            <Route path='/Sandbox' element={<Sandbox />} />
-          </Routes>
+          {makeRoutes(authSession)}     
         </SnackbarContext.Provider>
       </ThemeProvider>
     </Router>

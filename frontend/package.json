@@ -9,7 +9,6 @@
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.10",
     "@testing-library/react": "^11.2.7",
-    "@testing-library/user-event": "^12.8.3",
     "@types/node": "^17.0.23",
     "@types/react": "^17.0.44",
     "@types/react-dom": "^17.0.15",
@@ -54,6 +53,7 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.5.0",
     "miragejs": "^0.1.47"
   }

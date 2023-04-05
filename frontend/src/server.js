@@ -1,105 +1,109 @@
-import { Server, Model, Factory } from "miragejs";
+import { Server, Model, Factory, trait } from "miragejs";
+
+
+// NOTE: for now we'll assume that user is authorized, we can decide later how we test the failure scenarios
+const authorized_voter = {'authorized_voter': true, 'has_voted': false, 'roles': [], 'permissions': []}
 
 // vote Schema
-                //{
-                //    "db": {
-                //        "_collections": [
-                //            {
-                //                "name": "todos",
-                //                "_records": [],
-                //                "identityManager": {
-                //                    "_nextId": 1,
-                //                    "_ids": {}
-                //                }
-                //            }
-                //        ],
-                //        "_identityManagers": {}
-                //    },
-                //    "_registry": {
-                //        "todo": {
-                //            "foreignKeys": []
-                //        }
-                //    },
-                //    "_dependentAssociations": {
-                //        "polymorphic": []
-                //    },
-                //    "todos": {
-                //        "camelizedModelName": "todo"
-                //    },
-                //    "isSaving": {}
-                //}
+//{
+//    "db": {
+//        "_collections": [
+//            {
+//                "name": "todos",
+//                "_records": [],
+//                "identityManager": {
+//                    "_nextId": 1,
+//                    "_ids": {}
+//                }
+//            }
+//        ],
+//        "_identityManagers": {}
+//    },
+//    "_registry": {
+//        "todo": {
+//            "foreignKeys": []
+//        }
+//    },
+//    "_dependentAssociations": {
+//        "polymorphic": []
+//    },
+//    "todos": {
+//        "camelizedModelName": "todo"
+//    },
+//    "isSaving": {}
+//}
 
 
-                // Vote Request
-                //{
-                //    "_eventListeners": {
-                //        "loadend": [
-                //            null
-                //        ],
-                //        "abort": [
-                //            null
-                //        ],
-                //        "load": [
-                //            null
-                //        ],
-                //        "progress": [
-                //            null
-                //        ],
-                //        "loadstart": [
-                //            null
-                //        ]
-                //    },
-                //    "readyState": 4,
-                //    "requestHeaders": {
-                //        "Accept": "application/json",
-                //        "Content-Type": "application/json"
-                //    },
-                //    "requestBody": "{\"ballot\":{\"ballot_id\":\"0\",\"election_id\":\"c3152107-ec74-4ccc-a5ed-40162b5ada85\",\"votes\":[{\"race_id\":\"0\",\"scores\":[{\"candidate_id\":\"0\",\"score\":5},{\"candidate_id\":\"1\",\"score\":3},{\"candidate_id\":\"2\",\"score\":0}]}],\"date_submitted\":1679970566082,\"status\":\"submitted\"}}",
-                //    "status": 201,
-                //    "statusText": "Created",
-                //    "upload": {
-                //        "_eventListeners": {
-                //            "loadend": [
-                //                null
-                //            ],
-                //            "abort": [
-                //                null
-                //            ],
-                //            "load": [
-                //                null
-                //            ],
-                //            "progress": [
-                //                null
-                //            ],
-                //            "loadstart": [
-                //                null
-                //            ]
-                //        }
-                //    },
-                //    "onloadend": null,
-                //    "onloadstart": null,
-                //    "onprogress": null,
-                //    "onreadystatechange": null,
-                //    "method": "POST",
-                //    "url": "/API/Election/c3152107-ec74-4ccc-a5ed-40162b5ada85/vote",
-                //    "async": true,
-                //    "responseText": "{}",
-                //    "response": "{}",
-                //    "responseXML": null,
-                //    "responseURL": "/API/Election/c3152107-ec74-4ccc-a5ed-40162b5ada85/vote",
-                //    "sendFlag": true,
-                //    "sendArguments": {
-                //        "0": "{\"ballot\":{\"ballot_id\":\"0\",\"election_id\":\"c3152107-ec74-4ccc-a5ed-40162b5ada85\",\"votes\":[{\"race_id\":\"0\",\"scores\":[{\"candidate_id\":\"0\",\"score\":5},{\"candidate_id\":\"1\",\"score\":3},{\"candidate_id\":\"2\",\"score\":0}]}],\"date_submitted\":1679970566082,\"status\":\"submitted\"}}"
-                //    },
-                //    "errorFlag": false,
-                //    "params": {
-                //        "id": "c3152107-ec74-4ccc-a5ed-40162b5ada85"
-                //    },
-                //    "queryParams": {},
-                //    "responseHeaders": {
-                //        "Content-Type": "application/json"
-                //    }
-                //}
+// Vote Request
+//{
+//    "_eventListeners": {
+//        "loadend": [
+//            null
+//        ],
+//        "abort": [
+//            null
+//        ],
+//        "load": [
+//            null
+//        ],
+//        "progress": [
+//            null
+//        ],
+//        "loadstart": [
+//            null
+//        ]
+//    },
+//    "readyState": 4,
+//    "requestHeaders": {
+//        "Accept": "application/json",
+//        "Content-Type": "application/json"
+//    },
+//    "requestBody": "{\"ballot\":{\"ballot_id\":\"0\",\"election_id\":\"c3152107-ec74-4ccc-a5ed-40162b5ada85\",\"votes\":[{\"race_id\":\"0\",\"scores\":[{\"candidate_id\":\"0\",\"score\":5},{\"candidate_id\":\"1\",\"score\":3},{\"candidate_id\":\"2\",\"score\":0}]}],\"date_submitted\":1679970566082,\"status\":\"submitted\"}}",
+//    "status": 201,
+//    "statusText": "Created",
+//    "upload": {
+//        "_eventListeners": {
+//            "loadend": [
+//                null
+//            ],
+//            "abort": [
+//                null
+//            ],
+//            "load": [
+//                null
+//            ],
+//            "progress": [
+//                null
+//            ],
+//            "loadstart": [
+//                null
+//            ]
+//        }
+//    },
+//    "onloadend": null,
+//    "onloadstart": null,
+//    "onprogress": null,
+//    "onreadystatechange": null,
+//    "method": "POST",
+//    "url": "/API/Election/c3152107-ec74-4ccc-a5ed-40162b5ada85/vote",
+//    "async": true,
+//    "responseText": "{}",
+//    "response": "{}",
+//    "responseXML": null,
+//    "responseURL": "/API/Election/c3152107-ec74-4ccc-a5ed-40162b5ada85/vote",
+//    "sendFlag": true,
+//    "sendArguments": {
+//        "0": "{\"ballot\":{\"ballot_id\":\"0\",\"election_id\":\"c3152107-ec74-4ccc-a5ed-40162b5ada85\",\"votes\":[{\"race_id\":\"0\",\"scores\":[{\"candidate_id\":\"0\",\"score\":5},{\"candidate_id\":\"1\",\"score\":3},{\"candidate_id\":\"2\",\"score\":0}]}],\"date_submitted\":1679970566082,\"status\":\"submitted\"}}"
+//    },
+//    "errorFlag": false,
+//    "params": {
+//        "id": "c3152107-ec74-4ccc-a5ed-40162b5ada85"
+//    },
+//    "queryParams": {},
+//    "responseHeaders": {
+//        "Content-Type": "application/json"
+//    }
+//}
 // Quick Poll input
 //       {
 //     "title": "What's your favorite fruit?",
@@ -190,30 +194,65 @@ import { Server, Model, Factory } from "miragejs";
 //                 }
 
 
-
-
 export function makeServer({ environment = "development" } = {}) {
     let server = new Server({
         environment,
 
         models: {
-            todo: Model
+            election: Model
         },
 
         factories: {
-            todo: Factory.extend({
-                text(i) {
-                    return `Todo ${i + 1}`;
-                },
-
-                isDone: false
+            election: Factory.extend({
+                "fruit-election": trait({
+                    "election_id": "fruit-election",
+                    "title": "What's your favorite fruit?",
+                    "description": null,
+                    "frontend_url": "",
+                    "start_time": null,
+                    "end_time": null,
+                    "support_email": null,
+                    "owner_id": null,
+                    "audit_ids": null,
+                    "admin_ids": null,
+                    "credential_ids": null,
+                    "state": "open",
+                    "races": [
+                        {
+                            "race_id": "0",
+                            "num_winners": 1,
+                            "voting_method": "STAR",
+                            "candidates": [
+                                {
+                                    "candidate_id": "0",
+                                    "candidate_name": "Banana"
+                                },
+                                {
+                                    "candidate_id": "1",
+                                    "candidate_name": "Strawberry"
+                                },
+                                {
+                                    "candidate_id": "2",
+                                    "candidate_name": "Apple"
+                                }
+                            ],
+                            "title": "What's your favorite fruit?"
+                        }
+                    ],
+                    "settings": {
+                        "voter_access": "open",
+                        "voter_authentication": {
+                            "ip_address": true
+                        },
+                        "ballot_updates": false,
+                        "public_results": true
+                    }
+                })
             })
         },
 
         seeds(server) {
-            //server.create("todo", { text: "Buy groceries", isDone: false });
-            //server.create("todo", { text: "Walk the dog", isDone: false });
-            //server.create("todo", { text: "Do laundry", isDone: false });
+            server.create("election", "fruit-election")
         },
 
         routes() {
@@ -232,61 +271,10 @@ export function makeServer({ environment = "development" } = {}) {
             this.post('/Election/:id/vote', (schema, request) => {
             })
             // TODO: retrieve item from elections based on id
-            this.get('/Election/:id', schema => {
-                return {
-                    "election": {
-                        "election_id": "premade-fruit-election",
-                        "title": "What's your favorite fruit?",
-                        "description": null,
-                        "frontend_url": "",
-                        "start_time": null,
-                        "end_time": null,
-                        "support_email": null,
-                        "owner_id": null,
-                        "audit_ids": null,
-                        "admin_ids": null,
-                        "credential_ids": null,
-                        "state": "open",
-                        "races": [
-                            {
-                                "race_id": "0",
-                                "num_winners": 1,
-                                "voting_method": "STAR",
-                                "candidates": [
-                                    {
-                                        "candidate_id": "0",
-                                        "candidate_name": "Banana"
-                                    },
-                                    {
-                                        "candidate_id": "1",
-                                        "candidate_name": "Strawberry"
-                                    },
-                                    {
-                                        "candidate_id": "2",
-                                        "candidate_name": "Apple"
-                                    }
-                                ],
-                                "title": "What's your favorite fruit?"
-                            }
-                        ],
-                        "settings": {
-                            "voter_access": "open",
-                            "voter_authentication": {
-                                "ip_address": true
-                            },
-                            "ballot_updates": false,
-                            "public_results": true
-                        }
-                    },
-                    "voterAuth": {
-                        "authorized_voter": true,
-                        "has_voted": false,
-                        "roles": [],
-                        "permissions": []
-                    }
-                }
+            this.get('/Election/:id', (schema, request) => {
+                return {'election': schema.elections.findBy({ election_id: request.params.id }), 'voterAuth': authorized_voter }
             })
-
+        }
 
 
         //this.get("/todos", schema => {
@@ -312,7 +300,6 @@ export function makeServer({ environment = "development" } = {}) {
         //this.delete("/todos/:id", (schema, request) => {
         //  return schema.todos.find(request.params.id).destroy();
         //});
-        }
     });
 
     return server;

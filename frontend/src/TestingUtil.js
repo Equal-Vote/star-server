@@ -3,17 +3,38 @@
 
 import React from "react";
 import Election from './components/Election/Election'
-import {MemoryRouter, Route, Routes} from 'react-router-dom'
-import App from "./App"
-import { makeServer } from "./server";
-import { render, waitForElementToBeRemoved, prettyDOM } from "@testing-library/react"
+import {BrowserRouter, MemoryRouter, Route, Routes} from 'react-router-dom'
+import {makeRoutes} from "./App"
+import { screen, render, waitForElementToBeRemoved, prettyDOM } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import '@testing-library/jest-dom/extend-expect' // toBeInDocument wouldn't work without this function
 
-makeServer({environment: 'test'})
+
+export function getUser(){
+    let user = userEvent.setup()
+
+    async function clickButton(text){
+        await user.click(screen.getByText(text))
+    }
+
+    async function fillBallot(data){
+        await waitForElementToBeRemoved(() => screen.getByText(/loading election.../i))
+        screen.debug()
+        for( const [candidate, vote_value] of Object.entries(data) ){
+            console.log(candidate)
+            console.log(screen.getByText('Banana'));
+            const cell = screen.getByRole('cell', {name: 'Banana'});
+            console.log(cell)
+            const row = cell.closest('.MuiGrid-root');
+        }
+    }
+
+    return { clickButton, fillBallot}
+}
 
 const mockAuth = () => {
     const isLoggedIn = () => {
-        return false;
+        return false
     }
     const openLogin = () => {}
     const openLogout = () => {}
@@ -21,7 +42,7 @@ const mockAuth = () => {
     return {isLoggedIn, openLogin, openLogout, getIdField}
 }
 
-export const voterOpensElection = async (electionId) => {
+export const openElection = async (electionId) => {
 
     // This gives the following error: Invalid hook call. Hooks can only be called inside of the body of a function component.
     // const authSession = useAuthSession;
@@ -32,18 +53,13 @@ export const voterOpensElection = async (electionId) => {
     // Ideally I'd like to avoid a mock here, but it's the only way I got it to work
     const authSession = mockAuth()
 
-    const page = render(
-        // NOTE: this was the best way I found to start the test on a subpage, but ideally I'd like to use an approach that doesn't use a more black box approach
+    render(
         <MemoryRouter initialEntries={[`/Election/${electionId}`]}>
-            <Routes>
-                <Route path="/Election/:id/*" element={<Election authSession={authSession}/>} />
-            </Routes>
+            {makeRoutes(authSession)}
         </MemoryRouter>
     )
 
-    await waitForElementToBeRemoved(() => page.getByText(/Loading Election.../))
+    await waitForElementToBeRemoved(() => screen.getByText(/loading election.../i))
 
-    expect(page.getByText("Vote")).toBeInTheDocument();
-
-    return page
+    expect(screen.getByText("Vote")).toBeInTheDocument();
 }
