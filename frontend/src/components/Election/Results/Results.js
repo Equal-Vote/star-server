@@ -1,10 +1,11 @@
-import { Grid } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
 import React from "react";
 import MatrixViewer from "./MatrixViewer";
 import IconButton from '@mui/material/IconButton'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import { useState } from 'react'
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 // import Grid from "@mui/material/Grid";
 
 function CandidateViewer({ candidate, runoffScore }) {
@@ -216,44 +217,97 @@ function IRVResultsViewer({ results }) {
     <div className="resultViewer">
       <h2>Detailed Results</h2>
 
-      <table className='matrix'>
-        <thead className='matrix'>
-          <tr>
-            <th className='matrix'> Candidate</th>
-            {results.voteCounts.map((roundVoteCounts, i) => <th className='matrix'> {`Round ${i + 1}`}</th>)}
-          </tr>
+      <Paper elevation={0} sx={{ width: '100%' }}>
+        <TableContainer sx={{ maxHeight: 600, maxWidth: { xs: 300, sm: 500, md: 600, lg: 1000 } }}>
 
-          {results.summaryData.candidates.map((c, n) => (
-            <tr className='matrix' key={`h${n}`} >{c.name}
-              {results.voteCounts.map((roundVoteCounts, i) =>
-                <td> {roundVoteCounts[n]} </td>
-              )}
-            </tr>
-          ))}
-          <tr>
-            <tr className='matrix'> Exhausted Ballots</tr>
-            {results.exhaustedVoteCounts.map((exhaustedVoteCount, i) => <td className='matrix'> {exhaustedVoteCount} </td>)}
-          </tr>
 
-        </thead>
-      </table>
-      <table className='matrix'>
-        <thead className='matrix'>
-          <tr>
-            <th className='matrix'> Candidate</th>
-            <th className='matrix'> # of wins head to head wins</th>
-          </tr>
+          <Table size='small' stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  style={{
+                    position: 'sticky',
+                    left: 0,
+                    background: 'white',
+                    zIndex: 900,
+                    minWidth: 100
+                  }}
+                  align='left'
+                  key={``}> Candidate </TableCell>
+                {results.voteCounts.map((roundVoteCounts, i) =>
+                  <TableCell
+                    align='right'
+                    style={{
+                      minWidth: 100,
+                      zIndex: 800,
+                    }}
+                  >
+                    {`Round ${i + 1}`}
+                  </TableCell>)}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {results.summaryData.candidates.map((c, n) => (
 
-          {results.summaryData.candidates.map((c, n) => (
-            <>
-              <tr className='matrix' key={`h${n}`} >{c.name}
-                <td> {results.summaryData.totalScores[n].score} </td>
-              </tr>
+                <TableRow >
+                  <TableCell
+                    align="left"
+                    style={{
+                      position: 'sticky',
+                      left: 0,
+                      background: 'white',
+                      zIndex: 700,
+                    }}>
+                    {c.name}
+                  </TableCell>
+                  {results.voteCounts.map((roundVoteCounts, i) =>
+                    <TableCell
+                      align="right">
+                      {roundVoteCounts[n]}
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))}
+              <TableRow >
+                <TableCell
+                  align="left"
+                  style={{
+                    position: 'sticky',
+                    left: 0,
+                    background: 'white',
+                    zIndex: 700,
+                  }}> Exhausted Ballots</TableCell>
+                {results.exhaustedVoteCounts.map((exhaustedVoteCount, i) => <TableCell align="right"> {exhaustedVoteCount} </TableCell>)}
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
 
-            </>
-          ))}
-        </thead>
-      </table>
+      <Paper elevation={0} sx={{ my: 1, width: '100%' }}>
+        <TableContainer sx={{ maxHeight: 600, maxWidth: { xs: 300 } }}>
+
+          <Table size='small'>
+            <TableHead>
+              <TableRow>
+                <TableCell className='matrix'> Candidate</TableCell>
+                <TableCell className='matrix'> # of wins head to head wins</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {results.summaryData.candidates.map((c, n) => (
+                <TableRow >
+                  <TableCell>
+                    {c.name}
+                  </TableCell>
+                  <TableCell> {results.summaryData.totalScores[n].score} </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+        </TableContainer>
+      </Paper>
       <Grid container alignItems="center" >
         <Grid item xs={1}>
           {!viewMatrix &&

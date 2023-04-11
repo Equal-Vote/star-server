@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react";
 import { useCookie } from "./useCookie";
 import jwt_decode from 'jwt-decode'
-let keycloakBaseUrl = 'https://auth.star.vote:8443/realms/STAR%20Voting%20Dev/protocol/openid-connect';
-// if (prodEndpoints.includes(window.location.origin)) {
-//     keycloakBaseUrl = 'https://auth.star.vote:8443/realms/STAR%20Voting/protocol/openid-connect';
-// } else {
-//     keycloakBaseUrl = 'https://auth.star.vote:8443/realms/STAR%20Voting%20Dev/protocol/openid-connect';
-// }
+let keycloakBaseUrl = process.env.REACT_APP_KEYCLOAK_URL;
 
 const keycloakAuthConfig = {
     clientId: 'star_vote_web',
