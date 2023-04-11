@@ -1,3 +1,4 @@
+# I stole this from Scott and haven't tested it yet. -Evans
 version: "3.9"
 services:
   web:
@@ -7,7 +8,7 @@ services:
     networks:
       - star-net
     environment:
-      - DATABASE_URL=postgresql://postgres:password@my-db:5432/postgres
+      - DATABASE_URL=postgresql://postgres:ChangeMeOrDontTest2020@my-db:5432/postgres
   my-db:
     image: postgres
     ports:
@@ -15,8 +16,7 @@ services:
     networks:
       - star-net
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_PASSWORD=ChangeMeOrDontTest2020
     restart:
       on-failure
 networks:
