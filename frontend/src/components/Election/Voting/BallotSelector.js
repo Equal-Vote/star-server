@@ -3,6 +3,7 @@ import StarBallotView from "./StarBallotView";
 import PluralityBallotView from "./PluralityBallotView.js";
 import RankedBallotView from "./RankedBallotView.js";
 import ApprovalBallotView from "./ApprovalBallotView.js";
+import StarPRBallotView from "./StarPRBallotView";
 
 export default function BallotSelector({
   race,
@@ -15,6 +16,14 @@ export default function BallotSelector({
     <>
     {race.voting_method == 'STAR' &&
       <StarBallotView
+        race={race}
+        candidates={candidates}
+        scores={scores}
+        onUpdate={onUpdate}
+        />
+    }
+    {race.voting_method == 'STAR_PR' &&
+      <StarPRBallotView
         race={race}
         candidates={candidates}
         scores={scores}
