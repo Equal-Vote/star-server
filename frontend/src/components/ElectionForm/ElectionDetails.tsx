@@ -143,9 +143,15 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                         type='datetime-local'
                         error={errors.startTime !== ''}
                         value={dateAsInputString(election.start_time)}
+
                         onChange={(e) => {
                             setErrors({ ...errors, startTime: '' })
-                            applyElectionUpdate(election => election.start_time = new Date(e.target.value))
+                            console.log(e.target.value)
+                            if (e.target.value == null || e.target.value == '') {
+                                applyElectionUpdate(election => election.start_time = undefined)
+                            } else {
+                                applyElectionUpdate(election => election.start_time = new Date(e.target.value))
+                            }
                         }}
                     />
                     <FormHelperText error sx={{ pl: 0, mt: 0 }}>
@@ -165,7 +171,11 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                         value={dateAsInputString(election.end_time)}
                         onChange={(e) => {
                             setErrors({ ...errors, endTime: '' })
-                            applyElectionUpdate(election => { election.end_time = new Date(e.target.value) })
+                            if (e.target.value == null || e.target.value == '') {
+                                applyElectionUpdate(election => { election.end_time = undefined })
+                            } else {
+                                applyElectionUpdate(election => { election.end_time = new Date(e.target.value) })
+                            }
                         }}
                     />
                     <FormHelperText error sx={{ pl: 0, mt: 0 }}>
