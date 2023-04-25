@@ -13,6 +13,7 @@ import CardContent from '@mui/material/CardContent';
 import { CardActionArea } from "@mui/material";
 import Typography from '@mui/material/Typography';
 import { StyledButton } from '../styles';
+import SummaryPage from "./SummaryPage";
 
 type Pages = 'ElectionDetails' | 'RaceDetails' | 'Open?' | 'Limit?' | 'VoterList?' | 'Emails?' | 'Invitations?' | 'Login?' | 'Register?' | 'CustomRegister?' |
     'Scenario1' | 'Scenario2' | 'Scenario3' | 'Scenario4' | 'Scenario5' | 'Scenario6' | 'Scenario7' | 'Scenario8' | 'Scenario9' | 'PublicResults?' | 'Save'
@@ -98,7 +99,7 @@ function Question({ Enable, Question, HelpText, Option1, Option2, onNext, BackPa
                                     setPage(Option2.GotoPage)
                                 }}>
                                     <CardContent sx={{ height: 200 }}>
-                                        <Typography align='center' gutterBottom variant="h4" component="h4"  fontWeight='bold'>
+                                        <Typography align='center' gutterBottom variant="h4" component="h4" fontWeight='bold'>
                                             {Option2.Answer}
                                         </Typography>
                                         <Typography align='left' gutterBottom variant='body1'>
@@ -432,14 +433,14 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                         HelpText=''
                         Option1={{
                             Answer: 'Yes',
-                            HelpText: '',
+                            HelpText: 'Voters will also provide additional info to cast a provisional ballot.',
                             GotoPage: 'Scenario7',
                             election: election,
                             setPage: setPage,
                         }}
                         Option2={{
                             Answer: 'No',
-                            HelpText: '',
+                            HelpText: 'Voters will just create a star.vote account',
                             GotoPage: 'Scenario8',
                             election: election,
                             setPage: setPage,
@@ -651,32 +652,11 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                     />
                     <Fade in={page === 'Save'} mountOnEnter unmountOnExit timeout={{ appear: 500, enter: 500, exit: 0 }}>
                         <div>
-                            <Grid container
-                                sx={{
-                                    m: 0,
-                                    p: 1,
-                                }}
-                            >
-                                <Grid item xs={12} sx={{ m: 0, p: 1 }}>
-                                    <Typography align='center' variant="h4" component="h4">
-                                        Save
-                                    </Typography>
-                                    <Typography align='center' variant="body1">
-                                        some text about saving, maybe overview of their election
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12} sx={{ m: 0, p: 1 }}>
-                                    <StyledButton
-                                        type='button'
-                                        variant="contained"
-                                        onClick={() => {
-                                            onSubmit()
-                                        }
-                                        }>
-                                        {submitText}
-                                    </StyledButton>
-                                </Grid>
-                            </Grid>
+                            <SummaryPage
+                                election={election}
+                                onBack={() => setPage('PublicResults?')}
+                                onSubmit={() => onSubmit()}
+                                submitText={submitText} />
                         </div>
                     </Fade>
                 </form>
