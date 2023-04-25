@@ -61,7 +61,7 @@ function Question({ Enable, Question, HelpText, Option1, Option2, onNext, BackPa
                     }}
                 >
                     <Grid item xs={12} sx={{ m: 0, p: 1 }}>
-                        <Typography align='center' variant="h4" component="h4">
+                        <Typography align='center' variant="h4" component="h4" fontWeight='bold'>
                             {Question}
                         </Typography>
                         <Typography align='center' variant="body1">
@@ -78,10 +78,10 @@ function Question({ Enable, Question, HelpText, Option1, Option2, onNext, BackPa
                                     setPage(Option1.GotoPage)
                                 }}>
                                     <CardContent sx={{ height: 200 }} >
-                                        <Typography align='center' gutterBottom variant="h4" component="h4">
+                                        <Typography align='center' gutterBottom variant="h4" component="h4" fontWeight='bold'>
                                             {Option1.Answer}
                                         </Typography>
-                                        <Typography align='left' gutterBottom variant='body2'>
+                                        <Typography align='left' gutterBottom variant='body1'>
                                             {Option1.HelpText}
                                         </Typography>
                                     </CardContent>
@@ -98,10 +98,10 @@ function Question({ Enable, Question, HelpText, Option1, Option2, onNext, BackPa
                                     setPage(Option2.GotoPage)
                                 }}>
                                     <CardContent sx={{ height: 200 }}>
-                                        <Typography align='center' gutterBottom variant="h4" component="h4">
+                                        <Typography align='center' gutterBottom variant="h4" component="h4"  fontWeight='bold'>
                                             {Option2.Answer}
                                         </Typography>
-                                        <Typography align='left' gutterBottom variant='body2'>
+                                        <Typography align='left' gutterBottom variant='body1'>
                                             {Option2.HelpText}
                                         </Typography>
                                     </CardContent>
