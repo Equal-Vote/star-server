@@ -39,6 +39,7 @@ const Header = ({ authSession }) => {
     return (
         <AppBar position="sticky" sx={{ backgroundColor: "primary.main" }}>
             <Toolbar>
+                {/**** MOBILE HAMBURGER MENU ****/}
                 <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
                     <IconButton
                         size="large"
@@ -73,11 +74,6 @@ const Header = ({ authSession }) => {
                             target="_blank">
                             About
                         </MenuItem>
-                        <MenuItem
-                            component={Link}
-                            href='/CreateElection'>
-                            Quick Poll
-                        </MenuItem>
                         {authSession.isLoggedIn() &&
                             <>
                                 <MenuItem
@@ -85,19 +81,18 @@ const Header = ({ authSession }) => {
                                     href='/CreateElection'>
                                     New Election
                                 </MenuItem>
-
-                                <MenuItem
-                                    onClick={
-                                        () => {
-                                            navigate({ pathname: '/Elections'});
-                                            // navigate({ pathname: '/Elections', search: `?filter=owner_id:${authSession.getIdField('sub')}` });
-                                            window.location.reload();
-                                        }
-                                    } >
-                                    My Elections
-                                </MenuItem>
                             </>
                         }
+                        <MenuItem
+                            onClick={
+                                () => {
+                                    navigate({ pathname: '/Elections'});
+                                    // navigate({ pathname: '/Elections', search: `?filter=owner_id:${authSession.getIdField('sub')}` });
+                                    window.location.reload();
+                                }
+                            } >
+                            Elections
+                        </MenuItem>
                         <MenuItem
                             component={Link}
                             href='/sandbox' >
@@ -107,6 +102,7 @@ const Header = ({ authSession }) => {
                     </Menu>
                 </Box>
 
+                {/**** TITLE ****/}
                 <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: "center" }}
                 >
                     <Button color='inherit' href="/">
@@ -115,6 +111,8 @@ const Header = ({ authSession }) => {
                         </Typography>
                     </Button>
                 </Box>
+
+                {/**** DESKTOP OPTIONS ****/}
                 <Box
                     sx={{ flexGrow: 100, display: { xs: 'none', md: 'flex' } }}>
                     <Button color='inherit' href='https://www.starvoting.us' target="_blank">
@@ -125,33 +123,24 @@ const Header = ({ authSession }) => {
                     {authSession.isLoggedIn() &&
                         <Button color='inherit' href='/CreateElection'>
                             <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
-                                Quick Poll
-                            </Typography>
-                        </Button>
-                    }
-                    {authSession.isLoggedIn() &&
-                        <Button color='inherit' href='/CreateElection'>
-                            <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                                 New Election
                             </Typography>
                         </Button>
                     }
-                    {authSession.isLoggedIn() &&
-                        <Button
-                            color='inherit'
-                            onClick={
-                                () => {
-                                    navigate({ pathname: '/Elections'});
-                                    // navigate({ pathname: '/Elections', search: `?filter=owner_id:${authSession.getIdField('sub')}` });
-                                    window.location.reload();
-                                }
+                    <Button
+                        color='inherit'
+                        onClick={
+                            () => {
+                                navigate({ pathname: '/Elections'});
+                                // navigate({ pathname: '/Elections', search: `?filter=owner_id:${authSession.getIdField('sub')}` });
+                                window.location.reload();
                             }
-                        >
-                            <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
-                                My Elections
-                            </Typography>
-                        </Button>
-                    }
+                        }
+                    >
+                        <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                            Elections
+                        </Typography>
+                    </Button>
                     <Button color='inherit' href='/sandbox' >
                         <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                             Sandbox
@@ -160,6 +149,7 @@ const Header = ({ authSession }) => {
                     </Button>
                 </Box>
 
+                {/**** LOG IN/OUT ****/}
                 <Box sx={{ alignItems: 'center', flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
 
                     {authSession.isLoggedIn() ?
