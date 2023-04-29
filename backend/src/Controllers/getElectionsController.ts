@@ -13,16 +13,23 @@ const getElections = async (req: any, res: any, next: any) => {
     // var filter = (req.query.filter == undefined) ? "" : req.query.filter;
     const email = req.user?.email || ''
     const id = req.user?.sub || ''
-    var elections_as_official = await ElectionsModel.getElections(id, email, req);
-    if (!elections_as_official) {
-        var msg = "Election does not exist";
-        Logger.info(req, msg);
-        throw new BadRequest(msg);
+
+    /////////// ELECTIONS WE OWN ////////////////
+    var elections_as_official = null;
+    if(email !== '' || id !== ''){ 
+        elections_as_official = await ElectionsModel.getElections(id, email, req);
+        if (!elections_as_official) {
+            var msg = "Election does not exist";
+            Logger.info(req, msg);
+            throw new BadRequest(msg);
+        }
+        elections_as_official.forEach((elec: Election) => {
+            removeHiddenFields(elec, null);
+        })
     }
-    elections_as_official.forEach((elec: Election) => {
-        removeHiddenFields(elec, null);
-    })
-    var elections_as_voter = null
+
+    /////////// ELECTIONS WE'RE INVITED TO ////////////////
+    var elections_as_voter = null;
     if (email !== '') {
         let myRolls = await ElectionRollModel.getByEmail(email, req)
         let election_ids = myRolls?.map(election => election.election_id)
@@ -31,7 +38,15 @@ const getElections = async (req: any, res: any, next: any) => {
             console.log(elections_as_voter)
         }
     }
-    res.json({ elections_as_official: elections_as_official, elections_as_voter: elections_as_voter});
+
+    /////////// OPEN ELECTIONS ////////////////
+    var open_elections = await ElectionsModel.getOpenElections(req);
+
+    res.json({
+        elections_as_official: elections_as_official,
+        elections_as_voter: elections_as_voter,
+        open_elections: open_elections
+    });
 }
 
 module.exports = {

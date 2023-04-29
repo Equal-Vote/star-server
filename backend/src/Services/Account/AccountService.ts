@@ -82,6 +82,13 @@ export default class AccountService {
             const key = customKey ? customKey : this.publicKey;
             return AccountServiceUtils.extractUserFromRequest(req, token, key);
         }
+        const tempId = req.cookies.temp_id;
+        if(tempId){
+            return {
+                'typ': 'TEMP_ID', // keycloak populates typ with ID, so I'm trying to follow a similar convention
+                'sub': tempId
+            }
+        }
         return null
     }
 }
