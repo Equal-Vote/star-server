@@ -139,6 +139,29 @@ export default class ElectionsDB {
         });
     }
 
+    async getOpenElections(ctx: ILoggingContext): Promise<Election[] | null> {
+        // Returns all elections where settings.voter_access == open and state == open
+
+        // TODO: The filter is pretty inefficient for now since I don't think there's a way to include on settings.voter_access in the query
+
+        // All elections with state=open
+        var sqlString = `SELECT * FROM ${this._tableName} WHERE state=$1`;
+        let values = ['open']
+
+        // Do Query
+        var elections = await this._postgresClient.query({
+            text: sqlString,
+            values: values
+        }).then((response: any) => {
+            return (response.rows.length == 0)? [] as Election[] : response.rows;
+        });
+
+        // Filter for settings.voter_access = open
+        return elections.filter( (election : Election, index : any, array : any) => {
+            return election.settings.voter_access == 'open';
+        });
+    }
+
     getElections(id: string, email: string, ctx: ILoggingContext): Promise<Election[] | null> {
         // When I filter in trello it adds "filter=member:arendpetercastelein,overdue:true" to the URL, I'm following the same pattern here
         Logger.debug(ctx, `${className}.getAll ${id} ${email}`);

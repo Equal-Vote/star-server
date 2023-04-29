@@ -52,6 +52,7 @@ const Elections = ({ authSession }) => {
             sx={{ width: '100%', pt:2 }}>
             <Paper elevation={3} sx={{ width: 800, p: 3 }} >
                 {isPending && <Typography align='center' variant="h3" component="h2"> Loading Elections... </Typography>}
+                {/****** elections you manage ********/}
                 <Typography variant="h5" component="h5">
                     Elections you manage
                 </Typography>
@@ -83,6 +84,8 @@ const Elections = ({ authSession }) => {
                         </TableBody>
                     </Table>
                 </TableContainer>
+
+                {/****** elections we're invited to ********/}
                 <Typography variant="h5" component="h5"sx={{pt:2 }}>
                     Elections as a voter
                 </Typography>
@@ -98,6 +101,37 @@ const Elections = ({ authSession }) => {
                         </TableHead>
                         <TableBody>
                             {data?.elections_as_voter?.map((election: Election) => (
+                                <TableRow key={election.election_id} >
+                                    <TableCell component="th" scope="row">
+                                        {election.title}
+                                    </TableCell>
+                                    <TableCell >{election.state || ''}</TableCell>
+                                    <TableCell > {election.start_time ? new Date(election.start_time).toLocaleString() : ''}</TableCell>
+                                    <TableCell >{election.end_time ? new Date(election.end_time).toLocaleString() : ''}</TableCell>
+                                    <TableCell >{limit(election.description, 30) || ''}</TableCell>
+                                    <TableCell ><Button variant='outlined' href={`/Election/${String(election.election_id)}`} > View </Button></TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+
+                {/****** elections open to all ********/}
+                <Typography variant="h5" component="h5"sx={{pt:2 }}>
+                    Open Elections
+                </Typography>
+                <TableContainer component={Paper}>
+                    <Table style={{ width: '100%' }} aria-label="simple table">
+                        <TableHead>
+                            <TableCell> Election Title </TableCell>
+                            <TableCell> State </TableCell>
+                            <TableCell> Start Date </TableCell>
+                            <TableCell> End Date </TableCell>
+                            <TableCell> Description </TableCell>
+                            <TableCell> View </TableCell>
+                        </TableHead>
+                        <TableBody>
+                            {data?.open_elections?.map((election: Election) => (
                                 <TableRow key={election.election_id} >
                                     <TableCell component="th" scope="row">
                                         {election.title}

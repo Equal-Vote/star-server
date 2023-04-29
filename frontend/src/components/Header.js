@@ -10,13 +10,13 @@ import Button from '@mui/material/Button'
 import { Box, IconButton, Link, Menu, MenuItem } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useCookie } from '../hooks/useCookie'
 import { v4 } from 'uuid'
 
 const headerTextColor = 'primary.contrastText'
 const Header = ({ authSession }) => {
     const navigate = useNavigate()
-    const [tempID, setTempID] = useLocalStorage('tempID', v4())
+    const [tempID, setTempID] = useCookie('temp_id', v4())
     const [anchorElNav, setAnchorElNav] = useState(null)
     const [anchorElUser, setAnchorElUser] = useState(null)
 
