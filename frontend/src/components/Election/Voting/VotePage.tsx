@@ -58,14 +58,24 @@ const VotePage = ({ election, fetchElection }) => {
             variant='outlined'
             onClick={() => setCurrentRace(count => count - 1)}
             disabled={currentRace === 0}
-            style={{ minWidth:"150px" }}>
+            style={{ minWidth:"150px", marginRight: "10%" }}>
             Previous Race
           </Button>
+          {scores.map((scores, n) => (
+            <>
+            <Button
+              variant='outlined'
+              onClick={() => setCurrentRace(n)}
+              style={{ minWidth:"20px", border: "none" }}>
+              {(scores.some((s) => ( s > 0 )))? <>✅</> : <>⬜</>}
+            </Button>
+            </>
+          ))}
           <Button
             variant='outlined'
             onClick={() => setCurrentRace(count => count + 1)}
             disabled={currentRace === election.races.length-1}
-            style={{ minWidth:"150px" }}>
+            style={{ minWidth:"150px", marginLeft: "10%" }}>
             Next Race
           </Button>
         </Box>
