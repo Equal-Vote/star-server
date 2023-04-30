@@ -1,5 +1,6 @@
 import { useState } from "react"
-import BallotSelector from "./BallotSelector";
+import BallotPageSelector from "./BallotPageSelector";
+import Grid from "@mui/material/Grid";
 import useFetch from "../../../hooks/useFetch";
 import { useParams } from "react-router";
 import React from 'react'
@@ -10,19 +11,45 @@ import { Score } from "../../../../../domain_model/Score";
 import { Box, Container } from "@mui/material";
 import Button from "@mui/material/Button";
 const VotePage = ({ election, fetchElection }) => {
-  const { id } = useParams();
-  const [scores, setScores] = useState(election.races.map((race) =>
-    Array(race.candidates.length).fill(null)))
+  const makePages = () => {
+    // generate ballot pages
+    let pages = election.races.map((race, i) => ({
+      type: "ballot",
+      scores: Array(race.candidates.length).fill(null),
+      voting_method : race.voting_method,
+      race_index: i
+    }))
 
+    // determine where to add info pages
+    for(var i = 0; i < pages.length; i++){
+      if(pages[i].type != "ballot") continue;
+
+      // check if page is the first race with the voting method
+      var info_exists = pages.some((p) => p.type == 'info' && p.voting_method == pages[i].voting_method);
+      if(info_exists) continue;
+      
+      // add info page for method
+      pages.splice(i, 0, {
+        type: "info",
+        voting_method: pages[i].voting_method
+      })
+    }
+
+    return pages
+  }
+  const { id } = useParams();
+  const [pages, setPages] = useState(makePages())
   const navigate = useNavigate();
-  const [currentRace, setCurrentRace] = useState(0)
+  const [currentPage, setCurrentPage] = useState(0)
   const { data, isPending, error, makeRequest: postBallot } = useFetch(`/API/Election/${id}/vote`, 'post')
-  const onUpdate = (race_index, newRaceScores) => {
-    var newRankings = [...scores]
-    newRankings[race_index] = newRaceScores
-    setScores(newRankings)
+  const onUpdate = (pageIndex, newRaceScores) => {
+    var newPages = [...pages]
+    newPages[pageIndex].scores = newRaceScores
+    setPages(newPages)
   }
   const submit = async () => {
+    var scores = pages.filter((p) => p.type == "ballot").map((p) => p.scores)
+
     const votes: Vote[] =
       election.races.map((race, race_index) => (
         {
@@ -44,39 +71,42 @@ const VotePage = ({ election, fetchElection }) => {
     }
     navigate(`/Election/${id}/thanks`)
   }
+
   return (
     <Container disableGutters={true} maxWidth="sm">
-      <BallotSelector
-        race={election.races[currentRace]}
-        candidates={election.races[currentRace].candidates}
-        onUpdate={newRankings => { onUpdate(currentRace, newRankings) }}
-        scores={scores[currentRace]}
+      <BallotPageSelector
+        page={pages[currentPage]}
+        races={election.races}
+        onUpdate={newRankings => { onUpdate(currentPage, newRankings) }}
       />
-      {election.races.length > 1 &&
+      {pages.length > 1 &&
         <Box sx={{ display: 'flex', justifyContent: "space-between" }}>
           <Button
             variant='outlined'
-            onClick={() => setCurrentRace(count => count - 1)}
-            disabled={currentRace === 0}
-            style={{ minWidth:"150px", marginRight: "10%" }}>
-            Previous Race
+            onClick={() => setCurrentPage(count => count - 1)}
+            disabled={currentPage === 0}
+            style={{ minWidth:"150px", marginRight: "40px"}}>
+            Previous Page
           </Button>
-          {scores.map((scores, n) => (
-            <>
-            <Button
-              variant='outlined'
-              onClick={() => setCurrentRace(n)}
-              style={{ minWidth:"20px", border: "none" }}>
-              {(scores.some((s) => ( s > 0 )))? <>✅</> : <>⬜</>}
-            </Button>
-            </>
-          ))}
+          <Grid xs={pages.length} wrap='nowrap'>
+            {pages.map((page, n) => (
+              <>
+                <Button
+                  onClick={() => setCurrentPage(n)}
+                  style={{ fontSize: "16px", width: "auto", minWidth: "0px", marginTop: "10px", paddingLeft: "0px", paddingRight: "0px", outline: (n === currentPage)? 'solid' : 'none' }}
+                >
+                  {page.type == 'info' && <>📄</> }
+                  {page.type == 'ballot' && (page.scores.some((s) => ( s > 0 ))? <>✅</> : <>⬜</>)}
+                </Button>
+              </>
+            ))}
+          </Grid>
           <Button
             variant='outlined'
-            onClick={() => setCurrentRace(count => count + 1)}
-            disabled={currentRace === election.races.length-1}
-            style={{ minWidth:"150px", marginLeft: "10%" }}>
-            Next Race
+            onClick={() => setCurrentPage(count => count + 1)}
+            disabled={currentPage === pages.length-1}
+            style={{ minWidth:"150px", marginLeft: "40px"}}>
+            Next Page
           </Button>
         </Box>
       }
@@ -85,7 +115,7 @@ const VotePage = ({ election, fetchElection }) => {
         <Button
           variant='outlined'
           onClick={submit}
-          disabled={isPending||currentRace !== election.races.length-1 || scores[currentRace].every(score => score===null)}//disable unless on last page and at least one candidate scored
+          disabled={isPending || currentPage !== pages.length-1 || pages[currentPage].scores.every(score => score===null)}//disable unless on last page and at least one candidate scored
           style={{ marginLeft: "auto", minWidth:"150px", marginTop:"20px"}}>
           Submit Ballot
         </Button>
