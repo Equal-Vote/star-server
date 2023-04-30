@@ -502,7 +502,7 @@ h2.selected {
 .ballot .rowDivider {
   width: 100%;
   height: 2px;
-  background-color: #999999;
+  background-color: #B5D0D4;
 }
 
 .ballot .row{
@@ -522,16 +522,16 @@ h2.selected {
 
 .ballot .scoreColumnHeading{
   position: absolute;
-  transform: translate(155%,38%);
+  transform: translate(170%,52%);
   font-family: 'Archivo Black';
-  font-size: 1.1em;
+  font-size: 1.02em;
   font-weight: bold;
 }
 
 .ballot .starIcon {
   position: absolute;
   transform: translate(-50%,15%);
-  font-size: 2.1em;
+  font-size: 2.2em;
 }
 
 /* Ballot Bubbles*/
