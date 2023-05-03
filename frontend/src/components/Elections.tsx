@@ -44,6 +44,7 @@ const Elections = ({ authSession }) => {
         if (!string) return ''
         return string.substring(0, limit)
     }
+
     return (
         <Box
             display='flex'
@@ -78,7 +79,7 @@ const Elections = ({ authSession }) => {
                                     <TableCell > {election.start_time ? new Date(election.start_time).toLocaleString() : ''}</TableCell>
                                     <TableCell >{election.end_time ? new Date(election.end_time).toLocaleString() : ''}</TableCell>
                                     <TableCell >{limit(election.description, 30) || ''}</TableCell>
-                                    <TableCell ><Button variant='outlined' href={`/Election/${String(election.election_id)}/admin`} > View </Button></TableCell>
+                                    <TableCell ><Button variant='outlined' href={`/Election/${String(election.election_id)}${authSession.isLoggedIn()? '/admin' : ''}`} > View </Button></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
