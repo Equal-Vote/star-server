@@ -5,48 +5,10 @@ import { Box, Divider, Paper } from "@mui/material";
 import { Typography } from "@mui/material";
 import { StyledButton } from "../../styles";
 import { Link } from 'react-router-dom';
-
-const writePermissions = [
-    'canEditElectionRoles',
-    'canEditElection',
-    'canEditElectionState',
-];
-
-const hasPermission = (authSession, permissions: string[], requiredPermission: string) => {
-    let has_permission = (permissions && permissions.includes(requiredPermission))
-
-    // HACK: The server doesn't know which elections are ready-only temp-user elections and which ones are real elections
-    //  as a result the permission list assumes the temp user is an admin with full access
-    //  we add this weird case as a work around
-    //  in the future we should change the server side permission logic to account for these temp-user elections
-    if(has_permission && !authSession.isLoggedIn() && writePermissions.includes(requiredPermission)){
-        return false;
-    }
-
-    return has_permission;
+const hasPermission = (permissions: string[], requiredPermission: string) => {
+    return (permissions && permissions.includes(requiredPermission))
 }
-
-const generatePermissionErrorIfNeeded = (authSession, permissions, requiredPermission) => {
-    let has_permission = (permissions && permissions.includes(requiredPermission))
-
-    if(has_permission && !authSession.isLoggedIn() && writePermissions.includes(requiredPermission))
-        return <>
-            <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                Election can't be modified because it was created without an account
-            </Typography>
-        </>
-
-    if(!has_permission)
-        return <>
-            <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                You do not have the correct permissions for this action
-            </Typography>
-        </>
-
-    return <></>;
-}
-
-const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
+const AdminHome = ({ election, permissions, fetchElection }) => {
     const { makeRequest } = useFetch(`/API/Election/${election.election_id}/setPublicResults`, 'post')
     const togglePublicResults = async () => {
         const public_results = !election.settings.public_results
@@ -100,12 +62,16 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="body1" sx={{ pl: 2 }}>
                                     Add election administrators, auditors, credentialers
                                 </Typography>
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canEditElectionRoles')}
+                                {!hasPermission(permissions, 'canEditElectionRoles') &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     variant='contained'
-                                    disabled={!hasPermission(authSession, permissions, 'canEditElectionRoles')}
+                                    disabled={!hasPermission(permissions, 'canEditElectionRoles')}
                                     fullwidth
                                     component={Link} to={`/Election/${election.election_id}/admin/roles`}
                                 >
@@ -125,13 +91,17 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="body1" sx={{ pl: 2 }}>
                                     Voter access must be set to closed
                                 </Typography>
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canViewElectionRoll')}
+                                {!hasPermission(permissions, 'canViewElectionRoll') &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     type='button'
                                     variant='contained'
-                                    disabled={election.settings.voter_access !== 'closed' || !hasPermission(authSession, permissions, 'canViewElectionRoll')}
+                                    disabled={election.settings.voter_access !== 'closed' || !hasPermission(permissions, 'canViewElectionRoll')}
                                     fullwidth
                                     component={Link} to={`/Election/${election.election_id}/admin/rolls`}
                                 >
@@ -145,13 +115,17 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="h5">
                                     Edit your election
                                 </Typography>
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canEditElection')}
+                                {!hasPermission(permissions, 'canEditElection') &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     type='button'
                                     variant='contained'
-                                    disabled={!hasPermission(authSession, permissions, 'canEditElection')}
+                                    disabled={!hasPermission(permissions, 'canEditElection')}
                                     fullwidth
                                     component={Link} to={`/Election/${election.election_id}/edit`}
                                 >
@@ -192,13 +166,17 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                         Invitations will be sent to your voters
                                     </Typography>
                                 }
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canEditElectionState')}
+                                {!hasPermission(permissions, 'canEditElectionState') &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     type='button'
                                     variant='contained'
-                                    disabled={!hasPermission(authSession, permissions, 'canEditElectionState')}
+                                    disabled={!hasPermission(permissions, 'canEditElectionState')}
                                     fullwidth
                                     onClick={() => finalizeElection()}
                                 >
@@ -237,13 +215,16 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="body1" sx={{ pl: 2 }}>
                                     Add election administrators, auditors, credentialers
                                 </Typography>
-
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canEditElectionRoles')}
+                                {!hasPermission(permissions, 'canEditElectionRoles') &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     variant='contained'
-                                    disabled={!hasPermission(authSession, permissions, 'canEditElectionRoles')}
+                                    disabled={!hasPermission(permissions, 'canEditElectionRoles')}
                                     fullwidth
                                     component={Link} to={`/Election/${election.election_id}/admin/roles`}
                                 >
@@ -257,13 +238,17 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="h5">
                                     View Voters
                                 </Typography>
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canViewElectionRoll')}
+                                {!hasPermission(permissions, 'canViewElectionRoll') &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     type='button'
                                     variant='contained'
-                                    disabled={!hasPermission(authSession, permissions, 'canViewElectionRoll')}
+                                    disabled={!hasPermission(permissions, 'canViewElectionRoll')}
                                     fullwidth
                                     component={Link} to={`/Election/${election.election_id}/admin/rolls`}
                                 >
@@ -321,12 +306,16 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="body1" sx={{ pl: 2 }}>
                                     Add election administrators, auditors, credentialers
                                 </Typography>
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canEditElectionRoles')}
+                                {!hasPermission(permissions, 'canEditElectionRoles') &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     variant='contained'
-                                    disabled={!hasPermission(authSession, permissions, 'canEditElectionRoles')}
+                                    disabled={!hasPermission(permissions, 'canEditElectionRoles')}
                                     fullwidth
                                     component={Link} to={`/Election/${election.election_id}/admin/roles`}
                                 >
@@ -338,13 +327,17 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="h5">
                                     View voters
                                 </Typography>
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canViewElectionRoll')}
+                                {!hasPermission(permissions, 'canViewElectionRoll') &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     type='button'
                                     variant='contained'
-                                    disabled={!hasPermission(authSession, permissions, 'canViewElectionRoll')}
+                                    disabled={!hasPermission(permissions, 'canViewElectionRoll')}
                                     fullwidth
                                     component={Link} to={`/Election/${election.election_id}/admin/rolls`}
                                 >
@@ -356,13 +349,17 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="h5">
                                     View ballots
                                 </Typography>
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canViewBallots')}
+                                {!hasPermission(permissions, 'canViewBallots') &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     type='button'
                                     variant='contained'
-                                    disabled={!hasPermission(authSession, permissions, 'canViewBallots')}
+                                    disabled={!hasPermission(permissions, 'canViewBallots')}
                                     fullwidth
                                     component={Link} to={`/Election/${election.election_id}/admin/ballots`}
                                 >
@@ -374,13 +371,17 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="h5">
                                     View preliminary results
                                 </Typography>
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canViewPreliminaryResults')}
+                                {!(hasPermission(permissions, 'canViewPreliminaryResults') || election.settings.public_results === true) &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     type='button'
                                     variant='contained'
-                                    disabled={!(hasPermission(authSession, permissions, 'canViewPreliminaryResults') || election.settings.public_results === true)}
+                                    disabled={!(hasPermission(permissions, 'canViewPreliminaryResults') || election.settings.public_results === true)}
                                     fullwidth
                                     component={Link} to={`/Election/${election.election_id}/results`}
                                 >
@@ -392,13 +393,17 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="h5">
                                     {election.settings.public_results === true ? 'Make results private' : 'Make results public'}
                                 </Typography>
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canEditElectionState')}
+                                {!hasPermission(permissions, 'canEditElectionState') &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     type='button'
                                     variant='contained'
-                                    disabled={!hasPermission(authSession, permissions, 'canEditElectionState')}
+                                    disabled={!hasPermission(permissions, 'canEditElectionState')}
                                     fullwidth
                                     onClick={() => togglePublicResults()}
                                 >
@@ -427,12 +432,16 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="body1" sx={{ pl: 2 }}>
                                     Add election administrators, auditors, credentialers
                                 </Typography>
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canEditElectionRoles')}
+                                {!hasPermission(permissions, 'canEditElectionRoles') &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     variant='contained'
-                                    disabled={!hasPermission(authSession, permissions, 'canEditElectionRoles')}
+                                    disabled={!hasPermission(permissions, 'canEditElectionRoles')}
                                     fullwidth
                                     component={Link} to={`/Election/${election.election_id}/admin/roles`}
                                 >
@@ -444,13 +453,17 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="h5">
                                     View voters
                                 </Typography>
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canViewElectionRoll')}
+                                {!hasPermission(permissions, 'canViewElectionRoll') &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     type='button'
                                     variant='contained'
-                                    disabled={!hasPermission(authSession, permissions, 'canViewElectionRoll')}
+                                    disabled={!hasPermission(permissions, 'canViewElectionRoll')}
                                     fullwidth
                                     component={Link} to={`/Election/${election.election_id}/admin/rolls`}
                                 >
@@ -462,13 +475,17 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="h5">
                                     View ballots
                                 </Typography>
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canViewBallots')}
+                                {!hasPermission(permissions, 'canViewBallots') &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     type='button'
                                     variant='contained'
-                                    disabled={!hasPermission(authSession, permissions, 'canViewBallots')}
+                                    disabled={!hasPermission(permissions, 'canViewBallots')}
                                     fullwidth
                                     component={Link} to={`/Election/${election.election_id}/admin/ballots`}
                                 >
@@ -480,13 +497,17 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="h5">
                                     View results
                                 </Typography>
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canViewPreliminaryResults')}
+                                {!(hasPermission(permissions, 'canViewPreliminaryResults') || election.settings.public_results === true) &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     type='button'
                                     variant='contained'
-                                    disabled={!(hasPermission(authSession, permissions, 'canViewPreliminaryResults') || election.settings.public_results === true)}
+                                    disabled={!(hasPermission(permissions, 'canViewPreliminaryResults') || election.settings.public_results === true)}
                                     fullwidth
                                     component={Link} to={`/Election/${election.election_id}/results`}
                                 >
@@ -498,13 +519,17 @@ const AdminHome = ({ authSession, election, permissions, fetchElection }) => {
                                 <Typography variant="h5">
                                     {election.settings.public_results === true ? 'Make results private' : 'Make results public'}
                                 </Typography>
-                                {generatePermissionErrorIfNeeded(authSession, permissions, 'canEditElectionState')}
+                                {!hasPermission(permissions, 'canEditElectionState') &&
+                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                        You do not have the correct permissions for this action
+                                    </Typography>
+                                }
                             </Grid>
                             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     type='button'
                                     variant='contained'
-                                    disabled={!hasPermission(authSession, permissions, 'canEditElectionState')}
+                                    disabled={!hasPermission(permissions, 'canEditElectionState')}
                                     fullwidth
                                     onClick={() => togglePublicResults()}
                                 >
