@@ -79,10 +79,10 @@ function Question({ Enable, Question, HelpText, Option1, Option2, onNext, BackPa
                                     setPage(Option1.GotoPage)
                                 }}>
                                     <CardContent sx={{ height: 200 }} >
-                                        <Typography align='center' gutterBottom variant="h4" component="h4" fontWeight='bold'>
+                                        <Typography align='center' gutterBottom variant="h4" component="h4" fontWeight='bold' sx={{ m: 0, p: 3 , pb:1 }}>
                                             {Option1.Answer}
                                         </Typography>
-                                        <Typography align='left' gutterBottom variant='body1'>
+                                        <Typography align='center' gutterBottom variant='body1' sx={{ m: 0, p: 1 }}>
                                             {Option1.HelpText}
                                         </Typography>
                                     </CardContent>
@@ -99,10 +99,10 @@ function Question({ Enable, Question, HelpText, Option1, Option2, onNext, BackPa
                                     setPage(Option2.GotoPage)
                                 }}>
                                     <CardContent sx={{ height: 200 }}>
-                                        <Typography align='center' gutterBottom variant="h4" component="h4" fontWeight='bold'>
+                                        <Typography align='center' gutterBottom variant="h4" component="h4" fontWeight='bold'  sx={{ m: 0, p: 3, pb:1 }}>
                                             {Option2.Answer}
                                         </Typography>
-                                        <Typography align='left' gutterBottom variant='body1'>
+                                        <Typography align='center' gutterBottom variant='body1' sx={{ m: 0, p: 1 }}>
                                             {Option2.HelpText}
                                         </Typography>
                                     </CardContent>
