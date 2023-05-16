@@ -10,15 +10,6 @@ import ServiceLocator from "../ServiceLocator";
 
 const accountService = ServiceLocator.accountService();
 
-export function expectUserFromRequest(req:IRequest ):any {
-    var user = accountService.extractUserFromRequest(req);
-    if (!user){
-      throw new Unauthorized();
-    }
-    Logger.debug(req, "Request User: "+JSON.stringify(user));
-    return user;
-  }
-
 export function expectValidElectionFromRequest(req:IRequest):Election {
     const inputElection = req.body.Election;
     inputElection.election_id = randomUUID();
