@@ -40,9 +40,9 @@ export default function BallotPageSelector({page, races, onUpdate}) {
           <iframe width="480" height="270" src="https://www.youtube.com/embed/Nu4eTUafuSc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
           </>
         }
-        {page.voting_method == 'Ranked-Robin' &&
+        {page.voting_method == 'RankedRobin' &&
           <>
-          The next race uses Ranked-Robin, here's how it works
+          The next race uses RankedRobin, here's how it works
           <img style={{maxWidth: '100%'}} src="https://assets.nationbuilder.com/unifiedprimary/pages/815/attachments/original/1673647821/How_Does_Ranked_Robin_Work_.png?1673647821"/>
           </>
         }
@@ -72,7 +72,7 @@ export default function BallotPageSelector({page, races, onUpdate}) {
             onUpdate={onUpdate}
             />
         }
-        {(page.voting_method == 'Ranked-Robin' || race.voting_method == "IRV") && 
+        {(page.voting_method == 'RankedRobin' || race.voting_method == "IRV") && 
           <RankedBallotView
             race={race}
             candidates={candidates}

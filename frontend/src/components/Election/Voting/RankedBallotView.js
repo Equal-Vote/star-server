@@ -24,7 +24,7 @@ export default function RankedBallotView({
       <Typography align='left' component="li">
         Rank the candidates in order of preference.
       </Typography>
-      { race.voting_method === 'Ranked-Robin' &&
+      { race.voting_method === 'RankedRobin' &&
         <Typography align='left' component="li">
           Equal ranks are allowed
         </Typography>
@@ -42,7 +42,7 @@ export default function RankedBallotView({
 
   const footer = (
     <>
-    { race.voting_method === 'Ranked-Robin' &&
+    { race.voting_method === 'RankedRobin' &&
       <Typography align='left' component="li">
         Candidates are compared in 1-on-1 match-ups.<br/>
         A candidates wins a match-up if they are ranked
