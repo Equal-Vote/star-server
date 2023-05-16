@@ -4,12 +4,19 @@ import Grid from "@mui/material/Grid";
 import useFetch from "../../../hooks/useFetch";
 import { useParams } from "react-router";
 import React from 'react'
+import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import { useNavigate } from "react-router";
 import { Ballot } from "../../../../../domain_model/Ballot";
 import { Vote } from "../../../../../domain_model/Vote";
 import { Score } from "../../../../../domain_model/Score";
-import { Box, Container } from "@mui/material";
+import { Box, Container, Step, StepLabel, Stepper, SvgIcon } from "@mui/material";
 import Button from "@mui/material/Button";
+
+// I'm using the icon codes instead of an import because there was padding I couldn't get rid of https://stackoverflow.com/questions/65721218/remove-material-ui-icon-margin
+const INFO_ICON = "M 11 7 h 2 v 2 h -2 Z m 0 4 h 2 v 6 h -2 Z m 1 -9 C 6.48 2 2 6.48 2 12 s 4.48 10 10 10 s 10 -4.48 10 -10 S 17.52 2 12 2 Z m 0 18 c -4.41 0 -8 -3.59 -8 -8 s 3.59 -8 8 -8 s 8 3.59 8 8 s -3.59 8 -8 8 Z"
+const CHECKED_BOX = "M 19 3 H 5 c -1.11 0 -2 0.9 -2 2 v 14 c 0 1.1 0.89 2 2 2 h 14 c 1.11 0 2 -0.9 2 -2 V 5 c 0 -1.1 -0.89 -2 -2 -2 Z m -9 14 l -5 -5 l 1.41 -1.41 L 10 14.17 l 7.59 -7.59 L 19 8 l -9 9 Z"
+const UNCHECKED_BOX = "M 19 5 v 14 H 5 V 5 h 14 m 0 -2 H 5 c -1.1 0 -2 0.9 -2 2 v 14 c 0 1.1 0.9 2 2 2 h 14 c 1.1 0 2 -0.9 2 -2 V 5 c 0 -1.1 -0.9 -2 -2 -2 Z"
+
 const VotePage = ({ election, fetchElection }) => {
   const makePages = () => {
     // generate ballot pages
@@ -72,6 +79,7 @@ const VotePage = ({ election, fetchElection }) => {
     navigate(`/Election/${id}/thanks`)
   }
 
+                  
   return (
     <Container disableGutters={true} maxWidth="sm">
       <BallotPageSelector
@@ -88,19 +96,24 @@ const VotePage = ({ election, fetchElection }) => {
             style={{ minWidth:"150px", marginRight: "40px"}}>
             Previous Page
           </Button>
-          <Grid xs={pages.length} wrap='nowrap'>
+          <Stepper>
             {pages.map((page, n) => (
               <>
-                <Button
+                <Step
                   onClick={() => setCurrentPage(n)}
-                  style={{ fontSize: "16px", width: "auto", minWidth: "0px", marginTop: "10px", paddingLeft: "0px", paddingRight: "0px", outline: (n === currentPage)? 'solid' : 'none' }}
+                  style={{ fontSize: "16px", width: "auto", minWidth: "0px", marginTop: "10px", paddingLeft: "0px", paddingRight: "0px"}}
                 >
-                  {page.type == 'info' && <>📄</> }
-                  {page.type == 'ballot' && (page.scores.some((s) => ( s > 0 ))? <>✅</> : <>⬜</>)}
-                </Button>
+                  <StepLabel>
+                    {/* I tried reusing #E3EDEF from the ballot, but it was too light so I darkened it*/}
+                    <SvgIcon style={{color: (n === currentPage)? '#000000' : '#66A0AA'}}>
+                      {page.type == 'info' && <path d={INFO_ICON}/>}
+                      {page.type == 'ballot' && (page.scores.some((s) => ( s > 0 ))? <path d={CHECKED_BOX}/> : <path d={UNCHECKED_BOX}/> )}
+                    </SvgIcon>
+                  </StepLabel> 
+                </Step>
               </>
             ))}
-          </Grid>
+          </Stepper> 
           <Button
             variant='outlined'
             onClick={() => setCurrentPage(count => count + 1)}
