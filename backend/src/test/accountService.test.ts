@@ -38,6 +38,21 @@ describe("User with correct signature creates election", () => {
     });
 });
 
+describe("Temp user creates election", () => {
+    test("responds with 200 status", async () => {
+        const response = await th.createElection(
+            testInputs.TempElection,
+            null,
+            null,
+            testInputs.user4tempId
+        );
+
+        expect(response.statusCode).toBe(200);
+        expect(response.election).toBeTruthy();
+        th.testComplete();
+    });
+});
+
 describe("User with wrong signature creates election", () => {
     var badToken = jwt.sign(user, "NOT" + accountService.privateKey);
     test("responds with 401 status", async () => {

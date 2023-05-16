@@ -37,26 +37,27 @@ export class TestHelper {
         this.logger = new TestLoggerImpl().setup();
     }
 
-    getRequest(url: string, userToken: string | null, customToken: string| null = null) {
+    getRequest(url: string, userToken: string | null, customToken: string| null = null, tempId: string|null=null) {
         var r = request(this.expressApp)
             .get(url)
             .set("Accept", "application/json");
-        r = this.addUserTokenVoterIdCookie(r, userToken, null, customToken);
+        r = this.addUserTokenVoterIdCookie(r, userToken, null, customToken, tempId);
         return r;
     }
 
-    postRequest(url: string, body: Object, userToken: string | null, customToken: string| null = null) {
+    postRequest(url: string, body: Object, userToken: string | null, customToken: string| null = null, tempId: string|null=null) {
         var r = request(this.expressApp)
             .post(url)
             .set("Accept", "application/json");
-        r = this.addUserTokenVoterIdCookie(r, userToken, null, customToken);
+        r = this.addUserTokenVoterIdCookie(r, userToken, null, customToken, tempId);
         return r.send(body);
     }
 
     async createElection(
         election: Election,
         userToken: string | null,
-        customToken: string | null = null
+        customToken: string | null = null,
+        tempId: string | null = null
     ): Promise<ElectionResponse> {
         const res = await this.postRequest(
             "/API/Elections",
@@ -64,21 +65,26 @@ export class TestHelper {
                 Election: election,
             },
             userToken,
-            customToken
+            customToken,
+            tempId
         );
         return this.electionResponse(res);
     }
 
     async editElection(
         election: Election,
-        userToken: string | null
+        userToken: string | null,
+        customToken: string | null = null,
+        tempId: string | null = null
     ): Promise<ElectionResponse> {
         const res = await this.postRequest(
             `/API/Election/${election.election_id}/edit`,
             {
                 Election: election,
             },
-            userToken
+            userToken,
+            customToken,
+            tempId
         );
         return this.electionResponse(res);
     }
@@ -112,11 +118,15 @@ export class TestHelper {
 
     async fetchElectionById(
         electionId: Uid,
-        userToken: string | null
+        userToken: string | null,
+        customToken: string | null = null,
+        tempId: string | null = null
     ): Promise<ElectionResponse> {
         const res = await this.getRequest(
             `/API/Election/${electionId}`,
-            userToken
+            userToken,
+            customToken,
+            tempId
         );
         return this.electionResponse(res);
     }
@@ -166,7 +176,7 @@ export class TestHelper {
             .post(`/API/Election/${electionId}/ballot`)
             .set("Accept", "application/json");
 
-        req = this.addUserTokenVoterIdCookie(req, userToken, voterId, customToken);
+        req = this.addUserTokenVoterIdCookie(req, userToken, voterId, customToken, null);
 
         const res = await req.send({});
         var err = null;
@@ -192,7 +202,7 @@ export class TestHelper {
             .post(`/API/Election/${electionId}/vote`)
             .set("Accept", "application/json");
 
-        r = this.addUserTokenVoterIdCookie(r, userToken, voterId, customToken);
+        r = this.addUserTokenVoterIdCookie(r, userToken, voterId, customToken, null);
         return r.send({ ballot: ballot });
     }
 
@@ -206,7 +216,7 @@ export class TestHelper {
             .post(`/API/Election/${electionId}/rolls`)
             .set("Accept", "application/json");
 
-        r = this.addUserTokenVoterIdCookie(r, userToken, null, customToken);
+        r = this.addUserTokenVoterIdCookie(r, userToken, null, customToken, null);
         return r.send({ electionRoll: electionRoll });
     }
 
@@ -214,7 +224,8 @@ export class TestHelper {
         req: any,
         userToken: string | null,
         voterId: string | null,
-        customToken: string | null
+        customToken: string | null,
+        tempId: string | null,
     ): any {
         var cookies = "";
         if (userToken != null) {
@@ -231,6 +242,12 @@ export class TestHelper {
                 cookies += "; ";
             }
             cookies += "voter_id=" + voterId;
+        }
+        if (tempId != null) {
+            if (cookies.length > 0) {
+                cookies += "; ";
+            }
+            cookies += "temp_id=" + tempId;
         }
         console.log("cookies:  " + cookies);
         if (cookies.length > 0) {
