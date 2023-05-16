@@ -21,6 +21,12 @@ const setupInitialElection = async () => {
     return response.election.election_id;
 }
 
+const setupInitialTempElection = async () => {
+    const response = await th.createElection(testInputs.TempElection, null, null, testInputs.user4tempId);
+    expect(response.statusCode).toBe(200);
+    return response.election.election_id;
+}
+
 const fetchElectionById = async (electionId:string):Promise<Election> => {
     const response = await th.fetchElectionById(electionId, testInputs.user1token);
     expect(response.election).toBeTruthy();
@@ -56,6 +62,16 @@ describe("Edit Election", () => {
             const ID = await setupInitialElection();
             const election1Copy = { ...testInputs.Election1, election_id:ID};
             const response = await th.editElection(election1Copy, testInputs.user2token);
+            expect(response.statusCode).toBe(401);
+            th.testComplete();
+        })
+    })
+
+    describe("User is temp user", () => {
+        test("responds with 401 status", async () => {
+            const ID = await setupInitialTempElection();
+            const tempElectionCopy = { ...testInputs.TempElection, election_id:ID};
+            const response = await th.editElection(tempElectionCopy, null, null, testInputs.user4tempId);
             expect(response.statusCode).toBe(401);
             th.testComplete();
         })
