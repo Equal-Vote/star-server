@@ -5,7 +5,7 @@ import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
 import { InternalServerError } from "@curveball/http-errors";
 import { ILoggingContext } from "../Services/Logging/ILogger";
-import { expectUserFromRequest, expectValidElectionFromRequest, catchAndRespondError, expectPermission } from "./controllerUtils";
+import { expectValidElectionFromRequest, catchAndRespondError, expectPermission } from "./controllerUtils";
 
 var ElectionsModel = ServiceLocator.electionsDb();
 
