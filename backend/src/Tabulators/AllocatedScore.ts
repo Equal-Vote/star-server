@@ -311,12 +311,12 @@ function indexOfMax(arr: number[], breakTiesRandomly: boolean) {
     var maxIndex = 0;
     var ties: number[] = [0];
     for (var i = 1; i < arr.length; i++) {
-        if (arr[i] > max) {
+        if (Math.abs(max - arr[i]) < 1e-8) {
+            ties.push(i);
+        } else if (arr[i] > max) {
             maxIndex = i;
             max = arr[i];
             ties = [i];
-        } else if (arr[i] === max) {
-            ties.push(i);
         }
     }
     if (breakTiesRandomly && ties.length > 1) {
