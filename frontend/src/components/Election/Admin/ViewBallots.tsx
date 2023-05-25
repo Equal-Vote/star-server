@@ -7,6 +7,7 @@ import Container from '@mui/material/Container';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
 import PermissionHandler from "../../PermissionHandler";
 import ViewBallot from "./ViewBallot";
+import { CSVLink, CSVDownload } from "react-csv";
 
 const ViewBallots = ({ election, permissions }) => {
     const { id } = useParams();
@@ -31,6 +32,13 @@ const ViewBallots = ({ election, permissions }) => {
         return event.toLocaleString();
     }
 
+    const csvData = [
+        ["firstname", "lastname", "email"],
+        ["Ahmed", "Tomi", "ah@smthing.co.com"],
+        ["Raed", "Labes", "rl@smthing.co.com"],
+        ["Yezzi", "Min l3b", "ymin@cocococo.com"]
+      ];
+
     return (
         <Container>
             <Typography align='center' gutterBottom variant="h4" component="h4">
@@ -41,6 +49,7 @@ const ViewBallots = ({ election, permissions }) => {
             </Typography>
             {isPending && <div> Loading Data... </div>}
             {data && data.ballots && !isViewing && !addRollPage &&
+            
                 <TableContainer component={Paper}>
                     <Table style={{ width: '100%' }} aria-label="simple table">
                         <TableHead>
@@ -74,6 +83,8 @@ const ViewBallots = ({ election, permissions }) => {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                && 
+                <CSVDownload data={csvData} target="_blank" />
             }
             {isViewing && selectedBallot &&
                 <ViewBallot election={election} ballot={selectedBallot} onClose={onClose} fetchBallot={fetchBallots} permissions={permissions} />
