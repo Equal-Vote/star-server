@@ -1,0 +1,23 @@
+# I stole this from Scott and haven't tested it yet. -Evans
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    networks:
+      - star-net
+    environment:
+      - DATABASE_URL=postgresql://postgres:ChangeMeOrDontTest2020@my-db:5432/postgres
+  my-db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - star-net
+    environment:
+      - POSTGRES_PASSWORD=ChangeMeOrDontTest2020
+    restart:
+      on-failure
+networks:
+  star-net: {}
