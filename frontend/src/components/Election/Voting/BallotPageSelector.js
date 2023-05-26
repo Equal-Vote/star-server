@@ -10,8 +10,7 @@ export default function BallotPageSelector({page, races, onUpdate}) {
   var race, candidates, scores; 
   if(page.type == "ballot"){
     race = races[page.race_index];
-    candidates = races[page.race_index].candidates;
-    scores = page.scores;
+    candidates = page.candidates;
   }
   // TODO: it would be more scalable if we selected the class from a dictionary, but I'm not sure how to do that in react
   return (
@@ -60,7 +59,6 @@ export default function BallotPageSelector({page, races, onUpdate}) {
           <StarBallotView
             race={race}
             candidates={candidates}
-            scores={scores}
             onUpdate={onUpdate}
             />
         }
@@ -68,7 +66,6 @@ export default function BallotPageSelector({page, races, onUpdate}) {
           <PluralityBallotView
             race={race}
             candidates={candidates}
-            scores={scores}
             onUpdate={onUpdate}
             />
         }
@@ -76,7 +73,6 @@ export default function BallotPageSelector({page, races, onUpdate}) {
           <RankedBallotView
             race={race}
             candidates={candidates}
-            scores={scores}
             onUpdate={onUpdate}
             />
         }
@@ -84,7 +80,6 @@ export default function BallotPageSelector({page, races, onUpdate}) {
           <ApprovalBallotView
             race={race}
             candidates={candidates}
-            scores={scores}
             onUpdate={onUpdate}
             />
         }
