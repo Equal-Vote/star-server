@@ -3,25 +3,23 @@ import { useState } from "react"
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
-import { FormHelperText, InputLabel } from "@mui/material"
+import { FormHelperText, InputLabel, MenuItem, Select } from "@mui/material"
 import { StyledButton } from '../styles';
 import { Input } from '@mui/material';
-
+import { DateTime } from 'luxon'
+import { timeZones } from './TimeZones'
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 export default function ElectionDetails({ election, applyElectionUpdate, getStyle, setPageNumber }) {
-    const dateAsInputString = (date) => {
-        if (date == null) return ''
-        date = new Date(date)
-        // Remove time zone offset before switching to ISO
-        var s = (new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString());
-        s = s.replace(':00.000Z', '')
-        return s
-    }
+
     const [errors, setErrors] = useState({
         title: '',
         description: '',
         startTime: '',
         endTime: '',
     })
+
+    const [timeZone, setTimeZone] = useLocalStorage('timezone',DateTime.now().zone.name)
+
     const isValidDate = (d) => {
         if (d instanceof Date) return !isNaN(d.valueOf())
         if (typeof(d) === 'string')  return !isNaN(new Date(d).valueOf())
@@ -127,9 +125,26 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                 <FormHelperText error sx={{ pl: 1, pt: 0 }}>
                     {errors.description}
                 </FormHelperText>
+            </Grid>            
+            <Grid item xs={4} sx={{ m: 0, p: 1 }} justifyContent='center'>
+                <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Time Zone</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={timeZone}
+                        label="Time Zone"
+                        onChange={(e) => setTimeZone(e.target.value)}
+                    >
+                        <MenuItem value={timeZone}>{timeZone}</MenuItem>
+                        {timeZones.map(tz =>
+                            <MenuItem value={tz.ID}>{tz.name}</MenuItem>
+                        )}
+                    </Select>
+                </FormControl>
             </Grid>
+            <Grid item xs={8}></Grid>
             <Grid item xs={6} sx={{ m: 0, p: 1 }} justifyContent='center' >
-
                 <FormControl fullWidth>
                     <InputLabel shrink>
                         Start Date
@@ -137,10 +152,14 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                     <Input
                         type='datetime-local'
                         error={errors.startTime !== ''}
-                        value={dateAsInputString(election.start_time)}
+                        value={DateTime.fromJSDate(election.start_time)
+                            .setZone(timeZone)
+                            .startOf("minute")
+                            .toISO({ includeOffset: false, suppressSeconds: true, suppressMilliseconds: true })}
                         onChange={(e) => {
                             setErrors({ ...errors, startTime: '' })
-                            applyElectionUpdate(election => election.start_time = new Date(e.target.value))
+                            applyElectionUpdate(election => 
+                                election.start_time = DateTime.fromISO(e.target.value).setZone(timeZone,{keepLocalTime : true}).toJSDate())
                         }}
                     />
                     <FormHelperText error sx={{ pl: 0, mt: 0 }}>
@@ -148,7 +167,6 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                     </FormHelperText>
                 </FormControl>
             </Grid>
-
             <Grid item xs={6} sx={{ m: 0, p: 1 }} justifyContent='center'>
                 <FormControl fullWidth>
                     <InputLabel shrink>
@@ -157,10 +175,14 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                     <Input
                         type='datetime-local'
                         error={errors.endTime !== ''}
-                        value={dateAsInputString(election.end_time)}
+                        value={DateTime.fromJSDate(election.end_time)
+                            .setZone(timeZone)
+                            .startOf("minute")
+                            .toISO({ includeOffset: false, suppressSeconds: true, suppressMilliseconds: true })}
                         onChange={(e) => {
                             setErrors({ ...errors, endTime: '' })
-                            applyElectionUpdate(election => { election.end_time = new Date(e.target.value) })
+                            applyElectionUpdate(election =>  
+                                election.end_time = DateTime.fromISO(e.target.value).setZone(timeZone,{keepLocalTime : true}).toJSDate())
                         }}
                     />
                     <FormHelperText error sx={{ pl: 0, mt: 0 }}>
