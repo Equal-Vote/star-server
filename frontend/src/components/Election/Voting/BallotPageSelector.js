@@ -71,7 +71,7 @@ export default function BallotPageSelector({page, races, onUpdate}) {
             onUpdate={onUpdate}
             />
         }
-        {race.voting_method == 'STAR_PR' &&
+        {page.voting_method == 'STAR_PR' &&
           <StarPRBallotView
             race={race}
             candidates={candidates}
