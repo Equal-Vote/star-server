@@ -1,4 +1,4 @@
-import { Button, styled } from "@mui/material"
+import { Button, responsiveFontSizes, styled } from "@mui/material"
 import { TextField, useTheme } from '@mui/material';
 
 export const StyledButton = (props) => (
@@ -8,8 +8,8 @@ export const StyledButton = (props) => (
             p: 1,
             m: 0,
             boxShadow: 2,
-            backgroundColor: 'primary.light',
-            fontWeight: 'bold'
+            backgroundColor: 'primary.main',
+            fontWeight: 'bold',
         }}
         {...props}
     >

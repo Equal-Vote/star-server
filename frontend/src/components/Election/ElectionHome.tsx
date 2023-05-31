@@ -72,7 +72,7 @@ const ElectionHome = ({ authSession, electionData, fetchElection }) => {
                 </Button>
               </Box>
             }
-            <Box sx={{ p: 1, display: 'flex', justifyContent: 'flex-end' }}>
+            {/* <Box sx={{ p: 1, display: 'flex', justifyContent: 'flex-end' }}>
               {authSession.isLoggedIn() &&
                 <Tooltip title="Create copy of this election" >
                   <IconButton component={Link} to={`/DuplicateElection/${electionData.election.election_id}`}>
@@ -80,7 +80,7 @@ const ElectionHome = ({ authSession, electionData, fetchElection }) => {
                   </IconButton>
                 </Tooltip>
               }
-            </Box>
+            </Box> */}
 
           </Paper>
         </Box>

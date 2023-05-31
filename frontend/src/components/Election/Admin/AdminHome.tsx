@@ -17,13 +17,13 @@ const AdminHome = ({ election, permissions, fetchElection }) => {
     }
     const { makeRequest: finalize } = useFetch(`/API/Election/${election.election_id}/finalize`, 'post')
     const finalizeElection = async () => {
-      console.log("finalizing election")
-      try {
-        await finalize()
-        await fetchElection()
-      } catch (err) {
-        console.log(err)
-      }
+        console.log("finalizing election")
+        try {
+            await finalize()
+            await fetchElection()
+        } catch (err) {
+            console.log(err)
+        }
     }
     return (
         <Box
@@ -155,6 +155,28 @@ const AdminHome = ({ election, permissions, fetchElection }) => {
                             <Divider style={{ width: '100%' }} />
                             <Grid xs={8} sx={{ p: 1 }}>
                                 <Typography variant="h5">
+                                    Duplicate
+                                </Typography>
+                                <Typography variant="body1" sx={{ pl: 2 }}>
+                                    Create copy of this election
+                                </Typography>
+                            </Grid>
+                            <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
+                                <StyledButton
+                                    type='button'
+                                    variant='contained'
+                                    disabled={!hasPermission(permissions, 'canEditElectionState')}
+                                    fullwidth
+                                    component={Link} to={`/DuplicateElection/${election.election_id}`}
+                                >
+                                    <Typography align='center' variant="body2">
+                                        Duplicate
+                                    </Typography>
+                                </StyledButton>
+                            </Grid>
+                            <Divider style={{ width: '100%' }} />
+                            <Grid xs={8} sx={{ p: 1 }}>
+                                <Typography variant="h5">
                                     Finalize Election
                                 </Typography>
                                 <Typography variant="body1" sx={{ pl: 2 }}>
@@ -272,6 +294,28 @@ const AdminHome = ({ election, permissions, fetchElection }) => {
                                 >
                                     <Typography align='center' variant="body2">
                                         Preview ballot
+                                    </Typography>
+                                </StyledButton>
+                            </Grid>
+                            <Divider style={{ width: '100%' }} />
+                            <Grid xs={8} sx={{ p: 1 }}>
+                                <Typography variant="h5">
+                                    Duplicate
+                                </Typography>
+                                <Typography variant="body1" sx={{ pl: 2 }}>
+                                    Create copy of this election
+                                </Typography>
+                            </Grid>
+                            <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
+                                <StyledButton
+                                    type='button'
+                                    variant='contained'
+                                    disabled={!hasPermission(permissions, 'canEditElectionState')}
+                                    fullwidth
+                                    component={Link} to={`/DuplicateElection/${election.election_id}`}
+                                >
+                                    <Typography align='center' variant="body2">
+                                        Duplicate
                                     </Typography>
                                 </StyledButton>
                             </Grid>
@@ -410,6 +454,28 @@ const AdminHome = ({ election, permissions, fetchElection }) => {
                                     {election.settings.public_results === true ? 'Make results private' : 'Make results public'}
                                 </StyledButton>
                             </Grid>
+                            <Divider style={{ width: '100%' }} />
+                            <Grid xs={8} sx={{ p: 1 }}>
+                                <Typography variant="h5">
+                                    Duplicate
+                                </Typography>
+                                <Typography variant="body1" sx={{ pl: 2 }}>
+                                    Create copy of this election
+                                </Typography>
+                            </Grid>
+                            <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
+                                <StyledButton
+                                    type='button'
+                                    variant='contained'
+                                    disabled={!hasPermission(permissions, 'canEditElectionState')}
+                                    fullwidth
+                                    component={Link} to={`/DuplicateElection/${election.election_id}`}
+                                >
+                                    <Typography align='center' variant="body2">
+                                        Duplicate
+                                    </Typography>
+                                </StyledButton>
+                            </Grid>
                         </>
                     }
                     {election.state === 'closed' &&
@@ -536,9 +602,30 @@ const AdminHome = ({ election, permissions, fetchElection }) => {
                                     {election.settings.public_results === true ? 'Make results private' : 'Make results public'}
                                 </StyledButton>
                             </Grid>
+                            <Divider style={{ width: '100%' }} />
+                            <Grid xs={8} sx={{ p: 1 }}>
+                                <Typography variant="h5">
+                                    Duplicate
+                                </Typography>
+                                <Typography variant="body1" sx={{ pl: 2 }}>
+                                    Create copy of this election
+                                </Typography>
+                            </Grid>
+                            <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
+                                <StyledButton
+                                    type='button'
+                                    variant='contained'
+                                    disabled={!hasPermission(permissions, 'canEditElectionState')}
+                                    fullwidth
+                                    component={Link} to={`/DuplicateElection/${election.election_id}`}
+                                >
+                                    <Typography align='center' variant="body2">
+                                        Duplicate
+                                    </Typography>
+                                </StyledButton>
+                            </Grid>
                         </>
                     }
-
                 </Grid>
             </Paper>
 

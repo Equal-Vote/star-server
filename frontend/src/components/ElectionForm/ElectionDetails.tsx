@@ -7,7 +7,7 @@ import { FormHelperText, InputLabel } from "@mui/material"
 import { StyledButton } from '../styles';
 import { Input } from '@mui/material';
 
-export default function ElectionDetails({ election, applyElectionUpdate, getStyle, setPageNumber }) {
+export default function ElectionDetails({ election, applyElectionUpdate, getStyle, onBack, onNext }) {
     const dateAsInputString = (date) => {
         if (date == null) return ''
         date = new Date(date)
@@ -24,7 +24,7 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
     })
     const isValidDate = (d) => {
         if (d instanceof Date) return !isNaN(d.valueOf())
-        if (typeof(d) === 'string')  return !isNaN(new Date(d).valueOf())
+        if (typeof (d) === 'string') return !isNaN(new Date(d).valueOf())
         return false
     }
     const validatePage = () => {
@@ -76,7 +76,12 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
     }
 
     return (
-        <>
+        <Grid container
+            sx={{
+                m: 0,
+                p: 1,
+            }}
+        >
             <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <TextField
                     inputProps={{ pattern: "[a-z]{1,15}" }}
@@ -138,9 +143,15 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                         type='datetime-local'
                         error={errors.startTime !== ''}
                         value={dateAsInputString(election.start_time)}
+
                         onChange={(e) => {
                             setErrors({ ...errors, startTime: '' })
-                            applyElectionUpdate(election => election.start_time = new Date(e.target.value))
+                            console.log(e.target.value)
+                            if (e.target.value == null || e.target.value == '') {
+                                applyElectionUpdate(election => election.start_time = undefined)
+                            } else {
+                                applyElectionUpdate(election => election.start_time = new Date(e.target.value))
+                            }
                         }}
                     />
                     <FormHelperText error sx={{ pl: 0, mt: 0 }}>
@@ -160,7 +171,11 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                         value={dateAsInputString(election.end_time)}
                         onChange={(e) => {
                             setErrors({ ...errors, endTime: '' })
-                            applyElectionUpdate(election => { election.end_time = new Date(e.target.value) })
+                            if (e.target.value == null || e.target.value == '') {
+                                applyElectionUpdate(election => { election.end_time = undefined })
+                            } else {
+                                applyElectionUpdate(election => { election.end_time = new Date(e.target.value) })
+                            }
                         }}
                     />
                     <FormHelperText error sx={{ pl: 0, mt: 0 }}>
@@ -176,7 +191,7 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                     disabled={true}
                     onClick={() => {
                         if (validatePage()) {
-                            setPageNumber(pageNumber => pageNumber - 1)
+                            onBack()
                         }
                     }}>
                     Back
@@ -190,13 +205,13 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                     fullWidth
                     onClick={() => {
                         if (validatePage()) {
-                            setPageNumber(pageNumber => pageNumber + 1)
+                            onNext()
                         }
                     }}>
                     Next
                 </StyledButton>
             </Grid>
-        </>
+        </Grid>
 
     )
 }

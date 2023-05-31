@@ -24,7 +24,7 @@ const AddElection = ({ authSession }) => {
         < >
             {!authSession.isLoggedIn() && <div> Must be logged in to create elections </div>}
             {authSession.isLoggedIn() &&
-                <ElectionForm authSession={authSession} onSubmitElection={onAddElection} prevElectionData={null} submitText='Create Election' disableSubmit={isPending} />
+                <ElectionForm authSession={authSession} onSubmitElection={onAddElection} prevElectionData={null} submitText='Save Election' disableSubmit={isPending} />
             }
             {isPending && <div> Submitting... </div>}
         </>
