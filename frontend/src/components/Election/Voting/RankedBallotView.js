@@ -16,7 +16,6 @@ function scoresAreOverVote({scores}){
 export default function RankedBallotView({
   race,
   candidates,
-  scores,
   onUpdate
 }) {
   const instructions = (
@@ -81,12 +80,11 @@ export default function RankedBallotView({
       key="rankedBallot"
       race={race}
       candidates={candidates}
-      scores={scores}
       columns={['1st', '2nd', '3rd', '4th', '5th']}
       columnValues={[1, 2, 3, 4, 5]}
       instructions={instructions}
       onClick={(i, j) => {
-        const newScores = [...scores];
+        const newScores = candidates.map(c => c.score);
         newScores[i] = newScores[i] === j ? null : j;
         onUpdate(newScores);
       }}
