@@ -8,8 +8,6 @@ declare namespace Intl {
         public format: (items: string[]) => string;
     }
 }
-// converts list of strings to string with correct grammar ([a,b,c] => 'a, b, and c')
-const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
 const minScore = 0;
 const maxScore = 5;
