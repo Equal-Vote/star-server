@@ -1,0 +1,732 @@
+.ui-page {
+	font-family: verdana, tahoma, helvetica, sans-serif;
+	/*background-color: #aaaaaa;*/
+	/*background-image: url("../images/wood_texture.jpg");*/
+}
+
+html, body {
+	height: 100vh;
+	margin: 0;
+}
+
+#page {
+	font-family: verdana, tahoma, helvetica, sans-serif;
+	min-height: 100vh-20px;
+	padding-bottom: 30px;
+}
+
+/* Page Header */
+
+div#headerActual.ui-bar {
+	float: left;
+	width: 100%;
+	border-top: none !important;
+	padding: 0 !important;
+	background-color: black;
+}
+
+div#pageHeader {
+	float: left;
+	height: 48px;
+}
+
+img#headerLogo {
+	float: left;
+	height: 48px;
+	margin: none;
+	margin-right: 5px;
+	padding: none;
+	/*background-color: white;
+	border-radius: 10px;*/
+	border: dashed 0px purple;
+}
+
+#pageHeader a {
+	text-decoration: none;
+	cursor: pointer;
+}
+
+a#headerTitle {
+	display: block;
+	float: left;
+	padding-top: 15px;
+	font-size: 12px;
+	height: 48px;
+	color: #ededed;
+}
+
+div#breadCrumbs {
+	float: right;
+	font-size: 12px;
+	margin-top: 3px;
+}
+
+div#breadCrumbsTitle {
+	color: white;
+	float: right;
+	font-size: 12px;
+	margin-top: 15px;
+	margin-right: 10px;
+}
+
+/* Index */
+
+div#indexHeaderContainer {
+	display: table;
+	margin: 0px auto;
+}
+
+div#indexHeader {
+	text-align: center;
+	font-size: 16pt;
+	border: solid 0px orange;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+div#indexHeaderText {
+	float: left;
+	margin-right: 10px;
+	margin-top: 4px;
+}
+
+div#indexHeaderText a:link, a:active, a:hover, a:visited {
+	cursor: pointer;
+}
+
+div#indexHeaderImageContainer {
+	float: left;
+}
+
+img#starvotingLogo {
+	width: 140px;
+	padding: 2px;
+	margin-bottom: -6px;
+	background-color: #34424B;
+	border-radius: 7px;
+	border: dashed 0px purple;
+}
+
+div.bigContainer {
+	box-shadow: 4px 4px 4px #cccccc;
+	border-radius: 10px;
+	margin-top: 20px;
+	background-color: #ffffff;
+}
+
+div.bigContainerTitle {
+	font-size: 13pt;
+	font-weight: bold;
+	border: none;
+	background-color: #e7e7e7;
+	border-radius: 10px 10px 0px 0px;
+	padding: 10px;
+	margin-top: 10px;
+}
+
+div.bigContainerInner, #indexCreatePollContainer {
+	border: solid 2px #e7e7e7;
+	border-radius: 0px 0px 10px 10px;
+	padding: 10px;
+}
+
+div.bigContainerSubheader {
+	border-bottom: solid 1px #cccccc;
+}
+
+/* Polls */
+#statusMsg {
+	display: none;
+	border-radius: 7px;
+	padding: 0px 5px 0px 5px;
+	float: left;
+	border: solid 2px #cccccc;
+}
+
+div#pollTitle {
+	font-weight: bold;
+	font-size: 14pt;
+}
+
+a.pollLink:link, a.pollLink:hover, a.pollLink:visited, a.surveyLink:link, a.surveyLink:hover, a.surveyLink:visited {
+	display: block;
+	float: left;
+	height: 50px;
+	width: 100%;
+	border: solid 1px #cccccc;
+	border-radius: 7px;
+	text-decoration: none;
+	padding: 5px;
+	color: #38c;
+	font-weight: bold;
+}
+
+div.pollInfo {
+	display: block;
+	font-weight: normal;
+	font-size: 12px;
+	color: black;
+	vertical-align: top;
+	color: #999999;
+	border-radius: 5px;
+}
+
+div.pollInfoVotes {
+	float: left;
+	border: dashed 0px orange;
+	font-size: 14px;
+	vertical-align: top;
+	color: black;
+	padding: 5px;
+	margin-right: 5px;
+	margin-left: 1px;
+	margin-top: 2px;
+	background-color: #ededed;
+	border-radius: 5px;
+}
+
+div#pollButtonContainer {
+	text-align: center;
+}
+
+#createPollButton, #addAnswerButton {
+	margin: 0px auto;
+}
+
+/* Vote Selector */
+.voteForm {
+	float: left;
+	border: solid 1px #e7e7e7;
+	border-radius: 7px;
+	margin: 0px 0px 5px 0px;
+	padding: 3px 5px 0px 5px;
+}
+
+.voteForm legend {
+	text-align: center;
+}
+
+.voteForm input{
+    margin:0;padding:0;
+    display: none;
+}
+
+.legendImg {
+	width: 99%;
+	max-width: 400px;
+}
+
+.legendImgSmall {
+	max-width: 100px;
+}
+
+.emptystar{background-image:url(../../../web/images/star-empty-blue.png);}
+.fullstar{background-image:url(../../../web/images/star-full-blue.png);}
+
+.voteForm input:active +.voteFormLabel{
+	opacity: 1;
+	font-weight: bold !important;
+}
+.voteForm input:checked +.voteFormLabel{
+    -webkit-filter: none;
+       -moz-filter: none;
+            filter: none;
+	font-weight: bold !important;
+}
+
+.voteForm input:checked +.voteFormLabel.fullstar{
+	color: white;
+	text-shadow: 1px 1px 2px #000000;
+}
+
+.voteFormLabel{
+    float:left;
+	cursor:pointer;
+    background-size:contain;
+    background-repeat:no-repeat;
+    display:inline-block;
+	font-size: 14px !important;
+	font-weight: bold !important;
+	text-align: center;
+	padding-top: 10px;
+    width:35px;height:35px;
+    -webkit-transition: all 100ms ease-in;
+       -moz-transition: all 100ms ease-in;
+            transition: all 100ms ease-in;
+    -webkit-filter: brightness(1.8) grayscale(1) opacity(.7);
+       -moz-filter: brightness(1.8) grayscale(1) opacity(.7);
+            filter: brightness(1.8) grayscale(1) opacity(.7);
+}
+.voteFormLabel:hover{
+    /*-webkit-filter: brightness(1.2) grayscale(.5) opacity(1);
+       -moz-filter: brightness(1.2) grayscale(.5) opacity(1);
+            filter: brightness(1.2) grayscale(.5) opacity(1);*/
+	-webkit-filter: none;
+       -moz-filter: none;
+            filter: none;
+}
+
+.voteFormLabel.fullstar:hover{
+	color: white;
+	text-shadow: 1px 1px 2px #000000;
+}
+
+/* END Vote Selector*/
+
+div#voteInput {
+	float: left;
+}
+
+div#yourVoteTime {
+	font-size: 12px;
+}
+
+div#customSlugInputContainer, div#verifiedVotingSelectContainer, div#startEndInputContainer {
+	display: none;
+}
+
+input#fsCustomSlugInput.highlightInputGreen, input#voterKey.highlightInputGreen {
+	border: solid 1px green;
+}
+
+input#fsCustomSlugInput.highlightInputRed, input#voterKey.highlightInputRed {
+	border: solid 1px red;
+}
+
+table#resultsTable th, table#yourVoteTable th, table.yourVoteTable th, table#runoffResultsTable th {
+	font-size: 12px;
+	text-align: left;
+}
+
+div#startEndInputContainer div.ui-input-text {
+	width: 150px;
+}
+
+div#numWinnersInputContainer div.ui-input-text {
+	width: 70px;
+}
+
+div#numWinnersContainer {
+	text-align: center;
+}
+
+div.startEndString {
+	float: left;
+	font-size: 11pt;
+	margin-bottom: 5px;
+	border: solid 1px #38c;
+	background-color: #e7e7e7;
+	border-radius: 7px;
+	padding: 5px;
+}
+
+table.yourVoteTable th.pollHeader {
+	text-align: center;
+	background-color: #e7e7e7;
+	border: solid 1px #e7e7e7;
+}
+
+table#resultsTable td.number, table#yourVoteTable td.number, table.yourVoteTable td.number, table#runoffResultsTable td.number {
+	font-family: monospace;
+	text-align: right;
+	font-size: 14pt;
+}
+
+div#yourVoterID {
+	float: left;
+	padding-left: 3px;
+	border-bottom: solid 1px #e7e7e7;
+	margin-bottom: 10px;
+	font-size: 10pt;
+}
+
+span#yourVoterIDActual {
+	border-radius: 7px 7px 0px 0px;
+	border: solid 1px #e7e7e7;
+	background-color: #e7e7e7;
+	padding: 0px 5px 0px 5px;
+}
+
+table#yourVoteTable, table.yourVoteTable {
+	border-collapse: collapse;
+}
+
+table#yourVoteTable td, table.yourVoteTable td {
+	border-top: solid 1px #cccccc;
+}
+
+table#yourVoteTable td.orderCell, table.yourVoteTable td.orderCell {
+	padding-right: 5px;
+}
+
+div#voteInstructions {
+	font-size: 10pt;
+}
+
+div#voteInstructions ul {
+	padding-left: 1.5em;
+}
+
+div.yourPollMsg {
+	font-size: 14px;
+	background-color: #38C;
+	border: solid 1px #38C;
+	color: white;
+	/*text-shadow: 1px 1px 2px #000000;*/
+	text-shadow: none;
+	height: 20px;
+	border-radius: 7px;
+	padding: 5px 7px;
+	box-shadow: 4px 4px 4px #cccccc;
+}
+
+div.yourPollMsg a, div.yourPollMsg a:link, div.yourPollMsg a:visited {
+	color: white;
+}
+
+table#voterKeyTable, table#voterKeyTable th, table#voterKeyTable td {
+	border-collapse: collapse;
+	border: solid 1px #cccccc;
+}
+
+table#voterKeyTable td.voterKeyCell {
+	font-family: monospace;
+}
+
+div.surveyPollContainer {
+	float: left;
+	border: solid 1px #cccccc;
+	background-color: #e7e7e7;
+	border-radius: 5px;
+	padding: 5px;
+	margin-bottom: 10px;
+	margin-right: 10px;
+	/*box-shadow: 4px 4px 4px #cccccc;*/
+}
+
+div.surveyPollContainer form.voteForm {
+	background-color: #ffffff;
+}
+
+div.surveyPollTitle {
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+div.surveyResultsPollTitle, div.recentOrPopularBar, div.placeHeader {
+	background-color: #38c;
+	color: white;
+	text-shadow: 1px 1px 2px #333333;
+	padding: 5px;
+	border-radius: 7px;
+	font-weight: bold;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+div.recentOrPopularBar {
+	margin: none;
+	margin-left: 1px;
+	width: 100%;
+}
+
+td.barGraphTd {
+	position: relative;
+}
+
+div.barGraph {
+	font-size: 10px;
+	height: 20px;
+	width: 1px;
+	background-color: #38C;
+}
+
+div.barGraphData {
+	display: inline;
+	float: left;
+	font-size: 10px;
+	height: 20px;
+	color: white;
+	text-shadow: 1px 1px 2px #000000;
+	position: absolute;
+	top: .4em;
+	left: 5px;
+}
+
+tr.answerResults.advances {
+	background-color: #dddddd;
+}
+
+td.rankCell {
+	width: 20px;
+	text-align: center;
+}
+
+td.rankCell.advances, td.rankCell.winner {
+	background-image: url(../../../web/images/star-gray.png);
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	text-shadow: 1px 1px 2px #ffffff;
+}
+
+td.rankCell.winner {
+	background-image: url(../../../web/images/star-gold.png);
+}
+
+div#resultsArrow {
+	font-size: 30px;
+	float: left;
+	padding-top: 20px;
+	margin-left: 5px;
+	font-weight: bold;
+}
+
+table#cvrTable {
+	overflow: scroll;
+}
+
+table#cvrTable, table#cvrTable td, table#cvrTable th {
+	border-collapse: collapse;
+	border: solid 1px #cccccc;
+}
+
+table#cvrTable th {
+	background-color: #e7e7e7;
+}
+
+table#cvrTable td, table#cvrTable th {
+	padding: 5px;
+}
+
+table#cvrTable tr.yourVoteRow td {
+	background-color: #38C;
+	color: white;
+	text-shadow: 1px 1px 2px #000000;
+}
+
+#shareURLInput {
+	width: 75%;
+}
+
+table#resultsTable, table#runoffResultsTable {
+	border-collapse: collapse;
+}
+
+table#resultsTable th, table#runoffResultsTable th {
+	text-align: left;
+	border-bottom: solid 1px #cccccc;
+}
+
+table#resultsTable tr, table#runoffResultsTable tr {
+	border-top: solid 1px #cccccc;
+}
+
+table#resultsTable tr.barGraphTr, table#resultsTable tr.headerRow, table#runoffResultsTable tr.headerRow {
+	border-top: none;
+}
+
+table#runoffResultsTable tr.noTopBorder {
+	border-top: none;
+}
+
+table#runoffMatrix, table.runoffMatrix {
+	table-layout: fixed;
+	max-width: 100%;
+	border-collapse: collapse;
+}
+
+table#runoffMatrix td, table#runoffMatrix th, table.runoffMatrix td, table.runoffMatrix th {
+	border: none;
+	font-size: 9pt;
+}
+
+table#runoffMatrix th, table.runoffMatrix th {
+	width: 1px;
+}
+
+table#runoffMatrix td.borderCell, table.runoffMatrix td.borderCell {
+	border: solid 1px #cccccc;
+}
+
+table#runoffMatrix td.leftBorderCell, table.runoffMatrix td.leftBorderCell {
+	border: solid 1px #cccccc;
+	border-right: none;
+}
+
+table#runoffMatrix td.centerBorderCell, table.runoffMatrix td.centerBorderCell {
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+}
+
+table#runoffMatrix td.rightBorderCell, table.runoffMatrix td.rightBorderCell {
+	border: solid 1px #cccccc;
+	border-left: none;
+}
+
+table#runoffMatrix td.filled, table.runoffMatrix td.filled {
+	background-color: #cccccc;
+}
+
+table#runoffMatrix td.number, table.runoffMatrix td.number {
+	font-family: monospace;
+	text-align: right;
+	width: 1px;
+	text-shadow: 1px 1px 1px #cccccc;
+}
+
+table#runoffMatrix td.padded, table.runoffMatrix td.padded {
+	padding: 3px;
+}
+
+table#runoffMatrix td.winCell, table.runoffMatrix td.winCell {
+	background-color: #deeede;
+}
+
+table#runoffMatrix td.tieCell, table.runoffMatrix td.tieCell {
+	background-color: #ffffe0;
+}
+
+table#runoffMatrix td.loseCell, table.runoffMatrix td.loseCell {
+	background-color: #ffeeee;
+}
+
+div#runoffMatrixContainer, div#ballotRecordContainer {
+	display: none;
+	overflow: scroll;
+}
+
+div#ballotRecordContainer {
+	font-size: 12px;
+}
+
+div#runoffResults, div#pollResultsContainer {
+	float: left;
+	border-radius: 7px;
+	padding: 5px;
+	background-color: #eeeeee;
+	box-shadow: 2px 2px 4px #cccccc;
+	margin-bottom: 10px;
+}
+
+div#runoffResults {
+	margin-left: 10px;
+}
+
+div.runoffLegend {
+	float: left;
+	font-size: 10pt;
+	border-bottom: solid 1px #e7e7e7;
+	margin-bottom: 10px;
+}
+
+span.runoffFor {
+	color: green;
+}
+
+span.runoffAgainst {
+	color: darkred;
+}
+
+span.runoffNopref {
+	color: #777777;
+}
+
+span.yeaNay {
+	font-size: 8pt;
+}
+
+div#preferenceText {
+	border-top: solid 1px #cccccc;
+	font-size: 10pt;
+}
+
+/* Page Footer */
+div#footer {
+	font-size: 14px;
+	text-align: center;
+	padding: 5px;
+	height: 20px;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+}
+
+div#footer a:link {
+	text-decoration: none;
+}
+
+/* Global */
+.ui-link {
+	/*color: #c9e3b5 !important;*/
+}
+
+/* Generic Classes */
+.firstRow {
+	background-color: #dfdfdf;
+}
+
+.secondRow {
+	background-color: #ffffff;
+}
+
+.numberCell {
+	text-align: right;
+}
+
+.alignLeft {
+	text-align: left !important;
+}
+
+.alignRight {
+	text-align: right !important;
+}
+
+.hidden {
+	display: none;
+}
+
+.center {
+	text-align: center;
+}
+
+.clear {
+	clear: both;
+}
+
+.italic {
+	font-style: italic;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.floatleft {
+	float: left;
+}
+
+.floatright {
+	float: right;
+}
+
+.alignright {
+	text-align: right;
+}
+
+.monospace {
+	font-family: monospace;
+}
+
+.pageBreak	{
+	display: none;
+}
+
+.noMargin {
+	margin: 0px !important;
+}
+
+.noPadding {
+	padding: 0px !important;
+}
