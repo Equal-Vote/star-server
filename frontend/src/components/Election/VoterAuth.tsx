@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router";
 import React from 'react'
 import { useNavigate } from "react-router";
@@ -10,8 +10,13 @@ import TextField from "@mui/material/TextField";
 import Box from '@mui/material/Box';
 import { useCookie } from "../../hooks/useCookie";
 const VoterAuth = ({ authSession, electionData, fetchElection }) => {
-  const { id } = useParams();
-  const [voterID, setVoterID] = useCookie('voter_id', null, 1)
+  const { voter_id } = useParams();
+  const [voterID, setVoterID] = useCookie('voter_id', voter_id, 1)
+
+  useEffect(() => {
+    setVoterID(voter_id)
+    submitVoterID()
+  }, [voter_id])
 
   const submitVoterID = () => {
     fetchElection()

@@ -35,13 +35,13 @@ const ViewElectionRolls = ({ election, permissions }) => {
                 {election.title}
             </Typography>
             <Typography align='center' gutterBottom variant="h5" component="h5">
-                Election Rolls
+                Voters
             </Typography>
             {isPending && <div> Loading Data... </div>}
             {data && data.electionRoll && !isEditing && !addRollPage &&
                 <>
                     <PermissionHandler permissions={permissions} requiredPermission={'canAddToElectionRoll'}>
-                        <Button variant='outlined' onClick={() => setAddRollPage(true)} > Add Rolls </Button>
+                        <Button variant='outlined' onClick={() => setAddRollPage(true)} > Add Voters </Button>
                     </PermissionHandler>
                     <TableContainer component={Paper}>
                         <Table style={{ width: '100%' }} aria-label="simple table">

@@ -438,7 +438,7 @@ export default function Results({ race, result }) {
     <div>
       <div className="flexContainer">
         {race.voting_method === "STAR" &&
-          race.num_winners === 1 &&
+          race.num_winners == 1 &&
           <>
             <SummaryViewer votingMethod='STAR Voting' results={result} />
             <STARResultViewer results={result} rounds={1} />

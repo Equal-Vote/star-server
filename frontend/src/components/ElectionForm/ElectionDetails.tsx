@@ -8,8 +8,8 @@ import { StyledButton } from '../styles';
 import { Input } from '@mui/material';
 import { DateTime } from 'luxon'
 import { timeZones } from './TimeZones'
-import { useLocalStorage } from '../../hooks/useLocalStorage';
-export default function ElectionDetails({ election, applyElectionUpdate, getStyle, setPageNumber }) {
+
+export default function ElectionDetails({ election, applyElectionUpdate, getStyle, onBack, onNext }) {
     const dateToLocalLuxonDate = (date: Date|string, timeZone: string) => {
         // Converts either string date or date object to ISO string in input time zone
         if (date == null || date == '') return ''
@@ -30,7 +30,7 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
 
     const isValidDate = (d) => {
         if (d instanceof Date) return !isNaN(d.valueOf())
-        if (typeof(d) === 'string')  return !isNaN(new Date(d).valueOf())
+        if (typeof (d) === 'string') return !isNaN(new Date(d).valueOf())
         return false
     }
     const validatePage = () => {
@@ -84,7 +84,12 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
     const timeZone = election.settings.time_zone ? election.settings.time_zone : DateTime.now().zone.name
 
     return (
-        <>
+        <Grid container
+            sx={{
+                m: 0,
+                p: 1,
+            }}
+        >
             <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <TextField
                     inputProps={{ pattern: "[a-z]{1,15}" }}
@@ -165,8 +170,13 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                         value={dateToLocalLuxonDate(election.start_time, timeZone)}
                         onChange={(e) => {
                             setErrors({ ...errors, startTime: '' })
+                            if (e.target.value == null || e.target.value == '') {
+                                applyElectionUpdate(election => election.start_time = undefined)
+                            } else {
                             applyElectionUpdate(election => 
                                 election.start_time = DateTime.fromISO(e.target.value).setZone(timeZone,{keepLocalTime : true}).toJSDate())
+                            }
+
                         }}
                     />
                     <FormHelperText error sx={{ pl: 0, mt: 0 }}>
@@ -185,8 +195,12 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                         value={dateToLocalLuxonDate(election.end_time, timeZone)}
                         onChange={(e) => {
                             setErrors({ ...errors, endTime: '' })
-                            applyElectionUpdate(election =>  
+                            if (e.target.value == null || e.target.value == '') {
+                                applyElectionUpdate(election => { election.end_time = undefined })
+                            } else {
+                                applyElectionUpdate(election =>  
                                 election.end_time = DateTime.fromISO(e.target.value).setZone(timeZone,{keepLocalTime : true}).toJSDate())
+                            }
                         }}
                     />
                     <FormHelperText error sx={{ pl: 0, mt: 0 }}>
@@ -202,7 +216,7 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                     disabled={true}
                     onClick={() => {
                         if (validatePage()) {
-                            setPageNumber(pageNumber => pageNumber - 1)
+                            onBack()
                         }
                     }}>
                     Back
@@ -216,13 +230,13 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                     fullWidth
                     onClick={() => {
                         if (validatePage()) {
-                            setPageNumber(pageNumber => pageNumber + 1)
+                            onNext()
                         }
                     }}>
                     Next
                 </StyledButton>
             </Grid>
-        </>
+        </Grid>
 
     )
 }

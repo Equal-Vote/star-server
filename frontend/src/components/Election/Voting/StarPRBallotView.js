@@ -2,22 +2,23 @@ import React from "react";
 import GenericBallotView from "./GenericBallotView.js";
 import Typography from '@mui/material/Typography';
 
-function scoresAreUnderVote({scores}){
+function scoresAreUnderVote({ scores }) {
   let five_selected = false
   let zero_selected = false
   let all_null = true
-  for(let i = 0; i < scores.length; i++){
-    if(scores[i] != null) all_null = false
-    if(scores[i] == null || scores[i] == 0) zero_selected = true
-    if(scores[i] == 5) five_selected = true
+  for (let i = 0; i < scores.length; i++) {
+    if (scores[i] != null) all_null = false
+    if (scores[i] == null || scores[i] == 0) zero_selected = true
+    if (scores[i] == 5) five_selected = true
   }
   return !(all_null || (five_selected && zero_selected))
 }
 
 // Renders a complete RCV ballot for a single race
-export default function StarBallotView({
+export default function StarPRBallotView({
   race,
   candidates,
+  scores,
   onUpdate
 }) {
   const instructions = (
@@ -40,18 +41,9 @@ export default function StarBallotView({
     </>
   )
   const footer = (
-    <>
-    {race.num_winners == 1 &&
-      <Typography align='center' component="p">
-        The two highest scoring candidates are finalists.<br/>Your full vote goes to the finalist you prefer.
-      </Typography>
-    }
-    {race.num_winners > 1 && 
-      <Typography align='center' component="p">
-        {`This election uses STAR Voting and will elect ${race.num_winners} winners. In STAR Voting the two highest scoring candidates are finalists and the finalist preferred by more voters wins.`}
-      </Typography>
-    }
-    </>
+    <Typography align='center' component="p">
+      Winners in Proportional STAR Voting are selected in rounds. Each round elects the candidate with the highest total score, then designates that candidate's strongest supporters are represented. Subsequent rounds include all voters who are not yet fully represented.
+    </Typography>
   )
   let warning = null;
 
@@ -69,12 +61,13 @@ export default function StarBallotView({
       key="starBallot"
       race={race}
       candidates={candidates}
+      scores={scores}
       columns={[0, 1, 2, 3, 4, 5]}
       instructions={instructions}
       leftTitle='Worst'
       rightTitle='Best'
       onClick={(i, j) => {
-        const newScores = candidates.map(c => c.score);
+        const newScores = [...scores];
         newScores[i] = newScores[i] === j ? null : j;
         onUpdate(newScores);
       }}

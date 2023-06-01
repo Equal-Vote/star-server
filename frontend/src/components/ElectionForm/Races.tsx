@@ -11,8 +11,14 @@ import MenuItem from "@mui/material/MenuItem";
 import Typography from '@mui/material/Typography';
 import { Box, Checkbox, FormGroup, FormHelperText, FormLabel, InputLabel, Radio, RadioGroup, Tooltip } from "@mui/material"
 import { StyledButton } from '../styles';
+// import { useNavigate } from 'react-router-dom';
 
-export default function Races({ election, applyElectionUpdate, getStyle, setPageNumber, submitText, onSubmit }) {
+export default function Races({ election, applyElectionUpdate, getStyle, onBack, onNext }) {
+    // blocks back button and calls onBack function instead
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = () => {
+        onBack()
+    }
     const [openRace, setOpenRace] = useState(0)
     const [newCandidateName, setNewCandidateName] = useState('')
     const onAddCandidate = (race_index) => {
@@ -131,7 +137,12 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
     }
 
     return (
-        <>
+        <Grid container
+            sx={{
+                m: 0,
+                p: 1,
+            }}
+        >
             <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <Typography gutterBottom variant="h4" component="h4">Race Settings</Typography>
             </Grid>
@@ -276,12 +287,12 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                             Mark all candidates you approve of, single winner or multi-winner
                                         </FormHelperText>
-                                        
+
                                         <FormControlLabel value="Plurality" control={<Radio />} label="Plurality" />
                                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                             Mark one candidate only. Not recommended with more than 2 candidates.
                                         </FormHelperText>
-                                        
+
                                         <FormControlLabel value="IRV" control={<Radio />} label="Ranked Choice" />
                                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                             Rank candidates in order of preference, single winner, only recommended for educational purposes
@@ -358,9 +369,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                     variant="contained"
                     width="100%"
                     onClick={() => {
-                        if (validatePage()) {
-                            setPageNumber(pageNumber => pageNumber - 1)
-                        }
+                        onBack()
                     }}>
                     Back
                 </StyledButton>
@@ -371,11 +380,15 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                     type='button'
                     variant="contained"
                     fullWidth
-                    disabled>
+                    onClick={() => {
+                        if (validatePage()) {
+                            onNext()
+                        }
+                    }}>
                     Next
                 </StyledButton>
             </Grid>
-            <Grid item xs={12} sx={{ m: 0, p: 1 }}>
+            {/* <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <StyledButton
                     type='button'
                     variant="contained"
@@ -387,7 +400,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                     }>
                     {submitText}
                 </StyledButton>
-            </Grid>
-        </>
+            </Grid> */}
+        </Grid>
     )
 }
