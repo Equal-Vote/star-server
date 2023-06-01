@@ -10,6 +10,16 @@ import { DateTime } from 'luxon'
 import { timeZones } from './TimeZones'
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 export default function ElectionDetails({ election, applyElectionUpdate, getStyle, setPageNumber }) {
+    const dateToLocalLuxonDate = (date: Date|string, timeZone: string) => {
+        // Converts either string date or date object to ISO string in input time zone
+        if (date == null || date == '') return ''
+        date = new Date(date)
+        // Convert to luxon date and apply time zone offset, then convert to ISO string for input component
+        return DateTime.fromJSDate(date)
+            .setZone(timeZone)
+            .startOf("minute")
+            .toISO({ includeOffset: false, suppressSeconds: true, suppressMilliseconds: true })
+    }
 
     const [errors, setErrors] = useState({
         title: '',
@@ -17,8 +27,6 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
         startTime: '',
         endTime: '',
     })
-
-    const [timeZone, setTimeZone] = useLocalStorage('timezone',DateTime.now().zone.name)
 
     const isValidDate = (d) => {
         if (d instanceof Date) return !isNaN(d.valueOf())
@@ -72,6 +80,8 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
         setErrors(errors => ({ ...errors, ...newErrors }))
         return isValid
     }
+
+    const timeZone = election.settings.time_zone ? election.settings.time_zone : DateTime.now().zone.name
 
     return (
         <>
@@ -134,7 +144,7 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                         id="demo-simple-select"
                         value={timeZone}
                         label="Time Zone"
-                        onChange={(e) => setTimeZone(e.target.value)}
+                        onChange={(e) => applyElectionUpdate(election => { election.settings.time_zone = e.target.value })}
                     >
                         <MenuItem value={timeZone}>{timeZone}</MenuItem>
                         {timeZones.map(tz =>
@@ -152,10 +162,7 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                     <Input
                         type='datetime-local'
                         error={errors.startTime !== ''}
-                        value={DateTime.fromJSDate(election.start_time)
-                            .setZone(timeZone)
-                            .startOf("minute")
-                            .toISO({ includeOffset: false, suppressSeconds: true, suppressMilliseconds: true })}
+                        value={dateToLocalLuxonDate(election.start_time, timeZone)}
                         onChange={(e) => {
                             setErrors({ ...errors, startTime: '' })
                             applyElectionUpdate(election => 
@@ -175,10 +182,7 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                     <Input
                         type='datetime-local'
                         error={errors.endTime !== ''}
-                        value={DateTime.fromJSDate(election.end_time)
-                            .setZone(timeZone)
-                            .startOf("minute")
-                            .toISO({ includeOffset: false, suppressSeconds: true, suppressMilliseconds: true })}
+                        value={dateToLocalLuxonDate(election.end_time, timeZone)}
                         onChange={(e) => {
                             setErrors({ ...errors, endTime: '' })
                             applyElectionUpdate(election =>  

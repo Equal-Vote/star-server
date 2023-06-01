@@ -8,6 +8,7 @@ import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { Box, Paper } from "@mui/material";
 import { Election } from "../../../../domain_model/Election";
 import ElectionDetails from "./ElectionDetails";
+import { DateTime } from 'luxon'
 
 const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitText, disableSubmit }) => {
     // I'm referencing 4th option here
@@ -50,6 +51,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
             },
             ballot_updates: false,
             public_results: true,
+            time_zone: DateTime.now().zone.name,
         }
     }
     if (prevElectionData == null) {
