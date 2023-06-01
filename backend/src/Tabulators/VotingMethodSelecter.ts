@@ -3,11 +3,11 @@ import { Approval } from "./Approval";
 import { Plurality } from "./Plurality";
 import { IRV } from "./IRV";
 import { RankedRobin } from "./RankedRobin";
-const AllocatedScoreResults = require('../Tabulators/AllocatedScore')
+import { AllocatedScore } from "./AllocatedScore";
 
 export const VotingMethods: { [id: string]: Function } = {
     STAR: Star,
-    STAR_PR: AllocatedScoreResults,
+    STAR_PR: AllocatedScore,
     Approval: Approval,
     Plurality: Plurality,
     IRV: IRV,
