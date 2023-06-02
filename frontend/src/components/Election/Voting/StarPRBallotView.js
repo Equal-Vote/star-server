@@ -18,7 +18,6 @@ function scoresAreUnderVote({ scores }) {
 export default function StarPRBallotView({
   race,
   candidates,
-  scores,
   onUpdate
 }) {
   const instructions = (
@@ -61,13 +60,12 @@ export default function StarPRBallotView({
       key="starBallot"
       race={race}
       candidates={candidates}
-      scores={scores}
       columns={[0, 1, 2, 3, 4, 5]}
       instructions={instructions}
       leftTitle='Worst'
       rightTitle='Best'
       onClick={(i, j) => {
-        const newScores = [...scores];
+        const newScores = candidates.map(c => c.score);
         newScores[i] = newScores[i] === j ? null : j;
         onUpdate(newScores);
       }}
