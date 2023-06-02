@@ -122,7 +122,7 @@ const VotePage = ({ election, fetchElection }) => {
                     {/* I tried reusing #E3EDEF from the ballot, but it was too light so I darkened it*/}
                     <SvgIcon style={{color: (n === currentPage)? '#000000' : '#66A0AA'}}>
                       {page.type == 'info' && <path d={INFO_ICON}/>}
-                      {page.type == 'ballot' && (page.scores.some((s) => ( s > 0 ))? <path d={CHECKED_BOX}/> : <path d={UNCHECKED_BOX}/> )}
+                      {page.type == 'ballot' && (page.candidates.some((c) => ( c.score > 0 ))? <path d={CHECKED_BOX}/> : <path d={UNCHECKED_BOX}/> )}
                     </SvgIcon>
                   </StepLabel> 
                 </Step>

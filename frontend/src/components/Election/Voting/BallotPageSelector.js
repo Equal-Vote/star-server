@@ -8,7 +8,7 @@ import ApprovalBallotView from "./ApprovalBallotView.js";
 import StarPRBallotView from "./StarPRBallotView";
 
 export default function BallotPageSelector({page, races, onUpdate}) {
-  var race, candidates, scores; 
+  var race, candidates; 
   if(page.type == "ballot"){
     race = races[page.race_index];
     candidates = page.candidates;
@@ -73,7 +73,6 @@ export default function BallotPageSelector({page, races, onUpdate}) {
           <StarPRBallotView
             race={race}
             candidates={candidates}
-            scores={scores}
             onUpdate={onUpdate}
             />
         }
