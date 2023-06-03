@@ -27,7 +27,9 @@ const Section = ({ Description, Button }: SectionProps) => {
     return (
         <>
             <Grid xs={8} sx={{ p: 1 }}>
-                {Description}
+                <Box sx={{minHeight:60}}>
+                    {Description}
+                </Box>
             </Grid>
             <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                 {Button}
@@ -356,36 +358,33 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
                                     Before finalizing your election you can...
                                 </Typography>
                             </Grid>
-                            <EditRolesSection election={election} permissions={permissions} />
+                            <PreviewBallotSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
                             <AddVotersSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
-                            <EditElectionSection election={election} permissions={permissions} />
+                            <EditRolesSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
-                            <PreviewBallotSection election={election} permissions={permissions} />
+                            <EditElectionSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
                             <DuplicateElectionSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
-                            <Grid xs={8} sx={{ p: 1 }}>
-                                <Typography variant="h5">
-                                    Finalize Election
-                                </Typography>
-                                <Typography variant="body1" sx={{ pl: 2 }}>
+                            <Grid xs={12} sx={{ p: 1, pt:3, pb: 0}}>
+                                <Typography align='center' variant="body1" sx={{ pl: 2 }}>
                                     {/* {`If you're finished setting up your election you can finalize it. This will prevent future edits ${election.settings.invitation ? ', send out invitations, ' : ''} and open the election for voters to submit ballots${election.start_time ? ' after your specified start time' : ''}.`} */}
                                     {`When finished setting up your election, finalize it. Once final, it can't be edited. Voting begins ${election.start_time ? 'after your specified start time.' : 'immediately.'}`}
                                 </Typography>
                                 {election.settings.invitation &&
-                                    <Typography variant="body1" sx={{ pl: 2 }}>
+                                    <Typography align='center' variant="body1" sx={{ pl: 2 }}>
                                         Invitations will be sent to your voters
                                     </Typography>
                                 }
                                 {!hasPermission(permissions, 'canEditElectionState') &&
-                                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                                    <Typography align='center' variant="body1" sx={{ color: 'error.main', pl: 2 }}>
                                         You do not have the correct permissions for this action
                                     </Typography>
                                 }
                             </Grid>
-                            <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
+                            <Grid xs={12} sx={{ p: 1,pt:0, display: 'flex', alignItems: 'center' }}>
                                 <StyledButton
                                     type='button'
                                     variant='contained'
@@ -393,7 +392,7 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
                                     fullwidth
                                     onClick={() => finalizeElection()}
                                 >
-                                    <Typography align='center' variant="body2">
+                                    <Typography align='center' variant="h4" fontWeight={'bold'}>
                                         Finalize Election
                                     </Typography>
                                 </StyledButton>
