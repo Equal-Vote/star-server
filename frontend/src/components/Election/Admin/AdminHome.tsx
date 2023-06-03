@@ -308,9 +308,6 @@ const TogglePublicResultsSection = ({ election, permissions, togglePublicResults
     />
 }
 
-
-{/* <TogglePublicResultsSection election={election} permissions={permissions} /> */ }
-
 const AdminHome = ({ election, permissions, fetchElection }: Props) => {
     const { makeRequest } = useFetch(`/API/Election/${election.election_id}/setPublicResults`, 'post')
     const togglePublicResults = async () => {
@@ -421,11 +418,11 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
                                     </Typography>
                                 </Grid>}
 
-                            <EditRolesSection election={election} permissions={permissions} />
+                            <PreviewBallotSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
                             <ViewVotersSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
-                            <PreviewBallotSection election={election} permissions={permissions} />
+                            <EditRolesSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
                             <DuplicateElectionSection election={election} permissions={permissions} />
                         </>
