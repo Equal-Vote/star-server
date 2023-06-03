@@ -26,12 +26,12 @@ type SectionProps = {
 const Section = ({ Description, Button }: SectionProps) => {
     return (
         <>
-            <Grid xs={8} sx={{ p: 1 }}>
-                <Box sx={{minHeight:60}}>
+            <Grid xs={12} md={8} sx={{ p: 1 }}>
+                <Box sx={{minHeight:{xs: 0, md: 60}}}>
                     {Description}
                 </Box>
             </Grid>
-            <Grid xs={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
+            <Grid xs={12} md={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                 {Button}
             </Grid>
         </>
