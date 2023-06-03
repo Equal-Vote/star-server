@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useCookie } from "./useCookie";
 import jwt_decode from 'jwt-decode'
 let keycloakBaseUrl = process.env.REACT_APP_KEYCLOAK_URL;
@@ -61,9 +61,9 @@ export const useAuthSession = (): IAuthSession => {
         window.location.href = authConfig.endpoints.logout+"?"+queryString;
     }
 
-    const getIdField = (fieldName) => {
+    const getIdField = (fieldName: string) => {
         if (!idToken) return null
-        const id_map = jwt_decode(idToken);
+        const id_map = jwt_decode<any>(idToken);
         return id_map[fieldName];
     }
 
