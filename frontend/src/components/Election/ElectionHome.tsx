@@ -7,8 +7,19 @@ import { IconButton, Paper, Tooltip } from "@mui/material";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ShareButton from "./ShareButton";
 import VoterAuth from "./VoterAuth";
+import { Election } from '../../../../domain_model/Election';
+import { VoterAuth as IVoterAuth } from '../../../../domain_model/VoterAuth';
+import { IAuthSession } from '../../hooks/useAuthSession';
 
-const ElectionHome = ({ authSession, electionData, fetchElection }) => {
+type Props = {
+  authSession: IAuthSession,
+  electionData: {
+    election: Election, 
+    voterAuth: IVoterAuth},
+  fetchElection: Function,
+}
+
+const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
 
   return (
     <>

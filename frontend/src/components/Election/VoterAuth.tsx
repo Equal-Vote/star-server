@@ -7,7 +7,19 @@ import TextField from "@mui/material/TextField";
 import Box from '@mui/material/Box';
 import { FormHelperText } from "@mui/material"
 import { useCookie } from "../../hooks/useCookie";
-const VoterAuth = ({ authSession, electionData, fetchElection }) => {
+import { Election } from '../../../../domain_model/Election';
+import { VoterAuth as IVoterAuth } from '../../../../domain_model/VoterAuth';
+import { IAuthSession } from '../../hooks/useAuthSession';
+
+type Props = {
+  authSession: IAuthSession,
+  electionData: {
+    election: Election, 
+    voterAuth: IVoterAuth},
+  fetchElection: Function,
+}
+
+const VoterAuth = ({ authSession, electionData, fetchElection }: Props) => {
   const { voter_id } = useParams();
   const [voterID, setVoterID] = useCookie('voter_id', voter_id ? voter_id : null, 1)
 

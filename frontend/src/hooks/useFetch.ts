@@ -1,13 +1,20 @@
 import { useEffect, useState, useContext } from "react";
 import { SnackbarContext } from "../components/SnackbarContext";
 
+export interface IuseFetch { 
+    data?: any
+    isPending: Boolean,
+    error: any,
+    makeRequest: (data?:any) =>  Promise<any>
+}
+
 const useFetch = (url, method, successMessage = null) => {
     const [isPending, setIsPending] = useState(false)
     const [error, setError] = useState(null)
     const [data, setData] = useState(null)
     const { snack, setSnack } = useContext(SnackbarContext)
 
-    const makeRequest = async (data) => {
+    const makeRequest = async (data?: any) => {
         const options = {
             method: method,
             headers: {
@@ -33,12 +40,13 @@ const useFetch = (url, method, successMessage = null) => {
             setData(data);
             setIsPending(false);
             setError(null);
-            if (successMessage !== null){
+            if (successMessage !== null) {
                 setSnack({
                     message: successMessage,
                     severity: 'success',
                     open: true,
-                    autoHideDuration: 6000,})
+                    autoHideDuration: 6000,
+                })
             }
             return data
         } catch (err) {
@@ -46,7 +54,8 @@ const useFetch = (url, method, successMessage = null) => {
                 message: err.message,
                 severity: "error",
                 open: true,
-                autoHideDuration: null})
+                autoHideDuration: null
+            })
             setIsPending(false);
             setError(err.message);
             return false

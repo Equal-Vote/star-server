@@ -13,7 +13,7 @@ import DebugPage from './components/DebugPage'
 import LandingPage from './components/LandingPage'
 import { Alert, CssBaseline, Snackbar } from '@mui/material'
 import { useAuthSession } from './hooks/useAuthSession'
-import { SnackbarContext } from './components/SnackbarContext'
+import { Isnack, SnackbarContext } from './components/SnackbarContext'
 const App = () => {
   const authSession = useAuthSession()
   const [snack, setSnack] = useState({
@@ -21,12 +21,7 @@ const App = () => {
     severity: "info",
     open: false,
     autoHideDuration: null,
-  } as {
-    message: string,
-    severity: 'error' | 'info' | 'success' | 'warning',
-    open: boolean,
-    autoHideDuration: number | null,
-  })
+  } as Isnack)
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
