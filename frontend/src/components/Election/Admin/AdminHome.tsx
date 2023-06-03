@@ -5,11 +5,12 @@ import { Box, Divider, Paper } from "@mui/material";
 import { Typography } from "@mui/material";
 import { StyledButton } from "../../styles";
 import { Link } from 'react-router-dom';
+import { Election } from '../../../../../domain_model/Election';
+import ShareButton from "../ShareButton";
 const hasPermission = (permissions: string[], requiredPermission: string) => {
     return (permissions && permissions.includes(requiredPermission))
 }
 
-import { Election } from '../../../../../domain_model/Election';
 
 type Props = {
     election: Election,
@@ -308,6 +309,21 @@ const TogglePublicResultsSection = ({ election, permissions, togglePublicResults
     />
 }
 
+const ShareSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
+    return <Section
+        Description={
+            (<>
+                <Typography variant="h5">
+                    Share your election
+                </Typography>
+            </>)}
+        Button={(<>
+            <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} text={'Share'} />
+
+        </>)}
+    />
+}
+
 const AdminHome = ({ election, permissions, fetchElection }: Props) => {
     const { makeRequest } = useFetch(`/API/Election/${election.election_id}/setPublicResults`, 'post')
     const togglePublicResults = async () => {
@@ -418,6 +434,8 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
                                     </Typography>
                                 </Grid>}
 
+                            <ShareSection election={election} permissions={permissions} />
+                            <Divider style={{ width: '100%' }} />
                             <PreviewBallotSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
                             <ViewVotersSection election={election} permissions={permissions} />
@@ -450,6 +468,8 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
                                     </Typography>
                                 </Grid>}
 
+                            <ShareSection election={election} permissions={permissions} />
+                            <Divider style={{ width: '100%' }} />
                             <EditRolesSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
                             <ViewVotersSection election={election} permissions={permissions} />

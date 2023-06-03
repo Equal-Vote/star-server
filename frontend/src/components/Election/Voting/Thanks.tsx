@@ -30,8 +30,10 @@ const Thanks = ({ election }) => {
                         </Typography>
                     }
 
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} text={'Share'} />
+                    <div style={{ display: 'flex', justifyContent: 'center'}}>
+                        <Box sx={{maxWidth:200}}>
+                            <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} text={'Share'} />
+                        </Box>
                     </div>
                     {(election.state === 'open' || election.state === 'closed') && election.settings.public_results === true &&
                         <div style={{ display: 'flex', justifyContent: 'center' }}>

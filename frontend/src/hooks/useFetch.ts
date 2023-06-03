@@ -49,7 +49,7 @@ const useFetch = (url: string, method: 'get'|'post'|'put', successMessage:string
                 })
             }
             return data
-        } catch (err: any) {
+        } catch (err) {
             setSnack({
                 message: err.message,
                 severity: "error",
