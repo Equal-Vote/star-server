@@ -18,13 +18,17 @@ const ElectionHome = ({ authSession, electionData, fetchElection }) => {
           justifyContent="center"
           alignItems="center"
           sx={{ width: '100%' }}>
-          <Paper elevation={3} sx={{ p: 3, width: 600, minHeight:400, 
-          display: 'flex',
-          flexDirection: 'column', justifyContent: 'space-between' }} >
-
-            {/* <Box sx={{ m: 1, display: 'flex', justifyContent: 'flex-end' }}>
-              <ShareButton url={`${window.location.origin}/Election/${electionData.election.election_id}`} text={'Share'} />
-            </Box> */}
+          <Paper elevation={3} sx={{
+            p: 3, width: 600, minHeight: 400,
+            display: 'flex',
+            flexDirection: 'column', justifyContent: 'space-between'
+          }} >
+            {/* Only show share button if election voter access is not closed  */}
+            {electionData.election.settings.voter_access !== 'closed' &&
+              <Box sx={{ m: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                <ShareButton url={`${window.location.origin}/Election/${electionData.election.election_id}`} text={'Share'} />
+              </Box>
+            }
             <Box sx={{ flexGrow: 0 }}>
               <Typography align='center' gutterBottom variant="h3" component="h3" fontWeight={'bold'}>
                 {electionData.election.title}
@@ -51,7 +55,6 @@ const ElectionHome = ({ authSession, electionData, fetchElection }) => {
             {electionData.election.state === 'open' && <>
 
               {electionData.election.end_time &&
-              
                 <Box sx={{ flexGrow: 1 }}>
                   < Typography align='center' variant="h6" component="h6">
                     {`Election ends on ${new Date(electionData.election.end_time).toLocaleDateString()} at ${new Date(electionData.election.end_time).toLocaleTimeString()} `}
@@ -71,12 +74,12 @@ const ElectionHome = ({ authSession, electionData, fetchElection }) => {
             </>}
 
             {electionData.election.state === 'closed' &&
-            
-            <Box sx={{ flexGrow: 1 }}>
-              <Typography align='center' variant="h6" component="h6">
-                {`Election ended on ${new Date(electionData.election.end_time).toLocaleDateString()} at ${new Date(electionData.election.end_time).toLocaleTimeString()} `}
-              </Typography>
-            </Box>
+
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography align='center' variant="h6" component="h6">
+                  {`Election ended on ${new Date(electionData.election.end_time).toLocaleDateString()} at ${new Date(electionData.election.end_time).toLocaleTimeString()} `}
+                </Typography>
+              </Box>
             }
             {electionData.voterAuth.has_voted == true &&
               <Box sx={{ flexGrow: 1 }}>
@@ -85,23 +88,15 @@ const ElectionHome = ({ authSession, electionData, fetchElection }) => {
                 </Typography>
               </Box>
             }
-            {(electionData.election.state === 'open' || electionData.election.state === 'closed') && electionData.election.settings.public_results === true &&
+            {/* Show results button only if public_results enabled and voter has voted or election is closed */}
+            {(electionData.election.settings.public_results === true &&
+              (electionData.election.state === 'open' && electionData.voterAuth.has_voted) || electionData.election.state === 'closed') &&
               <Box sx={{ p: 1, flexGrow: 0 }}>
                 <Button fullWidth variant='outlined' href={`/Election/${electionData.election.election_id}/results`} >
                   View Results
                 </Button>
               </Box>
             }
-            {/* <Box sx={{ p: 1, display: 'flex', justifyContent: 'flex-end' }}>
-              {authSession.isLoggedIn() &&
-                <Tooltip title="Create copy of this election" >
-                  <IconButton component={Link} to={`/DuplicateElection/${electionData.election.election_id}`}>
-                    <ContentCopyIcon />
-                  </IconButton>
-                </Tooltip>
-              }
-            </Box> */}
-
           </Paper>
         </Box>
       }
