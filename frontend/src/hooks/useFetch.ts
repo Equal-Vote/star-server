@@ -8,10 +8,10 @@ export interface IuseFetch {
     makeRequest: (data?:any) =>  Promise<any>
 }
 
-const useFetch = (url, method, successMessage = null) => {
+const useFetch = (url: string, method: 'get'|'post'|'put', successMessage:string|null = null) => {
     const [isPending, setIsPending] = useState(false)
-    const [error, setError] = useState(null)
-    const [data, setData] = useState(null)
+    const [error, setError] = useState<any>(null)
+    const [data, setData] = useState<any>(null)
     const { snack, setSnack } = useContext(SnackbarContext)
 
     const makeRequest = async (data?: any) => {
@@ -49,7 +49,7 @@ const useFetch = (url, method, successMessage = null) => {
                 })
             }
             return data
-        } catch (err) {
+        } catch (err: any) {
             setSnack({
                 message: err.message,
                 severity: "error",
