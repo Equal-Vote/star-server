@@ -8,6 +8,7 @@ import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { Box, Paper, Fade } from "@mui/material";
 import { Election } from "../../../../domain_model/Election";
 import ElectionDetails from "./ElectionDetails";
+import { DateTime } from 'luxon'
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { CardActionArea } from "@mui/material";
@@ -183,6 +184,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
             },
             ballot_updates: false,
             public_results: true,
+            time_zone: DateTime.now().zone.name,
         }
     }
     if (prevElectionData == null) {

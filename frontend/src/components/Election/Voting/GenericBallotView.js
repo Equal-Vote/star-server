@@ -46,7 +46,7 @@ const Choices = ({ rowIndex, onClick, score, columns }) =>
     ));
 
 // Represents the row of all data for a single candidate
-const Row = ({ rowIndex, candidate, score, onClick, columns }) => {
+const Row = ({ rowIndex, candidate, onClick, columns }) => {
   const [expanded, setExpanded] = useState(false)
   const hasExpandedData = HasExpandedData(candidate)
   var rowColor = 'white'
@@ -76,7 +76,7 @@ const Row = ({ rowIndex, candidate, score, onClick, columns }) => {
         <Choices
           key={`starChoices${rowIndex}`}
           rowIndex={rowIndex}
-          score={score}
+          score={candidate.score}
           onClick={onClick}
           columns={columns}
         />
@@ -130,7 +130,7 @@ const Row = ({ rowIndex, candidate, score, onClick, columns }) => {
 };
 
 // Represents the list of rows corresponding to the list of candidates
-const Rows = ({ candidates, scores, onClick, columns }) =>
+const Rows = ({ candidates, onClick, columns }) =>
   candidates.map((row, n) => (
     <>
       <Row
@@ -138,7 +138,6 @@ const Rows = ({ candidates, scores, onClick, columns }) =>
         key={`starRow${n}`}
         candidate={row}
         party={row.party}
-        score={scores[n]}
         onClick={(score) => onClick(n, score)}
         columns={columns}
       />
@@ -209,7 +208,6 @@ const ScoreColumnHeadings = ({starHeadings, columns}) =>
 export default function GenericBallotView({
   race,
   candidates,
-  scores,
   onClick,
   columns,
   instructions,
@@ -251,7 +249,7 @@ export default function GenericBallotView({
             headingPrefix={headingPrefix}
           />
           <Divider className="rowDivider"/>
-          <Rows candidates={candidates} scores={scores} onClick={onClick} columns={columnValues}/>
+          <Rows candidates={candidates} onClick={onClick} columns={columnValues}/>
 
           <Grid item xs={10} className="footer">
             {footer}

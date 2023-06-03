@@ -396,34 +396,39 @@ function PRResultsViewer({ result }) {
     <div>
       <h2>Summary</h2>
       <p>Voting Method: Proportional STAR Voting</p>
-      <p>{`Winners: ${result.cvr.prResults.winners.map((winner) => winner.name).join(', ')}`}</p>
-      <p>{`Number of voters: ${result.cvr.voters.length}`}</p>
+      <p>{`Winners: ${result.elected.map((winner) => winner.name).join(', ')}`}</p>
+      <p>{`Number of voters: ${result.summaryData.nValidVotes}`}</p>
       <h2>Detailed Results</h2>
       <h3>Scores By Round</h3>
       <table className='matrix'>
         <thead className='matrix'>
           <tr className='matrix'>
             <th className='matrix'> Candidate</th>
-            {result.cvr.prResults.winners.map((c, n) => (
+            {result.elected.map((c, n) => (
               <th className='matrix' key={`h${n}`} >Round {n + 1} </th>
             ))}
           </tr>
         </thead>
         <tbody className='matrix'>
-          {/* {console.log(data.Results.cvr.prResults.weightedSumsData)} */}
-          {result.cvr.prResults.weightedSumsData.map((row, i) => (
-            <tr className='matrix' key={`d${i}`}>
-              <th className='matrix' key={`dh${i}`} >{result.cvr.candidates[i].name}</th>
-              {row.map((col, j) => (
-                result.cvr.prResults.winners[j].index === result.cvr.candidates[i].index ?
-                  <td className='highlight' key={`c${i},${j}`}>
-                    <h3>{Math.round(col * 10) / 10}</h3>
-                  </td>
-                  :
-                  <td className='matrix' key={`c${i},${j}`}>
-                    <h3>{Math.round(col * 10) / 10}</h3>
-                  </td>
-              ))}
+          {/* Loop over each candidate, for each loop over each round and return score */}
+          {/* Data is stored in the transpose of the desired format which is why loops look weird */}
+          {result.summaryData.weightedScoresByRound[0].map((col, cand_ind) => (
+            <tr className='matrix' key={`d${cand_ind}`}>
+              <th className='matrix' key={`dh${cand_ind}`} >{result.summaryData.candidates[cand_ind].name}</th>
+              {result.summaryData.weightedScoresByRound.map((row, round_ind) => {
+                const score = Math.round(result.summaryData.weightedScoresByRound[round_ind][cand_ind] * 10) / 10
+                return (
+                  result.elected[round_ind].index === result.summaryData.candidates[cand_ind].index ?
+                    <td className='highlight' key={`c${cand_ind},${round_ind}`}>
+                      <h3>{ score }</h3>
+                    </td>
+                    :
+                    <td className='matrix' key={`c${cand_ind},${round_ind}`}>
+                      <h3>{score}</h3>
+                    </td>
+                )
+              }
+              )}
             </tr>
           ))}
         </tbody>
