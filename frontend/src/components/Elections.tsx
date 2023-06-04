@@ -16,12 +16,21 @@ const Elections = ({ authSession }) => {
     // if (url_params.has('filter')) {
     //     url = `${url}?filter=${url_params.get('filter')}`
     // }
-    console.log(`fetch ${url}`)
     const { data, isPending, error, makeRequest: fetchElections } = useFetch(url, 'get')
 
     useEffect(() => {
+        console.log(`fetch ${url}`)
         fetchElections()
-    }, [url])
+    }, [])
+
+    const archiveElection = async (election_id) => {
+        if (window.confirm('Are you sure you wish to archive this election? This action cannot be undone')) {
+            console.log('confirmed')
+            await fetch(`/API/Election/${election_id}/archive`, { method: 'post' })
+            await fetchElections()
+        }
+    }
+
     const userEmail = authSession.getIdField('email')
     const id = authSession.getIdField('sub')
     const getRoles = (election: Election) => {
@@ -50,8 +59,8 @@ const Elections = ({ authSession }) => {
             display='flex'
             justifyContent="center"
             alignItems="center"
-            sx={{ width: '100%', pt:2 }}>
-            <Paper elevation={3} sx={{ width: 800, p: 3 }} >
+            sx={{ width: '100%', pt: 2 }}>
+            <Paper elevation={3} sx={{ p: 3 }} >
                 {isPending && <Typography align='center' variant="h3" component="h2"> Loading Elections... </Typography>}
                 {/****** elections you manage ********/}
                 <Typography variant="h5" component="h5">
@@ -67,9 +76,10 @@ const Elections = ({ authSession }) => {
                             <TableCell> End Date </TableCell>
                             <TableCell> Description </TableCell>
                             <TableCell> View </TableCell>
+                            <TableCell> Archive </TableCell>
                         </TableHead>
                         <TableBody>
-                            {data?.elections_as_official?.map((election: Election) => (
+                            {data?.elections_as_official?.filter(election => election.state != 'archived').map((election: Election) => (
                                 <TableRow key={election.election_id} >
                                     <TableCell component="th" scope="row">
                                         {election.title}
@@ -79,7 +89,8 @@ const Elections = ({ authSession }) => {
                                     <TableCell > {election.start_time ? new Date(election.start_time).toLocaleString() : ''}</TableCell>
                                     <TableCell >{election.end_time ? new Date(election.end_time).toLocaleString() : ''}</TableCell>
                                     <TableCell >{limit(election.description, 30) || ''}</TableCell>
-                                    <TableCell ><Button variant='outlined' href={`/Election/${String(election.election_id)}${authSession.isLoggedIn()? '/admin' : ''}`} > View </Button></TableCell>
+                                    <TableCell ><Button variant='outlined' href={`/Election/${String(election.election_id)}${authSession.isLoggedIn() ? '/admin' : ''}`} > View </Button></TableCell>
+                                    <TableCell ><Button variant='outlined' onClick={() => archiveElection(election.election_id)} > Archive </Button></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -87,7 +98,7 @@ const Elections = ({ authSession }) => {
                 </TableContainer>
 
                 {/****** elections we're invited to ********/}
-                <Typography variant="h5" component="h5"sx={{pt:2 }}>
+                <Typography variant="h5" component="h5" sx={{ pt: 2 }}>
                     Elections as a voter
                 </Typography>
                 <TableContainer component={Paper}>
@@ -101,7 +112,7 @@ const Elections = ({ authSession }) => {
                             <TableCell> View </TableCell>
                         </TableHead>
                         <TableBody>
-                            {data?.elections_as_voter?.map((election: Election) => (
+                            {data?.elections_as_voter?.filter(election => election.state != 'archived').map((election: Election) => (
                                 <TableRow key={election.election_id} >
                                     <TableCell component="th" scope="row">
                                         {election.title}
@@ -118,7 +129,7 @@ const Elections = ({ authSession }) => {
                 </TableContainer>
 
                 {/****** elections open to all ********/}
-                <Typography variant="h5" component="h5"sx={{pt:2 }}>
+                <Typography variant="h5" component="h5" sx={{ pt: 2 }}>
                     Open Elections
                 </Typography>
                 <TableContainer component={Paper}>
@@ -132,7 +143,7 @@ const Elections = ({ authSession }) => {
                             <TableCell> View </TableCell>
                         </TableHead>
                         <TableBody>
-                            {data?.open_elections?.map((election: Election) => (
+                            {data?.open_elections?.filter(election => election.state != 'archived').map((election: Election) => (
                                 <TableRow key={election.election_id} >
                                     <TableCell component="th" scope="row">
                                         {election.title}

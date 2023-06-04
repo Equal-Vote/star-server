@@ -14,8 +14,9 @@ import { IAuthSession } from '../../hooks/useAuthSession';
 type Props = {
   authSession: IAuthSession,
   electionData: {
-    election: Election, 
-    voterAuth: IVoterAuth},
+    election: Election,
+    voterAuth: IVoterAuth
+  },
   fetchElection: Function,
 }
 
@@ -37,7 +38,7 @@ const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
             {/* Only show share button if election voter access is not closed  */}
             {electionData.election.settings.voter_access !== 'closed' &&
               <Box sx={{ m: 1, display: 'flex', justifyContent: 'flex-end' }}>
-                <Box sx={{maxWidth: 200}}>
+                <Box sx={{ maxWidth: 200 }}>
                   <ShareButton url={`${window.location.origin}/Election/${electionData.election.election_id}`} text={'Share'} />
                 </Box>
               </Box>
@@ -108,6 +109,13 @@ const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
                 <Button fullWidth variant='outlined' href={`/Election/${electionData.election.election_id}/results`} >
                   View Results
                 </Button>
+              </Box>
+            }
+            {electionData.election.state === 'archived' &&
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography align='center' variant="h6" component="h6">
+                  This election has been archived
+                </Typography>
               </Box>
             }
           </Paper>
