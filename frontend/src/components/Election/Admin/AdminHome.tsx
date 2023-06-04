@@ -8,7 +8,16 @@ import { Link } from 'react-router-dom';
 const hasPermission = (permissions: string[], requiredPermission: string) => {
     return (permissions && permissions.includes(requiredPermission))
 }
-const AdminHome = ({ election, permissions, fetchElection }) => {
+
+import { Election } from '../../../../../domain_model/Election';
+
+type Props = {
+    election: Election, 
+    permissions: string[],
+    fetchElection: Function,
+}
+
+const AdminHome = ({ election, permissions, fetchElection }: Props) => {
     const { makeRequest } = useFetch(`/API/Election/${election.election_id}/setPublicResults`, 'post')
     const togglePublicResults = async () => {
         const public_results = !election.settings.public_results
@@ -217,7 +226,7 @@ const AdminHome = ({ election, permissions, fetchElection }) => {
                                     Your election is finalized
                                 </Typography>
                             </Grid>
-                            {election.settings.invitations &&
+                            {election.settings.invitation &&
                                 <Grid xs={12}>
                                     <Typography align='center' gutterBottom variant="h6" component="h6">
                                         Invitations have been sent to your voters
@@ -330,7 +339,7 @@ const AdminHome = ({ election, permissions, fetchElection }) => {
                                     Your election is open
                                 </Typography>
                             </Grid>
-                            {election.settings.invitations &&
+                            {election.settings.invitation &&
                                 <Grid xs={12}>
                                     <Typography align='center' gutterBottom variant="h6" component="h6">
                                         Invitations have been sent to your voters

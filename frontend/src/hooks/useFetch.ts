@@ -1,13 +1,20 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { SnackbarContext } from "../components/SnackbarContext";
 
-const useFetch = (url, method, successMessage = null) => {
+export interface IuseFetch { 
+    data?: any
+    isPending: Boolean,
+    error: any,
+    makeRequest: (data?:any) =>  Promise<any>
+}
+
+const useFetch = (url: string, method: 'get'|'post'|'put', successMessage:string|null = null) => {
     const [isPending, setIsPending] = useState(false)
-    const [error, setError] = useState(null)
-    const [data, setData] = useState(null)
+    const [error, setError] = useState<any>(null)
+    const [data, setData] = useState<any>(null)
     const { snack, setSnack } = useContext(SnackbarContext)
 
-    const makeRequest = async (data) => {
+    const makeRequest = async (data?: any) => {
         const options = {
             method: method,
             headers: {
@@ -33,20 +40,22 @@ const useFetch = (url, method, successMessage = null) => {
             setData(data);
             setIsPending(false);
             setError(null);
-            if (successMessage !== null){
+            if (successMessage !== null) {
                 setSnack({
                     message: successMessage,
                     severity: 'success',
                     open: true,
-                    autoHideDuration: 6000,})
+                    autoHideDuration: 6000,
+                })
             }
             return data
-        } catch (err) {
+        } catch (err: any) {
             setSnack({
                 message: err.message,
                 severity: "error",
                 open: true,
-                autoHideDuration: null})
+                autoHideDuration: null
+            })
             setIsPending(false);
             setError(err.message);
             return false
