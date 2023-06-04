@@ -8,9 +8,19 @@ import { StyledButton } from '../styles';
 import { Input } from '@mui/material';
 import { DateTime } from 'luxon'
 import { timeZones } from './TimeZones'
+import { Election } from '../../../../domain_model/Election';
 
-export default function ElectionDetails({ election, applyElectionUpdate, getStyle, onBack, onNext }) {
-    const dateToLocalLuxonDate = (date: Date|string, timeZone: string) => {
+
+type Props = {
+    election: Election
+    applyElectionUpdate: (updateFunc: (election: Election) => any) => void,
+    getStyle: any,
+    onBack: Function,
+    onNext: Function,
+}
+
+export default function ElectionDetails({ election, applyElectionUpdate, getStyle, onBack, onNext }: Props) {
+    const dateToLocalLuxonDate = (date: Date|string|null|undefined, timeZone: string) => {
         // Converts either string date or date object to ISO string in input time zone
         if (date == null || date == '') return ''
         date = new Date(date)
@@ -28,7 +38,7 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
         endTime: '',
     })
 
-    const isValidDate = (d) => {
+    const isValidDate = (d: any) => {
         if (d instanceof Date) return !isNaN(d.valueOf())
         if (typeof (d) === 'string') return !isNaN(new Date(d).valueOf())
         return false
@@ -45,7 +55,7 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
             newErrors.title = 'Election title must be between 3 and 256 characters';
             isValid = 0;
         }
-        if (election.description.length > 1000) {
+        if (election.description && election.description.length > 1000) {
             newErrors.description = 'Description must be less than 1000 characters';
             isValid = 0;
         }

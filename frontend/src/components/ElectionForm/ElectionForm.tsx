@@ -6,7 +6,6 @@ import structuredClone from '@ungap/structured-clone';
 import Races from "./Races";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { Box, Paper, Fade } from "@mui/material";
-import { Election } from "../../../../domain_model/Election";
 import ElectionDetails from "./ElectionDetails";
 import { DateTime } from 'luxon'
 import Card from '@mui/material/Card';
@@ -15,6 +14,9 @@ import { CardActionArea } from "@mui/material";
 import Typography from '@mui/material/Typography';
 import { StyledButton } from '../styles';
 import SummaryPage from "./SummaryPage";
+import { Election } from "./../../../../domain_model/Election";
+import { Candidate } from "../../../../domain_model/Candidate";
+
 
 type Pages = 'ElectionDetails' | 'RaceDetails' | 'Open?' | 'Limit?' | 'VoterList?' | 'Emails?' | 'Invitations?' | 'Login?' | 'Register?' | 'CustomRegister?' |
     'Scenario1' | 'Scenario2' | 'Scenario3' | 'Scenario4' | 'Scenario5' | 'Scenario6' | 'Scenario7' | 'Scenario8' | 'Scenario9' | 'PublicResults?' | 'Save'
@@ -80,7 +82,7 @@ function Question({ Enable, Question, HelpText, Option1, Option2, onNext, BackPa
                                     setPage(Option1.GotoPage)
                                 }}>
                                     <CardContent sx={{ height: 200 }} >
-                                        <Typography align='center' gutterBottom variant="h4" component="h4" fontWeight='bold' sx={{ m: 0, p: 3 , pb:1 }}>
+                                        <Typography align='center' gutterBottom variant="h4" component="h4" fontWeight='bold' sx={{ m: 0, p: 3, pb: 1 }}>
                                             {Option1.Answer}
                                         </Typography>
                                         <Typography align='center' gutterBottom variant='body1' sx={{ m: 0, p: 1 }}>
@@ -100,7 +102,7 @@ function Question({ Enable, Question, HelpText, Option1, Option2, onNext, BackPa
                                     setPage(Option2.GotoPage)
                                 }}>
                                     <CardContent sx={{ height: 200 }}>
-                                        <Typography align='center' gutterBottom variant="h4" component="h4" fontWeight='bold'  sx={{ m: 0, p: 3, pb:1 }}>
+                                        <Typography align='center' gutterBottom variant="h4" component="h4" fontWeight='bold' sx={{ m: 0, p: 3, pb: 1 }}>
                                             {Option2.Answer}
                                         </Typography>
                                         <Typography align='center' gutterBottom variant='body1' sx={{ m: 0, p: 1 }}>
@@ -143,7 +145,16 @@ function Question({ Enable, Question, HelpText, Option1, Option2, onNext, BackPa
     )
 }
 
-const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitText, disableSubmit }) => {
+
+type Props = {
+    authSession: any,
+    onSubmitElection: Function,
+    prevElectionData: Election | null,
+    submitText: string,
+    disableSubmit: boolean,
+}
+
+const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitText, disableSubmit }: Props) => {
     // I'm referencing 4th option here
     // https://daveceddia.com/usestate-hook-examples/
     const defaultElection: Election = {
@@ -191,22 +202,24 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
         prevElectionData = defaultElection
     }
 
-    const [election, setElectionData] = useLocalStorage('Election', prevElectionData)
+    const [election, setElectionData]: [Election, (election: Election) => void] = useLocalStorage('Election', prevElectionData)
     useEffect(() => {
-        prevElectionData.races.forEach((race) => {
-            race.candidates.push({
-                candidate_id: String(race.candidates.length),
-                candidate_name: '',
+        if (prevElectionData != null) {
+            prevElectionData.races.forEach((race) => {
+                race.candidates.push({
+                    candidate_id: String(race.candidates.length),
+                    candidate_name: '',
+                })
             })
-        })
-        setElectionData(prevElectionData)
+            setElectionData(prevElectionData)
+        }
     }, [])
 
     const [page, setPage] = useState('ElectionDetails' as Pages)
     const [selectedScenario, setSelectedScenario] = useState('Scenario1' as Pages)
 
-    const applyElectionUpdate = (updateFunc) => {
-        const electionCopy = structuredClone(election)
+    const applyElectionUpdate = (updateFunc: (election:Election)=>any) => {
+        const electionCopy: Election = structuredClone(election)
         updateFunc(electionCopy)
         setElectionData(electionCopy)
     };
@@ -224,7 +237,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
     const onSubmit = () => {
         // This assigns only the new fields, but otherwise keeps the existing election fields
 
-        const newElection = structuredClone(election)
+        const newElection: Election = structuredClone(election)
         newElection.frontend_url = ''
         newElection.owner_id = authSession.getIdField('sub')
         newElection.state = 'draft'
@@ -237,7 +250,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
 
         //Iterates through races and removes candidates without a name listed
         newElection.races.forEach((race, index) => {
-            const newCandidates = []
+            const newCandidates: Candidate[] = []
             newElection.races[index].candidates.forEach(candidate => {
                 if (candidate.candidate_name !== '') {
                     newCandidates.push(candidate)
