@@ -3,11 +3,17 @@ import useFetch from '../../hooks/useFetch';
 import ElectionForm from "./ElectionForm";
 import Container from '@mui/material/Container';
 import { useNavigate } from "react-router"
-const AddElection = ({ authSession }) => {
+
+import { IAuthSession } from '../../hooks/useAuthSession';
+import { Election } from '../../../../domain_model/Election';
+
+
+
+const AddElection = ({ authSession }: {authSession: IAuthSession}) => {
 
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = useFetch('/API/Elections', 'post')
-    const onAddElection = async (election) => {
+    const onAddElection = async (election: Election) => {
         // calls post election api, throws error if response not ok
         const newElection = await postElection(
             {

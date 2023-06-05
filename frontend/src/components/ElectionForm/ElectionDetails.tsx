@@ -3,14 +3,24 @@ import { useState } from "react"
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
-import { FormHelperText, InputLabel, MenuItem, Select } from "@mui/material"
+import { Checkbox, Divider, FormControlLabel, FormGroup, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material"
 import { StyledButton } from '../styles';
 import { Input } from '@mui/material';
 import { DateTime } from 'luxon'
 import { timeZones } from './TimeZones'
+import { Election } from '../../../../domain_model/Election';
 
-export default function ElectionDetails({ election, applyElectionUpdate, getStyle, onBack, onNext }) {
-    const dateToLocalLuxonDate = (date: Date|string, timeZone: string) => {
+
+type Props = {
+    election: Election
+    applyElectionUpdate: (updateFunc: (election: Election) => any) => void,
+    getStyle: any,
+    onBack: Function,
+    onNext: Function,
+}
+
+export default function ElectionDetails({ election, applyElectionUpdate, getStyle, onBack, onNext }: Props) {
+    const dateToLocalLuxonDate = (date: Date | string | null | undefined, timeZone: string) => {
         // Converts either string date or date object to ISO string in input time zone
         if (date == null || date == '') return ''
         date = new Date(date)
@@ -28,11 +38,19 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
         endTime: '',
     })
 
-    const isValidDate = (d) => {
+
+    const isValidDate = (d: any) => {
         if (d instanceof Date) return !isNaN(d.valueOf())
         if (typeof (d) === 'string') return !isNaN(new Date(d).valueOf())
         return false
     }
+
+    const timeZone = election.settings.time_zone ? election.settings.time_zone : DateTime.now().zone.name
+
+    const [enableStartEndTime, setEnableStartEndTime] = useState(isValidDate(election.start_time) || isValidDate(election.end_time))
+    const [defaultStartTime, setDefaultStartTime] = useState(isValidDate(election.start_time) ? election.start_time : DateTime.now().setZone(timeZone, { keepLocalTime: true }).toJSDate())
+    const [defaultEndTime, setDefaultEndTime] = useState(isValidDate(election.end_time) ? election.end_time : DateTime.now().plus({ days: 1 }).setZone(timeZone, { keepLocalTime: true }).toJSDate())
+
     const validatePage = () => {
         let isValid = 1
         let newErrors = { ...errors }
@@ -45,17 +63,13 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
             newErrors.title = 'Election title must be between 3 and 256 characters';
             isValid = 0;
         }
-        if (election.description.length > 1000) {
+        if (election.description && election.description.length > 1000) {
             newErrors.description = 'Description must be less than 1000 characters';
             isValid = 0;
         }
         if (election.start_time) {
             if (!isValidDate(election.start_time)) {
                 newErrors.startTime = 'Invalid date';
-                isValid = 0;
-            }
-            else if (election.start_time < new Date()) {
-                newErrors.startTime = 'Start date must be in the future';
                 isValid = 0;
             }
         }
@@ -81,7 +95,6 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
         return isValid
     }
 
-    const timeZone = election.settings.time_zone ? election.settings.time_zone : DateTime.now().zone.name
 
     return (
         <Grid container
@@ -140,74 +153,114 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                 <FormHelperText error sx={{ pl: 1, pt: 0 }}>
                     {errors.description}
                 </FormHelperText>
-            </Grid>            
-            <Grid item xs={4} sx={{ m: 0, p: 1 }} justifyContent='center'>
-                <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Time Zone</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={timeZone}
-                        label="Time Zone"
-                        onChange={(e) => applyElectionUpdate(election => { election.settings.time_zone = e.target.value })}
-                    >
-                        <MenuItem value={timeZone}>{timeZone}</MenuItem>
-                        {timeZones.map(tz =>
-                            <MenuItem value={tz.ID}>{tz.name}</MenuItem>
-                        )}
-                    </Select>
-                </FormControl>
             </Grid>
-            <Grid item xs={8}></Grid>
-            <Grid item xs={6} sx={{ m: 0, p: 1 }} justifyContent='center' >
-                <FormControl fullWidth>
-                    <InputLabel shrink>
-                        Start Date
-                    </InputLabel>
-                    <Input
-                        type='datetime-local'
-                        error={errors.startTime !== ''}
-                        value={dateToLocalLuxonDate(election.start_time, timeZone)}
-                        onChange={(e) => {
-                            setErrors({ ...errors, startTime: '' })
-                            if (e.target.value == null || e.target.value == '') {
-                                applyElectionUpdate(election => election.start_time = undefined)
-                            } else {
-                            applyElectionUpdate(election => 
-                                election.start_time = DateTime.fromISO(e.target.value).setZone(timeZone,{keepLocalTime : true}).toJSDate())
-                            }
 
-                        }}
-                    />
-                    <FormHelperText error sx={{ pl: 0, mt: 0 }}>
-                        {errors.startTime}
-                    </FormHelperText>
-                </FormControl>
+            <Grid item xs={12} sx={{ m: 0, p: 1 }}>
+
+                <FormGroup>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={enableStartEndTime}
+                                onChange={(e) => {
+                                    setEnableStartEndTime(e.target.checked)
+                                    if (e.target.checked) {
+                                        applyElectionUpdate(election => {
+                                            election.start_time = defaultStartTime
+                                            election.end_time = defaultEndTime
+                                        })
+                                    }
+                                    else {
+                                        applyElectionUpdate(election => {
+                                        election.start_time = undefined
+                                        election.end_time = undefined
+                                    })
+
+                                    }
+                                }
+                                }
+                            />
+                        }
+                        label="Enable Start/End Times?" />
+                </FormGroup>
             </Grid>
-            <Grid item xs={6} sx={{ m: 0, p: 1 }} justifyContent='center'>
-                <FormControl fullWidth>
-                    <InputLabel shrink>
-                        Stop Date
-                    </InputLabel>
-                    <Input
-                        type='datetime-local'
-                        error={errors.endTime !== ''}
-                        value={dateToLocalLuxonDate(election.end_time, timeZone)}
-                        onChange={(e) => {
-                            setErrors({ ...errors, endTime: '' })
-                            if (e.target.value == null || e.target.value == '') {
-                                applyElectionUpdate(election => { election.end_time = undefined })
-                            } else {
-                                applyElectionUpdate(election =>  
-                                election.end_time = DateTime.fromISO(e.target.value).setZone(timeZone,{keepLocalTime : true}).toJSDate())
-                            }
-                        }}
-                    />
-                    <FormHelperText error sx={{ pl: 0, mt: 0 }}>
-                        {errors.endTime}
-                    </FormHelperText>
-                </FormControl>
-            </Grid>
+
+            {enableStartEndTime &&
+                <>
+                    <Grid item xs={4} sx={{ m: 0, p: 1 }} justifyContent='center'>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Time Zone</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={timeZone}
+                                label="Time Zone"
+                                onChange={(e) => applyElectionUpdate(election => { election.settings.time_zone = e.target.value })}
+                            >
+                                <MenuItem value={DateTime.now().zone.name}>{DateTime.now().zone.name}</MenuItem>
+                                <Divider />
+                                {timeZones.map(tz =>
+                                    <MenuItem value={tz.ID}>{tz.name}</MenuItem>
+                                )}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={8}></Grid>
+                    <Grid item xs={6} sx={{ m: 0, p: 1 }} justifyContent='center' >
+                        <FormControl fullWidth>
+                            <InputLabel shrink>
+                                Start Date
+                            </InputLabel>
+                            <Input
+                                type='datetime-local'
+                                error={errors.startTime !== ''}
+                                value={dateToLocalLuxonDate(election.start_time, timeZone)}
+                                onChange={(e) => {
+                                    setErrors({ ...errors, startTime: '' })
+                                    if (e.target.value == null || e.target.value == '') {
+                                        applyElectionUpdate(election => election.start_time = undefined)
+                                    } else {
+                                        applyElectionUpdate(election =>
+                                            election.start_time = DateTime.fromISO(e.target.value).setZone(timeZone, { keepLocalTime: true }).toJSDate())
+                                            setDefaultStartTime( DateTime.fromISO(e.target.value).setZone(timeZone, { keepLocalTime: true }).toJSDate() )
+                                    }
+
+                                }}
+                            />
+                            <FormHelperText error sx={{ pl: 0, mt: 0 }}>
+                                {errors.startTime}
+                            </FormHelperText>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6} sx={{ m: 0, p: 1 }} justifyContent='center'>
+                        <FormControl fullWidth>
+                            <InputLabel shrink>
+                                Stop Date
+                            </InputLabel>
+                            <Input
+                                type='datetime-local'
+                                error={errors.endTime !== ''}
+                                value={dateToLocalLuxonDate(election.end_time, timeZone)}
+                                onChange={(e) => {
+                                    setErrors({ ...errors, endTime: '' })
+                                    if (e.target.value == null || e.target.value == '') {
+                                        applyElectionUpdate(election => { election.end_time = undefined })
+                                    } else {
+                                        applyElectionUpdate(election =>
+                                            election.end_time = DateTime.fromISO(e.target.value).setZone(timeZone, { keepLocalTime: true }).toJSDate())
+                                            setDefaultEndTime( DateTime.fromISO(e.target.value).setZone(timeZone, { keepLocalTime: true }).toJSDate() )
+                                    }
+                                }}
+                            />
+                            <FormHelperText error sx={{ pl: 0, mt: 0 }}>
+                                {errors.endTime}
+                            </FormHelperText>
+                        </FormControl>
+                    </Grid>
+
+                </>
+
+            }
             <Grid item xs={3} sx={{ m: 0, p: 1, pt: 2 }}>
                 <StyledButton
                     type='button'
