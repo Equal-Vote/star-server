@@ -45,9 +45,12 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
         return false
     }
 
+    const timeZone = election.settings.time_zone ? election.settings.time_zone : DateTime.now().zone.name
+
     const [enableStartEndTime, setEnableStartEndTime] = useState(isValidDate(election.start_time) || isValidDate(election.end_time))
-    console.log(enableStartEndTime)
-    console.log(election)
+    const [defaultStartTime, setDefaultStartTime] = useState(isValidDate(election.start_time) ? election.start_time : DateTime.now().setZone(timeZone, { keepLocalTime: true }).toJSDate())
+    const [defaultEndTime, setDefaultEndTime] = useState(isValidDate(election.end_time) ? election.end_time : DateTime.now().plus({ days: 1 }).setZone(timeZone, { keepLocalTime: true }).toJSDate())
+
     const validatePage = () => {
         let isValid = 1
         let newErrors = { ...errors }
@@ -92,7 +95,6 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
         return isValid
     }
 
-    const timeZone = election.settings.time_zone ? election.settings.time_zone : DateTime.now().zone.name
 
     return (
         <Grid container
@@ -164,8 +166,8 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                                     setEnableStartEndTime(e.target.checked)
                                     if (e.target.checked) {
                                         applyElectionUpdate(election => {
-                                            election.start_time = DateTime.now().setZone(timeZone, { keepLocalTime: true }).toJSDate()
-                                            election.end_time = DateTime.now().plus({ days: 1 }).setZone(timeZone, { keepLocalTime: true }).toJSDate()
+                                            election.start_time = defaultStartTime
+                                            election.end_time = defaultEndTime
                                         })
                                     }
                                     else {
@@ -219,6 +221,7 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                                     } else {
                                         applyElectionUpdate(election =>
                                             election.start_time = DateTime.fromISO(e.target.value).setZone(timeZone, { keepLocalTime: true }).toJSDate())
+                                            setDefaultStartTime( DateTime.fromISO(e.target.value).setZone(timeZone, { keepLocalTime: true }).toJSDate() )
                                     }
 
                                 }}
@@ -244,6 +247,7 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                                     } else {
                                         applyElectionUpdate(election =>
                                             election.end_time = DateTime.fromISO(e.target.value).setZone(timeZone, { keepLocalTime: true }).toJSDate())
+                                            setDefaultEndTime( DateTime.fromISO(e.target.value).setZone(timeZone, { keepLocalTime: true }).toJSDate() )
                                     }
                                 }}
                             />
