@@ -1,11 +1,7 @@
-import ElectionCard from "./ElectionCard"
 import useFetch from "../hooks/useFetch"
-import { Link } from "react-router-dom"
 import React, { useEffect } from 'react'
 import { Election } from "../../../domain_model/Election"
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
 import { Box } from "@mui/material"
 import Button from "@mui/material/Button";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
@@ -22,14 +18,6 @@ const Elections = ({ authSession }) => {
         console.log(`fetch ${url}`)
         fetchElections()
     }, [])
-
-    const archiveElection = async (election_id) => {
-        if (window.confirm('Are you sure you wish to archive this election? This action cannot be undone')) {
-            console.log('confirmed')
-            await fetch(`/API/Election/${election_id}/archive`, { method: 'post' })
-            await fetchElections()
-        }
-    }
 
     const userEmail = authSession.getIdField('email')
     const id = authSession.getIdField('sub')
@@ -76,7 +64,6 @@ const Elections = ({ authSession }) => {
                             <TableCell> End Date </TableCell>
                             <TableCell> Description </TableCell>
                             <TableCell> View </TableCell>
-                            <TableCell> Archive </TableCell>
                         </TableHead>
                         <TableBody>
                             {data?.elections_as_official?.filter(election => election.state != 'archived').map((election: Election) => (
@@ -90,7 +77,6 @@ const Elections = ({ authSession }) => {
                                     <TableCell >{election.end_time ? new Date(election.end_time).toLocaleString() : ''}</TableCell>
                                     <TableCell >{limit(election.description, 30) || ''}</TableCell>
                                     <TableCell ><Button variant='outlined' href={`/Election/${String(election.election_id)}${authSession.isLoggedIn() ? '/admin' : ''}`} > View </Button></TableCell>
-                                    <TableCell ><Button variant='outlined' onClick={() => archiveElection(election.election_id)} > Archive </Button></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
