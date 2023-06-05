@@ -3,7 +3,7 @@ import { useState } from "react"
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
-import { Checkbox, FormControlLabel, FormGroup, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material"
+import { Checkbox, Divider, FormControlLabel, FormGroup, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material"
 import { StyledButton } from '../styles';
 import { Input } from '@mui/material';
 import { DateTime } from 'luxon'
@@ -197,7 +197,8 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
                                 label="Time Zone"
                                 onChange={(e) => applyElectionUpdate(election => { election.settings.time_zone = e.target.value })}
                             >
-                                <MenuItem value={timeZone}>{timeZone}</MenuItem>
+                                <MenuItem value={DateTime.now().zone.name}>{DateTime.now().zone.name}</MenuItem>
+                                <Divider />
                                 {timeZones.map(tz =>
                                     <MenuItem value={tz.ID}>{tz.name}</MenuItem>
                                 )}
