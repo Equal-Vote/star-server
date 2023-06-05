@@ -1,0 +1,37 @@
+import ServiceLocator from '../ServiceLocator';
+import Logger from '../Services/Logging/Logger';
+import { permissions } from '../../../domain_model/permissions';
+import { expectPermission } from "./controllerUtils";
+import { BadRequest, InternalServerError } from "@curveball/http-errors";
+import { Election } from '../../../domain_model/Election';
+
+var ElectionsModel = ServiceLocator.electionsDb();
+
+const className = "election.Controllers";
+
+const archiveElection = async (req: any, res: any, next: any) => {
+    Logger.info(req, `${className}.archive ${req.election.election_id}`);
+    expectPermission(req.user_auth.roles, permissions.canEditElectionState)
+
+    const election: Election = req.election
+
+    if (election.state === 'archived') {
+        var msg = "Election already archived";
+        Logger.info(req, msg);
+        throw new BadRequest(msg)
+    }
+
+    var failMsg = "Failed to update Election";
+    election.state = 'archived'
+    const updatedElection = await ElectionsModel.updateElection(req.election, req, `Archive election`);
+    if (!updatedElection) {
+        Logger.info(req, failMsg);
+        throw new BadRequest(failMsg)
+    }
+
+    return res.json({ election: updatedElection })
+}
+
+module.exports = {
+    archiveElection,
+}

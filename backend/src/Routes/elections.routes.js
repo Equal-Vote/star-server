@@ -24,6 +24,7 @@ const { editElectionRoles } = require('../Controllers/editElectionRolesControlle
 const { permissions } = require('../../../domain_model/permissions');
 const { ElectionRollState } = require('../../../domain_model/ElectionRoll');
 const { uploadImageController, upload } = require('../Controllers/uploadImageController')
+const { archiveElection } = require('../Controllers/archiveElectionController')
 const asyncHandler = require('express-async-handler')
 
 router.get('/Election/:id', asyncHandler(electionController.returnElection))
@@ -49,6 +50,7 @@ router.get('/ElectionResult/:id', asyncHandler(getElectionResults))
 router.post('/Election/:id/vote', asyncHandler(castVoteController))
 router.post('/Election/:id/finalize',asyncHandler(finalizeElection))
 router.post('/Election/:id/setPublicResults',asyncHandler(setPublicResults))
+router.post('/Election/:id/archive', asyncHandler(archiveElection))
 
 router.post('/Sandbox',asyncHandler(getSandboxResults))
 

@@ -309,6 +309,38 @@ const TogglePublicResultsSection = ({ election, permissions, togglePublicResults
     />
 }
 
+const ArchiveElectionSection = ({ election, permissions, archiveElection }: { election: Election, permissions: string[], archiveElection: Function }) => {
+    return <Section
+        Description={
+            (<>
+                <Typography variant="h5">
+                    Archive
+                </Typography>
+                <Typography variant="body1" sx={{ pl: 2 }}>
+                    Achives election, preventing future changes and hiding it from on the elections page
+                </Typography>
+                {!hasPermission(permissions, 'canEditElectionState') &&
+                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                        You do not have the correct permissions for this action
+                    </Typography>
+                }
+            </>)}
+        Button={(<>
+            <StyledButton
+                type='button'
+                variant='contained'
+                disabled={!hasPermission(permissions, 'canEditElectionState')}
+                fullwidth
+                onClick={() => archiveElection()}
+            >
+                Archive
+            </StyledButton>
+
+        </>)}
+    />
+}
+
+
 const ShareSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
     return <Section
         Description={
@@ -332,6 +364,7 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
         await fetchElection()
     }
     const { makeRequest: finalize } = useFetch(`/API/Election/${election.election_id}/finalize`, 'post')
+    const { makeRequest: archive } = useFetch(`/API/Election/${election.election_id}/archive`, 'post')
     const finalizeElection = async () => {
         console.log("finalizing election")
         try {
@@ -341,6 +374,20 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
             console.log(err)
         }
     }
+
+    const archiveElection = async () => {
+        console.log("archiving election")
+        if (window.confirm('Are you sure you wish to archive this election? This action cannot be undone')){
+            console.log('confirmed')
+            try {
+                await archive()
+                await fetchElection()
+            } catch (err) {
+                console.log(err)
+            }
+        }
+    }
+
     return (
         <Box
             display='flex'
@@ -380,6 +427,8 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
                             <EditElectionSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
                             <DuplicateElectionSection election={election} permissions={permissions} />
+                            <Divider style={{ width: '100%' }} />
+                            <ArchiveElectionSection election={election} permissions={permissions} archiveElection={archiveElection}/>
                             <Divider style={{ width: '100%' }} />
                             <Grid xs={12} sx={{ p: 1, pt:3, pb: 0}}>
                                 <Typography align='center' variant="body1" sx={{ pl: 2 }}>
@@ -443,6 +492,8 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
                             <EditRolesSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
                             <DuplicateElectionSection election={election} permissions={permissions} />
+                            <Divider style={{ width: '100%' }} />
+                            <ArchiveElectionSection election={election} permissions={permissions} archiveElection={archiveElection}/>
                         </>
 
                     }
@@ -482,6 +533,8 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
                             <TogglePublicResultsSection election={election} permissions={permissions} togglePublicResults={togglePublicResults}/>
                             <Divider style={{ width: '100%' }} />
                             <DuplicateElectionSection election={election} permissions={permissions} />
+                            <Divider style={{ width: '100%' }} />
+                            <ArchiveElectionSection election={election} permissions={permissions} archiveElection={archiveElection}/>
                         </>
                     }
                     {election.state === 'closed' &&
@@ -508,6 +561,32 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
                             <ResultsSection election={election} permissions={permissions} preliminary={false} />
                             <Divider style={{ width: '100%' }} />
                             <TogglePublicResultsSection election={election} permissions={permissions} togglePublicResults={togglePublicResults}/>
+                            <Divider style={{ width: '100%' }} />
+                            <DuplicateElectionSection election={election} permissions={permissions} />
+                            <Divider style={{ width: '100%' }} />
+                            <ArchiveElectionSection election={election} permissions={permissions} archiveElection={archiveElection}/>
+                        </>
+                    }
+                    {election.state === 'archived' &&
+                        <>
+                            <Grid xs={12}>
+                                <Typography align='center' gutterBottom variant="h6" component="h6">
+                                    This election has been archived
+                                </Typography>
+                            </Grid>
+                            {election.end_time &&
+                                <Grid xs={12}>
+                                    <Typography align='center' gutterBottom variant="h6" component="h6">
+                                        {`Your election ended on ${new Date(election.end_time).toLocaleString()}`}
+                                    </Typography>
+                                </Grid>}
+
+                            <ViewVotersSection election={election} permissions={permissions} />
+                            <Divider style={{ width: '100%' }} />
+                            <ViewBallotSection election={election} permissions={permissions} />
+                            <Divider style={{ width: '100%' }} />
+
+                            <ResultsSection election={election} permissions={permissions} preliminary={false} />
                             <Divider style={{ width: '100%' }} />
                             <DuplicateElectionSection election={election} permissions={permissions} />
                         </>
