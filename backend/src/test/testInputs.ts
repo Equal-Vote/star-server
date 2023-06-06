@@ -11,34 +11,49 @@ export default {
         email: 'Alice@email.com',
         sub: 'Alice1234',
     
-     }, "privateKey"),
+    }, "privateKey"),
     
-     user2token : jwt.sign({ 
+    user2token : jwt.sign({ 
         email: 'Bob@email.com',
         sub: 'Bob2345',
     
-     }, "privateKey"),
+    }, "privateKey"),
 
-     user3token : jwt.sign({ 
+    user3token : jwt.sign({ 
         email: 'Carl@email.com',
         sub: 'Carl3456',
     
-     }, "privateKey"),
-    
-     Election1 : {
-         election_id: "0",
-         title: 'Election 1',
-         state: 'draft',
-         frontend_url: '',
-         owner_id: 'Alice1234',
-         races: [] as Race[],
-         settings: {
-            voter_access: 'open',
-            voter_authentication: {ip_address: true},
-         } as ElectionSettings
-     } as Election,
+    }, "privateKey"),
 
-     IncompleteElection : {
+    user4tempId: 'tempDanny4567',
+    
+    Election1 : {
+        election_id: "0",
+        title: 'Election 1',
+        state: 'draft',
+        frontend_url: '',
+        owner_id: 'Alice1234',
+        races: [] as Race[],
+        settings: {
+           voter_access: 'open',
+           voter_authentication: {ip_address: true},
+        } as ElectionSettings
+    } as Election,
+
+    TempElection : {
+        election_id: "0",
+        title: 'Quick Poll Election',
+        state: 'open',
+        frontend_url: '',
+        owner_id: 'tempDanny4567',
+        races: [] as Race[],
+        settings: {
+           voter_access: 'open',
+           voter_authentication: {ip_address: true},
+        } as ElectionSettings
+    } as Election,
+
+    IncompleteElection : {
         election_id: "0",
         title: 'Election 1',
         state: 'draft',

@@ -11,9 +11,19 @@ import MenuItem from "@mui/material/MenuItem";
 import Typography from '@mui/material/Typography';
 import { Box, Checkbox, FormGroup, FormHelperText, FormLabel, InputLabel, Radio, RadioGroup, Tooltip } from "@mui/material"
 import { StyledButton } from '../styles';
+import IconButton from '@mui/material/IconButton'
+import ExpandLess from '@mui/icons-material/ExpandLess'
+import ExpandMore from '@mui/icons-material/ExpandMore'
+// import { useNavigate } from 'react-router-dom';
 
-export default function Races({ election, applyElectionUpdate, getStyle, setPageNumber, submitText, onSubmit }) {
+export default function Races({ election, applyElectionUpdate, getStyle, onBack, onNext }) {
+    // blocks back button and calls onBack function instead
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = () => {
+        onBack()
+    }
     const [openRace, setOpenRace] = useState(0)
+    const [showsAllMethods, setShowsAllMethods] = useState(false)
     const [newCandidateName, setNewCandidateName] = useState('')
     const onAddCandidate = (race_index) => {
         applyElectionUpdate(election => {
@@ -131,7 +141,12 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
     }
 
     return (
-        <>
+        <Grid container
+            sx={{
+                m: 0,
+                p: 1,
+            }}
+        >
             <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <Typography gutterBottom variant="h4" component="h4">Race Settings</Typography>
             </Grid>
@@ -222,10 +237,12 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                                         </Grid>} */}
                                 </>}
                             <Grid item xs={12} sx={{ m: 0, p: 1 }}>
+                                <Typography gutterBottom variant="h6" component="h6">
+                                    Number of Winners
+                                </Typography>
                                 <TextField
                                     id={`num-winners-${String(race_index)}`}
                                     name="Number Of Winners"
-                                    label="Number of Winners"
                                     inputProps={{ ...getStyle('races', 0, 'num_winners'), min: 1 }}
                                     type="number"
                                     error={errors.raceNumWinners !== ''}
@@ -248,12 +265,12 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
 
                             <Grid item xs={12} sx={{ m: 0, my: 1, p: 1 }}>
                                 <FormControl component="fieldset" variant="standard">
-                                    <FormLabel id="voter-access">
+                                    <Typography gutterBottom variant="h6" component="h6">
                                         Voting Method
-                                    </FormLabel>
+                                    </Typography>
                                     <RadioGroup
                                         aria-labelledby="voting-method-radio-group"
-                                        name="voter-access-radio-buttons-group"
+                                        name="voter-method-radio-buttons-group"
                                         value={election.races[race_index].voting_method}
                                         onChange={(e) => applyElectionUpdate(election => { election.races[race_index].voting_method = e.target.value })}
                                     >
@@ -276,16 +293,53 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                             Mark all candidates you approve of, single winner or multi-winner
                                         </FormHelperText>
-                                        
-                                        <FormControlLabel value="Plurality" control={<Radio />} label="Plurality" />
-                                        <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                            Mark one candidate only. Not recommended with more than 2 candidates.
-                                        </FormHelperText>
-                                        
-                                        <FormControlLabel value="IRV" control={<Radio />} label="Ranked Choice" />
-                                        <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                            Rank candidates in order of preference, single winner, only recommended for educational purposes
-                                        </FormHelperText>
+
+
+                                        <Box
+                                            display='flex'
+                                            justifyContent="left"
+                                            alignItems="center"
+                                            sx={{ width: '100%', ml: -1 }}>
+
+
+
+                                            {!showsAllMethods &&
+                                                <IconButton aria-label="Home" onClick={() => { setShowsAllMethods(true) }}>
+                                                    <ExpandMore />
+                                                </IconButton>}
+                                            {showsAllMethods &&
+                                                <IconButton aria-label="Home" onClick={() => { setShowsAllMethods(false) }}>
+                                                    <ExpandLess />
+                                                </IconButton>}
+                                            <Typography variant="body1" >
+                                                More Options
+                                            </Typography>
+                                        </Box>
+                                        {showsAllMethods &&
+                                            <Box
+                                                display='flex'
+                                                justifyContent="left"
+                                                alignItems="center"
+                                                sx={{ width: '100%', pl: 4, mt: -1 }}>
+
+                                                <FormHelperText >
+                                                    These voting methods do not guarantee every voter an equally powerful vote if there are more than two candidates.
+                                                </FormHelperText>
+                                            </Box>
+                                        }
+                                        {showsAllMethods &&
+                                            <>
+                                                <FormControlLabel value="Plurality" control={<Radio />} label="Plurality" />
+                                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                                    Mark one candidate only. Not recommended with more than 2 candidates.
+                                                </FormHelperText>
+
+                                                <FormControlLabel value="IRV" control={<Radio />} label="Ranked Choice" />
+                                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                                    Rank candidates in order of preference, single winner, only recommended for educational purposes
+                                                </FormHelperText>
+
+                                            </>}
                                     </RadioGroup>
                                 </FormControl>
 
@@ -309,9 +363,11 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                             ))}
                         </>}
                 </>
-            ))}
+            ))
+            }
 
-            {election.races.length > 1 &&
+            {
+                election.races.length > 1 &&
                 <>
                     <Grid item xs={3} sx={{ m: 0, p: 1 }}>
                         <StyledButton
@@ -358,9 +414,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                     variant="contained"
                     width="100%"
                     onClick={() => {
-                        if (validatePage()) {
-                            setPageNumber(pageNumber => pageNumber - 1)
-                        }
+                        onBack()
                     }}>
                     Back
                 </StyledButton>
@@ -371,11 +425,15 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                     type='button'
                     variant="contained"
                     fullWidth
-                    disabled>
+                    onClick={() => {
+                        if (validatePage()) {
+                            onNext()
+                        }
+                    }}>
                     Next
                 </StyledButton>
             </Grid>
-            <Grid item xs={12} sx={{ m: 0, p: 1 }}>
+            {/* <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <StyledButton
                     type='button'
                     variant="contained"
@@ -387,7 +445,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, setPage
                     }>
                     {submitText}
                 </StyledButton>
-            </Grid>
-        </>
+            </Grid> */}
+        </Grid >
     )
 }

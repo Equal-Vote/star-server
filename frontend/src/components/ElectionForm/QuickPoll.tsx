@@ -8,11 +8,12 @@ import structuredClone from '@ungap/structured-clone';
 import { StyledButton, StyledTextField } from '../styles.js'
 import { Button, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useCookie } from '../../hooks/useCookie';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import Typography from '@mui/material/Typography';
 
 const QuickPoll = ({ authSession }) => {
-    const [tempID, setTempID] = useLocalStorage('tempID', '0')
+    const [tempID, setTempID] = useCookie('temp_id', '0')
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = useFetch('/API/Elections', 'post')
     const onSubmitElection = async (election) => {

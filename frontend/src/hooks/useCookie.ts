@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function setCookie(name,value,hours=null) {
+function setCookie(name: string ,value: any, hours: number | null =null) {
     var expires = "";
     if (hours) {
         var date = new Date();
@@ -10,7 +10,7 @@ function setCookie(name,value,hours=null) {
     document.cookie = name + "=" + (value || "")  + expires + "; path=/";
 }
 
-function getCookie(name) {
+function getCookie(name: string) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
     for(var i=0;i < ca.length;i++) {
@@ -23,20 +23,20 @@ function getCookie(name) {
     return null;
 }
 
-function cookieExists(name){
+function cookieExists(name: string){
     return getCookie(name) != null;
 }
 
-function deleteCookie(name) {
+function deleteCookie(name: string) {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
-export const useCookie = (key, defaultValue, expiration = null, updateRate = null) => {
+export const useCookie = (key: string, defaultValue: any, expiration: number|null = null, updateRate: number | null = null) => {
     // This hook behaves similarly to useState however the state is also stored in a cookie
     // If the cookie doesn't exist it is set to defaultValue
     // The optional input updateRate allows for periodic checking to see if the value cookie has been updated or expired
    
-    const getStoredValue = (key, defaultValue) => {
+    const getStoredValue = (key: string, defaultValue: any) => {
         // getting stored value
         const saved = getCookie(key);
         if (!saved && defaultValue!==null) { 
@@ -51,7 +51,7 @@ export const useCookie = (key, defaultValue, expiration = null, updateRate = nul
         return getStoredValue(key, defaultValue);
     });
 
-    const setValue = (newValue) => {
+    const setValue = (newValue: any) => {
         if (newValue === null) {
             deleteCookie(key)
             setStoredValue(newValue)

@@ -66,7 +66,7 @@ const electionPostAuthMiddleware = async (req: any, res: any, next: any) => {
 
         req.user_auth = {}
         req.user_auth.roles = []
-        if (req.user && req.election){
+        if (req.user && req.election && req.user.typ != 'TEMP_ID'){
           if (req.user.sub === req.election.owner_id){
             req.user_auth.roles.push(roles.owner)
           }

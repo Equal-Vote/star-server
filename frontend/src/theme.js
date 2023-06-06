@@ -7,7 +7,7 @@ let theme = createTheme({
       light: '#5ac7d6',
       main: '#2aa2b3',
       dark: '#02627c',
-      contrastText: '#000000',
+      contrastText: '#ffffff',
     },
     secondary: {
       light: '#ffca47',
@@ -16,6 +16,12 @@ let theme = createTheme({
       contrastText: '#000',
     }
   },
+  typography: {
+    fontFamily: [
+      'Montserrat',
+      'Verdana'
+    ].join(','),
+  }
 })
 
 theme = responsiveFontSizes(theme);
