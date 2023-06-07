@@ -1,6 +1,4 @@
 * {
-  box-sizing: border-box;
-
   /* NOTE: these variables are named based on where they're used
   but in the future we should consider reducing them and giving generic names*/
 
@@ -19,11 +17,11 @@
   --brand-white: #FFFFFF;
 
   /* https://docs.google.com/presentation/d/1NSAirKzmq4YyUPB56NR3pKiRTn3W9btwnUtHi_zteeU/edit#slide=id.g177cd3ac88b_0_0 */
-  --brand-gray-1: #1F1F1F; /* Charcoal used in "How does STAR Voting Work?" graphic */
-  --brand-gray-2: #666666; /* Bubbles on ballots */
+  --brand-gray-5: #1F1F1F; /* Charcoal used in "How does STAR Voting Work?" graphic */
+  --brand-gray-4: #666666; /* Bubbles on ballots */
   --brand-gray-3: #999999; /* Lines separating candidates on ballot */
-  --brand-gray-4: #CCCCCC; /* Stars on STAR ballots */
-  --brand-gray-5: #ECECEC; /* Highlight for alternating candidates on ballots */
+  --brand-gray-2: #CCCCCC; /* Stars on STAR ballots */
+  --brand-gray-1: #ECECEC; /* Highlight for alternating candidates on ballots */
   --brand-gray-alpha: #7B7B7B7D; /* For graying out candidates for the "How does STAR Voting Work?" Graphic (has transparency)
 
   /* teal / blue */
@@ -239,4 +237,81 @@ td.highlight {
   font-family: 'Archivo Black';
   font-size: .93em;
   font-weight: bold;
+}
+
+/* Results */
+.resultWidget {
+  display: flex;
+  flex-direction: column;
+}
+
+.resultWidget .scoreRound {
+  background-color: #2AA2B3;
+}
+
+.resultWidget .runoffRound {
+  background-color: #1F1F1F;
+}
+
+.resultWidget h2{
+  align-self: center;
+}
+
+.resultWidget h3{
+  align-self: center;
+  font-size: 1rem;
+}
+
+.resultWidget .resultStar{
+  color: #FFD956;
+}
+
+.resultWidget .arrow{
+  position: relative;
+  top: .35rem;
+  left: .25rem;
+}
+
+.resultWidget .votingMethod{
+  align-self: flex-end;
+  color: #808080;
+  font-size: .8rem;
+}
+
+.resultWidget .graphs h3{
+  margin: 0;
+}
+
+.resultWidget .graphs p{
+  margin: 0;
+}
+
+.resultWidget .graphs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.resultWidget .graph {
+  padding: 8px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.resultViewer .detailedWidgets{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.statsWidget strong{
+  font-size: 1.3rem;
+  color: var(--brand-blue);
+}
+
+.recharts-wrapper{
+  padding: 0;
 }
