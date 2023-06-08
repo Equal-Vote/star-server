@@ -10,6 +10,7 @@
   --brand-ltblue: #2AA2B3;
   --brand-blue: #02627C;
   --brand-gold: #FFE156;
+  --brand-gold-alpha: #FFE15688;
   --brand-red: #EE2C53;
   --brand-orange: #FF9900;
   --brand-green: #60B33C;
@@ -56,15 +57,15 @@ code {
 }
 
 .matrix th {
-  min-width:60px;
+  min-width: 160px;
   text-align: center;
 }
 .matrix td {
   text-align: center;
 }
 
-td.highlight {
-  background: var(--result-row-gray);
+tr.highlight {
+  background: var(--brand-gold-alpha);
 }
 
 .login-form {
@@ -302,6 +303,7 @@ td.highlight {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-right: 100px;
 }
 
 .resultViewer .detailedWidgets{
@@ -318,4 +320,9 @@ td.highlight {
 
 .recharts-wrapper{
   padding: 0;
+}
+
+/* HACK: The log statements were widening the display and this is a quick fix */
+.detailedSteps{
+  max-width: 600px;
 }

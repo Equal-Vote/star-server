@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import StarRoundedIcon from '@mui/icons-material/Star';
 import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded';
 import { BarChart, Bar, PieChart, Pie, Cell, LabelList, XAxis, YAxis} from 'recharts';
@@ -14,12 +14,6 @@ const COLORS = [
     'var(--brand-green)',
     'var(--brand-red)',
     'var(--brand-ltblue)',
-];
-
-const PIE_COLORS = [
-    'var(--brand-gold)',
-    'var(--brand-gray-2)',
-    'var(--brand-blue)',
 ];
 
 const RADIAN = Math.PI / 180;
@@ -48,7 +42,13 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
     const runnerUpVotes = results.summaryData.preferenceMatrix[runnerUpIndex][winnerIndex];
     const noPrefVotes = results.summaryData.nValidVotes - winnerVotes - runnerUpVotes;
 
-    const pieData = [
+    var pieColors = [
+        'var(--brand-gold)',
+        'var(--brand-gray-2)',
+        'var(--brand-blue)',
+    ];
+
+    var pieData = [
         {
             name: `⭐${results.summaryData.candidates[winnerIndex].name}`,
             votes: winnerVotes
@@ -63,6 +63,11 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
         }
     ];
 
+    if(noPrefVotes == 0){
+        pieColors.splice(1, 1);
+        pieData.splice(1, 1);
+    }
+
     const candidateWithLongestName = results.summaryData.candidates.reduce( function(a, b){
         return (a.name.length > b.name.length)? a : b;
     })
@@ -73,11 +78,11 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
         <div className="resultWidget">
             <h2>🎉 {results.elected.map(c => c.name).join(', ')} Wins! 🎉</h2>
             <div className="graphs">
-                <Paper className='graph' sx={{position: 'relative', backgroundColor: 'brand.gray1', borderRadius: '10px'}}>
+                <Paper className='graph' sx={{position: 'relative', backgroundColor: 'brand.gray1', left: '80px', borderRadius: '10px'}}>
                     <h3>Score Round</h3>
                     <p>Add the Stars across all ballots</p>  
                     <p>The two highest scoring candidates are the finalists</p>
-                    <BarChart width={600} height={50*histData.length} data={histData} barCategoryGap={5} layout="vertical">
+                    <BarChart width={500} height={50*histData.length} data={histData} barCategoryGap={5} layout="vertical">
                         <XAxis hide axisLine={false} type="number" />
                         <YAxis
                             dataKey='name'
@@ -94,18 +99,15 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
                             ))}
                         </Bar>
                     </BarChart>
-                    <div style={{width: 'calc(100% + 20px)', height: '3px', backgroundColor: 'var(--brand-gray-2)', margin: '40px 0px' }}/>
                     {
-                    //<div style={{height: '3px', backgroundColor: 'var(--brand-gray-1)', margin: '30px 0px' }}/>
+                        //<div style={{width: 'calc(100% + 20px)', height: '3px', backgroundColor: 'var(--brand-gray-2)', margin: '40px 0px' }}/>
                     }
-                    {
-                //</Paper>
-                //<Paper className='graph' sx={{boxShadow: 15, position: 'relative', top: '-50px', left: '50px', backgroundColor: 'brand.gray1', borderRadius: '10px'}}>
-
-                    }
+                    <div style={{height: '3px', backgroundColor: 'var(--brand-gray-1)', margin: '30px 0px' }}/>
+                </Paper>
+                <Paper className='graph' sx={{boxShadow: 15, position: 'relative', top: '-50px', left: '30px', backgroundColor: 'brand.gray1', borderRadius: '10px'}}>
                     <h3>Automatic Runoff Round</h3>
                     <p>Each vote goes to their prefferred candidate</p>
-                    <p>candidate with most votes wins </p>
+                    <p>The candidate with most votes wins </p>
                     <PieChart width={600} height={250}>
                         <Pie
                             data={pieData}
@@ -121,7 +123,7 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
                         >
                             <LabelList dataKey='name' position='outside' fill='unset' strokeWidth={0}/>
                             {pieData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={ PIE_COLORS[index % PIE_COLORS.length]} stroke='var(--brand-gray-1)' strokeWidth={6}/>
+                                <Cell key={`cell-${index}`} fill={ pieColors[index]} stroke='var(--brand-gray-1)' strokeWidth={6}/>
                             ))}
                         </Pie>
                     </PieChart>
