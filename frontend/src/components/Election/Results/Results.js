@@ -19,7 +19,7 @@ function STARResultViewer({ results, rounds }) {
       <DetailedResultsExpander defaultSelectedIndex={-1}>
           <STARResultTableWidget title="Tabular Results" results={results} rounds={rounds}/>
           <STARResultStatsWidget title="Statistics" results={results}/>
-          <MatrixViewer title="Matrix" results={results}/>
+          <MatrixViewer title="Preference Matrix" results={results}/>
           <STARResultDetailedStepsWidget title="Detailed Steps" results={results} rounds={rounds}/>
       </DetailedResultsExpander>
     </div>
@@ -60,7 +60,7 @@ function RankedRobinViewer({ results }) {
             </IconButton>}
         </Grid>
         <Grid item xs={2}>
-          <h3> View Matrix</h3>
+          <h3> View Preference Matrix</h3>
         </Grid>
       </Grid>
       {viewMatrix && <MatrixViewer results={results} />}
@@ -76,8 +76,6 @@ function IRVResultsViewer({ results }) {
 
       <Paper elevation={0} sx={{ width: '100%' }}>
         <TableContainer sx={{ maxHeight: 600, maxWidth: { xs: 300, sm: 500, md: 600, lg: 1000 } }}>
-
-
           <Table size='small' stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
@@ -295,52 +293,55 @@ function PRResultsViewer({ result }) {
 }
 
 export default function Results({ race, result }) {
-  console.log(result)
   return (
     <div>
       <div className="flexContainer">
-        {race.voting_method === "STAR" &&
-          race.num_winners == 1 &&
+        {result.summaryData.nValidVotes == 0 && <h2>Still waiting for results<br/>No votes have been cast</h2>}
+        {result.summaryData.nValidVotes > 0 &&
           <>
-            <STARResultViewer results={result} rounds={1} />
-          </>}
+          {race.voting_method === "STAR" &&
+            race.num_winners == 1 &&
+            <>
+              <STARResultViewer results={result} rounds={1} />
+            </>}
 
-        {race.voting_method === "STAR" && race.num_winners > 1 &&
-          <>
-            <SummaryViewer votingMethod='Multi-Winner STAR Voting' results={result} />
-            <STARResultViewer results={result} rounds={race.num_winners} />
-          </>}
+          {race.voting_method === "STAR" && race.num_winners > 1 &&
+            <>
+              <SummaryViewer votingMethod='Multi-Winner STAR Voting' results={result} />
+              <STARResultViewer results={result} rounds={race.num_winners} />
+            </>}
 
-        {race.voting_method === "STAR_PR" &&
-          <>
-            {/* PR tabulator needs to be refactored to match interface of other methods */}
-            {/* <SummaryViewer votingMethod='Proportional STAR' results={result} /> */}
-            <PRResultsViewer result={result} />
-          </>}
+          {race.voting_method === "STAR_PR" &&
+            <>
+              {/* PR tabulator needs to be refactored to match interface of other methods */}
+              {/* <SummaryViewer votingMethod='Proportional STAR' results={result} /> */}
+              <PRResultsViewer result={result} />
+            </>}
 
-        {race.voting_method === "RankedRobin" &&
-          <>
-            <SummaryViewer votingMethod='Ranked Robin' results={result} />
-            <RankedRobinViewer results={result} />
-          </>}
+          {race.voting_method === "RankedRobin" &&
+            <>
+              <SummaryViewer votingMethod='Ranked Robin' results={result} />
+              <RankedRobinViewer results={result} />
+            </>}
 
-        {race.voting_method === "Plurality" &&
-          <>
-            <SummaryViewer votingMethod='Plurality' results={result} />
-            <PluralityResultsViewer results={result} />
-          </>}
+          {race.voting_method === "Plurality" &&
+            <>
+              <SummaryViewer votingMethod='Plurality' results={result} />
+              <PluralityResultsViewer results={result} />
+            </>}
 
-        {race.voting_method === "Approval" &&
-          <>
-            <SummaryViewer votingMethod='Approval' results={result} />
-            <ApprovalResultsViewer results={result} />
-          </>}
+          {race.voting_method === "Approval" &&
+            <>
+              <SummaryViewer votingMethod='Approval' results={result} />
+              <ApprovalResultsViewer results={result} />
+            </>}
 
-        {race.voting_method === "IRV" &&
-          <>
-            <SummaryViewer votingMethod='Ranked Choice Voting' results={result} />
-            <IRVResultsViewer results={result} />
-          </>}
+          {race.voting_method === "IRV" &&
+            <>
+              <SummaryViewer votingMethod='Ranked Choice Voting' results={result} />
+              <IRVResultsViewer results={result} />
+            </>}
+        </>}
       </div>
     </div>
   );

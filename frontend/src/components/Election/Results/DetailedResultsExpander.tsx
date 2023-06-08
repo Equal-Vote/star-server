@@ -8,47 +8,33 @@ const DetailedResultsExpander = ({children, defaultSelectedIndex}) => {
     const [widgetIndex, setWidgetIndex] = useState(defaultSelectedIndex);
 
     return <>
-        <Grid container alignItems="center" >
-            <Grid item xs={11}>
+        <div style={{display: 'flex', flexDirection: 'row', gap: 10, justifyContent: 'center', cursor: 'pointer', alignItems: 'center'}} onClick={() => { setViewDetails(!viewDetails) }}>
             <h2>Detailed Results</h2>
-            </Grid>
-            <Grid item xs={1}>
-            {!viewDetails &&
-                <IconButton onClick={() => { setViewDetails(true) }}>
-                    <ExpandMore />
-                </IconButton>}
-            {viewDetails &&
-                <IconButton  onClick={() => { setViewDetails(false) }}>
-                    <ExpandLess />
-                </IconButton>}
-            </Grid>
-        </Grid>
+            {!viewDetails && <ExpandMore />}
+            {viewDetails && <ExpandLess />}
+        </div>
         <div className="detailedWidgets">
-            {viewDetails && children.map((child,n) => (
-                <Paper sx={{backgroundColor: 'brand.gray1', padding: '8px'}}>
-                    <Grid container alignItems="center" >
+            {viewDetails && children.map((child,i) => (
+                <Paper sx={{backgroundColor: 'brand.gray1', padding: '8px'}} >
+                    <Grid container alignItems="center" style={{cursor: 'pointer'}} onClick={() => { setWidgetIndex((widgetIndex == i)? -1 : i); }}>
                         <Grid item xs={11}>
                             <h3>{child.props.title}</h3>
                         </Grid>
                         <Grid item xs={1}>
-                        {(widgetIndex != n) &&
-                            <IconButton onClick={() => { setWidgetIndex(n); }}>
-                                <ExpandMore />
-                            </IconButton>
-                        }
-                        {(widgetIndex == n) &&
-                            <IconButton onClick={() => { setWidgetIndex(-1); }}>
-                                <ExpandLess />
-                            </IconButton>
-                        }
+                        <IconButton>
+                            {(widgetIndex != i) && <ExpandMore />}
+                            {(widgetIndex == i) && <ExpandLess />}
+                        </IconButton>
                         </Grid>
                     </Grid>
-                        {(widgetIndex == n) && 
-                            <>
-                                <hr/>
+                    {(widgetIndex == i) && 
+                        <>
+                            <hr/>
+                            <div style={{textAlign: 'left'}}>
                                 {child}
-                            </>
-                        }
+                            </div>
+                        </>
+                    }
                 </Paper>
             ))}
         </div>
