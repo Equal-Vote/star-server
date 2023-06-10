@@ -28,7 +28,9 @@ export default function Footer() {
             }}>
               About Us
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary" sx={{
+              pl: 1, pr: 1
+            }}>
               STAR Elections mission is to ensure that anyone who wants to use STAR Voting can. We are a volunteer run coalition project with Equal Vote and STAR Voting Action which allows people to set up and host their own STAR Voting elections.
             </Typography>
           </Grid>
@@ -82,7 +84,8 @@ export default function Footer() {
             </Box>
           </Grid>
         </Grid>
-        <Box mt={5}>
+        {/* Commenting out copyright until that's figured out */}
+        {/* <Box mt={5}>
           <Typography variant="body2" color="text.secondary" align="center">
             {"Copyright © "}
             <Link color="inherit" href="https://your-website.com/">
@@ -91,7 +94,7 @@ export default function Footer() {
             {new Date().getFullYear()}
             {"."}
           </Typography>
-        </Box>
+        </Box> */}
       </Container>
     </Box>
   );
