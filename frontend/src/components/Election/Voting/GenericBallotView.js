@@ -151,7 +151,7 @@ const Rows = ({ candidates, onClick, columns }) =>
 const ColumnHeadings = ({starHeadings, columns, leftTitle, rightTitle, headingPrefix}) => (
   <>
   { leftTitle != '' &&
-    <Grid container alignItems="stretch" >
+    <Grid sx={{pt: 3}} container alignItems="stretch" >
       <Grid item xs={5}></Grid>
       <Grid item xs={1}>
         <Typography align='center' className="columnDescriptor">
@@ -230,17 +230,18 @@ export default function GenericBallotView({
         <Grid container alignItems="center" justify="center" direction="column">
 
           <Grid item sx={{ p: 3 }}>
-            <Typography align='center' gutterBottom variant="h4" component="h4" className="title">
+            <Typography align='center' variant="h4" component="h4" className="title">
               {race.title}
             </Typography>
           </Grid>
-          <Grid item>
-            <Typography align='center' gutterBottom variant="h6" component="h6" style={{whiteSpace: 'pre-line'}}>
+          {race.description &&
+            <Grid item sx={{p:3}}>
+            <Typography align='center' variant="h6" component="h6" style={{whiteSpace: 'pre-line'}}>
               {race.description}
             </Typography>
-          </Grid>
+          </Grid>}
 
-          <Grid item xs={8} className="instructions">
+          <Grid item xs={8} sx={{ p:3, px:0 }} className="instructions">
             {instructions}
           </Grid>
 
