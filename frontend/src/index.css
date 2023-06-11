@@ -523,7 +523,7 @@ h2.selected {
 
 .ballot .scoreColumnHeading{
   position: absolute;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -45%);
   font-family: 'Archivo Black';
   font-size: 1.02em;
   top: 50%;
@@ -583,7 +583,7 @@ h2.selected {
   text-align: center;
   justify-content: center;
   font-family: 'Archivo Black';
-  font-size: .93em;
+  font-size: .95em;
   font-weight: bold;
 }
 
