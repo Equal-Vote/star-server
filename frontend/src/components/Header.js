@@ -107,7 +107,7 @@ const Header = ({ authSession }) => {
                 >
                     <Button color='inherit' href="/">
                         <Typography align='center' variant="h6" color={headerTextColor} sx={{ fontWeight: 'bold' }}>
-                            STAR Vote 2.0
+                            STAR.Vote
                         </Typography>
                     </Button>
                 </Box>
