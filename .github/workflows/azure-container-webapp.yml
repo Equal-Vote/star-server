@@ -68,6 +68,27 @@ jobs:
           tags: ghcr.io/${{ env.REPO }}:${{ github.sha }}
           file: ./Dockerfile
 
+  # Trying to do proper gitops IaC here. This will checkout the
+  # star-server-infra repo, update the image tag variable, then commit those
+  # changes. After that, the star-server-infra repo should have a pipeline that
+  # automatically deploys it to the dev env.
+  update-star-server-infra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: 'Equal-Vote/star-server-infra'
+      - name: Updates the star-server image tag in the star-server-infra repo.
+        run: sed -i "s#ghcr.io/${{ env.REPO }}:.*#ghcr.io/${{ env.REPO }}:${{ github.sha }}#" dev/variables.tf 
+      - name: Commit report
+        run: |
+          git config --global user.name 'star-server-bot'
+          git config --global user.email 'noreply@equal.vote'
+          git commit -am "Automatically updating star-server image."
+          git push
+
+  # After we get the update-star-server-infra job above working correctly, we
+  # should be able to skip this step.
   deploy:
     permissions:
       contents: none
