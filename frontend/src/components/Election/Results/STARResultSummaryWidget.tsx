@@ -1,9 +1,6 @@
 import React, { useEffect } from 'react'
-import StarRoundedIcon from '@mui/icons-material/Star';
-import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded';
 import { BarChart, Bar, PieChart, Pie, Cell, LabelList, XAxis, YAxis, ResponsiveContainer, Legend} from 'recharts';
-import { Divider, Paper, Typography } from '@mui/material';
-import { callbackify } from 'util';
+import { Paper, Typography } from '@mui/material';
 
 // NOTE: I tried using brand.gold here, but it didn't work
 const COLORS = [
@@ -75,7 +72,7 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
 
     return (
         <div className="resultWidget">
-            <Typography variant="h5" sx={{fontWeight: 'bold'}}>🎉 {results.elected.map(c => c.name).join(', ')} Wins! 🎉</Typography>
+            <Typography variant="h5" sx={{fontWeight: 'bold'}}>⭐ {results.elected.map(c => c.name).join(', ')} Wins! ⭐</Typography>
             <div className="graphs">
                 <Paper elevation={5} className='graph' sx={{backgroundColor: 'brand.white', borderRadius: '10px'}}>
                     <Typography variant="h5">Scoring Round</Typography>
@@ -99,9 +96,6 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
                            </Bar>
                        </BarChart>
                     </ResponsiveContainer>
-                    {
-                        //<div style={{width: 'calc(100% + 20px)', height: '3px', backgroundColor: 'var(--brand-gray-2)', margin: '40px 0px' }}/>
-                    }
                     <div style={{height: '3px', backgroundColor: 'var(--brand-gray-1)', margin: '30px 0px' }}/>
                 </Paper>
                 <Paper elevation={5} className='graph' sx={{backgroundColor: 'brand.white', borderRadius: '10px'}}>
