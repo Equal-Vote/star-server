@@ -86,7 +86,7 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
                                type="category"
                                axisLine={false}
                                tickLine={false}
-                               tick={{fontSize: '.9rem', fill: 'black', stroke: 'black'}}
+                               tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
                                width={axisWidth}
                            />
                            <Bar dataKey='votes' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
