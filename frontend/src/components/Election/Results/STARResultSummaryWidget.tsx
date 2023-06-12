@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { BarChart, Bar, PieChart, Pie, Cell, LabelList, XAxis, YAxis, ResponsiveContainer, Legend} from 'recharts';
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, ResponsiveContainer, Legend} from 'recharts';
 import { Paper, Typography } from '@mui/material';
 
 // NOTE: I tried using brand.gold here, but it didn't work
@@ -16,7 +16,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
     return (
-        <text x={x} y={y} fill="black" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+        <text x={x} y={y} fill="black" style={{fontWeight: 'bold', textAlign: 'center'}} textAnchor='middle' dominantBaseline="central">
             {`${(percent * 100).toFixed(0)}%`}
         </text>
     );
@@ -86,7 +86,7 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
                                type="category"
                                axisLine={false}
                                tickLine={false}
-                               label={{fill: 'black', stroke: 'black', strokeWidth: 1}}
+                               tick={{fontSize: '.9rem', fill: 'black', stroke: 'black'}}
                                width={axisWidth}
                            />
                            <Bar dataKey='votes' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
@@ -120,7 +120,10 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
                                     <Cell key={`cell-${index}`} fill={ pieColors[index]} stroke='var(--brand-white)' strokeWidth={6}/>
                                 ))}
                             </Pie>
-                            <Legend layout="vertical" verticalAlign="top" align="right" />
+                            <Legend 
+                                layout="vertical" verticalAlign="top" align="right" 
+                                formatter={(value) => <span style={{color: 'black', fontWeight: 'bold', fontSize: '.9rem'}}>{value}</span>}
+                            />
                         </PieChart>
                     </ResponsiveContainer>
                 </Paper>

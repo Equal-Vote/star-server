@@ -73,7 +73,6 @@ const STARResultTableWidget = ({title, results, rounds}) => {
             {results.roundResults.map((round, r) => (
               r < rounds && <RoundViewer summaryData={results.summaryData} candidate={c} round={round} />))}
           </tr>
-
         </>
         ))}
         </tbody>
