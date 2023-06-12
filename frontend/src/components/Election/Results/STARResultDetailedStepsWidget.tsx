@@ -8,8 +8,10 @@ const STARResultDetailedStepsWidget = ({title, results, rounds}) => {
     return <div className='detailedSteps'>
         {results.roundResults.map((round, r) => (
             <>
-            {rounds > 1 && <h4>{`Winner ${r + 1}`}</h4>}
-            {round.logs.map(log => (<p>{log}</p>))}
+            {rounds > 1 && <Typography variant="h4">{`Winner ${r + 1}`}</Typography>}
+            <ol>
+                {round.logs.map(log => (<li>{log}</li>))}
+            </ol>
             </>
         ))}
         { showTieBreakerWarning && <Paper sx={{backgroundColor: 'theme.gray4', width: '80%', marginLeft: '10%', marginRight: '10%'}}>
@@ -19,9 +21,9 @@ const STARResultDetailedStepsWidget = ({title, results, rounds}) => {
                     <b>A note on Tiebreakers</b><br/><br/>
                     Ties are very rare under STAR Voting, and especially as you get more voters. 
                     <br/><br/>
-                    It's more than 10 times less likely for ties to occur under STAR than under choose-one voting
+                    It's more than 10 times less likely for ties to occur under STAR than under choose-one voting.
                     <br/><br/>
-                    However in the unlikely event a tie does occur, the tie is broken using the <a href='https://www.starvoting.org/ties'>Offical Tiebreaker Protocol</a>
+                    However in the unlikely event a tie does occur, the tie is broken using the <a href='https://www.starvoting.org/ties'>Offical Tiebreaker Protocol</a>.
                 </p>
             </div>
         </Paper> }

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import StarRoundedIcon from '@mui/icons-material/Star';
 import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded';
-import { BarChart, Bar, PieChart, Pie, Cell, LabelList, XAxis, YAxis, ResponsiveContainer} from 'recharts';
+import { BarChart, Bar, PieChart, Pie, Cell, LabelList, XAxis, YAxis, ResponsiveContainer, Legend} from 'recharts';
 import { Divider, Paper, Typography } from '@mui/material';
 import { callbackify } from 'util';
 
@@ -41,8 +41,8 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
 
     var pieColors = [
         'var(--ltbrand-blue)',
-        'var(--brand-gray-2)',
         'var(--ltbrand-green)',
+        'var(--brand-gray-2)',
     ];
 
     var pieData = [
@@ -51,18 +51,18 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
             votes: winnerVotes
         },
         {
+            name: results.summaryData.candidates[runnerUpIndex].name,
+            votes: winnerVotes
+        },
+        {
             name: 'No Preference',
             votes: noPrefVotes
         },
-        {
-            name: results.summaryData.candidates[runnerUpIndex].name,
-            votes: winnerVotes
-        }
     ];
 
     if(noPrefVotes == 0){
-        pieColors.splice(1, 1);
-        pieData.splice(1, 1);
+        pieColors.splice(2, 1);
+        pieData.splice(2, 1);
     }
 
     const candidateWithLongestName = results.summaryData.candidates.reduce( function(a, b){
@@ -71,12 +71,14 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
 
     const axisWidth = 10 * ((candidateWithLongestName.name.length > 20)? 20 : candidateWithLongestName.name.length);
     
+    const pieAngle = 90 + 360 * (1 - (pieData[0].votes/results.summaryData.nValidVotes))
+
     return (
         <div className="resultWidget">
-            <h2>🎉 {results.elected.map(c => c.name).join(', ')} Wins! 🎉</h2>
+            <Typography variant="h5" sx={{fontWeight: 'bold'}}>🎉 {results.elected.map(c => c.name).join(', ')} Wins! 🎉</Typography>
             <div className="graphs">
                 <Paper elevation={5} className='graph' sx={{backgroundColor: 'brand.white', borderRadius: '10px'}}>
-                    <Typography variant="h3">Scoring Round</Typography>
+                    <Typography variant="h5">Scoring Round</Typography>
                     <p>Add the stars from all the ballots.</p>  
                     <p>The two highest scoring candidates are the finalists.</p>
                     <ResponsiveContainer width="90%" height={50*histData.length}>
@@ -103,7 +105,7 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
                     <div style={{height: '3px', backgroundColor: 'var(--brand-gray-1)', margin: '30px 0px' }}/>
                 </Paper>
                 <Paper elevation={5} className='graph' sx={{backgroundColor: 'brand.white', borderRadius: '10px'}}>
-                    <h3>Automatic Runoff Round</h3>
+                    <Typography variant="h5">Automatic Runoff Round</Typography>
                     <p>Each vote goes to the voter's preferred finalist.</p>
                     <p>Finalist with most votes wins.</p>
                     <ResponsiveContainer width="100%" height={250}>
@@ -117,14 +119,14 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
                                 outerRadius={100}
                                 fill="#8884d8"
                                 dataKey="votes"
-                                startAngle={90}
-                                endAngle={450}
+                                startAngle={pieAngle}
+                                endAngle={pieAngle+360}
                             >
-                                <LabelList dataKey='name' position='outside' fill='unset' strokeWidth={0}/>
                                 {pieData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={ pieColors[index]} stroke='var(--brand-white)' strokeWidth={6}/>
                                 ))}
                             </Pie>
+                            <Legend layout="vertical" verticalAlign="top" align="right" />
                         </PieChart>
                     </ResponsiveContainer>
                 </Paper>

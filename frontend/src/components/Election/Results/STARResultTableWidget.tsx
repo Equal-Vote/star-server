@@ -1,4 +1,5 @@
 import React, { useState }  from 'react'
+import { TableContainer} from "@mui/material";
 
 function RoundViewer({ summaryData, candidate, round }) {
   const winnerIndex = round.winners[0].index
@@ -22,25 +23,30 @@ function RoundViewer({ summaryData, candidate, round }) {
   }
   return (
     < >
-      {isFinalist ? <td className='highlight'> {runoffVotes} </td> : <td>  </td>}
-      {isFinalist ?
-        candidate.index === winnerIndex ?
-          <td className='highlight'> {`${Math.round(runoffVotes * 1000 / totalRunoffVotes) / 10}%`}</td>
-          : <td> {`${Math.round(runoffVotes * 1000 / totalRunoffVotes) / 10}%`} </td>
-        : <td>  </td>}
-
+      {isFinalist && <>
+          <td className={`${candidate.index === winnerIndex ? 'highlight' : ''}`}>
+            {runoffVotes}
+          </td>
+          <td className={`${candidate.index === winnerIndex ? 'highlight' : ''}`}>
+             {`${Math.round(runoffVotes * 1000 / totalRunoffVotes) / 10}%`}
+          </td>
+        </>
+      }
+      { !isFinalist && <><td/><td/></> }
     </>
   )
 }
 
 const STARResultTableWidget = ({title, results, rounds}) => {
-    return <table className='matrix'>
-        <thead className='matrix'>
+    return (
+      <TableContainer sx={{ marginLeft: 'auto', marginRight: 'auto', maxHeight: 600, maxWidth: {xs:300, sm: 500, md: 550, lg: 550}}}>
+        <table className='resultTable'>
+        <thead className='resultTable'>
 
         {rounds > 1 &&
         <>
-          <th className='matrix'> </th>
-          <th className='matrix'> </th>
+          <th className='resultTable'> </th>
+          <th className='resultTable'> </th>
           {results.roundResults.map((round, r) => (
             r < rounds && <>
               <th colSpan={2}> {`Round ${r + 1}`} </th>
@@ -48,28 +54,32 @@ const STARResultTableWidget = ({title, results, rounds}) => {
         </>
         }
         <tr>
-        <th className='matrix'> Candidate</th>
-        <th className='matrix'> Total Score</th>
+        <th className='resultTable'> Candidate</th>
+        <th className='resultTable'> Total Score</th>
         {results.roundResults.map((round, r) => (
           r < rounds && <>
-            <th className='matrix'> Runoff Votes</th>
-            <th className='matrix'> % Runoff Votes</th>
+            <th className='resultTable'> Runoff Votes</th>
+            <th className='resultTable'> % Runoff Votes</th>
           </>))}
         </tr>
+        </thead>
 
+        <tbody>
         {results.summaryData.candidates.map((c, n) => (
         <>
-          <tr className={`matrix ${(n < 2)?'highlight':''}`} key={`h${n}`}>
-            <div style={{paddingLeft: '8px'}}>{c.name}</div>
-            <td> {results.summaryData.totalScores[n].score} </td>
+          <tr className='resultTable' key={`h${n}`}>
+            <td className={`resultTable ${(n < 2)?'highlight':''}`} style={{paddingLeft: '8px'}}>{c.name}</td>
+            <td className={`resultTable ${(n < 2)?'highlight':''}`}> {results.summaryData.totalScores[n].score} </td>
             {results.roundResults.map((round, r) => (
               r < rounds && <RoundViewer summaryData={results.summaryData} candidate={c} round={round} />))}
           </tr>
 
         </>
         ))}
-        </thead>
-    </table>
+        </tbody>
+      </table>
+    </TableContainer>
+    );
 }
 
 export default STARResultTableWidget;
