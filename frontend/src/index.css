@@ -62,29 +62,28 @@ code {
     monospace;
 }
 
-.matrix{
+.resultTable{
+  width: 100%;
   border: 1px solid black;
   margin: 0;
   border-collapse: collapse;
 }
 
-.matrix tr{
-  padding-left: 4px;
+.resultTable thead {
+  border: 2px solid black;
 }
 
-
-.matrix th {
-  min-width: 160px;
+.resultTable th {
+  min-width: 100px;
   text-align: center;
-  border-bottom: 2px solid black;
 }
 
-.matrix td {
+.resultTable td:not(:first-child) {
   text-align: center;
   border: 1px solid black;
 }
 
-tr.highlight {
+.resultTable .highlight {
   background: var(--brand-gold);
 }
 
@@ -333,5 +332,5 @@ tr.highlight {
 
 /* HACK: The log statements were widening the display and this is a quick fix */
 .detailedSteps{
-  max-width: 600px;
+  max-width: 550px;
 }
