@@ -15,7 +15,7 @@ const DetailedResultsExpander = ({children, defaultSelectedIndex}) => {
         </div>
         <div className="detailedWidgets">
             {viewDetails && children.map((child,i) => (
-                <Paper sx={{backgroundColor: 'brand.gray1', padding: '8px'}} >
+                <Paper elevation={5} sx={{backgroundColor: 'brand.white', padding: '8px'}} >
                     <Grid container alignItems="center" style={{cursor: 'pointer'}} onClick={() => { setWidgetIndex((widgetIndex == i)? -1 : i); }}>
                         <Grid item xs={11}>
                             <h3>{child.props.title}</h3>

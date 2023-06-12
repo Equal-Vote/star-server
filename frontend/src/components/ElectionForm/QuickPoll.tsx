@@ -141,8 +141,8 @@ const QuickPoll = ({ authSession }) => {
 
     return (
         <form onSubmit={onSubmit} >
-            <Grid container >
-                <Grid item xs={12} sx={{ p: 1 }}>
+            <Grid container>
+                <Grid item xs={12} sx={{ p: 1, pt: 2 }}>
                     <StyledTextField
                         autoFocus
                         error={titleError}
@@ -153,7 +153,7 @@ const QuickPoll = ({ authSession }) => {
                         value={election.title}
                         label="What is your poll question?"
                         sx={{
-                            label: {fontWeight: 600,}
+                            label: {fontWeight: 600, fontSize: 18}
                         }}
                         required
                         onChange={(e) => {
@@ -177,7 +177,7 @@ const QuickPoll = ({ authSession }) => {
                             value={candidate.candidate_name}
                             label={`Option ${index + 1}`}
                             sx={{
-                                label: {fontWeight: 600,}
+                                label: {fontWeight: 600, fontSize: 18}
                             }}
                             onChange={(e) => {
                                 onUpdateCandidate(index, e.target.value)
@@ -196,10 +196,7 @@ const QuickPoll = ({ authSession }) => {
                         variant="contained"
                         disabled={isPending} >
 
-                        <Typography sx={{ fontWeight: 'bold' }} >
-                            Create Quick Poll
-                        </Typography>
-
+                        Create Quick Poll
                     </StyledButton>
                 </Grid>
                 <Grid item xs={12} sx={{ p: 1 }}>
@@ -208,18 +205,14 @@ const QuickPoll = ({ authSession }) => {
                             variant="contained"
                             disabled={isPending}
                             onClick={() => authSession.openLogin()}>
-                            <Typography sx={{ fontWeight: 'bold' }} >
-                                Log in for more settings
-                            </Typography>
+                            Log in for more settings
                         </StyledButton>
                         :
                         <StyledButton
                             variant="contained"
                             disabled={isPending}
                             href='/CreateElection'>
-                            <Typography sx={{ fontWeight: 'bold' }} >
-                                Explore more settings
-                            </Typography>
+                            Explore more settings
                         </StyledButton>
                     }
                 </Grid>

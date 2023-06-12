@@ -10,6 +10,7 @@ export const StyledButton = (props) => (
             boxShadow: 2,
             backgroundColor: 'primary.main',
             fontWeight: 'bold',
+            fontSize: 18,
         }}
         {...props}
     >

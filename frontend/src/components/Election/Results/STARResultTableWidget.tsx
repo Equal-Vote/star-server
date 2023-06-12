@@ -60,7 +60,7 @@ const STARResultTableWidget = ({title, results, rounds}) => {
         {results.summaryData.candidates.map((c, n) => (
         <>
           <tr className={`matrix ${(n < 2)?'highlight':''}`} key={`h${n}`}>
-            {c.name}
+            <div style={{paddingLeft: '8px'}}>{c.name}</div>
             <td> {results.summaryData.totalScores[n].score} </td>
             {results.roundResults.map((round, r) => (
               r < rounds && <RoundViewer summaryData={results.summaryData} candidate={c} round={round} />))}
