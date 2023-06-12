@@ -37,10 +37,34 @@ let theme = createTheme({
     }
   },
   typography: {
-    fontFamily: [
-      'Montserrat',
-      'Verdana'
-    ].join(','),
+    fontFamily: 'Verdana',
+    h1: {
+      marginTop: '1rem',
+      marginBottom: '1rem',
+    },
+    h2: {
+      marginTop: '1rem',
+      marginBottom: '1rem',
+    },
+    h3: {
+      marginTop: '1rem',
+      marginBottom: '1rem',
+    },
+    h4: {
+      marginTop: '1rem',
+      marginBottom: '1rem',
+    },
+    h5: {
+      marginTop: '1rem',
+      marginBottom: '1rem',
+    },
+    h6: {
+      marginTop: '1rem',
+      marginBottom: '1rem',
+    }
+  },
+  button: {
+    textTransform: 'lowercase'
   }
 })
 

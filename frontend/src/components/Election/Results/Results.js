@@ -17,10 +17,10 @@ function STARResultViewer({ results, rounds }) {
     <div className="resultViewer">
       <STARResultSummaryWidget results={results} rounds={rounds}/>
       <DetailedResultsExpander defaultSelectedIndex={-1}>
-          <STARResultTableWidget title="Tabular Results" results={results} rounds={rounds}/>
-          <STARResultStatsWidget title="Statistics" results={results}/>
-          <MatrixViewer title="Preference Matrix" results={results}/>
-          <STARResultDetailedStepsWidget title="Detailed Steps" results={results} rounds={rounds}/>
+         <STARResultTableWidget title="Election Results" results={results} rounds={rounds}/>
+         <STARResultStatsWidget title="Statistics" results={results}/>
+         <MatrixViewer title="Preference Matrix" results={results}/>
+         <STARResultDetailedStepsWidget title="Detailed Steps" results={results} rounds={rounds}/>
       </DetailedResultsExpander>
     </div>
   );

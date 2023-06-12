@@ -6,11 +6,17 @@
   css to theme.js in the future */
 
   /* https://docs.google.com/presentation/d/1NSAirKzmq4YyUPB56NR3pKiRTn3W9btwnUtHi_zteeU/edit#slide=id.g827b1a2992_5_86*/
+  --ltbrand-blue: #5AC7D6FF;
+  --ltbrand-green: #87C76AFF;
+  --ltbrand-lime: #C4E44CFF;
+  --ltbrand-yellow: #FFFF54FF;
+  --ltbrand-orange: #FFA929FF;
+  --ltbrand-red: #FF6069FF;
+
   --brand-purple: #4D2586;
   --brand-ltblue: #2AA2B3;
-  --brand-blue: #02627C;
+  --brand-blue: #02627c;
   --brand-gold: #FFE156;
-  --brand-gold-alpha: #FFE15688;
   --brand-red: #EE2C53;
   --brand-orange: #FF9900;
   --brand-green: #60B33C;
@@ -56,16 +62,30 @@ code {
     monospace;
 }
 
+.matrix{
+  border: 1px solid black;
+  margin: 0;
+  border-collapse: collapse;
+}
+
+.matrix tr{
+  padding-left: 4px;
+}
+
+
 .matrix th {
   min-width: 160px;
   text-align: center;
+  border-bottom: 2px solid black;
 }
+
 .matrix td {
   text-align: center;
+  border: 1px solid black;
 }
 
 tr.highlight {
-  background: var(--brand-gold-alpha);
+  background: var(--brand-gold);
 }
 
 .login-form {
@@ -258,11 +278,6 @@ tr.highlight {
   align-self: center;
 }
 
-.resultWidget h3{
-  align-self: center;
-  font-size: 1rem;
-}
-
 .resultWidget .resultStar{
   color: #FFD956;
 }
@@ -279,10 +294,6 @@ tr.highlight {
   font-size: .8rem;
 }
 
-.resultWidget .graphs h3{
-  margin: 0;
-}
-
 .resultWidget .graphs p{
   margin: 0;
 }
@@ -291,15 +302,17 @@ tr.highlight {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  gap: 30px;
 }
 
 .resultWidget .graph {
-  padding: 8px;
+  width: 90%;
+  padding: 18px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-right: 100px;
 }
 
 .resultViewer .detailedWidgets{

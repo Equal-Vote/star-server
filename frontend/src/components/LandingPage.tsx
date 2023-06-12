@@ -21,17 +21,17 @@ const LandingPage = ({ authSession }) => {
                     <Typography variant="h3" style={{ fontWeight: 700 }} >
                         STAR Voting Election Hosting
                     </Typography>
-                    <Typography variant="h6" style={{
+                    <Typography variant="h5" style={{
                         opacity: '0.7',
                     }}>
                         Open source election software
                     </Typography>
-                    <Typography variant="h6" style={{
+                    <Typography variant="h5" style={{
                         opacity: '0.7',
                     }}>
                         From quick polls to highly secure elections
                     </Typography>
-                    <Typography variant="h6" style={{
+                    <Typography variant="h5" style={{
                         opacity: '0.7',
                         paddingBottom: '30px',
                     }}>

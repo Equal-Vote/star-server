@@ -103,10 +103,10 @@ const Header = ({ authSession }) => {
                 </Box>
 
                 {/**** TITLE ****/}
-                <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: "center" }}
+                <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: "center", marginRight: 2 }}
                 >
                     <Button color='inherit' href="/">
-                        <Typography align='center' variant="h6" color={headerTextColor} sx={{ fontWeight: 'bold' }}>
+                        <Typography align='center' variant="h5" color={headerTextColor} sx={{ fontWeight: 'bold' }}>
                             STAR Vote 2.0
                         </Typography>
                     </Button>
@@ -114,15 +114,15 @@ const Header = ({ authSession }) => {
 
                 {/**** DESKTOP OPTIONS ****/}
                 <Box
-                    sx={{ flexGrow: 100, display: { xs: 'none', md: 'flex' } }}>
+                    sx={{ flexGrow: 100, flexWrap: 'wrap', display: { xs: 'none', md: 'flex' }, gap: 2, rowGap: 0 }}>
                     <Button color='inherit' href='https://www.starvoting.us' target="_blank">
-                        <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                        <Typography variant="h5" sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                             About
                         </Typography>
                     </Button>
                     {authSession.isLoggedIn() &&
                         <Button color='inherit' href='/CreateElection'>
-                            <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                            <Typography variant="h5" sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                                 New Election
                             </Typography>
                         </Button>
@@ -137,12 +137,12 @@ const Header = ({ authSession }) => {
                             }
                         }
                     >
-                        <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                        <Typography variant="h5" sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                             Elections
                         </Typography>
                     </Button>
                     <Button color='inherit' href='/sandbox' >
-                        <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                        <Typography variant="h5" sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                             Sandbox
                         </Typography>
 
@@ -150,18 +150,18 @@ const Header = ({ authSession }) => {
                 </Box>
 
                 {/**** LOG IN/OUT ****/}
-                <Box sx={{ alignItems: 'center', flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
+                <Box variant="h5" sx={{ alignItems: 'center', flexWrap: 'wrap', flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
 
                     {authSession.isLoggedIn() ?
                         <>
-                            <Typography sx={{ fontWeight: 'medium' }} color={headerTextColor}>
+                            <Typography variant="h5" sx={{ fontWeight: 'medium' }} color={headerTextColor}>
                                 {authSession.getIdField('email')}
                             </Typography>
                             <Button
                                 color='inherit'
                                 onClick={() => authSession.openLogout()}
                             >
-                                <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                                <Typography variant="h5" sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                                     Log Out
                                 </Typography>
                             </Button>
@@ -172,7 +172,7 @@ const Header = ({ authSession }) => {
                             onClick={() => authSession.openLogin()}
                         >
 
-                            <Typography sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                            <Typography variant="h5" sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                                 Log In
                             </Typography>
                         </Button>
