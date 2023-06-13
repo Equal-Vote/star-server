@@ -24,11 +24,17 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 const STARResultSummaryWidget = ({ results, rounds }) => {
     const histData = results.summaryData.candidates.map((c, n) => ({
-        name: (n < 2)? `⭐${c.name}` : c.name,
+        name: c.name,
         votes: results.summaryData.totalScores[n].score,
         // vvvv HACK to get the bars to fill the whole width, this is useful if we want to test the graph padding
         votesBig: results.summaryData.totalScores[n].score*10000 
     }));
+
+    histData.sort((a, b) => b.votes - a.votes);
+
+    for(let i = 0; i < 2; i++){
+        histData[i].name = `⭐${histData[i].name}`
+    }
 
     const winnerIndex = results.roundResults[0].winners[0].index;
     const runnerUpIndex = results.roundResults[0].runner_up[0].index;
@@ -49,7 +55,7 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
         },
         {
             name: results.summaryData.candidates[runnerUpIndex].name,
-            votes: winnerVotes
+            votes: runnerUpVotes
         },
         {
             name: 'No Preference',
@@ -66,7 +72,7 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
         return (a.name.length > b.name.length)? a : b;
     })
 
-    const axisWidth = 10 * ((candidateWithLongestName.name.length > 20)? 20 : candidateWithLongestName.name.length);
+    const axisWidth = 12 * ((candidateWithLongestName.name.length > 20)? 20 : candidateWithLongestName.name.length);
     
     const pieAngle = 90 + 360 * (1 - (pieData[0].votes/results.summaryData.nValidVotes))
 
