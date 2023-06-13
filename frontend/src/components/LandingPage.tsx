@@ -19,7 +19,7 @@ const LandingPage = ({ authSession }) => {
             }}>
                 <Grid item xs={12} md={7}>
                     <Typography variant="h3" style={{ fontWeight: 700 }} >
-                        STAR Voting Election Hosting
+                        STAR Elections
                     </Typography>
                     <Typography variant="h5" style={{
                         opacity: '0.7',
