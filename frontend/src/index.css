@@ -132,8 +132,6 @@ td.highlight {
 
 .ballot .instructions {
   font-family: Verdana, Geneva, sans-serif;
-  font-size: 12px;
-  padding: 0cm 2cm .2cm 2cm;
 }
 
 .ballot .footer {
@@ -162,7 +160,8 @@ td.highlight {
 }
 
 .ballot .row{
-  padding: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .ballot .row hr~div:nth-child(even){
@@ -182,15 +181,21 @@ td.highlight {
 
 .ballot .scoreColumnHeading{
   position: absolute;
-  transform: translate(170%,52%);
+  transform: translate(-50%, -45%);
   font-family: 'Archivo Black';
   font-size: 1.02em;
-  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
 }
 
 .ballot .starIcon {
   position: absolute;
-  transform: translate(-50%,15%);
+  transform: translate(-50%, -50%);
+  height: 100%;
+  width: 100%;
+  top: 50%;
+  left: 50%;
   font-size: 2.2em;
 }
 
@@ -206,7 +211,6 @@ td.highlight {
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   cursor: pointer;
-  margin-left: .4em; /* Added some margin to make it align a bit better with the column headings */ 
   text-align: center;
   justify-content: center;
 }
@@ -237,6 +241,6 @@ td.highlight {
   text-align: center;
   justify-content: center;
   font-family: 'Archivo Black';
-  font-size: .93em;
+  font-size: .95em;
   font-weight: bold;
 }

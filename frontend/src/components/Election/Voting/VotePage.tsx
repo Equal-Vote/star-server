@@ -108,8 +108,8 @@ const VotePage = ({ election, fetchElection }) => {
             variant='outlined'
             onClick={() => setCurrentPage(count => count - 1)}
             disabled={currentPage === 0}
-            style={{ minWidth:"150px", marginRight: "40px"}}>
-            Previous Page
+            style={{ minWidth:"100px", marginRight: "40px"}}>
+            Previous
           </Button>
           <Stepper>
             {pages.map((page, n) => (
@@ -133,8 +133,8 @@ const VotePage = ({ election, fetchElection }) => {
             variant='outlined'
             onClick={() => setCurrentPage(count => count + 1)}
             disabled={currentPage === pages.length-1}
-            style={{ minWidth:"150px", marginLeft: "40px"}}>
-            Next Page
+            style={{ minWidth:"100px", marginLeft: "40px"}}>
+            Next
           </Button>
         </Box>
       }

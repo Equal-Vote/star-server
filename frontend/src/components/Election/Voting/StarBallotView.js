@@ -22,19 +22,19 @@ export default function StarBallotView({
 }) {
   const instructions = (
     <>
-      <Typography align='left' component="li">
+      <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
         Give your favorite(s) five stars.
       </Typography>
-      <Typography align='left' component="li">
+      <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
         Give your last choice(s) zero stars.
       </Typography>
-      <Typography align='left' component="li">
+      <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
         Show preference order and level of support.
       </Typography>
-      <Typography align='left' component="li">
+      <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
         Equal scores indicate no preference.
       </Typography>
-      <Typography align='left' component="li">
+      <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
         Those left blank receive zero stars.
       </Typography>
     </>
