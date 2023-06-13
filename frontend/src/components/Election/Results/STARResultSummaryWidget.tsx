@@ -102,7 +102,6 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
                            </Bar>
                        </BarChart>
                     </ResponsiveContainer>
-                    <div style={{height: '3px', backgroundColor: 'var(--brand-gray-1)', margin: '30px 0px' }}/>
                 </Paper>
                 <Paper elevation={5} className='graph' sx={{backgroundColor: 'brand.white', borderRadius: '10px'}}>
                     <Typography variant="h5">Automatic Runoff Round</Typography>
