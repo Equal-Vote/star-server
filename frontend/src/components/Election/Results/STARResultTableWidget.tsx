@@ -38,6 +38,14 @@ function RoundViewer({ summaryData, candidate, round }) {
 }
 
 const STARResultTableWidget = ({title, results, rounds}) => {
+    const tableData = results.summaryData.candidates.map((c, n) => ({
+        name: c.name,
+        votes: results.summaryData.totalScores[n].score,
+        index: n
+    }));
+
+    tableData.sort((a, b) => b.votes - a.votes);
+
     return (
       <TableContainer sx={{ marginLeft: 'auto', marginRight: 'auto', maxHeight: 600, maxWidth: {xs:300, sm: 500, md: 550, lg: 550}}}>
         <table className='resultTable'>
@@ -65,11 +73,11 @@ const STARResultTableWidget = ({title, results, rounds}) => {
         </thead>
 
         <tbody>
-        {results.summaryData.candidates.map((c, n) => (
+        {tableData.map((c, n) => (
         <>
           <tr className='resultTable' key={`h${n}`}>
             <td className={`resultTable ${(n < 2)?'highlight':''}`} style={{paddingLeft: '8px'}}>{c.name}</td>
-            <td className={`resultTable ${(n < 2)?'highlight':''}`}> {results.summaryData.totalScores[n].score} </td>
+            <td className={`resultTable ${(n < 2)?'highlight':''}`}> {c.votes} </td>
             {results.roundResults.map((round, r) => (
               r < rounds && <RoundViewer summaryData={results.summaryData} candidate={c} round={round} />))}
           </tr>
