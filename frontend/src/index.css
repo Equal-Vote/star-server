@@ -312,6 +312,7 @@ code {
 .resultWidget .graph {
   width: 90%;
   padding: 18px;
+  padding-top: 0px; /* the margin from the h3 tags is enough */
 
   display: flex;
   flex-direction: column;
