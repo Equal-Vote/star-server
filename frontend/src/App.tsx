@@ -39,25 +39,25 @@ const App = () => {
             </Alert>
           </Snackbar>
           <CssBaseline />
-          <Header authSession={authSession} />
-          <Box
-            sx={{
-              width: '100%',
-              minHeight: `calc(100vh - 255px - 64px)` //Sets min height of content to 100% minus footer and header in order to force footer to the bottom
-            }}>
-            <Routes>
-              <Route path='/' element={<LandingPage authSession={authSession} />} />
-              <Route path='/Elections' element={<Elections authSession={authSession} />} />
-              <Route path='/Login' element={<Login />} />
-              <Route path='/Debug' element={<DebugPage authSession={authSession} />} />
-              <Route path='/CreateElection' element={<AddElection authSession={authSession} />} />
-              <Route path='/Election/:id/*' element={<Election authSession={authSession} />} />
-              <Route path='/DuplicateElection/:id' element={<DuplicateElection authSession={authSession} />} />
-              <Route path='/Sandbox' element={<Sandbox />} />
-            </Routes>
-
+          <Box display='flex' flexDirection='column' minHeight={'100vh'} >
+            <Header authSession={authSession} />
+            <Box
+              sx={{
+                width: '100%',
+              }}>
+              <Routes>
+                <Route path='/' element={<LandingPage authSession={authSession} />} />
+                <Route path='/Elections' element={<Elections authSession={authSession} />} />
+                <Route path='/Login' element={<Login />} />
+                <Route path='/Debug' element={<DebugPage authSession={authSession} />} />
+                <Route path='/CreateElection' element={<AddElection authSession={authSession} />} />
+                <Route path='/Election/:id/*' element={<Election authSession={authSession} />} />
+                <Route path='/DuplicateElection/:id' element={<DuplicateElection authSession={authSession} />} />
+                <Route path='/Sandbox' element={<Sandbox />} />
+              </Routes>
+            </Box>
+            <Footer />
           </Box>
-          <Footer />
         </SnackbarContext.Provider>
       </ThemeProvider>
     </Router>

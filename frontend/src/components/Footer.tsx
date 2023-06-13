@@ -13,7 +13,8 @@ export default function Footer() {
         backgroundColor: (theme) =>
           theme.palette.grey[200],//Make theme pallete for this
         p: 6,
-        width: '100%'
+        width: '100%',
+        mt: 'auto'
       }}
     >
       <Container maxWidth="lg">
