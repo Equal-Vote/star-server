@@ -49,11 +49,13 @@ const Choices = ({ rowIndex, onClick, score, columns }) =>
 const Row = ({ rowIndex, candidate, onClick, columns }) => {
   const [expanded, setExpanded] = useState(false)
   const hasExpandedData = HasExpandedData(candidate)
+
+  // NOTE: I tried doing this in css with the :nth-child(even) pseudo class but it didn't work
   var rowColor = 'white'
   if (rowIndex % 2 == 0) {
-    rowColor = '#E3EDEF';
+    rowColor = 'var(--ballot-even-row-teal)';
   } else {
-    rowColor = 'white';
+    rowColor = 'var(--brand-white)';
   }
   return (
     <>
@@ -193,7 +195,8 @@ const ScoreColumnHeadings = ({starHeadings, columns}) =>
     <Grid item xs={1}>
       { starHeadings &&
         <ScoreIcon
-          color={(n != 0)? '#B7D2D6' : '#FFFFFF'}
+          // NOTE: I tried doing this in CSS with :first-child but it didn't work
+          color={(n != 0)? 'var(--ballot-star-teal)' : 'var(--brand-white)'}
           value={columnTitle}
         />
       }
@@ -256,7 +259,7 @@ export default function GenericBallotView({
           </Grid>
 
           { warning !== null &&
-            <Box style={{backgroundColor: '#FFFF88', marginLeft:'10%', marginRight:'10%', marginBottom:'.4cm', padding: '.2cm'}}>
+            <Box style={{backgroundColor: 'var(--brand-gold)', marginLeft:'10%', marginRight:'10%', marginBottom:'.4cm', padding: '.2cm'}}>
               <Typography>⚠️</Typography>
               <Typography style={{paddingLeft:'30px'}}>{warning}</Typography>
             </Box>
