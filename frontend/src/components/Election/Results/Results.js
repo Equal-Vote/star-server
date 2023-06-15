@@ -6,165 +6,24 @@ import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import { useState } from 'react'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
-// import Grid from "@mui/material/Grid";
-
-function CandidateViewer({ candidate, runoffScore }) {
-  return (
-    <>
-      {typeof runoffScore != "undefined" &&
-        <p>
-          <b>{candidate.name}</b>: Total Score: {candidate.totalScore}, Runoff Votes: {runoffScore}
-        </p>
-      }
-      {typeof runoffScore == "undefined" &&
-        <p>
-          <b>{candidate.name}</b>: Total Score: {candidate.totalScore}
-        </p>
-      }
-    </>
-  );
-}
-
-function RoundViewer({ summaryData, Candidate, Round }) {
-  const winnerIndex = Round.winners[0].index
-  const runnerUpIndex = Round.runner_up[0].index
-  const totalRunoffVotes = summaryData.nValidVotes
-
-  var isFinalist = false
-  var runoffVotes = 0
-  // const isFinalist = Candidate.index===winnerIndex||Candidate.index===runnerUpIndex
-  if (Candidate.index === winnerIndex) {
-    isFinalist = true
-    runoffVotes = summaryData.preferenceMatrix[winnerIndex][runnerUpIndex]
-  }
-  else if (Candidate.index === runnerUpIndex) {
-    isFinalist = true
-    runoffVotes = summaryData.preferenceMatrix[runnerUpIndex][winnerIndex]
-  }
-  else {
-    isFinalist = false
-    runoffVotes = 0
-  }
-  return (
-    < >
-      {isFinalist ? <td className='highlight'> {runoffVotes} </td> : <td>  </td>}
-      {isFinalist ?
-        Candidate.index === winnerIndex ?
-          <td className='highlight'> {`${Math.round(runoffVotes * 1000 / totalRunoffVotes) / 10}%`}</td>
-          : <td> {`${Math.round(runoffVotes * 1000 / totalRunoffVotes) / 10}%`} </td>
-        : <td>  </td>}
-
-    </>
-  )
-
-}
+import STARResultSummaryWidget from "./STARResultSummaryWidget";
+import DetailedResultsExpander from "./DetailedResultsExpander";
+import STARResultTableWidget from "./STARResultTableWidget";
+import STARResultStatsWidget from "./STARResultStatsWidget";
+import STARResultDetailedStepsWidget from "./STARResultDetailedStepsWidget";
 
 function STARResultViewer({ results, rounds }) {
-  const [viewDetails, setViewDetails] = useState(false)
-  const [viewMatrix, setViewMatrix] = useState(false)
-  const [viewHist, setViewHist] = useState(false)
   return (
     <div className="resultViewer">
-      <Grid container alignItems="center" >
-        <Grid item xs={11}>
-          <h2>Detailed Results</h2>
-        </Grid>
-        <Grid item xs={1}>
-          {!viewDetails &&
-            <IconButton aria-label="Home" onClick={() => { setViewDetails(true) }}>
-              <ExpandMore />
-            </IconButton>}
-          {viewDetails &&
-            <IconButton aria-label="Home" onClick={() => { setViewDetails(false) }}>
-              <ExpandLess />
-            </IconButton>}
-        </Grid>
-      </Grid>
-      {viewDetails &&
-        <>
-          <table className='matrix'>
-            <thead className='matrix'>
-
-              {rounds > 1 &&
-                <>
-                  <th className='matrix'> </th>
-                  <th className='matrix'> </th>
-                  {results.roundResults.map((round, r) => (
-                    r < rounds && <>
-                      <th colspan="2"> {`Round ${r + 1}`} </th>
-                    </>))}
-                </>
-              }
-              <tr>
-                <th className='matrix'> Candidate</th>
-                <th className='matrix'> Total Score</th>
-                {results.roundResults.map((round, r) => (
-                  r < rounds && <>
-                    <th className='matrix'> Runoff Votes</th>
-                    <th className='matrix'> % Runoff Votes</th>
-                  </>))}
-              </tr>
-
-              {results.summaryData.candidates.map((c, n) => (
-                <>
-                  <tr className='matrix' key={`h${n}`} >{c.name}
-                    <td> {results.summaryData.totalScores[n].score} </td>
-                    {results.roundResults.map((round, r) => (
-                      r < rounds && <RoundViewer summaryData={results.summaryData} Candidate={c} Round={round} />))}
-
-                  </tr>
-
-                </>
-              ))}
-            </thead>
-          </table>
-
-          <table className='matrix'>
-            <thead className='matrix'>
-              <tr className='matrix'>
-                Number of Valid Votes
-                <td className='matrix'> {results.summaryData.nValidVotes}</td>
-              </tr>
-              <tr className='matrix'>
-                Number of Invalid Votes
-                <td className='matrix'> {results.summaryData.nInvalidVotes}</td>
-              </tr>
-              <tr className='matrix'>
-                Number of Bullet Votes
-                <td className='matrix'> {results.summaryData.nBulletVotes}</td>
-              </tr>
-              <tr className='matrix'>
-                Number of Under Votes
-                <td className='matrix'> {results.summaryData.nUnderVotes}</td>
-              </tr>
-
-            </thead>
-          </table>
-
-          <Grid container alignItems="center" >
-            <Grid item xs={11}>
-              <h3> View Matrix</h3>
-            </Grid>
-            <Grid item xs={1}>
-              {!viewMatrix &&
-                <IconButton aria-label="Home" onClick={() => { setViewMatrix(true) }}>
-                  <ExpandMore />
-                </IconButton>}
-              {viewMatrix &&
-                <IconButton aria-label="Home" onClick={() => { setViewMatrix(false) }}>
-                  <ExpandLess />
-                </IconButton>}
-            </Grid>
-          </Grid>
-          {viewMatrix && <MatrixViewer results={results} />}
-          <h3>Additional Election Data</h3>
-          {results.roundResults.map((round, r) => (
-            <>
-              {rounds > 1 && <h4>{`Winner ${r + 1}`}</h4>}
-              {round.logs.map(log => (<p>{log}</p>))}
-            </>
-          ))}
-        </>}
+      <STARResultSummaryWidget results={results} rounds={rounds}/>
+      <DetailedResultsExpander defaultSelectedIndex={-1}>
+         <STARResultTableWidget title="Election Results" results={results} rounds={rounds}/>
+         {
+          //<STARResultStatsWidget title="Statistics" results={results}/>
+          //<MatrixViewer title="Preference Matrix" results={results}/>
+         }
+         <STARResultDetailedStepsWidget title="Detailed Steps" results={results} rounds={rounds}/>
+      </DetailedResultsExpander>
     </div>
   );
 }
@@ -203,7 +62,7 @@ function RankedRobinViewer({ results }) {
             </IconButton>}
         </Grid>
         <Grid item xs={2}>
-          <h3> View Matrix</h3>
+          <h3> View Preference Matrix</h3>
         </Grid>
       </Grid>
       {viewMatrix && <MatrixViewer results={results} />}
@@ -219,8 +78,6 @@ function IRVResultsViewer({ results }) {
 
       <Paper elevation={0} sx={{ width: '100%' }}>
         <TableContainer sx={{ maxHeight: 600, maxWidth: { xs: 300, sm: 500, md: 600, lg: 1000 } }}>
-
-
           <Table size='small' stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
@@ -438,53 +295,55 @@ function PRResultsViewer({ result }) {
 }
 
 export default function Results({ race, result }) {
-  console.log(result)
   return (
     <div>
       <div className="flexContainer">
-        {race.voting_method === "STAR" &&
-          race.num_winners == 1 &&
+        {result.summaryData.nValidVotes == 0 && <h2>Still waiting for results<br/>No votes have been cast</h2>}
+        {result.summaryData.nValidVotes > 0 &&
           <>
-            <SummaryViewer votingMethod='STAR Voting' results={result} />
-            <STARResultViewer results={result} rounds={1} />
-          </>}
+          {race.voting_method === "STAR" &&
+            race.num_winners == 1 &&
+            <>
+              <STARResultViewer results={result} rounds={1} />
+            </>}
 
-        {race.voting_method === "STAR" && race.num_winners > 1 &&
-          <>
-            <SummaryViewer votingMethod='Multi-Winner STAR Voting' results={result} />
-            <STARResultViewer results={result} rounds={race.num_winners} />
-          </>}
+          {race.voting_method === "STAR" && race.num_winners > 1 &&
+            <>
+              <SummaryViewer votingMethod='Multi-Winner STAR Voting' results={result} />
+              <STARResultViewer results={result} rounds={race.num_winners} />
+            </>}
 
-        {race.voting_method === "STAR_PR" &&
-          <>
-            {/* PR tabulator needs to be refactored to match interface of other methods */}
-            {/* <SummaryViewer votingMethod='Proportional STAR' results={result} /> */}
-            <PRResultsViewer result={result} />
-          </>}
+          {race.voting_method === "STAR_PR" &&
+            <>
+              {/* PR tabulator needs to be refactored to match interface of other methods */}
+              {/* <SummaryViewer votingMethod='Proportional STAR' results={result} /> */}
+              <PRResultsViewer result={result} />
+            </>}
 
-        {race.voting_method === "RankedRobin" &&
-          <>
-            <SummaryViewer votingMethod='Ranked Robin' results={result} />
-            <RankedRobinViewer results={result} />
-          </>}
+          {race.voting_method === "RankedRobin" &&
+            <>
+              <SummaryViewer votingMethod='Ranked Robin' results={result} />
+              <RankedRobinViewer results={result} />
+            </>}
 
-        {race.voting_method === "Plurality" &&
-          <>
-            <SummaryViewer votingMethod='Plurality' results={result} />
-            <PluralityResultsViewer results={result} />
-          </>}
+          {race.voting_method === "Plurality" &&
+            <>
+              <SummaryViewer votingMethod='Plurality' results={result} />
+              <PluralityResultsViewer results={result} />
+            </>}
 
-        {race.voting_method === "Approval" &&
-          <>
-            <SummaryViewer votingMethod='Approval' results={result} />
-            <ApprovalResultsViewer results={result} />
-          </>}
+          {race.voting_method === "Approval" &&
+            <>
+              <SummaryViewer votingMethod='Approval' results={result} />
+              <ApprovalResultsViewer results={result} />
+            </>}
 
-        {race.voting_method === "IRV" &&
-          <>
-            <SummaryViewer votingMethod='Ranked Choice Voting' results={result} />
-            <IRVResultsViewer results={result} />
-          </>}
+          {race.voting_method === "IRV" &&
+            <>
+              <SummaryViewer votingMethod='Ranked Choice Voting' results={result} />
+              <IRVResultsViewer results={result} />
+            </>}
+        </>}
       </div>
     </div>
   );

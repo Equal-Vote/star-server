@@ -151,7 +151,7 @@ const Rows = ({ candidates, onClick, columns }) =>
 const ColumnHeadings = ({starHeadings, columns, leftTitle, rightTitle, headingPrefix}) => (
   <>
   { leftTitle != '' &&
-    <Grid container alignItems="stretch" >
+    <Grid sx={{pt: 3}} container alignItems="stretch" >
       <Grid item xs={5}></Grid>
       <Grid item xs={1}>
         <Typography align='center' className="columnDescriptor">
@@ -182,7 +182,7 @@ const ColumnHeadings = ({starHeadings, columns, leftTitle, rightTitle, headingPr
 );
 
 const ScoreIcon = ({color, value}) => (
-  <div align='center' style={{width: '50px', height: '50px'}}>
+  <div align='center' style={{ position: 'relative', height: '50px'}}>
     <FaRegStar style={{color: color}} className="starIcon"/>
     <Typography className="scoreColumnHeading">
       {value}
@@ -229,18 +229,19 @@ export default function GenericBallotView({
       <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }} className="ballot">
         <Grid container alignItems="center" justify="center" direction="column">
 
-          <Grid item style={{ padding: '0.8cm 0cm 0cm 0cm' }}>
-            <Typography align='center' gutterBottom variant="h2" component="h6" className="title">
+          <Grid item sx={{ p: 3 }}>
+            <Typography align='center' variant="h4" component="h4" className="title">
               {race.title}
             </Typography>
           </Grid>
-          <Grid item>
-            <Typography align='center' gutterBottom variant="h6" component="h6" style={{whiteSpace: 'pre-line'}}>
+          {race.description &&
+            <Grid item sx={{p:3}}>
+            <Typography align='center' variant="h6" component="h6" style={{whiteSpace: 'pre-line'}}>
               {race.description}
             </Typography>
-          </Grid>
+          </Grid>}
 
-          <Grid item xs={8} className="instructions">
+          <Grid item xs={8} sx={{ p:3, px:0 }} className="instructions">
             {instructions}
           </Grid>
 

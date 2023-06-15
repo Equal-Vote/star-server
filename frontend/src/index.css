@@ -1,6 +1,4 @@
 * {
-  box-sizing: border-box;
-
   /* NOTE: these variables are named based on where they're used
   but in the future we should consider reducing them and giving generic names*/
 
@@ -8,9 +6,16 @@
   css to theme.js in the future */
 
   /* https://docs.google.com/presentation/d/1NSAirKzmq4YyUPB56NR3pKiRTn3W9btwnUtHi_zteeU/edit#slide=id.g827b1a2992_5_86*/
+  --ltbrand-blue: #5AC7D6FF;
+  --ltbrand-green: #87C76AFF;
+  --ltbrand-lime: #C4E44CFF;
+  --ltbrand-yellow: #FFFF54FF;
+  --ltbrand-orange: #FFA929FF;
+  --ltbrand-red: #FF6069FF;
+
   --brand-purple: #4D2586;
   --brand-ltblue: #2AA2B3;
-  --brand-blue: #02627C;
+  --brand-blue: #02627c;
   --brand-gold: #FFE156;
   --brand-red: #EE2C53;
   --brand-orange: #FF9900;
@@ -19,11 +24,11 @@
   --brand-white: #FFFFFF;
 
   /* https://docs.google.com/presentation/d/1NSAirKzmq4YyUPB56NR3pKiRTn3W9btwnUtHi_zteeU/edit#slide=id.g177cd3ac88b_0_0 */
-  --brand-gray-1: #1F1F1F; /* Charcoal used in "How does STAR Voting Work?" graphic */
-  --brand-gray-2: #666666; /* Bubbles on ballots */
+  --brand-gray-5: #1F1F1F; /* Charcoal used in "How does STAR Voting Work?" graphic */
+  --brand-gray-4: #666666; /* Bubbles on ballots */
   --brand-gray-3: #999999; /* Lines separating candidates on ballot */
-  --brand-gray-4: #CCCCCC; /* Stars on STAR ballots */
-  --brand-gray-5: #ECECEC; /* Highlight for alternating candidates on ballots */
+  --brand-gray-2: #CCCCCC; /* Stars on STAR ballots */
+  --brand-gray-1: #ECECEC; /* Highlight for alternating candidates on ballots */
   --brand-gray-alpha: #7B7B7B7D; /* For graying out candidates for the "How does STAR Voting Work?" Graphic (has transparency)
 
   /* teal / blue */
@@ -57,16 +62,29 @@ code {
     monospace;
 }
 
-.matrix th {
-  min-width:60px;
-  text-align: center;
+.resultTable{
+  width: 100%;
+  border: 1px solid black;
+  margin: 0;
+  border-collapse: collapse;
 }
-.matrix td {
+
+.resultTable thead {
+  border: 2px solid black;
+}
+
+.resultTable th {
+  min-width: 100px;
   text-align: center;
 }
 
-td.highlight {
-  background: var(--result-row-gray);
+.resultTable td:not(:first-child) {
+  text-align: center;
+  border: 1px solid black;
+}
+
+.resultTable .highlight {
+  background: var(--brand-gold);
 }
 
 .login-form {
@@ -132,8 +150,6 @@ td.highlight {
 
 .ballot .instructions {
   font-family: Verdana, Geneva, sans-serif;
-  font-size: 12px;
-  padding: 0cm 2cm .2cm 2cm;
 }
 
 .ballot .footer {
@@ -162,7 +178,8 @@ td.highlight {
 }
 
 .ballot .row{
-  padding: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .ballot .row hr~div:nth-child(even){
@@ -182,15 +199,21 @@ td.highlight {
 
 .ballot .scoreColumnHeading{
   position: absolute;
-  transform: translate(170%,52%);
+  transform: translate(-50%, -45%);
   font-family: 'Archivo Black';
   font-size: 1.02em;
-  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
 }
 
 .ballot .starIcon {
   position: absolute;
-  transform: translate(-50%,15%);
+  transform: translate(-50%, -50%);
+  height: 100%;
+  width: 100%;
+  top: 50%;
+  left: 50%;
   font-size: 2.2em;
 }
 
@@ -206,7 +229,6 @@ td.highlight {
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   cursor: pointer;
-  margin-left: .4em; /* Added some margin to make it align a bit better with the column headings */ 
   text-align: center;
   justify-content: center;
 }
@@ -237,6 +259,83 @@ td.highlight {
   text-align: center;
   justify-content: center;
   font-family: 'Archivo Black';
-  font-size: .93em;
+  font-size: .95em;
   font-weight: bold;
+}
+
+/* Results */
+.resultWidget {
+  display: flex;
+  flex-direction: column;
+}
+
+.resultWidget .scoreRound {
+  background-color: #2AA2B3;
+}
+
+.resultWidget .runoffRound {
+  background-color: #1F1F1F;
+}
+
+.resultWidget h2{
+  align-self: center;
+}
+
+.resultWidget .resultStar{
+  color: #FFD956;
+}
+
+.resultWidget .arrow{
+  position: relative;
+  top: .35rem;
+  left: .25rem;
+}
+
+.resultWidget .votingMethod{
+  align-self: flex-end;
+  color: #808080;
+  font-size: .8rem;
+}
+
+.resultWidget .graphs p{
+  margin: 0;
+}
+
+.resultWidget .graphs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.resultWidget .graph {
+  width: 90%;
+  padding: 18px;
+  padding-top: 0px; /* the margin from the h3 tags is enough */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.resultViewer .detailedWidgets{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.statsWidget strong{
+  font-size: 1.3rem;
+  color: var(--brand-blue);
+}
+
+.recharts-wrapper{
+  padding: 0;
+}
+
+/* HACK: The log statements were widening the display and this is a quick fix */
+.detailedSteps{
+  max-width: 550px;
 }

@@ -11,9 +11,10 @@ import DuplicateElection from './components/ElectionForm/DuplicateElection'
 import Sandbox from './components/Sandbox'
 import DebugPage from './components/DebugPage'
 import LandingPage from './components/LandingPage'
-import { Alert, CssBaseline, Snackbar } from '@mui/material'
+import { Alert, Box, CssBaseline, Snackbar } from '@mui/material'
 import { useAuthSession } from './hooks/useAuthSession'
 import { Isnack, SnackbarContext } from './components/SnackbarContext'
+import Footer from './components/Footer'
 const App = () => {
   const authSession = useAuthSession()
   const [snack, setSnack] = useState({
@@ -26,7 +27,7 @@ const App = () => {
     if (reason === 'clickaway') {
       return;
     }
-    setSnack({...snack, open: false})
+    setSnack({ ...snack, open: false })
   }
   return (
     <Router>
@@ -38,17 +39,25 @@ const App = () => {
             </Alert>
           </Snackbar>
           <CssBaseline />
-          <Header authSession={authSession} />
-          <Routes>
-            <Route path='/' element={<LandingPage authSession={authSession} />} />
-            <Route path='/Elections' element={<Elections authSession={authSession} />} />
-            <Route path='/Login' element={<Login />} />
-            <Route path='/Debug' element={<DebugPage authSession={authSession} />} />
-            <Route path='/CreateElection' element={<AddElection authSession={authSession} />} />
-            <Route path='/Election/:id/*' element={<Election authSession={authSession} />} />
-            <Route path='/DuplicateElection/:id' element={<DuplicateElection authSession={authSession} />} />
-            <Route path='/Sandbox' element={<Sandbox />} />
-          </Routes>
+          <Box display='flex' flexDirection='column' minHeight={'100vh'} >
+            <Header authSession={authSession} />
+            <Box
+              sx={{
+                width: '100%',
+              }}>
+              <Routes>
+                <Route path='/' element={<LandingPage authSession={authSession} />} />
+                <Route path='/Elections' element={<Elections authSession={authSession} />} />
+                <Route path='/Login' element={<Login />} />
+                <Route path='/Debug' element={<DebugPage authSession={authSession} />} />
+                <Route path='/CreateElection' element={<AddElection authSession={authSession} />} />
+                <Route path='/Election/:id/*' element={<Election authSession={authSession} />} />
+                <Route path='/DuplicateElection/:id' element={<DuplicateElection authSession={authSession} />} />
+                <Route path='/Sandbox' element={<Sandbox />} />
+              </Routes>
+            </Box>
+            <Footer />
+          </Box>
         </SnackbarContext.Provider>
       </ThemeProvider>
     </Router>
