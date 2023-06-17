@@ -30,7 +30,7 @@ export class LoggerImpl {
         var ctxStr = "";
         var prefix = "";
         if (context!= null){
-            ctxStr = "  ctx:" + context.contextId;
+            ctxStr = "ctx:" + context.contextId;
             if (context.logPrefix == null){
                 context.logPrefix = "";
             }
@@ -43,7 +43,7 @@ export class LoggerImpl {
             lvlStr = levelStr+"  ";
         }
 
-        var msg = `${prefix}${lvlStr}${message}${ctxStr}`;
+        var msg = `${prefix}${ctxStr} ${lvlStr}${message}`;
         console.log(msg, ...optionalParams);
     }
 }
