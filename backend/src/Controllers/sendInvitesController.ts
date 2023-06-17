@@ -47,9 +47,14 @@ const sendInvitationsController = async (req: any, res: any, next: any) => {
     const electionRollFiltered = electionRoll.filter(roll => {
         if (!roll.email_data) return true
         if (!roll.email_data.inviteResponse) return true
-        if (!(roll.email_data.inviteResponse.statusCode < 400)) return true
+        if (!(roll.email_data.inviteResponse.length > 0)) return true
+        if (!(roll.email_data.inviteResponse[0].statusCode < 400)) return true
         return false
     })
+
+    if (electionRollFiltered.length == 0) {
+        throw new BadRequest('All email invites have already been sent')
+    }
 
     await sendBatchEmailInvites(req, electionRollFiltered, election)
 
@@ -98,7 +103,12 @@ async function handleSendInviteEvent(job: { id: string; data: SendInviteEvent; }
     if (!electionRoll.email_data) {
         electionRoll.email_data = {}
     }
-    electionRoll.email_data.inviteResponse = emailResponse
+    //Should have an array of one response in which case grab the first, but could have an error message
+    if (emailResponse.length > 0) {
+        electionRoll.email_data.inviteResponse = emailResponse[0]
+    } else {
+        electionRoll.email_data.inviteResponse = emailResponse
+    }
     if (electionRoll.history == null) {
         electionRoll.history = [];
     }
