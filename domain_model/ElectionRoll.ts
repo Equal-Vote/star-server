@@ -14,9 +14,8 @@ export interface ElectionRoll {
     registration?: any; //Registration data for voter
     precinct?: string; // Precint of voter
     email_data?: {
-        batch: string,
-        response: any,
-        
+        inviteResponse?: any,
+        reminderResponse?: any,
     }
 }
 
