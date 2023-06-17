@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import { ILoggingContext } from "../Logging/ILogger";
-import { EventHandler, IEventQueue } from "./IEventQueue";
+import { EventHandler, IEventQueue, JobInsert } from "./IEventQueue";
 import { QueueName } from "./QueueName";
 
 type Job = {
@@ -40,6 +40,16 @@ export class MockEventQueue implements IEventQueue {
         return j.id;
     }
 
+    public async publishBatch(queue:QueueName, data:object[]):Promise<object> {
+        var j = data.map(d => ({
+            queue: queue,
+            data: d,
+            id: randomUUID()
+        }))
+        this._pendingJobs.push(...j);
+        this.triggerJobs();
+        return j;
+    }
 
     private async triggerJobs(){
         if (this._working){
