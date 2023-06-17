@@ -55,7 +55,7 @@ const sendInvitationsController = async (req: any, res: any, next: any) => {
     return res.json({})
 }
 
-export async function sendBatchEmailInvites(req: any, electionRoll: ElectionRoll[], election: Election) {
+async function sendBatchEmailInvites(req: any, electionRoll: ElectionRoll[], election: Election) {
     const Jobs: SendInviteEvent[] = []
     const reqId = req.contextId ? req.contextId : randomUUID();
     const url = req.protocol + '://' + req.get('host')
@@ -97,4 +97,5 @@ async function handleSendInviteEvent(job: { id: string; data: SendInviteEvent; }
 module.exports = {
     sendInvitationsController,
     handleSendInviteEvent,
+    sendBatchEmailInvites
 }

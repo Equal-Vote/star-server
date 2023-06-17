@@ -4,7 +4,7 @@ import { permissions } from '../../../domain_model/permissions';
 import { expectPermission } from "./controllerUtils";
 import { BadRequest } from "@curveball/http-errors";
 import { ElectionRoll } from '../../../domain_model/ElectionRoll';
-import { sendBatchEmailInvites } from './sendInvitesController'
+const { sendBatchEmailInvites } = require('./sendInvitesController')
 
 var ElectionsModel = ServiceLocator.electionsDb();
 var ElectionRollModel = ServiceLocator.electionRollDb();
