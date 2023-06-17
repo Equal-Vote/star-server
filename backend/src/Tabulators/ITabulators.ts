@@ -32,6 +32,22 @@ export interface summaryData {
     nUnderVotes: number,
     nBulletVotes: number
 }
+
+export interface allocatedScoreSummaryData {
+    candidates: candidate[],
+    totalScores: totalScore[],
+    scoreHist: number[][],
+    preferenceMatrix: number[][],
+    pairwiseMatrix: number[][],
+    nValidVotes: number,
+    nInvalidVotes: number,
+    nUnderVotes: number,
+    nBulletVotes: number,
+    splitPoints: number[],
+    spentAboves: number[], 
+    weight_on_splits: number[],
+    weightedScoresByRound: number[][]
+}
 export interface approvalSummaryData {
     candidates: candidate[],
     totalScores: totalScore[],
@@ -82,6 +98,13 @@ export interface results {
     other: candidate[],
     roundResults: roundResults[],
     summaryData: summaryData,
+}
+export interface allocatedScoreResults {
+    elected: candidate[],
+    tied: candidate[][],
+    other: candidate[],
+    roundResults: roundResults[],
+    summaryData: allocatedScoreSummaryData,
 }
 
 export interface approvalResults {

@@ -46,14 +46,16 @@ const Choices = ({ rowIndex, onClick, score, columns }) =>
     ));
 
 // Represents the row of all data for a single candidate
-const Row = ({ rowIndex, candidate, score, onClick, columns }) => {
+const Row = ({ rowIndex, candidate, onClick, columns }) => {
   const [expanded, setExpanded] = useState(false)
   const hasExpandedData = HasExpandedData(candidate)
+
+  // NOTE: I tried doing this in css with the :nth-child(even) pseudo class but it didn't work
   var rowColor = 'white'
   if (rowIndex % 2 == 0) {
-    rowColor = '#E3EDEF';
+    rowColor = 'var(--ballot-even-row-teal)';
   } else {
-    rowColor = 'white';
+    rowColor = 'var(--brand-white)';
   }
   return (
     <>
@@ -76,7 +78,7 @@ const Row = ({ rowIndex, candidate, score, onClick, columns }) => {
         <Choices
           key={`starChoices${rowIndex}`}
           rowIndex={rowIndex}
-          score={score}
+          score={candidate.score}
           onClick={onClick}
           columns={columns}
         />
@@ -130,7 +132,7 @@ const Row = ({ rowIndex, candidate, score, onClick, columns }) => {
 };
 
 // Represents the list of rows corresponding to the list of candidates
-const Rows = ({ candidates, scores, onClick, columns }) =>
+const Rows = ({ candidates, onClick, columns }) =>
   candidates.map((row, n) => (
     <>
       <Row
@@ -138,7 +140,6 @@ const Rows = ({ candidates, scores, onClick, columns }) =>
         key={`starRow${n}`}
         candidate={row}
         party={row.party}
-        score={scores[n]}
         onClick={(score) => onClick(n, score)}
         columns={columns}
       />
@@ -150,7 +151,7 @@ const Rows = ({ candidates, scores, onClick, columns }) =>
 const ColumnHeadings = ({starHeadings, columns, leftTitle, rightTitle, headingPrefix}) => (
   <>
   { leftTitle != '' &&
-    <Grid container alignItems="stretch" >
+    <Grid sx={{pt: 3}} container alignItems="stretch" >
       <Grid item xs={5}></Grid>
       <Grid item xs={1}>
         <Typography align='center' className="columnDescriptor">
@@ -181,7 +182,7 @@ const ColumnHeadings = ({starHeadings, columns, leftTitle, rightTitle, headingPr
 );
 
 const ScoreIcon = ({color, value}) => (
-  <div align='center' style={{width: '50px', height: '50px'}}>
+  <div align='center' style={{ position: 'relative', height: '50px'}}>
     <FaRegStar style={{color: color}} className="starIcon"/>
     <Typography className="scoreColumnHeading">
       {value}
@@ -194,7 +195,8 @@ const ScoreColumnHeadings = ({starHeadings, columns}) =>
     <Grid item xs={1}>
       { starHeadings &&
         <ScoreIcon
-          color={(n != 0)? '#B7D2D6' : '#FFFFFF'}
+          // NOTE: I tried doing this in CSS with :first-child but it didn't work
+          color={(n != 0)? 'var(--ballot-star-teal)' : 'var(--brand-white)'}
           value={columnTitle}
         />
       }
@@ -209,7 +211,6 @@ const ScoreColumnHeadings = ({starHeadings, columns}) =>
 export default function GenericBallotView({
   race,
   candidates,
-  scores,
   onClick,
   columns,
   instructions,
@@ -228,18 +229,19 @@ export default function GenericBallotView({
       <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }} className="ballot">
         <Grid container alignItems="center" justify="center" direction="column">
 
-          <Grid item style={{ padding: '0.8cm 0cm 0cm 0cm' }}>
-            <Typography align='center' gutterBottom variant="h2" component="h6" className="title">
+          <Grid item sx={{ p: 3 }}>
+            <Typography align='center' variant="h4" component="h4" className="title">
               {race.title}
             </Typography>
           </Grid>
-          <Grid item>
-            <Typography align='center' gutterBottom variant="h6" component="h6" style={{whiteSpace: 'pre-line'}}>
+          {race.description &&
+            <Grid item sx={{p:3}}>
+            <Typography align='center' variant="h6" component="h6" style={{whiteSpace: 'pre-line'}}>
               {race.description}
             </Typography>
-          </Grid>
+          </Grid>}
 
-          <Grid item xs={8} className="instructions">
+          <Grid item xs={8} sx={{ p:3, px:0 }} className="instructions">
             {instructions}
           </Grid>
 
@@ -251,14 +253,14 @@ export default function GenericBallotView({
             headingPrefix={headingPrefix}
           />
           <Divider className="rowDivider"/>
-          <Rows candidates={candidates} scores={scores} onClick={onClick} columns={columnValues}/>
+          <Rows candidates={candidates} onClick={onClick} columns={columnValues}/>
 
           <Grid item xs={10} className="footer">
             {footer}
           </Grid>
 
           { warning !== null &&
-            <Box style={{backgroundColor: '#FFFF88', marginLeft:'10%', marginRight:'10%', marginBottom:'.4cm', padding: '.2cm'}}>
+            <Box style={{backgroundColor: 'var(--brand-gold)', marginLeft:'10%', marginRight:'10%', marginBottom:'.4cm', padding: '.2cm'}}>
               <Typography>⚠️</Typography>
               <Typography style={{paddingLeft:'30px'}}>{warning}</Typography>
             </Box>

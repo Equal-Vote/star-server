@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 export default function ApprovalBallotView({
   race,
   candidates,
-  scores,
   onUpdate
 }) {
   const instructions = (
@@ -24,11 +23,10 @@ export default function ApprovalBallotView({
       key="approvalBallot"
       race={race}
       candidates={candidates}
-      scores={scores}
       columns={[1]}
       instructions={instructions}
       onClick={(row, score) => {
-        const newScores = [...scores];
+        const newScores = candidates.map(c => c.score);
         newScores[row] = newScores[row] === score ? null : score;
         onUpdate(newScores);
       }}

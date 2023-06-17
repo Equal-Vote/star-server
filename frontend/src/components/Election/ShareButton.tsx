@@ -14,6 +14,7 @@ import TwitterIcon from "@mui/icons-material/Twitter"
 import RedditIcon from "@mui/icons-material/Reddit"
 import LinkIcon from "@mui/icons-material/Link"
 import { IconButton, Menu, Tooltip, Typography } from "@mui/material";
+import { StyledButton } from "../styles";
 
 export default function ShareButton({ url, text }) {
     const [anchorElNav, setAnchorElNav] = useState(null)
@@ -66,11 +67,13 @@ export default function ShareButton({ url, text }) {
         <>
             <Tooltip title="Share">
                 {text !== null ?
-                    <Button
-                        variant='outlined'
+                    <StyledButton
+                        type='button'
+                        variant='contained'
+                        fullwidth
                         onClick={handleOpenNavMenu}>
                         {text}
-                    </Button>
+                    </StyledButton>
                     :
                     <IconButton
                         size="large"

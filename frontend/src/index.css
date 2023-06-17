@@ -1,4 +1,52 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
+* {
+  /* NOTE: these variables are named based on where they're used
+  but in the future we should consider reducing them and giving generic names*/
+
+  /* NOTE: we also have colors defined in theme.js, the colors might be moved from
+  css to theme.js in the future */
+
+  /* https://docs.google.com/presentation/d/1NSAirKzmq4YyUPB56NR3pKiRTn3W9btwnUtHi_zteeU/edit#slide=id.g827b1a2992_5_86*/
+  --ltbrand-blue: #5AC7D6FF;
+  --ltbrand-green: #87C76AFF;
+  --ltbrand-lime: #C4E44CFF;
+  --ltbrand-yellow: #FFFF54FF;
+  --ltbrand-orange: #FFA929FF;
+  --ltbrand-red: #FF6069FF;
+
+  --brand-purple: #4D2586;
+  --brand-ltblue: #2AA2B3;
+  --brand-blue: #02627c;
+  --brand-gold: #FFE156;
+  --brand-red: #EE2C53;
+  --brand-orange: #FF9900;
+  --brand-green: #60B33C;
+  --brand-black: #000000;
+  --brand-white: #FFFFFF;
+
+  /* https://docs.google.com/presentation/d/1NSAirKzmq4YyUPB56NR3pKiRTn3W9btwnUtHi_zteeU/edit#slide=id.g177cd3ac88b_0_0 */
+  --brand-gray-5: #1F1F1F; /* Charcoal used in "How does STAR Voting Work?" graphic */
+  --brand-gray-4: #666666; /* Bubbles on ballots */
+  --brand-gray-3: #999999; /* Lines separating candidates on ballot */
+  --brand-gray-2: #CCCCCC; /* Stars on STAR ballots */
+  --brand-gray-1: #ECECEC; /* Highlight for alternating candidates on ballots */
+  --brand-gray-alpha: #7B7B7B7D; /* For graying out candidates for the "How does STAR Voting Work?" Graphic (has transparency)
+
+  /* teal / blue */
+  --ballot-even-row-teal: #E3EDEF;
+  --ballot-border-teal: #B5D0D4;
+  --ballot-star-teal: #A2C4C9;
+  --logo-teal: #76A5AF;
+  --ballot-bubble-hover-ltblue: #B5EBEB;
+  --login-form-border-blue: #4682B4; /*steelblue*/
+  --ballot-race-icon-teal: #66A0AA; /* NOTE: I tried reusing #E3EDEF from the ballot, but it was too light so I darkened it*/
+
+  /* grays */
+  --ballot-bubble-border-gray: #666666;
+  --ballot-bubble-gray: #777879;
+  --ballot-bubble-filled-text-gray: #808080;
+  --result-row-gray: #DADADA;
+  --dark-bkg-gray: #1F1F1F;
+}
 
 body {
   margin: 0;
@@ -13,121 +61,36 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-/* 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
-body {
-  font-family: 'Poppins', sans-serif;
-}
-
-.container {
-  max-width: max-content;
-  min-width: 400px;
-  margin: 30px auto;
-  overflow: auto;
-  min-height: 300px;
-  border: 1px solid steelblue;
-  padding: 30px;
-  border-radius: 5px;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.btn {
-  display: inline-block;
-  background: #000;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  margin: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 15px;
-  font-family: inherit;
-}
-
-.btn:focus {
-  outline: none;
-}
-
-.btn:active {
-  transform: scale(0.98);
-}
-
-.btn-block {
-  display: block;
+.resultTable{
   width: 100%;
+  border: 1px solid black;
+  margin: 0;
+  border-collapse: collapse;
 }
 
-.cell {
-  background: #ffffff;
-  margin: 5px;
-  padding: 10px 20px;
+.resultTable thead {
+  border: 2px solid black;
 }
 
-.cell.reminder {
-  border-left: 5px solid green;
-}
-
-.cell h3 {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-/* .matrix table th, td, thead, tr, tbody {
-  border: 1px solid rgba(100, 100, 100, 0.39);
-} 
-.matrix th, td {
-  border: 1px solid rgba(100, 100, 100, 0.39);
-}
-.matrix th,thead,tr,tbody {
-  text-align: center;
-}
-.matrix th {
-  text-align: center;
-  overflow-wrap: break-word;
-}
-.matrix thead {
-  text-align: center;
-}
-.matrix tr {
-  text-align: center;
-}
-.matrix tbody {
-  text-align: center;
-}
-.matrix table {
-  table-layout: fixed;  
-}
-*/
-
-.matrix th {
-  min-width:60px;
-  text-align: center;
-}
-.matrix td {
+.resultTable th {
+  min-width: 100px;
   text-align: center;
 }
 
+.resultTable td:not(:first-child) {
+  text-align: center;
+  border: 1px solid black;
+}
 
-td.highlight {
-  background: #dadada;
+.resultTable .highlight {
+  background: var(--brand-gold);
 }
 
 .login-form {
   margin-bottom: 40px;
   padding-right: 30px;
-  border-right: 2px solid steelblue;
+  border-right: 2px solid var(--login-form-border-blue);
 }
 
 .register-form {
@@ -176,308 +139,17 @@ td.highlight {
   flex: 2;
   height: 20px;
 }
-/*
-footer {
-  margin-top: 30px;
-  text-align: center;
-}
-
-
-
-
-body {
-  background-color: rgb(255, 255, 255);
-  color: rgb(0, 0, 0);
-  font-family: Montserrat;
-  text-align: left;
-  padding: 0;
-}
-.App {
-  color: white;
-}
-.rotate {
-  transform: rotate(-3.5deg);
-}
-.unrotate {
-  transform: rotate(3.5deg);
-}
-.banner {
-  height: 100px;
-  margin-bottom: 20px;
-}
-
-.banner > div {
-  transform: rotate(-3.5deg);
-  position: absolute;
-  top: -40px;
-  left: -120px;
-  width: 2000px;
-  height: 90px;
-  background-color: #ee2c53;
-  padding-left: 150px;
-  padding-top: 0em;
-  margin: 0em 0em 0em 2em;
-}
-.banner h1 {
-  position: absolute;
-  left: 230px;
-  top: 0px;
-  margin: 0;
-  padding: 0;
-  font-size: 48px;
-}
-.banner img {
-  position: relative;
-  left: -55px;
-  top: -15px;
-}
-.mainmenu {
-  z-index: 0;
-  position: absolute;
-  top: 55px;
-  left: 210px;
-  font-size: 20px;
-}
-.mainmenu > div {
-  display: inline-block;
-  margin-left: 1em;
-  cursor: pointer;
-  padding: 4px;
-}
-
-a {
-  font-weight: bold;
-  text-decoration: none;
-}
-a:hover,
-.link:hover,
-.mainmenu > div:hover,
-.mainmenu > div.selected:hover,
-button:hover,
-button.primary:hover {
-  background-color: #ff9900;
-  color: black;
-}
-.mainmenu > div.selected {
-  font-weight: bold;
-  color: #ee2c53;
-  background-color: #ffd956;
-}
-
-.help {
-  margin: 0em 2em 2em 1em;
-  max-width: 400px;
-  background-color: #ffd956;
-  color: black;
-  padding: 2em 2em 2em 3em;
-}
-.help .close {
-  float: right;
-  margin-top: -20px;
-  margin-right: -20px;
-  padding: 8px;
-  font-size: 20px;
-  cursor: pointer;
-}
-.help .close:hover {
-  background-color: #ff9900;
-}
-
-.help h1 {
-  font-size: 2.5em;
-}
-h1 {
-  padding: 0px 0px 4px 0px;
-  margin: 0px;
-  font-size: 1.5em;
-}
-h2 {
-  padding: 0px 0px 2px 0px;
-  margin: 0px;
-  font-size: 1.25em;
-  text-align: center;
-}
-h3 {
-  padding: 0px 0px;
-  margin: 0px 0.2em 0.1em 0px;
-  font-size: 1em;
-}
-.wrapper {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: left;
-}
-.wrapper .star {
-  color: white;
-  background: #2aa2b3;
-  padding: 0.5em 0.5em;
-  border-radius: 3px;
-  width: 100%;
-}
-.wrapper .star > div {
-  background: white;
-  margin: 0em 0.5em 1em 0.5em;
-  padding: 0em 0em 0em 0em;
-  margin-bottom: 0.5em;
-  color: black;
-  font-weight: bold;
-}
-
-.wrapper .star h1:hover {
-  /* color: blue; 
-  cursor: default;
-}
-
-.tight {
-  margin: 0;
-  padding: 0;
-  color: #007500;
-}
-.fullwidth {
-  width: 100%;
-}
-.center {
-  text-align: center;
-  margin: auto;
-}
-
-.support {
-  margin-top: 2px;
-  height: 1.25em;
-}
-
-.editmode textarea {
-  width: 98%;
-  height: 65vh;
-  font-size: 14px;
-}
-
-.editmode input {
-  width: 98%;
-  font-size: 16px;
-}
-
-button {
-  font-size: 1em;
-  background-color: #2aa2b3;
-  border: none;
-  text-decoration: none;
-  margin-left: 1em;
-  padding: 0.25em 1em;
-}
-
-button.primary {
-  font-size: 1.5em;
-  background-color: #ee2c53;
-  color: white;
-}
-
-.editmode h2 {
-  margin-top: 0.5em;
-  text-align: left;
-}
-
-.right {
-  float: right;
-}
-
-.link,
-.link:visited {
-  color: blue;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.menu {
-  margin-top: 4px;
-}
-
-.smaller {
-  font-size: 80%;
-}
-.larger {
-  font-size: 120%;
-}
-.topline {
-  margin: 0em 2em 2em 0em;
-}
-.topline > div {
-  background: #ff5252;
-  padding: 1em;
-}
-
-.topline > div > div {
-  background: white;
-  padding: 1em;
-}
-
-.topline table {
-  border-collapse: collapse;
-}
-.topline th {
-  text-align: left;
-  padding: 4px 8px;
-  background-color: white;
-  color: black;
-}
-.topline td {
-  text-align: right;
-  padding: 4px 6px;
-}
-.topline tr.selected > th,
-h2.selected {
-  background: #f9a602;
-}
-
-.votetotal {
-  margin-top: -1em;
-  color: black;
-  padding: 0em;
-}
-.votetotal h3 {
-  margin: 0px 0px 0px 1.5em;
-}
-.votetotal ul {
-  margin: 0px 0px 0px 1em;
-}
-.compare {
-  height: 49px;
-  font-size: 1.25em;
-}
-.Win {
-  background-color: #008000;
-  color: white;
-}
-.Lose {
-  background-color: #800000;
-  color: white;
-}
-.self {
-  background: #f9a602;
-  color: black;
-}
-.h2h {
-  font-size: 0.75em;
-  font-weight: normal;
-}
-.oppose {
-  padding: 0px 6px 0px 6px;
-  color: black;
-  background-color: white;
-}
 
 /* Ballot */
 .ballot {
   text-align: center;
   font-size: 1em;
   background-color: white;
-  color: black;
+  color: var(--brand-black);
 }
 
 .ballot .instructions {
   font-family: Verdana, Geneva, sans-serif;
-  font-size: 12px;
-  padding: 0cm 2cm .2cm 2cm;
 }
 
 .ballot .footer {
@@ -502,11 +174,16 @@ h2.selected {
 .ballot .rowDivider {
   width: 100%;
   height: 2px;
-  background-color: #B5D0D4;
+  background-color: var(--ballot-border-teal);
 }
 
 .ballot .row{
-  padding: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.ballot .row hr~div:nth-child(even){
+  background-color: var(--ballot-even-row-teal);
 }
 
 .ballot .rowHeading{
@@ -522,15 +199,21 @@ h2.selected {
 
 .ballot .scoreColumnHeading{
   position: absolute;
-  transform: translate(170%,52%);
+  transform: translate(-50%, -45%);
   font-family: 'Archivo Black';
   font-size: 1.02em;
-  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
 }
 
 .ballot .starIcon {
   position: absolute;
-  transform: translate(-50%,15%);
+  transform: translate(-50%, -50%);
+  height: 100%;
+  width: 100%;
+  top: 50%;
+  left: 50%;
   font-size: 2.2em;
 }
 
@@ -541,12 +224,11 @@ h2.selected {
   height: 1.9em;
   width: 1.9em;
   font-size: .8em;
-  border: 2px solid #666666;
+  border: 2px solid var(--ballot-bubble-border-gray);
   border-radius: 50%;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   cursor: pointer;
-  margin-left: .4em; /* Added some margin to make it align a bit better with the column headings */ 
   text-align: center;
   justify-content: center;
 }
@@ -558,17 +240,17 @@ h2.selected {
 
 .circle:hover,
 .oval:hover {
-  background-color: rgb(181, 235, 235);
+  background-color: var(--ballot-bubble-hover-ltblue);
   transition: background-color 200ms;
 }
 
 .error .oval.filled:hover {
-  background-color: red !important;
+  background-color: var(--brand-red) !important;
 }
 
 .circle.filled:hover {
-  background-color: black;
-  color: #808080;
+  background-color: var(--brand-black);
+  color: var(--ballot-bubble-filled-text-gray);
   transition: color 200ms;
 }
 
@@ -577,8 +259,83 @@ h2.selected {
   text-align: center;
   justify-content: center;
   font-family: 'Archivo Black';
-  font-size: .93em;
+  font-size: .95em;
   font-weight: bold;
 }
 
+/* Results */
+.resultWidget {
+  display: flex;
+  flex-direction: column;
+}
 
+.resultWidget .scoreRound {
+  background-color: #2AA2B3;
+}
+
+.resultWidget .runoffRound {
+  background-color: #1F1F1F;
+}
+
+.resultWidget h2{
+  align-self: center;
+}
+
+.resultWidget .resultStar{
+  color: #FFD956;
+}
+
+.resultWidget .arrow{
+  position: relative;
+  top: .35rem;
+  left: .25rem;
+}
+
+.resultWidget .votingMethod{
+  align-self: flex-end;
+  color: #808080;
+  font-size: .8rem;
+}
+
+.resultWidget .graphs p{
+  margin: 0;
+}
+
+.resultWidget .graphs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.resultWidget .graph {
+  width: 90%;
+  padding: 18px;
+  padding-top: 0px; /* the margin from the h3 tags is enough */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.resultViewer .detailedWidgets{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.statsWidget strong{
+  font-size: 1.3rem;
+  color: var(--brand-blue);
+}
+
+.recharts-wrapper{
+  padding: 0;
+}
+
+/* HACK: The log statements were widening the display and this is a quick fix */
+.detailedSteps{
+  max-width: 550px;
+}

@@ -11,27 +11,27 @@ const ViewElectionResults = ({ election }) => {
     const { data, isPending, error, makeRequest: getResults } = useFetch(`/API/ElectionResult/${id}`, 'get')
     useEffect(() => { getResults() }, [])
 
-    console.log(data)
     return (
         <Box
             display='flex'
             justifyContent="center"
             alignItems="center"
-            sx={{ width: '100%' }}>
-            <Paper elevation={3} sx={{p:2,maxWidth:1200}}  >
-                <Typography variant="h3" component="h3">
-                    {election.state === 'closed' ? 'OFFICIAL RESULTS: ' : 'PRELIMINARY RESULTS: '}
+            sx={{ width: '100%', textAlign: 'center' }}>
+            <Paper elevation={3} sx={{p:2,maxWidth:1200, backgroundColor:'brand.white'}}  >
+                <Typography variant="h3" component="h3" sx={{marginBottom: 4}}>
+                    {election.state === 'closed' ? 'OFFICIAL RESULTS' : 'PRELIMINARY RESULTS'}
                 </Typography>
                 <Typography variant="h4" component="h4">
-                    {election.title}
+                    Election Name:<br/>{election.title}
                 </Typography>
                 {isPending && <div> Loading Election... </div>}
                 {data?.Results.map((result, race_index) => (
                     <>
                         {election.races.length > 1 &&
-                            <h2>
-                                {`${election.races[race_index].title}`}
-                            </h2>}
+                            <Typography variant="h2">
+                                {`Race ${race_index}: ${election.races[race_index].title}`}
+                            </Typography>
+                    }
                         <Results race={election.races[race_index]} result={result} />
                         {race_index < election.races.length - 1 && <Divider />}
                     </>

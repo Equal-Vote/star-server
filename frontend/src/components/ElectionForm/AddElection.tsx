@@ -3,11 +3,17 @@ import useFetch from '../../hooks/useFetch';
 import ElectionForm from "./ElectionForm";
 import Container from '@mui/material/Container';
 import { useNavigate } from "react-router"
-const AddElection = ({ authSession }) => {
+
+import { IAuthSession } from '../../hooks/useAuthSession';
+import { Election } from '../../../../domain_model/Election';
+
+
+
+const AddElection = ({ authSession }: {authSession: IAuthSession}) => {
 
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = useFetch('/API/Elections', 'post')
-    const onAddElection = async (election) => {
+    const onAddElection = async (election: Election) => {
         // calls post election api, throws error if response not ok
         const newElection = await postElection(
             {
@@ -24,7 +30,7 @@ const AddElection = ({ authSession }) => {
         < >
             {!authSession.isLoggedIn() && <div> Must be logged in to create elections </div>}
             {authSession.isLoggedIn() &&
-                <ElectionForm authSession={authSession} onSubmitElection={onAddElection} prevElectionData={null} submitText='Create Election' disableSubmit={isPending} />
+                <ElectionForm authSession={authSession} onSubmitElection={onAddElection} prevElectionData={null} submitText='Save Election' disableSubmit={isPending} />
             }
             {isPending && <div> Submitting... </div>}
         </>

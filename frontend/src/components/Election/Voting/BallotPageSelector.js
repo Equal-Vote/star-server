@@ -5,13 +5,13 @@ import StarBallotView from "./StarBallotView";
 import PluralityBallotView from "./PluralityBallotView.js";
 import RankedBallotView from "./RankedBallotView.js";
 import ApprovalBallotView from "./ApprovalBallotView.js";
+import StarPRBallotView from "./StarPRBallotView";
 
 export default function BallotPageSelector({page, races, onUpdate}) {
-  var race, candidates, scores; 
+  var race, candidates; 
   if(page.type == "ballot"){
     race = races[page.race_index];
-    candidates = races[page.race_index].candidates;
-    scores = page.scores;
+    candidates = page.candidates;
   }
   // TODO: it would be more scalable if we selected the class from a dictionary, but I'm not sure how to do that in react
   return (
@@ -21,9 +21,15 @@ export default function BallotPageSelector({page, races, onUpdate}) {
         {page.voting_method == 'STAR' &&
           <>
           The next race uses STAR Voting, here's how it works
-          <img style={{maxWidth: '100%'}} src="https://assets.nationbuilder.com/unifiedprimary/pages/227/features/original/How_Does_STAR_Voting_Work___04_17_23.png?1681784554"/>
+          <img style={{maxWidth: '100%'}} src="/images/star_info.png"/>
           <hr/>
           <iframe width="480" height="270" src="https://www.youtube.com/embed/3-mOeUXAkV0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          </>
+        }
+        {page.voting_method == 'STAR_PR' &&
+          <>
+          The next race uses Proportional STAR Voting, here's how it works
+          <img style={{maxWidth: '100%'}} src="/images/star_pr_info.png"/>
           </>
         }
         {page.voting_method == 'Plurality' &&
@@ -60,7 +66,13 @@ export default function BallotPageSelector({page, races, onUpdate}) {
           <StarBallotView
             race={race}
             candidates={candidates}
-            scores={scores}
+            onUpdate={onUpdate}
+            />
+        }
+        {page.voting_method == 'STAR_PR' &&
+          <StarPRBallotView
+            race={race}
+            candidates={candidates}
             onUpdate={onUpdate}
             />
         }
@@ -68,7 +80,6 @@ export default function BallotPageSelector({page, races, onUpdate}) {
           <PluralityBallotView
             race={race}
             candidates={candidates}
-            scores={scores}
             onUpdate={onUpdate}
             />
         }
@@ -76,7 +87,6 @@ export default function BallotPageSelector({page, races, onUpdate}) {
           <RankedBallotView
             race={race}
             candidates={candidates}
-            scores={scores}
             onUpdate={onUpdate}
             />
         }
@@ -84,7 +94,6 @@ export default function BallotPageSelector({page, races, onUpdate}) {
           <ApprovalBallotView
             race={race}
             candidates={candidates}
-            scores={scores}
             onUpdate={onUpdate}
             />
         }
