@@ -13,6 +13,7 @@ import { Typography } from "@mui/material";
 const ViewElectionRolls = ({ election, permissions }) => {
     const { id } = useParams();
     const { data, isPending, error, makeRequest: fetchRolls } = useFetch(`/API/Election/${id}/rolls`, 'get')
+    const sendInvites = useFetch(`/API/Election/${id}/sendInvites`, 'post')
     useEffect(() => { fetchRolls() }, [])
     const [isEditing, setIsEditing] = useState(false)
     const [addRollPage, setAddRollPage] = useState(false)
@@ -28,6 +29,11 @@ const ViewElectionRolls = ({ election, permissions }) => {
         setEditedRoll(null)
         fetchRolls()
     }
+
+    const onSendInvites = () => {
+        sendInvites.makeRequest()
+    }
+
     console.log(data)
     return (
         <Container >
@@ -43,6 +49,7 @@ const ViewElectionRolls = ({ election, permissions }) => {
                     <PermissionHandler permissions={permissions} requiredPermission={'canAddToElectionRoll'}>
                         <Button variant='outlined' onClick={() => setAddRollPage(true)} > Add Voters </Button>
                     </PermissionHandler>
+                    <Button variant='outlined' onClick={() => onSendInvites()} > Send Invites </Button>
                     <TableContainer component={Paper}>
                         <Table style={{ width: '100%' }} aria-label="simple table">
                             <TableHead>

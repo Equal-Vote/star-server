@@ -194,7 +194,7 @@ export default class ElectionRollDB implements IElectionRollStore{
 
     update(election_roll: ElectionRoll, ctx:ILoggingContext, reason:string): Promise<ElectionRoll | null> {
         Logger.debug(ctx, `ElectionRollDB.updateRoll`);
-        var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state=$3, history=$4, registration=$5, email_data = $6, WHERE election_id = $7 AND voter_id=$8`;
+        var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state=$3, history=$4, registration=$5, email_data=$6 WHERE election_id = $7 AND voter_id=$8`;
         Logger.debug(ctx, sqlString);
         Logger.debug(ctx, "", election_roll)
         var p = this._postgresClient.query({

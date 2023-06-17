@@ -47,7 +47,7 @@ const sendInvitationsController = async (req: any, res: any, next: any) => {
     const electionRollFiltered = electionRoll.filter(roll => {
         if (!roll.email_data) return true
         if (!roll.email_data.inviteResponse) return true
-        if (roll.email_data.inviteResponse.statusCode > 400) return true
+        if (!(roll.email_data.inviteResponse.statusCode < 400)) return true
         return false
     })
 
@@ -99,15 +99,21 @@ async function handleSendInviteEvent(job: { id: string; data: SendInviteEvent; }
         electionRoll.email_data = {}
     }
     electionRoll.email_data.inviteResponse = emailResponse
-    if (electionRoll.history == null){
+    if (electionRoll.history == null) {
         electionRoll.history = [];
     }
     electionRoll.history.push({
-        action_type:"email invite sent",
+        action_type: "email invite sent",
         actor: event.sender,
-        timestamp: Date.now() ,
+        timestamp: Date.now(),
     });
-    await ElectionRollModel.update(electionRoll, ctx, `User submits a ballot`);
+    try {
+        await ElectionRollModel.update(electionRoll, ctx, `User submits a ballot`);
+    } catch (err: any) {
+        const msg = `Could not update election roll`;
+        Logger.error(ctx, `${msg}: ${err.message}`);
+        throw new InternalServerError(msg)
+    }
 }
 
 module.exports = {
