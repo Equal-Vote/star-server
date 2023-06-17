@@ -31,7 +31,8 @@ export default class ElectionRollDB implements IElectionRollStore{
             state           VARCHAR NOT NULL,
             history         json,
             registration    json,
-            precinct        VARCHAR
+            precinct        VARCHAR,
+            email_data      json
           );
         `;
         Logger.debug(appInitContext, query);
@@ -39,11 +40,18 @@ export default class ElectionRollDB implements IElectionRollStore{
         return p.then((_: any) => {
             //removes pgboss archive, only use in dev 
             // var cleanupQuerry = `
-            // DROP TABLE IF EXISTS archive`;
+            // DELETE FROM pgboss.archive`;
             // return this._postgresClient.query(cleanupQuerry).catch((err:any) => {
             //     console.log("err cleaning up db: " + err.message);
             //     return err;
             // });
+            var credentialQuery = `
+            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS email_data json
+            `;
+            return this._postgresClient.query(credentialQuery).catch((err: any) => {
+                console.log("err adding email_data column to DB: " + err.message);
+                return err;
+            });
         }).then((_:any)=> {
             return this;
         });
@@ -70,8 +78,9 @@ export default class ElectionRollDB implements IElectionRollStore{
             electionRoll.state,
             JSON.stringify(electionRoll.history),
             JSON.stringify(electionRoll.registration),
-            electionRoll.precinct]))
-        var sqlString = format(`INSERT INTO ${this._tableName} (voter_id,election_id,email,ip_address,submitted,state,history,registration,precinct)
+            electionRoll.precinct,
+            JSON.stringify(electionRoll.email_data)]))
+        var sqlString = format(`INSERT INTO ${this._tableName} (voter_id,election_id,email,ip_address,submitted,state,history,registration,precinct,email_data)
         VALUES %L;`, values);
         Logger.debug(ctx, sqlString)
         Logger.debug(ctx, values)
@@ -185,13 +194,13 @@ export default class ElectionRollDB implements IElectionRollStore{
 
     update(election_roll: ElectionRoll, ctx:ILoggingContext, reason:string): Promise<ElectionRoll | null> {
         Logger.debug(ctx, `ElectionRollDB.updateRoll`);
-        var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state=$3, history=$4, registration=$5 WHERE election_id = $6 AND voter_id=$7`;
+        var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state=$3, history=$4, registration=$5, email_data = $6, WHERE election_id = $7 AND voter_id=$8`;
         Logger.debug(ctx, sqlString);
         Logger.debug(ctx, "", election_roll)
         var p = this._postgresClient.query({
             text: sqlString,
 
-            values: [election_roll.ballot_id, election_roll.submitted, election_roll.state, JSON.stringify(election_roll.history), JSON.stringify(election_roll.registration), election_roll.election_id, election_roll.voter_id]
+            values: [election_roll.ballot_id, election_roll.submitted, election_roll.state, JSON.stringify(election_roll.history), JSON.stringify(election_roll.registration), JSON.stringify(election_roll.email_data), election_roll.election_id, election_roll.voter_id]
 
         });
         return p.then((response: any) => {

@@ -22,6 +22,7 @@ export type SendInviteEvent = {
     election: Election,
     url: string,
     electionRoll: ElectionRoll,
+    sender: string,
 }
 
 const sendInvitationsController = async (req: any, res: any, next: any) => {
@@ -51,7 +52,7 @@ const sendInvitationsController = async (req: any, res: any, next: any) => {
     })
 
     await sendBatchEmailInvites(req, electionRollFiltered, election)
-    
+
     return res.json({})
 }
 
@@ -66,6 +67,7 @@ async function sendBatchEmailInvites(req: any, electionRoll: ElectionRoll[], ele
                 election: election,
                 url: url,
                 electionRoll: roll,
+                sender: req.user.email
             }
         )
     })
@@ -85,13 +87,27 @@ async function sendBatchEmailInvites(req: any, electionRoll: ElectionRoll[], ele
 async function handleSendInviteEvent(job: { id: string; data: SendInviteEvent; }): Promise<void> {
     const event = job.data;
     const ctx = Logger.createContext(event.requestId);
-    const electionRoll = event.electionRoll
+    const electionRoll = await ElectionRollModel.getByVoterID(event.election.election_id, event.electionRoll.voter_id, ctx)
+    if (!electionRoll) {
+        //this should hopefully never happen
+        Logger.error(ctx, `Could not find voter ${event.electionRoll.voter_id}`);
+        throw new InternalServerError('Could not find voter');
+    }
     const invites = Invites(event.election, [electionRoll], event.url)
     const emailResponse = await EmailService.sendEmails(invites)
     if (!electionRoll.email_data) {
         electionRoll.email_data = {}
     }
     electionRoll.email_data.inviteResponse = emailResponse
+    if (electionRoll.history == null){
+        electionRoll.history = [];
+    }
+    electionRoll.history.push({
+        action_type:"email invite sent",
+        actor: event.sender,
+        timestamp: Date.now() ,
+    });
+    await ElectionRollModel.update(electionRoll, ctx, `User submits a ballot`);
 }
 
 module.exports = {
