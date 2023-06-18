@@ -28,11 +28,11 @@ const ViewElectionResults = ({ election }) => {
                 {data?.Results.map((result, race_index) => (
                     <>
                         {election.races.length > 1 &&
-                            <Typography variant="h2">
-                                {`Race ${race_index}: ${election.races[race_index].title}`}
+                            <Typography variant="h5">
+                                {`Race ${race_index+1}: ${election.races[race_index].title}`}
                             </Typography>
                     }
-                        <Results race={election.races[race_index]} result={result} />
+                        <Results raceIndex={race_index} race={election.races[race_index]} result={result} />
                         {race_index < election.races.length - 1 && <Divider />}
                     </>
                 ))}
