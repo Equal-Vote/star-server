@@ -154,6 +154,7 @@ const Sandbox = () => {
                     {isPending && <div> Loading Results... </div>}
                     {data && (
                         <Results
+                            raceIndex='0'
                             result={data.Results}
                             race={{
                                 candidates: candidates.split(',').map((candidate) => [{ candidate_name: candidate }]),

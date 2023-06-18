@@ -3,7 +3,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Grid, IconButton, Paper, Typography } from '@mui/material'
 import React, { useState, useRef, useEffect }  from 'react'
 
-const DetailedResultsExpander = ({children, defaultSelectedIndex}) => {
+const DetailedResultsExpander = ({children, defaultSelectedIndex, raceIndex}) => {
     const [viewDetails, setViewDetails] = useState(false);
     const [widgetIndex, setWidgetIndex] = useState(defaultSelectedIndex);
 
@@ -39,7 +39,7 @@ const DetailedResultsExpander = ({children, defaultSelectedIndex}) => {
     return <>
         <div style={{display: 'flex', flexDirection: 'row', gap: 10, justifyContent: 'center', cursor: 'pointer', alignItems: 'center'}} onClick={() => {
             if(!viewDetails){
-                scrollToElement(document.querySelector('.detailedWidgets'))
+                scrollToElement(document.querySelector(`.detailedWidgets-${raceIndex}`))
             }
             setViewDetails(!viewDetails)
         }}>
@@ -47,12 +47,12 @@ const DetailedResultsExpander = ({children, defaultSelectedIndex}) => {
             {!viewDetails && <ExpandMore />}
             {viewDetails && <ExpandLess />}
         </div>
-        <div className="detailedWidgets">
+        <div className={`detailedWidgets-${raceIndex}`}>
             {viewDetails && children.map((child,i) => (
                 <Paper elevation={5} sx={{backgroundColor: 'brand.white', padding: '8px'}} >
-                    <Grid container className='resultsDetailSection' alignItems="center" style={{cursor: 'pointer'}} onClick={() => {
+                    <Grid container className={`resultDetailSection-${raceIndex}`} alignItems="center" style={{cursor: 'pointer'}} onClick={() => {
                         if((widgetIndex != i)){
-                            scrollToElement(document.querySelectorAll('.resultsDetailSection')[i].parentNode);
+                            scrollToElement(document.querySelectorAll(`.resultDetailSection-${raceIndex}`)[i].parentNode);
                         }
                         setWidgetIndex((widgetIndex == i)? -1 : i);
                     }}>

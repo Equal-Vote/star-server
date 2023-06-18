@@ -12,11 +12,11 @@ import STARResultTableWidget from "./STARResultTableWidget";
 import STARResultStatsWidget from "./STARResultStatsWidget";
 import STARResultDetailedStepsWidget from "./STARResultDetailedStepsWidget";
 
-function STARResultViewer({ results, rounds }) {
+function STARResultViewer({ raceIndex, results, rounds }) {
   return (
     <div className="resultViewer">
       <STARResultSummaryWidget results={results} rounds={rounds}/>
-      <DetailedResultsExpander defaultSelectedIndex={-1}>
+      <DetailedResultsExpander raceIndex={raceIndex} defaultSelectedIndex={-1}>
          <STARResultTableWidget title="Election Results" results={results} rounds={rounds}/>
          {
           //<STARResultStatsWidget title="Statistics" results={results}/>
@@ -294,7 +294,7 @@ function PRResultsViewer({ result }) {
   )
 }
 
-export default function Results({ race, result }) {
+export default function Results({ raceIndex, race, result }) {
   return (
     <div>
       <div className="flexContainer">
@@ -304,7 +304,7 @@ export default function Results({ race, result }) {
           {race.voting_method === "STAR" &&
             race.num_winners == 1 &&
             <>
-              <STARResultViewer results={result} rounds={1} />
+              <STARResultViewer raceIndex={raceIndex} results={result} rounds={1} />
             </>}
 
           {race.voting_method === "STAR" && race.num_winners > 1 &&
