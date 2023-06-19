@@ -81,6 +81,7 @@ const AddCandidate = ({ onEditCandidate, candidate, index }: CandidateProps) => 
         }
     }
 
+
     return (
         <>
             <Grid item xs={10} sx={{ display: "flex", alignItems: "center", m: 0, p: 1 }}>
@@ -120,106 +121,31 @@ const AddCandidate = ({ onEditCandidate, candidate, index }: CandidateProps) => 
                     </Button>
                 </Grid>}
             {editCandidate &&
-                <>
-                    <Grid item xs={10} sx={{ m: 0, p: 1, pl: 3 }}>
-                        <TextField
-                            id="bio"
-                            name="bio"
-                            label="Bio"
-                            type="text"
-                            multiline
-                            fullWidth
-                            value={candidate.bio}
-                            sx={{
-                                m: 0,
-                                p: 0,
-                                boxShadow: 2,
-                            }}
-                            onChange={(e) => onApplyEditCandidate((candidate) => { candidate.bio = e.target.value })}
-                        />
-                    </Grid>
-                    <Grid item xs={10} sx={{ m: 0, p: 1, pl: 3 }}>
-                        <TextField
-                            id="long-name"
-                            name="long name"
-                            label="Full Name"
-                            type="text"
-                            fullWidth
-                            value={candidate.full_name}
-                            sx={{
-                                m: 0,
-                                p: 0,
-                                boxShadow: 2,
-                            }}
-                            onChange={(e) => onApplyEditCandidate((candidate) => { candidate.full_name = e.target.value })}
-                        />
-                    </Grid>
-                    <Grid item xs={10} sx={{ m: 0, p: 1, pl: 3}}>
-                        <TextField
-                            id="candidate url"
-                            name="candidate url"
-                            label="Candidate URL"
-                            type="url"
-                            fullWidth
-                            value={candidate.candidate_url}
-                            sx={{
-                                m: 0,
-                                p: 0,
-                                boxShadow: 2,
-                            }}
-                            onChange={(e) => onApplyEditCandidate((candidate) => { candidate.candidate_url = e.target.value })}
-                        />
-                    </Grid>
-                    <Grid item xs={10} sx={{ m: 0, p: 1, pl: 3 }}>
-                        <TextField
-                            id="Party"
-                            name="Party"
-                            label="Party"
-                            type="text"
-                            fullWidth
-                            value={candidate.party}
-                            sx={{
-                                m: 0,
-                                p: 0,
-                                boxShadow: 2,
-                            }}
-                            onChange={(e) => onApplyEditCandidate((candidate) => { candidate.party = e.target.value })}
-                        />
-                    </Grid>
-                    <Grid item xs={10} sx={{ m: 0, p: 1, pl: 3 }}>
-                        <TextField
-                            id="party url"
-                            name="party url"
-                            label="Party URL"
-                            type="url"
-                            fullWidth
-                            value={candidate.partyUrl}
-                            sx={{
-                                m: 0,
-                                p: 0,
-                                boxShadow: 2,
-                            }}
-                            onChange={(e) => onApplyEditCandidate((candidate) => { candidate.partyUrl = e.target.value })}
-                        />
-                    </Grid>
+                <Grid item xs={12} sx={{position: 'relative', display: 'flex', flexDirection: {sm: 'row', xs: 'column'}, justifyContent: 'space-between', alignItems: 'top'}}>
+                    <Box>
                     <Grid item xs={12} sx={{ m: 0, p: 1, pl: 3}}>
                         <Typography variant="h6" component="h6">
                             Candidate Photo
                         </Typography>
                     </Grid>
                     {!candidatePhotoFile &&
-                        <Grid item xs={10} md={5} sx={{ display: "flex", alignItems: "center", m: 0, p: 1, pl: 3 }}>
+                        <Grid className={candidate.photo_filename? 'filledPhotoContainer' : 'emptyPhotoContainer'} item xs={10} md={5} sx={{ display: "flex", alignItems: "center", m: 0, p: 1, pl: 3 }}>
+                            {/* NOTE: setting width in px is a bad habit, but I change the flex direction to column on smaller screens to account for this */}
                             <Box
                                 display={'flex'}
                                 flexDirection={'column'}
                                 justifyContent={'center'}
                                 alignItems={'center'}
                                 height={'200px'}
+                                minWidth={'200px'} 
                                 border={'4px dashed rgb(112,112,112)'}
                                 sx={{ p: 1 }}
                                 onDragOver={handleDragOver}
                                 onDrop={handleOnDrop}>
-                                <Typography variant="h6" component="h6">
+                                {candidate.photo_filename &&
+                                    <img src={candidate.photo_filename} style={{position: 'absolute', width: 200, height: 200}} />
+                                }
+                                <Typography variant="h6" component="h6" sx={{m: 0}}>
                                     Drag and Drop
                                 </Typography>
                                 <Typography variant="h6" component="h6">
@@ -232,18 +158,11 @@ const AddCandidate = ({ onEditCandidate, candidate, index }: CandidateProps) => 
                                     ref={inputRef} />
                                 <Button variant='outlined'
                                     onClick={() => inputRef.current.click()} >
-                                    <Typography variant="h6" component="h6">
+                                    <Typography variant="h6" component="h6" sx={{m: 0}}>
                                         Select File
                                     </Typography>
                                 </Button>
-
                             </Box>
-                        </Grid>
-                    }
-
-                    {!candidatePhotoFile && candidate.photo_filename &&
-                        <Grid item xs={10} md={5} sx={{ display: "flex", alignItems: "center", m: 0, p: 1, pl: 3 }}>
-                            <img src={candidate.photo_filename} style={{ width: 200, height: 200 }} />
                         </Grid>
                     }
                     {candidatePhotoFile &&
@@ -276,7 +195,91 @@ const AddCandidate = ({ onEditCandidate, candidate, index }: CandidateProps) => 
                                 </Typography>
                             </Button>
                         </Grid>}
-                </>
+                    </Box>
+                    <Box sx={{flexGrow: 1}}>
+                    <Grid item xs={12} sx={{ m: 0, p: 1, pl: 3 }}>
+                        <TextField
+                            id="bio"
+                            name="bio"
+                            label="Bio"
+                            type="text"
+                            multiline
+                            fullWidth
+                            value={candidate.bio}
+                            sx={{
+                                m: 0,
+                                p: 0,
+                                boxShadow: 2,
+                            }}
+                            onChange={(e) => onApplyEditCandidate((candidate) => { candidate.bio = e.target.value })}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sx={{ m: 0, p: 1, pl: 3 }}>
+                        <TextField
+                            id="long-name"
+                            name="long name"
+                            label="Full Name"
+                            type="text"
+                            fullWidth
+                            value={candidate.full_name}
+                            sx={{
+                                m: 0,
+                                p: 0,
+                                boxShadow: 2,
+                            }}
+                            onChange={(e) => onApplyEditCandidate((candidate) => { candidate.full_name = e.target.value })}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sx={{ m: 0, p: 1, pl: 3}}>
+                        <TextField
+                            id="candidate url"
+                            name="candidate url"
+                            label="Candidate URL"
+                            type="url"
+                            fullWidth
+                            value={candidate.candidate_url}
+                            sx={{
+                                m: 0,
+                                p: 0,
+                                boxShadow: 2,
+                            }}
+                            onChange={(e) => onApplyEditCandidate((candidate) => { candidate.candidate_url = e.target.value })}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sx={{ m: 0, p: 1, pl: 3 }}>
+                        <TextField
+                            id="Party"
+                            name="Party"
+                            label="Party"
+                            type="text"
+                            fullWidth
+                            value={candidate.party}
+                            sx={{
+                                m: 0,
+                                p: 0,
+                                boxShadow: 2,
+                            }}
+                            onChange={(e) => onApplyEditCandidate((candidate) => { candidate.party = e.target.value })}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sx={{ m: 0, p: 1, pl: 3 }}>
+                        <TextField
+                            id="party url"
+                            name="party url"
+                            label="Party URL"
+                            type="url"
+                            fullWidth
+                            value={candidate.partyUrl}
+                            sx={{
+                                m: 0,
+                                p: 0,
+                                boxShadow: 2,
+                            }}
+                            onChange={(e) => onApplyEditCandidate((candidate) => { candidate.partyUrl = e.target.value })}
+                        />
+                    </Grid>
+                    </Box>
+                </Grid>
             }
         </>
     )
