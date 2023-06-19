@@ -85,7 +85,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
 
         return isValid
     }
-    console.log(errors)
+
     const onAddRace = () => {
         if (election.races.length === 1 && !multipleRaces) {
             // If there is only one race currently and this is the first time being run, set title required error because that field hasn't been shown yet.
