@@ -2,39 +2,12 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Grid, IconButton, Paper, Typography } from '@mui/material'
 import React, { useState, useRef, useEffect }  from 'react'
+import { scrollToElement } from '../../util';
+
 
 const DetailedResultsExpander = ({children, defaultSelectedIndex, raceIndex}) => {
     const [viewDetails, setViewDetails] = useState(false);
     const [widgetIndex, setWidgetIndex] = useState(defaultSelectedIndex);
-
-
-    function scrollToElement(e){
-        setTimeout(() => {
-            // TODO: I feel like there's got to be an easier way to do this
-            const openedSection = (e as HTMLElement);
-
-            const elemTop = document.documentElement.scrollTop + openedSection.getBoundingClientRect().top;
-            const elemBottom = elemTop + openedSection.scrollHeight;
-            const windowTop = document.documentElement.scrollTop
-            const windowBottom = windowTop + window.innerHeight;
-
-            // scroll down if the element is below the window
-            if(elemBottom > windowBottom){
-                window.scrollTo({
-                    top: elemBottom-window.innerHeight + 10,
-                    behavior: 'smooth'   
-                });
-            }
-
-            // scroll up if element is above the window
-            if(elemTop < windowTop){
-                window.scrollTo({
-                    top: elemTop,
-                    behavior: 'smooth'   
-                });
-            }
-        }, 250);
-    }
 
     return <>
         <div style={{display: 'flex', flexDirection: 'row', gap: 10, justifyContent: 'center', cursor: 'pointer', alignItems: 'center'}} onClick={() => {
