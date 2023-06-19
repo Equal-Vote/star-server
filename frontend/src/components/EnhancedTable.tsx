@@ -161,13 +161,14 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
             }
             {headCell.filterType === 'groups' &&
               <FormControl
-                sx={{ my: 1, minWidth: 120 }} size="small"
+                sx={{ my: 1, width: 120 }} size="small"
               >
                 <Select
                   multiple
-                  value={Object.keys(props.filters[cellInd]).filter(group => headCell.filterGroups[group])}
+                  value={Object.keys(props.filters[cellInd]).filter(group => props.filters[cellInd][group])}
                   renderValue={(selected) => selected.join(', ')}
                 >
+                  {console.log(Object.keys(props.filters[cellInd]).filter(group => headCell.filterGroups[group]===true))}
                   {Object.keys(headCell.filterGroups).map(group => (
                     <MenuItem 
                       onClick={(e) => handleGroupFilterChange(cellInd, group, !props.filters[cellInd][group])}>
