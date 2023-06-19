@@ -85,7 +85,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
         setErrors(errors => ({ ...errors, ...newErrors }))
 
         // NOTE: I'm passing the element as a function so that we can delay the query until the elements have been updated
-        scrollToElement(() => document.querySelector('.Mui-error').parentNode)
+        scrollToElement(() => document.querySelectorAll('.Mui-error'))
 
         return isValid
     }
@@ -386,7 +386,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
                             Previous
                         </StyledButton>
                     </Grid>
-                    <Grid xs={6}></Grid>
+                    <Grid item xs={6}></Grid>
                     <Grid item xs={3} sx={{ m: 0, p: 1 }}>
                         <StyledButton
                             type='button'
@@ -400,10 +400,10 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
                             Next Race
                         </StyledButton>
                     </Grid>
-                    <Grid xs={6}></Grid>
+                    <Grid item xs={6}></Grid>
                 </>
             }
-            <Grid xs={9}></Grid>
+            <Grid item xs={9}></Grid>
             <Grid item xs={3} sx={{ m: 0, p: 1 }}>
                 <StyledButton
                     type='button'
