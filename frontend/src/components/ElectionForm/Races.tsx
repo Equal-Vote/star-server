@@ -14,6 +14,7 @@ import { StyledButton } from '../styles';
 import IconButton from '@mui/material/IconButton'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
+import { scrollToElement } from '../util';
 // import { useNavigate } from 'react-router-dom';
 
 export default function Races({ election, applyElectionUpdate, getStyle, onBack, onNext }) {
@@ -83,9 +84,12 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
         }
         setErrors(errors => ({ ...errors, ...newErrors }))
 
+        // NOTE: I'm passing the element as a function so that we can delay the query until the elements have been updated
+        scrollToElement(() => document.querySelector('.Mui-error').parentNode)
+
         return isValid
     }
-    console.log(errors)
+
     const onAddRace = () => {
         if (election.races.length === 1 && !multipleRaces) {
             // If there is only one race currently and this is the first time being run, set title required error because that field hasn't been shown yet.
