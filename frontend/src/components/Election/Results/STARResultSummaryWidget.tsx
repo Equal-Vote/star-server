@@ -80,7 +80,7 @@ const STARResultSummaryWidget = ({ results, roundIndex }) => {
         return (a.name.length > b.name.length)? a : b;
     })
 
-    const axisWidth = 12 * ((candidateWithLongestName.name.length > 20)? 20 : candidateWithLongestName.name.length);
+    const axisWidth = 15 * ((candidateWithLongestName.name.length > 20)? 20 : candidateWithLongestName.name.length);
     
     const pieAngle = 90 + 360 * (1 - (pieData[0].votes/results.summaryData.nValidVotes))
 
