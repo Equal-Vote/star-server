@@ -22,13 +22,21 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
     );
 };
 
-const STARResultSummaryWidget = ({ results, rounds }) => {
-    const histData = results.summaryData.candidates.map((c, n) => ({
-        name: c.name,
-        votes: results.summaryData.totalScores[n].score,
-        // vvvv HACK to get the bars to fill the whole width, this is useful if we want to test the graph padding
-        votesBig: results.summaryData.totalScores[n].score*10000 
-    }));
+const STARResultSummaryWidget = ({ results, roundIndex }) => {
+    const prevWinners = results.roundResults
+        .filter((_, i) => i < roundIndex)
+        .map(round => round.winners)
+        .flat(1)
+        .map(winner => winner.index);
+
+    const histData = results.summaryData.candidates
+        .filter((_, i) => !prevWinners.includes(i))
+        .map((c, n) => ({
+            name: c.name,
+            votes: results.summaryData.totalScores[n].score,
+            // vvvv HACK to get the bars to fill the whole width, this is useful if we want to test the graph padding
+            votesBig: results.summaryData.totalScores[n].score*10000 
+        }));
 
     histData.sort((a, b) => b.votes - a.votes);
 
@@ -36,15 +44,15 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
         histData[i].name = `⭐${histData[i].name}`
     }
 
-    const winnerIndex = results.roundResults[0].winners[0].index;
-    const runnerUpIndex = results.roundResults[0].runner_up[0].index;
+    const winnerIndex = results.roundResults[roundIndex].winners[0].index;
+    const runnerUpIndex = results.roundResults[roundIndex].runner_up[0].index;
     const winnerVotes = results.summaryData.preferenceMatrix[winnerIndex][runnerUpIndex];
     const runnerUpVotes = results.summaryData.preferenceMatrix[runnerUpIndex][winnerIndex];
     const noPrefVotes = results.summaryData.nValidVotes - winnerVotes - runnerUpVotes;
 
     var pieColors = [
-        'var(--ltbrand-blue)',
-        'var(--ltbrand-green)',
+        COLORS[roundIndex % COLORS.length],
+        COLORS[(roundIndex+1) % COLORS.length],
         'var(--brand-gray-2)',
     ];
 
@@ -78,7 +86,6 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
 
     return (
         <div className="resultWidget">
-            <Typography variant="h5" sx={{fontWeight: 'bold'}}>⭐ {results.elected.map(c => c.name).join(', ')} Wins! ⭐</Typography>
             <div className="graphs">
                 <Paper elevation={5} className='graph' sx={{backgroundColor: 'brand.white', borderRadius: '10px'}}>
                     <Typography variant="h5">Scoring Round</Typography>
@@ -97,7 +104,7 @@ const STARResultSummaryWidget = ({ results, rounds }) => {
                            />
                            <Bar dataKey='votes' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
                                {histData.map((entry, index) => (
-                                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                   <Cell key={`cell-${index}`} fill={COLORS[(index+roundIndex) % COLORS.length]} />
                                ))}
                            </Bar>
                        </BarChart>

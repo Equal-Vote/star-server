@@ -16,7 +16,7 @@ const DetailedResultsExpander = ({children, defaultSelectedIndex, raceIndex}) =>
             }
             setViewDetails(!viewDetails)
         }}>
-            <Typography variant='h4'>Detailed Results</Typography>
+            <Typography variant='h6'>Detailed Results</Typography>
             {!viewDetails && <ExpandMore />}
             {viewDetails && <ExpandLess />}
         </div>
@@ -30,7 +30,7 @@ const DetailedResultsExpander = ({children, defaultSelectedIndex, raceIndex}) =>
                         setWidgetIndex((widgetIndex == i)? -1 : i);
                     }}>
                         <Grid item xs={11}>
-                            <Typography variant='h5'>{child.props.title}</Typography>
+                            <Typography variant='h6'>{child.props.title}</Typography>
                         </Grid>
                         <Grid item xs={1}>
                         <IconButton>
