@@ -30,13 +30,13 @@ const STARResultSummaryWidget = ({ results, roundIndex }) => {
         .map(winner => winner.index);
 
     const histData = results.summaryData.candidates
-        .filter((_, i) => !prevWinners.includes(i))
         .map((c, n) => ({
             name: c.name,
             votes: results.summaryData.totalScores[n].score,
             // vvvv HACK to get the bars to fill the whole width, this is useful if we want to test the graph padding
             votesBig: results.summaryData.totalScores[n].score*10000 
-        }));
+        }))
+        .filter((_, i) => !prevWinners.includes(i));
 
     histData.sort((a, b) => b.votes - a.votes);
 
