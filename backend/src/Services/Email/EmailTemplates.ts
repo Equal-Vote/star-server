@@ -29,7 +29,7 @@ export function Invites(election: Election, voters: ElectionRoll[], url: string)
                         <tr>
                           <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">
                             <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Hi there,</p>
-                            <p class="disable-links" style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">You have been invited to vote in a star.vote election.</p>
+                            <p class="disable-links" style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">You have been invited to vote in a STAR Voting election.</p>
                             <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Election: ${election.title}</p>
                             ${election.description ? `<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Description: ${election.description}</p>` : ''}
                             
