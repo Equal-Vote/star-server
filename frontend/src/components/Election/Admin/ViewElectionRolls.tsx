@@ -9,6 +9,17 @@ import EditElectionRoll from "./EditElectionRoll";
 import AddElectionRoll from "./AddElectionRoll";
 import PermissionHandler from "../../PermissionHandler";
 import { Typography } from "@mui/material";
+import EnhancedTable, { HeadCell, TableData } from "./../../EnhancedTable";
+
+
+interface Data extends TableData {
+    voter_id: string;
+    email: string;
+    ip: string;
+    precinct: string;
+    has_voted: string;
+    state: string;
+}
 
 const ViewElectionRolls = ({ election, permissions }) => {
     const { id } = useParams();
@@ -19,9 +30,9 @@ const ViewElectionRolls = ({ election, permissions }) => {
     const [addRollPage, setAddRollPage] = useState(false)
     const [editedRoll, setEditedRoll] = useState(null)
 
-    const onOpen = (roll) => {
+    const onOpen = (voter) => {
         setIsEditing(true)
-        setEditedRoll({ ...roll })
+        setEditedRoll(data.electionRoll.find(roll => roll.voter_id === voter.voter_id))
     }
     const onClose = (roll) => {
         setIsEditing(false)
@@ -34,7 +45,76 @@ const ViewElectionRolls = ({ election, permissions }) => {
         sendInvites.makeRequest()
     }
 
-    console.log(data)
+    const headCells: HeadCell[] = [
+        {
+            id: 'voter_id',
+            numeric: false,
+            disablePadding: false,
+            label: 'Voter ID',
+            filterType: 'search'
+        },
+        {
+            id: 'email',
+            numeric: false,
+            disablePadding: false,
+            label: 'Email',
+            filterType: 'search'
+        },
+        {
+            id: 'has_voted',
+            numeric: false,
+            disablePadding: false,
+            label: 'Has Voted',
+            filterType: 'groups',
+            filterGroups: {
+                'false': true,
+                'true' : true,
+            }
+        },
+        {
+            id: 'state',
+            numeric: false,
+            disablePadding: false,
+            label: 'State',
+            filterType: 'groups',
+            filterGroups: {
+                approved: true,
+                registered : true,
+            }
+        },
+        {
+            id: 'ip',
+            numeric: false,
+            disablePadding: false,
+            label: 'IP',
+            filterType: 'search'
+        },
+        {
+            id: 'precinct',
+            numeric: false,
+            disablePadding: false,
+            label: 'Precinct',
+            filterType: 'search'
+        },
+    ];
+
+    const tableData = React.useMemo(
+        () => {
+            if (data && data.electionRoll) {
+                return data.electionRoll.map(roll => ({
+                    voter_id: roll.voter_id,
+                    email: roll.email || '',
+                    ip: roll.ip_address || '',
+                    precinct: roll.precinct || '',
+                    has_voted: roll.submitted.toString(),
+                    state: roll.state.toString()
+                }))
+            } else {
+                return null
+            }
+        },
+        [data],
+    );
     return (
         <Container >
             <Typography align='center' gutterBottom variant="h4" component="h4">
@@ -50,34 +130,13 @@ const ViewElectionRolls = ({ election, permissions }) => {
                         <Button variant='outlined' onClick={() => setAddRollPage(true)} > Add Voters </Button>
                     </PermissionHandler>
                     <Button variant='outlined' onClick={() => onSendInvites()} > Send Invites </Button>
-                    <TableContainer component={Paper}>
-                        <Table style={{ width: '100%' }} aria-label="simple table">
-                            <TableHead>
-                                <TableCell> Voter ID </TableCell>
-                                <TableCell> Email </TableCell>
-                                <TableCell> IP Address </TableCell>
-                                <TableCell> Precinct </TableCell>
-                                <TableCell> Has Voted </TableCell>
-                                <TableCell> State </TableCell>
-                                <TableCell> View </TableCell>
-                            </TableHead>
-                            <TableBody>
-                                {data.electionRoll.map((roll) => (
-                                    <TableRow key={roll.voter_id} >
-                                        <TableCell component="th" scope="row">
-                                            {roll.voter_id}
-                                        </TableCell>
-                                        <TableCell >{roll.email || ''}</TableCell>
-                                        <TableCell >{roll.ip_address || ''}</TableCell>
-                                        <TableCell >{roll.precinct || ''}</TableCell>
-                                        <TableCell >{roll.submitted.toString()}</TableCell>
-                                        <TableCell >{roll.state.toString()}</TableCell>
-                                        <TableCell ><Button variant='outlined' onClick={() => onOpen(roll)} > View </Button></TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    <EnhancedTable
+                        headCells={headCells}
+                        data={tableData}
+                        defaultSortBy="voter_id"
+                        tableTitle="Voters"
+                        handleOnClick={(voter) => onOpen(voter)}
+                    />
                 </>
             }
             {isEditing && editedRoll &&

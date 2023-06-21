@@ -140,6 +140,10 @@ code {
   height: 20px;
 }
 
+.filledPhotoContainer:hover img{
+  opacity: .2;
+}
+
 /* Ballot */
 .ballot {
   text-align: center;

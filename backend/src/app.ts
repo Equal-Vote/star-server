@@ -41,9 +41,8 @@ const frontendPath = '../../../../frontend/build/';
 const path = require('path');
 app.use(express.static(path.join(__dirname, frontendPath)));
 app.use(express.json());
-app.use(authController.getUser)
 //Routes
-app.use('/API',electionRouter)
+app.use('/API',authController.getUser, electionRouter)
 // app.use('/debug',debugRouter)
 
 app.post('/API/Token', asyncHandler(getUserToken));

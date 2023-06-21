@@ -2,11 +2,15 @@ import useFetch from "../hooks/useFetch"
 import React, { useEffect } from 'react'
 import { Election } from "../../../domain_model/Election"
 import Typography from '@mui/material/Typography';
-import { Box } from "@mui/material"
+import { Box, Container } from "@mui/material"
 import Button from "@mui/material/Button";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
+import EnhancedTable, { HeadCell } from "./EnhancedTable";
+import { useNavigate } from "react-router"
 
 const Elections = ({ authSession }) => {
+
+    const navigate = useNavigate()
     // const url_params = new URLSearchParams(window.location.search)
     var url = '/API/Elections';
     // if (url_params.has('filter')) {
@@ -42,109 +46,226 @@ const Elections = ({ authSession }) => {
         return string.substring(0, limit)
     }
 
+    const electionsAsOfficialHeadCells: HeadCell[] = [
+        {
+            id: 'title',
+            numeric: false,
+            disablePadding: false,
+            label: 'Election Title',
+            filterType: 'search'
+        },
+        {
+            id: 'roles',
+            numeric: false,
+            disablePadding: false,
+            label: 'Role',
+            filterType: 'search'
+        },
+        {
+            id: 'state',
+            numeric: false,
+            disablePadding: false,
+            label: 'State',
+            filterType: 'groups',
+            filterGroups: {
+                draft: true,
+                finalized: true,
+                open: true,
+                closed: true,
+                archived: false
+            }
+        },
+        {
+            id: 'start_time',
+            numeric: false,
+            disablePadding: false,
+            label: 'Start Time',
+            filterType: 'search',
+        },
+        {
+            id: 'end_time',
+            numeric: false,
+            disablePadding: false,
+            label: 'End Time',
+            filterType: 'search',
+        },
+        {
+            id: 'description',
+            numeric: false,
+            disablePadding: false,
+            label: 'Description',
+            filterType: 'search'
+        },
+    ];
+
+    const electionsAsOfficialData = React.useMemo(
+        () => {
+            if (data && data.elections_as_official) {
+                return data.elections_as_official.map(election => ({
+                    election_id: election.election_id,
+                    title: election.title,
+                    roles: getRoles(election),
+                    state: election.state || '',
+                    start_time: election.start_time ? new Date(election.start_time).toLocaleString() : '',
+                    end_time: election.end_time ? new Date(election.end_time).toLocaleString() : '',
+                    description: limit(election.description, 30) || '',
+                }))
+            } else {
+                return []
+            }
+        },
+        [data],
+    );
+
+    const electionsAsVoterHeadCells: HeadCell[] = [
+        {
+            id: 'title',
+            numeric: false,
+            disablePadding: false,
+            label: 'Election Title',
+            filterType: 'search'
+        },
+        {
+            id: 'state',
+            numeric: false,
+            disablePadding: false,
+            label: 'State',
+            filterType: 'groups',
+            filterGroups: {
+                draft: true,
+                finalized: true,
+                open: true,
+                closed: true,
+                archived: false
+            }
+        },
+        {
+            id: 'start_time',
+            numeric: false,
+            disablePadding: false,
+            label: 'Start Time',
+            filterType: 'search',
+        },
+        {
+            id: 'end_time',
+            numeric: false,
+            disablePadding: false,
+            label: 'End Time',
+            filterType: 'search',
+        },
+        {
+            id: 'description',
+            numeric: false,
+            disablePadding: false,
+            label: 'Description',
+            filterType: 'search'
+        },
+    ];
+
+    const electionsAsVoterData = React.useMemo(
+        () => {
+            if (data && data.elections_as_voter) {
+                return data.elections_as_voter.map(election => ({
+                    election_id: election.election_id,
+                    title: election.title,
+                    state: election.state || '',
+                    start_time: election.start_time ? new Date(election.start_time).toLocaleString() : '',
+                    end_time: election.end_time ? new Date(election.end_time).toLocaleString() : '',
+                    description: limit(election.description, 30) || '',
+                }))
+            } else {
+                return []
+            }
+        },
+        [data],
+    );
+
+    const openElectionsHeadCells: HeadCell[] = [
+        {
+            id: 'title',
+            numeric: false,
+            disablePadding: false,
+            label: 'Election Title',
+            filterType: 'search'
+        },
+        {
+            id: 'start_time',
+            numeric: false,
+            disablePadding: false,
+            label: 'Start Time',
+            filterType: 'search',
+        },
+        {
+            id: 'end_time',
+            numeric: false,
+            disablePadding: false,
+            label: 'End Time',
+            filterType: 'search',
+        },
+        {
+            id: 'description',
+            numeric: false,
+            disablePadding: false,
+            label: 'Description',
+            filterType: 'search'
+        },
+    ];
+
+    const openElectionsData = React.useMemo(
+        () => {
+            if (data && data.open_elections) {
+                return data.open_elections.map(election => ({
+                    election_id: election.election_id,
+                    title: election.title,
+                    start_time: election.start_time ? new Date(election.start_time).toLocaleString() : '',
+                    end_time: election.end_time ? new Date(election.end_time).toLocaleString() : '',
+                    description: limit(election.description, 30) || '',
+                }))
+            } else {
+                return []
+            }
+        },
+        [data],
+    );
+    
     return (
         <Box
             display='flex'
             justifyContent="center"
             alignItems="center"
-            sx={{ width: '100%', pt: 2 }}>
-            <Paper elevation={3} sx={{ p: 3 }} >
+            flexDirection={'column'}
+            sx={{ pt: 2, width: '100%' }}>
                 {isPending && <Typography align='center' variant="h3" component="h2"> Loading Elections... </Typography>}
                 {/****** elections you manage ********/}
-                <Typography variant="h5" component="h5">
-                    Elections you manage
-                </Typography>
-                <TableContainer component={Paper}>
-                    <Table style={{ width: '100%' }} aria-label="simple table">
-                        <TableHead>
-                            <TableCell> Election Title </TableCell>
-                            <TableCell> Role </TableCell>
-                            <TableCell> State </TableCell>
-                            <TableCell> Start Date </TableCell>
-                            <TableCell> End Date </TableCell>
-                            <TableCell> Description </TableCell>
-                            <TableCell> View </TableCell>
-                        </TableHead>
-                        <TableBody>
-                            {data?.elections_as_official?.filter(election => election.state != 'archived').map((election: Election) => (
-                                <TableRow key={election.election_id} >
-                                    <TableCell component="th" scope="row">
-                                        {election.title}
-                                    </TableCell>
-                                    <TableCell >{getRoles(election)}</TableCell>
-                                    <TableCell >{election.state || ''}</TableCell>
-                                    <TableCell > {election.start_time ? new Date(election.start_time).toLocaleString() : ''}</TableCell>
-                                    <TableCell >{election.end_time ? new Date(election.end_time).toLocaleString() : ''}</TableCell>
-                                    <TableCell >{limit(election.description, 30) || ''}</TableCell>
-                                    <TableCell ><Button variant='outlined' href={`/Election/${String(election.election_id)}${authSession.isLoggedIn() ? '/admin' : ''}`} > View </Button></TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <Container>
+                    <EnhancedTable
+                        headCells={electionsAsOfficialHeadCells}
+                        data={electionsAsOfficialData}
+                        defaultSortBy="title"
+                        tableTitle="Elections You Manage"
+                        handleOnClick={(election) => navigate(`/Election/${String(election.election_id)}${authSession.isLoggedIn() ? '/admin' : ''}`)}
+                    />
+                </Container>
 
                 {/****** elections we're invited to ********/}
-                <Typography variant="h5" component="h5" sx={{ pt: 2 }}>
-                    Elections as a voter
-                </Typography>
-                <TableContainer component={Paper}>
-                    <Table style={{ width: '100%' }} aria-label="simple table">
-                        <TableHead>
-                            <TableCell> Election Title </TableCell>
-                            <TableCell> State </TableCell>
-                            <TableCell> Start Date </TableCell>
-                            <TableCell> End Date </TableCell>
-                            <TableCell> Description </TableCell>
-                            <TableCell> View </TableCell>
-                        </TableHead>
-                        <TableBody>
-                            {data?.elections_as_voter?.filter(election => election.state != 'archived').map((election: Election) => (
-                                <TableRow key={election.election_id} >
-                                    <TableCell component="th" scope="row">
-                                        {election.title}
-                                    </TableCell>
-                                    <TableCell >{election.state || ''}</TableCell>
-                                    <TableCell > {election.start_time ? new Date(election.start_time).toLocaleString() : ''}</TableCell>
-                                    <TableCell >{election.end_time ? new Date(election.end_time).toLocaleString() : ''}</TableCell>
-                                    <TableCell >{limit(election.description, 30) || ''}</TableCell>
-                                    <TableCell ><Button variant='outlined' href={`/Election/${String(election.election_id)}`} > View </Button></TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <Container>
+                    <EnhancedTable
+                        headCells={electionsAsVoterHeadCells}
+                        data={electionsAsVoterData}
+                        defaultSortBy="title"
+                        tableTitle="Elections You Can Vote In"
+                        handleOnClick={(election) => navigate(`/Election/${String(election.election_id)}`)}
+                    /></Container>
 
                 {/****** elections open to all ********/}
-                <Typography variant="h5" component="h5" sx={{ pt: 2 }}>
-                    Open Elections
-                </Typography>
-                <TableContainer component={Paper}>
-                    <Table style={{ width: '100%' }} aria-label="simple table">
-                        <TableHead>
-                            <TableCell> Election Title </TableCell>
-                            <TableCell> State </TableCell>
-                            <TableCell> Start Date </TableCell>
-                            <TableCell> End Date </TableCell>
-                            <TableCell> Description </TableCell>
-                            <TableCell> View </TableCell>
-                        </TableHead>
-                        <TableBody>
-                            {data?.open_elections?.filter(election => election.state != 'archived').map((election: Election) => (
-                                <TableRow key={election.election_id} >
-                                    <TableCell component="th" scope="row">
-                                        {election.title}
-                                    </TableCell>
-                                    <TableCell >{election.state || ''}</TableCell>
-                                    <TableCell > {election.start_time ? new Date(election.start_time).toLocaleString() : ''}</TableCell>
-                                    <TableCell >{election.end_time ? new Date(election.end_time).toLocaleString() : ''}</TableCell>
-                                    <TableCell >{limit(election.description, 30) || ''}</TableCell>
-                                    <TableCell ><Button variant='outlined' href={`/Election/${String(election.election_id)}`} > View </Button></TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Paper>
+                <Container>
+                    <EnhancedTable
+                        headCells={openElectionsHeadCells}
+                        data={openElectionsData}
+                        defaultSortBy="title"
+                        tableTitle="Open Elections"
+                        handleOnClick={(election) => navigate(`/Election/${String(election.election_id)}`)}
+                    /></Container>
         </Box>
     )
 }
