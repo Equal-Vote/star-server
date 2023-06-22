@@ -32,7 +32,6 @@ export default class PGBossEventQueue implements IEventQueue {
             data: d
         }))
         const jobs = await this._boss.insert(Jobs);
-        console.log(jobs)
         return jobs;
     }
 
