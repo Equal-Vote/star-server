@@ -32,18 +32,22 @@ export default function Footer() {
             <Typography variant="body2" color="text.secondary" sx={{
               pl: 1, pr: 1
             }}>
-              STAR Elections mission is to ensure that anyone who wants to use STAR Voting can. We are a volunteer run coalition project with Equal Vote and STAR Voting Action which allows people to set up and host their own STAR Voting elections.
+              STAR Elections is here to help make your dream election accessible to vote in and easy to officiate. Our mission is to support and empower the adoption and use of STAR Voting and better voting methods for polling, surveys, and real elections at any scale and for any scenario.
+              <br /><br />STAR Elections is a project of the Equal Vote Coalition 501c3. To support our work click <a target="blank" href='https://www.equal.vote/donate_double'>here</a>. All proceeds from the STAR Elections project go directly to helping fund and support the adoption of STAR Voting for public and private elections.
             </Typography>
           </Grid>
           <Grid item xs={12} md={4} >
             <Typography variant="h6" color="text.primary" gutterBottom align='center'>
-              STAR Voting
+              STAR Elections
             </Typography>
             <Typography variant="body2" color="text.secondary" align='center'>
-              OR, United States
+              A project of the Equal Vote Coalition
             </Typography>
             <Typography variant="body2" color="text.secondary" align='center'>
-              elections@equal.vote
+              PO Box 51245, Eugene, OR, USA 97405
+            </Typography>
+            <Typography variant="body2" color="text.secondary" align='center'>
+              <a target="blank" href='https://www.starvoting.org/'>starvoting.org</a> | <a target="blank" href='https://www.equal.vote/'>equal.vote</a>
             </Typography>
           </Grid>
           <Grid item xs={12} md={4} >
