@@ -92,6 +92,10 @@ async function sendBatchEmailInvites(req: any, electionRoll: ElectionRoll[], ele
 const sendInvitationController = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.sendInvite ${req.election.election_id} ${req.params.voter_id}`);
     expectPermission(req.user_auth.roles, permissions.canSendEmails)
+
+    if (!(req.election.settings.voter_access === 'closed' && req.election.settings.invitation === 'email')) {
+        throw new BadRequest('Email invitations not enabled')
+    }
     const url = req.protocol + '://' + req.get('host')
 
     const electionId = req.election.election_id;
