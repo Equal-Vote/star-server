@@ -1,5 +1,4 @@
 import { Imsg } from "./IEmail"
-
 export default class EmailService {
 
   sgMail;
@@ -12,10 +11,6 @@ export default class EmailService {
 
   sendEmails = async (msg: Imsg[]) => {
     const responses = await this.sgMail.send(msg)
-    const badResponses = responses.filter((response: any) => response.statusCode >= 400)
-    if (badResponses.length > 0) {
-      throw new Error(JSON.stringify(badResponses))
-    }
+    return responses
   }
-
 }

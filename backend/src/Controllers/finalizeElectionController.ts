@@ -2,13 +2,12 @@ import ServiceLocator from '../ServiceLocator';
 import Logger from '../Services/Logging/Logger';
 import { permissions } from '../../../domain_model/permissions';
 import { expectPermission } from "./controllerUtils";
-import { BadRequest, InternalServerError } from "@curveball/http-errors";
-import { Invites } from "../Services/Email/EmailTemplates"
+import { BadRequest } from "@curveball/http-errors";
 import { ElectionRoll } from '../../../domain_model/ElectionRoll';
+const { sendBatchEmailInvites } = require('./sendInvitesController')
 
 var ElectionsModel = ServiceLocator.electionsDb();
 var ElectionRollModel = ServiceLocator.electionRollDb();
-var EmailService = ServiceLocator.emailService();
 
 const className = "election.Controllers";
 
@@ -22,8 +21,8 @@ const finalizeElection = async (req: any, res: any, next: any) => {
     }
 
     const electionId = req.election.election_id;
-    let electionRoll:ElectionRoll[]|null = null
-    if (req.election.settings.voter_access === 'closed' &&  req.election.settings.invitation === 'email') {
+    let electionRoll: ElectionRoll[] | null = null
+    if (req.election.settings.voter_access === 'closed' && req.election.settings.invitation === 'email') {
         electionRoll = await ElectionRollModel.getRollsByElectionID(electionId, req);
         if (!electionRoll) {
             const msg = `Election roll for ${electionId} not found`;
@@ -40,17 +39,9 @@ const finalizeElection = async (req: any, res: any, next: any) => {
         throw new BadRequest(failMsg)
     }
 
-    if (updatedElection.settings.voter_access === 'closed' &&  updatedElection.settings.invitation === 'email') {
-        Logger.info(req, `${className}.sendInvitations`, { election_id: updatedElection.election_id });
-        try {
-            const url = req.protocol + '://' + req.get('host')
-            const invites = Invites(updatedElection, electionRoll as ElectionRoll[], url)
-            await EmailService.sendEmails(invites)
-        } catch (err: any) {
-            const msg = `Could not send invitations`;
-            Logger.error(req, `${msg}: ${err.message}`);
-
-            throw new InternalServerError(failMsg)
+    if (updatedElection.settings.voter_access === 'closed' && updatedElection.settings.invitation === 'email') {
+        if (electionRoll) {
+            await sendBatchEmailInvites(req, electionRoll, updatedElection)
         }
     }
     return res.json({ election: updatedElection })

@@ -23,6 +23,7 @@ export const permissions = {
   canInvalidateBallot:      [roles.system_admin, roles.owner],
   canEditElectionState:     [roles.system_admin, roles.owner],
   canViewPreliminaryResults:[roles.system_admin, roles.owner, roles.admin, roles.auditor],
+  canSendEmails:            [roles.system_admin, roles.owner, roles.admin],
 }
 
 export const hasPermission = (roles:roles[],permission:permission) => {
