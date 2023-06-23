@@ -24,6 +24,7 @@ interface Data extends TableData {
 const ViewElectionRolls = ({ election, permissions }) => {
     const { id } = useParams();
     const { data, isPending, error, makeRequest: fetchRolls } = useFetch(`/API/Election/${id}/rolls`, 'get')
+    const sendInvites = useFetch(`/API/Election/${id}/sendInvites`, 'post')
     useEffect(() => { fetchRolls() }, [])
     const [isEditing, setIsEditing] = useState(false)
     const [addRollPage, setAddRollPage] = useState(false)
@@ -41,7 +42,7 @@ const ViewElectionRolls = ({ election, permissions }) => {
     }
 
     const onSendInvites = () => {
-        // sendInvites.makeRequest()
+        sendInvites.makeRequest()
     }
 
     const headCells: HeadCell[] = [

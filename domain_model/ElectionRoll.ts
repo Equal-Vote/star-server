@@ -13,6 +13,10 @@ export interface ElectionRoll {
     history?: ElectionRollAction[];// history of changes to election roll
     registration?: any; //Registration data for voter
     precinct?: string; // Precint of voter
+    email_data?: {
+        inviteResponse?: any,
+        reminderResponse?: any,
+    }
 }
 
 export interface ElectionRollAction {

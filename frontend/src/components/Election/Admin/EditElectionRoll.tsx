@@ -90,7 +90,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
                                 {updatedRoll.history.map((history, i) => (
                                     <TableRow key={i} >
                                         <TableCell component="th" scope="row">
-                                            {history.action}
+                                            {history.action_type}
                                         </TableCell>
                                         <TableCell align="right" >{history.actor}</TableCell>
                                         <TableCell align="right" >{getDateString(history.timestamp)}</TableCell>
