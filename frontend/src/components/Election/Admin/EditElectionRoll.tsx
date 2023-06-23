@@ -15,6 +15,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
     const flag = useFetch(`/API/Election/${id}/rolls/flag`, 'post')
     const unflag = useFetch(`/API/Election/${id}/rolls/unflag`, 'post')
     const invalidate = useFetch(`/API/Election/${id}/rolls/invalidate`, 'post')
+    const sendInvite = useFetch(`/API/Election/${id}/sendInvite/${updatedRoll.voter_id}`, 'post')
 
     const onApprove = async () => {
         if (!await approve.makeRequest({ electionRollEntry: roll })) { return }
@@ -30,6 +31,10 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
     }
     const onInvalidate = async () => {
         if (!await invalidate.makeRequest({ electionRollEntry: roll })) { return }
+        await fetchRolls()
+    }
+    const onSendInvite = async () => {
+        if (!await sendInvite.makeRequest()) { return }
         await fetchRolls()
     }
 
@@ -48,36 +53,85 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
                         {`Voter ID: ${updatedRoll.voter_id}`}
                     </Typography>
                 </Grid>
+                {updatedRoll.email &&
+                    <Grid item sm={12}>
+                        <Typography align='left' gutterBottom variant="h6" component="h6">
+                            {`Email Address: ${updatedRoll.email}`}
+                        </Typography>
+                    </Grid>
+
+                }
                 <Grid item sm={12}>
                     <Typography align='left' gutterBottom variant="h6" component="h6">
                         {`Has Voted: ${updatedRoll.submitted.toString()}`}
                     </Typography>
                 </Grid>
+                <Grid item sm={12}>
+                    <Typography align='left' gutterBottom variant="h6" component="h6">
+                        {`State: ${updatedRoll.state}`}
+                    </Typography>
+                </Grid>
+                
+                {updatedRoll.email &&
+                    <>
+                        {updatedRoll && !(updatedRoll.email_data && updatedRoll.email_data.inviteResponse) &&
+                            <Grid item sm={12}>
+                                <Typography align='left' gutterBottom variant="h6" component="h6">
+                                    {`Email invite status: Invite not sent`}
+                                </Typography>
+                            </Grid>
+                        }
+                        {updatedRoll && (updatedRoll.email_data && updatedRoll.email_data.inviteResponse) && (updatedRoll.email_data.inviteResponse.length > 0 && updatedRoll.email_data.inviteResponse[0].statusCode < 400) &&
+                            <Grid item sm={12}>
+                                <Typography align='left' gutterBottom variant="h6" component="h6">
+                                    {`Email invite status: Success`}
+                                </Typography>
+                            </Grid>
+                        }
+                        {updatedRoll && (updatedRoll.email_data && updatedRoll.email_data.inviteResponse) && !(updatedRoll.email_data.inviteResponse.length > 0 && updatedRoll.email_data.inviteResponse[0].statusCode < 400) &&
+                            <Grid item sm={12}>
+                                <Typography align='left' gutterBottom variant="h6" component="h6">
+                                    {`Email invite status: Failed`}
+                                </Typography>
+                                <Typography align='left' gutterBottom component="p">
+                                    {`Debug Info: ${JSON.stringify(updatedRoll.email_data.inviteResponse)}`}
+                                </Typography>
+                            </Grid>
+                        }
+                        <Grid item sm={4} sx={{py:1}}>
+                            <PermissionHandler permissions={permissions} requiredPermission={'canSendEmails'}>
+                                <Button variant='outlined' onClick={() => { onSendInvite() }} > Send Invite </Button>
+                            </PermissionHandler>
+                        </Grid>
+                    </>
+                }
                 {updatedRoll.state === 'registered' &&
-                    <Grid item sm={4}>
+                    <Grid item sm={4} sx={{py:1}}>
                         <PermissionHandler permissions={permissions} requiredPermission={'canApproveElectionRoll'}>
                             <Button variant='outlined' onClick={() => { onApprove() }} > Approve </Button>
                         </PermissionHandler>
                     </Grid>}
                 {updatedRoll.state !== 'flagged' &&
-                    <Grid item sm={4}>
+                    <Grid item sm={4} sx={{py:1}}>
 
                         <PermissionHandler permissions={permissions} requiredPermission={'canFlagElectionRoll'}>
                             <Button variant='outlined' onClick={() => { onFlag() }} > Flag </Button>
                         </PermissionHandler>
                     </Grid>}
                 {updatedRoll.state === 'flagged' &&
-                    <Grid item sm={4}>
+                    <Grid item sm={4} sx={{py:1}}>
                         <PermissionHandler permissions={permissions} requiredPermission={'canUnflagElectionRoll'}>
                             <Button variant='outlined' onClick={() => { onUnflag() }} > Unflag </Button>
                         </PermissionHandler>
                     </Grid>}
                 {updatedRoll.state === 'flagged' &&
-                    <Grid item sm={4}>
+                    <Grid item sm={4} sx={{py:1}}>
                         <PermissionHandler permissions={permissions} requiredPermission={'canInvalidateElectionRoll'}>
                             <Button variant='outlined' onClick={() => { onInvalidate() }} > Invalidate </Button>
                         </PermissionHandler>
                     </Grid>}
+
+
                 {updatedRoll?.history &&
                     <TableContainer component={Paper}>
                         <Table style={{ width: '100%' }} aria-label="simple table">

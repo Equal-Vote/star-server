@@ -25,7 +25,7 @@ const { permissions } = require('../../../domain_model/permissions');
 const { ElectionRollState } = require('../../../domain_model/ElectionRoll');
 const { uploadImageController, upload } = require('../Controllers/uploadImageController')
 const { archiveElection } = require('../Controllers/archiveElectionController')
-const { sendInvitationsController } = require('../Controllers/sendInvitesController')
+const { sendInvitationsController, sendInvitationController } = require('../Controllers/sendInvitesController')
 const asyncHandler = require('express-async-handler')
 
 router.get('/Election/:id', asyncHandler(electionController.returnElection))
@@ -53,6 +53,7 @@ router.post('/Election/:id/finalize',asyncHandler(finalizeElection))
 router.post('/Election/:id/setPublicResults',asyncHandler(setPublicResults))
 router.post('/Election/:id/archive', asyncHandler(archiveElection))
 router.post('/Election/:id/sendInvites', asyncHandler(sendInvitationsController))
+router.post('/Election/:id/sendInvite/:voter_id', asyncHandler(sendInvitationController))
 
 router.post('/Sandbox',asyncHandler(getSandboxResults))
 
