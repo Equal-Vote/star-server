@@ -45,6 +45,12 @@ const ViewElectionRolls = ({ election, permissions }) => {
         sendInvites.makeRequest()
     }
 
+    const onUpdate = async () => {
+        const results = await fetchRolls()
+        if (!results) return
+        setEditedRoll(currentRoll => results.electionRoll.find(roll => roll.voter_id === currentRoll.voter_id))
+    }
+
     const headCells: HeadCell[] = [
         {
             id: 'voter_id',
@@ -164,7 +170,7 @@ const ViewElectionRolls = ({ election, permissions }) => {
                 </>
             }
             {isEditing && editedRoll &&
-                <EditElectionRoll roll={editedRoll} onClose={onClose} fetchRolls={fetchRolls} id={id} permissions={permissions} />
+                <EditElectionRoll roll={editedRoll} onClose={onClose} fetchRolls={onUpdate} id={id} permissions={permissions} />
             }
             {addRollPage &&
                 <AddElectionRoll election={election} onClose={onClose} />
