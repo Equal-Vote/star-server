@@ -1,20 +1,25 @@
 import { useState, useContext } from "react";
 import { SnackbarContext } from "../components/SnackbarContext";
 
-export interface IuseFetch { 
-    data?: any
-    isPending: Boolean,
-    error: any,
-    makeRequest: (data?:any) =>  Promise<any>
-}
-
-const useFetch = (url: string, method: 'get'|'post'|'put', successMessage:string|null = null) => {
+// Example usage 
+// Requst type: MyRequest
+// Response type: ApiResponse
+// MyRequestHook = useFetch<MyRequest, ApiResponse>(url, 'get')
+// Where
+// MyRequestHoot type = 
+// {
+//  data: ApiResponse | null, null by default until successful response
+//  isPending: Boolean, true if waiting for request 
+//  error: any | null, null by default until request error 
+//  makeRequest: (MyRequest) => Promise<ApiResponse|false>, if request errors response with false
+// }
+const useFetch = <Message, Response>(url: string, method: 'get' | 'post' | 'put', successMessage: string | null = null) => {
     const [isPending, setIsPending] = useState(false)
     const [error, setError] = useState<any>(null)
-    const [data, setData] = useState<any>(null)
+    const [data, setData] = useState<Response | null>(null)
     const { snack, setSnack } = useContext(SnackbarContext)
 
-    const makeRequest = async (data?: any) => {
+    const makeRequest = async (data?: Message) => {
         const options = {
             method: method,
             headers: {
@@ -48,16 +53,16 @@ const useFetch = (url: string, method: 'get'|'post'|'put', successMessage:string
                     autoHideDuration: 6000,
                 })
             }
-            return data
+            return data as Response
         } catch (err) {
             setSnack({
-                message: err.message,
+                message: err.message ? err.message : 'Unknown error',
                 severity: "error",
                 open: true,
                 autoHideDuration: null
             })
             setIsPending(false);
-            setError(err.message);
+            setError(err.message ? err.message : 'Unknown error');
             return false
         }
     }

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import useFetch from "../../../hooks/useFetch";
 import { useParams } from "react-router";
 import React from 'react'
 import Button from "@mui/material/Button";
@@ -8,10 +7,10 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 import PermissionHandler from "../../PermissionHandler";
 import ViewBallot from "./ViewBallot";
 import { CSVLink } from "react-csv";
+import { useGetBallots } from "../../../hooks/useAPI";
 
 const ViewBallots = ({ election, permissions }) => {
-    const { id } = useParams();
-    const { data, isPending, error, makeRequest: fetchBallots } = useFetch(`/API/Election/${id}/ballots`, 'get')
+    const { data, isPending, error, makeRequest: fetchBallots } = useGetBallots(election.election_id)
     useEffect(() => { fetchBallots() }, [])
     const [isViewing, setIsViewing] = useState(false)
     const [addRollPage, setAddRollPage] = useState(false)

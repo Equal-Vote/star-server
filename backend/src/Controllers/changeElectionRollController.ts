@@ -13,25 +13,25 @@ const className = "VoterRollState.Controllers";
 const approveElectionRoll = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.approveElectionRoll ${req.params.id}`);
     changeElectionRollState(req, ElectionRollState.approved, [ElectionRollState.registered, ElectionRollState.flagged], permissions.canApproveElectionRoll)
-    res.status('200').json()
+    res.status('200').json({})
 }
 
 const flagElectionRoll = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.flagElectionRoll ${req.params.id}`);
     changeElectionRollState(req, ElectionRollState.flagged, [ElectionRollState.approved, ElectionRollState.registered, ElectionRollState.invalid], permissions.canFlagElectionRoll)
-    res.status('200').json()
+    res.status('200').json({})
 }
 
 const invalidateElectionRoll = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.flagElectionRoll ${req.params.id}`);
     changeElectionRollState(req, ElectionRollState.invalid, [ElectionRollState.flagged], permissions.canInvalidateBallot)
-    res.status('200').json()
+    res.status('200').json({})
 }
 
 const uninvalidateElectionRoll = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.flagElectionRoll ${req.params.id}`);
     changeElectionRollState(req, ElectionRollState.flagged, [ElectionRollState.invalid], permissions.canInvalidateBallot)
-    res.status('200').json()
+    res.status('200').json({})
 }
 
 const changeElectionRollState = async (req: any, newState: ElectionRollState, validStates: ElectionRollState[], permission: permission) => {

@@ -5,16 +5,16 @@ import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
-import useFetch from "../../../hooks/useFetch";
 import PermissionHandler from "../../PermissionHandler";
+import { useApproveRoll, useFlagRoll, useInvalidateRoll, useUnflagRoll } from "../../../hooks/useAPI";
 
 const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
     const [updatedRoll, setUpdatedRoll] = useState(roll)
 
-    const approve = useFetch(`/API/Election/${id}/rolls/approve`, 'post')
-    const flag = useFetch(`/API/Election/${id}/rolls/flag`, 'post')
-    const unflag = useFetch(`/API/Election/${id}/rolls/unflag`, 'post')
-    const invalidate = useFetch(`/API/Election/${id}/rolls/invalidate`, 'post')
+    const approve = useApproveRoll(id)
+    const flag = useFlagRoll(id)
+    const unflag = useUnflagRoll(id)
+    const invalidate = useInvalidateRoll(id)
 
     const onApprove = async () => {
         if (!await approve.makeRequest({ electionRollEntry: roll })) { return }

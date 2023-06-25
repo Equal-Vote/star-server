@@ -1,7 +1,6 @@
 import { useState } from "react"
 import BallotPageSelector from "./BallotPageSelector";
 import Grid from "@mui/material/Grid";
-import useFetch from "../../../hooks/useFetch";
 import { useParams } from "react-router";
 import React from 'react'
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
@@ -11,6 +10,7 @@ import { Vote } from "../../../../../domain_model/Vote";
 import { Score } from "../../../../../domain_model/Score";
 import { Box, Container, Step, StepLabel, Stepper, SvgIcon } from "@mui/material";
 import Button from "@mui/material/Button";
+import { usePostBallot } from "../../../hooks/useAPI";
 
 // I'm using the icon codes instead of an import because there was padding I couldn't get rid of https://stackoverflow.com/questions/65721218/remove-material-ui-icon-margin
 const INFO_ICON = "M 11 7 h 2 v 2 h -2 Z m 0 4 h 2 v 6 h -2 Z m 1 -9 C 6.48 2 2 6.48 2 12 s 4.48 10 10 10 s 10 -4.48 10 -10 S 17.52 2 12 2 Z m 0 18 c -4.41 0 -8 -3.59 -8 -8 s 3.59 -8 8 -8 s 8 3.59 8 8 s -3.59 8 -8 8 Z"
@@ -64,7 +64,7 @@ const VotePage = ({ election, fetchElection }) => {
   const [pages, setPages] = useState(makePages())
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(0)
-  const { data, isPending, error, makeRequest: postBallot } = useFetch(`/API/Election/${id}/vote`, 'post')
+  const { data, isPending, error, makeRequest: postBallot } = usePostBallot(election.election_id)
   const onUpdate = (pageIndex, newRaceScores) => {
     var newPages = [...pages]
     newPages[pageIndex].candidates.forEach((c,i) => c.score = newRaceScores[i])

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import useFetch from "../../../hooks/useFetch";
 import { useParams } from "react-router";
 import React from 'react'
 import Button from "@mui/material/Button";
@@ -10,6 +9,7 @@ import AddElectionRoll from "./AddElectionRoll";
 import PermissionHandler from "../../PermissionHandler";
 import { Typography } from "@mui/material";
 import EnhancedTable, { HeadCell, TableData } from "./../../EnhancedTable";
+import { useGetRolls, useSendInvites } from "../../../hooks/useAPI";
 
 
 interface Data extends TableData {
@@ -22,9 +22,8 @@ interface Data extends TableData {
 }
 
 const ViewElectionRolls = ({ election, permissions }) => {
-    const { id } = useParams();
-    const { data, isPending, error, makeRequest: fetchRolls } = useFetch(`/API/Election/${id}/rolls`, 'get')
-    const sendInvites = useFetch(`/API/Election/${id}/sendInvites`, 'post')
+    const { data, isPending, error, makeRequest: fetchRolls } = useGetRolls(election.election_id)
+    const sendInvites = useSendInvites(election.election_id)
     useEffect(() => { fetchRolls() }, [])
     const [isEditing, setIsEditing] = useState(false)
     const [addRollPage, setAddRollPage] = useState(false)
@@ -140,7 +139,7 @@ const ViewElectionRolls = ({ election, permissions }) => {
                 </>
             }
             {isEditing && editedRoll &&
-                <EditElectionRoll roll={editedRoll} onClose={onClose} fetchRolls={fetchRolls} id={id} permissions={permissions} />
+                <EditElectionRoll roll={editedRoll} onClose={onClose} fetchRolls={fetchRolls} id={election.election_id} permissions={permissions} />
             }
             {addRollPage &&
                 <AddElectionRoll election={election} onClose={onClose} />

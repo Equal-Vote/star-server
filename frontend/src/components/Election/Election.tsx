@@ -1,5 +1,4 @@
 import { useEffect } from "react"
-import useFetch, { IuseFetch } from "../../hooks/useFetch";
 import { useParams } from "react-router";
 import React from 'react'
 import ElectionHome from "./ElectionHome";
@@ -13,23 +12,15 @@ import { Grid } from "@mui/material";
 import Thanks from "./Voting/Thanks";
 import ViewBallot from "./Admin/ViewBallot";
 import { IAuthSession } from "../../hooks/useAuthSession";
-import { Election as IElection } from '../../../../domain_model/Election';
-import { VoterAuth as IVoterAuth } from '../../../../domain_model/VoterAuth';
+import { useGetElection } from "../../hooks/useAPI";
 
 type Props = {
   authSession: IAuthSession,
 }
 
-interface GetElectionResponse extends IuseFetch {
-  data: null | {
-    election: IElection,
-    voterAuth: IVoterAuth
-  }
-}
-
 const Election = ({ authSession }: Props) => {
   const { id } = useParams();
-  const { data, isPending, error, makeRequest: fetchData }: GetElectionResponse = useFetch(`/API/Election/${id}`, 'get')
+  const { data, isPending, error, makeRequest: fetchData } = useGetElection(id)
   useEffect(() => {
     fetchData()
   }, [])
