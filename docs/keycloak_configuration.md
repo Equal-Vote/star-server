@@ -86,7 +86,7 @@ Repeat all the the following steps for the STAR Voting realm and the STAR Voting
     * Client ID: star_vote_web
 1. Under "Clients" > "star_vote_web" > "Settings" set the following and hit "Save"
     * Name: Star Vote Website Client
-    * Access Type: confidential (public might be more correct? but our process is setup assuming confidential [link](https://oauth.net/2/client-types/#:~:text=Confidentialclientsareapplicationsthat,oronamobiledevice.))
+    * Access Type: confidential (public might be more correct? but our process is setup assuming confidential [link](https://oauth.net/2/client-types/#:~:text=Confidential%20clients%20are%20applications%20that,or%20on%20a%20mobile%20device.))
     * Service Accounts Enabled: OFF (this was ON in the previous setup but I don't think we need it?)
     * Valid Redirect URISs: (these are all the websites that can use this login endpoint)
         * https://star-vote.herokuapp.com
