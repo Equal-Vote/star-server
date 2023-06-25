@@ -2,22 +2,37 @@ import React, {useState} from 'react'
 import Typography from '@mui/material/Typography';
 import {Paper, Box} from '@mui/material';
 
-const WinnerResultTabs = ({children, num_winners}) => {
+const WinnerResultTabs = ({children, numWinners}) => {
     const [currentTab, setCurrentTab] = useState(0);
 
-    if(num_winners == 1) return <>{children}</>
+    if(numWinners == 1) return <>{children}</>
 
     let i = 0;
-    const roundIndexes = Array.from({length: num_winners}, () => i++);
+    const roundIndexes = Array.from({length: numWinners}, () => i++);
+
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/PluralRules/PluralRules
+    const pr = new Intl.PluralRules("en-US", { type: "ordinal" });
+
+    const suffixes = new Map([
+        ["one", "st"],
+        ["two", "nd"],
+        ["few", "rd"],
+        ["other", "th"],
+    ]);
+    const formatOrdinals = (n) => {
+        const rule = pr.select(n);
+        const suffix = suffixes.get(rule);
+        return `${n}${suffix}`;
+    };
 
     return <>
-        {num_winners >= 5 && 
-            <Typography variant="h6">num_winners</Typography>
+        {numWinners >= 5 && 
+            <Typography variant="h6">Winners</Typography>
         }
         <Box display="flex" flexDirection="row" gap={0}>
             {roundIndexes.map((i) => (
                 <div className={(i == currentTab)? 'winnerResultTab activewinnerResultTab' : 'winnerResultTab'} onClick={() => setCurrentTab(i)}>
-                    {num_winners < 5 && 'Round'} {i+1}
+                    {formatOrdinals(i+1)} {numWinners < 5 && 'Winner'}
                 </div> 
             ))}
         </Box>
