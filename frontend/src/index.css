@@ -344,7 +344,7 @@ code {
   max-width: 550px;
 }
 
-.roundResults{
+.winnerResult{
   border: 1px solid var(--brand-gray-2);
   border-top: 1px solid transparent;
   display: none;
@@ -353,11 +353,11 @@ code {
   border-bottom-right-radius: 4px;
 }
 
-.activeRoundResults{
+.activeWinnerResults{
   display: block;
 }
 
-.roundResultsTab{
+.winnerResultTab{
   width: 100%;
   border: 1px solid var(--brand-gray-2);
   background-color: var(--brand-gray-1);
@@ -366,7 +366,7 @@ code {
   border-top-right-radius: 4px;
 }
 
-.activeRoundResultsTab{
+.activewinnerResultTab{
   border-bottom: 1px solid transparent;
   background-color: var(--brand-white);
 }
