@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import Typography from '@mui/material/Typography';
 import {Paper, Box} from '@mui/material';
 
-const RoundResultTabs = ({children, rounds}) => {
+const WinnerResultTabs = ({children, rounds}) => {
     const [currentTab, setCurrentTab] = useState(0);
 
     if(rounds == 1) return <>{children}</>
@@ -29,4 +29,4 @@ const RoundResultTabs = ({children, rounds}) => {
     </>
 }
 
-export default RoundResultTabs
+export default WinnerResultTabs

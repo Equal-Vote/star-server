@@ -12,7 +12,7 @@ import DetailedResultsExpander from "./DetailedResultsExpander";
 import STARResultTableWidget from "./STARResultTableWidget";
 import STARResultStatsWidget from "./STARResultStatsWidget";
 import STARResultDetailedStepsWidget from "./STARResultDetailedStepsWidget";
-import RoundResultTabs from "./RoundResultTabs";
+import WinnerResultTabs from "./WinnerResultTabs";
 
 function STARResultViewer({ raceIndex, results, rounds }) {
   let i = 0;
@@ -21,9 +21,9 @@ function STARResultViewer({ raceIndex, results, rounds }) {
   return (
     <div className="resultViewer">
       <Typography variant="h5" sx={{fontWeight: 'bold'}}>⭐ {results.elected.map(c => c.name).join(', ')} Wins! ⭐</Typography>
-      <RoundResultTabs rounds={rounds}>
+      <WinnerResultTabs rounds={rounds}>
         {roundIndexes.map((i) => <STARResultSummaryWidget results={results} roundIndex={i}/>)}
-      </RoundResultTabs>
+      </WinnerResultTabs>
       <DetailedResultsExpander raceIndex={raceIndex} defaultSelectedIndex={-1}>
          <STARResultTableWidget title="Election Results" results={results} rounds={rounds}/>
          {
