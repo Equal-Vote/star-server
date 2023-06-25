@@ -49,15 +49,16 @@ export const useAuthSession = (): IAuthSession => {
     }
 
     const openLogout = () => {
-        setAccessToken(null)
-        setIdToken(null)
-        setRefreshToken(null)
-
         const queryString = [
             `client_id=${authConfig.clientId}`,
             `logout_uri=${authConfig.redirectUri}`,
+            `id_token_hint=${idToken}`,
+            `post_logout_redirect_uri=${authConfig.redirectUri}`,
         ].join('&');
 
+        setAccessToken(null)
+        setIdToken(null)
+        setRefreshToken(null)
         window.location.href = authConfig.endpoints.logout+"?"+queryString;
     }
 
