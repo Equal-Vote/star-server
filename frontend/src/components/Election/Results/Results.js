@@ -17,11 +17,14 @@ import WinnerResultTabs from "./WinnerResultTabs";
 function STARResultViewer({ raceIndex, results, rounds }) {
   let i = 0;
   const roundIndexes = Array.from({length: rounds}, () => i++);
+  
+  const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
   return (
     <div className="resultViewer">
-      <Typography variant="h5" sx={{fontWeight: 'bold'}}>⭐ {results.elected.map(c => c.name).join(', ')} Wins! ⭐</Typography>
-      <WinnerResultTabs rounds={rounds}>
+      <Typography variant="h5" sx={{fontWeight: 'bold'}}>⭐ { formatter.format(results.elected.map(c => c.name))} Wins! ⭐</Typography>
+
+      <WinnerResultTabs numWinners={rounds}>
         {roundIndexes.map((i) => <STARResultSummaryWidget results={results} roundIndex={i}/>)}
       </WinnerResultTabs>
       <DetailedResultsExpander raceIndex={raceIndex} defaultSelectedIndex={-1}>
