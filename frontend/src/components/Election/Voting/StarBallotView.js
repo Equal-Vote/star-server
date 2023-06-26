@@ -29,7 +29,7 @@ export default function StarBallotView({
         Give your last choice(s) zero stars.
       </Typography>
       <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
-        Show preference order and level of support.
+      Score other candidates as desired.
       </Typography>
       <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
         Equal scores indicate no preference.

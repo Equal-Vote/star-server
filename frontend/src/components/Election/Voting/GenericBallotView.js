@@ -151,7 +151,7 @@ const Rows = ({ candidates, onClick, columns }) =>
 const ColumnHeadings = ({starHeadings, columns, leftTitle, rightTitle, headingPrefix}) => (
   <>
   { leftTitle != '' &&
-    <Grid sx={{pt: 3}} container alignItems="stretch" >
+    <Grid container alignItems="stretch" >
       <Grid item xs={5}></Grid>
       <Grid item xs={1}>
         <Typography align='center' className="columnDescriptor">
@@ -230,18 +230,18 @@ export default function GenericBallotView({
         <Grid container alignItems="center" justify="center" direction="column">
 
           <Grid item sx={{ p: 3 }}>
-            <Typography align='center' variant="h4" component="h4" className="title">
+            <Typography align='center' variant="h5" component="h4" fontWeight={'bold'}>
               {race.title}
             </Typography>
           </Grid>
-          {race.description &&
-            <Grid item sx={{p:3}}>
-            <Typography align='center' variant="h6" component="h6" style={{whiteSpace: 'pre-line'}}>
+          {race.description && 
+            <Grid item sx={{ pb: 5, px: 3 }}>
+            <Typography align='center' component="p" style={{whiteSpace: 'pre-line'}}>
               {race.description}
             </Typography>
           </Grid>}
 
-          <Grid item xs={8} sx={{ p:3, px:0 }} className="instructions">
+          <Grid item xs={8} sx={{ pb:5, px:0 }} className="instructions">
             {instructions}
           </Grid>
 
@@ -255,7 +255,7 @@ export default function GenericBallotView({
           <Divider className="rowDivider"/>
           <Rows candidates={candidates} onClick={onClick} columns={columnValues}/>
 
-          <Grid item xs={10} className="footer">
+          <Grid item xs={10} sx={{ p:5, px:0 }} className="footer">
             {footer}
           </Grid>
 
