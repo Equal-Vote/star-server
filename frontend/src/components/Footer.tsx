@@ -19,13 +19,27 @@ export default function Footer() {
     >
       <Container maxWidth="lg">
         <Grid container spacing={5}>
+          <Grid item xs={12} md={4} >
+            <Typography variant="h6" color="text.primary" gutterBottom sx={{textAlign: {xs: 'center',md: 'left'}}}>
+              STAR Elections
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{textAlign: {xs: 'center',md: 'left'}}}>
+              A project of the Equal Vote Coalition
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{textAlign: {xs: 'center',md: 'left'}}}>
+              PO Box 51245, Eugene, OR, USA 97405
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{textAlign: {xs: 'center',md: 'left'}}}>
+              <a target="blank" href='https://www.starvoting.org/'>starvoting.org</a> | <a target="blank" href='https://www.equal.vote/'>equal.vote</a>
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{textAlign: {xs: 'center',md: 'left'}}}>
+              <a href="mailto:elections@star.vote">elections@star.vote</a>
+            </Typography>
+          </Grid>
           <Grid item xs={12} md={4}>
             <Typography variant="h6" color="text.primary" gutterBottom sx={{
               pl: 1, pr: 1,
-              textAlign: {
-                xs: 'center',
-                md: 'left'
-              }
+              textAlign: 'center'
             }}>
               About Us
             </Typography>
@@ -33,21 +47,7 @@ export default function Footer() {
               pl: 1, pr: 1
             }}>
               STAR Elections is here to help make your dream election accessible to vote in and easy to officiate. Our mission is to support and empower the adoption and use of STAR Voting and better voting methods for polling, surveys, and real elections at any scale and for any scenario.
-              <br /><br />STAR Elections is a project of the Equal Vote Coalition 501c3. To support our work click <a target="blank" href='https://www.equal.vote/donate_double'>here</a>. All proceeds from the STAR Elections project go directly to helping fund and support the adoption of STAR Voting for public and private elections.
-            </Typography>
-          </Grid>
-          <Grid item xs={12} md={4} >
-            <Typography variant="h6" color="text.primary" gutterBottom align='center'>
-              STAR Elections
-            </Typography>
-            <Typography variant="body2" color="text.secondary" align='center'>
-              A project of the Equal Vote Coalition
-            </Typography>
-            <Typography variant="body2" color="text.secondary" align='center'>
-              PO Box 51245, Eugene, OR, USA 97405
-            </Typography>
-            <Typography variant="body2" color="text.secondary" align='center'>
-              <a target="blank" href='https://www.starvoting.org/'>starvoting.org</a> | <a target="blank" href='https://www.equal.vote/'>equal.vote</a>
+              <br /><br />STAR Elections is a project of the Equal Vote Coalition 501c3. To support our work click <a target="blank" href='https://www.equal.vote/donate_double'>here</a>. All proceeds from the STAR Elections project go directly to helping fund and support the adoption and use of STAR Voting.
             </Typography>
           </Grid>
           <Grid item xs={12} md={4} >
@@ -101,6 +101,6 @@ export default function Footer() {
           </Typography>
         </Box> */}
       </Container>
-    </Box>
+    </Box >
   );
 }
