@@ -154,6 +154,7 @@ const Sandbox = () => {
                     {isPending && <div> Loading Results... </div>}
                     {data && (
                         <Results
+                            title=''
                             raceIndex='0'
                             result={data.Results}
                             race={{

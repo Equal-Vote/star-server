@@ -323,11 +323,14 @@ code {
   align-items: center;
 }
 
-.resultViewer .detailedWidgets{
+.detailExpanderGroup{
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
+  cursor: pointer;
+  align-items: center;
+  width: 100%;
 }
 
 .statsWidget strong{
