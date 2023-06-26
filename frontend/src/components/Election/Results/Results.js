@@ -24,10 +24,18 @@ function STARResultViewer({ raceIndex, results, rounds }) {
       <WinnerResultTabs numWinners={rounds}>
         {roundIndexes.map((i) => <STARResultSummaryWidget results={results} roundIndex={i}/>)}
       </WinnerResultTabs>
-      <DetailExpander title='Detailed Results'>
+      <DetailExpander title='Details'>
         <DetailExpanderGroup defaultSelectedIndex={-1}>
           <STARResultTableWidget title="Election Results" results={results} rounds={rounds}/>
           <STARResultDetailedStepsWidget title="Detailed Steps" results={results} rounds={rounds}/>
+          <div title="How STAR Voting works" style={{maxWidth: '100%'}}>
+            <img style={{display: 'block', width: '100%', maxWidth: '400px', margin: '0 auto 0 auto'}} src="/images/star_info_vertical.png"/>
+            <hr/>
+            {/*https://faq.dailymotion.com/hc/en-us/articles/360022841393-How-to-preserve-the-player-aspect-ratio-on-a-responsive-page#:~:text=In%20the%20HTML%2C%20put%20the,56.25%25%20%3D%2016%3A9.*/}
+            <div style={{position: 'relative', paddingBottom: "56.25%"}}>
+              <iframe style={{position: 'absolute', width: '100%', height: '100%'}} src="https://www.youtube.com/embed/3-mOeUXAkV0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+          </div>
         </DetailExpanderGroup>
       </DetailExpander>
     </div>
