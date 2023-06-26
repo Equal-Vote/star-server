@@ -306,7 +306,7 @@ export default function Results({ title, raceIndex, race, result }) {
       <div className="flexContainer" style={{textAlign: 'center'}}>
         {result.summaryData.nValidVotes == 0 && <h2>Still waiting for results<br/>No votes have been cast</h2>}
         <Typography variant="h5" sx={{fontWeight: 'bold'}}>⭐ { formatter.format(result.elected.map(c => c.name))} Wins! ⭐</Typography>
-        {result.summaryData.nValidVotes == 1 && <h2>There's only one vote</h2> }
+        {result.summaryData.nValidVotes == 1 && <p>There's only one vote so far<br/>Full results will be displayed once there's more votes</p> }
         {result.summaryData.nValidVotes > 1 &&
           <>
           {race.voting_method === "STAR" && <STARResultViewer raceIndex={raceIndex} results={result} rounds={race.num_winners} /> }
