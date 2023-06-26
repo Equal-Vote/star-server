@@ -63,7 +63,8 @@ We shouldn't ever need to use the root admin user, instead we should create sepe
 Repeat all the the following steps for the STAR Voting realm and the STAR Voting Dev realm
 
 1. Hover over "Master" in the top left, and click "Add Realm"
-1. Give it a name (STAR Voting or STAR Voting Dev), and hit create
+1. Give it a name (STARVoting or STARVotingDev), and hit create
+1. Under "Realm Settings", set the display name to include spaces
 1. Under "Realm Settings" > "Login". Enable the following
     * User Registration
     * Forgot password
@@ -72,11 +73,15 @@ Repeat all the the following steps for the STAR Voting realm and the STAR Voting
 1. Under "Realm Settings" > "Email". Set the following (this assumes you setup sendgrid seperately)
     * Host: smtp.sendgrid.net
     * Port: 465
-    * From: mike@equal.vote
+    * From: elections@star.vote
     * Enable SSL: ON
     * Enable Authenticaion: ON
     * Authentication Username: apikey
     * Authentication Password: Use SENDGRID_API_KEY from [drive](https://docs.google.com/document/d/1D4CJ9l6lnR39YYPUvw_HbeUVXNR-tAbNF6eT89oxEuk)
+1. Under "Realm Settings" > "Token Settings". Set the following
+    * SSO Session Max: 10 Days
+    * Access Token Lifespan: 5 Days
+    * (there might be more, if user sessions are expiring too quickly you can come back to make tweaks)
 1. Under "Clients", select "Create" and specify the following and hit "Save"
     * Client ID: star_vote_web
 1. Under "Clients" > "star_vote_web" > "Settings" set the following and hit "Save"
@@ -85,6 +90,7 @@ Repeat all the the following steps for the STAR Voting realm and the STAR Voting
     * Service Accounts Enabled: OFF (this was ON in the previous setup but I don't think we need it?)
     * Valid Redirect URISs: (these are all the websites that can use this login endpoint)
         * https://star-vote.herokuapp.com
+        * https://star-vote.herokuapp.com/*
         * https://star-vote-review-1.herokuapp.com
         * https://star-vote-review-2.herokuapp.com
         * https://star-vote-review-3.herokuapp.com
@@ -93,12 +99,20 @@ Repeat all the the following steps for the STAR Voting realm and the STAR Voting
     * Client Authenticator: Client Id and Secret
 
 
+## Add login with Google
+
+We have all google api stuff under mike@equal.vote 
+
+Follow the guide here to set that up
+
+https://keycloakthemes.com/blog/how-to-setup-sign-in-with-google-using-keycloak
+
 
 ## Point website to new endpoint
 
 The dev and production environments need to be updated to point to the new keycloak service. You'll need the endpoint and secret for this
 
- * **endpoint**: The OIDC endpoint would be https://auth.star.vote:8443/realms/STAR%20Voting%20Dev/protocol/openid-connect (remove the %20Dev for the production environment)
+ * **endpoint**: The OIDC endpoint would be https://auth.star.vote:8443/realms/STARVotingDev/protocol/openid-connect (remove the Dev for the production environment)
  * **secret**: Copy this from "Clients" > "star_vote_web" > "Credentials" 
 
  > NOTE: Aside from the domain the endpoint structure is slightly different from the previous pattern due to a recent keycloak update [more info](https://stackoverflow.com/questions/48056418/keycloak-returns-404-not-found-page)
