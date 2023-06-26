@@ -5,9 +5,9 @@ import { Imsg } from "./IEmail"
 import { DateTime } from 'luxon'
 
 const emailSettings: Partial<Imsg> = {
-    asm: {
-        groupId: 21140
-    },
+    asm: process.env.SENDGRID_GROUP_ID ? {
+        groupId: parseInt(process.env.SENDGRID_GROUP_ID)
+    }  : undefined,
     mail_settings: process.env.EMAIL_TEST_MODE ? {
         "sandbox_mode": {
             "enable": true

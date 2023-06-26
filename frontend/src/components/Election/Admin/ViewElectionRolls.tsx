@@ -45,6 +45,12 @@ const ViewElectionRolls = ({ election, permissions }) => {
         sendInvites.makeRequest()
     }
 
+    const onUpdate = async () => {
+        const results = await fetchRolls()
+        if (!results) return
+        setEditedRoll(currentRoll => results.electionRoll.find(roll => roll.voter_id === currentRoll.voter_id))
+    }
+
     const headCells: HeadCell[] = [
         {
             id: 'voter_id',
@@ -61,6 +67,18 @@ const ViewElectionRolls = ({ election, permissions }) => {
             filterType: 'search'
         },
         {
+            id: 'invite_status',
+            numeric: false,
+            disablePadding: false,
+            label: 'Email Invites',
+            filterType: 'groups',
+            filterGroups: {
+                'Not Sent': true,
+                'Sent': true,
+                'Failed': true,
+            }
+        },
+        {
             id: 'has_voted',
             numeric: false,
             disablePadding: false,
@@ -68,7 +86,7 @@ const ViewElectionRolls = ({ election, permissions }) => {
             filterType: 'groups',
             filterGroups: {
                 'false': true,
-                'true' : true,
+                'true': true,
             }
         },
         {
@@ -79,7 +97,7 @@ const ViewElectionRolls = ({ election, permissions }) => {
             filterType: 'groups',
             filterGroups: {
                 approved: true,
-                registered : true,
+                registered: true,
             }
         },
         {
@@ -101,14 +119,26 @@ const ViewElectionRolls = ({ election, permissions }) => {
     const tableData = React.useMemo(
         () => {
             if (data && data.electionRoll) {
-                return data.electionRoll.map(roll => ({
-                    voter_id: roll.voter_id,
-                    email: roll.email || '',
-                    ip: roll.ip_address || '',
-                    precinct: roll.precinct || '',
-                    has_voted: roll.submitted.toString(),
-                    state: roll.state.toString()
-                }))
+                const invite_status = 'Not Sent';
+                return data.electionRoll.map(roll => {
+                    let invite_status = 'Not Sent'
+                    if (roll.email_data && roll.email_data.inviteResponse) {
+                        if (roll.email_data.inviteResponse.length > 0 && roll.email_data.inviteResponse[0].statusCode < 400) {
+                            invite_status = 'Sent'
+                        } else {
+                            invite_status = 'Failed'
+                        }
+                    }
+                    return {
+                        voter_id: roll.voter_id,
+                        email: roll.email || '',
+                        invite_status: invite_status,
+                        ip: roll.ip_address || '',
+                        precinct: roll.precinct || '',
+                        has_voted: roll.submitted.toString(),
+                        state: roll.state.toString()
+                    }
+                })
             } else {
                 return null
             }
@@ -140,7 +170,7 @@ const ViewElectionRolls = ({ election, permissions }) => {
                 </>
             }
             {isEditing && editedRoll &&
-                <EditElectionRoll roll={editedRoll} onClose={onClose} fetchRolls={fetchRolls} id={id} permissions={permissions} />
+                <EditElectionRoll roll={editedRoll} onClose={onClose} fetchRolls={onUpdate} id={id} permissions={permissions} />
             }
             {addRollPage &&
                 <AddElectionRoll election={election} onClose={onClose} />

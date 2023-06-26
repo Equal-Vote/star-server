@@ -26,7 +26,7 @@ export type SendInviteEvent = {
 }
 
 const sendInvitationsController = async (req: any, res: any, next: any) => {
-    Logger.info(req, `${className}.finalize ${req.election.election_id}`);
+    Logger.info(req, `${className}.sendInvitations ${req.election.election_id}`);
     expectPermission(req.user_auth.roles, permissions.canSendEmails)
 
     const electionId = req.election.election_id;
@@ -89,6 +89,33 @@ async function sendBatchEmailInvites(req: any, electionRoll: ElectionRoll[], ele
     }
 }
 
+const sendInvitationController = async (req: any, res: any, next: any) => {
+    Logger.info(req, `${className}.sendInvite ${req.election.election_id} ${req.params.voter_id}`);
+    expectPermission(req.user_auth.roles, permissions.canSendEmails)
+
+    if (!(req.election.settings.voter_access === 'closed' && req.election.settings.invitation === 'email')) {
+        throw new BadRequest('Email invitations not enabled')
+    }
+    const url = req.protocol + '://' + req.get('host')
+
+    const electionId = req.election.election_id;
+    const election = req.election
+    const voter_id = req.params.voter_id
+    if (!voter_id) {
+        throw new BadRequest('Voter ID not specified')
+    }
+    const electionRoll = await ElectionRollModel.getByVoterID(electionId, voter_id, req)
+    if (!electionRoll) {
+        //this should hopefully never happen
+        Logger.error(req, `Could not find voter ${voter_id}`);
+        throw new InternalServerError('Could not find voter');
+    }
+
+    const updatedElectionRoll = await sendInvitation(req, election, electionRoll, req.user.email, url)
+
+    return res.status('200').json({electionRoll: updatedElectionRoll})
+}
+
 async function handleSendInviteEvent(job: { id: string; data: SendInviteEvent; }): Promise<void> {
     const event = job.data;
     const ctx = Logger.createContext(event.requestId);
@@ -98,14 +125,22 @@ async function handleSendInviteEvent(job: { id: string; data: SendInviteEvent; }
         Logger.error(ctx, `Could not find voter ${event.electionRoll.voter_id}`);
         throw new InternalServerError('Could not find voter');
     }
-    const invites = Invites(event.election, [electionRoll], event.url)
+    await sendInvitation(ctx, event.election, electionRoll, event.sender, event.url)
+}
+
+async function sendInvitation(ctx: any, election:Election, electionRoll: ElectionRoll, sender: string, url: string) {
+    const invites = Invites(election, [electionRoll], url)
     const emailResponse = await EmailService.sendEmails(invites)
     if (!electionRoll.email_data) {
         electionRoll.email_data = {}
     }
     //Should have an array of one response in which case grab the first, but could have an error message
+    let emailSuccess = false
     if (emailResponse.length > 0) {
         electionRoll.email_data.inviteResponse = emailResponse[0]
+        if (emailResponse[0][0].statusCode < 400) {
+            emailSuccess = true
+        }
     } else {
         electionRoll.email_data.inviteResponse = emailResponse
     }
@@ -113,12 +148,17 @@ async function handleSendInviteEvent(job: { id: string; data: SendInviteEvent; }
         electionRoll.history = [];
     }
     electionRoll.history.push({
-        action_type: "email invite sent",
-        actor: event.sender,
+        action_type: `email invite sent: ${emailSuccess ? 'success' : 'failed'}`,
+        actor: sender,
         timestamp: Date.now(),
     });
     try {
-        await ElectionRollModel.update(electionRoll, ctx, `User submits a ballot`);
+        const updatedElectionRoll = await ElectionRollModel.update(electionRoll, ctx, `Email Invite Sent`);
+        if (updatedElectionRoll) {
+            return updatedElectionRoll
+        } else {
+            throw new InternalServerError()
+        }
     } catch (err: any) {
         const msg = `Could not update election roll`;
         Logger.error(ctx, `${msg}: ${err.message}`);
@@ -128,6 +168,7 @@ async function handleSendInviteEvent(job: { id: string; data: SendInviteEvent; }
 
 module.exports = {
     sendInvitationsController,
+    sendInvitationController,
     handleSendInviteEvent,
     sendBatchEmailInvites
 }
