@@ -17,8 +17,9 @@ const ViewElectionResults = ({ election }) => {
             display='flex'
             justifyContent="center"
             alignItems="center"
-            sx={{ width: '100%', textAlign: 'center' }}>
-            <Paper elevation={3} sx={{p:2,maxWidth:1200, backgroundColor:'brand.white'}}  >
+            sx={{ width: '100%', textAlign: 'center'}}
+        >
+            <Paper elevation={3} sx={{p:2,maxWidth:1200, backgroundColor:'brand.white', marginBottom: 2}}  >
                 <Typography variant="h3" component="h3" sx={{marginBottom: 4}}>
                     {election.state === 'closed' ? 'OFFICIAL RESULTS' : 'PRELIMINARY RESULTS'}
                 </Typography>
