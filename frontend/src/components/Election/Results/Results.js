@@ -7,34 +7,29 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import { useState } from 'react'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Typography from '@mui/material/Typography';
+import { DetailExpander, DetailExpanderGroup } from '../../util';
 import STARResultSummaryWidget from "./STARResultSummaryWidget";
-import DetailedResultsExpander from "./DetailedResultsExpander";
 import STARResultTableWidget from "./STARResultTableWidget";
-import STARResultStatsWidget from "./STARResultStatsWidget";
 import STARResultDetailedStepsWidget from "./STARResultDetailedStepsWidget";
 import WinnerResultTabs from "./WinnerResultTabs";
+
+const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
 function STARResultViewer({ raceIndex, results, rounds }) {
   let i = 0;
   const roundIndexes = Array.from({length: rounds}, () => i++);
-  
-  const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
   return (
     <div className="resultViewer">
-      <Typography variant="h5" sx={{fontWeight: 'bold'}}>⭐ { formatter.format(results.elected.map(c => c.name))} Wins! ⭐</Typography>
-
       <WinnerResultTabs numWinners={rounds}>
         {roundIndexes.map((i) => <STARResultSummaryWidget results={results} roundIndex={i}/>)}
       </WinnerResultTabs>
-      <DetailedResultsExpander raceIndex={raceIndex} defaultSelectedIndex={-1}>
-         <STARResultTableWidget title="Election Results" results={results} rounds={rounds}/>
-         {
-          //<STARResultStatsWidget title="Statistics" results={results}/>
-          //<MatrixViewer title="Preference Matrix" results={results}/>
-         }
-         <STARResultDetailedStepsWidget title="Detailed Steps" results={results} rounds={rounds}/>
-      </DetailedResultsExpander>
+      <DetailExpander title='Detailed Results'>
+        <DetailExpanderGroup defaultSelectedIndex={-1}>
+          <STARResultTableWidget title="Election Results" results={results} rounds={rounds}/>
+          <STARResultDetailedStepsWidget title="Detailed Steps" results={results} rounds={rounds}/>
+        </DetailExpanderGroup>
+      </DetailExpander>
     </div>
   );
 }
@@ -305,19 +300,16 @@ function PRResultsViewer({ result }) {
   )
 }
 
-export default function Results({ raceIndex, race, result }) {
+export default function Results({ title, raceIndex, race, result }) {
   return (
     <div>
-      <div className="flexContainer">
+      <div className="flexContainer" style={{textAlign: 'center'}}>
         {result.summaryData.nValidVotes == 0 && <h2>Still waiting for results<br/>No votes have been cast</h2>}
-        {result.summaryData.nValidVotes > 0 &&
+        <Typography variant="h5" sx={{fontWeight: 'bold'}}>⭐ { formatter.format(result.elected.map(c => c.name))} Wins! ⭐</Typography>
+        {result.summaryData.nValidVotes == 1 && <h2>There's only one vote</h2> }
+        {result.summaryData.nValidVotes > 1 &&
           <>
-          {race.voting_method === "STAR" &&
-            <>
-              <STARResultViewer raceIndex={raceIndex} results={result} rounds={race.num_winners} />
-            </>}
-
-
+          {race.voting_method === "STAR" && <STARResultViewer raceIndex={raceIndex} results={result} rounds={race.num_winners} /> }
           {race.voting_method === "STAR_PR" &&
             <>
               {/* PR tabulator needs to be refactored to match interface of other methods */}
