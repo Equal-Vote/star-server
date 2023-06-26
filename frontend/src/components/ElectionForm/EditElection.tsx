@@ -1,14 +1,13 @@
 import React from 'react'
 import { useParams } from "react-router";
-import useFetch from "../../hooks/useFetch";
 import Container from '@mui/material/Container';
 import ElectionForm from "./ElectionForm";
 import { useNavigate } from "react-router"
+import { useEditElection } from '../../hooks/useAPI';
 
 const EditElection = ({ authSession, election, fetchElection}) => {
     const navigate = useNavigate()
-    const { id } = useParams();
-    const { isPending, error, makeRequest: editElection } = useFetch(`/API/Election/${election.election_id}/edit`,'post')
+    const { isPending, error, makeRequest: editElection } = useEditElection(election.election_id)
     const onEditElection = async (election) => {
         const newElection = await editElection(
             {

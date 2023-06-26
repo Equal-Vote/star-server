@@ -6,15 +6,15 @@ import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Container from '@mui/material/Container';
-import useFetch from "../../../hooks/useFetch";
 import Box from '@mui/material/Box';
 import { Checkbox, FormGroup, FormControlLabel } from '@mui/material';
+import { usePostRolls } from "../../../hooks/useAPI";
 
 
 const AddElectionRoll = ({ election, onClose }) => {
 
     const [voterIDList, setVoterIDList] = useState('')
-    const postRoll = useFetch(`/API/Election/${election.election_id}/rolls/`, 'post')
+    const postRoll = usePostRolls(election.election_id)
     const [file, setFile] = useState()
     const fileReader = new FileReader()
     const [enableVoterID, setEnableVoterID] = useState(false)

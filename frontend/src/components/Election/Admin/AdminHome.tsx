@@ -1,4 +1,3 @@
-import useFetch from "../../../hooks/useFetch";
 import React from 'react'
 import Grid from "@mui/material/Grid";
 import { Box, Divider, Paper } from "@mui/material";
@@ -7,6 +6,7 @@ import { StyledButton } from "../../styles";
 import { Link } from 'react-router-dom';
 import { Election } from '../../../../../domain_model/Election';
 import ShareButton from "../ShareButton";
+import { useArchiveEleciton, useFinalizeEleciton, useSetPublicResults } from "../../../hooks/useAPI";
 const hasPermission = (permissions: string[], requiredPermission: string) => {
     return (permissions && permissions.includes(requiredPermission))
 }
@@ -357,14 +357,14 @@ const ShareSection = ({ election, permissions }: { election: Election, permissio
 }
 
 const AdminHome = ({ election, permissions, fetchElection }: Props) => {
-    const { makeRequest } = useFetch(`/API/Election/${election.election_id}/setPublicResults`, 'post')
+    const { makeRequest } = useSetPublicResults(election.election_id)
     const togglePublicResults = async () => {
         const public_results = !election.settings.public_results
         await makeRequest({ public_results: public_results })
         await fetchElection()
     }
-    const { makeRequest: finalize } = useFetch(`/API/Election/${election.election_id}/finalize`, 'post')
-    const { makeRequest: archive } = useFetch(`/API/Election/${election.election_id}/archive`, 'post')
+    const { makeRequest: finalize } = useFinalizeEleciton(election.election_id)
+    const { makeRequest: archive } = useArchiveEleciton(election.election_id)
     const finalizeElection = async () => {
         console.log("finalizing election")
         try {

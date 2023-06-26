@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from "react-router";
-import useFetch from "../../../hooks/useFetch";
 import Results from './Results';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import { Paper, Typography } from "@mui/material";
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { scrollToElement } from '../../util';
+import { useGetResults } from '../../../hooks/useAPI';
 
 const ViewElectionResults = ({ election }) => {
-    const { id } = useParams();
-    const { data, isPending, error, makeRequest: getResults } = useFetch(`/API/ElectionResult/${id}`, 'get')
+    const { data, isPending, error, makeRequest: getResults } = useGetResults(election.election_id)
     const [selectedRaceIndex, setSelectedRaceIndex] = useState((election.races.length == 1)? 0 : -1);
     useEffect(() => { getResults() }, [])
 

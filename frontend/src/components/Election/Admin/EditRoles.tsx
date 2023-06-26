@@ -5,9 +5,9 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import useFetch from "../../../hooks/useFetch";
 import { useNavigate } from "react-router"
 import PermissionHandler from "../../PermissionHandler";
+import { usePutElectionRoles } from "../../../hooks/useAPI";
 
 const EditRoles = ({ election, permissions }) => {
     const navigate = useNavigate()
@@ -27,7 +27,7 @@ const EditRoles = ({ election, permissions }) => {
         return election.credential_ids.join('\n')
     })
 
-    const putRoles = useFetch(`/API/Election/${election.election_id}/roles/`, 'put')
+    const putRoles = usePutElectionRoles(election.election_id)
 
     const onSubmit = async (e) => {
         e.preventDefault()

@@ -5,14 +5,14 @@ import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
-import useFetch from "../../../hooks/useFetch";
 import PermissionHandler from "../../PermissionHandler";
 import { useParams } from "react-router";
+import { useGetBallot } from "../../../hooks/useAPI";
 
 const ViewBallot = ({ election, ballot, onClose, fetchBallot, permissions }) => {
     const { ballot_id } = useParams();
 
-    const { data, isPending, error, makeRequest: fetchBallots } = useFetch(`/API/Election/${election.election_id}/ballot/${ballot_id}`, 'get')
+    const { data, isPending, error, makeRequest: fetchBallots } = useGetBallot(election.election_id, ballot_id)
 
     useEffect(() => {
         if (ballot_id) {

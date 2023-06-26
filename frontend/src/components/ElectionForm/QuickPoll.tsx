@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import useFetch from '../../hooks/useFetch';
 import Container from '@mui/material/Container';
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -11,11 +10,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useCookie } from '../../hooks/useCookie';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import Typography from '@mui/material/Typography';
+import { usePostElection } from '../../hooks/useAPI';
 
 const QuickPoll = ({ authSession }) => {
     const [tempID, setTempID] = useCookie('temp_id', '0')
     const navigate = useNavigate()
-    const { error, isPending, makeRequest: postElection } = useFetch('/API/Elections', 'post')
+    const { error, isPending, makeRequest: postElection } = usePostElection()
     const onSubmitElection = async (election) => {
         // calls post election api, throws error if response not ok
         const newElection = await postElection(

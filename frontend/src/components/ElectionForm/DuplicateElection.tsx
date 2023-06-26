@@ -1,10 +1,10 @@
 import React from 'react'
 import { useParams } from "react-router";
-import useFetch from "../../hooks/useFetch";
 import Container from '@mui/material/Container';
 import ElectionForm from "./ElectionForm";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router"
+import { useGetElection, usePostElection } from '../../hooks/useAPI';
 
 const DuplicateElection = ({ authSession }) => {
     const navigate = useNavigate()
@@ -12,8 +12,8 @@ const DuplicateElection = ({ authSession }) => {
 
     const [data, setData] = useState(null);
 
-    let { data: prevData, isPending, error, makeRequest: fetchElection } = useFetch(`/API/Election/${id}`, 'get');
-    const { isPending: postIsPending, error: postError, makeRequest: postElection } = useFetch('/API/Elections', 'post')
+    let { data: prevData, isPending, error, makeRequest: fetchElection } = useGetElection(id);
+    const { isPending: postIsPending, error: postError, makeRequest: postElection } = usePostElection()
     useEffect(() => {
         fetchElection()
     }, [])

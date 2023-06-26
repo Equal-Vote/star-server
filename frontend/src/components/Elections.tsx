@@ -1,4 +1,3 @@
-import useFetch from "../hooks/useFetch"
 import React, { useEffect } from 'react'
 import { Election } from "../../../domain_model/Election"
 import Typography from '@mui/material/Typography';
@@ -7,19 +6,15 @@ import Button from "@mui/material/Button";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
 import EnhancedTable, { HeadCell } from "./EnhancedTable";
 import { useNavigate } from "react-router"
+import { useGetElections } from "../hooks/useAPI";
 
 const Elections = ({ authSession }) => {
 
     const navigate = useNavigate()
     // const url_params = new URLSearchParams(window.location.search)
-    var url = '/API/Elections';
-    // if (url_params.has('filter')) {
-    //     url = `${url}?filter=${url_params.get('filter')}`
-    // }
-    const { data, isPending, error, makeRequest: fetchElections } = useFetch(url, 'get')
+    const { data, isPending, error, makeRequest: fetchElections } = useGetElections()
 
     useEffect(() => {
-        console.log(`fetch ${url}`)
         fetchElections()
     }, [])
 
