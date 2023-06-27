@@ -258,20 +258,34 @@ export function runStarRound(summaryData: summaryData, remainingCandidates: cand
     finalists.push(tiedCandidates[0])
   }
 
-  if (summaryData.pairwiseMatrix[finalists[0].index][finalists[1].index] === 1) {
+  // votes with preference to 0 over 1
+  const leftVotes = summaryData.preferenceMatrix[finalists[0].index][finalists[1].index]
+  // votes with preference to 1 over 0
+  const rightVotes = summaryData.preferenceMatrix[finalists[1].index][finalists[0].index]
+  const noPrefVotes = summaryData.nValidVotes - leftVotes - rightVotes;
+
+  if (leftVotes > rightVotes){
     // First candidate wins runoff
     roundResults.winners.push(finalists[0])
     roundResults.runner_up.push(finalists[1])
-    roundResults.logs.push(`${finalists[0].name} defeats ${finalists[1].name} with ${summaryData.preferenceMatrix[finalists[0].index][finalists[1].index]} votes to ${summaryData.preferenceMatrix[finalists[1].index][finalists[0].index]}.`)
+    roundResults.logs.push(
+      `${finalists[0].name} defeats ${finalists[1].name} with ${leftVotes} votes to ${rightVotes}, and ${noPrefVotes} no preference votes.`
+    )
     return roundResults
   }
-  if (summaryData.pairwiseMatrix[finalists[1].index][finalists[0].index] === 1) {
+  if (leftVotes < rightVotes) {
     // Second candidate wins runoff
     roundResults.winners.push(finalists[1])
     roundResults.runner_up.push(finalists[0])
-    roundResults.logs.push(`${finalists[1].name} defeats ${finalists[0].name} with ${summaryData.preferenceMatrix[finalists[1].index][finalists[0].index]} votes to ${summaryData.preferenceMatrix[finalists[0].index][finalists[1].index]}.`)
+    roundResults.logs.push(
+      `${finalists[1].name} defeats ${finalists[0].name} with ${rightVotes} votes to ${leftVotes}, and ${noPrefVotes} no preference votes.`
+    )
     return roundResults
   }
+  roundResults.logs.push(
+      `${finalists[0].name} ties ${finalists[1].name} in runoff with ${rightVotes} votes to ${leftVotes}, and ${noPrefVotes} no preference votes.`
+  )
+
   // Tie, run runoff tiebreaker
   const runoffTieWinner = runRunoffTiebreaker(summaryData, finalists)
   if (runoffTieWinner === 0) {
