@@ -30,25 +30,32 @@ const STARResultSummaryWidget = ({ results, roundIndex }) => {
         .map(winner => winner.index);
 
     const histData = results.summaryData.candidates
-        .map((c, n) => ({
+        .map((c, i) => ({
             name: c.name,
-            votes: results.summaryData.totalScores[n].score,
+            index: i,
+            votes: results.summaryData.totalScores[i].score,
             // vvvv HACK to get the bars to fill the whole width, this is useful if we want to test the graph padding
-            votesBig: results.summaryData.totalScores[n].score*10000 
+            votesBig: results.summaryData.totalScores[i].score*10000 
         }))
         .filter((_, i) => !prevWinners.includes(i));
-
-    histData.sort((a, b) => b.votes - a.votes);
-
-    for(let i = 0; i < 2; i++){
-        histData[i].name = `⭐${histData[i].name}`
-    }
 
     const winnerIndex = results.roundResults[roundIndex].winners[0].index;
     const runnerUpIndex = results.roundResults[roundIndex].runner_up[0].index;
     const winnerVotes = results.summaryData.preferenceMatrix[winnerIndex][runnerUpIndex];
     const runnerUpVotes = results.summaryData.preferenceMatrix[runnerUpIndex][winnerIndex];
     const noPrefVotes = results.summaryData.nValidVotes - winnerVotes - runnerUpVotes;
+
+    histData.sort((a, b) => {
+        if(a.index == winnerIndex) return -1;
+        if(b.index == winnerIndex) return 1;
+        if(a.index == runnerUpIndex) return -1;
+        if(b.index == runnerUpIndex) return 1;
+        return b.votes - a.votes;
+    });
+
+    for(let i = 0; i < 2; i++){
+        histData[i].name = `⭐${histData[i].name}`
+    }
 
     var pieColors = [
         COLORS[roundIndex % COLORS.length],
