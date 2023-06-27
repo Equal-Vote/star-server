@@ -117,7 +117,7 @@ const AddCandidate = ({ onEditCandidate, candidate, index }: CandidateProps) => 
                     <Button
                         onClick={() => setEditCandidate(true)}
                     >
-                        <Typography variant="h6" component="h6"> Add Bio </Typography>
+                        <Typography variant="h6" component="h6"> Add Details </Typography>
                     </Button>
                 </Grid>}
             {editCandidate &&
