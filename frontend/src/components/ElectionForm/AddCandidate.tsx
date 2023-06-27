@@ -88,7 +88,7 @@ const AddCandidate = ({ onEditCandidate, candidate, index }: CandidateProps) => 
                 <TextField
                     id={`candidate-name-${String(index)}`}
                     name="new-candidate-name"
-                    label="Name"
+                    label={candidate.candidate_name == ''? "Add Candidate" : "Name"}
                     type="text"
                     value={candidate.candidate_name}
                     fullWidth
@@ -109,7 +109,7 @@ const AddCandidate = ({ onEditCandidate, candidate, index }: CandidateProps) => 
                     <Button
                         onClick={() => setEditCandidate(false)}
                     >
-                        <Typography variant="h6" component="h6"> Save </Typography>
+                        <Typography variant="h6" component="h6"> Hide </Typography>
                     </Button>
                 </Grid>
                 :
