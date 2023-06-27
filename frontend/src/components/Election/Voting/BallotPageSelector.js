@@ -25,6 +25,7 @@ export default function BallotPageSelector({page, races, onUpdate}) {
           <img style={{maxWidth: '100%'}} src="/images/star_info_vertical_top.png"/>
           <DetailExpander title='Learn More'>
             <img style={{maxWidth: '100%'}} src="/images/star_info_vertical_bottom.png"/>
+            <hr/>
             <iframe width="480" height="270" src="https://www.youtube.com/embed/3-mOeUXAkV0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
           </DetailExpander>
           </>
