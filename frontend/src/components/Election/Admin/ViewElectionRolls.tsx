@@ -159,13 +159,16 @@ const ViewElectionRolls = ({ election, permissions }) => {
                         <Button variant='outlined' onClick={() => setAddRollPage(true)} > Add Voters </Button>
                     </PermissionHandler>
                     <Button variant='outlined' onClick={() => onSendInvites()} > Send Invites </Button>
-                    <EnhancedTable
-                        headCells={headCells}
-                        data={tableData}
-                        defaultSortBy="voter_id"
-                        tableTitle="Voters"
-                        handleOnClick={(voter) => onOpen(voter)}
-                    />
+                    {tableData.length == 0 && <p>This election doesn't have any voters on the roll yet</p>}
+                    {tableData.length > 0 &&
+                        <EnhancedTable
+                            headCells={headCells}
+                            data={tableData}
+                            defaultSortBy="voter_id"
+                            tableTitle="Voters"
+                            handleOnClick={(voter) => onOpen(voter)}
+                        />
+                    }
                 </>
             }
             {isEditing && editedRoll &&
