@@ -358,7 +358,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                     <Question
                         Enable={page === 'Emails?'}
                         Question='Will you provide a list of emails or voter IDs?'
-                        HelpText=''
+                        HelpText="(You'll be able to add the list once the election is drafted)"
                         Option1={{
                             Answer: 'Emails',
                             HelpText: '',
