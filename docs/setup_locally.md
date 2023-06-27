@@ -139,13 +139,16 @@ You need a reference from your local clone to the `upstream` repository in addit
 
 Now that you have a local copy of star.vote, you can follow these instructions to run it locally.
 
-
+To run the server locally run the following commands
 ```
 # terminal 1
 cd backend
 npm install
 npm start
+```
 
+To run the web client run the following commands. If you want to just run the web client without setting up the server you can change the proxy under frontend/package.json to "proxy": "https://star-vote-staging.herokuapp.com/". 
+```
 # terminal 2
 cd frontend
 npm install
@@ -258,15 +261,6 @@ Deploying to localhost still uses the same KeyCloak userbase as production (at l
 
 1. Click the login button
 2. Login with your standard credentials (i.e. not admin)
-3. This will redirect you back to localhost, and you'll likely get a insecure error. To fix this update the url to use http instead of https
-
-![](images/disable_keycloak_https.gif)
-
-> **Why can't we fix the "Insecure Connection" error?**<br>
-> Keycloak has a policy to always redirect to https instead of http, but it's really hard to setup localhost to use https. So this hack is the best we can do for the sake of testing (Side note: Most identity providers have this rule, but some make an exception for localhost in order to accomodate this use case)
-
-4. At the time of writing there's a bug where you need to refresh the page one more time to complete the login, so try that if you're not logged in yet
-
 
 ## Making changes locally
 
