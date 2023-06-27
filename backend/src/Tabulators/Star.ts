@@ -178,21 +178,21 @@ export function runStarRound(summaryData: summaryData, remainingCandidates: cand
   // Iterate through remaining candidates looking for two top scoring candidates to advance to runoff round
   // In most elections this is a simple process, but for cases where there are ties we advance one candidate at a time
   // and resolve ties as they occur
-  const runoffCandidates: candidate[] = []
-  scoreLoop: while (runoffCandidates.length < 2) {
-    const nCandidatesNeeded = 2 - runoffCandidates.length
-    const eligibleCandidates = remainingCandidates.filter(c => !runoffCandidates.includes(c))
+  const finalists: candidate[] = []
+  scoreLoop: while (finalists.length < 2) {
+    const nCandidatesNeeded = 2 - finalists.length
+    const eligibleCandidates = remainingCandidates.filter(c => !finalists.includes(c))
     const scoreWinners = getScoreWinners(summaryData, eligibleCandidates)
     if (scoreWinners.length === 1) {
       // Candidate has top score, advances to runoff
-      runoffCandidates.push(summaryData.candidates[scoreWinners[0].index])
+      finalists.push(summaryData.candidates[scoreWinners[0].index])
       roundResults.logs.push(`${scoreWinners[0].name} advances to the runoff round with a score of ${summaryData.totalScores[scoreWinners[0].index].score}.`)
       continue scoreLoop
     }
 
     if (scoreWinners.length === 2 && nCandidatesNeeded === 2) {
       // Tie between two candidates, but both can advance to runoff
-      runoffCandidates.push(...scoreWinners)
+      finalists.push(...scoreWinners)
       roundResults.logs.push(`${scoreWinners[0].name} and ${scoreWinners[1].name} advance to the runoff round.`)
       continue scoreLoop
     }
@@ -211,7 +211,7 @@ export function runStarRound(summaryData: summaryData, remainingCandidates: cand
       // All tied candidates have the same number of head to head lossess
       if (nCandidatesNeeded === 2 && tiedCandidates.length === 2) {
         // Tie between two candidates, but both can advance to runoff
-        runoffCandidates.push(...tiedCandidates)
+        finalists.push(...tiedCandidates)
         roundResults.logs.push(`${tiedCandidates[0].name} and ${tiedCandidates[1].name} win score tiebreaker and advance to the runoff round.`)
         continue scoreLoop
       }
@@ -221,14 +221,14 @@ export function runStarRound(summaryData: summaryData, remainingCandidates: cand
       if (nCandidatesNeeded === 2 && fiveStarCounts[1].counts > fiveStarCounts[2].counts) {
         // Two candidates needed and first two have more five star counts than the rest, advance them both to runoff
         roundResults.logs.push(`${fiveStarCounts[0].candidate.name} and ${fiveStarCounts[1].candidate.name} advance to the runoff round with most five star votes.`)
-        runoffCandidates.push(fiveStarCounts[0].candidate)
-        runoffCandidates.push(fiveStarCounts[1].candidate)
+        finalists.push(fiveStarCounts[0].candidate)
+        finalists.push(fiveStarCounts[1].candidate)
         continue scoreLoop
       }
       if (fiveStarCounts[0].counts > fiveStarCounts[1].counts) {
         // First has more five star counts than the rest, advance them to runoff
         roundResults.logs.push(`${fiveStarCounts[0].candidate.name} advance to the runoff round with most five star votes.`)
-        runoffCandidates.push(fiveStarCounts[0].candidate)
+        finalists.push(fiveStarCounts[0].candidate)
         continue scoreLoop
       }
       // No five star winner, try to find five star losers instead
@@ -246,54 +246,54 @@ export function runStarRound(summaryData: summaryData, remainingCandidates: cand
         // Random tiebreaker enabled, selects a candidate at random
         const randomWinner = tiedCandidates[getRandomInt(tiedCandidates.length)]
         roundResults.logs.push(`${randomWinner.name} wins random tiebreaker and advances to the runoff round.`)
-        runoffCandidates.push(randomWinner)
+        finalists.push(randomWinner)
         continue scoreLoop
       }
       roundResults.logs.push('True Tie')
-      roundResults.winners.push(...runoffCandidates)
+      roundResults.winners.push(...finalists)
       roundResults.winners.push(...tiedCandidates)
       return roundResults
     }
     roundResults.logs.push(`${tiedCandidates[0].name} wins score tiebreaker and advances to the runoff round.`)
-    runoffCandidates.push(tiedCandidates[0])
+    finalists.push(tiedCandidates[0])
   }
 
-  if (summaryData.pairwiseMatrix[runoffCandidates[0].index][runoffCandidates[1].index] === 1) {
+  if (summaryData.pairwiseMatrix[finalists[0].index][finalists[1].index] === 1) {
     // First candidate wins runoff
-    roundResults.winners.push(runoffCandidates[0])
-    roundResults.runner_up.push(runoffCandidates[1])
-    roundResults.logs.push(`${runoffCandidates[0].name} defeats ${runoffCandidates[1].name} with ${summaryData.preferenceMatrix[runoffCandidates[0].index][runoffCandidates[1].index]} votes to ${summaryData.preferenceMatrix[runoffCandidates[1].index][runoffCandidates[0].index]}.`)
+    roundResults.winners.push(finalists[0])
+    roundResults.runner_up.push(finalists[1])
+    roundResults.logs.push(`${finalists[0].name} defeats ${finalists[1].name} with ${summaryData.preferenceMatrix[finalists[0].index][finalists[1].index]} votes to ${summaryData.preferenceMatrix[finalists[1].index][finalists[0].index]}.`)
     return roundResults
   }
-  if (summaryData.pairwiseMatrix[runoffCandidates[1].index][runoffCandidates[0].index] === 1) {
+  if (summaryData.pairwiseMatrix[finalists[1].index][finalists[0].index] === 1) {
     // Second candidate wins runoff
-    roundResults.winners.push(runoffCandidates[1])
-    roundResults.runner_up.push(runoffCandidates[0])
-    roundResults.logs.push(`${runoffCandidates[1].name} defeats ${runoffCandidates[0].name} with ${summaryData.preferenceMatrix[runoffCandidates[1].index][runoffCandidates[0].index]} votes to ${summaryData.preferenceMatrix[runoffCandidates[0].index][runoffCandidates[1].index]}.`)
+    roundResults.winners.push(finalists[1])
+    roundResults.runner_up.push(finalists[0])
+    roundResults.logs.push(`${finalists[1].name} defeats ${finalists[0].name} with ${summaryData.preferenceMatrix[finalists[1].index][finalists[0].index]} votes to ${summaryData.preferenceMatrix[finalists[0].index][finalists[1].index]}.`)
     return roundResults
   }
   // Tie, run runoff tiebreaker
-  const runoffTieWinner = runRunoffTiebreaker(summaryData, runoffCandidates)
+  const runoffTieWinner = runRunoffTiebreaker(summaryData, finalists)
   if (runoffTieWinner === 0) {
-    roundResults.winners = [runoffCandidates[0]]
-    roundResults.runner_up = [runoffCandidates[1]]
-    roundResults.logs.push(`${runoffCandidates[0].name} defeats ${runoffCandidates[1].name} in runoff tiebreaker with a score of ${summaryData.totalScores[runoffCandidates[0].index].score} to ${summaryData.totalScores[runoffCandidates[1].index].score}.`)
+    roundResults.winners = [finalists[0]]
+    roundResults.runner_up = [finalists[1]]
+    roundResults.logs.push(`${finalists[0].name} defeats ${finalists[1].name} in runoff tiebreaker with a score of ${summaryData.totalScores[finalists[0].index].score} to ${summaryData.totalScores[finalists[1].index].score}.`)
     return roundResults
   }
   if (runoffTieWinner === 1) {
-    roundResults.winners = [runoffCandidates[1]]
-    roundResults.runner_up = [runoffCandidates[0]]
-    roundResults.logs.push(`${runoffCandidates[1].name} defeats ${runoffCandidates[0].name} in runoff tiebreaker with a score of ${summaryData.totalScores[runoffCandidates[1].index].score} to ${summaryData.totalScores[runoffCandidates[0].index].score}.`)
+    roundResults.winners = [finalists[1]]
+    roundResults.runner_up = [finalists[0]]
+    roundResults.logs.push(`${finalists[1].name} defeats ${finalists[0].name} in runoff tiebreaker with a score of ${summaryData.totalScores[finalists[1].index].score} to ${summaryData.totalScores[finalists[0].index].score}.`)
     return roundResults
   }
   // True tie, other tiebreaker needed to resolve
-  roundResults.logs.push(`True tie between ${runoffCandidates[0].name} and ${runoffCandidates[1].name}.`)
+  roundResults.logs.push(`True tie between ${finalists[0].name} and ${finalists[1].name}.`)
   if (enablefiveStarTiebreaker) {
     // Five-star tiebreaker is enabled, look for candidate with most 5 star votes
-    const fiveStarWinners = fiveStarTiebreaker(summaryData, runoffCandidates, 1)
+    const fiveStarWinners = fiveStarTiebreaker(summaryData, finalists, 1)
     if (fiveStarWinners.length === 1) {
       roundResults.winners = [fiveStarWinners[0]]
-      roundResults.runner_up = runoffCandidates.filter(c => c.index != fiveStarWinners[0].index)
+      roundResults.runner_up = finalists.filter(c => c.index != fiveStarWinners[0].index)
       roundResults.logs.push(`${roundResults.winners[0].name} defeats ${roundResults.runner_up[0].name} in five-star tiebreaker.`)
       return roundResults
     }
@@ -303,13 +303,13 @@ export function runStarRound(summaryData: summaryData, remainingCandidates: cand
   if (breakTiesRandomly) {
     // Break tie randomly
     const randomWinner = getRandomInt(2)
-    roundResults.winners = [runoffCandidates[randomWinner]]
-    roundResults.runner_up = [runoffCandidates[1 - randomWinner]]
-    roundResults.logs.push(`${runoffCandidates[randomWinner].name} defeats ${runoffCandidates[1 - randomWinner].name} in random tiebreaker.`)
+    roundResults.winners = [finalists[randomWinner]]
+    roundResults.runner_up = [finalists[1 - randomWinner]]
+    roundResults.logs.push(`${finalists[randomWinner].name} defeats ${finalists[1 - randomWinner].name} in random tiebreaker.`)
     return roundResults
   }
   // Tie could not be resolved, select both tied candidates as winners of round
-  roundResults.winners = runoffCandidates
+  roundResults.winners = finalists
   return roundResults
 }
 
