@@ -111,14 +111,6 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
                                 candidate_id: '0',
                                 candidate_name: '',
                             },
-                            {
-                                candidate_id: '1',
-                                candidate_name: '',
-                            },
-                            {
-                                candidate_id: '2',
-                                candidate_name: '',
-                            }
                         ] as Candidate[],
                         precincts: undefined,
                     }
@@ -140,6 +132,9 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
                     candidate_id: String(election.races[openRace].candidates.length),
                     candidate_name: '',
                 })
+            }
+            while(candidates.length >= 2 && candidates[candidates.length-1].candidate_name == '' && candidates[candidates.length-2].candidate_name == ''){
+                candidates.pop();
             }
         })
     }
