@@ -3,7 +3,7 @@ name: Build, push, and deploy
 on:
   push:
     branches:
-      - $default-branch
+      - main
 
 jobs:
   build-push-deploy:
