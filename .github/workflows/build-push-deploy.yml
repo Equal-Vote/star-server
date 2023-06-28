@@ -32,7 +32,6 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=ref,event=tag
             type=schedule
             type=sha
 
@@ -46,11 +45,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-
       - name: Build and push container image to registry
         uses: docker/build-push-action@v4.0.0
         with:
-          cache-from: type=registry,ref=ghcr.io/${{ env.REPO }}:latest
+          cache-from: type=registry,ref=ghcr.io/${{ env.REPO }}:${{ env.GITHUB_REF_NAME }}
           cache-to: type=inline
           labels: ${{ steps.meta.outputs.labels }}
           push: true
@@ -65,10 +63,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: 'Equal-Vote/star-server-infra'
+          token: ${{ secrets.GH_PAT }}
       - name: Update variables.tf with new container tag
         run: |
           sed -i "s#ghcr.io/${{ env.REPO }}:.*#ghcr.io/${{ env.REPO }}:${{ github.sha }}#" variables.tf
-          git config --global user.name 'star-server-bot'
-          git config --global user.email 'noreply@equal.vote'
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git commit -am "Automatically updating star-server image."
           git push
