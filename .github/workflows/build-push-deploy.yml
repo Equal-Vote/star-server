@@ -1,5 +1,4 @@
 name: Build, push, and deploy
-
 on:
   push:
 
@@ -7,67 +6,46 @@ on:
     #branches: [ $default-branch ]
     branches: [ 260-build-and-deploy-docker-container-image ]
 
-#permissions:
-#  contents: read
-
 jobs:
   docker:
     runs-on: ubuntu-latest
-#    permissions:
-#      packages: write
     steps:
-      - name: Lowercase the repo name and username
-        run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
-
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/${{ env.REPO }}
+            ghcr.io/${{ github.repository }}
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
             type=ref,event=pr
             type=schedule
-            type=sha
-
+            type=sha,format=long
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.5.0
-
       - name: Log in to GitHub container registry
         uses: docker/login-action@v2.1.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
-
-      - name: Dumping env
-        run: env
-
       - name: Build and push container image to registry
         uses: docker/build-push-action@v4.0.0
         with:
-          cache-from: type=registry,ref=ghcr.io/${{ env.REPO }}:${{ env.GITHUB_REF_NAME }}
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
           cache-to: type=inline
           labels: ${{ steps.meta.outputs.labels }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-
-  # Based on https://stackoverflow.com/questions/57921401/push-to-origin-from-github-action/58393457#58393457
-  # Trying to do proper gitops IaC here. This will checkout the
-  # star-server-infra repo, update the image tag variable, then commit those
-  # changes. After that, the star-server-infra repo should have a pipeline that
-  # automatically deploys it to the dev env.
-  # Commented out for now, because it's not working.
       - uses: actions/checkout@v3
         with:
           repository: 'Equal-Vote/star-server-infra'
           token: ${{ secrets.GH_PAT }}
       - name: Update variables.tf with new container tag
         run: |
-          sed -i "s#ghcr.io/${{ env.REPO }}:.*#ghcr.io/${{ env.REPO }}:${{ steps.meta.outputs.tags }}#" variables.tf
+          sed -i "s#ghcr.io/${{ github.repository }}:.*#ghcr.io/${{ github.repository }}:${{ github.sha }}#" variables.tf
           git config user.name github-actions
           git config user.email github-actions@github.com
           git commit -am "Automatically updating star-server image."
