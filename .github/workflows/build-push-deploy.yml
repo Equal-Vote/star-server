@@ -10,13 +10,19 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+
+      # We have to do this to workaround these errors:
+      # ERROR: failed to configure registry cache importer: invalid reference format: repository name must be lowercase
+      - name: Creating REPO var that contains lowercase repo name
+        run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/${{ github.repository }}
+            ghcr.io/${{ env.REPO }}
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
@@ -34,7 +40,7 @@ jobs:
       - name: Build and push container image to registry
         uses: docker/build-push-action@v4.0.0
         with:
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+          cache-from: type=registry,ref=ghcr.io/${{ env.REPO }}:${{ github.ref_name }}
           cache-to: type=inline
           labels: ${{ steps.meta.outputs.labels }}
           push: true
@@ -45,7 +51,7 @@ jobs:
           token: ${{ secrets.GH_PAT }}
       - name: Update variables.tf with new container tag
         run: |
-          sed -i "s#ghcr.io/${{ github.repository }}:.*#ghcr.io/${{ github.repository }}:${{ github.sha }}#" variables.tf
+          sed -i "s#ghcr.io/${{ env.REPO }}:.*#ghcr.io/${{ env.REPO }}:${{ github.sha }}#" variables.tf
           git config user.name github-actions
           git config user.email github-actions@github.com
           git commit -am "Automatically updating star-server image."
