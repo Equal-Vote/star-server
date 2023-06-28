@@ -44,9 +44,6 @@ jobs:
   # changes. After that, the star-server-infra repo should have a pipeline that
   # automatically deploys it to the dev env.
   # Commented out for now, because it's not working.
-  update-star-server-infra:
-    runs-on: ubuntu-latest
-    steps:
       - uses: actions/checkout@v3
         with:
           repository: 'Equal-Vote/star-server-infra'
