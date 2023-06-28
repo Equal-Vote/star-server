@@ -43,6 +43,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
+      - name: Dumping env
+        run: env
+
       - name: Build and push container image to registry
         uses: docker/build-push-action@v4.0.0
         with:
@@ -64,7 +67,7 @@ jobs:
           token: ${{ secrets.GH_PAT }}
       - name: Update variables.tf with new container tag
         run: |
-          sed -i "s#ghcr.io/${{ env.REPO }}:.*#ghcr.io/${{ env.REPO }}:${{ github.sha }}#" variables.tf
+          sed -i "s#ghcr.io/${{ env.REPO }}:.*#ghcr.io/${{ env.REPO }}:${{ steps.meta.outputs.tags }}#" variables.tf
           git config user.name github-actions
           git config user.email github-actions@github.com
           git commit -am "Automatically updating star-server image."
