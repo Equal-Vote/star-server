@@ -35,8 +35,11 @@ jobs:
         uses: docker/build-push-action@v4.0.0
         with:
           push: true
-          tags: ghcr.io/${{ env.REPO }}:${{ github.sha }}
-#          file: ./Dockerfile
+          tags:
+            - ghcr.io/${{ env.REPO }}:${{ github.sha }}
+            - ghcr.io/${{ env.REPO }}:latest
+          cache-from: type=registry,ref=ghcr.io/${{ env.REPO }}:latest
+          cache-to: type=inline
 
   # Based on https://stackoverflow.com/questions/57921401/push-to-origin-from-github-action/58393457#58393457
   # Trying to do proper gitops IaC here. This will checkout the
@@ -47,7 +50,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: 'Equal-Vote/star-server-infra'
-      - run: |
+      - name: Update variables.tf with new container tag
+        run: |
           sed -i "s#ghcr.io/${{ env.REPO }}:.*#ghcr.io/${{ env.REPO }}:${{ github.sha }}#" variables.tf
           git config --global user.name 'star-server-bot'
           git config --global user.email 'noreply@equal.vote'
