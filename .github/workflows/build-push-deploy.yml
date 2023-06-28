@@ -1,55 +1,66 @@
 name: Build, push, and deploy
+
 on:
   push:
-
-    # Testing with the 260 branch right now.
-    #branches: [ $default-branch ]
-    branches: [ 260-build-and-deploy-docker-container-image ]
+    branches:
+      - $default-branch
+      - 260-build-and-deploy-docker-container-image 
 
 jobs:
-  docker:
+  build-push-deploy:
     runs-on: ubuntu-latest
     steps:
 
       # We have to do this to workaround these errors:
       # ERROR: failed to configure registry cache importer: invalid reference format: repository name must be lowercase
-      - name: Creating REPO var that contains lowercase repo name
+      - name: Create REPO env var that contains lowercase github.repository name
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
 
-      - name: Docker meta
+      - name: Docker Metadata action
+        uses: docker/metadata-action@v4.6.0
         id: meta
-        uses: docker/metadata-action@v4
         with:
-          # list of Docker images to use as base name for tags
           images: |
             ghcr.io/${{ env.REPO }}
-          # generate Docker tags based on the following events/attributes
+
+          # Using `branch` to give a predictable name to cache from, and using
+          # `sha` so we always have a unique tag which will trigger
+          # star-server-infra terraform to run.
           tags: |
             type=ref,event=branch
-            type=ref,event=pr
-            type=schedule
             type=sha
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2.5.0
-      - name: Log in to GitHub container registry
-        uses: docker/login-action@v2.1.0
+
+      - name: Docker Setup Buildx
+        uses: docker/setup-buildx-action@v2.7.0
+
+      - name: Docker Login
+        uses: docker/login-action@v2.2.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
-      - name: Build and push container image to registry
-        uses: docker/build-push-action@v4.0.0
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v4.1.1
         with:
           cache-from: type=registry,ref=ghcr.io/${{ env.REPO }}:${{ github.ref_name }}
           cache-to: type=inline
           labels: ${{ steps.meta.outputs.labels }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-      - uses: actions/checkout@v3
+
+      # TODO: Currently using a personal access token to do this, which is not
+      # secure. Need to switch to switch to one of these maybe?
+      # 
+      # * https://github.com/marketplace/actions/workflow-dispatch
+      # * https://github.com/marketplace/actions/trigger-workflow-and-wait
+      - name: Checkout
+        uses: actions/checkout@v3.5.3
         with:
           repository: 'Equal-Vote/star-server-infra'
           token: ${{ secrets.GH_PAT }}
-      - name: Update variables.tf with new container tag
+
+      - name: Update star-server-infra repo variables.tf with new container tag
         run: |
           sed -i "s#\"ghcr.io/${{ env.REPO }}:.*#\"ghcr.io/${{ env.REPO }}:sha-${GITHUB_SHA::7}\"#" variables.tf
           git config user.name github-actions
