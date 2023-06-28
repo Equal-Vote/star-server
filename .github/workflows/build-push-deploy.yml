@@ -16,8 +16,6 @@ jobs:
 #    permissions:
 #      packages: write
     steps:
-#      - uses: actions/checkout@v3.5.2
-
       - name: Lowercase the repo name and username
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
 
