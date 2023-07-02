@@ -1,5 +1,6 @@
 import { InternalServerError } from "@curveball/http-errors";
 import { randomUUID } from "crypto";
+import { Request, Response, NextFunction } from 'express';
 const S3 = require("aws-sdk/clients/s3");
 const ID = process.env.S3_ID;
 const SECRET = process.env.S3_SECRET;
@@ -30,8 +31,12 @@ const upload = multer({
     limits: { fileSize: 1000000000, files: 1 },
   });
 
+interface ImageRequest extends Request {
+    file: any
+}
 
-const uploadImageController = async (req: any, res: any, next: any) => {
+// TODO: add multer file and S3 types
+const uploadImageController = async (req: ImageRequest, res: Response, next: NextFunction) => {
     const file = req.file
 
     const params = {

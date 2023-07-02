@@ -7,34 +7,36 @@ const ElectionRollModel = ServiceLocator.electionRollDb();
 import { hasPermission, permission, permissions } from '../../../domain_model/permissions';
 import { expectPermission } from "./controllerUtils";
 import { InternalServerError, Unauthorized } from "@curveball/http-errors";
+import { IElectionRequest } from "../IRequest";
+import { Response, NextFunction } from 'express';
 
 const className = "VoterRollState.Controllers";
 
-const approveElectionRoll = async (req: any, res: any, next: any) => {
+const approveElectionRoll = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.approveElectionRoll ${req.params.id}`);
     changeElectionRollState(req, ElectionRollState.approved, [ElectionRollState.registered, ElectionRollState.flagged], permissions.canApproveElectionRoll)
-    res.status('200').json({})
+    res.status(200).json({})
 }
 
-const flagElectionRoll = async (req: any, res: any, next: any) => {
+const flagElectionRoll = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.flagElectionRoll ${req.params.id}`);
     changeElectionRollState(req, ElectionRollState.flagged, [ElectionRollState.approved, ElectionRollState.registered, ElectionRollState.invalid], permissions.canFlagElectionRoll)
-    res.status('200').json({})
+    res.status(200).json({})
 }
 
-const invalidateElectionRoll = async (req: any, res: any, next: any) => {
+const invalidateElectionRoll = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.flagElectionRoll ${req.params.id}`);
     changeElectionRollState(req, ElectionRollState.invalid, [ElectionRollState.flagged], permissions.canInvalidateBallot)
-    res.status('200').json({})
+    res.status(200).json({})
 }
 
-const uninvalidateElectionRoll = async (req: any, res: any, next: any) => {
+const uninvalidateElectionRoll = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.flagElectionRoll ${req.params.id}`);
     changeElectionRollState(req, ElectionRollState.flagged, [ElectionRollState.invalid], permissions.canInvalidateBallot)
-    res.status('200').json({})
+    res.status(200).json({})
 }
 
-const changeElectionRollState = async (req: any, newState: ElectionRollState, validStates: ElectionRollState[], permission: permission) => {
+const changeElectionRollState = async (req: IElectionRequest, newState: ElectionRollState, validStates: ElectionRollState[], permission: permission) => {
     expectPermission(req.user_auth.roles, permission)
     const roll = await ElectionRollModel.getByVoterID(req.election.election_id, req.body.electionRollEntry.voter_id, req)
     if (!roll) {

@@ -2,7 +2,7 @@ import { Election, removeHiddenFields } from '../../../domain_model/Election';
 import ServiceLocator from '../ServiceLocator';
 import Logger from '../Services/Logging/Logger';
 import { responseErr } from '../Util';
-import { IRequest } from '../IRequest';
+import { IElectionRequest, IRequest } from '../IRequest';
 import { roles } from "../../../domain_model/roles"
 import { getPermissions } from '../../../domain_model/permissions';
 import { getOrCreateElectionRoll, checkForMissingAuthenticationData, getVoterAuthorization } from "./voterRollUtils"
@@ -50,7 +50,7 @@ const electionSpecificAuth = async (req: IRequest, res: any, next: any) => {
     return next();
 }
 
-const electionPostAuthMiddleware = async (req: any, res: any, next: any) => {
+const electionPostAuthMiddleware = async (req: IElectionRequest, res: any, next: any) => {
     Logger.info(req, `${className}.electionPostAuthMiddleware ${req.params.id}`);
     try {
         // Update Election State
@@ -64,8 +64,10 @@ const electionPostAuthMiddleware = async (req: any, res: any, next: any) => {
 
         req.election = election;
 
-        req.user_auth = {}
-        req.user_auth.roles = []
+        req.user_auth = {
+            roles: [],
+            permissions: []
+        }
         if (req.user && req.election && req.user.typ != 'TEMP_ID'){
           if (req.user.sub === req.election.owner_id){
             req.user_auth.roles.push(roles.owner)

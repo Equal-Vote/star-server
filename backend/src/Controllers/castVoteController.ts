@@ -10,6 +10,8 @@ import { randomUUID } from "crypto";
 import { Uid } from "../../../domain_model/Uid";
 import { Receipt } from "../Services/Email/EmailTemplates"
 import { getOrCreateElectionRoll, checkForMissingAuthenticationData, getVoterAuthorization } from "./voterRollUtils"
+import { IElectionRequest } from "../IRequest";
+import { Response, NextFunction } from 'express';
 
 const ElectionsModel = ServiceLocator.electionsDb();
 const ElectionRollModel = ServiceLocator.electionRollDb();
@@ -26,7 +28,7 @@ type CastVoteEvent = {
 
 const castVoteEventQueue = "castVoteEvent";
 
-async function castVoteController(req: IRequest, res: any, next: any) {
+async function castVoteController(req: IElectionRequest, res: Response, next: NextFunction) {
     Logger.info(req, "Cast Vote Controller");
     
     const targetElection = req.election;
@@ -104,7 +106,7 @@ async function castVoteController(req: IRequest, res: any, next: any) {
     }
 
     await (await EventQueue).publish(castVoteEventQueue, event);
-    res.status("200").json({ ballot: inputBallot} );
+    res.status(200).json({ ballot: inputBallot} );
     Logger.debug(req, "CastVoteController done, saved event to store", event);
 };
 

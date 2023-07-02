@@ -5,13 +5,15 @@ import { expectPermission } from "./controllerUtils";
 import { BadRequest } from "@curveball/http-errors";
 import { ElectionRoll } from '../../../domain_model/ElectionRoll';
 const { sendBatchEmailInvites } = require('./sendInvitesController')
+import { IElectionRequest } from "../IRequest";
+import { Response, NextFunction } from 'express';
 
 var ElectionsModel = ServiceLocator.electionsDb();
 var ElectionRollModel = ServiceLocator.electionRollDb();
 
 const className = "election.Controllers";
 
-const finalizeElection = async (req: any, res: any, next: any) => {
+const finalizeElection = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.finalize ${req.election.election_id}`);
     expectPermission(req.user_auth.roles, permissions.canEditElectionState)
     if (req.election.state !== 'draft') {

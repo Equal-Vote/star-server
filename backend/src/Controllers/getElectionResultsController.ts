@@ -5,11 +5,13 @@ import { Ballot } from '../../../domain_model/Ballot';
 import { Score } from '../../../domain_model/Score';
 import { expectPermission } from "./controllerUtils";
 import { permissions } from '../../../domain_model/permissions';
-import { VotingMethods } from '../Tabulators/VotingMethodSelecter'
+import { VotingMethods } from '../Tabulators/VotingMethodSelecter';
+import { IElectionRequest } from "../IRequest";
+import { Response, NextFunction } from 'express';
 
 const BallotModel = ServiceLocator.ballotsDb();
 
-const getElectionResults = async (req: any, res: any, next: any) => {
+const getElectionResults = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     var electionId = req.election.election_id;
     Logger.info(req, `getElectionResults: ${electionId}`);
 

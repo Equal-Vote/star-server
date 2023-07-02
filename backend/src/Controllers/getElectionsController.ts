@@ -1,14 +1,15 @@
 import ServiceLocator from '../ServiceLocator';
 import Logger from '../Services/Logging/Logger';
-import { responseErr } from '../Util';
 import { BadRequest } from "@curveball/http-errors";
 import { Election, removeHiddenFields } from '../../../domain_model/Election';
+import { IElectionRequest } from "../IRequest";
+import { Response, NextFunction } from 'express';
 
 
 var ElectionsModel = ServiceLocator.electionsDb();
 var ElectionRollModel = ServiceLocator.electionRollDb();
 
-const getElections = async (req: any, res: any, next: any) => {
+const getElections = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `getElections`);
     // var filter = (req.query.filter == undefined) ? "" : req.query.filter;
     const email = req.user?.email || ''

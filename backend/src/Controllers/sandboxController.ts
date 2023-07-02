@@ -1,8 +1,9 @@
 import Logger from '../Services/Logging/Logger';
 const className = "Elections.Controllers";
 import { VotingMethods } from '../Tabulators/VotingMethodSelecter'
+import { Request, Response, NextFunction } from 'express';
 
-const getSandboxResults = async (req: any, res: any, next: any) => {
+const getSandboxResults = async (req: Request, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.getSandboxResults`);
 
     const candidateNames = req.body.candidates;

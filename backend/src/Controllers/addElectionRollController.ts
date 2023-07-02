@@ -6,12 +6,14 @@ import { hasPermission, permission, permissions } from '../../../domain_model/pe
 import { expectPermission } from "./controllerUtils";
 import { BadRequest, InternalServerError } from "@curveball/http-errors";
 import { randomUUID } from "crypto";
+import { IElectionRequest } from "../IRequest";
+import { Response, NextFunction } from 'express';
 
 const ElectionRollModel = ServiceLocator.electionRollDb();
 
 const className = "VoterRolls.Controllers";
 
-const addElectionRoll = async (req: any, res: any, next: any) => {
+const addElectionRoll = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     expectPermission(req.user_auth.roles, permissions.canAddToElectionRoll)
     Logger.info(req, `${className}.addElectionRoll ${req.election.election_id}`);
     const history = [{
@@ -52,7 +54,7 @@ const addElectionRoll = async (req: any, res: any, next: any) => {
         throw new InternalServerError(msg);
     }
 
-    res.status('200').json({ election: req.election, newElectionRoll });
+    res.status(200).json({ election: req.election, newElectionRoll });
     return next()
 }
 

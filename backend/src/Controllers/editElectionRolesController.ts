@@ -5,11 +5,13 @@ import { responseErr } from '../Util';
 import { expectPermission } from "./controllerUtils";
 import { permissions } from '../../../domain_model/permissions';
 import { BadRequest } from "@curveball/http-errors";
+import { IElectionRequest } from "../IRequest";
+import { Response, NextFunction } from 'express';
 
 var ElectionsModel = ServiceLocator.electionsDb();
 
 
-const editElectionRoles = async (req: any, res: any, next: any) => {
+const editElectionRoles = async (req: IElectionRequest, res: Response, next: NextFunction) => {
 
     const inputElection = req.body.Election;
     Logger.info(req, `editElectionRoles: ${req.election.election_id}`)
@@ -33,7 +35,7 @@ const editElectionRoles = async (req: any, res: any, next: any) => {
     req.election = updatedElection
     Logger.debug(req, `editElectionRoles succeeds for ${updatedElection.election_id}`);
 
-    res.status('200').json({election: req.election})
+    res.status(200).json({election: req.election})
 }
 
 module.exports = {

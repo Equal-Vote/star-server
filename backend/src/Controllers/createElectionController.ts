@@ -6,18 +6,19 @@ import Logger from "../Services/Logging/Logger";
 import { InternalServerError } from "@curveball/http-errors";
 import { ILoggingContext } from "../Services/Logging/ILogger";
 import { expectValidElectionFromRequest, catchAndRespondError, expectPermission } from "./controllerUtils";
+import { Response, NextFunction } from "express";
 
 var ElectionsModel = ServiceLocator.electionsDb();
 
 const className = "createElectionController";
 const failMsgPrfx = "CATCH:  create error electio err: ";
-async function createElectionController(req: IRequest, res: any, next: any) {
+async function createElectionController(req: IRequest, res: Response, next: NextFunction) {
     Logger.info(req, "Create Election Controller");
     const inputElection = expectValidElectionFromRequest(req);
 
     const resElection = await createAndCheckElection(inputElection, req);
 
-    res.status("200").json({ election: resElection });
+    res.status(200).json({ election: resElection });
 };
 
 const createAndCheckElection = async (
