@@ -1,9 +1,9 @@
-import { response } from "express";
+import { Request, Response, NextFunction } from 'express';
 import ServiceLocator from "../ServiceLocator";
 
 const AccountService = ServiceLocator.accountService()
 
-const getUserToken = async (req: any, res: any, next: any) => {
+const getUserToken = async (req: Request, res: Response, next: NextFunction) => {
     const data = await AccountService.getToken(req)
     res.json(data)
 }
