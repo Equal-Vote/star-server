@@ -8,8 +8,10 @@ import { getOrCreateElectionRoll, checkForMissingAuthenticationData, getVoterAut
 import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-errors";
 import { Election } from "../../../domain_model/Election";
 import { randomUUID } from "crypto";
+import { IElectionRequest } from "../IRequest";
+import { Response, NextFunction } from 'express';
 
-const registerVoter = async (req: any, res: any, next: any) => {
+const registerVoter = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.registerVoter ${req.election.election_id}`);
 
     const targetElection: Election | null = req.election;
@@ -33,19 +35,21 @@ const registerVoter = async (req: any, res: any, next: any) => {
     if (missingAuthData !== null) {
         throw new Unauthorized(missingAuthData);
     }
-
-    let roll = await getOrCreateElectionRoll(req, targetElection, req);
-    if (roll === null) {
+    let roll: ElectionRoll
+    let tempRoll = await getOrCreateElectionRoll(req, targetElection, req);
+    if (tempRoll == null) {
         roll = {
             voter_id: randomUUID(),
             election_id: req.election.election_id,
             email: req.user?.email,
             submitted: false,
-            ip_address: targetElection.settings.voter_authentication.ip_address ? req.ip : null,
+            ip_address: targetElection.settings.voter_authentication.ip_address ? req.ip : undefined,
             state: ElectionRollState.registered,
             history: [],
             registration: req.body.registration,
         }
+    } else {
+        roll = tempRoll
     }
     const history = {
         action_type: 'registered',
@@ -61,7 +65,7 @@ const registerVoter = async (req: any, res: any, next: any) => {
         throw new InternalServerError(msg)
     }
 
-    res.status('200').json(JSON.stringify({ election: req.election, NewElectionRoll }))
+    res.status(200).json(JSON.stringify({ election: req.election, NewElectionRoll }))
     return next()
 }
 

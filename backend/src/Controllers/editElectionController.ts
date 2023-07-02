@@ -5,11 +5,13 @@ import { responseErr } from '../Util';
 import { expectPermission } from "./controllerUtils";
 import { permissions } from '../../../domain_model/permissions';
 import { BadRequest } from "@curveball/http-errors";
+import { IElectionRequest } from "../IRequest";
+import { Response, NextFunction } from 'express';
 
 var ElectionsModel = ServiceLocator.electionsDb();
 
 
-const editElection = async (req: any, res: any, next: any) => {
+const editElection = async (req: IElectionRequest, res: Response, next: NextFunction) => {
 
     const inputElection = req.body.Election;
     Logger.info(req, `editElection: ${req.election.election_id}`)

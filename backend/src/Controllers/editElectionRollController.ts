@@ -5,12 +5,14 @@ import { responseErr } from "../Util";
 import { hasPermission, permissions } from '../../../domain_model/permissions';
 import { expectPermission } from "./controllerUtils";
 import { BadRequest } from "@curveball/http-errors";
+import { IElectionRequest } from "../IRequest";
+import { Response, NextFunction } from 'express';
 
 const ElectionRollModel = ServiceLocator.electionRollDb();
 
 const className = "VoterRolls.Controllers";
 
-const editElectionRoll = async (req: any, res: any, next: any) => {
+const editElectionRoll = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     expectPermission(req.user_auth.roles, permissions.canEditElectionRoll)
     const electinoRollInput = req.body.electionRollEntry;
     Logger.info(req, `${className}.editElectionRoll`, { electionRollEntry: electinoRollInput });
@@ -28,7 +30,7 @@ const editElectionRoll = async (req: any, res: any, next: any) => {
         Logger.info(req, msg);
         throw new BadRequest(msg)
     }
-    res.status('200').json(electionRollEntry)
+    res.status(200).json(electionRollEntry)
 }
 
 module.exports = {

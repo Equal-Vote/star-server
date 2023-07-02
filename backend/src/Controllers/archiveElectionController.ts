@@ -4,12 +4,14 @@ import { permissions } from '../../../domain_model/permissions';
 import { expectPermission } from "./controllerUtils";
 import { BadRequest, InternalServerError } from "@curveball/http-errors";
 import { Election } from '../../../domain_model/Election';
+import { IElectionRequest } from "../IRequest";
+import { Response, NextFunction } from 'express';
 
 var ElectionsModel = ServiceLocator.electionsDb();
 
 const className = "election.Controllers";
 
-const archiveElection = async (req: any, res: any, next: any) => {
+const archiveElection = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.archive ${req.election.election_id}`);
     expectPermission(req.user_auth.roles, permissions.canEditElectionState)
 

@@ -8,6 +8,8 @@ import { ElectionRoll } from '../../../domain_model/ElectionRoll';
 import { Uid } from "../../../domain_model/Uid";
 import { Election } from '../../../domain_model/Election';
 import { randomUUID } from "crypto";
+import { IElectionRequest } from "../IRequest";
+import { Response, NextFunction } from 'express';
 
 var ElectionRollModel = ServiceLocator.electionRollDb();
 var EmailService = ServiceLocator.emailService();
@@ -25,7 +27,7 @@ export type SendInviteEvent = {
     sender: string,
 }
 
-const sendInvitationsController = async (req: any, res: any, next: any) => {
+const sendInvitationsController = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.sendInvitations ${req.election.election_id}`);
     expectPermission(req.user_auth.roles, permissions.canSendEmails)
 

@@ -1,16 +1,16 @@
-import { ElectionRoll, ElectionRollState } from "../../../domain_model/ElectionRoll";
 import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
-import { responseErr } from "../Util";
-import { hasPermission, permissions } from '../../../domain_model/permissions';
+import { permissions } from '../../../domain_model/permissions';
 import { expectPermission } from "./controllerUtils";
 import { BadRequest } from "@curveball/http-errors";
+import { IElectionRequest } from "../IRequest";
+import { Response, NextFunction } from 'express';
 
 const ElectionRollModel = ServiceLocator.electionRollDb();
 
 const className = "VoterRolls.Controllers";
 
-const getRollsByElectionID = async (req: any, res: any, next: any) => {
+const getRollsByElectionID = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     expectPermission(req.user_auth.roles, permissions.canViewElectionRoll)
     const electionId = req.election.election_id;
     Logger.info(req, `${className}.getRollsByElectionID ${electionId}`);
@@ -24,12 +24,11 @@ const getRollsByElectionID = async (req: any, res: any, next: any) => {
     }
 
     Logger.debug(req, `Got Election: ${req.params.id}`, electionRoll);
-    req.electionRoll = electionRoll
     Logger.info(req, `${className}.returnRolls ${req.params.id}`);
     res.json({ election: req.election, electionRoll: electionRoll });
 }
 
-const getByVoterID = async (req: any, res: any, next: any) => {
+const getByVoterID = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.getByVoterID ${req.election.election_id} ${req.params.voter_id}`)
     expectPermission(req.user_auth.roles, permissions.canViewElectionRoll)
     const electionRollEntry = await ElectionRollModel.getByVoterID(req.election.election_id, req.params.voter_id, req)

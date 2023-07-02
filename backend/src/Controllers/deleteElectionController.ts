@@ -5,11 +5,13 @@ import { IRequest } from '../IRequest';
 import { hasPermission, permissions } from '../../../domain_model/permissions';
 import { expectPermission } from "./controllerUtils";
 import { BadRequest } from "@curveball/http-errors";
+import { IElectionRequest } from "../IRequest";
+import { Response, NextFunction } from 'express';
 
 var ElectionsModel = ServiceLocator.electionsDb();
 const className = "Elections.Controllers";
 
-const deleteElection = async (req: any, res: any, next: any) => {
+const deleteElection = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     expectPermission(req.user_auth.roles, permissions.canDeleteElection)
     const electionId = req.election.election_id;
     Logger.info(req, `${className}.deleteElection ${electionId}`)
@@ -21,7 +23,7 @@ const deleteElection = async (req: any, res: any, next: any) => {
         throw new BadRequest(msg)
     }
     Logger.info(req, `Deleted election ${electionId}`);
-    return res.status('200')
+    return res.status(200)
 
 }
 module.exports = {
