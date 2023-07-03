@@ -2,24 +2,27 @@ import { ElectionRoll } from "./ElectionRoll";
 import { ElectionSettings } from "./ElectionSettings";
 import { Race } from "./Race";
 import { Uid } from "./Uid";
+import { Election as IElection  } from "../backend/src/Models/IElection";
 
-export interface Election {
-    election_id:    Uid; // identifier assigned by the system
-    title:          string; // one-line election title
-    description?:   string; // mark-up text describing the election
-    frontend_url:   string; // base URL for the frontend
-    start_time?:    Date | string;   // when the election starts 
-    end_time?:      Date | string;   // when the election ends
-    support_email?: string; // email available to voters to request support
-    owner_id:       Uid;  // user_id of owner of election
-    audit_ids?:     Uid[];  // user_id of account with audit access
-    admin_ids?:     Uid[];  // user_id of account with admin access
-    credential_ids?:Uid[];  // user_id of account with credentialling access
-    state:          'draft' | 'finalized' | 'open' | 'closed' | 'archived'; // State of election, In development, finalized, etc
-    races:          Race[]; // one or more race definitions
-    settings:       ElectionSettings;
-    auth_key?:      string;
-  }
+// Temp forwarding of election type
+export type Election = IElection
+
+  //   election_id:    Uid; // identifier assigned by the system
+  //   title:          string; // one-line election title
+  //   description?:   string; // mark-up text describing the election
+  //   frontend_url:   string; // base URL for the frontend
+  //   start_time?:    Date | string;   // when the election starts 
+  //   end_time?:      Date | string;   // when the election ends
+  //   support_email?: string; // email available to voters to request support
+  //   owner_id:       Uid;  // user_id of owner of election
+  //   audit_ids?:     Uid[];  // user_id of account with audit access
+  //   admin_ids?:     Uid[];  // user_id of account with admin access
+  //   credential_ids?:Uid[];  // user_id of account with credentialling access
+  //   state:          'draft' | 'finalized' | 'open' | 'closed' | 'archived'; // State of election, In development, finalized, etc
+  //   races:          Race[]; // one or more race definitions
+  //   settings:       ElectionSettings;
+  //   auth_key?:      string;
+  // }
 
   
 export function electionValidation(obj:Election): string | null {
