@@ -1,160 +1,124 @@
-import { ElectionRoll, ElectionRollAction } from '../../../domain_model/ElectionRoll';
+// import { ElectionRoll, ElectionRollAction } from '../../../domain_model/ElectionRoll';
 import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
 import { IElectionRollStore } from './IElectionRollStore';
 var format = require('pg-format');
+import { Kysely, SqlBool, SqlBool, sql } from 'kysely'
+import { NewElectionRoll, ElectionRoll, UpdatedElectionRoll } from './IElectionRoll';
+import { Database } from './Database';
+const tableName = 'electionRollDB';
 
-export default class ElectionRollDB implements IElectionRollStore{
+export default class ElectionRollDB implements IElectionRollStore {
 
     _postgresClient;
-    _tableName: string;
+    _tableName: string = tableName;
 
-    constructor(postgresClient:any) {
+    constructor(postgresClient: Kysely<Database>) {
         this._postgresClient = postgresClient;
-        this._tableName = "electionRollDB";
         this.init()
     }
 
     async init(): Promise<ElectionRollDB> {
         var appInitContext = Logger.createContext("appInit");
         Logger.debug(appInitContext, "-> ElectionRollDB.init");
-        //await this.dropTable(appInitContext);
-        var query = `
-        CREATE TABLE IF NOT EXISTS ${this._tableName} (
-            voter_id        VARCHAR NOT NULL PRIMARY KEY,
-            election_id     VARCHAR NOT NULL,
-            email           VARCHAR,
-            submitted       BOOLEAN NOT NULL,
-            ballot_id       VARCHAR,
-            ip_address      VARCHAR,
-            address         VARCHAR,
-            state           VARCHAR NOT NULL,
-            history         json,
-            registration    json,
-            precinct        VARCHAR,
-            email_data      json
-          );
-        `;
-        Logger.debug(appInitContext, query);
-        var p = this._postgresClient.query(query);
-        return p.then((_: any) => {
-            //removes pgboss archive, only use in dev 
-            // var cleanupQuerry = `
-            // DELETE FROM pgboss.archive`;
-            // return this._postgresClient.query(cleanupQuerry).catch((err:any) => {
-            //     console.log("err cleaning up db: " + err.message);
-            //     return err;
-            // });
-            var credentialQuery = `
-            ALTER TABLE ${this._tableName} ADD COLUMN IF NOT EXISTS email_data json
-            `;
-            return this._postgresClient.query(credentialQuery).catch((err: any) => {
-                console.log("err adding email_data column to DB: " + err.message);
-                return err;
-            });
-        }).then((_:any)=> {
-            return this;
-        });
+        return this;
     }
 
-    async dropTable(ctx:ILoggingContext):Promise<void>{
-        var query = `DROP TABLE IF EXISTS ${this._tableName};`;
-        var p = this._postgresClient.query({
-            text: query,
-        });
-        return p.then((_: any) => {
-            Logger.debug(ctx, `Dropped it (like its hot)`);
-        });
-    }
-    
-    submitElectionRoll(electionRolls: ElectionRoll[], ctx:ILoggingContext,reason:string): Promise<boolean> {
-        Logger.debug(ctx, `ElectionRollDB.submit`);
-        var values = electionRolls.map((electionRoll) => ([
-            electionRoll.voter_id,
-            electionRoll.election_id,
-            electionRoll.email,
-            electionRoll.ip_address,
-            electionRoll.submitted,
-            electionRoll.state,
-            JSON.stringify(electionRoll.history),
-            JSON.stringify(electionRoll.registration),
-            electionRoll.precinct,
-            JSON.stringify(electionRoll.email_data)]))
-        var sqlString = format(`INSERT INTO ${this._tableName} (voter_id,election_id,email,ip_address,submitted,state,history,registration,precinct,email_data)
-        VALUES %L;`, values);
-        Logger.debug(ctx, sqlString)
-        Logger.debug(ctx, values)
-        var p = this._postgresClient.query(sqlString);
-        return p.then((res: any) => {
-            Logger.state(ctx, `Submit Election Roll: `, {reason: reason, electionRoll: electionRolls});
-            return true;
-        }).catch((err:any)=>{
-            Logger.error(ctx, `Error with postgres submitElectionRoll:  ${err.message}`);
-        });
+    async dropTable(ctx: ILoggingContext): Promise<void> {
+        Logger.debug(ctx, `${tableName}.dropTable`);
+        return this._postgresClient.schema.dropTable(tableName).execute()
     }
 
-    getRollsByElectionID(election_id: string, ctx:ILoggingContext): Promise<ElectionRoll[] | null> {
-        Logger.debug(ctx, `ElectionRollDB.getByElectionID`);
-        var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1`;
-        Logger.debug(ctx, sqlString);
+    submitElectionRoll(electionRolls: ElectionRoll[], ctx: ILoggingContext, reason: string): Promise<boolean> {
+        Logger.debug(ctx, `${tableName}.submit`);
 
-        var p = this._postgresClient.query({
-            text: sqlString,
-            values: [election_id]
-        });
-        return p.then((response: any) => {
-            const resRolls = response.rows;
-            Logger.debug(ctx, "", resRolls);
-            if (resRolls.length == 0) {
-                Logger.debug(ctx, ".get null");
-                return [];
-            }
-            return resRolls
-        });
+        var stringifiedRolls: NewElectionRoll[] = electionRolls.map((electionRoll) => (
+            stringifyRoll(electionRoll)))
+
+        return this._postgresClient
+            .insertInto(tableName)
+            .values(stringifiedRolls)
+            .execute().then((res) => { return true })
     }
 
-    getByVoterID(election_id: string, voter_id: string, ctx:ILoggingContext): Promise<ElectionRoll | null> {
-        Logger.debug(ctx, `ElectionRollDB.getByVoterID election:${election_id}, voter:${voter_id}`);
+    getRollsByElectionID(election_id: string, ctx: ILoggingContext): Promise<ElectionRoll[] | null> {
+        Logger.debug(ctx, `${tableName}.getByElectionID ${election_id}`);
+
+        return this._postgresClient
+            .selectFrom(tableName)
+            .where('election_id', '=', election_id)
+            .selectAll()
+            .execute()
+    }
+
+    getByVoterID(election_id: string, voter_id: string, ctx: ILoggingContext): Promise<ElectionRoll | null> {
+        Logger.debug(ctx, `${tableName}.getByVoterID election:${election_id}, voter:${voter_id}`);
         var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1 AND voter_id = $2`;
         Logger.debug(ctx, sqlString);
 
-        var p = this._postgresClient.query({
-            text: sqlString,
-            values: [election_id, voter_id]
-        });
-        return p.then((response: any) => {
-            var rows = response.rows;
-            Logger.debug(ctx, rows[0])
-            if (rows.length == 0) {
-                Logger.debug(ctx, ".get null");
-                return null;
-            }
-            return rows[0]
-        });
+        return this._postgresClient
+            .selectFrom(tableName)
+            .where('election_id', '=', election_id)
+            .where('voter_id', '=', voter_id)
+            .selectAll()
+            .executeTakeFirstOrThrow()
+            .catch(((reason: any) => {
+                Logger.debug(ctx, reason);
+                return null
+            }))
     }
-    getByEmail(email: string, ctx:ILoggingContext): Promise<ElectionRoll[] | null> {
-        Logger.debug(ctx, `ElectionRollDB.getByEmail email:${email}`);
-        var sqlString = `SELECT * FROM ${this._tableName} WHERE email = $1`;
-        Logger.debug(ctx, sqlString);
+    getByEmail(email: string, ctx: ILoggingContext): Promise<ElectionRoll[] | null> {
+        Logger.debug(ctx, `${tableName}.getByEmail email:${email}`);
 
-        var p = this._postgresClient.query({
-            text: sqlString,
-            values: [email]
-        });
-        return p.then((response: any) => {
-            var rows = response.rows;
-            Logger.debug(ctx, rows[0])
-            if (rows.length == 0) {
-                Logger.debug(ctx, ".get null");
-                return null;
-            }
-            return rows
-        });
+        return this._postgresClient
+            .selectFrom(tableName)
+            .where('email', '=', email)
+            .selectAll()
+            .execute()
+            .catch(((reason: any) => {
+                Logger.debug(ctx, reason);
+                return null
+            }))
     }
 
-    getElectionRoll(election_id: string, voter_id: string|null, email: string|null, ip_address: string|null, ctx:ILoggingContext): Promise<[ElectionRoll] | null> {
-        Logger.debug(ctx, `ElectionRollDB.get election:${election_id}, voter:${voter_id}`);
+    getElectionRoll(election_id: string, voter_id: string | null, email: string | null, ip_address: string | null, ctx: ILoggingContext): Promise<[ElectionRoll] | null> {
+        Logger.debug(ctx, `${tableName}.get election:${election_id}, voter:${voter_id}`);
         let sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1 AND ( `;
+
+        let query = this._postgresClient
+            .selectFrom(tableName)
+            .where(({ or, cmpr }) =>
+                or(
+                )
+            )
+
+        if (voter_id) {
+            values.push(voter_id)
+            sqlString += `voter_id = $${values.length}`
+        }
+        if (email) {
+            if (voter_id) {
+                sqlString += ' OR '
+            }
+            values.push(email)
+            sqlString += `email = $${values.length}`
+        }
+        if (ip_address) {
+            if (voter_id || email) {
+                sqlString += ' OR '
+            }
+            values.push(ip_address)
+            sqlString += `ip_address = $${values.length}`
+        }
+
+
+        return query.selectAll()
+            .execute()
+            .catch(((reason: any) => {
+                Logger.debug(ctx, reason);
+                return null
+            }))
+
         let values = [election_id]
         if (voter_id) {
             values.push(voter_id)
@@ -192,8 +156,8 @@ export default class ElectionRollDB implements IElectionRollStore{
         });
     }
 
-    update(election_roll: ElectionRoll, ctx:ILoggingContext, reason:string): Promise<ElectionRoll | null> {
-        Logger.debug(ctx, `ElectionRollDB.updateRoll`);
+    update(election_roll: ElectionRoll, ctx: ILoggingContext, reason: string): Promise<ElectionRoll | null> {
+        Logger.debug(ctx, `${tableName}.updateRoll`);
         var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state=$3, history=$4, registration=$5, email_data=$6 WHERE election_id = $7 AND voter_id=$8`;
         Logger.debug(ctx, sqlString);
         Logger.debug(ctx, "", election_roll)
@@ -211,13 +175,13 @@ export default class ElectionRollDB implements IElectionRollStore{
                 return [] as ElectionRoll[];
             }
             const newElectionRoll = rows;
-            Logger.state(ctx, `Update Election Roll: `, {reason: reason, electionRoll:newElectionRoll });
+            Logger.state(ctx, `Update Election Roll: `, { reason: reason, electionRoll: newElectionRoll });
             return newElectionRoll;
         });
     }
 
-    delete(election_roll: ElectionRoll, ctx:ILoggingContext, reason:string): Promise<boolean> {
-        Logger.debug(ctx, `ElectionRollDB.delete`);
+    delete(election_roll: ElectionRoll, ctx: ILoggingContext, reason: string): Promise<boolean> {
+        Logger.debug(ctx, `${tableName}.delete`);
         var sqlString = `DELETE FROM ${this._tableName} WHERE election_id = $1 AND voter_id=$2`;
         Logger.debug(ctx, sqlString);
 
@@ -228,10 +192,19 @@ export default class ElectionRollDB implements IElectionRollStore{
         });
         return p.then((response: any) => {
             if (response.rowCount == 1) {
-                Logger.state(ctx, `Delete ElectionRoll`, {reason:reason, electionId: election_roll.election_id});
+                Logger.state(ctx, `Delete ElectionRoll`, { reason: reason, electionId: election_roll.election_id });
                 return true;
             }
             return false;
         });
+    }
+}
+
+function stringifyRoll(electionRoll: ElectionRoll) {
+    return {
+        ...electionRoll,
+        history: JSON.stringify(electionRoll.history),
+        registration: JSON.stringify(electionRoll.registration),
+        email_data: JSON.stringify(electionRoll.email_data)
     }
 }

@@ -22,6 +22,7 @@ export default class ElectionsDB {
     }
 
     async dropTable(ctx: ILoggingContext): Promise<void> {
+        Logger.debug(ctx, `${tableName}.dropTable`);
         return this._postgresClient.schema.dropTable(tableName).execute()
     }
 

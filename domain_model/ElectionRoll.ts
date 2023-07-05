@@ -25,8 +25,6 @@ export interface ElectionRollAction {
     timestamp:number;
 }
 
-export const ElectionStates = {}
-
 export enum ElectionRollState {
     approved= 'approved',
     flagged = 'flagged',

@@ -103,7 +103,7 @@ function electionsDb(): ElectionsDB {
 
 function electionRollDb(): ElectionRollDB {
     if (_electionRollDb == null) {
-        _electionRollDb = new ElectionRollDB(postgres());
+        _electionRollDb = new ElectionRollDB(database());
     }
     return _electionRollDb;
 }
