@@ -10,8 +10,6 @@ import PermissionHandler from "../../PermissionHandler";
 import { Typography } from "@mui/material";
 import EnhancedTable, { HeadCell, TableData } from "./../../EnhancedTable";
 import { useGetRolls, useSendInvites } from "../../../hooks/useAPI";
-import { SnackbarContext } from "../../SnackbarContext";
-
 
 interface Data extends TableData {
     voter_id: string;
@@ -25,7 +23,6 @@ interface Data extends TableData {
 const ViewElectionRolls = ({ election, permissions }) => {
     const { data, isPending, error, makeRequest: fetchRolls } = useGetRolls(election.election_id)
     const sendInvites = useSendInvites(election.election_id)
-    const { snack, setSnack } = useContext(SnackbarContext)
     useEffect(() => { fetchRolls() }, [])
     const [isEditing, setIsEditing] = useState(false)
     const [addRollPage, setAddRollPage] = useState(false)
@@ -42,15 +39,9 @@ const ViewElectionRolls = ({ election, permissions }) => {
         fetchRolls()
     }
 
-    const onSendInvites = async () => {
+    const onSendInvites = () => {
         // NOTE: since we don't have await here, it 
-        if(!await sendInvites.makeRequest()){ return }
-        setSnack({
-            message: 'Email Invites Sent!',
-            severity: 'success',
-            open: true,
-            autoHideDuration: 6000,
-        })
+        sendInvites.makeRequest()
     }
 
     const onUpdate = async () => {
