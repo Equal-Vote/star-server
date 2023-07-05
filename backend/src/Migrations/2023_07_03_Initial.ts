@@ -35,10 +35,24 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('precinct', 'varchar')
     .addColumn('email_data', 'json')
     .execute()
+
+  await db.schema
+    .createTable('ballotDB')
+    .addColumn('ballot_id', 'varchar', (col) => col.primaryKey().notNull())
+    .addColumn('election_id', 'varchar')
+    .addColumn('user_id', 'varchar')
+    .addColumn('status', 'varchar')
+    .addColumn('date_submitted', 'varchar')
+    .addColumn('ip_address', 'varchar')
+    .addColumn('votes', 'json', (col) => col.notNull())
+    .addColumn('history', 'json')
+    .addColumn('precinct', 'varchar')
+    .execute()
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable('electiondb').execute()
+  await db.schema.dropTable('electionDB').execute()
   await db.schema.dropTable('electionRollDB').execute()
+  await db.schema.dropTable('ballotDB').execute()
 }
 

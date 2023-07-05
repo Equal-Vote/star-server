@@ -100,7 +100,7 @@ async function eventQueue(): Promise<IEventQueue> {
 
 function ballotsDb(): IBallotStore {
     if (_ballotsDb == null) {
-        _ballotsDb = new BallotsDB(postgres());
+        _ballotsDb = new BallotsDB(database());
     }
     return _ballotsDb;
 }
