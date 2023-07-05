@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
 import React from 'react'
 import Grid from "@mui/material/Grid";
 import structuredClone from '@ungap/structured-clone';
@@ -24,6 +26,7 @@ type Pages = 'ElectionDetails' | 'RaceDetails' | 'Open?' | 'Limit?' | 'VoterList
 type QuestionProps = {
     Enable: boolean,
     Question: string,
+    Bullets?: string[],
     HelpText?: string,
     Option1?: AnswerProps,
     Option2?: AnswerProps,
@@ -43,7 +46,7 @@ type AnswerProps = {
     setPage: Function
 }
 
-function Question({ Enable, Question, HelpText, Option1, Option2, onNext, BackPage, election, applyElectionUpdate, setPage }: QuestionProps) {
+function Question({ Enable, Question, Bullets, HelpText, Option1, Option2, onNext, BackPage, election, applyElectionUpdate, setPage }: QuestionProps) {
     // blocks back button and calls onBack function instead
     useEffect(() => {
         if (Enable) {
@@ -65,8 +68,13 @@ function Question({ Enable, Question, HelpText, Option1, Option2, onNext, BackPa
                     }}
                 >
                     <Grid item xs={12} sx={{ m: 0, p: 1 }}>
-                        <Typography align='center' variant="h4" component="h4" fontWeight='bold'>
+                        <Typography align='center' variant="h4" component="h4">
                             {Question}
+                            {Bullets && <List sx={{listStyleType: 'disc', pl: 4}}>
+                                {Bullets.map((bullet, i) => (
+                                    <ListItem sx={{display: 'list-item'}}>{bullet}</ListItem>
+                                ))}
+                            </List>}
                         </Typography>
                         <Typography align='center' variant="body1">
                             {HelpText}
@@ -465,7 +473,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                     />
                     <Question
                         Enable={page === 'Scenario1'}
-                        Question="Ok, we'll limit voters to one vote per person."
+                        Question="Great, we'll limit voters to one vote per person."
                         HelpText=''
                         onNext={() => {
                             applyElectionUpdate((election: Election) => {
@@ -484,7 +492,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
 
                     <Question
                         Enable={page === 'Scenario2'}
-                        Question="Ok, voters will be able to vote as many times as they want."
+                        Question="Great, voters will be able to vote as many times as they want."
                         HelpText=''
                         onNext={() => {
                             applyElectionUpdate((election: Election) => {
@@ -503,7 +511,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
 
                     <Question
                         Enable={page === 'Scenario3'}
-                        Question="Ok, emails will be sent to your voters inviting them to create a star.vote account and vote in your election."
+                        Question="Great, emails will be sent to your voters inviting them to create a star.vote account and vote in your election."
                         HelpText=''
                         onNext={() => {
                             applyElectionUpdate((election: Election) => {
@@ -522,7 +530,11 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
 
                     <Question
                         Enable={page === 'Scenario4'}
-                        Question="Ok, unique emails will be sent to your voters containing their voter ID inviting them to vote in your election. They will not be required to create a star.vote account."
+                        Question="Great!"
+                        Bullets={[
+                            "Voters will receive unique emails inviting them to vote.",
+                            "They will not be required to create a star.vote account."
+                        ]}
                         HelpText=''
                         onNext={() => {
                             applyElectionUpdate((election: Election) => {
@@ -541,7 +553,11 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
 
                     <Question
                         Enable={page === 'Scenario5'}
-                        Question="Ok, voters will not be sent an invitation and will need to create a star.vote account to verify their email address and access your election."
+                        Question="Great!"
+                        Bullets={[
+                            "Voters will not be sent email invitations.",
+                            "Voters will need to create a star.vote account to vote." 
+                        ]}
                         HelpText=''
                         onNext={() => {
                             applyElectionUpdate((election: Election) => {
@@ -560,7 +576,11 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
 
                     <Question
                         Enable={page === 'Scenario6'}
-                        Question="Ok, you will need to provide voters their voter id which they will enter in order to vote."
+                        Question="Great!"
+                        Bullets={[
+                            "You will need to provide voters their voter id.",
+                            "They will use their voter id to vote."
+                        ]}
                         HelpText=''
                         onNext={() => {
                             applyElectionUpdate((election: Election) => {
@@ -579,7 +599,12 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
 
                     <Question
                         Enable={page === 'Scenario7'}
-                        Question="Ok, voters will register with star.vote and provide the additional registration information you request in order to submit a provisional ballot. Your or a credentialer you specify will need to review and approve their registration."
+                        Question="Great!"
+                        Bullets={[
+                            "Voters will register with star.vote.",
+                            "Then they will provide additional infromation to submit a provisional ballot.",
+                            "You (or a credentialer you specify) will need to review and approve their registration."
+                        ]}
                         HelpText=''
                         onNext={() => {
                             applyElectionUpdate((election: Election) => {
@@ -598,7 +623,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
 
                     <Question
                         Enable={page === 'Scenario8'}
-                        Question="Ok, voters will register with star.vote in order to vote."
+                        Question="Great, voters will register with star.vote in order to vote."
                         HelpText=''
                         onNext={() => {
                             applyElectionUpdate((election: Election) => {
@@ -617,7 +642,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
 
                     <Question
                         Enable={page === 'Scenario9'}
-                        Question="Ok, voters won't need to log in in order to vote."
+                        Question="Great, voters won't need to log in in order to vote."
                         HelpText=''
                         onNext={() => {
                             applyElectionUpdate((election: Election) => {
