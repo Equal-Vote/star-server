@@ -21,11 +21,19 @@ export const useEditElection = (election_id: string | undefined) => {
 }
 
 export const useSendInvites = (electionID: string | undefined) => {
-    return useFetch<undefined, {}>(`/API/Election/${electionID}/sendInvites`, 'post')
+    return useFetch<undefined, {}>(
+        `/API/Election/${electionID}/sendInvites`,
+        'post',
+        'Email Invites Sent!',
+    )
 }
 
 export const useSendInvite = (election_id: string, voter_id: string | undefined) => {
-    return useFetch(`/API/Election/${election_id}/sendInvite/${voter_id}`, 'post')
+    return useFetch<undefined, {}>(
+        `/API/Election/${election_id}/sendInvite/${voter_id}`,
+        'post',
+        'Email Invitation Sent!',
+    )
 }
 
 export const useGetRolls = (electionID: string | undefined) => {

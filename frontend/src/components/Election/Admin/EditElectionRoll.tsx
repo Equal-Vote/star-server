@@ -7,12 +7,9 @@ import Container from '@mui/material/Container';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
 import PermissionHandler from "../../PermissionHandler";
 import { useApproveRoll, useFlagRoll, useInvalidateRoll, useSendInvite, useUnflagRoll } from "../../../hooks/useAPI";
-import useFetch from "../../../hooks/useFetch";
-import { SnackbarContext } from "../../SnackbarContext";
 
 const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
     const [updatedRoll, setUpdatedRoll] = useState(roll)
-    const { snack, setSnack } = useContext(SnackbarContext)
 
     const approve = useApproveRoll(id)
     const flag = useFlagRoll(id)
@@ -38,13 +35,6 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
     }
     const onSendInvite = async () => {
         if (!await sendInvite.makeRequest()) { return }
-
-        setSnack({
-            message: 'Email Invitation Sent!',
-            severity: 'success',
-            open: true,
-            autoHideDuration: 6000,
-        })
 
         await fetchRolls()
     }
