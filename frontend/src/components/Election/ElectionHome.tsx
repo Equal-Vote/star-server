@@ -39,7 +39,7 @@ const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
             {electionData.election.settings.voter_access !== 'closed' &&
               <Box sx={{ m: 1, display: 'flex', justifyContent: 'flex-end' }}>
                 <Box sx={{ maxWidth: 200 }}>
-                  <ShareButton url={`${window.location.origin}/Election/${electionData.election.election_id}`} text={'Share'} />
+                  <ShareButton url={`${window.location.origin}/Election/${electionData.election.election_id}`} />
                 </Box>
               </Box>
             }
