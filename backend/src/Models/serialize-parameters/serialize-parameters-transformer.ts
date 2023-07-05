@@ -1,11 +1,13 @@
-import { 
+import {
   ColumnUpdateNode,
   OperationNodeTransformer,
   OperatorNode,
   PrimitiveValueListNode,
   ValueListNode,
   ValueNode,
-  ValuesNode } from 'kysely'
+  ValuesNode,
+  OperationNode
+} from 'kysely'
 import {
   Caster,
   defaultSerializer,
@@ -38,10 +40,10 @@ export class SerializeParametersTransformer extends OperationNodeTransformer {
           kind: 'ValueListNode',
           values: valueItemNode.values.map(
             (value) =>
-              ({
-                kind: 'ValueNode',
-                value,
-              } as ValueNode)
+            ({
+              kind: 'ValueNode',
+              value,
+            } as ValueNode)
           ),
         } as ValueListNode
       }),
@@ -56,20 +58,20 @@ export class SerializeParametersTransformer extends OperationNodeTransformer {
     return super.transformValueList({
       ...node,
       values: node.values.map((listNodeItem) => {
-        
+
         if (listNodeItem.kind !== 'ValueNode') {
           return listNodeItem
         }
-        return listNodeItem
-        // const { value } = listNodeItem
 
-        // const serializedValue = this.#serializer(value)
+        const { value, ...item } = listNodeItem as ValueNode
 
-        // if (value === serializedValue) {
-        //   return listNodeItem
-        // }
+        const serializedValue = this.#serializer(value)
 
-        // return this.#caster!(serializedValue, value).toOperationNode()
+        if (value === serializedValue) {
+          return listNodeItem
+        }
+
+        return this.#caster!(serializedValue, value).toOperationNode()
       }),
     })
   }
@@ -89,20 +91,18 @@ export class SerializeParametersTransformer extends OperationNodeTransformer {
       return super.transformColumnUpdate(node)
     }
 
-    return super.transformColumnUpdate(node)
+    const { value, ...item } = valueNode as ValueNode
 
-    // const { value } = valueNode
+    const serializedValue = this.#serializer(value)
 
-    // const serializedValue = this.#serializer(value)
+    if (value === serializedValue) {
+      return super.transformColumnUpdate(node)
+    }
 
-    // if (value === serializedValue) {
-    //   return super.transformColumnUpdate(node)
-    // }
-
-    // return super.transformColumnUpdate({
-    //   ...node,
-    //   value: this.#caster(serializedValue, value).toOperationNode(),
-    // })
+    return super.transformColumnUpdate({
+      ...node,
+      value: this.#caster(serializedValue, value).toOperationNode(),
+    })
   }
 
   protected override transformValue(node: ValueNode): ValueNode {
