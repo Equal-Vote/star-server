@@ -10,6 +10,7 @@ import VoterAuth from "./VoterAuth";
 import { Election } from '../../../../domain_model/Election';
 import { VoterAuth as IVoterAuth } from '../../../../domain_model/VoterAuth';
 import { IAuthSession } from '../../hooks/useAuthSession';
+import { formatDate } from '../util';
 
 type Props = {
   authSession: IAuthSession,
@@ -60,7 +61,7 @@ const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
             {electionData.election.state === 'finalized' && electionData.election.start_time &&
               <Box sx={{ flexGrow: 1 }}>
                 <Typography align='center' variant="h6" component="h6">
-                  {`Election begins on ${new Date(electionData.election.start_time).toLocaleDateString()} at ${new Date(electionData.election.start_time).toLocaleTimeString()} `}
+                  {`Election begins on ${formatDate(electionData.election.start_time, electionData.election.settings.time_zone)}`}
                 </Typography>
               </Box>
             }
@@ -70,7 +71,7 @@ const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
               {electionData.election.end_time &&
                 <Box sx={{ flexGrow: 1 }}>
                   < Typography align='center' variant="h6" component="h6">
-                    {`Election ends on ${new Date(electionData.election.end_time).toLocaleDateString()} at ${new Date(electionData.election.end_time).toLocaleTimeString()} `}
+                    {`Election ends on ${formatDate(electionData.election.start_time, electionData.election.settings.time_zone)}`}
                   </Typography>
                 </Box>}
               {
@@ -89,7 +90,7 @@ const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
             {electionData.election.state === 'closed' && electionData.election.end_time &&
               <Box sx={{ flexGrow: 1 }}>
                 <Typography align='center' variant="h6" component="h6">
-                  {`Election ended on ${new Date(electionData.election.end_time).toLocaleDateString()} at ${new Date(electionData.election.end_time).toLocaleTimeString()} `}
+                  {`Election ended on ${formatDate(electionData.election.start_time, electionData.election.settings.time_zone)}`}
                 </Typography>
               </Box>
             }

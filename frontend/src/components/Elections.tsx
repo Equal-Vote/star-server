@@ -7,6 +7,7 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 import EnhancedTable, { HeadCell } from "./EnhancedTable";
 import { useNavigate } from "react-router"
 import { useGetElections } from "../hooks/useAPI";
+import { formatDate } from './util';
 
 const Elections = ({ authSession }) => {
 
@@ -101,8 +102,8 @@ const Elections = ({ authSession }) => {
                     title: election.title,
                     roles: getRoles(election),
                     state: election.state || '',
-                    start_time: election.start_time ? new Date(election.start_time).toLocaleString() : '',
-                    end_time: election.end_time ? new Date(election.end_time).toLocaleString() : '',
+                    start_time: election.start_time ? formatDate(election.start_time) : '',
+                    end_time: election.end_time ? formatDate(election.end_time) : '',
                     description: limit(election.description, 30) || '',
                 }))
             } else {
@@ -164,8 +165,8 @@ const Elections = ({ authSession }) => {
                     election_id: election.election_id,
                     title: election.title,
                     state: election.state || '',
-                    start_time: election.start_time ? new Date(election.start_time).toLocaleString() : '',
-                    end_time: election.end_time ? new Date(election.end_time).toLocaleString() : '',
+                    start_time: election.start_time ? formatDate(election.start_time) : '',
+                    end_time: election.end_time ? formatDate(election.end_time) : '',
                     description: limit(election.description, 30) || '',
                 }))
             } else {
@@ -212,8 +213,8 @@ const Elections = ({ authSession }) => {
                 return data.open_elections.map(election => ({
                     election_id: election.election_id,
                     title: election.title,
-                    start_time: election.start_time ? new Date(election.start_time).toLocaleString() : '',
-                    end_time: election.end_time ? new Date(election.end_time).toLocaleString() : '',
+                    start_time: election.start_time ? formatDate(election.start_time) : '',
+                    end_time: election.end_time ? formatDate(election.end_time) : '',
                     description: limit(election.description, 30) || '',
                 }))
             } else {

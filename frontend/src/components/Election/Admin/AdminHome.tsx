@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { Election } from '../../../../../domain_model/Election';
 import ShareButton from "../ShareButton";
 import { useArchiveEleciton, useFinalizeEleciton, useSetPublicResults } from "../../../hooks/useAPI";
+import { formatDate } from '../../util';
 const hasPermission = (permissions: string[], requiredPermission: string) => {
     return (permissions && permissions.includes(requiredPermission))
 }
@@ -479,7 +480,7 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
                             {election.start_time &&
                                 <Grid xs={12}>
                                     <Typography align='center' gutterBottom variant="h6" component="h6">
-                                        {`Your election will open on ${new Date(election.start_time).toLocaleString()}`}
+                                        {`Your election will open on ${formatDate(election.start_time, election.settings.time_zone)}`}
                                     </Typography>
                                 </Grid>}
 
@@ -515,7 +516,7 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
                             {election.end_time &&
                                 <Grid xs={12}>
                                     <Typography align='center' gutterBottom variant="h6" component="h6">
-                                        {`Your election will end on ${new Date(election.end_time).toLocaleString()}`}
+                                        {`Your election will end on ${formatDate(election.end_time, election.settings.time_zone)}`}
                                     </Typography>
                                 </Grid>}
 
@@ -547,7 +548,7 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
                             {election.end_time &&
                                 <Grid xs={12}>
                                     <Typography align='center' gutterBottom variant="h6" component="h6">
-                                        {`Your election ended on ${new Date(election.end_time).toLocaleString()}`}
+                                        {`Your election ended on ${formatDate(election.end_time, election.settings.time_zone)}`}
                                     </Typography>
                                 </Grid>}
 
@@ -577,7 +578,7 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
                             {election.end_time &&
                                 <Grid xs={12}>
                                     <Typography align='center' gutterBottom variant="h6" component="h6">
-                                        {`Your election ended on ${new Date(election.end_time).toLocaleString()}`}
+                                        {`Your election ended on ${formatDate(election.end_time, election.settings.time_zone)}`}
                                     </Typography>
                                 </Grid>}
 

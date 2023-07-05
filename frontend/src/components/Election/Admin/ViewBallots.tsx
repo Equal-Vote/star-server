@@ -8,6 +8,7 @@ import PermissionHandler from "../../PermissionHandler";
 import ViewBallot from "./ViewBallot";
 import { CSVLink } from "react-csv";
 import { useGetBallots } from "../../../hooks/useAPI";
+import { formatDate } from "../../util";
 
 const ViewBallots = ({ election, permissions }) => {
     const { data, isPending, error, makeRequest: fetchBallots } = useGetBallots(election.election_id)
@@ -27,10 +28,6 @@ const ViewBallots = ({ election, permissions }) => {
         setAddRollPage(false)
         setSelectedBallot(null)
         fetchBallots()
-    }
-    const getDateString = (dateNum) => {
-        const event = new Date(dateNum);
-        return event.toLocaleString();
     }
 
     const buildCsvData = () => {
@@ -85,7 +82,7 @@ const ViewBallots = ({ election, permissions }) => {
                                     <TableRow key={ballot.ballot_id} >
                                         <TableCell component="th" scope="row">{ballot.ballot_id}</TableCell>
                                         <TableCell >{ballot.precinct || ''}</TableCell>
-                                        <TableCell >{getDateString(Number(ballot.date_submitted))}</TableCell>
+                                        <TableCell >{formatDate(Number(ballot.date_submitted), election.settings.time_zone)}</TableCell>
                                         <TableCell >{ballot.status.toString()}</TableCell>
                                         {ballot.votes.map((vote) => (
                                             vote.scores.map((score) => (

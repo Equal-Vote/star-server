@@ -7,6 +7,7 @@ import Container from '@mui/material/Container';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
 import PermissionHandler from "../../PermissionHandler";
 import { useApproveRoll, useFlagRoll, useInvalidateRoll, useSendInvite, useUnflagRoll } from "../../../hooks/useAPI";
+import { formatDate } from "../../util";
 
 const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
     const [updatedRoll, setUpdatedRoll] = useState(roll)
@@ -39,11 +40,6 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
         await fetchRolls()
     }
 
-
-    const getDateString = (dateNum) => {
-        const event = new Date(dateNum);
-        return event.toLocaleString();
-    }
     return (
         <Container>
             {(approve.isPending || flag.isPending || unflag.isPending || invalidate.isPending) &&
@@ -148,7 +144,8 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
                                             {history.action_type}
                                         </TableCell>
                                         <TableCell align="right" >{history.actor}</TableCell>
-                                        <TableCell align="right" >{getDateString(history.timestamp)}</TableCell>
+                                        {/* TODO: for now this is displayed as local timezone, but we may want it to use the election timezone in the future*/}
+                                        <TableCell align="right" >{formatDate(history.timestamp)}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

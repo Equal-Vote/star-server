@@ -28,7 +28,7 @@ const Thanks = ({ election }) => {
 
                     {election.state === 'open' && election.end_time &&
                         < Typography align='center' variant="h6" component="h6" sx={{ pb: 3 }}>
-                            {`Election ends on ${new Date(election.end_time).toLocaleDateString()} at ${new Date(election.end_time).toLocaleTimeString()} `}
+                            {`Election ends ${new Date(election.end_time).toLocaleDateString()} at ${new Date(election.end_time).toLocaleTimeString()} `}
                         </Typography>
                     }
 

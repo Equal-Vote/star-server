@@ -2,6 +2,7 @@ import React from 'react'
 import Grid from "@mui/material/Grid";
 import Typography from '@mui/material/Typography';
 import { StyledButton } from '../styles';
+import { formatDate } from '../util';
 
 export default function SummaryPage({ election, onBack, onSubmit, submitText }) {
     // blocks back button and calls onBack function instead
@@ -35,12 +36,12 @@ export default function SummaryPage({ election, onBack, onSubmit, submitText }) 
                 </Grid>
                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                     <Typography align='left' variant="body1">
-                        {`Start: ${election.start_time ? new Date(election.start_time).toLocaleString() : 'none'}`}
+                        {`Start: ${election.start_time ? formatDate(election.start_time, election.settings.time_zone) : 'none'}`}
                     </Typography>
                 </Grid>
                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                     <Typography align='left' variant="body1">
-                        {`End: ${election.end_time ? new Date(election.end_time).toLocaleString() : 'none'}`}
+                        {`End: ${election.end_time ? formatDate(election.end_time, election.settings.time_zone) : 'none'}`}
                     </Typography>
                 </Grid>
                 {election.races.map((race, index) => (
