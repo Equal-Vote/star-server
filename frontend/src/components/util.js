@@ -3,6 +3,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Grid, IconButton, Paper, Typography } from '@mui/material'
 import React, { useState, useRef, useEffect }  from 'react'
 import _uniqueId from 'lodash/uniqueId';
+import { DateTime } from 'luxon'
 
 export function scrollToElement(e){
     setTimeout(() => {
@@ -94,4 +95,12 @@ export const DetailExpanderGroup = ({children, defaultSelectedIndex}) => {
             </Paper>
         ))}
     </div>;
+}
+
+export const formatDate = (time, displayTimezone=null) => {
+    if(displayTimezone === null) displayTimezone = DateTime.now().zone.name;
+
+    return DateTime.fromJSDate(new Date(time))
+        .setZone(displayTimezone)
+        .toLocaleString(DateTime.DATETIME_FULL)
 }

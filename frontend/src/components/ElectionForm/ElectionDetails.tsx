@@ -21,6 +21,8 @@ type Props = {
 
 export default function ElectionDetails({ election, applyElectionUpdate, getStyle, onBack, onNext }: Props) {
     const dateToLocalLuxonDate = (date: Date | string | null | undefined, timeZone: string) => {
+        // NOTE: we don't want to use the util function here since we want to omit the timezone
+
         // Converts either string date or date object to ISO string in input time zone
         if (date == null || date == '') return ''
         date = new Date(date)
@@ -37,7 +39,6 @@ export default function ElectionDetails({ election, applyElectionUpdate, getStyl
         startTime: '',
         endTime: '',
     })
-
 
     const isValidDate = (d: any) => {
         if (d instanceof Date) return !isNaN(d.valueOf())

@@ -8,6 +8,7 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 import PermissionHandler from "../../PermissionHandler";
 import { useParams } from "react-router";
 import { useGetBallot } from "../../../hooks/useAPI";
+import { formatDate } from "../../util";
 
 const ViewBallot = ({ election, ballot, onClose, fetchBallot, permissions }) => {
     const { ballot_id } = useParams();
@@ -22,10 +23,6 @@ const ViewBallot = ({ election, ballot, onClose, fetchBallot, permissions }) => 
 
     let myballot = ballot === null ? data?.ballot : ballot;
 
-    const getDateString = (dateNum) => {
-        const event = new Date(dateNum);
-        return event.toLocaleString();
-    }
     return (
         <Container>
 
@@ -46,7 +43,7 @@ const ViewBallot = ({ election, ballot, onClose, fetchBallot, permissions }) => 
                     }
                     <Grid item sm={12}>
                         <Typography align='left' variant="h6" component="h6">
-                            {`Date Submitted: ${getDateString(Number(myballot.date_submitted))}`}
+                            {`Date Submitted: ${formatDate(Number(myballot.date_submitted), election.settings.time_zone)}`}
                         </Typography>
                     </Grid>
                     <Grid item sm={12}>
@@ -107,7 +104,7 @@ const ViewBallot = ({ election, ballot, onClose, fetchBallot, permissions }) => 
                                                     {history.action_type}
                                                 </TableCell>
                                                 <TableCell align="right" >{history.actor}</TableCell>
-                                                <TableCell align="right" >{getDateString(history.timestamp)}</TableCell>
+                                                <TableCell align="right" >{formatDate(history.timestamp, election.settings.time_zone)}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
