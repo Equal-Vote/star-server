@@ -1,8 +1,7 @@
-import { ElectionTable } from "./IElection";
-import { ElectionRollTable } from "./IElectionRoll";
-
+import { Election } from "../../../domain_model/Election";
+import { ElectionRoll } from "../../../domain_model/ElectionRoll";
 
 export interface Database {
-    electiondb: ElectionTable,
-    electionRollDB: ElectionRollTable
+    electiondb: Election,
+    electionRollDB: ElectionRoll
 }

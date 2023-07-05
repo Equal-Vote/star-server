@@ -12,6 +12,7 @@ import AccountService from "./Services/Account/AccountService"
 import GlobalData from "./Services/GlobalData";
 import { Kysely, PostgresDialect } from 'kysely'
 import { Database } from "./Models/Database";
+import { SerializeParametersPlugin } from "./Models/serialize-parameters/serialize-parameters-plugin";
 
 const { Pool } = require('pg');
 
@@ -42,6 +43,16 @@ function postgres(): any {
 
         _DB = new Kysely<Database>({
             dialect,
+            plugins: [
+                new SerializeParametersPlugin({
+                    serializer: (value) => {
+                        if (value !== null && typeof value === 'object') {
+                            return JSON.stringify(value)
+                        }
+                        return value
+                    }
+                }),
+            ],
         })
 
     }
@@ -50,7 +61,7 @@ function postgres(): any {
 
 function database(): Kysely<Database> {
     console.log('starting database')
-    if (_DB == null){
+    if (_DB == null) {
         postgres()
     }
     return _DB

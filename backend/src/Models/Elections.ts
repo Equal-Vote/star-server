@@ -3,7 +3,7 @@ import { Database } from './Database';
 import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
 import { Kysely, sql } from 'kysely'
-import { NewElection, Election, UpdatedElection } from './IElection';
+import { Election } from '../../../domain_model/Election';
 const tableName = 'electiondb';
 
 export default class ElectionsDB {
@@ -29,18 +29,9 @@ export default class ElectionsDB {
     createElection(election: Election, ctx: ILoggingContext, reason: string): Promise<Election> {
         Logger.debug(ctx, `${tableName}.createElection`, election);
 
-        const stringifiedElection: NewElection = {
-            ...election,
-            settings: JSON.stringify(election.settings),
-            races: JSON.stringify(election.races),
-            admin_ids: JSON.stringify(election.admin_ids),
-            audit_ids: JSON.stringify(election.audit_ids),
-            credential_ids: JSON.stringify(election.credential_ids),
-        }
-
         const newElection = this._postgresClient
             .insertInto(tableName)
-            .values(stringifiedElection)
+            .values(election)
             .returningAll()
             .executeTakeFirstOrThrow()
         return newElection
@@ -49,18 +40,9 @@ export default class ElectionsDB {
     updateElection(election: Election, ctx: ILoggingContext, reason: string): Promise<Election> {
         Logger.debug(ctx, `${tableName}.updateElection`, election);
 
-        const stringifiedElection: UpdatedElection = {
-            ...election,
-            settings: JSON.stringify(election.settings),
-            races: JSON.stringify(election.races),
-            admin_ids: JSON.stringify(election.admin_ids),
-            audit_ids: JSON.stringify(election.audit_ids),
-            credential_ids: JSON.stringify(election.credential_ids),
-        }
-
         const updatedElection = this._postgresClient
             .updateTable(tableName)
-            .set(stringifiedElection)
+            .set(election)
             .where('election_id', '=', election.election_id)
             .returningAll()
             .executeTakeFirstOrThrow()

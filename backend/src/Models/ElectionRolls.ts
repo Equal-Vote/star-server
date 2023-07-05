@@ -1,10 +1,9 @@
-// import { ElectionRoll, ElectionRollAction } from '../../../domain_model/ElectionRoll';
 import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
 import { IElectionRollStore } from './IElectionRollStore';
-import { Expression, Kysely, SqlBool, sql } from 'kysely'
-import { NewElectionRoll, ElectionRoll, UpdatedElectionRoll } from './IElectionRoll';
+import { Expression, Kysely } from 'kysely'
 import { Database } from './Database';
+import { ElectionRoll } from '../../../domain_model/ElectionRoll';
 const tableName = 'electionRollDB';
 
 export default class ElectionRollDB implements IElectionRollStore {
@@ -31,12 +30,9 @@ export default class ElectionRollDB implements IElectionRollStore {
     submitElectionRoll(electionRolls: ElectionRoll[], ctx: ILoggingContext, reason: string): Promise<boolean> {
         Logger.debug(ctx, `${tableName}.submit`);
 
-        var stringifiedRolls: NewElectionRoll[] = electionRolls.map((electionRoll) => (
-            stringifyRoll(electionRoll)))
-
         return this._postgresClient
             .insertInto(tableName)
-            .values(stringifiedRolls)
+            .values(electionRolls)
             .execute().then((res) => { return true })
     }
 
@@ -102,7 +98,12 @@ export default class ElectionRollDB implements IElectionRollStore {
             })
             .selectAll()
             .execute()
+            .then((rolls) => {
+                if (rolls.length == 0) return null
+                return rolls
+            })
             .catch(((reason: any) => {
+                console.log('aaaaahhhhhh')
                 Logger.debug(ctx, reason);
                 return null
             }))
@@ -116,7 +117,7 @@ export default class ElectionRollDB implements IElectionRollStore {
             .updateTable(tableName)
             .where('election_id', '=', election_roll.election_id)
             .where('voter_id', '=', election_roll.voter_id)
-            .set(stringifyRoll(election_roll))
+            .set(election_roll)
             .returningAll()
             .executeTakeFirstOrThrow()
             .catch((reason: any) => {
@@ -143,14 +144,5 @@ export default class ElectionRollDB implements IElectionRollStore {
                 return false
             }
         })
-    }
-}
-
-function stringifyRoll(electionRoll: ElectionRoll) {
-    return {
-        ...electionRoll,
-        history: JSON.stringify(electionRoll.history),
-        registration: JSON.stringify(electionRoll.registration),
-        email_data: JSON.stringify(electionRoll.email_data)
     }
 }

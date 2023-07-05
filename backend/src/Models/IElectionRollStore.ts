@@ -1,7 +1,5 @@
-// import { ElectionRoll } from "../../../domain_model/ElectionRoll";
-
+import { ElectionRoll } from "../../../domain_model/ElectionRoll";
 import { ILoggingContext } from "../Services/Logging/ILogger";
-import { ElectionRoll } from "./IElectionRoll";
 
 export interface IElectionRollStore {
     submitElectionRoll: (
