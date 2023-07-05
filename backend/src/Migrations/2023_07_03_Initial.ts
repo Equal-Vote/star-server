@@ -2,7 +2,7 @@ import { Kysely } from 'kysely'
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
-    .createTable('electiondb')
+    .createTable('electionDB')
     .addColumn('election_id', 'varchar', (col) => col.primaryKey())
     .addColumn('title', 'varchar')
     .addColumn('description', 'text')

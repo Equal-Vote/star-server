@@ -4,7 +4,7 @@ import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
 import { Kysely, sql } from 'kysely'
 import { Election } from '../../../domain_model/Election';
-const tableName = 'electiondb';
+const tableName = 'electionDB';
 
 export default class ElectionsDB {
     _postgresClient;
