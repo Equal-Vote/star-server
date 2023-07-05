@@ -24,6 +24,10 @@ export const useSendInvites = (electionID: string | undefined) => {
     return useFetch<undefined, {}>(`/API/Election/${electionID}/sendInvites`, 'post')
 }
 
+export const useSendInvite = (election_id: string, voter_id: string | undefined) => {
+    return useFetch(`/API/Election/${election_id}/sendInvite/${voter_id}`, 'post')
+}
+
 export const useGetRolls = (electionID: string | undefined) => {
     return useFetch<undefined, { election: Election, electionRoll: ElectionRoll[] }>(`/API/Election/${electionID}/rolls`, 'get')
 }

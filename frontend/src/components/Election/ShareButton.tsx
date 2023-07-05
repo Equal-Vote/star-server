@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import ShareIcon from '@mui/icons-material/Share';
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
@@ -15,9 +15,12 @@ import RedditIcon from "@mui/icons-material/Reddit"
 import LinkIcon from "@mui/icons-material/Link"
 import { IconButton, Menu, Tooltip, Typography } from "@mui/material";
 import { StyledButton } from "../styles";
+import { SnackbarContext } from "../SnackbarContext";
 
-export default function ShareButton({ url, text }) {
+export default function ShareButton({ url }) {
+    const { snack, setSnack } = useContext(SnackbarContext)
     const [anchorElNav, setAnchorElNav] = useState(null)
+
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -52,6 +55,12 @@ export default function ShareButton({ url, text }) {
 
             case "copy":
                 navigator.clipboard.writeText(ahref)
+                setSnack({
+                    message: 'Link Copied!',
+                    severity: 'success',
+                    open: true,
+                    autoHideDuration: 6000,
+                })
                 break
 
             default:
@@ -65,27 +74,13 @@ export default function ShareButton({ url, text }) {
 
     return (
         <>
-            <Tooltip title="Share">
-                {text !== null ?
-                    <StyledButton
-                        type='button'
-                        variant='contained'
-                        fullwidth
-                        onClick={handleOpenNavMenu}>
-                        {text}
-                    </StyledButton>
-                    :
-                    <IconButton
-                        size="large"
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleOpenNavMenu}
-                        color="inherit">
-                        <ShareIcon />
-                    </IconButton>
-                }
-            </Tooltip>
+            <StyledButton
+                type='button'
+                variant='contained'
+                fullwidth
+                onClick={handleOpenNavMenu}>
+                Share
+            </StyledButton>
             <Fade timeout={350}>
                 <Paper >
                     <Menu

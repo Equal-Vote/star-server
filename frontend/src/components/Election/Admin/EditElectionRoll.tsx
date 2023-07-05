@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
 import React from 'react'
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -6,17 +6,19 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
 import PermissionHandler from "../../PermissionHandler";
-import { useApproveRoll, useFlagRoll, useInvalidateRoll, useUnflagRoll } from "../../../hooks/useAPI";
+import { useApproveRoll, useFlagRoll, useInvalidateRoll, useSendInvite, useUnflagRoll } from "../../../hooks/useAPI";
 import useFetch from "../../../hooks/useFetch";
+import { SnackbarContext } from "../../SnackbarContext";
 
 const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
     const [updatedRoll, setUpdatedRoll] = useState(roll)
+    const { snack, setSnack } = useContext(SnackbarContext)
 
     const approve = useApproveRoll(id)
     const flag = useFlagRoll(id)
     const unflag = useUnflagRoll(id)
     const invalidate = useInvalidateRoll(id)
-    const sendInvite = useFetch(`/API/Election/${id}/sendInvite/${roll.voter_id}`, 'post') // TODO: move to useAPI
+    const sendInvite = useSendInvite(id, roll.voter_id)
 
     const onApprove = async () => {
         if (!await approve.makeRequest({ electionRollEntry: roll })) { return }
@@ -36,6 +38,14 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
     }
     const onSendInvite = async () => {
         if (!await sendInvite.makeRequest()) { return }
+
+        setSnack({
+            message: 'Email Invitation Sent!',
+            severity: 'success',
+            open: true,
+            autoHideDuration: 6000,
+        })
+
         await fetchRolls()
     }
 

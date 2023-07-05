@@ -350,7 +350,7 @@ const ShareSection = ({ election, permissions }: { election: Election, permissio
                 </Typography>
             </>)}
         Button={(<>
-            <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} text={'Share'} />
+            <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} />
 
         </>)}
     />

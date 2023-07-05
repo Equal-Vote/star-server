@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 import { useParams } from "react-router";
 import React from 'react'
 import Button from "@mui/material/Button";
@@ -10,6 +10,7 @@ import PermissionHandler from "../../PermissionHandler";
 import { Typography } from "@mui/material";
 import EnhancedTable, { HeadCell, TableData } from "./../../EnhancedTable";
 import { useGetRolls, useSendInvites } from "../../../hooks/useAPI";
+import { SnackbarContext } from "../../SnackbarContext";
 
 
 interface Data extends TableData {
@@ -24,6 +25,7 @@ interface Data extends TableData {
 const ViewElectionRolls = ({ election, permissions }) => {
     const { data, isPending, error, makeRequest: fetchRolls } = useGetRolls(election.election_id)
     const sendInvites = useSendInvites(election.election_id)
+    const { snack, setSnack } = useContext(SnackbarContext)
     useEffect(() => { fetchRolls() }, [])
     const [isEditing, setIsEditing] = useState(false)
     const [addRollPage, setAddRollPage] = useState(false)
@@ -40,8 +42,15 @@ const ViewElectionRolls = ({ election, permissions }) => {
         fetchRolls()
     }
 
-    const onSendInvites = () => {
-        sendInvites.makeRequest()
+    const onSendInvites = async () => {
+        // NOTE: since we don't have await here, it 
+        if(!await sendInvites.makeRequest()){ return }
+        setSnack({
+            message: 'Email Invites Sent!',
+            severity: 'success',
+            open: true,
+            autoHideDuration: 6000,
+        })
     }
 
     const onUpdate = async () => {
