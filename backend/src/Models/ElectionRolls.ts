@@ -2,8 +2,7 @@
 import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
 import { IElectionRollStore } from './IElectionRollStore';
-var format = require('pg-format');
-import { Kysely, SqlBool, SqlBool, sql } from 'kysely'
+import { Expression, Kysely, SqlBool, sql } from 'kysely'
 import { NewElectionRoll, ElectionRoll, UpdatedElectionRoll } from './IElectionRoll';
 import { Database } from './Database';
 const tableName = 'electionRollDB';
@@ -53,8 +52,6 @@ export default class ElectionRollDB implements IElectionRollStore {
 
     getByVoterID(election_id: string, voter_id: string, ctx: ILoggingContext): Promise<ElectionRoll | null> {
         Logger.debug(ctx, `${tableName}.getByVoterID election:${election_id}, voter:${voter_id}`);
-        var sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1 AND voter_id = $2`;
-        Logger.debug(ctx, sqlString);
 
         return this._postgresClient
             .selectFrom(tableName)
@@ -81,122 +78,71 @@ export default class ElectionRollDB implements IElectionRollStore {
             }))
     }
 
-    getElectionRoll(election_id: string, voter_id: string | null, email: string | null, ip_address: string | null, ctx: ILoggingContext): Promise<[ElectionRoll] | null> {
+    getElectionRoll(election_id: string, voter_id: string | null, email: string | null, ip_address: string | null, ctx: ILoggingContext): Promise<ElectionRoll[] | null> {
         Logger.debug(ctx, `${tableName}.get election:${election_id}, voter:${voter_id}`);
-        let sqlString = `SELECT * FROM ${this._tableName} WHERE election_id = $1 AND ( `;
 
-        let query = this._postgresClient
+        return this._postgresClient
             .selectFrom(tableName)
-            .where(({ or, cmpr }) =>
-                or(
-                )
-            )
+            .where((eb) => {
+                const ors: Expression<boolean>[] = []
 
-        if (voter_id) {
-            values.push(voter_id)
-            sqlString += `voter_id = $${values.length}`
-        }
-        if (email) {
-            if (voter_id) {
-                sqlString += ' OR '
-            }
-            values.push(email)
-            sqlString += `email = $${values.length}`
-        }
-        if (ip_address) {
-            if (voter_id || email) {
-                sqlString += ' OR '
-            }
-            values.push(ip_address)
-            sqlString += `ip_address = $${values.length}`
-        }
+                if (voter_id) {
+                    ors.push(eb.cmpr('voter_id', '=', voter_id))
+                }
 
+                if (email) {
+                    ors.push(eb.cmpr('email', '=', email))
+                }
 
-        return query.selectAll()
+                if (ip_address) {
+                    ors.push(eb.cmpr('ip_address', '=', ip_address))
+                }
+
+                return eb.or(ors)
+            })
+            .selectAll()
             .execute()
             .catch(((reason: any) => {
                 Logger.debug(ctx, reason);
                 return null
             }))
-
-        let values = [election_id]
-        if (voter_id) {
-            values.push(voter_id)
-            sqlString += `voter_id = $${values.length}`
-        }
-        if (email) {
-            if (voter_id) {
-                sqlString += ' OR '
-            }
-            values.push(email)
-            sqlString += `email = $${values.length}`
-        }
-        if (ip_address) {
-            if (voter_id || email) {
-                sqlString += ' OR '
-            }
-            values.push(ip_address)
-            sqlString += `ip_address = $${values.length}`
-        }
-        sqlString += ')'
-        Logger.debug(ctx, sqlString);
-
-        var p = this._postgresClient.query({
-            text: sqlString,
-            values: values
-        });
-        return p.then((response: any) => {
-            var rows = response.rows;
-            Logger.debug(ctx, rows[0])
-            if (rows.length == 0) {
-                Logger.debug(ctx, ".get null");
-                return null;
-            }
-            return rows
-        });
     }
 
     update(election_roll: ElectionRoll, ctx: ILoggingContext, reason: string): Promise<ElectionRoll | null> {
         Logger.debug(ctx, `${tableName}.updateRoll`);
-        var sqlString = `UPDATE ${this._tableName} SET ballot_id=$1, submitted=$2, state=$3, history=$4, registration=$5, email_data=$6 WHERE election_id = $7 AND voter_id=$8`;
-        Logger.debug(ctx, sqlString);
         Logger.debug(ctx, "", election_roll)
-        var p = this._postgresClient.query({
-            text: sqlString,
 
-            values: [election_roll.ballot_id, election_roll.submitted, election_roll.state, JSON.stringify(election_roll.history), JSON.stringify(election_roll.registration), JSON.stringify(election_roll.email_data), election_roll.election_id, election_roll.voter_id]
-
-        });
-        return p.then((response: any) => {
-            var rows = response.rows;
-            Logger.debug(ctx, "", response);
-            if (rows.length == 0) {
+        return this._postgresClient
+            .updateTable(tableName)
+            .where('election_id', '=', election_roll.election_id)
+            .where('voter_id', '=', election_roll.voter_id)
+            .set(stringifyRoll(election_roll))
+            .returningAll()
+            .executeTakeFirstOrThrow()
+            .catch((reason: any) => {
                 Logger.debug(ctx, ".get null");
-                return [] as ElectionRoll[];
-            }
-            const newElectionRoll = rows;
-            Logger.state(ctx, `Update Election Roll: `, { reason: reason, electionRoll: newElectionRoll });
-            return newElectionRoll;
-        });
+                return null;
+            })
     }
 
     delete(election_roll: ElectionRoll, ctx: ILoggingContext, reason: string): Promise<boolean> {
         Logger.debug(ctx, `${tableName}.delete`);
         var sqlString = `DELETE FROM ${this._tableName} WHERE election_id = $1 AND voter_id=$2`;
         Logger.debug(ctx, sqlString);
+        let deletedRoll = this._postgresClient
+            .deleteFrom(tableName)
+            .where('election_id', '=', election_roll.election_id)
+            .where('voter_id', '=', election_roll.voter_id)
+            .returningAll()
+            .execute()
 
-        var p = this._postgresClient.query({
-            rowMode: 'array',
-            text: sqlString,
-            values: [election_roll.election_id, election_roll.voter_id]
-        });
-        return p.then((response: any) => {
-            if (response.rowCount == 1) {
-                Logger.state(ctx, `Delete ElectionRoll`, { reason: reason, electionId: election_roll.election_id });
-                return true;
+        return deletedRoll.then((roll) => {
+            if (roll) {
+                return true
+            } else {
+                return false
             }
-            return false;
-        });
+        })
     }
 }
 
