@@ -21,6 +21,7 @@ type Props = {
 
 const VoterAuth = ({ authSession, electionData, fetchElection }: Props) => {
   const { voter_id } = useParams();
+  // TODO: maybe we should reconsider useCookie here? this has the potential of inserting the voter id on a different election
   const [voterID, setVoterID] = useCookie('voter_id', voter_id ? voter_id : null, 1)
 
   useEffect(() => {
@@ -67,7 +68,7 @@ const VoterAuth = ({ authSession, electionData, fetchElection }: Props) => {
               </Typography>
             </Box>
           }
-          {voterIdRequired &&
+          {voterIdRequired && voter_id === null &&
             <>
               <Box sx={{ display: 'flex' }}>
                 <Box sx={{ p: 1, flexGrow: 1 }}>

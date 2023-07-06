@@ -87,7 +87,6 @@ const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
             </>}
 
             {electionData.election.state === 'closed' && electionData.election.end_time &&
-
               <Box sx={{ flexGrow: 1 }}>
                 <Typography align='center' variant="h6" component="h6">
                   {`Election ended on ${new Date(electionData.election.end_time).toLocaleDateString()} at ${new Date(electionData.election.end_time).toLocaleTimeString()} `}
