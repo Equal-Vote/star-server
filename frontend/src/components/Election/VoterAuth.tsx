@@ -23,7 +23,7 @@ const VoterAuth = ({ authSession, electionData, fetchElection }: Props) => {
   const { voter_id } = useParams();
   console.log('useParam')
   // TODO: maybe we should reconsider useCookie here? this has the potential of inserting the voter id on a different election
-  const [voterID, setVoterID] = useCookie('paramVoterID', voter_id ? voter_id : null, 1)
+  const [voterID, setVoterID] = useCookie('voter_id', voter_id ? voter_id : null, 1)
 
   useEffect(() => {
     setVoterID(voter_id)
@@ -50,8 +50,6 @@ const VoterAuth = ({ authSession, electionData, fetchElection }: Props) => {
   const missingEmail = electionData?.voterAuth?.required === "Email Validation Required"
   const missingVoterID = electionData.voterAuth?.required === "Voter ID Required"
 
-
-  console.log(voter_id)
   return (
     <Box sx={{ p: 1, flexGrow: 1 }}>
       {isOpen &&
