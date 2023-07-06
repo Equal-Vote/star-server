@@ -21,8 +21,9 @@ type Props = {
 
 const VoterAuth = ({ authSession, electionData, fetchElection }: Props) => {
   const { voter_id } = useParams();
+  console.log('useParam')
   // TODO: maybe we should reconsider useCookie here? this has the potential of inserting the voter id on a different election
-  const [voterID, setVoterID] = useCookie('voter_id', voter_id ? voter_id : null, 1)
+  const [voterID, setVoterID] = useCookie('paramVoterID', voter_id ? voter_id : null, 1)
 
   useEffect(() => {
     setVoterID(voter_id)
@@ -50,6 +51,7 @@ const VoterAuth = ({ authSession, electionData, fetchElection }: Props) => {
   const missingVoterID = electionData.voterAuth?.required === "Voter ID Required"
 
 
+  console.log(voter_id)
   return (
     <Box sx={{ p: 1, flexGrow: 1 }}>
       {isOpen &&
@@ -68,7 +70,18 @@ const VoterAuth = ({ authSession, electionData, fetchElection }: Props) => {
               </Typography>
             </Box>
           }
-          {voterIdRequired && voter_id === null &&
+          {voterIdRequired && voter_id !== undefined && isAuthorized &&
+            <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+              <Typography variant="h5" component="h5">
+                Your unique voter id:
+              </Typography>
+              <p>
+                {/*The below expression displays the uuid as b1d0cac0-****-****-****-************ */}
+                {voter_id.split('-').map((str, i) => (i==0)? str : str.replace(/./g, "●")).join('-')}
+              </p>
+            </Box>
+          }
+          {voterIdRequired && (voter_id === undefined || !isAuthorized) &&
             <>
               <Box sx={{ display: 'flex' }}>
                 <Box sx={{ p: 1, flexGrow: 1 }}>

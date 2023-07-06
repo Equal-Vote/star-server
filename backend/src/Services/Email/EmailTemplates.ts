@@ -36,6 +36,9 @@ export function Invites(election: Election, voters: ElectionRoll[], url: string)
                             ${election.start_time && election.settings.time_zone ? `<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Start Time: ${ DateTime.fromJSDate(new Date(election.start_time)).setZone(election.settings.time_zone).toLocaleString(DateTime.DATETIME_FULL) }</p>` : ''}
                             
                             ${election.end_time && election.settings.time_zone ? `<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">End Time: ${ DateTime.fromJSDate(new Date(election.end_time)).setZone(election.settings.time_zone).toLocaleString(DateTime.DATETIME_FULL) }</p>` : ''}
+
+                            This link is unique to you, be careful not to share this email with others
+
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; box-sizing: border-box; width: 100%;" width="100%">
                               <tbody>
                                 <tr>
@@ -51,6 +54,7 @@ export function Invites(election: Election, voters: ElectionRoll[], url: string)
                                 </tr>
                               </tbody>
                             </table>
+
                         </td>
                         </tr>
                       </table>
