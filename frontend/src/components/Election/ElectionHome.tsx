@@ -21,7 +21,6 @@ type Props = {
 }
 
 const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
-
   return (
     <>
       {electionData && electionData.election && electionData.voterAuth &&
@@ -47,7 +46,6 @@ const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
               <Typography align='center' gutterBottom variant="h3" component="h3" fontWeight={'bold'}>
                 {electionData.election.title}
               </Typography>
-
             </Box>
 
             <Box sx={{ flexGrow: 1 }}>
@@ -57,6 +55,7 @@ const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
             </Box>
 
             <VoterAuth authSession={authSession} electionData={electionData} fetchElection={fetchElection} />
+
 
             {electionData.election.state === 'finalized' && electionData.election.start_time &&
               <Box sx={{ flexGrow: 1 }}>
@@ -109,6 +108,13 @@ const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
                 <Button fullWidth variant='outlined' href={`/Election/${electionData.election.election_id}/results`} >
                   View Results
                 </Button>
+              </Box>
+            }
+            {electionData.election.state === 'draft' &&
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography align='center' variant="h6" component="h6">
+                  This election is still being drafted
+                </Typography>
               </Box>
             }
             {electionData.election.state === 'archived' &&
