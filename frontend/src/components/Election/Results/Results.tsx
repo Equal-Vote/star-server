@@ -15,7 +15,12 @@ import WinnerResultTabs from "./WinnerResultTabs";
 import { Race } from "../../../../../domain_model/Race";
 import { raceResults, results } from "../../../../../domain_model/Results";
 import { allocatedScoreResults, approvalResults, irvResults, pluralityResults, rankedRobinResults } from "../../../../../backend/src/Tabulators/ITabulators";
-
+declare namespace Intl {
+  class ListFormat {
+    constructor(locales?: string | string[], options?: {});
+    public format: (items: string[]) => string;
+  }
+}
 const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
 type STARResultViewerProps = {
@@ -280,13 +285,19 @@ type SummaryViewerProps = {
 }
 
 function SummaryViewer({ votingMethod, raceResults }: SummaryViewerProps) {
+  // star PR reports ties slightly differently and doesn't even use this component, but have to check to make typescript happy
+  let tiedCandidates:string[] = []
+  if (raceResults.votingMethod !== 'STAR_PR') {
+    tiedCandidates.push(...raceResults.results.tied.map(c => c.name))
+  }
+
   return (
     <>
       <h2>Summary</h2>
       <p>{`Voting Method: ${votingMethod}`}</p>
       <p>{`${raceResults.results.elected.length > 1 ? 'Winners' : 'Winner'}: ${raceResults.results.elected.map(c => c.name).join(', ')}`}</p>
-      {raceResults.results.tied?.length > 0 &&
-        <p>{`Tied: ${raceResults.results.tied.map(c => c.name).join(', ')}`}</p>}
+      {tiedCandidates.length > 0 &&
+        <p>{`Tied: ${tiedCandidates.join(', ')}`}</p>}
       <p>{`Number of voters: ${raceResults.results.summaryData.nValidVotes}`}</p>
     </>
   );
