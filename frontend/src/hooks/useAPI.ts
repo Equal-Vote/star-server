@@ -3,6 +3,7 @@ import { VoterAuth } from '../../../domain_model/VoterAuth';
 import { ElectionRoll } from "../../../domain_model/ElectionRoll";
 import useFetch from "./useFetch";
 import { Ballot } from "../../../domain_model/Ballot";
+import { raceResults } from "../../../domain_model/Results";
 
 export const useGetElection = (electionID: string | undefined) => {
     return useFetch<undefined, { election: Election, voterAuth: VoterAuth }>(`/API/Election/${electionID}`, 'get')
@@ -85,11 +86,14 @@ export const useGetBallots = (election_id: string | undefined) => {
 }
 
 export const useGetResults = (election_id: string | undefined) => {
-    return useFetch<undefined, any>(`/API/ElectionResult/${election_id}`, 'get')
+    return useFetch<
+        undefined,
+        { Election: Election, Results: raceResults[] }
+    >(`/API/ElectionResult/${election_id}`, 'get')
 }
 
 export const usePostBallot = (election_id: string | undefined) => {
-    return useFetch<{ ballot: Ballot }, {ballot: Ballot}>(`/API/Election/${election_id}/vote`, 'post')
+    return useFetch<{ ballot: Ballot }, { ballot: Ballot }>(`/API/Election/${election_id}/vote`, 'post')
 }
 
 

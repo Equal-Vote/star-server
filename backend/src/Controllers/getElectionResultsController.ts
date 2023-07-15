@@ -49,8 +49,7 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
         }
         const msg = `Tabulating results for ${voting_method} election`
         Logger.info(req, msg);
-        // const func = VotingMethods[voting_method]
-        // const x = func(candidateNames, cvr, num_winners)
+        
         const result = {
             votingMethod: voting_method,
             results: VotingMethods[voting_method](candidateNames, cvr, num_winners)
