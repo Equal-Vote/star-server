@@ -24,6 +24,7 @@ WORKDIR /usr/src/app
 COPY --chown=node:node domain_model domain_model
 WORKDIR /usr/src/app/frontend
 COPY --chown=node:node frontend .
+ENV REACT_APP_KEYCLOAK_URL https://auth.star.vote:8443/realms/STARVotingDev/protocol/openid-connect
 RUN npm run build
 WORKDIR /usr/src/app/backend
 COPY --chown=node:node backend .
