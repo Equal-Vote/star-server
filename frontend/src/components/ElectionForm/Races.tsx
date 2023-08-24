@@ -235,32 +235,34 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
                                             />
                                         </Grid>} */}
                                 </>}
-                            <Grid item xs={12} sx={{ m: 0, p: 1 }}>
-                                <Typography gutterBottom variant="h6" component="h6">
-                                    Number of Winners
-                                </Typography>
-                                <TextField
-                                    id={`num-winners-${String(race_index)}`}
-                                    name="Number Of Winners"
-                                    inputProps={{ ...getStyle('races', 0, 'num_winners'), min: 1 }}
-                                    type="number"
-                                    error={errors.raceNumWinners !== ''}
-                                    // helperText={errors.raceNumWinners}
-                                    fullWidth
-                                    value={election.races[race_index].num_winners}
-                                    sx={{
-                                        p: 0,
-                                        boxShadow: 2,
-                                    }}
-                                    onChange={(e) => {
-                                        setErrors({ ...errors, raceNumWinners: '' })
-                                        applyElectionUpdate(election => { election.races[race_index].num_winners = e.target.value })
-                                    }}
-                                />
-                                <FormHelperText error sx={{ pl: 1, pt: 0 }}>
-                                    {errors.raceNumWinners}
-                                </FormHelperText>
-                            </Grid>
+                            {(process.env.FF_MULTI_WINNER || false) &&
+                                <Grid item xs={12} sx={{ m: 0, p: 1 }}>
+                                    <Typography gutterBottom variant="h6" component="h6">
+                                        Number of Winners
+                                    </Typography>
+                                    <TextField
+                                        id={`num-winners-${String(race_index)}`}
+                                        name="Number Of Winners"
+                                        inputProps={{ ...getStyle('races', 0, 'num_winners'), min: 1 }}
+                                        type="number"
+                                        error={errors.raceNumWinners !== ''}
+                                        // helperText={errors.raceNumWinners}
+                                        fullWidth
+                                        value={election.races[race_index].num_winners}
+                                        sx={{
+                                            p: 0,
+                                            boxShadow: 2,
+                                        }}
+                                        onChange={(e) => {
+                                            setErrors({ ...errors, raceNumWinners: '' })
+                                            applyElectionUpdate(election => { election.races[race_index].num_winners = e.target.value })
+                                        }}
+                                    />
+                                    <FormHelperText error sx={{ pl: 1, pt: 0 }}>
+                                        {errors.raceNumWinners}
+                                    </FormHelperText>
+                                </Grid>
+                            }
 
                             <Grid item xs={12} sx={{ m: 0, my: 1, p: 1 }}>
                                 <FormControl component="fieldset" variant="standard">
@@ -278,20 +280,27 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
                                             Score candidates 0-5, single winner or multi-winner
                                         </FormHelperText>
 
-                                        <FormControlLabel value="STAR_PR" control={<Radio />} label="Proportional STAR" />
-                                        <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                            Score candidates 0-5, proportional multi-winner
-                                        </FormHelperText>
 
-                                        <FormControlLabel value="RankedRobin" control={<Radio />} label="Ranked Robin" />
-                                        <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                            Rank candidates in order of preference, single winner or multi-winner
-                                        </FormHelperText>
+                                        {(process.env.FF_METHOD_STAR_PR || false) && <>
+                                            <FormControlLabel value="STAR_PR" control={<Radio />} label="Proportional STAR" />
+                                            <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                                Score candidates 0-5, proportional multi-winner
+                                            </FormHelperText>
+                                        </>}
 
-                                        <FormControlLabel value="Approval" control={<Radio />} label="Approval" />
-                                        <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                            Mark all candidates you approve of, single winner or multi-winner
-                                        </FormHelperText>
+                                        {(process.env.FF_METHOD_RANKED_ROBIN || false) && <>
+                                            <FormControlLabel value="RankedRobin" control={<Radio />} label="Ranked Robin" />
+                                            <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                                Rank candidates in order of preference, single winner or multi-winner
+                                            </FormHelperText>
+                                        </>}
+
+                                        {(process.env.FF_METHOD_APPROVAL || false) && <>
+                                            <FormControlLabel value="Approval" control={<Radio />} label="Approval" />
+                                            <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                                Mark all candidates you approve of, single winner or multi-winner
+                                            </FormHelperText>
+                                        </>}
 
 
                                         <Box
@@ -328,17 +337,20 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
                                         }
                                         {showsAllMethods &&
                                             <>
+
                                                 <FormControlLabel value="Plurality" control={<Radio />} label="Plurality" />
                                                 <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                                     Mark one candidate only. Not recommended with more than 2 candidates.
                                                 </FormHelperText>
 
-                                                <FormControlLabel value="IRV" control={<Radio />} label="Ranked Choice" />
-                                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                                    Rank candidates in order of preference, single winner, only recommended for educational purposes
-                                                </FormHelperText>
-
-                                            </>}
+                                                {(process.env.FF_METHOD_RANKED_CHOICE || false) && <>
+                                                    <FormControlLabel value="IRV" control={<Radio />} label="Ranked Choice" />
+                                                    <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                                        Rank candidates in order of preference, single winner, only recommended for educational purposes
+                                                    </FormHelperText>
+                                                </>}
+                                            </>
+                                        }
                                     </RadioGroup>
                                 </FormControl>
 
@@ -399,13 +411,17 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
                 </>
             }
             <Grid item xs={9}></Grid>
+
+
             <Grid item xs={3} sx={{ m: 0, p: 1 }}>
+                {(process.env.FF_METHOD_PLURALITY || false) && <>
                 <StyledButton
                     type='button'
                     variant="contained"
                     onClick={() => onAddRace()} >
                     Add Race
                 </StyledButton>
+                </>}
             </Grid>
             <Grid item xs={3} sx={{ m: 0, p: 1, pt: 2 }}>
                 <StyledButton
