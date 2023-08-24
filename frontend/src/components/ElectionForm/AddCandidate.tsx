@@ -114,11 +114,13 @@ const AddCandidate = ({ onEditCandidate, candidate, index }: CandidateProps) => 
                 </Grid>
                 :
                 <Grid item xs={2} sx={{ display: "flex", alignItems: "center" }}>
-                    <Button
-                        onClick={() => setEditCandidate(true)}
-                    >
-                        <Typography variant="h6" component="h6"> Add Details </Typography>
-                    </Button>
+                    {(process.env.FF_CANDIDATE_DETAILS || false) && <>
+                        <Button
+                            onClick={() => setEditCandidate(true)}
+                        >
+                            <Typography variant="h6" component="h6"> Add Details </Typography>
+                        </Button>
+                    </>}
                 </Grid>}
             {editCandidate &&
                 <Grid item xs={12} sx={{position: 'relative', display: 'flex', flexDirection: {sm: 'row', xs: 'column'}, justifyContent: 'flex-start', alignItems: 'top'}}>
