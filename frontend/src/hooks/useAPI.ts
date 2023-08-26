@@ -41,7 +41,10 @@ export const useGetRolls = (electionID: string | undefined) => {
 }
 
 export const usePutElectionRoles = (election_id: string) => {
-    return useFetch<{ admin_ids: string[], audit_ids: string[], credential_ids: string[] }, {}>(`/API/Election/${election_id}/roles/`, 'put')
+    return useFetch<{ admin_ids: string[], audit_ids: string[], credential_ids: string[] }, {}>(
+        `/API/Election/${election_id}/roles/`, 
+        'put',
+        'Election Roles Saved!',)
 }
 
 export const usePostRolls = (election_id: string) => {
