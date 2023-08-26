@@ -17,7 +17,7 @@ const Elections = ({ authSession }) => {
 
     useEffect(() => {
         fetchElections()
-    }, [])
+    }, [authSession.isLoggedIn()])
 
     const userEmail = authSession.getIdField('email')
     const id = authSession.getIdField('sub')
