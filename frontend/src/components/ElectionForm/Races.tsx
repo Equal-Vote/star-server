@@ -209,7 +209,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
                                         </FormHelperText>
                                     </Grid>
 
-                                    {/* {election.settings.voter_access !== 'open' &&
+                                    {process.env.REACT_APP_FF_PRECINCTS === 'true' && election.settings.voter_access !== 'open' &&
                                         <Grid item xs={12}>
                                             <TextField
                                                 id={`race-precincts-${String(race_index)}`}
@@ -233,9 +233,10 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
                                                     }
                                                 })}
                                             />
-                                        </Grid>} */}
+                                        </Grid>
+                                    }
                                 </>}
-                            {(process.env.FF_MULTI_WINNER || false) &&
+                            {process.env.REACT_APP_FF_MULTI_WINNER === 'true' &&
                                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                                     <Typography gutterBottom variant="h6" component="h6">
                                         Number of Winners
@@ -281,21 +282,21 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
                                         </FormHelperText>
 
 
-                                        {(process.env.FF_METHOD_STAR_PR || false) && <>
+                                        {(process.env.REACT_APP_FF_METHOD_STAR_PR === 'true') && <>
                                             <FormControlLabel value="STAR_PR" control={<Radio />} label="Proportional STAR" />
                                             <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                                 Score candidates 0-5, proportional multi-winner
                                             </FormHelperText>
                                         </>}
 
-                                        {(process.env.FF_METHOD_RANKED_ROBIN || false) && <>
+                                        {(process.env.REACT_APP_FF_METHOD_RANKED_ROBIN === 'true') && <>
                                             <FormControlLabel value="RankedRobin" control={<Radio />} label="Ranked Robin" />
                                             <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                                 Rank candidates in order of preference, single winner or multi-winner
                                             </FormHelperText>
                                         </>}
 
-                                        {(process.env.FF_METHOD_APPROVAL || false) && <>
+                                        {(process.env.REACT_APP_FF_METHOD_APPROVAL === 'true') && <>
                                             <FormControlLabel value="Approval" control={<Radio />} label="Approval" />
                                             <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                                 Mark all candidates you approve of, single winner or multi-winner
@@ -343,7 +344,7 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
                                                     Mark one candidate only. Not recommended with more than 2 candidates.
                                                 </FormHelperText>
 
-                                                {(process.env.FF_METHOD_RANKED_CHOICE || false) && <>
+                                                {(process.env.REACT_APP_FF_METHOD_RANKED_CHOICE === 'true') && <>
                                                     <FormControlLabel value="IRV" control={<Radio />} label="Ranked Choice" />
                                                     <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                                         Rank candidates in order of preference, single winner, only recommended for educational purposes
@@ -412,9 +413,8 @@ export default function Races({ election, applyElectionUpdate, getStyle, onBack,
             }
             <Grid item xs={9}></Grid>
 
-
             <Grid item xs={3} sx={{ m: 0, p: 1 }}>
-                {(process.env.FF_METHOD_PLURALITY || false) && <>
+                {(process.env.REACT_APP_FF_METHOD_PLURALITY === 'true') && <>
                 <StyledButton
                     type='button'
                     variant="contained"

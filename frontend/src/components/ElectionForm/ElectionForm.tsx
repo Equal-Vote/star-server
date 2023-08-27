@@ -435,7 +435,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                         Option1={{
                             Answer: 'Yes',
                             HelpText: 'Voters will create an account and verify their email adress.',
-                            GotoPage: 'Scenario8',
+                            GotoPage: (process.env.REACT_APP_FF_CUSTOM_REGISTER === 'true')? 'CustomRegister?': 'Scenario8',
                             election: election,
                             setPage: setPage,
                         }}

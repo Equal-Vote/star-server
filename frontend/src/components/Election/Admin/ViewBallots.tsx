@@ -65,7 +65,9 @@ const ViewBallots = ({ election, permissions }) => {
                         <Table style={{ width: '100%' }} aria-label="simple table">
                             <TableHead>
                                 <TableCell> ID </TableCell>
-                                <TableCell> Precinct </TableCell>
+                                {process.env.REACT_APP_FF_VOTER_FLAGGING === 'true' &&
+                                    <TableCell> Precinct </TableCell>
+                                }
                                 <TableCell> Date Submitted </TableCell>
                                 <TableCell> Status </TableCell>
                                 {election.races.map((race) => (
@@ -81,7 +83,9 @@ const ViewBallots = ({ election, permissions }) => {
                                 {data.ballots.map((ballot) => (
                                     <TableRow key={ballot.ballot_id} >
                                         <TableCell component="th" scope="row">{ballot.ballot_id}</TableCell>
-                                        <TableCell >{ballot.precinct || ''}</TableCell>
+                                        {process.env.REACT_APP_FF_VOTER_FLAGGING === 'true' &&
+                                            <TableCell >{ballot.precinct || ''}</TableCell>
+                                        }
                                         <TableCell >{formatDate(Number(ballot.date_submitted), election.settings.time_zone)}</TableCell>
                                         <TableCell >{ballot.status.toString()}</TableCell>
                                         {ballot.votes.map((vote) => (
