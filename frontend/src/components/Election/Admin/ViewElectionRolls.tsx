@@ -106,14 +106,17 @@ const ViewElectionRolls = ({ election, permissions }) => {
             label: 'IP',
             filterType: 'search'
         },
-        {
-            id: 'precinct',
-            numeric: false,
-            disablePadding: false,
-            label: 'Precinct',
-            filterType: 'search'
-        },
     ];
+
+    if(process.env.REACT_APP_FF_PRECINCTS === 'true'){
+        headCells.push({
+                id: 'precinct',
+                numeric: false,
+                disablePadding: false,
+                label: 'Precinct',
+                filterType: 'search'
+        });
+    }
 
     const tableData = React.useMemo(
         () => {

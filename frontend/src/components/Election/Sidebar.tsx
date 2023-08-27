@@ -35,9 +35,12 @@ export default function Sidebar({ electionData }) {
                             <ListItem text='Admin Home' link={`/Election/${id}/admin`} />
                             {electionData.election.state === 'draft' &&
                                 <>
-                                    <PermissionHandler permissions={electionData.voterAuth.permissions} requiredPermission={'canEditElectionRoles'}>
-                                        <ListItem text='Edit Election Roles' link={`/Election/${id}/admin/roles`} />
-                                    </PermissionHandler>
+
+                                    {process.env.REACT_APP_FF_METHOD_ELECTION_ROLES === 'true' &&
+                                        <PermissionHandler permissions={electionData.voterAuth.permissions} requiredPermission={'canEditElectionRoles'}>
+                                            <ListItem text='Edit Election Roles' link={`/Election/${id}/admin/roles`} />
+                                        </PermissionHandler>
+                                    }
                                     <PermissionHandler permissions={electionData.voterAuth.permissions} requiredPermission={'canEditElection'}>
                                         <ListItem text='Edit Election' link={`/Election/${id}/edit`} />
                                     </PermissionHandler>

@@ -41,6 +41,7 @@ const Section = ({ Description, Button }: SectionProps) => {
 }
 
 const EditRolesSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
+    if(process.env.REACT_APP_FF_METHOD_PLURALITY !== 'true') return <></>;
     return <Section
         Description={
             (<>

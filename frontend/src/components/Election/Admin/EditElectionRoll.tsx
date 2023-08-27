@@ -108,27 +108,27 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
                             <Button variant='outlined' onClick={() => { onApprove() }} > Approve </Button>
                         </PermissionHandler>
                     </Grid>}
-                {roll.state !== 'flagged' &&
-                    <Grid item sm={4} sx={{py:1}}>
+                {process.env.REACT_APP_FF_VOTER_FLAGGING === 'true' && <>
+                    {roll.state !== 'flagged' &&
+                        <Grid item sm={4} sx={{py:1}}>
 
-                        <PermissionHandler permissions={permissions} requiredPermission={'canFlagElectionRoll'}>
-                            <Button variant='outlined' onClick={() => { onFlag() }} > Flag </Button>
-                        </PermissionHandler>
-                    </Grid>}
-                {roll.state === 'flagged' &&
-                    <Grid item sm={4} sx={{py:1}}>
-                        <PermissionHandler permissions={permissions} requiredPermission={'canUnflagElectionRoll'}>
-                            <Button variant='outlined' onClick={() => { onUnflag() }} > Unflag </Button>
-                        </PermissionHandler>
-                    </Grid>}
-                {roll.state === 'flagged' &&
-                    <Grid item sm={4} sx={{py:1}}>
-                        <PermissionHandler permissions={permissions} requiredPermission={'canInvalidateElectionRoll'}>
-                            <Button variant='outlined' onClick={() => { onInvalidate() }} > Invalidate </Button>
-                        </PermissionHandler>
-                    </Grid>}
-
-
+                            <PermissionHandler permissions={permissions} requiredPermission={'canFlagElectionRoll'}>
+                                <Button variant='outlined' onClick={() => { onFlag() }} > Flag </Button>
+                            </PermissionHandler>
+                        </Grid>}
+                    {roll.state === 'flagged' &&
+                        <Grid item sm={4} sx={{py:1}}>
+                            <PermissionHandler permissions={permissions} requiredPermission={'canUnflagElectionRoll'}>
+                                <Button variant='outlined' onClick={() => { onUnflag() }} > Unflag </Button>
+                            </PermissionHandler>
+                        </Grid>}
+                    {roll.state === 'flagged' &&
+                        <Grid item sm={4} sx={{py:1}}>
+                            <PermissionHandler permissions={permissions} requiredPermission={'canInvalidateElectionRoll'}>
+                                <Button variant='outlined' onClick={() => { onInvalidate() }} > Invalidate </Button>
+                            </PermissionHandler>
+                        </Grid>}
+                </>}
                 {roll?.history &&
                     <TableContainer component={Paper}>
                         <Table style={{ width: '100%' }} aria-label="simple table">

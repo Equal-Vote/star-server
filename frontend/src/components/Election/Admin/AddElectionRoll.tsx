@@ -135,16 +135,18 @@ const AddElectionRoll = ({ election, onClose }) => {
                                 }
                                 label='Email'
                             />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        id="enable-precinct"
-                                        name="Precinct"
-                                        checked={enablePrecinct}
-                                        onChange={(e) => setEnablePrecinct(e.target.checked)} />
-                                }
-                                label='Precinct'
-                            />
+                            {process.env.REACT_APP_FF_PRECINCTS === 'true' &&
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            id="enable-precinct"
+                                            name="Precinct"
+                                            checked={enablePrecinct}
+                                            onChange={(e) => setEnablePrecinct(e.target.checked)} />
+                                    }
+                                    label='Precinct'
+                                />
+                            }
                         </FormGroup>
                     </Grid>
                     <Grid item sx={{ p: 1 }}>
