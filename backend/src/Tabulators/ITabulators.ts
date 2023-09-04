@@ -138,23 +138,3 @@ export interface irvResults {
     exhaustedVoteCounts: number[],
     overVoteCounts: number[]
 }
-
-export type raceResults = {
-    votingMethod: 'STAR',
-    results: results
-} | {
-    votingMethod: 'STAR_PR',
-    results: allocatedScoreResults
-} | {
-    votingMethod: 'Approval',
-    results: approvalResults
-} | {
-    votingMethod: 'Plurality',
-    results: pluralityResults
-} | {
-    votingMethod: 'IRV',
-    results: irvResults
-} | {
-    votingMethod: 'RankedRobin',
-    results: rankedRobinResults
-}

@@ -8,7 +8,6 @@ import { permissions } from '../../../domain_model/permissions';
 import { VotingMethods } from '../Tabulators/VotingMethodSelecter';
 import { IElectionRequest } from "../IRequest";
 import { Response, NextFunction } from 'express';
-import { raceResults, results } from "../Tabulators/ITabulators";
 
 const BallotModel = ServiceLocator.ballotsDb();
 
@@ -30,7 +29,7 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
     const election = req.election
     let results = []
     for (let race_index = 0; race_index < election.races.length; race_index++) {
-        const candidateNames = election.races[race_index].candidates.map((Candidate) => (Candidate.candidate_name))
+        const candidateNames = election.races[race_index].candidates.map((Candidate: any) => (Candidate.candidate_name))
         const race_id = election.races[race_index].race_id
         const cvr: number[][] = []
         ballots.forEach((ballot: Ballot) => {
@@ -49,12 +48,7 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
         }
         const msg = `Tabulating results for ${voting_method} election`
         Logger.info(req, msg);
-        
-        const result = {
-            votingMethod: voting_method,
-            results: VotingMethods[voting_method](candidateNames, cvr, num_winners)
-        }
-        results[race_index] = result
+        results[race_index] = VotingMethods[voting_method](candidateNames, cvr, num_winners)
     }
     res.json(
         {
