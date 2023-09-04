@@ -12,42 +12,28 @@ import STARResultSummaryWidget from "./STARResultSummaryWidget";
 import STARResultTableWidget from "./STARResultTableWidget";
 import STARResultDetailedStepsWidget from "./STARResultDetailedStepsWidget";
 import WinnerResultTabs from "./WinnerResultTabs";
-import { Race } from "../../../../../domain_model/Race";
-import { raceResults, results } from "../../../../../domain_model/Results";
-import { allocatedScoreResults, approvalResults, irvResults, pluralityResults, rankedRobinResults } from "../../../../../backend/src/Tabulators/ITabulators";
-declare namespace Intl {
-  class ListFormat {
-    constructor(locales?: string | string[], options?: {});
-    public format: (items: string[]) => string;
-  }
-}
+
 const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
-type STARResultViewerProps = {
-  raceIndex: number,
-  results: results,
-  rounds: number
-}
-
-function STARResultViewer({ raceIndex, results, rounds }: STARResultViewerProps) {
+function STARResultViewer({ raceIndex, results, rounds }) {
   let i = 0;
-  const roundIndexes = Array.from({ length: rounds }, () => i++);
+  const roundIndexes = Array.from({length: rounds}, () => i++);
 
   return (
     <div className="resultViewer">
       <WinnerResultTabs numWinners={rounds}>
-        {roundIndexes.map((i) => <STARResultSummaryWidget results={results} roundIndex={i} />)}
+        {roundIndexes.map((i) => <STARResultSummaryWidget results={results} roundIndex={i}/>)}
       </WinnerResultTabs>
       <DetailExpander title='Details'>
         <DetailExpanderGroup defaultSelectedIndex={-1}>
-          <STARResultTableWidget title="Election Results" results={results} rounds={rounds} />
-          <STARResultDetailedStepsWidget title="Detailed Steps" results={results} rounds={rounds} />
-          <div title="How STAR Voting works" style={{ maxWidth: '100%' }}>
-            <img style={{ display: 'block', width: '100%', maxWidth: '400px', margin: '0 auto 0 auto' }} src="/images/star_info_vertical.png" />
-            <hr />
+          <STARResultTableWidget title="Election Results" results={results} rounds={rounds}/>
+          <STARResultDetailedStepsWidget title="Detailed Steps" results={results} rounds={rounds}/>
+          <div title="How STAR Voting works" style={{maxWidth: '100%'}}>
+            <img style={{display: 'block', width: '100%', maxWidth: '400px', margin: '0 auto 0 auto'}} src="/images/star_info_vertical.png"/>
+            <hr/>
             {/*https://faq.dailymotion.com/hc/en-us/articles/360022841393-How-to-preserve-the-player-aspect-ratio-on-a-responsive-page#:~:text=In%20the%20HTML%2C%20put%20the,56.25%25%20%3D%2016%3A9.*/}
-            <div style={{ position: 'relative', paddingBottom: "56.25%" }}>
-              <iframe style={{ position: 'absolute', width: '100%', height: '100%' }} src="https://www.youtube.com/embed/3-mOeUXAkV0" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+            <div style={{position: 'relative', paddingBottom: "56.25%"}}>
+              <iframe style={{position: 'absolute', width: '100%', height: '100%'}} src="https://www.youtube.com/embed/3-mOeUXAkV0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
           </div>
         </DetailExpanderGroup>
@@ -56,11 +42,7 @@ function STARResultViewer({ raceIndex, results, rounds }: STARResultViewerProps)
   );
 }
 
-type RankedRobinViewer = {
-  results: rankedRobinResults
-}
-
-function RankedRobinViewer({ results }: RankedRobinViewer) {
+function RankedRobinViewer({ results }) {
   const [viewMatrix, setViewMatrix] = useState(false)
   return (
     <div className="resultViewer">
@@ -102,11 +84,7 @@ function RankedRobinViewer({ results }: RankedRobinViewer) {
   );
 }
 
-type IRVResultsViewerProps = {
-  results: irvResults
-}
-
-function IRVResultsViewer({ results }: IRVResultsViewerProps) {
+function IRVResultsViewer({ results }) {
   const [viewMatrix, setViewMatrix] = useState(false)
   return (
     <div className="resultViewer">
@@ -221,11 +199,31 @@ function IRVResultsViewer({ results }: IRVResultsViewerProps) {
   );
 }
 
-type PluralityResultsViewerProps = {
-  results: pluralityResults
-}
+function PluralityResultsViewer({ results }) {
+  return (
+    <div className="resultViewer">
+      <h2>Detailed Results</h2>
+      <table className='matrix'>
+        <thead className='matrix'>
+          <tr>
+            <th className='matrix'> Candidate</th>
+            <th className='matrix'> Votes </th>
+          </tr>
 
-function PluralityResultsViewer({ results }: PluralityResultsViewerProps) {
+          {results.summaryData.candidates.map((c, n) => (
+            <>
+              <tr className='matrix' key={`h${n}`} >{c.name}
+                <td> {results.summaryData.totalScores[n].score} </td>
+              </tr>
+
+            </>
+          ))}
+        </thead>
+      </table>
+    </div>
+  );
+}
+function ApprovalResultsViewer({ results }) {
   return (
     <div className="resultViewer">
       <h2>Detailed Results</h2>
@@ -250,64 +248,20 @@ function PluralityResultsViewer({ results }: PluralityResultsViewerProps) {
   );
 }
 
-type ApprovalResultsViewerProps = {
-  results: approvalResults
-}
-
-function ApprovalResultsViewer({ results }: ApprovalResultsViewerProps) {
-  return (
-    <div className="resultViewer">
-      <h2>Detailed Results</h2>
-      <table className='matrix'>
-        <thead className='matrix'>
-          <tr>
-            <th className='matrix'> Candidate</th>
-            <th className='matrix'> Votes </th>
-          </tr>
-
-          {results.summaryData.candidates.map((c, n) => (
-            <>
-              <tr className='matrix' key={`h${n}`} >{c.name}
-                <td> {results.summaryData.totalScores[n].score} </td>
-              </tr>
-
-            </>
-          ))}
-        </thead>
-      </table>
-    </div>
-  );
-}
-
-type SummaryViewerProps = {
-  votingMethod: string //Display version of voting method
-  raceResults: raceResults
-}
-
-function SummaryViewer({ votingMethod, raceResults }: SummaryViewerProps) {
-  // star PR reports ties slightly differently and doesn't even use this component, but have to check to make typescript happy
-  let tiedCandidates:string[] = []
-  if (raceResults.votingMethod !== 'STAR_PR') {
-    tiedCandidates.push(...raceResults.results.tied.map(c => c.name))
-  }
-
+function SummaryViewer({ votingMethod, results, }) {
   return (
     <>
       <h2>Summary</h2>
       <p>{`Voting Method: ${votingMethod}`}</p>
-      <p>{`${raceResults.results.elected.length > 1 ? 'Winners' : 'Winner'}: ${raceResults.results.elected.map(c => c.name).join(', ')}`}</p>
-      {tiedCandidates.length > 0 &&
-        <p>{`Tied: ${tiedCandidates.join(', ')}`}</p>}
-      <p>{`Number of voters: ${raceResults.results.summaryData.nValidVotes}`}</p>
+      <p>{`${results.elected.length > 1 ? 'Winners' : 'Winner'}: ${results.elected.map(c => c.name).join(', ')}`}</p>
+      {results.tied?.length > 0 &&
+        <p>{`Tied: ${results.tied.map(c => c.name).join(', ')}`}</p>}
+      <p>{`Number of voters: ${results.summaryData.nValidVotes}`}</p>
     </>
   );
 }
 
-type PRResultsViewerProps = {
-  result: allocatedScoreResults
-}
-
-function PRResultsViewer({ result }: PRResultsViewerProps) {
+function PRResultsViewer({ result }) {
 
   return (
     <div>
@@ -337,7 +291,7 @@ function PRResultsViewer({ result }: PRResultsViewerProps) {
                 return (
                   result.elected[round_ind].index === result.summaryData.candidates[cand_ind].index ?
                     <td className='highlight' key={`c${cand_ind},${round_ind}`}>
-                      <h3>{score}</h3>
+                      <h3>{ score }</h3>
                     </td>
                     :
                     <td className='matrix' key={`c${cand_ind},${round_ind}`}>
@@ -354,57 +308,49 @@ function PRResultsViewer({ result }: PRResultsViewerProps) {
   )
 }
 
-type ResultsProps = {
-  title: string,
-  raceIndex: number,
-  race: Race,
-  raceResult: raceResults
-}
-
-export default function Results({ title, raceIndex, race, raceResult }: ResultsProps) {
-
+export default function Results({ title, raceIndex, race, result }) {
   return (
     <div>
-      <div className="flexContainer" style={{ textAlign: 'center' }}>
-        {raceResult.results.summaryData.nValidVotes == 0 && <h2>Still waiting for results<br />No votes have been cast</h2>}
-        {raceResult.results.summaryData.nValidVotes >= 1 &&
-          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>⭐ {formatter.format(raceResult.results.elected.map(c => c.name))} Wins! ⭐</Typography>
+      <div className="flexContainer" style={{textAlign: 'center'}}>
+        {result.summaryData.nValidVotes == 0 && <h2>Still waiting for results<br/>No votes have been cast</h2>}
+        {result.summaryData.nValidVotes >= 1 &&
+          <Typography variant="h5" sx={{fontWeight: 'bold'}}>⭐ { formatter.format(result.elected.map(c => c.name))} Wins! ⭐</Typography>
         }
-        {raceResult.results.summaryData.nValidVotes == 1 && <p>There's only one vote so far<br />Full results will be displayed once there's more votes</p>}
-        {raceResult.results.summaryData.nValidVotes > 1 &&
+        {result.summaryData.nValidVotes == 1 && <p>There's only one vote so far<br/>Full results will be displayed once there's more votes</p> }
+        {result.summaryData.nValidVotes > 1 &&
           <>
-            {raceResult.votingMethod === "STAR" && <STARResultViewer raceIndex={raceIndex} results={raceResult.results} rounds={race.num_winners} />}
-            {raceResult.votingMethod === "STAR_PR" &&
-              <>
-                {/* PR tabulator needs to be refactored to match interface of other methods */}
-                {/* <SummaryViewer votingMethod='Proportional STAR' results={result} /> */}
-                <PRResultsViewer result={raceResult.results} />
-              </>}
+          {race.voting_method === "STAR" && <STARResultViewer raceIndex={raceIndex} results={result} rounds={race.num_winners} /> }
+          {race.voting_method === "STAR_PR" &&
+            <>
+              {/* PR tabulator needs to be refactored to match interface of other methods */}
+              {/* <SummaryViewer votingMethod='Proportional STAR' results={result} /> */}
+              <PRResultsViewer result={result} />
+            </>}
 
-            {raceResult.votingMethod === "RankedRobin" &&
-              <>
-                <SummaryViewer votingMethod='Ranked Robin' raceResults={raceResult} />
-                <RankedRobinViewer results={raceResult.results} />
-              </>}
+          {race.voting_method === "RankedRobin" &&
+            <>
+              <SummaryViewer votingMethod='Ranked Robin' results={result} />
+              <RankedRobinViewer results={result} />
+            </>}
 
-            {raceResult.votingMethod === "Plurality" &&
-              <>
-                <SummaryViewer votingMethod='Plurality' raceResults={raceResult} />
-                <PluralityResultsViewer results={raceResult.results} />
-              </>}
+          {race.voting_method === "Plurality" &&
+            <>
+              <SummaryViewer votingMethod='Plurality' results={result} />
+              <PluralityResultsViewer results={result} />
+            </>}
 
-            {raceResult.votingMethod === "Approval" &&
-              <>
-                <SummaryViewer votingMethod='Approval' raceResults={raceResult} />
-                <ApprovalResultsViewer results={raceResult.results} />
-              </>}
+          {race.voting_method === "Approval" &&
+            <>
+              <SummaryViewer votingMethod='Approval' results={result} />
+              <ApprovalResultsViewer results={result} />
+            </>}
 
-            {raceResult.votingMethod === "IRV" &&
-              <>
-                <SummaryViewer votingMethod='Ranked Choice Voting' raceResults={raceResult} />
-                <IRVResultsViewer results={raceResult.results} />
-              </>}
-          </>}
+          {race.voting_method === "IRV" &&
+            <>
+              <SummaryViewer votingMethod='Ranked Choice Voting' results={result} />
+              <IRVResultsViewer results={result} />
+            </>}
+        </>}
       </div>
     </div>
   );

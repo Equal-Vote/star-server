@@ -12,7 +12,7 @@ function CellViewer({ cell }) {
   );
 }
 
-export default function MatrixViewer({ results }) {
+export default function MatrixViewer({ title, results }) {
   return (
       <TableContainer sx={{ maxHeight: 600, maxWidth: {xs:300, sm: 500, md: 600, lg: 1000}}}>
         <Table stickyHeader aria-label="sticky table">

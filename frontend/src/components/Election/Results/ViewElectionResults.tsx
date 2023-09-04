@@ -34,7 +34,7 @@ const ViewElectionResults = ({ election }) => {
                             title={`Race ${race_index+1}: ${election.races[race_index].title}`}
                             raceIndex={race_index}
                             race={election.races[race_index]}
-                            raceResult={result}
+                            result={result}
                         />
                     ))}
                 </DetailExpanderGroup>

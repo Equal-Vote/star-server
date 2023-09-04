@@ -7,7 +7,6 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import { Box, InputLabel } from "@mui/material";
-import { Candidate } from '../../../domain_model/Candidate';
 
 const Sandbox = () => {
     const [candidates, setCandidates] = useState('A,B,C,D,E')
@@ -156,12 +155,10 @@ const Sandbox = () => {
                     {data && (
                         <Results
                             title=''
-                            raceIndex={0}
-                            raceResult={data}
+                            raceIndex='0'
+                            result={data.Results}
                             race={{
-                                race_id: '0',
-                                title: '',
-                                candidates: candidates.split(',').map(candidate => ({ candidate_name: candidate }) as Candidate),
+                                candidates: candidates.split(',').map((candidate) => [{ candidate_name: candidate }]),
                                 voting_method: data.voting_method,
                                 num_winners: nWinners,
                             }}
