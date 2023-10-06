@@ -12,5 +12,7 @@ If you new here and want to make a contribution, head over to [Set up star.vote 
 
 ---
 ## Volunteer List: Name | Slack 
+Mike Franze | @Mike Franze
 Arend Peter Castelein | @Arend Peter
+Evans Tucker | @evans
 Simeon Cekov | @Simeon Cekov
