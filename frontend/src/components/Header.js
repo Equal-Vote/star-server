@@ -72,7 +72,7 @@ const Header = ({ authSession }) => {
                     >
                         <MenuItem
                             component={Link}
-                            href='https://www.starvoting.us'
+                            href='/About'
                             target="_blank">
                             About
                         </MenuItem>
@@ -117,7 +117,7 @@ const Header = ({ authSession }) => {
                 {/**** DESKTOP OPTIONS ****/}
                 <Box
                     sx={{ flexGrow: 100, flexWrap: 'wrap', display: { xs: 'none', md: 'flex' }, gap: 2, rowGap: 0 }}>
-                    <Button color='inherit' href='https://www.starvoting.us' target="_blank">
+                    <Button color='inherit' href='/About' target="_blank">
                         <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                             About
                         </Typography>
