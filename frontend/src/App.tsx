@@ -16,6 +16,8 @@ import { useAuthSession } from './hooks/useAuthSession'
 import { Isnack, SnackbarContext } from './components/SnackbarContext'
 import Footer from './components/Footer'
 import { ConfirmDialogProvider } from './components/ConfirmationDialogProvider'
+import About from './components/About'
+
 const App = () => {
   const authSession = useAuthSession()
   const [snack, setSnack] = useState({
@@ -49,6 +51,7 @@ const App = () => {
               }}>
               <Routes>
                 <Route path='/' element={<LandingPage authSession={authSession} />} />
+                <Route path='/About' element={<About/>}/>
                 <Route path='/Elections' element={<Elections authSession={authSession} />} />
                 <Route path='/Login' element={<Login />} />
                 <Route path='/Debug' element={<DebugPage authSession={authSession} />} />
