@@ -15,6 +15,7 @@ import { Alert, Box, CssBaseline, Snackbar } from '@mui/material'
 import { useAuthSession } from './hooks/useAuthSession'
 import { Isnack, SnackbarContext } from './components/SnackbarContext'
 import Footer from './components/Footer'
+import { ConfirmDialogProvider } from './components/ConfirmationDialogProvider'
 const App = () => {
   const authSession = useAuthSession()
   const [snack, setSnack] = useState({
@@ -32,6 +33,7 @@ const App = () => {
   return (
     <Router>
       <ThemeProvider theme={theme}>
+        <ConfirmDialogProvider>
         <SnackbarContext.Provider value={{ snack, setSnack }}>
           <Snackbar open={snack.open} autoHideDuration={snack.autoHideDuration} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
             <Alert severity={snack.severity} onClose={handleClose}>
@@ -59,6 +61,7 @@ const App = () => {
             <Footer />
           </Box>
         </SnackbarContext.Provider>
+        </ConfirmDialogProvider>
       </ThemeProvider>
     </Router>
   );
