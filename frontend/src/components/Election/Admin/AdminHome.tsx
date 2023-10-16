@@ -8,6 +8,7 @@ import { Election } from '../../../../../domain_model/Election';
 import ShareButton from "../ShareButton";
 import { useArchiveEleciton, useFinalizeEleciton, useSetPublicResults } from "../../../hooks/useAPI";
 import { formatDate } from '../../util';
+import useConfirm from '../../ConfirmationDialogProvider';
 const hasPermission = (permissions: string[], requiredPermission: string) => {
     return (permissions && permissions.includes(requiredPermission))
 }
@@ -367,8 +368,17 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
     }
     const { makeRequest: finalize } = useFinalizeEleciton(election.election_id)
     const { makeRequest: archive } = useArchiveEleciton(election.election_id)
+
+    const confirm = useConfirm()
+
     const finalizeElection = async () => {
         console.log("finalizing election")
+        const confirmed = await confirm(
+            {
+                title: 'Confirm Finalize Election', 
+                message: "Are you sure you want to finalize your election? Once finalized you won't be able to edit it."
+            })
+        if (!confirmed) return
         try {
             await finalize()
             await fetchElection()
@@ -379,14 +389,18 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
 
     const archiveElection = async () => {
         console.log("archiving election")
-        if (window.confirm('Are you sure you wish to archive this election? This action cannot be undone')){
-            console.log('confirmed')
-            try {
-                await archive()
-                await fetchElection()
-            } catch (err) {
-                console.log(err)
-            }
+        const confirmed = await confirm(
+            {
+                title: 'Confirm Archive Election', 
+                message: "Are you sure you wish to archive this election? This action cannot be undone."
+            })
+        if (!confirmed) return
+        console.log('confirmed')
+        try {
+            await archive()
+            await fetchElection()
+        } catch (err) {
+            console.log(err)
         }
     }
 
