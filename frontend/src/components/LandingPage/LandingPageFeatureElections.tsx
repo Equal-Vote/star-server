@@ -8,13 +8,13 @@ export default ({electionIds}) => {
         flexDirection: 'column',
         background: 'var(--brand-gray-1)',
         clip: 'unset',
-        width: '100%'
+        width: '100%',
+        p: { xs: 2},
     }}>
         <Box sx={{
             width: '100%',
             maxWidth: '1300px',
             margin: 'auto',
-            p: { xs: 2, md: 2 },
         }}>
             <Typography variant='h4' sx={{textAlign: 'left'}}>Vote in a Featured Public Election</Typography>
         </Box>
@@ -22,7 +22,7 @@ export default ({electionIds}) => {
             display: 'flex',
             flexDirection: 'row',
             gap: '2rem',
-            p: { xs: 2, md: 2 },
+            p: { xs: 4},
             justifyContent: 'center',
             flexWrap: 'wrap',
         }}>
