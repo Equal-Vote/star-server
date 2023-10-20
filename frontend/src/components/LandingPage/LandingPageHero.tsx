@@ -11,7 +11,7 @@ export default ({authSession}) => {
             margin: 'auto',
             p: { xs: 2, md: 2 },
         }}>
-            <Grid container >
+            <Grid container spacing={2}>
                 <Grid item xs={12} md={7}>
                     <Typography variant="h3" style={{ fontWeight: 700 }} >
                         STAR Elections
@@ -60,7 +60,9 @@ export default ({authSession}) => {
                     </Box>
                 </Grid>
                 <Grid item xs={12} md={5}>
-                    <QuickPoll authSession={authSession} />
+                    <Box sx={{paddingTop: {xs: 10, md: 0}}}>
+                        <QuickPoll authSession={authSession} />
+                    </Box>
                 </Grid>
             </Grid>
         </Box>
