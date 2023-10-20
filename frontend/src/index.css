@@ -14,7 +14,8 @@
   --ltbrand-red: #FF6069FF;
 
   --brand-purple: #4D2586;
-  --brand-ltblue: #2AA2B3;
+  --brand-ltblue: #2AA2B3; 
+  --brand-ltblue-comma: 42, 162, 179; /* comma version to be used within rgba */
   --brand-blue: #02627c;
   --brand-gold: #FFE156;
   --brand-red: #EE2C53;
@@ -371,4 +372,12 @@ code {
 .activewinnerResultTab{
   border-bottom: 1px solid transparent;
   background-color: var(--brand-white);
+}
+
+.featuredElection:hover{
+  /*Copied from Paper elevation 8, except for color change and doubled opacity*/
+  box-shadow:
+    0px 5px 5px -3px rgba(var(--brand-ltblue-comma), 0.4),
+    0px 8px 10px 1px rgba(var(--brand-ltblue-comma), 0.28),
+    0px 3px 14px 2px rgba(var(--brand-ltblue-comma), 0.24);
 }

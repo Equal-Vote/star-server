@@ -7,10 +7,10 @@ import structuredClone from '@ungap/structured-clone';
 import { StyledButton, StyledTextField } from '../styles.js'
 import { Button, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useCookie } from '../../hooks/useCookie';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import Typography from '@mui/material/Typography';
 import { usePostElection } from '../../hooks/useAPI';
+import { useCookie } from '../../hooks/useCookie';
 
 const QuickPoll = ({ authSession }) => {
     const [tempID, setTempID] = useCookie('temp_id', '0')

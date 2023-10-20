@@ -7,16 +7,11 @@ import QuickPoll from '../ElectionForm/QuickPoll'
 export default ({authSession}) => {
     return (
         <Box sx={{
-            width: '100%',
-            display: 'flex',
-            minHeight: '600px',
-            justifyContent: 'center',
-            pt: { xs: 0, md: 0 },
+            maxWidth: '1300px',
+            margin: 'auto',
+            p: { xs: 2, md: 2 },
         }}>
-            <Grid container sx={{
-                maxWidth: '1300px',
-                p: { xs: 2, md: 2 },
-            }}>
+            <Grid container >
                 <Grid item xs={12} md={7}>
                     <Typography variant="h3" style={{ fontWeight: 700 }} >
                         STAR Elections
