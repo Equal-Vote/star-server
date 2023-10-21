@@ -4,8 +4,9 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import QuickPoll from './ElectionForm/QuickPoll';
 import LandingPageHero from './LandingPage/LandingPageHero';
-import LandingPageFeatureElections from './LandingPage/LandingPageFeatureElections';
+import LandingPageFeatureElections from './LandingPage/LandingPageFeaturedElections';
 import LandingPageFeatures from './LandingPage/LandingPageFeatures';
+import LandingPageSignUpBar from './LandingPage/LandingPageSignUpBar';
 
 const LandingPage = ({ authSession }) => {
     return (
@@ -26,6 +27,7 @@ const LandingPage = ({ authSession }) => {
                 '5c84e93b-b01c-4ab0-82ee-7181cb7ac995'
             ]}/>
             <LandingPageFeatures/>
+            <LandingPageSignUpBar authSession={authSession}/>
         </Box>
     )
 }
