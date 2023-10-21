@@ -1,6 +1,5 @@
 import { Box, Typography } from '@mui/material'
 import React from 'react'
-import FeaturedElection from './FeaturedElection'
 
 export default ({testimonials}) => {
     return <Box sx={{

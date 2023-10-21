@@ -12,6 +12,7 @@ export default ({authSession}) =>
         <Box sx={{
             width: '50%',
             maxWidth: '650px',
+            minWidth: '250px',
             margin: 'auto',
             display: 'flex',
             flexDirection: 'row',

@@ -8,6 +8,8 @@ import LandingPageFeatureElections from './LandingPage/LandingPageFeaturedElecti
 import LandingPageFeatures from './LandingPage/LandingPageFeatures';
 import LandingPageSignUpBar from './LandingPage/LandingPageSignUpBar';
 import LandingPageTestimonials from './LandingPage/LandingPageTestimonials';
+import { Paper } from '@mui/material';
+import LandingPagePricing from './LandingPage/LandingPagePricing';
 
 const LandingPage = ({ authSession }) => {
     return (
@@ -15,11 +17,11 @@ const LandingPage = ({ authSession }) => {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            gap: '20rem',
+            gap: '15rem',
             minHeight: '600px',
-            justifyContent: 'center',
             margin: 'auto',
-            clip: 'unset',
+            paddingTop: '8rem',
+            paddingBottom: '8rem',
         }}>
             <LandingPageHero authSession={authSession}/>
             <LandingPageFeatureElections electionIds={[
@@ -44,6 +46,23 @@ const LandingPage = ({ authSession }) => {
                     quote: 'STAR Voting is Awesome!',
                     name: 'Equal Vote',
                     url: 'https://yt3.googleusercontent.com/el7OsIUIJVHjHIwsNXgrBVft0Ht3RSfJ3wO94MQivXaa_IK0JMGlHrPIbvt8fYtXvjJfErcdG-Y=s176-c-k-c0x00ffffff-no-rj'
+                },
+            ]}/>
+            <LandingPagePricing options={[
+                {
+                    title: 'Free Tier',
+                    price: <b>$0.00</b>,
+                    description: <>Unlimited voters for Public elections<br/>Private elections up to 100 voters</>
+                },
+                {
+                    title: 'Professional',
+                    price: <>starts at <b>$100.00</b></>,
+                    description: <>Private elections over 100 voters<br/>All proceeds go to non-profit use<br/>Contact us at elections@equal.vote for a quote<br/></>
+                },
+                {
+                    title: 'Discounted Professional',
+                    price: <b>??</b>,
+                    description: <>Are you a non-profit or a student organization?<br/>Contact us for a discount at elections@equal.vote</>
                 },
             ]}/>
         </Box>
