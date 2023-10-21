@@ -27,7 +27,8 @@ export default ({options}) => {
         }}>
             {options.map(option => 
                 <Paper className='pricingOption' elevation={8} sx={{
-                    width: '20rem',
+                    width: '100%',
+                    maxWidth: '20rem',
                     display: 'flex',
                     flexDirection: 'column',
                     flexShrink: '0',

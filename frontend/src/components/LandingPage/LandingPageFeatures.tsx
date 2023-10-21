@@ -14,8 +14,7 @@ export default () => {
 
     let itemSxProps= {
         flexShrink: '0',
-        width: '25%',
-        minWidth: '30rem',
+        width: {xs: '100%', lg: '35%'},
     };
 
     return <Box sx={{

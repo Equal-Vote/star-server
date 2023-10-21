@@ -3,7 +3,8 @@ import React from 'react';
 
 export default ({electionId}) => {
     return <Paper className='featuredElection' elevation={8} sx={{
-        width: '20rem',
+        width: '100%',
+        maxWidth: '20rem',
         display: 'flex',
         flexDirection: 'column',
         flexShrink: '0',
