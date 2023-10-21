@@ -7,6 +7,7 @@ import LandingPageHero from './LandingPage/LandingPageHero';
 import LandingPageFeatureElections from './LandingPage/LandingPageFeaturedElections';
 import LandingPageFeatures from './LandingPage/LandingPageFeatures';
 import LandingPageSignUpBar from './LandingPage/LandingPageSignUpBar';
+import LandingPageTestimonials from './LandingPage/LandingPageTestimonials';
 
 const LandingPage = ({ authSession }) => {
     return (
@@ -28,6 +29,23 @@ const LandingPage = ({ authSession }) => {
             ]}/>
             <LandingPageFeatures/>
             <LandingPageSignUpBar authSession={authSession}/>
+            <LandingPageTestimonials testimonials={[
+                {
+                    quote: 'STAR Voting is Awesome!',
+                    name: 'John Doe',
+                    url: 'https://yt3.googleusercontent.com/el7OsIUIJVHjHIwsNXgrBVft0Ht3RSfJ3wO94MQivXaa_IK0JMGlHrPIbvt8fYtXvjJfErcdG-Y=s176-c-k-c0x00ffffff-no-rj'
+                },
+                {
+                    quote: 'STAR Voting is Awesome!',
+                    name: 'Jane Doe',
+                    url: 'https://yt3.googleusercontent.com/el7OsIUIJVHjHIwsNXgrBVft0Ht3RSfJ3wO94MQivXaa_IK0JMGlHrPIbvt8fYtXvjJfErcdG-Y=s176-c-k-c0x00ffffff-no-rj'
+                },
+                {
+                    quote: 'STAR Voting is Awesome!',
+                    name: 'Equal Vote',
+                    url: 'https://yt3.googleusercontent.com/el7OsIUIJVHjHIwsNXgrBVft0Ht3RSfJ3wO94MQivXaa_IK0JMGlHrPIbvt8fYtXvjJfErcdG-Y=s176-c-k-c0x00ffffff-no-rj'
+                },
+            ]}/>
         </Box>
     )
 }
