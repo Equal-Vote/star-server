@@ -19,21 +19,21 @@ export interface Election {
     races:          Race[]; // one or more race definitions
     settings:       ElectionSettings;
     auth_key?:      string;
-  }
+}
 
-  
+
 export function electionValidation(obj:Election): string | null {
   if (!obj){
     return "Election is null";
   }
   const election_id = obj.election_id;
   if (!election_id || typeof election_id !== 'string'){
-      return "Invalid Election ID";
+    return "Invalid Election ID";
   }
   if (typeof obj.title !== 'string'){
-      return "Invalid Title";
+    return "Invalid Title";
   }
-  if (obj.title.length < 3 || obj.title.length > 256){
+  if (obj.state !== 'draft' && (obj.title.length < 3 || obj.title.length > 256)) {
     return "invalid Title length";
   }
   //TODO... etc
@@ -45,7 +45,7 @@ export function removeHiddenFields(obj:Election, electionRoll: ElectionRoll|null
   if (obj.state==='open' && electionRoll?.precinct){
     // If election is open and precinct is defined, remove races that don't include precinct
     obj.races = getApprovedRaces(obj, electionRoll.precinct)
-    
+
   }
 }
 // Where should this belong..
