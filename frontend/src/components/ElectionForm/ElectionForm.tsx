@@ -5,10 +5,10 @@ import React from 'react'
 import Grid from "@mui/material/Grid";
 import structuredClone from '@ungap/structured-clone';
 // import Settings from "./Settings";
-import Races from "./Races";
+import Races from "./Races/Races";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { Box, Paper, Fade } from "@mui/material";
-import ElectionDetails from "./ElectionDetails";
+import ElectionDetails from "./Details/ElectionDetails";
 import { DateTime } from 'luxon'
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -296,7 +296,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                     </Fade>
                     <Fade in={page === 'RaceDetails'} mountOnEnter unmountOnExit timeout={{ appear: 500, enter: 500, exit: 0 }}>
                         <div>
-                            <Races election={election} applyElectionUpdate={applyElectionUpdate} getStyle={getStyle} onBack={() => setPage('ElectionDetails')} onNext={() => setPage('Open?')} />
+                            {/* <Races election={election} applyElectionUpdate={applyElectionUpdate} getStyle={getStyle} onBack={() => setPage('ElectionDetails')} onNext={() => setPage('Open?')} /> */}
                         </div>
                     </Fade>
                     <Question

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Grid from "@mui/material/Grid";
 import { Box, Divider, Paper } from "@mui/material";
 import { Typography } from "@mui/material";
@@ -9,15 +9,12 @@ import ShareButton from "../ShareButton";
 import { useArchiveEleciton, useFinalizeEleciton, useSetPublicResults } from "../../../hooks/useAPI";
 import { formatDate } from '../../util';
 import useConfirm from '../../ConfirmationDialogProvider';
+import useElection from '../../ElectionContextProvider';
+import ElectionDetailsInlineForm from '../../ElectionForm/Details/ElectionDetailsInlineForm';
+import Races from '../../ElectionForm/Races/Races';
+import ElectionSettings from '../../ElectionForm/ElectionSettings';
 const hasPermission = (permissions: string[], requiredPermission: string) => {
     return (permissions && permissions.includes(requiredPermission))
-}
-
-
-type Props = {
-    election: Election,
-    permissions: string[],
-    fetchElection: Function,
 }
 
 type SectionProps = {
@@ -359,7 +356,8 @@ const ShareSection = ({ election, permissions }: { election: Election, permissio
     />
 }
 
-const AdminHome = ({ election, permissions, fetchElection }: Props) => {
+const AdminHome = () => {
+    const { election, refreshElection: fetchElection, permissions } = useElection()
     const { makeRequest } = useSetPublicResults(election.election_id)
     const togglePublicResults = async () => {
         const public_results = !election.settings.public_results
@@ -373,7 +371,7 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
 
     const finalizeElection = async () => {
         console.log("finalizing election")
-        const confirmed = await confirm(
+const confirmed = await confirm(
             {
                 title: 'Confirm Finalize Election', 
                 message: "Are you sure you want to finalize your election? Once finalized you won't be able to edit it."
@@ -395,13 +393,13 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
                 message: "Are you sure you wish to archive this election? This action cannot be undone."
             })
         if (!confirmed) return
-        console.log('confirmed')
-        try {
-            await archive()
-            await fetchElection()
-        } catch (err) {
-            console.log(err)
-        }
+            console.log('confirmed')
+            try {
+                await archive()
+                await fetchElection()
+            } catch (err) {
+                console.log(err)
+                    }
     }
 
     return (
@@ -412,36 +410,25 @@ const AdminHome = ({ election, permissions, fetchElection }: Props) => {
             sx={{ width: '100%' }}>
             <Paper elevation={3} sx={{ width: 800, p: 3 }} >
                 <Grid container>
-                    <Grid xs={12}>
-                        <Typography align='center' gutterBottom variant="h4" component="h4">
-                            {election.title}
-                        </Typography>
+                    <Grid xs={12} sx={{ p: 1 }}>
+                        <ElectionDetailsInlineForm />
                     </Grid>
-                    <Grid xs={12}>
-                        <Typography align='center' gutterBottom variant="h5" component="h5">
-                            Admin Page
-                        </Typography>
+                    <Grid xs={12} sx={{ p: 1 }}>
+                        <Races />
+                    </Grid>
+                    <Grid xs={12} sx={{ p: 1 }}>
+                        <ElectionSettings />
                     </Grid>
                     {election.state === 'draft' &&
                         <>
-                            <Grid xs={12}>
-                                <Typography align='center' gutterBottom variant="h6" component="h6">
-                                    Your election is still in the draft phase
-                                </Typography>
-                            </Grid>
-                            <Grid xs={12}>
-                                <Typography align='center' gutterBottom variant="h6" component="h6">
-                                    Before finalizing your election you can...
-                                </Typography>
-                            </Grid>
                             <PreviewBallotSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
                             <AddVotersSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
                             <EditRolesSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
-                            <EditElectionSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
+                            {/* <EditElectionSection election={election} permissions={permissions} />
+                            <Divider style={{ width: '100%' }} /> */}
                             <DuplicateElectionSection election={election} permissions={permissions} />
                             <Divider style={{ width: '100%' }} />
                             <ArchiveElectionSection election={election} permissions={permissions} archiveElection={archiveElection}/>
