@@ -20,7 +20,7 @@ export default ({options}) => {
         <Box sx={{
             display: 'flex',
             flexDirection: 'row',
-            gap: '2rem',
+            gap: '5rem',
             p: { xs: 4},
             justifyContent: 'center',
             flexWrap: 'wrap',
@@ -28,7 +28,7 @@ export default ({options}) => {
             {options.map(option => 
                 <Paper className='pricingOption' elevation={8} sx={{
                     width: '100%',
-                    maxWidth: '20rem',
+                    maxWidth: '25rem',
                     display: 'flex',
                     flexDirection: 'column',
                     flexShrink: '0',

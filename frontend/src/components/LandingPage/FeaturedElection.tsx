@@ -1,17 +1,24 @@
-import { Paper, Typography } from "@mui/material";
+import { Card, CardActionArea, CardContent, Paper, Typography } from "@mui/material";
 import React from 'react';
+import { useNavigate } from "react-router";
+
 
 export default ({electionId}) => {
-    return <Paper className='featuredElection' elevation={8} sx={{
+    const navigate = useNavigate();
+
+    return <Card className='featuredElection' onClick={() => navigate(`/Election/${electionId}`)} elevation={8} sx={{
         width: '100%',
         maxWidth: '20rem',
         display: 'flex',
         flexDirection: 'column',
         flexShrink: '0',
-        p: { xs: 2, md: 2 },
     }}>
-        <Typography variant='h5'>Election Title</Typography>
-        <Typography variant='h6'>election info</Typography>
-        <Typography variant='h6'>election info</Typography>
-    </Paper>
+        <CardActionArea sx={{p: { xs: 2, md: 2 }}}>
+            <CardContent>
+                <Typography variant='h5'>Election Title</Typography>
+                <Typography variant='h6'>election info</Typography>
+                <Typography variant='h6'>election info</Typography>
+            </CardContent>
+        </CardActionArea>
+    </Card>
 }

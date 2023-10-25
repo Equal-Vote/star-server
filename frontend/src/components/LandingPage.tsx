@@ -52,17 +52,12 @@ const LandingPage = ({ authSession }) => {
                 {
                     title: 'Free Tier',
                     price: <b>$0.00</b>,
-                    description: <>Unlimited voters for Public elections<br/>Private elections up to 100 voters</>
+                    description: <>Unlimited voters for Public elections<br/><br/>Private elections up to 100 voters</>
                 },
                 {
                     title: 'Professional',
-                    price: <>starts at <b>$100.00</b></>,
-                    description: <>Private elections over 100 voters<br/>All proceeds go to non-profit use<br/>Contact us at elections@equal.vote for a quote<br/></>
-                },
-                {
-                    title: 'Discounted Professional',
-                    price: <b>??</b>,
-                    description: <>Are you a non-profit or a student organization?<br/>Contact us for a discount at elections@equal.vote</>
+                    price: <><b>Contact for quote</b></>,
+                    description: <>Private elections over 100 voters<br/><br/>All proceeds go to non-profit use<br/><br/>Discounts are available on request<br/><br/>Email elections@equal.vote</>
                 },
             ]}/>
         </Box>
