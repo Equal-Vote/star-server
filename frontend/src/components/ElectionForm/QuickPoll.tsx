@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router"
 import structuredClone from '@ungap/structured-clone';
 import { StyledButton, StyledTextField } from '../styles.js'
-import { Button, IconButton } from '@mui/material';
+import { Box, Button, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import Typography from '@mui/material/Typography';
@@ -141,24 +141,46 @@ const QuickPoll = ({ authSession }) => {
 
     return (
         <form onSubmit={onSubmit} >
-            <Grid container>
-                <Grid item xs={12} sx={{ p: 1, pt: 2 }}>
+            <Box sx={{
+                display: 'flex',
+                gap: 2,
+                flexDirection: 'column',
+            }}>
+                <StyledTextField
+                    autoFocus
+                    error={titleError}
+                    helperText={titleError ? "Election name is required" : ""}
+                    id="election-name"
+                    name="name"
+                    type="text"
+                    value={election.title}
+                    label="What is your poll question?"
+                    sx={{
+                        label: {fontWeight: 600, fontSize: 18}
+                    }}
+                    required
+                    onChange={(e) => {
+                        setTitleError(false)
+                        applyElectionUpdate(election => { election.title = e.target.value })
+                    }}
+                    onKeyPress={(ev) => {
+                        if (ev.key === 'Enter') {
+                            handleEnter(ev)
+                        }
+                    }}
+                />
+                {election.races[0].candidates?.map((candidate, index) => (
                     <StyledTextField
-                        autoFocus
-                        error={titleError}
-                        helperText={titleError ? "Election name is required" : ""}
-                        id="election-name"
-                        name="name"
+                        id={`candidate-name-${String(index)}`}
+                        name="candidate-name"
                         type="text"
-                        value={election.title}
-                        label="What is your poll question?"
+                        value={candidate.candidate_name}
+                        label={`Option ${index + 1}`}
                         sx={{
                             label: {fontWeight: 600, fontSize: 18}
                         }}
-                        required
                         onChange={(e) => {
-                            setTitleError(false)
-                            applyElectionUpdate(election => { election.title = e.target.value })
+                            onUpdateCandidate(index, e.target.value)
                         }}
                         onKeyPress={(ev) => {
                             if (ev.key === 'Enter') {
@@ -166,66 +188,39 @@ const QuickPoll = ({ authSession }) => {
                             }
                         }}
                     />
-                </Grid>
-
-                {election.races[0].candidates?.map((candidate, index) => (
-                    <Grid item xs={12} sx={{ p: 1 }}>
-                        <StyledTextField
-                            id={`candidate-name-${String(index)}`}
-                            name="candidate-name"
-                            type="text"
-                            value={candidate.candidate_name}
-                            label={`Option ${index + 1}`}
-                            sx={{
-                                label: {fontWeight: 600, fontSize: 18}
-                            }}
-                            onChange={(e) => {
-                                onUpdateCandidate(index, e.target.value)
-                            }}
-                            onKeyPress={(ev) => {
-                                if (ev.key === 'Enter') {
-                                    handleEnter(ev)
-                                }
-                            }}
-                        />
-                    </Grid>
                 ))}
-                <Grid item xs={12} sx={{ p: 1 }}>
-                    <StyledButton
-                        type='submit'
-                        variant="contained"
-                        disabled={isPending} >
+                <StyledButton
+                    type='submit'
+                    variant="contained"
+                    disabled={isPending} >
 
-                        Create Quick Poll
+                    Create Quick Poll
+                </StyledButton>
+                {!authSession.isLoggedIn() ?
+                    <StyledButton
+                        variant="contained"
+                        disabled={isPending}
+                        onClick={() => authSession.openLogin()}>
+                        Log in for more settings
                     </StyledButton>
-                </Grid>
-                <Grid item xs={12} sx={{ p: 1 }}>
-                    {!authSession.isLoggedIn() ?
-                        <StyledButton
-                            variant="contained"
-                            disabled={isPending}
-                            onClick={() => authSession.openLogin()}>
-                            Log in for more settings
-                        </StyledButton>
-                        :
-                        <StyledButton
-                            variant="contained"
-                            disabled={isPending}
-                            href='/CreateElection'>
-                            Explore more settings
-                        </StyledButton>
-                    }
-                </Grid>
-                <Grid item xs={11}>
-                </Grid>
-                <Grid item xs={1} sx={{ p: 1 }}>
+                    :
+                    <StyledButton
+                        variant="contained"
+                        disabled={isPending}
+                        href='/CreateElection'>
+                        Explore more settings
+                    </StyledButton>
+                }
+                <Box sx={{
+                    marginLeft: 'auto'
+                }}>
                     <IconButton
                         type="button"
                         onClick={() => setElectionData(QuickPollTemplate)} >
                         <DeleteIcon />
                     </IconButton>
-                </Grid>
-            </Grid>
+                </Box>
+            </Box>
         </form >
     )
 }
