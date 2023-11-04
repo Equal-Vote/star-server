@@ -22,6 +22,7 @@ RUN npm ci --only=production
 # Run "npm build" steps after "npm ci" to take advantage of caching.
 WORKDIR /usr/src/app
 COPY --chown=node:node domain_model domain_model
+COPY --chown=node:node package*.json ./
 WORKDIR /usr/src/app/frontend
 COPY --chown=node:node frontend .
 ENV REACT_APP_KEYCLOAK_URL https://auth.star.vote:8443/realms/STARVotingDev/protocol/openid-connect
@@ -43,6 +44,7 @@ COPY --chown=node:node --from=build /usr/src/app/domain_model domain_model
 COPY --chown=node:node --from=build /usr/src/app/frontend/build /usr/src/app/frontend/build
 COPY --chown=node:node --from=build /usr/src/app/backend/build /usr/src/app/backend/build
 COPY --chown=node:node --from=build /usr/src/app/backend/node_modules /usr/src/app/backend/node_modules
+COPY --chown=node:node --from=build /usr/src/app/package*.json ./
 ENTRYPOINT ["dumb-init", "--"]
 CMD ["npm", "run", "start"]
 EXPOSE 5000
