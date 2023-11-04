@@ -22,7 +22,7 @@ export interface IElectionRollStore {
         email: string|null, 
         ip_address: string|null, 
         ctx:ILoggingContext
-        ) => Promise<[ElectionRoll] | null>;
+        ) => Promise<ElectionRoll[] | null>;
     update: (
         election_roll: ElectionRoll,
         ctx: ILoggingContext,
