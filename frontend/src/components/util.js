@@ -104,3 +104,9 @@ export const formatDate = (time, displayTimezone=null) => {
         .setZone(displayTimezone)
         .toLocaleString(DateTime.DATETIME_FULL)
 }
+
+export const isValidDate = (d) => {
+    if (d instanceof Date) return !isNaN(d.valueOf())
+    if (typeof (d) === 'string') return !isNaN(new Date(d).valueOf())
+    return false
+}

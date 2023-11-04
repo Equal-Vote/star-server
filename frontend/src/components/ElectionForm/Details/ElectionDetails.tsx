@@ -4,11 +4,11 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import { Checkbox, Divider, FormControlLabel, FormGroup, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material"
-import { StyledButton } from '../styles';
+import { StyledButton } from '../../styles';
 import { Input } from '@mui/material';
 import { DateTime } from 'luxon'
 import { timeZones } from './TimeZones'
-import { Election } from '../../../../domain_model/Election';
+import { Election } from '../../../../../domain_model/Election';
 
 
 type Props = {

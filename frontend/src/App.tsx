@@ -5,7 +5,8 @@ import { ThemeProvider } from '@mui/material/styles'
 import Header from './components/Header'
 import Elections from './components/Elections'
 import Login from './components/Login'
-import AddElection from './components/ElectionForm/AddElection'
+import CreateElectionTemplates from './components/ElectionForm/CreateElectionTemplates'
+// import AddElection from './components/ElectionForm/AddElection'
 import Election from './components/Election/Election'
 import DuplicateElection from './components/ElectionForm/DuplicateElection'
 import Sandbox from './components/Sandbox'
@@ -55,7 +56,7 @@ const App = () => {
                 <Route path='/Elections' element={<Elections authSession={authSession} />} />
                 <Route path='/Login' element={<Login />} />
                 <Route path='/Debug' element={<DebugPage authSession={authSession} />} />
-                <Route path='/CreateElection' element={<AddElection authSession={authSession} />} />
+                <Route path='/CreateElection' element={<CreateElectionTemplates authSession={authSession} />} />
                 <Route path='/Election/:id/*' element={<Election authSession={authSession} />} />
                 <Route path='/DuplicateElection/:id' element={<DuplicateElection authSession={authSession} />} />
                 <Route path='/Sandbox' element={<Sandbox />} />
