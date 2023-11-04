@@ -42,6 +42,6 @@ COPY --chown=node:node --from=build /usr/src/app/domain_model domain_model
 COPY --chown=node:node --from=build /usr/src/app/frontend/build /usr/src/app/frontend/build
 COPY --chown=node:node --from=build /usr/src/app/backend/build /usr/src/app/backend/build
 COPY --chown=node:node --from=build /usr/src/app/backend/node_modules /usr/src/app/backend/node_modules
-CMD ["dumb-init", "node", "backend/build/backend/src/index.js"]
-
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["npm", "run", "start"]
 EXPOSE 5000

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "cd backend && npm install && npm test",
-    "start": "cd backend && npm start",
+    "start": "node ./backend/build/backend/src/migrate-to-latest.js && node ./backend/build/backend/src/index.js",
     "heroku-postbuild": "cd frontend && npm install && npm run build && cd ../backend && npm install"
   },
   "repository": {
