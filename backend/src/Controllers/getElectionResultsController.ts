@@ -48,8 +48,10 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
         }
         const msg = `Tabulating results for ${voting_method} election`
         Logger.info(req, msg);
-        results[race_index] = VotingMethods[voting_method](candidateNames, cvr, num_winners)
+        const candidateIDs = election.races[race_index].candidates.map((Candidate) => (Candidate.candidate_id))
+        results[race_index] = VotingMethods[voting_method](candidateNames, cvr, num_winners, candidateIDs)
     }
+    
     res.json(
         {
             Election: election,

@@ -67,6 +67,7 @@ describe("Ranked Robin Tests", () => {
         expect(results.summaryData.nInvalidVotes).toBe(0)
     })
     test("Ties", () => {
+        // Tiebreak order not defined, select lower index
         const candidates = ['Alice', 'Bob', 'Carol', 'Dave']
 
         const votes = [
@@ -78,7 +79,7 @@ describe("Ranked Robin Tests", () => {
             [2, 1, 3, 4],
         ]
         const results = RankedRobin(candidates, votes)
-        expect(['Alice','Bob']).toContain(results.elected[0].name)
+        expect(results.elected[0].name).toBe('Alice')
         expect(results.elected.length).toBe(1);
         expect(results.summaryData.preferenceMatrix[0]).toStrictEqual([0,3,6,6]);  
         expect(results.summaryData.preferenceMatrix[1]).toStrictEqual([3,0,6,6]);  
@@ -102,5 +103,20 @@ describe("Ranked Robin Tests", () => {
         expect(results.summaryData.nValidVotes).toBe(6)
         expect(results.summaryData.nInvalidVotes).toBe(0)
     })
+    test("Ties, tiebreak order defined", () => {
+        // Tiebreak order defined, select lower
+        const candidates = ['Alice', 'Bob', 'Carol', 'Dave']
 
+        const votes = [
+            [1, 2, 3, 4],
+            [1, 2, 3, 4],
+            [1, 2, 3, 4],
+            [2, 1, 3, 4],
+            [2, 1, 3, 4],
+            [2, 1, 3, 4],
+        ]
+        const results = RankedRobin(candidates, votes,1,['4','3','2','1'])
+        expect(results.elected[0].name).toBe('Bob')
+        expect(results.elected.length).toBe(1);
+    })
 })

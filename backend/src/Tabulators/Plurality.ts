@@ -3,9 +3,9 @@ import { approvalResults, approvalSummaryData, ballot, candidate, pluralityResul
 import { IparsedData } from './ParseData'
 const ParseData = require("./ParseData");
 
-export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, breakTiesRandomly = true) {
+export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:string[] = [], breakTiesRandomly = true) {
   const parsedData = ParseData(votes, getPluralityBallotValidity)
-  const summaryData = getSummaryData(candidates, parsedData)
+  const summaryData = getSummaryData(candidates, parsedData, randomTiebreakOrder)
   const results: pluralityResults = {
     elected: [],
     tied: [],
@@ -16,7 +16,8 @@ export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, b
   const sortedScores = summaryData.totalScores.sort((a: totalScore, b: totalScore) => {
     if (a.score > b.score) return -1
     if (a.score < b.score) return 1
-    return 0.5 - Math.random()
+    if (summaryData.candidates[a.index].tieBreakOrder < summaryData.candidates[b.index].tieBreakOrder) return -1
+    return 1
   })
   var remainingCandidates = [...summaryData.candidates]
   while (remainingCandidates.length>0) {
@@ -45,9 +46,12 @@ export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, b
   return results;
 }
 
-function getSummaryData(candidates: string[], parsedData: IparsedData): pluralitySummaryData{
+function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: string[]): pluralitySummaryData{
   // Initialize summary data structures
   const nCandidates = candidates.length
+  if (randomTiebreakOrder.length < nCandidates) {
+      randomTiebreakOrder = candidates.map((c,index) => index.toString())
+    }
   const totalScores = Array(nCandidates)
   for (let i = 0; i < nCandidates; i++) {
     totalScores[i] = { index: i, score: 0 };
@@ -58,7 +62,7 @@ function getSummaryData(candidates: string[], parsedData: IparsedData): pluralit
       totalScores[i].score += vote[i]
     }
   })
-  const candidatesWithIndexes = candidates.map((candidate, index) => ({ index: index, name: candidate }))
+  const candidatesWithIndexes = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
   return {
     candidates: candidatesWithIndexes,
     totalScores,
@@ -86,8 +90,4 @@ function getPluralityBallotValidity(ballot: ballot) {
     return { isValid: false, isUnderVote: isUnderVote }
   }
   return { isValid: true, isUnderVote: isUnderVote }
-}
-
-function getRandomInt(max: number) {
-  return Math.floor(Math.random() * max);
 }

@@ -11,12 +11,13 @@ declare namespace Intl {
 // converts list of strings to string with correct grammar ([a,b,c] => 'a, b, and c')
 const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
-export function Star(candidates: string[], votes: ballot[], nWinners = 1, breakTiesRandomly = true, enablefiveStarTiebreaker = true) {
+export function Star(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:string[] = [], breakTiesRandomly = true, enablefiveStarTiebreaker = true) {
   // Determines STAR winners for given election
   // Parameters: 
   // candidates: Array of candidate names
   // votes: Array of votes, size nVoters x Candidates
   // nWiners: Number of winners in election, defaulted to 1
+  // randomTiebreakOrder: Array to determine tiebreak order, uses strings to allow comparing UUIDs. If empty or not same length as candidates, set to candidate indexes
   // breakTiesRandomly: In the event of a true tie, should a winner be selected at random, defaulted to true
   // enablefiveStarTiebreaker: In the event of a true tie in the runoff round, should the five-star tiebreaker be used (select candidate with the most 5 star votes), defaulted to true
 
@@ -27,7 +28,7 @@ export function Star(candidates: string[], votes: ballot[], nWinners = 1, breakT
   // total scores
   // score histograms
   // preference and pairwise matrices
-  const summaryData = getSummaryData(candidates, parsedData)
+  const summaryData = getSummaryData(candidates, parsedData,randomTiebreakOrder)
 
   // Initialize output data structure
   const results: results = {
@@ -65,8 +66,11 @@ export function Star(candidates: string[], votes: ballot[], nWinners = 1, breakT
   return results
 }
 
-function getSummaryData(candidates: string[], parsedData: IparsedData): summaryData {
+function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: string[]): summaryData {
   const nCandidates = candidates.length
+  if (randomTiebreakOrder.length < nCandidates) {
+    randomTiebreakOrder = candidates.map((c,index) => index.toString())
+  }
   // Initialize summary data structures
   // Total scores for each candidate, includes candidate indexes for easier sorting
   const totalScores: totalScore[] = Array(nCandidates)
@@ -122,7 +126,7 @@ function getSummaryData(candidates: string[], parsedData: IparsedData): summaryD
 
     }
   }
-  const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate }))
+  const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder:  randomTiebreakOrder[index]}))
   return {
     candidates: candidatesWithIndexes,
     totalScores,
@@ -244,7 +248,7 @@ export function runStarRound(summaryData: summaryData, remainingCandidates: cand
       // True tie. Break tie randomly or mark all as tied.
       if (breakTiesRandomly) {
         // Random tiebreaker enabled, selects a candidate at random
-        const randomWinner = tiedCandidates[getRandomInt(tiedCandidates.length)]
+        const randomWinner = sortByTieBreakOrder(tiedCandidates)[0]
         roundResults.logs.push(`${randomWinner.name} wins random tiebreaker and advances to the runoff round.`)
         finalists.push(randomWinner)
         continue scoreLoop
@@ -316,10 +320,10 @@ export function runStarRound(summaryData: summaryData, remainingCandidates: cand
   }
   if (breakTiesRandomly) {
     // Break tie randomly
-    const randomWinner = getRandomInt(2)
-    roundResults.winners = [finalists[randomWinner]]
-    roundResults.runner_up = [finalists[1 - randomWinner]]
-    roundResults.logs.push(`${finalists[randomWinner].name} defeats ${finalists[1 - randomWinner].name} in random tiebreaker.`)
+    const sortedCandidates = sortByTieBreakOrder(finalists)
+    roundResults.winners = [sortedCandidates[0]]
+    roundResults.runner_up = [sortedCandidates[1]]
+    roundResults.logs.push(`${sortedCandidates[0].name} defeats ${sortedCandidates[1].name} in random tiebreaker.`)
     return roundResults
   }
   // Tie could not be resolved, select both tied candidates as winners of round
@@ -362,8 +366,11 @@ function runRunoffTiebreaker(summaryData: summaryData, runoffCandidates: candida
   return null
 }
 
-function getRandomInt(max: number) {
-  return Math.floor(Math.random() * max);
+export function sortByTieBreakOrder(candidates: candidate[]) {
+  return candidates.sort((a,b) => {
+    if (a.tieBreakOrder < b.tieBreakOrder) return -1
+    else return 1
+  })
 }
 
 function sortMatrix(matrix: number[][], order: number[]) {

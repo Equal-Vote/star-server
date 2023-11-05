@@ -2,6 +2,7 @@ import { ballot, candidate, fiveStarCount, allocatedScoreResults, allocatedScore
 
 import { IparsedData } from './ParseData'
 import Fraction from 'fraction.js'
+import { sortByTieBreakOrder } from "./Star";
 
 const ParseData = require("./ParseData");
 declare namespace Intl {
@@ -22,12 +23,13 @@ interface winner_scores {
 
 type ballotFrac = Fraction[]
 
-export function AllocatedScore(candidates: string[], votes: ballot[], nWinners = 3, breakTiesRandomly = true, enablefiveStarTiebreaker = true) {
+export function AllocatedScore(candidates: string[], votes: ballot[], nWinners = 3, randomTiebreakOrder: string[] = [], breakTiesRandomly = true, enablefiveStarTiebreaker = true) {
     // Determines STAR-PR winners for given election using Allocated Score
     // Parameters: 
     // candidates: Array of candidate names
     // votes: Array of votes, size nVoters x Candidates
     // nWiners: Number of winners in election, defaulted to 3
+    // randomTiebreakOrder: Array to determine tiebreak order, uses strings to allow comparing UUIDs. If empty or not same length as candidates, set to candidate indexes
     // breakTiesRandomly: In the event of a true tie, should a winner be selected at random, defaulted to true
     // enablefiveStarTiebreaker: In the event of a true tie in the runoff round, should the five-star tiebreaker be used (select candidate with the most 5 star votes), defaulted to true
     // Parse the votes for valid, invalid, and undervotes, and identifies bullet votes
@@ -37,7 +39,7 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
     // total scores
     // score histograms
     // preference and pairwise matrices
-    const summaryData = getSummaryData(candidates, parsedData)
+    const summaryData = getSummaryData(candidates, parsedData, randomTiebreakOrder)
 
     // Initialize output data structure
     const results: allocatedScoreResults = {
@@ -81,13 +83,9 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
         summaryData.weightedScoresByRound.push(weighted_sums.map(w => w.valueOf()))
         candidatesByRound.push([...remainingCandidates])
         // get index of winner
-        var maxAndTies = indexOfMax(weighted_sums, breakTiesRandomly);
+        var maxAndTies = indexOfMax(weighted_sums, summaryData.candidates, breakTiesRandomly);
         var w = maxAndTies.maxIndex;
-        var roundTies: candidate[] = [];
-        maxAndTies.ties.forEach((index, i) => {
-            roundTies.push(summaryData.candidates[index]);
-        });
-        results.tied.push(roundTies);
+        results.tied.push(maxAndTies.ties);
         // add winner to winner list
         results.elected.push(summaryData.candidates[w]);
         // Set all scores for winner to zero
@@ -162,8 +160,11 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
     return results
 }
 
-function getSummaryData(candidates: string[], parsedData: IparsedData): allocatedScoreSummaryData {
+function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: string[]): allocatedScoreSummaryData {
     const nCandidates = candidates.length
+    if (randomTiebreakOrder.length < nCandidates) {
+        randomTiebreakOrder = candidates.map((c,index) => index.toString())
+      }
     // Initialize summary data structures
     // Total scores for each candidate, includes candidate indexes for easier sorting
     const totalScores: totalScore[] = Array(nCandidates)
@@ -219,7 +220,7 @@ function getSummaryData(candidates: string[], parsedData: IparsedData): allocate
 
         }
     }
-    const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate }))
+    const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
     return {
         candidates: candidatesWithIndexes,
         totalScores,
@@ -304,31 +305,27 @@ function findWeightOnSplit(cand_df: winner_scores[], split_point: Fraction) {
     return weight_on_split;
 }
 
-function indexOfMax(arr: Fraction[], breakTiesRandomly: boolean) {
+function indexOfMax(arr: Fraction[], candidates: candidate[], breakTiesRandomly: boolean) {
     if (arr.length === 0) {
         return { maxIndex: -1, ties: [] };
     }
 
     var max = arr[0];
     var maxIndex = 0;
-    var ties: number[] = [0];
+    var ties: candidate[] = [candidates[0]];
     for (var i = 1; i < arr.length; i++) {
         if (max.equals(arr[i])) {
-            ties.push(i);
+            ties.push(candidates[i]);
         } else if (arr[i].compare(max) > 0) {
             maxIndex = i;
             max = arr[i];
-            ties = [i];
+            ties = [candidates[i]];
         }
     }
     if (breakTiesRandomly && ties.length > 1) {
-        maxIndex = ties[getRandomInt(ties.length)]
+        maxIndex = candidates.indexOf(sortByTieBreakOrder(ties)[0])
     }
     return { maxIndex, ties };
-}
-
-function getRandomInt(max: number) {
-    return Math.floor(Math.random() * max);
 }
 
 function normalizeArray(scores: ballot[], maxScore: number) {
