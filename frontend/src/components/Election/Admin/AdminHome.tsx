@@ -3,16 +3,18 @@ import Grid from "@mui/material/Grid";
 import { Box, Divider, Paper } from "@mui/material";
 import { Typography } from "@mui/material";
 import { StyledButton } from "../../styles";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Election } from '../../../../../domain_model/Election';
 import ShareButton from "../ShareButton";
-import { useArchiveEleciton, useFinalizeEleciton, useSetPublicResults } from "../../../hooks/useAPI";
+import { useArchiveEleciton, useFinalizeEleciton, usePostElection, useSetPublicResults } from "../../../hooks/useAPI";
 import { formatDate } from '../../util';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useElection from '../../ElectionContextProvider';
 import ElectionDetailsInlineForm from '../../ElectionForm/Details/ElectionDetailsInlineForm';
 import Races from '../../ElectionForm/Races/Races';
 import ElectionSettings from '../../ElectionForm/ElectionSettings';
+import structuredClone from '@ungap/structured-clone';
+import { IAuthSession } from '../../../hooks/useAuthSession';
 const hasPermission = (permissions: string[], requiredPermission: string) => {
     return (permissions && permissions.includes(requiredPermission))
 }
@@ -191,7 +193,7 @@ const PreviewBallotSection = ({ election, permissions }: { election: Election, p
     />
 }
 
-const DuplicateElectionSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
+const DuplicateElectionSection = ({ election, permissions, duplicateElection }: { election: Election, permissions: string[], duplicateElection: Function }) => {
     return <Section
         Description={
             (<>
@@ -208,13 +210,12 @@ const DuplicateElectionSection = ({ election, permissions }: { election: Electio
                 variant='contained'
                 disabled={!hasPermission(permissions, 'canEditElectionState')}
                 fullwidth
-                component={Link} to={`/DuplicateElection/${election.election_id}`}
+                onClick={() => duplicateElection()}
             >
                 <Typography align='center' variant="body2">
                     Duplicate
                 </Typography>
             </StyledButton>
-
         </>)}
     />
 }
@@ -441,7 +442,10 @@ const FinalizeSection = ({ election, permissions, finalizeElection }: { election
 }
 
 
-const AdminHome = () => {
+type Props = {
+    authSession: IAuthSession}
+    
+const AdminHome = ({authSession}:Props) => {
     const { election, refreshElection: fetchElection, permissions } = useElection()
     const { makeRequest } = useSetPublicResults(election.election_id)
     const togglePublicResults = async () => {
@@ -452,6 +456,9 @@ const AdminHome = () => {
     const { makeRequest: finalize } = useFinalizeEleciton(election.election_id)
     const { makeRequest: archive } = useArchiveEleciton(election.election_id)
 
+    const navigate = useNavigate()
+    const { error, isPending, makeRequest: postElection } = usePostElection()
+    
     const confirm = useConfirm()
 
     const finalizeElection = async () => {
@@ -486,6 +493,32 @@ const AdminHome = () => {
             console.log(err)
         }
     }
+    const duplicateElection = async () => {
+        console.log("duplicating election")
+        const confirmed = await confirm(
+            {
+                title: 'Confirm Duplicate Election',
+                message: "Are you sure you wish to duplicate this election?"
+            })
+        if (!confirmed) return
+        console.log('confirmed')
+        const copiedElection = structuredClone(election)
+        copiedElection.title = 'Copy of ' + copiedElection.title
+        copiedElection.frontend_url = ''
+        copiedElection.owner_id = authSession.getIdField('sub')
+        copiedElection.state = 'draft'
+
+        const newElection = await postElection(
+            {
+                Election: copiedElection,
+            })
+
+        if ((!newElection)) {
+            throw Error("Error submitting election");
+        }
+        navigate(`/Election/${newElection.election.election_id}/admin`)
+    }
+    
 
     return (
         <Box
@@ -524,7 +557,7 @@ const AdminHome = () => {
                 <Divider style={{ width: '100%' }} />
                 <EditRolesSection election={election} permissions={permissions} />
                 <Divider style={{ width: '100%' }} />
-                <DuplicateElectionSection election={election} permissions={permissions} />
+                <DuplicateElectionSection election={election} permissions={permissions} duplicateElection={duplicateElection}/>
                 <Divider style={{ width: '100%' }} />
                 <ArchiveElectionSection election={election} permissions={permissions} archiveElection={archiveElection} />
                 {election.state === 'draft' &&
