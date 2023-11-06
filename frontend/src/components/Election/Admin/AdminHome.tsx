@@ -27,7 +27,7 @@ const Section = ({ Description, Button }: SectionProps) => {
     return (
         <>
             <Grid xs={12} md={8} sx={{ p: 1 }}>
-                <Box sx={{minHeight:{xs: 0, md: 60}}}>
+                <Box sx={{ minHeight: { xs: 0, md: 60 } }}>
                     {Description}
                 </Box>
             </Grid>
@@ -39,7 +39,7 @@ const Section = ({ Description, Button }: SectionProps) => {
 }
 
 const EditRolesSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-    if(process.env.REACT_APP_FF_METHOD_PLURALITY !== 'true') return <></>;
+    if (process.env.REACT_APP_FF_METHOD_PLURALITY !== 'true') return <></>;
     return <Section
         Description={
             (<>
@@ -129,48 +129,15 @@ const EditElectionSection = ({ election, permissions }: { election: Election, pe
     />
 }
 
-const AddVotersSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
+const VotersSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
     return <Section
         Description={
             (<>
                 <Typography variant="h5">
-                    Add voters to your election
+                    {election.state === 'draft' ? 'Add voters to your election' : 'View voters'}
                 </Typography>
                 <Typography variant="body1" sx={{ pl: 2 }}>
-                    Add voters who are approved to vote in your election
-                </Typography>
-                <Typography variant="body1" sx={{ pl: 2 }}>
-                    Voter access must be set to closed
-                </Typography>
-                {!hasPermission(permissions, 'canViewElectionRoll') &&
-                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                        You do not have the correct permissions for this action
-                    </Typography>
-                }
-            </>)}
-        Button={(<>
-            <StyledButton
-                type='button'
-                variant='contained'
-                disabled={election.settings.voter_access !== 'closed' || !hasPermission(permissions, 'canViewElectionRoll')}
-                fullwidth
-                component={Link} to={`/Election/${election.election_id}/admin/voters`}
-            >
-                <Typography align='center' variant="body2">
-                    Add voters
-                </Typography>
-            </StyledButton>
-
-        </>)}
-    />
-}
-
-const ViewVotersSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-    return <Section
-        Description={
-            (<>
-                <Typography variant="h5">
-                    View Voters
+                    {election.state === 'draft' ? 'Add voters who are approved to vote in your election' : 'View the status of your voters'}
                 </Typography>
                 {!hasPermission(permissions, 'canViewElectionRoll') &&
                     <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
@@ -187,7 +154,7 @@ const ViewVotersSection = ({ election, permissions }: { election: Election, perm
                 component={Link} to={`/Election/${election.election_id}/admin/voters`}
             >
                 <Typography align='center' variant="body2">
-                    View voters
+                    {election.state === 'draft' ? 'Add voters' : 'View voters'}
                 </Typography>
             </StyledButton>
 
@@ -356,6 +323,124 @@ const ShareSection = ({ election, permissions }: { election: Election, permissio
     />
 }
 
+const HeaderSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
+    return (
+        <>
+            {election.state === 'finalized' &&
+                <>
+                    <Grid xs={12}>
+                        <Typography align='center' gutterBottom variant="h6" component="h6">
+                            Your election is finalized
+                        </Typography>
+                    </Grid>
+                    {election.settings.invitation &&
+                        <Grid xs={12}>
+                            <Typography align='center' gutterBottom variant="h6" component="h6">
+                                Invitations have been sent to your voters
+                            </Typography>
+                        </Grid>
+                    }
+                    {election.start_time &&
+                        <Grid xs={12}>
+                            <Typography align='center' gutterBottom variant="h6" component="h6">
+                                {`Your election will open on ${formatDate(election.start_time, election.settings.time_zone)}`}
+                            </Typography>
+                        </Grid>}
+                </>
+            }
+            {election.state === 'open' &&
+                <>
+                    <Grid xs={12}>
+                        <Typography align='center' gutterBottom variant="h6" component="h6">
+                            Your election is open
+                        </Typography>
+                    </Grid>
+                    {election.settings.invitation &&
+                        <Grid xs={12}>
+                            <Typography align='center' gutterBottom variant="h6" component="h6">
+                                Invitations have been sent to your voters
+                            </Typography>
+                        </Grid>
+                    }
+                    {election.end_time &&
+                        <Grid xs={12}>
+                            <Typography align='center' gutterBottom variant="h6" component="h6">
+                                {`Your election will end on ${formatDate(election.end_time, election.settings.time_zone)}`}
+                            </Typography>
+                        </Grid>}
+                </>
+            }
+            {election.state === 'closed' &&
+                <>
+                    <Grid xs={12}>
+                        <Typography align='center' gutterBottom variant="h6" component="h6">
+                            Your election is closed
+                        </Typography>
+                    </Grid>
+                    {election.end_time &&
+                        <Grid xs={12}>
+                            <Typography align='center' gutterBottom variant="h6" component="h6">
+                                {`Your election ended on ${formatDate(election.end_time, election.settings.time_zone)}`}
+                            </Typography>
+                        </Grid>}
+                </>
+            }
+            {election.state === 'archived' &&
+                <>
+                    <Grid xs={12}>
+                        <Typography align='center' gutterBottom variant="h6" component="h6">
+                            This election has been archived
+                        </Typography>
+                    </Grid>
+                    {election.end_time &&
+                        <Grid xs={12}>
+                            <Typography align='center' gutterBottom variant="h6" component="h6">
+                                {`Your election ended on ${formatDate(election.end_time, election.settings.time_zone)}`}
+                            </Typography>
+                        </Grid>}
+                </>
+            }
+
+
+        </>)
+}
+
+const FinalizeSection = ({ election, permissions, finalizeElection }: { election: Election, permissions: string[], finalizeElection: Function }) => {
+    return (
+        <>
+            <Grid xs={12} sx={{ p: 1, pt: 3, pb: 0 }}>
+                <Typography align='center' variant="body1" sx={{ pl: 2 }}>
+                    {/* {`If you're finished setting up your election you can finalize it. This will prevent future edits ${election.settings.invitation ? ', send out invitations, ' : ''} and open the election for voters to submit ballots${election.start_time ? ' after your specified start time' : ''}.`} */}
+                    {`When finished setting up your election, finalize it. Once final, it can't be edited. Voting begins ${election.start_time ? 'after your specified start time.' : 'immediately.'}`}
+                </Typography>
+                {election.settings.invitation &&
+                    <Typography align='center' variant="body1" sx={{ pl: 2 }}>
+                        Invitations will be sent to your voters
+                    </Typography>
+                }
+                {!hasPermission(permissions, 'canEditElectionState') &&
+                    <Typography align='center' variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                        You do not have the correct permissions for this action
+                    </Typography>
+                }
+            </Grid>
+            <Grid xs={12} sx={{ p: 1, pt: 0, display: 'flex', alignItems: 'center' }}>
+                <StyledButton
+                    type='button'
+                    variant='contained'
+                    disabled={election.title.length === 0 || election.races.length === 0 || !hasPermission(permissions, 'canEditElectionState')}
+                    fullwidth
+                    onClick={() => finalizeElection()}
+                >
+                    <Typography align='center' variant="h4" fontWeight={'bold'}>
+                        Finalize Election
+                    </Typography>
+                </StyledButton>
+            </Grid>
+        </>)
+}
+
+
 const AdminHome = () => {
     const { election, refreshElection: fetchElection, permissions } = useElection()
     const { makeRequest } = useSetPublicResults(election.election_id)
@@ -371,9 +456,9 @@ const AdminHome = () => {
 
     const finalizeElection = async () => {
         console.log("finalizing election")
-const confirmed = await confirm(
+        const confirmed = await confirm(
             {
-                title: 'Confirm Finalize Election', 
+                title: 'Confirm Finalize Election',
                 message: "Are you sure you want to finalize your election? Once finalized you won't be able to edit it."
             })
         if (!confirmed) return
@@ -389,17 +474,17 @@ const confirmed = await confirm(
         console.log("archiving election")
         const confirmed = await confirm(
             {
-                title: 'Confirm Archive Election', 
+                title: 'Confirm Archive Election',
                 message: "Are you sure you wish to archive this election? This action cannot be undone."
             })
         if (!confirmed) return
-            console.log('confirmed')
-            try {
-                await archive()
-                await fetchElection()
-            } catch (err) {
-                console.log(err)
-                    }
+        console.log('confirmed')
+        try {
+            await archive()
+            await fetchElection()
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     return (
@@ -408,195 +493,48 @@ const confirmed = await confirm(
             justifyContent="center"
             alignItems="center"
             sx={{ width: '100%' }}>
-            <Paper elevation={3} sx={{ width: 800, p: 3 }} >
-                <Grid container>
-                    <Grid xs={12} sx={{ p: 1 }}>
-                        <ElectionDetailsInlineForm />
-                    </Grid>
-                    <Grid xs={12} sx={{ p: 1 }}>
-                        <Races />
-                    </Grid>
-                    <Grid xs={12} sx={{ p: 1 }}>
-                        <ElectionSettings />
-                    </Grid>
-                    {election.state === 'draft' &&
-                        <>
-                            <PreviewBallotSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <AddVotersSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <EditRolesSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            {/* <EditElectionSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} /> */}
-                            <DuplicateElectionSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <ArchiveElectionSection election={election} permissions={permissions} archiveElection={archiveElection}/>
-                            <Divider style={{ width: '100%' }} />
-                            <Grid xs={12} sx={{ p: 1, pt:3, pb: 0}}>
-                                <Typography align='center' variant="body1" sx={{ pl: 2 }}>
-                                    {/* {`If you're finished setting up your election you can finalize it. This will prevent future edits ${election.settings.invitation ? ', send out invitations, ' : ''} and open the election for voters to submit ballots${election.start_time ? ' after your specified start time' : ''}.`} */}
-                                    {`When finished setting up your election, finalize it. Once final, it can't be edited. Voting begins ${election.start_time ? 'after your specified start time.' : 'immediately.'}`}
-                                </Typography>
-                                {election.settings.invitation &&
-                                    <Typography align='center' variant="body1" sx={{ pl: 2 }}>
-                                        Invitations will be sent to your voters
-                                    </Typography>
-                                }
-                                {!hasPermission(permissions, 'canEditElectionState') &&
-                                    <Typography align='center' variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                                        You do not have the correct permissions for this action
-                                    </Typography>
-                                }
-                            </Grid>
-                            <Grid xs={12} sx={{ p: 1,pt:0, display: 'flex', alignItems: 'center' }}>
-                                <StyledButton
-                                    type='button'
-                                    variant='contained'
-                                    disabled={!hasPermission(permissions, 'canEditElectionState')}
-                                    fullwidth
-                                    onClick={() => finalizeElection()}
-                                >
-                                    <Typography align='center' variant="h4" fontWeight={'bold'}>
-                                        Finalize Election
-                                    </Typography>
-                                </StyledButton>
-                            </Grid>
-
-                        </>
-                    }
-                    {election.state === 'finalized' &&
-                        <>
-                            <Grid xs={12}>
-                                <Typography align='center' gutterBottom variant="h6" component="h6">
-                                    Your election is finalized
-                                </Typography>
-                            </Grid>
-                            {election.settings.invitation &&
-                                <Grid xs={12}>
-                                    <Typography align='center' gutterBottom variant="h6" component="h6">
-                                        Invitations have been sent to your voters
-                                    </Typography>
-                                </Grid>
-                            }
-                            {election.start_time &&
-                                <Grid xs={12}>
-                                    <Typography align='center' gutterBottom variant="h6" component="h6">
-                                        {`Your election will open on ${formatDate(election.start_time, election.settings.time_zone)}`}
-                                    </Typography>
-                                </Grid>}
-
-                            <ShareSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <PreviewBallotSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <ViewVotersSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <EditRolesSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <DuplicateElectionSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <ArchiveElectionSection election={election} permissions={permissions} archiveElection={archiveElection}/>
-                        </>
-
-                    }
-
-                    {election.state === 'open' &&
-                        <>
-                            <Grid xs={12}>
-                                <Typography align='center' gutterBottom variant="h6" component="h6">
-                                    Your election is open
-                                </Typography>
-                            </Grid>
-                            {election.settings.invitation &&
-                                <Grid xs={12}>
-                                    <Typography align='center' gutterBottom variant="h6" component="h6">
-                                        Invitations have been sent to your voters
-                                    </Typography>
-                                </Grid>
-                            }
-                            {election.end_time &&
-                                <Grid xs={12}>
-                                    <Typography align='center' gutterBottom variant="h6" component="h6">
-                                        {`Your election will end on ${formatDate(election.end_time, election.settings.time_zone)}`}
-                                    </Typography>
-                                </Grid>}
-
-                            <ShareSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <EditRolesSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <ViewVotersSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-
-                            <ViewBallotSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <ResultsSection election={election} permissions={permissions} preliminary={true} />
-                            <Divider style={{ width: '100%' }} />
-                            <TogglePublicResultsSection election={election} permissions={permissions} togglePublicResults={togglePublicResults}/>
-                            <Divider style={{ width: '100%' }} />
-                            <DuplicateElectionSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <ArchiveElectionSection election={election} permissions={permissions} archiveElection={archiveElection}/>
-                        </>
-                    }
-                    {election.state === 'closed' &&
-                        <>
-                            <Grid xs={12}>
-                                <Typography align='center' gutterBottom variant="h6" component="h6">
-                                    Your election is closed
-                                </Typography>
-                            </Grid>
-                            {election.end_time &&
-                                <Grid xs={12}>
-                                    <Typography align='center' gutterBottom variant="h6" component="h6">
-                                        {`Your election ended on ${formatDate(election.end_time, election.settings.time_zone)}`}
-                                    </Typography>
-                                </Grid>}
-
-                            <EditRolesSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <ViewVotersSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <ViewBallotSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-
-                            <ResultsSection election={election} permissions={permissions} preliminary={false} />
-                            <Divider style={{ width: '100%' }} />
-                            <TogglePublicResultsSection election={election} permissions={permissions} togglePublicResults={togglePublicResults}/>
-                            <Divider style={{ width: '100%' }} />
-                            <DuplicateElectionSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <ArchiveElectionSection election={election} permissions={permissions} archiveElection={archiveElection}/>
-                        </>
-                    }
-                    {election.state === 'archived' &&
-                        <>
-                            <Grid xs={12}>
-                                <Typography align='center' gutterBottom variant="h6" component="h6">
-                                    This election has been archived
-                                </Typography>
-                            </Grid>
-                            {election.end_time &&
-                                <Grid xs={12}>
-                                    <Typography align='center' gutterBottom variant="h6" component="h6">
-                                        {`Your election ended on ${formatDate(election.end_time, election.settings.time_zone)}`}
-                                    </Typography>
-                                </Grid>}
-
-                            <ViewVotersSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-                            <ViewBallotSection election={election} permissions={permissions} />
-                            <Divider style={{ width: '100%' }} />
-
-                            <ResultsSection election={election} permissions={permissions} preliminary={false} />
-                            <Divider style={{ width: '100%' }} />
-                            <DuplicateElectionSection election={election} permissions={permissions} />
-                        </>
-                    }
+            <Grid container sx={{ width: 800 }}>
+                <Grid xs={12} sx={{ p: 1 }}>
+                    <HeaderSection election={election} permissions={permissions} />
                 </Grid>
-            </Paper>
+                <Grid xs={12} sx={{ p: 1 }}>
+                    <ElectionDetailsInlineForm />
+                </Grid>
+                <Grid xs={12} sx={{ p: 1 }}>
+                    <Races />
+                </Grid>
+                <Grid xs={12} sx={{ p: 1 }}>
+                    <ElectionSettings />
+                </Grid>
+                <PreviewBallotSection election={election} permissions={permissions} />
+                {(election.settings.voter_access === 'closed' || election.state !== 'draft') && <>
+                    <Divider style={{ width: '100%' }} />
+                    <VotersSection election={election} permissions={permissions} />
+                </>}
+                {(election.state !== 'draft' && election.state !== 'finalized') && <>
+                    <Divider style={{ width: '100%' }} />
+                    <ShareSection election={election} permissions={permissions} />
+                    <Divider style={{ width: '100%' }} />
+                    <ResultsSection election={election} permissions={permissions} preliminary={false} />
+                    <Divider style={{ width: '100%' }} />
+                    <TogglePublicResultsSection election={election} permissions={permissions} togglePublicResults={togglePublicResults} />
+                    <Divider style={{ width: '100%' }} />
+                    <ViewBallotSection election={election} permissions={permissions} />
+                </>}
+                <Divider style={{ width: '100%' }} />
+                <EditRolesSection election={election} permissions={permissions} />
+                <Divider style={{ width: '100%' }} />
+                <DuplicateElectionSection election={election} permissions={permissions} />
+                <Divider style={{ width: '100%' }} />
+                <ArchiveElectionSection election={election} permissions={permissions} archiveElection={archiveElection} />
+                {election.state === 'draft' &&
+                    <Grid xs={12} sx={{ p: 1 }}>
+                        <Divider style={{ width: '100%' }} />
+                        <FinalizeSection election={election} permissions={permissions} finalizeElection={finalizeElection} />
+                    </Grid>
+                }
 
+            </Grid>
         </Box>
     )
 }
