@@ -2,10 +2,12 @@ import React from 'react'
 
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import { StyledButton } from '../../styles';
+import useElection from '../../ElectionContextProvider';
 
 
 export default function RaceDialog({ onSaveRace, open, handleClose, children }) {
 
+    const { election } = useElection()
     const handleSave = () => {
         onSaveRace()
     }
@@ -39,7 +41,8 @@ export default function RaceDialog({ onSaveRace, open, handleClose, children }) 
                     type='button'
                     variant="contained"
                     fullWidth={false}
-                    onClick={() => handleSave()}>
+                    onClick={() => handleSave()}
+                    disabled={election.state!=='draft'}>
                     Save
                 </StyledButton>
             </DialogActions>
