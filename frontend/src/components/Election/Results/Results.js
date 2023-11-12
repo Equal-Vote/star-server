@@ -210,10 +210,10 @@ function PluralityResultsViewer({ results }) {
             <th className='matrix'> Votes </th>
           </tr>
 
-          {results.summaryData.candidates.map((c, n) => (
+          {results.summaryData.totalScores.map((totalScore, n) => (
             <>
-              <tr className='matrix' key={`h${n}`} >{c.name}
-                <td> {results.summaryData.totalScores[n].score} </td>
+              <tr className='matrix' key={`h${n}`} >{results.summaryData.candidates[totalScore.index].name}
+                <td> {totalScore.score} </td>
               </tr>
 
             </>
@@ -234,10 +234,10 @@ function ApprovalResultsViewer({ results }) {
             <th className='matrix'> Votes </th>
           </tr>
 
-          {results.summaryData.candidates.map((c, n) => (
+          {results.summaryData.totalScores.map((totalScore,n) => (
             <>
-              <tr className='matrix' key={`h${n}`} >{c.name}
-                <td> {results.summaryData.totalScores[n].score} </td>
+              <tr className='matrix' key={`h${n}`} >{results.summaryData.candidates[totalScore.index].name}
+                <td> {totalScore.score} </td>
               </tr>
 
             </>
