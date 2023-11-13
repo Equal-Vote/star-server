@@ -5,12 +5,15 @@ import { Box, Paper } from "@mui/material"
 import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import RaceDialog from './RaceDialog';
 import { useEditRace } from './useEditRace';
 import RaceForm from './RaceForm';
+import useElection from '../../ElectionContextProvider';
 
 export default function Race({ race, race_index }) {
 
+    const { election } = useElection()
     const { editedRace, errors, setErrors, applyRaceUpdate, onSaveRace, onDeleteRace } = useEditRace(race, race_index)
 
     const [open, setOpen] = useState(false);
@@ -36,7 +39,7 @@ export default function Race({ race, race_index }) {
                     <IconButton
                         aria-label="edit"
                         onClick={handleOpen}>
-                        <EditIcon />
+                        {election.state==='draft' ? <EditIcon /> : <VisibilityIcon /> }
                     </IconButton>
                 </Box>
                 <Box sx={{ flexShrink: 1, p: 1 }}>
@@ -44,7 +47,8 @@ export default function Race({ race, race_index }) {
                     <IconButton
                         aria-label="delete"
                         color="error"
-                        onClick={onDeleteRace}>
+                        onClick={onDeleteRace}
+                        disabled={election.state!=='draft'}>
                         <DeleteIcon />
                     </IconButton>
                 </Box>

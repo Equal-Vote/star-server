@@ -31,7 +31,8 @@ export default function AddRace() {
                 variant="contained"
                 fullWidth={false}
                 sx={{ borderRadius: 28, backgroundColor: 'brand.green' }}
-                onClick={handleOpen}>
+                onClick={handleOpen}
+                disabled={election.state!=='draft'}>
                 Add
             </StyledButton>
             <RaceDialog onSaveRace={onAdd} open={open} handleClose={handleClose} >

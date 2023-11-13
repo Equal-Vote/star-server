@@ -6,7 +6,7 @@ import Race from './Race';
 import AddRace from './AddRace';
 
 export default function Races() {
-    const { election, refreshElection, permissions, updateElection } = useElection()
+    const { election } = useElection()
 
     return (
         <Stack spacing={2}>
