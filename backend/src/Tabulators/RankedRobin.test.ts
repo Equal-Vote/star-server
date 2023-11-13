@@ -115,7 +115,7 @@ describe("Ranked Robin Tests", () => {
             [2, 1, 3, 4],
             [2, 1, 3, 4],
         ]
-        const results = RankedRobin(candidates, votes,1,['4','3','2','1'])
+        const results = RankedRobin(candidates, votes,1,[4,3,2,1])
         expect(results.elected[0].name).toBe('Bob')
         expect(results.elected.length).toBe(1);
     })

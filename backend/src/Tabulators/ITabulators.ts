@@ -7,7 +7,7 @@ export type ballots = ballot[]
 export interface candidate {
     index: number,
     name: string,
-    tieBreakOrder: string,
+    tieBreakOrder: number,
 }
 
 export interface voter {

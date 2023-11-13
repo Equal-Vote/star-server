@@ -3,7 +3,7 @@ import { approvalResults, approvalSummaryData, ballot, candidate, totalScore } f
 import { IparsedData } from './ParseData'
 const ParseData = require("./ParseData");
 
-export function Approval(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:string[] = [], breakTiesRandomly = true) {
+export function Approval(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true) {
   const parsedData = ParseData(votes, getApprovalBallotValidity)
   const summaryData = getSummaryData(candidates, parsedData, randomTiebreakOrder)
   const results: approvalResults = {
@@ -47,11 +47,11 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
   return results;
 }
 
-function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder:string[]): approvalSummaryData {
+function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder:number[]): approvalSummaryData {
   // Initialize summary data structures
   const nCandidates = candidates.length
   if (randomTiebreakOrder.length < nCandidates) {
-    randomTiebreakOrder = candidates.map((c,index) => index.toString())
+    randomTiebreakOrder = candidates.map((c,index) => index)
   }
   const totalScores = Array(nCandidates)
   for (let i = 0; i < nCandidates; i++) {

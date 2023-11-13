@@ -4,13 +4,13 @@ import { IparsedData } from './ParseData'
 import { sortByTieBreakOrder } from "./Star";
 const ParseData = require("./ParseData");
 
-export function RankedRobin(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:string[] = [], breakTiesRandomly = true) {
+export function RankedRobin(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true) {
   // Determines Ranked Robin winners for given election
   // Parameters: 
   // candidates: Array of candidate names
   // votes: Array of votes, size nVoters x Candidates
   // nWiners: Number of winners in election, defaulted to 1
-  // randomTiebreakOrder: Array to determine tiebreak order, uses strings to allow comparing UUIDs. If empty or not same length as candidates, set to candidate indexes
+  // randomTiebreakOrder: Array to determine tiebreak order. If empty or not same length as candidates, set to candidate indexes
   // breakTiesRandomly: In the event of a true tie, should a winner be selected at random, defaulted to true
 
   // Parse the votes for valid, invalid, and undervotes, and identifies bullet votes
@@ -73,10 +73,10 @@ function getRankedRobinBallotValidity(ballot: ballot) {
   return { isValid: true, isUnderVote: isUnderVote }
 }
 
-function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder:string[]): rankedRobinSummaryData {
+function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder:number[]): rankedRobinSummaryData {
   const nCandidates = candidates.length
   if (randomTiebreakOrder.length < nCandidates) {
-    randomTiebreakOrder = candidates.map((c,index) => index.toString())
+    randomTiebreakOrder = candidates.map((c,index) => index)
   }
   // Initialize summary data structures
   // Total scores for each candidate, includes candidate indexes for easier sorting

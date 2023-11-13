@@ -3,7 +3,7 @@ import { ballot, candidate, irvResults, irvSummaryData, totalScore } from "./ITa
 import { IparsedData } from './ParseData'
 const ParseData = require("./ParseData");
 
-export function IRV(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:string[] = [], breakTiesRandomly = true) {
+export function IRV(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true) {
     // Determines Instant Runoff winners for given election
     // Parameters: 
     // candidates: Array of candidate names
@@ -124,10 +124,10 @@ function getIRVBallotValidity(ballot: ballot) {
     return { isValid: true, isUnderVote: isUnderVote }
 }
 
-function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder:string[]): irvSummaryData {
+function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder:number[]): irvSummaryData {
     const nCandidates = candidates.length 
     if (randomTiebreakOrder.length < nCandidates) {
-        randomTiebreakOrder = candidates.map((c,index) => index.toString())
+        randomTiebreakOrder = candidates.map((c,index) => index)
       }
     // Initialize summary data structures
     // Total scores for each candidate, includes candidate indexes for easier sorting

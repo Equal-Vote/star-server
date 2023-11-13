@@ -108,7 +108,7 @@ describe("STAR Tests", () => {
             [1, 3],
             [4, 2],
         ]
-        const results = Star(candidates, votes, 1, ['Z','A'], true, true)
+        const results = Star(candidates, votes, 1, [2,1], true, true)
         // No candidates elected
         expect(results.elected[0].name).toBe('Bill');
         expect(results.elected.length).toBe(1);
@@ -138,7 +138,7 @@ describe("STAR Tests", () => {
 
 function buildTestSummaryData(candidates: string[], scores: number[], pairwiseMatrix: number[][], fiveStarCounts: number[]) {
     return {
-        candidates: candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: index.toString() })),
+        candidates: candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: index })),
         totalScores: scores.map((score, index) => ({ index, score })),
         scoreHist: fiveStarCounts.map(count => [0, 0, 0, 0, 0, count]),
         preferenceMatrix: pairwiseMatrix,

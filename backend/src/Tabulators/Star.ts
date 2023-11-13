@@ -11,13 +11,13 @@ declare namespace Intl {
 // converts list of strings to string with correct grammar ([a,b,c] => 'a, b, and c')
 const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
-export function Star(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:string[] = [], breakTiesRandomly = true, enablefiveStarTiebreaker = true) {
+export function Star(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true, enablefiveStarTiebreaker = true) {
   // Determines STAR winners for given election
   // Parameters: 
   // candidates: Array of candidate names
   // votes: Array of votes, size nVoters x Candidates
   // nWiners: Number of winners in election, defaulted to 1
-  // randomTiebreakOrder: Array to determine tiebreak order, uses strings to allow comparing UUIDs. If empty or not same length as candidates, set to candidate indexes
+  // randomTiebreakOrder: Array to determine tiebreak order. If empty or not same length as candidates, set to candidate indexes
   // breakTiesRandomly: In the event of a true tie, should a winner be selected at random, defaulted to true
   // enablefiveStarTiebreaker: In the event of a true tie in the runoff round, should the five-star tiebreaker be used (select candidate with the most 5 star votes), defaulted to true
 
@@ -66,10 +66,10 @@ export function Star(candidates: string[], votes: ballot[], nWinners = 1, random
   return results
 }
 
-function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: string[]): summaryData {
+function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: number[]): summaryData {
   const nCandidates = candidates.length
   if (randomTiebreakOrder.length < nCandidates) {
-    randomTiebreakOrder = candidates.map((c,index) => index.toString())
+    randomTiebreakOrder = candidates.map((c,index) => index)
   }
   // Initialize summary data structures
   // Total scores for each candidate, includes candidate indexes for easier sorting

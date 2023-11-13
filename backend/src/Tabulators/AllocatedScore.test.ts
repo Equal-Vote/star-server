@@ -112,7 +112,7 @@ describe("Allocated Score Tests", () => {
             [0, 0, 4, 5],
             [0, 0, 4, 5],
             [0, 0, 4, 5]]
-        const results = AllocatedScore(candidates, votes, 2, ['4','3','2','1'], true, false)
+        const results = AllocatedScore(candidates, votes, 2, [4,3,2,1], true, false)
         expect(results.elected.length).toBe(2);
         expect(results.tied[0].length).toBe(2); // two candidates tied in forst round
         expect(results.elected[0].name).toBe('Bill') // random tiebreaker, second place lower index 1
