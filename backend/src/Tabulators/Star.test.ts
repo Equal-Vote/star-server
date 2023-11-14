@@ -16,7 +16,7 @@ describe("STAR Tests", () => {
             [4, 0, 5, 1],
             [3, 4, 5, 0],
             [3, 5, 5, 5]]
-        const results = Star(candidates, votes, 1, false, false)
+        const results = Star(candidates, votes, 1, [], false, false)
         expect(results.elected[0].name).toBe('Allison');
         expect(results.roundResults[0].runner_up[0].name).toBe('Carmen');
     })
@@ -33,7 +33,7 @@ describe("STAR Tests", () => {
             [4, 0, 5, 1],
             [3, 4, 5, 0],
             [3, 5, 5, 4]]
-        const results = Star(candidates, votes, 1, false, false)
+        const results = Star(candidates, votes, 1, [],  false, false)
         expect(results.elected[0].name).toBe('Allison');
         expect(results.roundResults[0].runner_up[0].name).toBe('Bill');
         // expect(results.tied.length).toBe(2)
@@ -46,7 +46,7 @@ describe("STAR Tests", () => {
             [0, 5],
             [2, 4],
         ]
-        const results = Star(candidates, votes, 1, false, false)
+        const results = Star(candidates, votes, 1, [], false, false)
         expect(results.elected[0].name).toBe('Bill');
         expect(results.roundResults[0].runner_up[0].name).toBe('Allison');
     })
@@ -57,7 +57,7 @@ describe("STAR Tests", () => {
             [0, 5],
             [3, 2],
         ]
-        const results = Star(candidates, votes, 1, false, false)
+        const results = Star(candidates, votes, 1, [], false, false)
         expect(results.elected[0].name).toBe('Bill');
         expect(results.roundResults[0].runner_up[0].name).toBe('Allison');
     })
@@ -68,7 +68,7 @@ describe("STAR Tests", () => {
             [2, 4],
             [5, 3],
         ]
-        const results = Star(candidates, votes, 1, false, true)
+        const results = Star(candidates, votes, 1, [], false, true)
         expect(results.elected[0].name).toBe('Allison');
         expect(results.elected.length).toBe(1);
         expect(results.tied.length).toBe(0);
@@ -80,11 +80,39 @@ describe("STAR Tests", () => {
             [1, 3],
             [4, 2],
         ]
-        const results = Star(candidates, votes, 1, false, true)
+        const results = Star(candidates, votes, 1, [], false, true)
         // No candidates elected
         expect(results.elected.length).toBe(0);
         // Two candidates marked as tied
         expect(results.tied.length).toBe(2);
+    })
+    test("True Tie, use five-star tiebreaker, still tied, select lower index", () => {
+        // Both candidates have same score and runoff votes, five star tiebreaker selected, candidates still tied
+        // Tie break order not defined, select winner based on index 
+        const candidates = ['Allison', 'Bill']
+        const votes = [
+            [1, 3],
+            [4, 2],
+        ]
+        const results = Star(candidates, votes, 1, [], true, true)
+        // No candidates elected
+        expect(results.elected[0].name).toBe('Allison');
+        expect(results.elected.length).toBe(1);
+        expect(results.tied.length).toBe(0);
+    })
+    test("True Tie, use five-star tiebreaker, still tied, tiebreak order defined", () => {
+        // Both candidates have same score and runoff votes, five star tiebreaker selected, candidates still tied
+        // Tie break order defined, select lower 
+        const candidates = ['Allison', 'Bill']
+        const votes = [
+            [1, 3],
+            [4, 2],
+        ]
+        const results = Star(candidates, votes, 1, [2,1], true, true)
+        // No candidates elected
+        expect(results.elected[0].name).toBe('Bill');
+        expect(results.elected.length).toBe(1);
+        expect(results.tied.length).toBe(0);
     })
     test("Test valid/invalid/under/bullet vote counts", () => {
         const candidates = ['Allison', 'Bill', 'Carmen']
@@ -100,7 +128,7 @@ describe("STAR Tests", () => {
             [0, 5, 0],
             [0, 0, 5],
         ]
-        const results = Star(candidates, votes, 1, false, false)
+        const results = Star(candidates, votes, 1, [], false, false)
         expect(results.summaryData.nValidVotes).toBe(8);
         expect(results.summaryData.nInvalidVotes).toBe(2);
         expect(results.summaryData.nUnderVotes).toBe(2);
@@ -110,7 +138,7 @@ describe("STAR Tests", () => {
 
 function buildTestSummaryData(candidates: string[], scores: number[], pairwiseMatrix: number[][], fiveStarCounts: number[]) {
     return {
-        candidates: candidates.map((candidate, index) => ({ index: index, name: candidate })),
+        candidates: candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: index })),
         totalScores: scores.map((score, index) => ({ index, score })),
         scoreHist: fiveStarCounts.map(count => [0, 0, 0, 0, 0, count]),
         preferenceMatrix: pairwiseMatrix,

@@ -8,6 +8,7 @@ import { permissions } from '../../../domain_model/permissions';
 import { VotingMethods } from '../Tabulators/VotingMethodSelecter';
 import { IElectionRequest } from "../IRequest";
 import { Response, NextFunction } from 'express';
+var seedrandom = require('seedrandom');
 
 const BallotModel = ServiceLocator.ballotsDb();
 
@@ -48,8 +49,11 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
         }
         const msg = `Tabulating results for ${voting_method} election`
         Logger.info(req, msg);
-        results[race_index] = VotingMethods[voting_method](candidateNames, cvr, num_winners)
+        let rng = seedrandom(election.election_id + ballots.length.toString())
+        const tieBreakOrders = election.races[race_index].candidates.map((Candidate) => (rng() as number))
+        results[race_index] = VotingMethods[voting_method](candidateNames, cvr, num_winners, tieBreakOrders)
     }
+    
     res.json(
         {
             Election: election,

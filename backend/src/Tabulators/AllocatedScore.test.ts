@@ -16,7 +16,7 @@ describe("Allocated Score Tests", () => {
             [0, 0, 4, 5],
             [0, 0, 4, 5],
             [0, 0, 4, 5]]
-        const results = AllocatedScore(candidates, votes, 2, false, false)
+        const results = AllocatedScore(candidates, votes, 2, [], false, false)
         expect(results.elected.length).toBe(2);
         expect(results.elected[0].name).toBe('Allison');
         expect(results.elected[1].name).toBe('Doug');
@@ -40,7 +40,7 @@ describe("Allocated Score Tests", () => {
             [0, 0, 4, 5],
             [0, 0, 4, 5],
             [0, 0, 4, 5]]
-        const results = AllocatedScore(candidates, votes, 2, false, false)
+        const results = AllocatedScore(candidates, votes, 2, [], false, false)
         expect(results.elected.length).toBe(2);
         expect(results.elected[0].name).toBe('Allison');
         expect(results.elected[1].name).toBe('Doug');
@@ -66,7 +66,7 @@ describe("Allocated Score Tests", () => {
             [0, 0, 4, 5],
             [0, 0, 4, 5],
             [0, 0, 4, 5]]
-        const results = AllocatedScore(candidates, votes, 2, false, false)
+        const results = AllocatedScore(candidates, votes, 2, [], false, false)
         console.log(results.summaryData.weightedScoresByRound)
         expect(results.elected.length).toBe(2);
         expect(results.elected[0].name).toBe('Allison');
@@ -76,7 +76,8 @@ describe("Allocated Score Tests", () => {
     })
 
     test("Random Tiebreaker", () => {
-        // Two winners, two candidates tie for first, break tie randomly
+        // Two winners, two candidates tie for first
+        // Tiebreak order not defined, select lower index
         const candidates = ['Allison', 'Bill', 'Carmen', 'Doug']
         const votes = [
             [5, 5, 1, 0],
@@ -89,10 +90,32 @@ describe("Allocated Score Tests", () => {
             [0, 0, 4, 5],
             [0, 0, 4, 5],
             [0, 0, 4, 5]]
-        const results = AllocatedScore(candidates, votes, 2, true, false)
+        const results = AllocatedScore(candidates, votes, 2, [], true, false)
         expect(results.elected.length).toBe(2);
         expect(results.tied[0].length).toBe(2); // two candidates tied in forst round
-        expect(['Allison','Bill']).toContain(results.elected[0].name) // random tiebreaker, second place can either be Allison or Bill
+        expect(results.elected[0].name).toBe('Allison') // random tiebreaker, second place lower index 1
+        expect(results.elected[1].name).toBe('Doug');
+    })
+
+    test("Random Tiebreaker, tiebreak order defined", () => {
+        // Two winners, two candidates tie for first
+        // Tiebreak order defined, select lower
+        const candidates = ['Allison', 'Bill', 'Carmen', 'Doug']
+        const votes = [
+            [5, 5, 1, 0],
+            [5, 5, 1, 0],
+            [5, 5, 1, 0],
+            [5, 5, 1, 0],
+            [5, 5, 4, 0],
+            [0, 0, 0, 3],
+            [0, 0, 4, 5],
+            [0, 0, 4, 5],
+            [0, 0, 4, 5],
+            [0, 0, 4, 5]]
+        const results = AllocatedScore(candidates, votes, 2, [4,3,2,1], true, false)
+        expect(results.elected.length).toBe(2);
+        expect(results.tied[0].length).toBe(2); // two candidates tied in forst round
+        expect(results.elected[0].name).toBe('Bill') // random tiebreaker, second place lower index 1
         expect(results.elected[1].name).toBe('Doug');
     })
 
@@ -110,7 +133,7 @@ describe("Allocated Score Tests", () => {
             [0, 5, 0],
             [0, 0, 5],
         ]
-        const results = AllocatedScore(candidates, votes, 1, false, false)
+        const results = AllocatedScore(candidates, votes, 1, [], false, false)
         expect(results.summaryData.nValidVotes).toBe(8);
         expect(results.summaryData.nInvalidVotes).toBe(2);
         expect(results.summaryData.nUnderVotes).toBe(2);

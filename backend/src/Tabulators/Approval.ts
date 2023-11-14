@@ -3,9 +3,9 @@ import { approvalResults, approvalSummaryData, ballot, candidate, totalScore } f
 import { IparsedData } from './ParseData'
 const ParseData = require("./ParseData");
 
-export function Approval(candidates: string[], votes: ballot[], nWinners = 1, breakTiesRandomly = true) {
+export function Approval(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true) {
   const parsedData = ParseData(votes, getApprovalBallotValidity)
-  const summaryData = getSummaryData(candidates, parsedData)
+  const summaryData = getSummaryData(candidates, parsedData, randomTiebreakOrder)
   const results: approvalResults = {
     elected: [],
     tied: [],
@@ -16,7 +16,8 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, br
   const sortedScores = summaryData.totalScores.sort((a: totalScore, b: totalScore) => {
     if (a.score > b.score) return -1
     if (a.score < b.score) return 1
-    return 0.5 - Math.random()
+    if (summaryData.candidates[a.index].tieBreakOrder < summaryData.candidates[b.index].tieBreakOrder) return -1
+    return 1
   })
   
   var remainingCandidates = [...summaryData.candidates]
@@ -46,9 +47,12 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, br
   return results;
 }
 
-function getSummaryData(candidates: string[], parsedData: IparsedData): approvalSummaryData {
+function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder:number[]): approvalSummaryData {
   // Initialize summary data structures
   const nCandidates = candidates.length
+  if (randomTiebreakOrder.length < nCandidates) {
+    randomTiebreakOrder = candidates.map((c,index) => index)
+  }
   const totalScores = Array(nCandidates)
   for (let i = 0; i < nCandidates; i++) {
     totalScores[i] = { index: i, score: 0 };
@@ -67,7 +71,7 @@ function getSummaryData(candidates: string[], parsedData: IparsedData): approval
       nBulletVotes += 1
     }
   })
-  const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate }))
+  const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
   return {
     candidates: candidatesWithIndexes,
     totalScores,
@@ -91,8 +95,4 @@ function getApprovalBallotValidity(ballot: ballot) {
     }
   }
   return { isValid: true, isUnderVote: isUnderVote }
-}
-
-function getRandomInt(max: number) {
-  return Math.floor(Math.random() * max);
 }

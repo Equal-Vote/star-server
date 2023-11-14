@@ -3,18 +3,19 @@ import { ballot, candidate, irvResults, irvSummaryData, totalScore } from "./ITa
 import { IparsedData } from './ParseData'
 const ParseData = require("./ParseData");
 
-export function IRV(candidates: string[], votes: ballot[], nWinners = 1, breakTiesRandomly = true) {
+export function IRV(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true) {
     // Determines Instant Runoff winners for given election
     // Parameters: 
     // candidates: Array of candidate names
     // votes: Array of votes, size nVoters x Candidates, zeros indicate no rank
     // nWiners: Number of winners in election, defaulted to 1 (only supports 1 at the moment)
+    // randomTiebreakOrder: Array to determine tiebreak order, uses strings to allow comparing UUIDs. If empty or not same length as candidates, set to candidate indexes
     // breakTiesRandomly: In the event of a true tie, should a winner be selected at random, defaulted to true
 
     // Parse the votes for valid, invalid, and undervotes, and identifies bullet votes
     const parsedData = ParseData(votes, getIRVBallotValidity)
 
-    const summaryData = getSummaryData(candidates, parsedData)
+    const summaryData = getSummaryData(candidates, parsedData, randomTiebreakOrder)
 
     // Initialize output data structure
     const results: irvResults = {
@@ -123,8 +124,11 @@ function getIRVBallotValidity(ballot: ballot) {
     return { isValid: true, isUnderVote: isUnderVote }
 }
 
-function getSummaryData(candidates: string[], parsedData: IparsedData): irvSummaryData {
-    const nCandidates = candidates.length
+function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder:number[]): irvSummaryData {
+    const nCandidates = candidates.length 
+    if (randomTiebreakOrder.length < nCandidates) {
+        randomTiebreakOrder = candidates.map((c,index) => index)
+      }
     // Initialize summary data structures
     // Total scores for each candidate, includes candidate indexes for easier sorting
     const totalScores: totalScore[] = Array(nCandidates)
@@ -186,7 +190,7 @@ function getSummaryData(candidates: string[], parsedData: IparsedData): irvSumma
         }
     }
 
-    const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate }))
+    const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index]}))
     return {
         candidates: candidatesWithIndexes,
         totalScores,
@@ -222,10 +226,6 @@ function sortData(summaryData: irvSummaryData, order: candidate[]): irvSummaryDa
         nUnderVotes: summaryData.nUnderVotes,
         nBulletVotes: summaryData.nBulletVotes,
     }
-}
-
-function getRandomInt(max: number) {
-    return Math.floor(Math.random() * max);
 }
 
 function sortMatrix(matrix: number[][], order: number[]) {
