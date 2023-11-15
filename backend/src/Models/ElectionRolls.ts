@@ -79,6 +79,7 @@ export default class ElectionRollDB implements IElectionRollStore {
 
         return this._postgresClient
             .selectFrom(tableName)
+            .where('election_id', '=', 'election_id')
             .where((eb) => {
                 const ors: Expression<boolean>[] = []
 
