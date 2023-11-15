@@ -8,10 +8,11 @@ import { useState } from 'react'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Typography from '@mui/material/Typography';
 import { DetailExpander, DetailExpanderGroup } from '../../util';
-import STARResultSummaryWidget from "./STARResultSummaryWidget";
-import STARResultTableWidget from "./STARResultTableWidget";
-import STARResultDetailedStepsWidget from "./STARResultDetailedStepsWidget";
+import STARResultSummaryWidget from "./STAR/STARResultSummaryWidget";
+import STARResultTableWidget from "./STAR/STARResultTableWidget";
+import STARResultDetailedStepsWidget from "./STAR/STARResultDetailedStepsWidget";
 import WinnerResultTabs from "./WinnerResultTabs";
+import ApprovalResultSummaryWidget from "./Approval/ApprovalResultSummaryWidget";
 
 const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
@@ -223,28 +224,17 @@ function PluralityResultsViewer({ results }) {
     </div>
   );
 }
-function ApprovalResultsViewer({ results }) {
+function ApprovalResultsViewer({ raceIndex, results, rounds }) {
   return (
     <div className="resultViewer">
-      <h2>Detailed Results</h2>
-      <table className='matrix'>
-        <thead className='matrix'>
-          <tr>
-            <th className='matrix'> Candidate</th>
-            <th className='matrix'> Votes </th>
-          </tr>
-
-          {results.summaryData.totalScores.map((totalScore,n) => (
-            <>
-              <tr className='matrix' key={`h${n}`} >{results.summaryData.candidates[totalScore.index].name}
-                <td> {totalScore.score} </td>
-              </tr>
-
-            </>
-          ))}
-        </thead>
-      </table>
+      <ApprovalResultSummaryWidget results={results}/>
+      <DetailExpander title='How Approval Voting works'>
+        <div style={{position: 'relative', paddingBottom: "56.25%"}}>
+          <iframe style={{position: 'absolute', left: 0, width: '100%', height: '100%'}} src="https://www.youtube.com/embed/db6Syys2fmE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+      </DetailExpander>
     </div>
+
   );
 }
 
@@ -320,6 +310,8 @@ export default function Results({ title, raceIndex, race, result }) {
         {result.summaryData.nValidVotes > 1 &&
           <>
           {race.voting_method === "STAR" && <STARResultViewer raceIndex={raceIndex} results={result} rounds={race.num_winners} /> }
+          {race.voting_method === "Approval" && <ApprovalResultsViewer raceIndex={raceIndex} results={result} rounds={race.num_winners}/>}
+
           {race.voting_method === "STAR_PR" &&
             <>
               {/* PR tabulator needs to be refactored to match interface of other methods */}
@@ -339,11 +331,6 @@ export default function Results({ title, raceIndex, race, result }) {
               <PluralityResultsViewer results={result} />
             </>}
 
-          {race.voting_method === "Approval" &&
-            <>
-              <SummaryViewer votingMethod='Approval' results={result} />
-              <ApprovalResultsViewer results={result} />
-            </>}
 
           {race.voting_method === "IRV" &&
             <>
