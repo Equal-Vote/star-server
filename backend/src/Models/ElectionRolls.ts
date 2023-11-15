@@ -75,11 +75,11 @@ export default class ElectionRollDB implements IElectionRollStore {
     }
 
     getElectionRoll(election_id: string, voter_id: string | null, email: string | null, ip_address: string | null, ctx: ILoggingContext): Promise<ElectionRoll[] | null> {
-        Logger.debug(ctx, `${tableName}.get election:${election_id}, voter:${voter_id}`);
+        Logger.debug(ctx, `${tableName}.get election:${election_id}, voter:${voter_id}, email:${email}, ip_address:${ip_address}`);
 
         return this._postgresClient
             .selectFrom(tableName)
-            .where('election_id', '=', 'election_id')
+            .where('election_id', '=', election_id)
             .where((eb) => {
                 const ors: Expression<boolean>[] = []
 
