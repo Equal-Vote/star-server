@@ -47,19 +47,20 @@ const VotePage = ({ election, fetchElection }) => {
     }))
 
     // determine where to add info pages
-    for(var i = 0; i < pages.length; i++){
-      if(pages[i].type != "ballot") continue;
+    // commented out for now in case we want to return to this
+    // for(var i = 0; i < pages.length; i++){
+    //   if(pages[i].type != "ballot") continue;
 
-      // check if page is the first race with the voting method
-      var info_exists = pages.some((p) => p.type == 'info' && p.voting_method == pages[i].voting_method);
-      if(info_exists) continue;
+    //   // check if page is the first race with the voting method
+    //   var info_exists = pages.some((p) => p.type == 'info' && p.voting_method == pages[i].voting_method);
+    //   if(info_exists) continue;
       
-      // add info page for method
-      pages.splice(i, 0, {
-        type: "info",
-        voting_method: pages[i].voting_method
-      })
-    }
+    //   // add info page for method
+    //   pages.splice(i, 0, {
+    //     type: "info",
+    //     voting_method: pages[i].voting_method
+    //   })
+    // }
 
     return pages
   }
@@ -76,14 +77,17 @@ const VotePage = ({ election, fetchElection }) => {
   }
   const submit = async () => {
     var candidateScores = pages.filter((p) => p.type == "ballot").map((p) => p.candidates)
-    const sortFunc = (a: Score, b: Score) => {
-      return Number(a.candidate_id) - Number(b.candidate_id);
-    }
+    // create arrays of candidate IDs for each race. Ballots will be sorted into this order
+    const candidateIDs = election.races.map(race => race.candidates.map(candidate => candidate.candidate_id))
+
+    // takes voter's scores and resorts them back into the order in the election.race objects
     const votes: Vote[] =
       election.races.map((race, race_index) => (
         {
           race_id: race.race_id,
-          scores: candidateScores[race_index].map(c => ({candidate_id: c.candidate_id, score: c.score} as Score)).sort(sortFunc)
+          scores: candidateScores[race_index].map(c => ({candidate_id: c.candidate_id, score: c.score} as Score)).sort((a: Score, b: Score) => {
+            return candidateIDs[race_index].indexOf(a.candidate_id) - candidateIDs[race_index].indexOf(b.candidate_id)
+          })
         }))
     const ballot: Ballot = {
       ballot_id: '0', //Defaults to zero but is assigned ballot id by server when submitted
@@ -97,7 +101,7 @@ const VotePage = ({ election, fetchElection }) => {
       return
     }
     navigate(`/Election/${id}/thanks`)
-  }          
+  }        
   return (
     <Container disableGutters={true} maxWidth="sm">
       <BallotPageSelector
