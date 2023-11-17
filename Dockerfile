@@ -26,6 +26,12 @@ COPY --chown=node:node package*.json ./
 WORKDIR /usr/src/app/frontend
 COPY --chown=node:node frontend .
 ENV REACT_APP_KEYCLOAK_URL https://auth.star.vote:8443/realms/STARVotingDev/protocol/openid-connect
+ENV REACT_APP_FF_METHOD_STAR_PR true
+ENV REACT_APP_FF_METHOD_RANKED_ROBIN true
+ENV REACT_APP_FF_METHOD_APPROVAL true
+ENV REACT_APP_FF_CANDIDATE_DETAILS true
+ENV REACT_APP_FF_MULTI_RACE true
+ENV REACT_APP_FF_MULTI_WINNER true
 RUN npm run build
 WORKDIR /usr/src/app/backend
 COPY --chown=node:node backend .
