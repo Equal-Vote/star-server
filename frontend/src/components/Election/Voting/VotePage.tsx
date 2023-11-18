@@ -12,6 +12,7 @@ import { Box, Container, Step, StepLabel, Stepper, SvgIcon } from "@mui/material
 import Button from "@mui/material/Button";
 import { usePostBallot } from "../../../hooks/useAPI";
 import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecordOutlined';
+import useElection from "../../ElectionContextProvider";
 
 // I'm using the icon codes instead of an import because there was padding I couldn't get rid of
 // https://stackoverflow.com/questions/65721218/remove-material-ui-icon-margin
@@ -36,15 +37,20 @@ function shuffle(array) {
   return array;
 }
 
-const VotePage = ({ election, fetchElection }) => {
+const VotePage = () => {
+  
+  const { election } = useElection()
   const makePages = () => {
     // generate ballot pages
-    let pages = election.races.map((race, i) => ({
-      type: "ballot",
-      candidates: shuffle(race.candidates.map(c=> ({...c, score: null}))),
-      voting_method : race.voting_method,
-      race_index: i
-    }))
+    let pages = election.races.map((race, i) => {
+      let candidates = race.candidates.map(c=> ({...c, score: null}))
+      return {
+        type: "ballot",
+        candidates: election.settings.random_candidate_order ? shuffle(candidates) : candidates,
+        voting_method : race.voting_method,
+        race_index: i
+    }
+  })
 
     // determine where to add info pages
     // commented out for now in case we want to return to this

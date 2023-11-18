@@ -29,6 +29,7 @@ const CreateElectionTemplates = ({ authSession }: { authSession: IAuthSession })
             ballot_updates: false,
             public_results: true,
             time_zone: DateTime.now().zone.name,
+            random_candidate_order: true,
         }
     }
 

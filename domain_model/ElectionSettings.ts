@@ -22,4 +22,5 @@ export interface ElectionSettings {
     ballot_updates?:	    boolean; //		allows voters to update their ballots before election ends
     public_results?:	    boolean; //		allows public to view results
     time_zone?:           string; // Time zone for displaying election start/end times 
+    random_candidate_order?: boolean; // Randomize order of candidates on the ballot
   }

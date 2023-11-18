@@ -67,6 +67,18 @@ export default function ElectionSettings() {
                             <FormGroup>
                                 <FormControlLabel disabled control={
                                     <Checkbox
+                                        id="candidate-order"
+                                        name="Randomize Candidate Order"
+                                        checked={editedElectionSettings.random_candidate_order}
+                                        onChange={(e) => applySettingsUpdate(settings => { settings.random_candidate_order = e.target.checked })}
+                                    />}
+                                    label="Ballot Updates"
+                                />
+                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                    Allow voters to update their ballots while election is still open (currently not supported)
+                                </FormHelperText>
+                                <FormControlLabel disabled control={
+                                    <Checkbox
                                         id="ballot-updates"
                                         name="Ballot Updates"
                                         checked={editedElectionSettings.ballot_updates}
