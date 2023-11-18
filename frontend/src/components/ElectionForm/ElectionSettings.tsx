@@ -72,10 +72,10 @@ export default function ElectionSettings() {
                                         checked={editedElectionSettings.random_candidate_order}
                                         onChange={(e) => applySettingsUpdate(settings => { settings.random_candidate_order = e.target.checked })}
                                     />}
-                                    label="Ballot Updates"
+                                    label="Randomize Candidate Order"
                                 />
                                 <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                    Allow voters to update their ballots while election is still open (currently not supported)
+                                    Randomizes the order of candidates on the ballots.
                                 </FormHelperText>
                                 <FormControlLabel disabled control={
                                     <Checkbox
