@@ -146,7 +146,8 @@ export default function ElectionSettings() {
                                         <Checkbox
                                             id="require-instructions-confirmations"
                                             name="Require Instruction Confirmations"
-                                            checked={false}
+                                            checked={editedElectionSettings.require_instruction_confirmation}
+                                            onChange={(e) => applySettingsUpdate(settings => { settings.require_instruction_confirmation = e.target.checked })}
                                         />}
                                     label="Require Instruction Confirmations"
                                 />
