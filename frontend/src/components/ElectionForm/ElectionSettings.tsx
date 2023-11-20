@@ -65,7 +65,7 @@ export default function ElectionSettings() {
                     <Grid item xs={12} sx={{ m: 0, my: 1, p: 1 }}>
                         <FormControl component="fieldset" variant="standard">
                             <FormGroup>
-                                <FormControlLabel disabled control={
+                                <FormControlLabel control={
                                     <Checkbox
                                         id="candidate-order"
                                         name="Randomize Candidate Order"
