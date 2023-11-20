@@ -31,7 +31,7 @@ const TempWrapper = ({ authSession }: Props) => {
       <Grid xs={12} sm={8}>
         <Routes>
           <Route path='/' element={<ElectionHome authSession={authSession} electionData={data} fetchElection={refreshElection} />} />
-          <Route path='/vote' element={<VotePage election={data.election} fetchElection={refreshElection} />} />
+          <Route path='/vote' element={<VotePage />} />
           <Route path='/thanks' element={<Thanks election={data.election} />} />
           <Route path='/results' element={<ViewElectionResults election={data.election} />} />
           <Route path='/edit' element={<EditElection authSession={authSession} election={data.election} fetchElection={refreshElection} />} />

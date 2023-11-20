@@ -65,6 +65,18 @@ export default function ElectionSettings() {
                     <Grid item xs={12} sx={{ m: 0, my: 1, p: 1 }}>
                         <FormControl component="fieldset" variant="standard">
                             <FormGroup>
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        id="candidate-order"
+                                        name="Randomize Candidate Order"
+                                        checked={editedElectionSettings.random_candidate_order}
+                                        onChange={(e) => applySettingsUpdate(settings => { settings.random_candidate_order = e.target.checked })}
+                                    />}
+                                    label="Randomize Candidate Order"
+                                />
+                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                    Randomizes the order of candidates on the ballots.
+                                </FormHelperText>
                                 <FormControlLabel disabled control={
                                     <Checkbox
                                         id="ballot-updates"
@@ -134,7 +146,8 @@ export default function ElectionSettings() {
                                         <Checkbox
                                             id="require-instructions-confirmations"
                                             name="Require Instruction Confirmations"
-                                            checked={false}
+                                            checked={editedElectionSettings.require_instruction_confirmation}
+                                            onChange={(e) => applySettingsUpdate(settings => { settings.require_instruction_confirmation = e.target.checked })}
                                         />}
                                     label="Require Instruction Confirmations"
                                 />
