@@ -10,7 +10,7 @@ const Admin = ({ authSession, election, permissions, fetchElection }) => {
         <Container>
             <Routes>
                 <Route path='/' element={<AdminHome authSession={authSession}/>} />
-                <Route path='/voters' element={<ViewElectionRolls election={election} permissions={permissions} />} />
+                <Route path='/voters' element={<ViewElectionRolls />} />
                 <Route path='/roles' element={<EditRoles election={election} permissions={permissions} fetchElection={fetchElection} />} />
                 <Route path='/ballots' element={<ViewBallots election={election} permissions={permissions} />} />
             </Routes>
