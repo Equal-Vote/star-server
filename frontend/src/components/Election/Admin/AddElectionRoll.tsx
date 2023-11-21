@@ -9,16 +9,17 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import { Checkbox, FormGroup, FormControlLabel } from '@mui/material';
 import { usePostRolls } from "../../../hooks/useAPI";
+import useElection from "../../ElectionContextProvider";
 
 
-const AddElectionRoll = ({ election, onClose }) => {
-
+const AddElectionRoll = ({ onClose }) => {
+    const { election } = useElection()
     const [voterIDList, setVoterIDList] = useState('')
     const postRoll = usePostRolls(election.election_id)
     const [file, setFile] = useState()
     const fileReader = new FileReader()
-    const [enableVoterID, setEnableVoterID] = useState(false)
-    const [enableEmail, setEnableEmail] = useState(true)
+    const [enableVoterID, setEnableVoterID] = useState(election.settings.voter_authentication.voter_id && election.settings.invitation !== 'email')
+    const [enableEmail, setEnableEmail] = useState(election.settings.voter_authentication.email || election.settings.invitation === 'email')
     const [enablePrecinct, setEnablePrecinct] = useState(false)
     const inputRef = useRef(null)
 

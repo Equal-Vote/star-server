@@ -8,15 +8,22 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 import PermissionHandler from "../../PermissionHandler";
 import { useApproveRoll, useFlagRoll, useInvalidateRoll, useSendInvite, useUnflagRoll } from "../../../hooks/useAPI";
 import { formatDate } from "../../util";
-
-const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
+import useElection from "../../ElectionContextProvider";
+import { ElectionRoll } from "../../../../../domain_model/ElectionRoll";
+type Props = {
+    roll: ElectionRoll,
+    onClose: Function,
+    fetchRolls: Function,
+  }
+const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
+    const { election, permissions } = useElection()
     const [updatedRoll, setUpdatedRoll] = useState(roll)
 
-    const approve = useApproveRoll(id)
-    const flag = useFlagRoll(id)
-    const unflag = useUnflagRoll(id)
-    const invalidate = useInvalidateRoll(id)
-    const sendInvite = useSendInvite(id, roll.voter_id)
+    const approve = useApproveRoll(election.election_id)
+    const flag = useFlagRoll(election.election_id)
+    const unflag = useUnflagRoll(election.election_id)
+    const invalidate = useInvalidateRoll(election.election_id)
+    const sendInvite = useSendInvite(election.election_id, roll.voter_id)
 
     const onApprove = async () => {
         if (!await approve.makeRequest({ electionRollEntry: roll })) { return }
@@ -39,7 +46,6 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
 
         await fetchRolls()
     }
-
     return (
         <Container>
             {(approve.isPending || flag.isPending || unflag.isPending || invalidate.isPending) &&
@@ -69,7 +75,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls, id, permissions }) => {
                     </Typography>
                 </Grid>
                 
-                {roll.email &&
+                {election.settings.invitation === 'email' && roll.email &&
                     <>
                         {roll && !(roll.email_data && roll.email_data.inviteResponse) &&
                             <Grid item sm={12}>

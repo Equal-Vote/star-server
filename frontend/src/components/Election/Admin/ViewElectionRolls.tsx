@@ -10,6 +10,8 @@ import PermissionHandler from "../../PermissionHandler";
 import { Typography } from "@mui/material";
 import EnhancedTable, { HeadCell, TableData } from "./../../EnhancedTable";
 import { useGetRolls, useSendInvites } from "../../../hooks/useAPI";
+import useElection from "../../ElectionContextProvider";
+import { ElectionRoll } from "../../../../../domain_model/ElectionRoll";
 
 interface Data extends TableData {
     voter_id: string;
@@ -20,13 +22,14 @@ interface Data extends TableData {
     state: string;
 }
 
-const ViewElectionRolls = ({ election, permissions }) => {
+const ViewElectionRolls = () => {
+    const { election, permissions } = useElection()
     const { data, isPending, error, makeRequest: fetchRolls } = useGetRolls(election.election_id)
     const sendInvites = useSendInvites(election.election_id)
     useEffect(() => { fetchRolls() }, [])
     const [isEditing, setIsEditing] = useState(false)
     const [addRollPage, setAddRollPage] = useState(false)
-    const [editedRoll, setEditedRoll] = useState(null)
+    const [editedRoll, setEditedRoll] = useState<ElectionRoll|null>(null)
 
     const onOpen = (voter) => {
         setIsEditing(true)
@@ -108,13 +111,13 @@ const ViewElectionRolls = ({ election, permissions }) => {
         },
     ];
 
-    if(process.env.REACT_APP_FF_PRECINCTS === 'true'){
+    if (process.env.REACT_APP_FF_PRECINCTS === 'true') {
         headCells.push({
-                id: 'precinct',
-                numeric: false,
-                disablePadding: false,
-                label: 'Precinct',
-                filterType: 'search'
+            id: 'precinct',
+            numeric: false,
+            disablePadding: false,
+            label: 'Precinct',
+            filterType: 'search'
         });
     }
 
@@ -158,11 +161,15 @@ const ViewElectionRolls = ({ election, permissions }) => {
             {isPending && <div> Loading Data... </div>}
             {data && data.electionRoll && !isEditing && !addRollPage &&
                 <>
-                    <PermissionHandler permissions={permissions} requiredPermission={'canAddToElectionRoll'}>
-                        <Button variant='outlined' onClick={() => setAddRollPage(true)} > Add Voters </Button>
-                    </PermissionHandler>
-                    <Button variant='outlined' onClick={() => onSendInvites()} > Send Invites </Button>
-                    {tableData.length == 0 && <p>This election doesn't have any voters on the roll yet</p>}
+                    {election.settings.voter_access === 'closed' &&
+                        <PermissionHandler permissions={permissions} requiredPermission={'canAddToElectionRoll'}>
+                            <Button variant='outlined' onClick={() => setAddRollPage(true)} > Add Voters </Button>
+                        </PermissionHandler>
+                    }
+                    {election.settings.invitation === 'email' &&
+                        < Button variant='outlined' onClick={() => onSendInvites()} > Send Invites </Button>
+                    }
+                    {tableData.length == 0 && <p>This election doesn't have any voters yet</p>}
                     {tableData.length > 0 &&
                         <EnhancedTable
                             headCells={headCells}
@@ -174,13 +181,15 @@ const ViewElectionRolls = ({ election, permissions }) => {
                     }
                 </>
             }
-            {isEditing && editedRoll &&
-                <EditElectionRoll roll={editedRoll} onClose={onClose} fetchRolls={onUpdate} id={election.election_id} permissions={permissions} />
+            {
+                isEditing && editedRoll &&
+                <EditElectionRoll roll={editedRoll} onClose={onClose} fetchRolls={onUpdate}/>
             }
-            {addRollPage &&
-                <AddElectionRoll election={election} onClose={onClose} />
+            {
+                addRollPage &&
+                <AddElectionRoll onClose={onClose} />
             }
-        </Container>
+        </Container >
     )
 }
 
