@@ -31,7 +31,7 @@ const LandingPage = () => {
             ]} />
             <LandingPageFeatures />
             <LandingPageSignUpBar />
-            <LandingPageTestimonials testimonials={[
+            {process.env.REACT_APP_FF_TESTIMONIALS && <LandingPageTestimonials testimonials={[
                 {
                     quote: 'STAR Voting is Awesome!',
                     name: 'John Doe',
@@ -47,7 +47,7 @@ const LandingPage = () => {
                     name: 'Equal Vote',
                     url: 'https://yt3.googleusercontent.com/el7OsIUIJVHjHIwsNXgrBVft0Ht3RSfJ3wO94MQivXaa_IK0JMGlHrPIbvt8fYtXvjJfErcdG-Y=s176-c-k-c0x00ffffff-no-rj'
                 },
-            ]} />
+            ]} />}
             <LandingPagePricing options={[
                 {
                     title: 'Free Tier',
