@@ -147,91 +147,55 @@ const Header = ({ authSession }) => {
                         <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                             Sandbox
                         </Typography>
-
                     </Button>
                 </Box>
 
                 {/**** LOG IN/OUT ****/}
-                <Box variant="h5" sx={{ alignItems: 'center', flexWrap: 'wrap', flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
-
-                    {authSession.isLoggedIn() ?
-                        <>
-                            <Typography variant={navVariant} sx={{ fontWeight: 'medium' }} color={headerTextColor}>
+                <Box sx={{ flexGrow: 0, display: 'flex' }}>
+                    {authSession.isLoggedIn() && <>
+                        <IconButton
+                            size="large"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleOpenUserMenu}
+                            color="inherit">
+                            <AccountCircleIcon />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorElUser}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                            }}
+                            open={Boolean(anchorElUser)}
+                            onClose={handleCloseUserMenu}
+                            sx={{ display: 'block'}}
+                        >
+                            <MenuItem>
                                 {authSession.getIdField('email')}
-                            </Typography>
-                            <Button
+                            </MenuItem>
+                            <MenuItem
                                 color='inherit'
                                 onClick={() => authSession.openLogout()}
                             >
-                                <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
-                                    Log Out
-                                </Typography>
-                            </Button>
-                        </>
-                        :
-                        <Button
-                            color='inherit'
-                            onClick={() => authSession.openLogin()}
-                        >
-
+                                Logout
+                            </MenuItem>
+                        </Menu>
+                    </>}
+                    {!authSession.isLoggedIn() &&
+                        <Button color='inherit' onClick={() => authSession.openLogin()} >
                             <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
-                                Log In
+                                Login
                             </Typography>
                         </Button>
                     }
-                </Box>
-                <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
-                    <IconButton
-                        size="large"
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleOpenUserMenu}
-                        color="inherit">
-                        <AccountCircleIcon />
-                    </IconButton>
-                    <Menu
-                        id="menu-appbar"
-                        anchorEl={anchorElUser}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'left',
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'left',
-                        }}
-                        open={Boolean(anchorElUser)}
-                        onClose={handleCloseUserMenu}
-                        sx={{
-                            display: { xs: 'block', md: 'none' },
-                        }}
-                    >
-                        {authSession.isLoggedIn() ?
-                            <>
-                                <MenuItem>
-                                    {authSession.getIdField('email')}
-                                </MenuItem>
-                                <MenuItem
-                                    color='inherit'
-                                    onClick={() => authSession.openLogout()}
-                                >
-                                    Logout
-                                </MenuItem>
-                            </>
-                            :
-                            <>
-                                <MenuItem
-                                    color='inherit'
-                                    onClick={() => authSession.openLogin()}
-                                >
-                                    Login
-                                </MenuItem>
-                            </>
-                        }
-
-                    </Menu>
                 </Box>
 
             </Toolbar>
