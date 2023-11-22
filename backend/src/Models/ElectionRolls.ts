@@ -61,7 +61,7 @@ export default class ElectionRollDB implements IElectionRollStore {
             }))
     }
     getByEmail(email: string, ctx: ILoggingContext): Promise<ElectionRoll[] | null> {
-        Logger.debug(ctx, `${tableName}.getByEmail email:${email}`);
+        Logger.debug(ctx, `${tableName}.getByEmail`);
 
         return this._postgresClient
             .selectFrom(tableName)
