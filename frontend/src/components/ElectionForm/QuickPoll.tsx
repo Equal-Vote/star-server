@@ -11,29 +11,22 @@ import { useLocalStorage } from '../../hooks/useLocalStorage';
 import Typography from '@mui/material/Typography';
 import { usePostElection } from '../../hooks/useAPI';
 import { useCookie } from '../../hooks/useCookie';
+import { Election } from '../../../../domain_model/Election.js';
 
 const QuickPoll = ({ authSession }) => {
     const [tempID, setTempID] = useCookie('temp_id', '0')
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = usePostElection()
-    const onSubmitElection = async (election) => {
-        // calls post election api, throws error if response not ok
-        const newElection = await postElection(
-            {
-                Election: election,
-            })
-        if ((!newElection)) {
-            throw Error("Error submitting election");
-        }
-        localStorage.removeItem('Election')
-        navigate(`/Election/${newElection.election.election_id}`)
-    }
 
-    const QuickPollTemplate = {
+    const QuickPollTemplate: Election = {
         title: '',
         election_id: '0',
+        state: 'open',
+        frontend_url: '',
+        owner_id: '0',
         races: [
-            {
+            {   
+                title: '',
                 race_id: '0',
                 num_winners: 1,
                 voting_method: 'STAR',
@@ -67,9 +60,20 @@ const QuickPoll = ({ authSession }) => {
     }
 
 
-    const [election, setElectionData] = useLocalStorage('Election', QuickPollTemplate)
+    const [election, setElectionData] = useLocalStorage<Election>('QuickPoll', QuickPollTemplate)
     const [titleError, setTitleError] = useState(false)
-
+    const onSubmitElection = async (election) => {
+        // calls post election api, throws error if response not ok
+        const newElection = await postElection(
+            {
+                Election: election,
+            })
+        if ((!newElection)) {
+            throw Error("Error submitting election");
+        }
+        setElectionData(null)
+        navigate(`/Election/${newElection.election.election_id}`)
+    }
     const applyElectionUpdate = (updateFunc) => {
         const electionCopy = structuredClone(election)
         updateFunc(electionCopy)
