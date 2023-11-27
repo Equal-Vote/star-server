@@ -9,8 +9,11 @@ import PermissionHandler from "../../PermissionHandler";
 import { useParams } from "react-router";
 import { useGetBallot } from "../../../hooks/useAPI";
 import { formatDate } from "../../util";
+import useElection from "../../ElectionContextProvider";
 
-const ViewBallot = ({ election, ballot, onClose, fetchBallot, permissions }) => {
+const ViewBallot = ({ ballot, onClose }) => {
+    
+    const { election, refreshElection, permissions, updateElection } = useElection()
     const { ballot_id } = useParams();
 
     const { data, isPending, error, makeRequest: fetchBallots } = useGetBallot(election.election_id, ballot_id)

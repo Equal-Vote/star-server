@@ -11,7 +11,7 @@ import LandingPageTestimonials from './LandingPage/LandingPageTestimonials';
 import { Paper } from '@mui/material';
 import LandingPagePricing from './LandingPage/LandingPagePricing';
 
-const LandingPage = ({ authSession }) => {
+const LandingPage = () => {
     return (
         <Box sx={{
             width: '100%',
@@ -23,14 +23,14 @@ const LandingPage = ({ authSession }) => {
             paddingTop: '8rem',
             paddingBottom: '8rem',
         }}>
-            <LandingPageHero authSession={authSession}/>
+            <LandingPageHero />
             <LandingPageFeatureElections electionIds={[
                 '52c2b793-bdfe-49e8-b4cf-f448108c39af',
                 'e45e93b1-9e4e-4a87-bb80-e7dbbd6e4721',
                 '5c84e93b-b01c-4ab0-82ee-7181cb7ac995'
-            ]}/>
-            <LandingPageFeatures/>
-            <LandingPageSignUpBar authSession={authSession}/>
+            ]} />
+            <LandingPageFeatures />
+            <LandingPageSignUpBar />
             <LandingPageTestimonials testimonials={[
                 {
                     quote: 'STAR Voting is Awesome!',
@@ -47,19 +47,19 @@ const LandingPage = ({ authSession }) => {
                     name: 'Equal Vote',
                     url: 'https://yt3.googleusercontent.com/el7OsIUIJVHjHIwsNXgrBVft0Ht3RSfJ3wO94MQivXaa_IK0JMGlHrPIbvt8fYtXvjJfErcdG-Y=s176-c-k-c0x00ffffff-no-rj'
                 },
-            ]}/>
+            ]} />
             <LandingPagePricing options={[
                 {
                     title: 'Free Tier',
                     price: <b>$0.00</b>,
-                    description: <>Unlimited voters for Public elections<br/><br/>Private elections up to 100 voters</>
+                    description: <>Unlimited voters for Public elections<br /><br />Private elections up to 100 voters</>
                 },
                 {
                     title: 'Professional',
                     price: <><b>Contact for quote</b></>,
-                    description: <>Private elections over 100 voters<br/><br/>All proceeds go to non-profit use<br/><br/>Discounts are available on request<br/><br/>Email elections@equal.vote</>
+                    description: <>Private elections over 100 voters<br /><br />All proceeds go to non-profit use<br /><br />Discounts are available on request<br /><br />Email elections@equal.vote</>
                 },
-            ]}/>
+            ]} />
         </Box>
     )
 }

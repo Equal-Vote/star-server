@@ -8,9 +8,10 @@ import EnhancedTable, { HeadCell } from "./EnhancedTable";
 import { useNavigate } from "react-router"
 import { useGetElections } from "../hooks/useAPI";
 import { formatDate } from './util';
+import useAuthSession from './AuthSessionContextProvider';
 
-const Elections = ({ authSession }) => {
-
+const Elections = () => {
+    const authSession = useAuthSession()
     const navigate = useNavigate()
     // const url_params = new URLSearchParams(window.location.search)
     const { data, isPending, error, makeRequest: fetchElections } = useGetElections()

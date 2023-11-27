@@ -10,16 +10,12 @@ import { useCookie } from "../../hooks/useCookie";
 import { Election } from '../../../../domain_model/Election';
 import { VoterAuth as IVoterAuth } from '../../../../domain_model/VoterAuth';
 import { IAuthSession } from '../../hooks/useAuthSession';
+import useAuthSession from "../AuthSessionContextProvider";
+import useElection from "../ElectionContextProvider";
 
-type Props = {
-  authSession: IAuthSession,
-  electionData: {
-    election: Election, 
-    voterAuth: IVoterAuth},
-  fetchElection: Function,
-}
-
-const VoterAuth = ({ authSession, electionData, fetchElection }: Props) => {
+const VoterAuth = () => {
+  const authSession = useAuthSession()
+  const { election, voterAuth, refreshElection, permissions, updateElection } = useElection()
   const { voter_id } = useParams();
   console.log('useParam')
   // TODO: maybe we should reconsider useCookie here? this has the potential of inserting the voter id on a different election
@@ -31,24 +27,24 @@ const VoterAuth = ({ authSession, electionData, fetchElection }: Props) => {
   }, [voter_id])
 
   const submitVoterID = () => {
-    fetchElection()
+    refreshElection()
   }
 
   const clearVoterID = () => {
     setVoterID(null)
-    fetchElection()
+    refreshElection()
   }
 
-  if (!electionData) return <></>
+  if (!election) return <></>
 
-  const isOpen = electionData?.election?.state === "open"
+  const isOpen = election.state === "open"
 
-  const voterIdRequired = electionData?.election?.settings?.voter_authentication?.voter_id
-  const emailRequired = electionData?.election?.settings?.voter_authentication?.email
+  const voterIdRequired = election.settings?.voter_authentication?.voter_id
+  const emailRequired = election.settings?.voter_authentication?.email
 
-  const isAuthorized = electionData.voterAuth?.authorized_voter
-  const missingEmail = electionData?.voterAuth?.required === "Email Validation Required"
-  const missingVoterID = electionData.voterAuth?.required === "Voter ID Required"
+  const isAuthorized = voterAuth?.authorized_voter
+  const missingEmail = voterAuth?.required === "Email Validation Required"
+  const missingVoterID = voterAuth?.required === "Voter ID Required"
 
   return (
     <Box sx={{ p: 1, flexGrow: 1 }}>
