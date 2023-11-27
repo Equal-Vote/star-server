@@ -1,5 +1,5 @@
-import { useState, useContext } from "react";
-import { SnackbarContext } from "../components/SnackbarContext";
+import { useState } from "react";
+import useSnackbar from "../components/SnackbarContext";
 
 // Example usage 
 // Requst type: MyRequest
@@ -17,7 +17,7 @@ const useFetch = <Message, Response>(url: string, method: 'get' | 'post' | 'put'
     const [isPending, setIsPending] = useState(false)
     const [error, setError] = useState<any>(null)
     const [data, setData] = useState<Response | null>(null)
-    const { snack, setSnack } = useContext(SnackbarContext)
+    const { snack, setSnack } = useSnackbar()
 
     const makeRequest = async (data?: Message) => {
         const options = {
