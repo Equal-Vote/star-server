@@ -1,6 +1,5 @@
 import React from 'react'
 import { useNavigate } from "react-router"
-import { IAuthSession } from '../../hooks/useAuthSession';
 import { Election } from '../../../../domain_model/Election';
 import { usePostElection } from '../../hooks/useAPI';
 import { DateTime } from 'luxon'

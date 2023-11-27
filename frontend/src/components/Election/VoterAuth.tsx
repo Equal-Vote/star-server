@@ -7,9 +7,6 @@ import TextField from "@mui/material/TextField";
 import Box from '@mui/material/Box';
 import { FormHelperText } from "@mui/material"
 import { useCookie } from "../../hooks/useCookie";
-import { Election } from '../../../../domain_model/Election';
-import { VoterAuth as IVoterAuth } from '../../../../domain_model/VoterAuth';
-import { IAuthSession } from '../../hooks/useAuthSession';
 import useAuthSession from "../AuthSessionContextProvider";
 import useElection from "../ElectionContextProvider";
 

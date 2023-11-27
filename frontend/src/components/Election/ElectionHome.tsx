@@ -7,9 +7,6 @@ import { IconButton, Paper, Tooltip } from "@mui/material";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ShareButton from "./ShareButton";
 import VoterAuth from "./VoterAuth";
-import { Election } from '../../../../domain_model/Election';
-import { VoterAuth as IVoterAuth } from '../../../../domain_model/VoterAuth';
-import { IAuthSession } from '../../hooks/useAuthSession';
 import { formatDate } from '../util';
 import useElection from '../ElectionContextProvider';
 
