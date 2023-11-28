@@ -5,14 +5,14 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import EditRoles from './EditRoles';
 import ViewBallots from './ViewBallots';
 import AdminHome from './AdminHome';
-const Admin = ({ authSession, election, permissions, fetchElection }) => {
+const Admin = () => {
     return (
         <Container>
             <Routes>
-                <Route path='/' element={<AdminHome authSession={authSession}/>} />
+                <Route path='/' element={<AdminHome />} />
                 <Route path='/voters' element={<ViewElectionRolls />} />
-                <Route path='/roles' element={<EditRoles election={election} permissions={permissions} fetchElection={fetchElection} />} />
-                <Route path='/ballots' element={<ViewBallots election={election} permissions={permissions} />} />
+                <Route path='/roles' element={<EditRoles />} />
+                <Route path='/ballots' element={<ViewBallots />} />
             </Routes>
         </Container>
     )

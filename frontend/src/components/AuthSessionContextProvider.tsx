@@ -1,5 +1,12 @@
+import React, {
+    createContext,
+    useCallback,
+    useContext,
+    useRef,
+    useState,
+} from 'react';
 import { useEffect } from "react";
-import { useCookie } from "./useCookie";
+import { useCookie } from "../hooks/useCookie";
 import jwt_decode from 'jwt-decode'
 let keycloakBaseUrl = process.env.REACT_APP_KEYCLOAK_URL;
 
@@ -28,10 +35,12 @@ export interface IAuthSession {
     getIdField: (fieldName: any) => any
 }
 
-export const useAuthSession = (): IAuthSession => {
-    const [accessToken, setAccessToken] = useCookie('access_token', null, 24*5)
-    const [idToken, setIdToken] = useCookie('id_token', null, 24*5)
-    const [refreshToken, setRefreshToken] = useCookie('refresh_token', null, 24*5)
+const AuthSessionContext = createContext<IAuthSession>(null);
+
+export function AuthSessionContextProvider({ children }) {
+    const [accessToken, setAccessToken] = useCookie('access_token', null, 24 * 5)
+    const [idToken, setIdToken] = useCookie('id_token', null, 24 * 5)
+    const [refreshToken, setRefreshToken] = useCookie('refresh_token', null, 24 * 5)
 
     const isLoggedIn = () => {
         return accessToken !== null
@@ -45,7 +54,7 @@ export const useAuthSession = (): IAuthSession => {
             `scope=openid`,
         ].join('&');
 
-        window.location.href = authConfig.endpoints.login+"?"+queryString;
+        window.location.href = authConfig.endpoints.login + "?" + queryString;
     }
 
     const openLogout = () => {
@@ -59,7 +68,7 @@ export const useAuthSession = (): IAuthSession => {
         setAccessToken(null)
         setIdToken(null)
         setRefreshToken(null)
-        window.location.href = authConfig.endpoints.logout+"?"+queryString;
+        window.location.href = authConfig.endpoints.logout + "?" + queryString;
     }
 
     const getIdField = (fieldName: string) => {
@@ -68,9 +77,9 @@ export const useAuthSession = (): IAuthSession => {
         return id_map[fieldName];
     }
 
-    useEffect( () => {
+    useEffect(() => {
         refreshSession()
-    },[])
+    }, [])
 
     const refreshSession = () => {
         // This function refreshes our tokens (which we store as cookies)
@@ -135,7 +144,7 @@ export const useAuthSession = (): IAuthSession => {
                 // NOTE: Here I'm setting the cookies to expire after REFRESH_HOURS
                 //       I should probably be configuring the expiration time through the oAuth provider instead
                 //       but for now it's convenient to set the expiration time for the cookie and then force a refresh
-                setAccessToken( data['access_token'] );
+                setAccessToken(data['access_token']);
                 setIdToken(data['id_token']);
                 if (grant_type == 'authorization_code') { // we only receive refresh token on auth code flow
                     setRefreshToken(data['refresh_token']);
@@ -144,5 +153,20 @@ export const useAuthSession = (): IAuthSession => {
         }
 
     }
-        return {isLoggedIn, openLogin, openLogout, getIdField}
+
+    return (
+        <AuthSessionContext.Provider
+            value={{
+                isLoggedIn: isLoggedIn,
+                openLogin: openLogin,
+                openLogout: openLogout,
+                getIdField: getIdField,
+            }}>
+            {children}
+        </AuthSessionContext.Provider>
+    );
+}
+
+export default function useAuthSession() {
+    return useContext(AuthSessionContext);
 }

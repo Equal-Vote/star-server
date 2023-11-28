@@ -8,17 +8,17 @@ import structuredClone from '@ungap/structured-clone';
 
 
 export interface IElectionContext {
-    data: {election: Election, voterAuth: VoterAuth}
     election: Election;
+    voterAuth: VoterAuth;
     refreshElection: Function;
     updateElection: Function;
-    permissions: string[]
+    permissions: string[];
 }
 
 
 export const ElectionContext = createContext<IElectionContext>({
-    data: null,
     election: null,
+    voterAuth: null,
     refreshElection: () => false,
     updateElection: () => false,
     permissions: []
@@ -44,8 +44,8 @@ export const ElectionContextProvider = ({ id, children }) => {
 
     return (<ElectionContext.Provider
         value={{
-            data: data,
             election: data?.election,
+            voterAuth: data?.voterAuth,
             refreshElection: fetchData,
             updateElection: applyElectionUpdate,
             permissions: data?.voterAuth?.permissions

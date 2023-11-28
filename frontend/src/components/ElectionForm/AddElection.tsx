@@ -1,15 +1,12 @@
 import React from 'react'
 import ElectionForm from "./ElectionForm";
 import { useNavigate } from "react-router"
-
-import { IAuthSession } from '../../hooks/useAuthSession';
 import { Election } from '../../../../domain_model/Election';
 import { usePostElection } from '../../hooks/useAPI';
+import useAuthSession from '../AuthSessionContextProvider';
 
-
-
-const AddElection = ({ authSession }: {authSession: IAuthSession}) => {
-
+const AddElection = () => {
+    const authSession = useAuthSession()
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = usePostElection()
     const onAddElection = async (election: Election) => {

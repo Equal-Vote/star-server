@@ -9,8 +9,10 @@ import ViewBallot from "./ViewBallot";
 import { CSVLink } from "react-csv";
 import { useGetBallots } from "../../../hooks/useAPI";
 import { formatDate } from "../../util";
+import useElection from "../../ElectionContextProvider";
 
-const ViewBallots = ({ election, permissions }) => {
+const ViewBallots = () => {
+    const { election } = useElection()
     const { data, isPending, error, makeRequest: fetchBallots } = useGetBallots(election.election_id)
     useEffect(() => { fetchBallots() }, [])
     const [isViewing, setIsViewing] = useState(false)
@@ -114,7 +116,7 @@ const ViewBallots = ({ election, permissions }) => {
                 </>
             }
             {isViewing && selectedBallot &&
-                <ViewBallot election={election} ballot={selectedBallot} onClose={onClose} fetchBallot={fetchBallots} permissions={permissions} />
+                <ViewBallot ballot={selectedBallot} onClose={onClose} />
             }
         </Container>
     )

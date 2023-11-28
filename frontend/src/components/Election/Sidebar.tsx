@@ -5,6 +5,7 @@ import { Button, Grid } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paper } from '@mui/material';
 import PermissionHandler from '../PermissionHandler';
+import useElection from '../ElectionContextProvider';
 
 const ListItem = ({ text, link }) => {
     return (
@@ -18,12 +19,13 @@ const ListItem = ({ text, link }) => {
     )
 }
 
-export default function Sidebar({ electionData }) {
-    const id = electionData.election.election_id;
-    console.log(electionData)
+export default function Sidebar() {
+    
+    const { election, voterAuth, permissions } = useElection()
+    const id = election.election_id;
     return (
         <>
-            {electionData.voterAuth?.roles?.length > 0 &&
+            {voterAuth?.roles?.length > 0 &&
                 <Box
                     display='flex'
                     justifyContent="center"
@@ -33,18 +35,18 @@ export default function Sidebar({ electionData }) {
                         <Grid direction="column" >
                             <ListItem text='Voting Page' link={`/Election/${id}/`} />
                             <ListItem text='Admin Home' link={`/Election/${id}/admin`} />
-                            {electionData.election.state === 'draft' &&
+                            {election.state === 'draft' &&
                                 <>
                                     {process.env.REACT_APP_FF_METHOD_ELECTION_ROLES === 'true' &&
-                                        <PermissionHandler permissions={electionData.voterAuth.permissions} requiredPermission={'canEditElectionRoles'}>
+                                        <PermissionHandler permissions={permissions} requiredPermission={'canEditElectionRoles'}>
                                             <ListItem text='Edit Election Roles' link={`/Election/${id}/admin/roles`} />
                                         </PermissionHandler>
                                     }
                                 </>}
-                            <PermissionHandler permissions={electionData.voterAuth.permissions} requiredPermission={'canViewElectionRoll'}>
+                            <PermissionHandler permissions={permissions} requiredPermission={'canViewElectionRoll'}>
                                 <ListItem text='Voters' link={`/Election/${id}/admin/voters`} />
                             </PermissionHandler>
-                            <PermissionHandler permissions={electionData.voterAuth.permissions} requiredPermission={'canViewBallots'}>
+                            <PermissionHandler permissions={permissions} requiredPermission={'canViewBallots'}>
                                 <ListItem text='Ballots' link={`/Election/${id}/admin/ballots`} />
                             </PermissionHandler>
                         </Grid>

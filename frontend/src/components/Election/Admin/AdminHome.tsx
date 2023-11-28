@@ -14,7 +14,7 @@ import ElectionDetailsInlineForm from '../../ElectionForm/Details/ElectionDetail
 import Races from '../../ElectionForm/Races/Races';
 import ElectionSettings from '../../ElectionForm/ElectionSettings';
 import structuredClone from '@ungap/structured-clone';
-import { IAuthSession } from '../../../hooks/useAuthSession';
+import useAuthSession from '../../AuthSessionContextProvider';
 const hasPermission = (permissions: string[], requiredPermission: string) => {
     return (permissions && permissions.includes(requiredPermission))
 }
@@ -440,12 +440,10 @@ const FinalizeSection = ({ election, permissions, finalizeElection }: { election
             </Grid>
         </>)
 }
-
-
-type Props = {
-    authSession: IAuthSession}
     
-const AdminHome = ({authSession}:Props) => {
+const AdminHome = () => {
+    
+  const authSession = useAuthSession()
     const { election, refreshElection: fetchElection, permissions } = useElection()
     const { makeRequest } = useSetPublicResults(election.election_id)
     const togglePublicResults = async () => {

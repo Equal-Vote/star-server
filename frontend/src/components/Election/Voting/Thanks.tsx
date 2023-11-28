@@ -4,7 +4,11 @@ import Box from '@mui/material/Box';
 import ShareButton from "../ShareButton";
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import { StyledButton } from "../../styles";
-const Thanks = ({ election }) => {
+import useElection from '../../ElectionContextProvider';
+
+const Thanks = () => {
+    
+    const { election } = useElection()
     return (
         <>
             {election &&
