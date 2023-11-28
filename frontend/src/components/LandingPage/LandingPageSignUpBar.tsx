@@ -1,8 +1,11 @@
 import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
 import { StyledButton } from '../styles';
+import useAuthSession from '../AuthSessionContextProvider';
 
-export default ({authSession}) =>
+export default () => {
+    const authSession = useAuthSession()
+    return (
     <Box sx={{
         background: 'var(--brand-gray-1)',
         clip: 'unset',
@@ -36,3 +39,4 @@ export default ({authSession}) =>
             </Button>
         </Box>
     </Box>
+)}

@@ -3,8 +3,10 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import React from 'react'
 import QuickPoll from '../ElectionForm/QuickPoll'
+import useAuthSession from '../AuthSessionContextProvider'
 
-export default ({authSession}) => {
+export default ({}) => {
+    const authSession = useAuthSession()
     return (
         <Box sx={{
             maxWidth: '1300px',

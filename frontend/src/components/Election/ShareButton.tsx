@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useState } from "react"
 import ShareIcon from '@mui/icons-material/Share';
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
@@ -15,10 +15,10 @@ import RedditIcon from "@mui/icons-material/Reddit"
 import LinkIcon from "@mui/icons-material/Link"
 import { IconButton, Menu, Tooltip, Typography } from "@mui/material";
 import { StyledButton } from "../styles";
-import { SnackbarContext } from "../SnackbarContext";
+import useSnackbar from "../SnackbarContext";
 
 export default function ShareButton({ url }) {
-    const { snack, setSnack } = useContext(SnackbarContext)
+    const { snack, setSnack } = useSnackbar()
     const [anchorElNav, setAnchorElNav] = useState(null)
 
 

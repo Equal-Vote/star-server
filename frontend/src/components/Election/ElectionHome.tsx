@@ -7,24 +7,16 @@ import { IconButton, Paper, Tooltip } from "@mui/material";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ShareButton from "./ShareButton";
 import VoterAuth from "./VoterAuth";
-import { Election } from '../../../../domain_model/Election';
-import { VoterAuth as IVoterAuth } from '../../../../domain_model/VoterAuth';
-import { IAuthSession } from '../../hooks/useAuthSession';
 import { formatDate } from '../util';
+import useElection from '../ElectionContextProvider';
 
-type Props = {
-  authSession: IAuthSession,
-  electionData: {
-    election: Election,
-    voterAuth: IVoterAuth
-  },
-  fetchElection: Function,
-}
+const ElectionHome = () => {
+  
+  const { election, voterAuth, refreshElection, permissions, updateElection } = useElection()
 
-const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
   return (
     <>
-      {electionData && electionData.election && electionData.voterAuth &&
+      {election && voterAuth &&
         <Box
           display='flex'
           justifyContent="center"
@@ -36,49 +28,49 @@ const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
             flexDirection: 'column', justifyContent: 'space-between'
           }} >
             {/* Only show share button if election voter access is not closed  */}
-            {electionData.election.settings.voter_access !== 'closed' &&
+            {election.settings.voter_access !== 'closed' &&
               <Box sx={{ m: 1, display: 'flex', justifyContent: 'flex-end' }}>
                 <Box sx={{ maxWidth: 200 }}>
-                  <ShareButton url={`${window.location.origin}/Election/${electionData.election.election_id}`} />
+                  <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} />
                 </Box>
               </Box>
             }
             <Box sx={{ flexGrow: 0 }}>
               <Typography align='center' gutterBottom variant="h3" component="h3" fontWeight={'bold'}>
-                {electionData.election.title}
+                {election.title}
               </Typography>
             </Box>
 
             <Box sx={{ flexGrow: 1 }}>
               <Typography align='center' component="p" style={{ whiteSpace: 'pre-line' }}>
-                {electionData.election.description}
+                {election.description}
               </Typography>
             </Box>
 
-            <VoterAuth authSession={authSession} electionData={electionData} fetchElection={fetchElection} />
+            <VoterAuth />
 
 
-            {electionData.election.state === 'finalized' && electionData.election.start_time &&
+            {election.state === 'finalized' && election.start_time &&
               <Box sx={{ flexGrow: 1 }}>
                 <Typography align='center' variant="h6" component="h6">
-                  {`Election begins on ${formatDate(electionData.election.start_time, electionData.election.settings.time_zone)}`}
+                  {`Election begins on ${formatDate(election.start_time, election.settings.time_zone)}`}
                 </Typography>
               </Box>
             }
 
-            {electionData.election.state === 'open' && <>
+            {election.state === 'open' && <>
 
-              {electionData.election.end_time &&
+              {election.end_time &&
                 <Box sx={{ flexGrow: 1 }}>
                   < Typography align='center' variant="h6" component="h6">
-                    {`Election ends on ${formatDate(electionData.election.start_time, electionData.election.settings.time_zone)}`}
+                    {`Election ends on ${formatDate(election.start_time, election.settings.time_zone)}`}
                   </Typography>
                 </Box>}
               {
-                electionData.voterAuth.has_voted == false && electionData.voterAuth.authorized_voter && !electionData.voterAuth.required &&
+                voterAuth.has_voted == false && voterAuth.authorized_voter && !voterAuth.required &&
 
                 <Box sx={{ flexGrow: 1, p: 1 }}>
-                  <Button fullWidth variant='outlined' href={`/Election/${String(electionData?.election?.election_id)}/vote`} >
+                  <Button fullWidth variant='outlined' href={`/Election/${String(election?.election_id)}/vote`} >
                     <Typography align='center' variant="h3" component="h3" fontWeight='bold' sx={{ p: 2 }}>
                       Vote
                     </Typography>
@@ -87,14 +79,14 @@ const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
               }
             </>}
 
-            {electionData.election.state === 'closed' && electionData.election.end_time &&
+            {election.state === 'closed' && election.end_time &&
               <Box sx={{ flexGrow: 1 }}>
                 <Typography align='center' variant="h6" component="h6">
-                  {`Election ended on ${formatDate(electionData.election.start_time, electionData.election.settings.time_zone)}`}
+                  {`Election ended on ${formatDate(election.start_time, election.settings.time_zone)}`}
                 </Typography>
               </Box>
             }
-            {electionData.voterAuth.has_voted == true &&
+            {voterAuth.has_voted == true &&
               <Box sx={{ flexGrow: 1 }}>
                 <Typography align='center' variant="h6" component="h6">
                   Ballot Submitted
@@ -102,22 +94,22 @@ const ElectionHome = ({ authSession, electionData, fetchElection }: Props) => {
               </Box>
             }
             {/* Show results button only if public_results enabled and voter has voted or election is closed */}
-            {(electionData.election.settings.public_results === true &&
-              (electionData.election.state === 'open' && electionData.voterAuth.has_voted) || electionData.election.state === 'closed') &&
+            {(election.settings.public_results === true &&
+              (election.state === 'open' && voterAuth.has_voted) || election.state === 'closed') &&
               <Box sx={{ p: 1, flexGrow: 0 }}>
-                <Button fullWidth variant='outlined' href={`/Election/${electionData.election.election_id}/results`} >
+                <Button fullWidth variant='outlined' href={`/Election/${election.election_id}/results`} >
                   View Results
                 </Button>
               </Box>
             }
-            {electionData.election.state === 'draft' &&
+            {election.state === 'draft' &&
               <Box sx={{ flexGrow: 1 }}>
                 <Typography align='center' variant="h6" component="h6">
                   This election is still being drafted
                 </Typography>
               </Box>
             }
-            {electionData.election.state === 'archived' &&
+            {election.state === 'archived' &&
               <Box sx={{ flexGrow: 1 }}>
                 <Typography align='center' variant="h6" component="h6">
                   This election has been archived

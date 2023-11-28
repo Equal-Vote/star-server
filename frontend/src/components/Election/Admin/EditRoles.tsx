@@ -8,6 +8,8 @@ import PermissionHandler from "../../PermissionHandler";
 import { usePutElectionRoles } from "../../../hooks/useAPI";
 import { Election } from "../../../../../domain_model/Election";
 import { StyledButton } from "../../styles";
+import useAuthSession from "../../AuthSessionContextProvider";
+import useElection from "../../ElectionContextProvider";
 
 type Props = {
     election: Election,
@@ -15,7 +17,9 @@ type Props = {
     fetchElection: Function,
 }
 
-const EditRoles = ({ election, permissions, fetchElection }: Props) => {
+const EditRoles = () => {
+    const authSession = useAuthSession()
+    const { election, voterAuth, refreshElection, permissions, updateElection } = useElection()
 
     const [adminList, setAdminList] = useState(() => {
         if (election.admin_ids === null) return ''
@@ -43,7 +47,7 @@ const EditRoles = ({ election, permissions, fetchElection }: Props) => {
 
             const newRoles = await putRoles.makeRequest({ admin_ids, audit_ids, credential_ids })
             if (newRoles) {
-                fetchElection()
+                refreshElection()
             }
         } catch (error) {
             console.log(error)

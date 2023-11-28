@@ -12,9 +12,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useCookie } from '../hooks/useCookie'
 import { v4 } from 'uuid'
+import useAuthSession from './AuthSessionContextProvider';
 
 const headerTextColor = 'primary.contrastText'
-const Header = ({ authSession }) => {
+const Header = () => {
+    const authSession = useAuthSession()
     const navigate = useNavigate()
     const [tempID, setTempID] = useCookie('temp_id', v4())
     const [anchorElNav, setAnchorElNav] = useState(null)

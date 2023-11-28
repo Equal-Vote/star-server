@@ -4,8 +4,13 @@ import Container from '@mui/material/Container';
 import ElectionForm from "./ElectionForm";
 import { useNavigate } from "react-router"
 import { useEditElection } from '../../hooks/useAPI';
+import useAuthSession from '../AuthSessionContextProvider';
+import useElection from '../ElectionContextProvider';
 
-const EditElection = ({ authSession, election, fetchElection}) => {
+const EditElection = () => {
+    const authSession = useAuthSession()
+    
+    const { election, refreshElection } = useElection()
     const navigate = useNavigate()
     const { isPending, error, makeRequest: editElection } = useEditElection(election.election_id)
     const onEditElection = async (election) => {
@@ -19,7 +24,7 @@ const EditElection = ({ authSession, election, fetchElection}) => {
         }
         
         localStorage.removeItem('Election')
-        fetchElection()
+        refreshElection()
         navigate(`/Election/${election.election_id}/admin`)
     }
 

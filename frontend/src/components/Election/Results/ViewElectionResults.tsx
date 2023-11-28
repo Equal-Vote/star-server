@@ -7,8 +7,12 @@ import { Paper, Typography } from "@mui/material";
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { DetailExpanderGroup, scrollToElement } from '../../util';
 import { useGetResults } from '../../../hooks/useAPI';
+import useElection from '../../ElectionContextProvider';
 
-const ViewElectionResults = ({ election }) => {
+const ViewElectionResults = () => {
+    
+    const { election } = useElection()
+    
     const { data, isPending, error, makeRequest: getResults } = useGetResults(election.election_id)
     useEffect(() => { getResults() }, [])
 
