@@ -24,11 +24,9 @@ const LandingPage = () => {
             paddingBottom: '8rem',
         }}>
             <LandingPageHero />
-            <LandingPageFeatureElections electionIds={[
-                '658043c3-27a6-4944-802e-1dfc8825a6dd',
-                'ec8cd5d2-8fbe-45d5-be4a-895c8e6d9ad7',
-                '07269fb8-4ad3-4f0f-8f0c-32c5a70ec45b',
-            ]}/>
+            <LandingPageFeatureElections electionIds={
+                (process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')
+            }/>
             <LandingPageFeatures/>
             <LandingPageSignUpBar />
             {process.env.REACT_APP_FF_ELECTION_TESTIMONIALS === 'true' && <LandingPageTestimonials testimonials={[
