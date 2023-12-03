@@ -34,7 +34,7 @@ export default ({}) => {
                     }}>
                         Voting methods approved by the <a target="_blank" href={'https://www.equal.vote'} style={{ color: 'inherit', textDecoration: 'underline' }}>Equal Vote Coalition</a>
                     </Typography>
-                    {process.env.REACT_APP_FF_TESTIMONIALS && 
+                    {process.env.REACT_APP_FF_ELECTION_TALLY === 'true' && 
                         <Box sx={{
                             display: 'flex',
                             flexDirection: 'column',

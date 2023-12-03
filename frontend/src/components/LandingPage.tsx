@@ -31,7 +31,7 @@ const LandingPage = () => {
             ]}/>
             <LandingPageFeatures/>
             <LandingPageSignUpBar />
-            {process.env.REACT_APP_FF_TESTIMONIALS && <LandingPageTestimonials testimonials={[
+            {process.env.REACT_APP_FF_ELECTION_TESTIMONIALS === 'true' && <LandingPageTestimonials testimonials={[
                 {
                     quote: 'STAR Voting is Awesome!',
                     name: 'John Doe',
