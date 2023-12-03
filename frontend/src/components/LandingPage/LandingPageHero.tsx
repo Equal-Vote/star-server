@@ -34,32 +34,34 @@ export default ({}) => {
                     }}>
                         Voting methods approved by the <a target="_blank" href={'https://www.equal.vote'} style={{ color: 'inherit', textDecoration: 'underline' }}>Equal Vote Coalition</a>
                     </Typography>
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        width: '70%',
-                        marginLeft: '20px',
-                        background: 'var(--brand-gray-2)',
-                        p: { xs: 3, md: 3 },
-                        gap: '40px',
-                    }}>
+                    {process.env.REACT_APP_FF_ELECTION_TALLY === 'true' && 
                         <Box sx={{
                             display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
+                            flexDirection: 'column',
+                            width: '70%',
+                            marginLeft: '20px',
+                            background: 'var(--brand-gray-2)',
+                            p: { xs: 3, md: 3 },
+                            gap: '40px',
                         }}>
-                            <Typography variant='h5' sx={{margin: 0}}>Elections Created</Typography>
-                            <Typography variant='h5' sx={{margin: 0}}>10001</Typography>
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                            }}>
+                                <Typography variant='h5' sx={{margin: 0}}>Elections Created</Typography>
+                                <Typography variant='h5' sx={{margin: 0}}>10001</Typography>
+                            </Box>
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                            }}>
+                                <Typography variant='h5' sx={{margin: 0}}>Votes Cast</Typography>
+                                <Typography variant='h5' sx={{margin: 0}}>10001</Typography>
+                            </Box>
                         </Box>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                        }}>
-                            <Typography variant='h5' sx={{margin: 0}}>Votes Cast</Typography>
-                            <Typography variant='h5' sx={{margin: 0}}>10001</Typography>
-                        </Box>
-                    </Box>
+                    }
                 </Grid>
                 <Grid item xs={12} md={5}>
                     <Box sx={{paddingTop: {xs: 10, md: 0}}}>

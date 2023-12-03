@@ -69,7 +69,7 @@ export default class ElectionsDB {
 
     getElections(id: string, email: string, ctx: ILoggingContext): Promise<Election[] | null> {
         // When I filter in trello it adds "filter=member:arendpetercastelein,overdue:true" to the URL, I'm following the same pattern here
-        Logger.debug(ctx, `${tableName}.getAll ${id} ${email}`);
+        Logger.debug(ctx, `${tableName}.getAll ${id}`);
 
         let querry = this._postgresClient
             .selectFrom(tableName)

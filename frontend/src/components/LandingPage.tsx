@@ -24,14 +24,12 @@ const LandingPage = () => {
             paddingBottom: '8rem',
         }}>
             <LandingPageHero />
-            <LandingPageFeatureElections electionIds={[
-                '52c2b793-bdfe-49e8-b4cf-f448108c39af',
-                'e45e93b1-9e4e-4a87-bb80-e7dbbd6e4721',
-                '5c84e93b-b01c-4ab0-82ee-7181cb7ac995'
-            ]} />
-            <LandingPageFeatures />
+            <LandingPageFeatureElections electionIds={
+                (process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')
+            }/>
+            <LandingPageFeatures/>
             <LandingPageSignUpBar />
-            <LandingPageTestimonials testimonials={[
+            {process.env.REACT_APP_FF_ELECTION_TESTIMONIALS === 'true' && <LandingPageTestimonials testimonials={[
                 {
                     quote: 'STAR Voting is Awesome!',
                     name: 'John Doe',
@@ -47,7 +45,7 @@ const LandingPage = () => {
                     name: 'Equal Vote',
                     url: 'https://yt3.googleusercontent.com/el7OsIUIJVHjHIwsNXgrBVft0Ht3RSfJ3wO94MQivXaa_IK0JMGlHrPIbvt8fYtXvjJfErcdG-Y=s176-c-k-c0x00ffffff-no-rj'
                 },
-            ]} />
+            ]} />}
             <LandingPagePricing options={[
                 {
                     title: 'Free Tier',
