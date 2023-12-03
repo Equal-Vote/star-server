@@ -25,11 +25,11 @@ const LandingPage = () => {
         }}>
             <LandingPageHero />
             <LandingPageFeatureElections electionIds={[
-                '52c2b793-bdfe-49e8-b4cf-f448108c39af',
-                'e45e93b1-9e4e-4a87-bb80-e7dbbd6e4721',
-                '5c84e93b-b01c-4ab0-82ee-7181cb7ac995'
-            ]} />
-            <LandingPageFeatures />
+                '658043c3-27a6-4944-802e-1dfc8825a6dd',
+                'ec8cd5d2-8fbe-45d5-be4a-895c8e6d9ad7',
+                '07269fb8-4ad3-4f0f-8f0c-32c5a70ec45b',
+            ]}/>
+            <LandingPageFeatures/>
             <LandingPageSignUpBar />
             {process.env.REACT_APP_FF_TESTIMONIALS && <LandingPageTestimonials testimonials={[
                 {
