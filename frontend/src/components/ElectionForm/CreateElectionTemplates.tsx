@@ -4,12 +4,14 @@ import { Election } from '../../../../domain_model/Election';
 import { usePostElection } from '../../hooks/useAPI';
 import { DateTime } from 'luxon'
 import { Card, CardActionArea, CardMedia, CardContent, Typography, Box, Grid } from '@mui/material';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 import useAuthSession from '../AuthSessionContextProvider';
 
 const CreateElectionTemplates = () => {
     const authSession = useAuthSession()
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = usePostElection()
+    const [quickPoll, setQuickPoll] = useLocalStorage<Election>('QuickPoll', null)
 
     const defaultElection: Election = {
         title: '',
@@ -39,6 +41,19 @@ const CreateElectionTemplates = () => {
         election.frontend_url = ''
         election.owner_id = authSession.getIdField('sub')
         election.state = 'draft'
+        if (quickPoll) {
+            // If quick poll exists grab the title from it, if quick poll not filled in will just be empty string
+            election.title = quickPoll.title
+            // Grab candidates from quick poll that have a candidate name filled out
+            let candidates = quickPoll.races[0].candidates.filter(candidate => candidate.candidate_name.length > 0)
+            if (candidates.length > 0) {
+                // Set the race to use the same title as the quick poll so it's easy to identify, add candidates 
+                election.races = quickPoll.races
+                election.races[0].title = quickPoll.title
+                election.races[0].candidates = candidates
+            }
+
+        }
 
         const newElection = await postElection(
             {
@@ -47,6 +62,7 @@ const CreateElectionTemplates = () => {
         if ((!newElection)) {
             throw Error("Error submitting election");
         }
+        setQuickPoll(null)
         navigate(`/Election/${newElection.election.election_id}/admin`)
     }
     const cardHeight = 220
@@ -83,7 +99,7 @@ const CreateElectionTemplates = () => {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight  }}>
+                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight }}>
                                 <CardActionArea
                                     onClick={() => onAddElection(election => {
                                         election.settings.voter_access = 'open'
@@ -104,7 +120,7 @@ const CreateElectionTemplates = () => {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight  }}>
+                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight }}>
                                 <CardActionArea
                                     onClick={() => onAddElection(election => {
                                         election.settings.voter_access = 'open'
@@ -125,7 +141,7 @@ const CreateElectionTemplates = () => {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight  }}>
+                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight }}>
                                 <CardActionArea
                                     onClick={() => onAddElection(election => {
                                         election.settings.voter_access = 'registration'
@@ -146,7 +162,7 @@ const CreateElectionTemplates = () => {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight  }}>
+                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight }}>
                                 <CardActionArea
                                     onClick={() => onAddElection(election => {
                                         election.settings.voter_access = 'closed'
@@ -167,7 +183,7 @@ const CreateElectionTemplates = () => {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight  }}>
+                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight }}>
                                 <CardActionArea
                                     onClick={() => onAddElection(election => {
                                         election.settings.voter_access = 'closed'
@@ -188,7 +204,7 @@ const CreateElectionTemplates = () => {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight  }}>
+                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight }}>
                                 <CardActionArea
                                     onClick={() => onAddElection(election => {
                                         election.settings.voter_access = 'closed'
