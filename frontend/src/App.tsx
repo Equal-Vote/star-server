@@ -1,7 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import theme from './theme'
-import { ThemeProvider } from '@mui/material/styles'
+import { ThemeContextProvider } from './theme'
 import Header from './components/Header'
 import Elections from './components/Elections'
 import Login from './components/Login'
@@ -19,7 +18,7 @@ import { AuthSessionContextProvider } from './components/AuthSessionContextProvi
 const App = () => {
   return (
     <Router>
-      <ThemeProvider theme={theme}>
+      <ThemeContextProvider>
         <AuthSessionContextProvider>
           <ConfirmDialogProvider>
             <SnackbarContextProvider>
@@ -45,7 +44,7 @@ const App = () => {
             </SnackbarContextProvider>
           </ConfirmDialogProvider>
         </AuthSessionContextProvider>
-      </ThemeProvider>
+      </ThemeContextProvider>
     </Router>
   );
 }

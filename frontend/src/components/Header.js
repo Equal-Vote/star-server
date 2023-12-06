@@ -13,9 +13,11 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useCookie } from '../hooks/useCookie'
 import { v4 } from 'uuid'
 import useAuthSession from './AuthSessionContextProvider';
+import { useThemeSelector } from '../theme';
 
 const headerTextColor = 'primary.contrastText'
 const Header = () => {
+    const themeSelector = useThemeSelector()
     const authSession = useAuthSession()
     const navigate = useNavigate()
     const [tempID, setTempID] = useCookie('temp_id', v4())
@@ -174,6 +176,14 @@ const Header = () => {
                             >
                                 Logout
                             </MenuItem>
+                            {themeSelector.modes.map(mode => (
+                                <MenuItem
+                                    color='inherit'
+                                    onClick={() => themeSelector.selectColorMode(mode)}
+                                >
+                                    {mode}
+                                </MenuItem>
+                            ))}
                         </Menu>
                     </>}
                     {!authSession.isLoggedIn() &&
