@@ -79,22 +79,16 @@ const Header = () => {
                             About
                         </MenuItem>
                         {authSession.isLoggedIn() &&
-                            <>
-                                <MenuItem
-                                    component={Link}
-                                    href='/CreateElection'>
-                                    New Election
-                                </MenuItem>
-                            </>
+                            <MenuItem
+                                component={Link}
+                                href='/CreateElection'>
+                                New Election
+                            </MenuItem>
                         }
                         <MenuItem
-                            onClick={
-                                () => {
-                                    navigate({ pathname: '/Elections'});
-                                    // navigate({ pathname: '/Elections', search: `?filter=owner_id:${authSession.getIdField('sub')}` });
-                                    window.location.reload();
-                                }
-                            } >
+                            component={Link}
+                            href='/Elections'
+                            target="_blank">
                             Elections
                         </MenuItem>
                         <MenuItem
@@ -131,16 +125,7 @@ const Header = () => {
                             </Typography>
                         </Button>
                     }
-                    <Button
-                        color='inherit'
-                        onClick={
-                            () => {
-                                navigate({ pathname: '/Elections'});
-                                // navigate({ pathname: '/Elections', search: `?filter=owner_id:${authSession.getIdField('sub')}` });
-                                window.location.reload();
-                            }
-                        }
-                    >
+                    <Button color='inherit' href='/Elections' target="_blank">
                         <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                             Elections
                         </Typography>
