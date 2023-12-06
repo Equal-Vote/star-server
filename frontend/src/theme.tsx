@@ -1,5 +1,8 @@
-import { createTheme, responsiveFontSizes  } from '@mui/material/styles'
+import React from 'react'
+import { Theme, createTheme, responsiveFontSizes  } from '@mui/material/styles'
 import { teal, orange } from '@mui/material/colors'
+import { createContext } from 'react';
+import { ThemeProvider } from '@emotion/react';
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -120,4 +123,11 @@ let theme = createTheme({
 
 theme = responsiveFontSizes(theme);
 
-export default theme  
+export const ThemeContextProvider = ({ children }) => {
+
+  return (
+    <ThemeProvider theme={theme}>
+      {children}
+    </ThemeProvider>
+  )
+}
