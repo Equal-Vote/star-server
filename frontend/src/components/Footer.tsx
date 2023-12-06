@@ -4,13 +4,14 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import { Facebook, Instagram, Twitter, GitHub } from "@mui/icons-material";
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
+import { useThemeSelector } from "../theme";
 export default function Footer() {
+  const themeSelector = useThemeSelector()
   return (
     <Box
-      component="footer"
       sx={{
-        backgroundColor: 'var(--brand-gray-1)',
+        backgroundColor: themeSelector.mode === 'darkMode' ? 'brand.gray5' : 'brand.gray1',
         p: 6,
         width: '100%',
         mt: 'auto'

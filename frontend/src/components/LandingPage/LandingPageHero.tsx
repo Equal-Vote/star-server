@@ -4,9 +4,11 @@ import Typography from '@mui/material/Typography'
 import React from 'react'
 import QuickPoll from '../ElectionForm/QuickPoll'
 import useAuthSession from '../AuthSessionContextProvider'
+import { useThemeSelector } from '../../theme'
 
 export default ({}) => {
     const authSession = useAuthSession()
+    const themeSelector = useThemeSelector()
     return (
         <Box sx={{
             maxWidth: '1300px',
@@ -40,7 +42,7 @@ export default ({}) => {
                             flexDirection: 'column',
                             width: '70%',
                             marginLeft: '20px',
-                            background: 'var(--brand-gray-2)',
+                            backgroundColor: themeSelector.mode === 'darkMode' ? 'brand.gray4' : 'brand.gray2',
                             p: { xs: 3, md: 3 },
                             gap: '40px',
                         }}>

@@ -2,12 +2,14 @@ import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
 import { StyledButton } from '../styles';
 import useAuthSession from '../AuthSessionContextProvider';
+import { useThemeSelector } from '../../theme';
 
 export default () => {
     const authSession = useAuthSession()
+    const themeSelector = useThemeSelector()
     return (
     <Box sx={{
-        background: 'var(--brand-gray-1)',
+        background: themeSelector.mode === 'darkMode' ? 'brand.gray5' : 'brand.gray1',
         clip: 'unset',
         width: '100%',
         p: { xs: 2},

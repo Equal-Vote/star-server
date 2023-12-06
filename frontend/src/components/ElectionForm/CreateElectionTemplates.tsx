@@ -6,13 +6,15 @@ import { DateTime } from 'luxon'
 import { Card, CardActionArea, CardMedia, CardContent, Typography, Box, Grid } from '@mui/material';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import useAuthSession from '../AuthSessionContextProvider';
+import { useThemeSelector } from '../../theme';
 
 const CreateElectionTemplates = () => {
     const authSession = useAuthSession()
+    const themeSelector = useThemeSelector()
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = usePostElection()
     const [quickPoll, setQuickPoll] = useLocalStorage<Election>('QuickPoll', null)
-
+    const cardColor = themeSelector.mode === 'darkMode' ? 'brand.gray5' : 'brand.gray1'
     const defaultElection: Election = {
         title: '',
         election_id: '0',
@@ -78,7 +80,7 @@ const CreateElectionTemplates = () => {
                     <Grid container spacing={3} maxWidth={1000}>
                         <Grid item xs={12} sm={6} md={3}>
 
-                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight }}>
+                            <Card sx={{ backgroundColor: cardColor, minHeight: cardHeight }}>
                                 <CardActionArea
                                     onClick={() => onAddElection(election => {
                                         election.settings.voter_access = 'open'
@@ -99,7 +101,7 @@ const CreateElectionTemplates = () => {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight }}>
+                            <Card sx={{ backgroundColor: cardColor, minHeight: cardHeight }}>
                                 <CardActionArea
                                     onClick={() => onAddElection(election => {
                                         election.settings.voter_access = 'open'
@@ -120,7 +122,7 @@ const CreateElectionTemplates = () => {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight }}>
+                            <Card sx={{ backgroundColor: cardColor, minHeight: cardHeight }}>
                                 <CardActionArea
                                     onClick={() => onAddElection(election => {
                                         election.settings.voter_access = 'open'
@@ -141,7 +143,7 @@ const CreateElectionTemplates = () => {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight }}>
+                            <Card sx={{ backgroundColor: cardColor, minHeight: cardHeight }}>
                                 <CardActionArea
                                     onClick={() => onAddElection(election => {
                                         election.settings.voter_access = 'registration'
@@ -162,7 +164,7 @@ const CreateElectionTemplates = () => {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight }}>
+                            <Card sx={{ backgroundColor: cardColor, minHeight: cardHeight }}>
                                 <CardActionArea
                                     onClick={() => onAddElection(election => {
                                         election.settings.voter_access = 'closed'
@@ -183,7 +185,7 @@ const CreateElectionTemplates = () => {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight }}>
+                            <Card sx={{ backgroundColor: cardColor, minHeight: cardHeight }}>
                                 <CardActionArea
                                     onClick={() => onAddElection(election => {
                                         election.settings.voter_access = 'closed'
@@ -204,7 +206,7 @@ const CreateElectionTemplates = () => {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card sx={{ backgroundColor: 'brand.gray1', minHeight: cardHeight }}>
+                            <Card sx={{ backgroundColor: cardColor, minHeight: cardHeight }}>
                                 <CardActionArea
                                     onClick={() => onAddElection(election => {
                                         election.settings.voter_access = 'closed'

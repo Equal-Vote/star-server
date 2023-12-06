@@ -1,11 +1,14 @@
 import { Box, Paper, Typography } from '@mui/material'
 import React from 'react'
+import { useThemeSelector } from '../../theme'
 
 export default ({options}) => {
+    
+    const themeSelector = useThemeSelector()
     return <Box sx={{
         display: 'flex',
         flexDirection: 'column',
-        background: 'var(--brand-gray-1)',
+        backgroundColor: themeSelector.mode === 'darkMode' ? 'brand.gray5' : 'brand.gray1',
         clip: 'unset',
         width: '100%',
         p: { xs: 2},
