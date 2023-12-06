@@ -1,6 +1,55 @@
 import { createTheme, responsiveFontSizes  } from '@mui/material/styles'
 import { teal, orange } from '@mui/material/colors'
 
+declare module '@mui/material/styles' {
+  interface Palette {
+    brand: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    brand?: PaletteOptions['primary'];
+  }
+}
+
+declare module '@mui/material/styles' {
+
+  interface PaletteColor {
+    purple?: string;
+    ltblue?: string;
+    blue?: string;
+    gold?: string;
+    red?: string;
+    orange?: string;
+    green?: string;
+    black?: string;
+    white?: string;
+    gray5?: string;
+    gray4?: string;
+    gray3?: string;
+    gray2?: string;
+    gray1?: string;
+    grayAlpha?: string;
+  }
+
+  interface SimplePaletteColorOptions {
+    purple?: string;
+    ltblue?: string;
+    blue?: string;
+    gold?: string;
+    red?: string;
+    orange?: string;
+    green?: string;
+    black?: string;
+    white?: string;
+    gray5?: string;
+    gray4?: string;
+    gray3?: string;
+    gray2?: string;
+    gray1?: string;
+    grayAlpha?: string;
+  }
+}
+
 let theme = createTheme({
   palette: {
     primary: {
@@ -16,6 +65,7 @@ let theme = createTheme({
       contrastText: '#000',
     },
     brand: {
+      main: '#000000',
       /* https://docs.google.com/presentation/d/1NSAirKzmq4YyUPB56NR3pKiRTn3W9btwnUtHi_zteeU/edit#slide=id.g827b1a2992_5_86*/
       purple: '#4D2586',
       ltblue: '#2AA2B3',
@@ -63,9 +113,9 @@ let theme = createTheme({
       marginBottom: '1rem',
     }
   },
-  button: {
-    textTransform: 'lowercase'
-  }
+  // button: {
+  //   textTransform: 'lowercase'
+  // }
 })
 
 theme = responsiveFontSizes(theme);
