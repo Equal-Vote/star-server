@@ -232,9 +232,13 @@ code {
   border-radius: 50%;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
-  cursor: pointer;
   text-align: center;
   justify-content: center;
+}
+
+/* :enabled doesn't work, but :not(:disabled) does */
+.circle.unblurred{
+  cursor: pointer;
 }
 
 .circle.filled,
@@ -242,8 +246,8 @@ code {
   background-color: black;
 }
 
-.circle:hover,
-.oval:hover {
+.circle.unblurred:hover,
+.oval.unblurred:hover {
   background-color: var(--ballot-bubble-hover-ltblue);
   transition: background-color 200ms;
 }
