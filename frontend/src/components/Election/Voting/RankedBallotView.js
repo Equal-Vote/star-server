@@ -1,6 +1,7 @@
-import React from "react";
-import DynamicBallotView from "./GenericBallotView.js";
+import React, { useContext } from "react";
 import Typography from '@mui/material/Typography';
+import { BallotContext } from "./VotePage";
+import GenericBallotView from "./GenericBallotView.js";
 
 function scoresAreOverVote({scores}){
   let uniqueScores = new Set();
@@ -13,22 +14,19 @@ function scoresAreOverVote({scores}){
 }
 
 // Renders a complete RCV ballot for a single race
-export default function RankedBallotView({
-  race,
-  candidates,
-  onUpdate
-}) {
+export default function RankedBallotView() {
+  const ballotContext = useContext(BallotContext);
   const instructions = (
     <>
       <Typography align='left' component="li">
         Rank the candidates in order of preference.
       </Typography>
-      { race.voting_method === 'RankedRobin' &&
+      { ballotContext.race.voting_method === 'RankedRobin' &&
         <Typography align='left' component="li">
           Equal ranks are allowed
         </Typography>
       }
-      { race.voting_method === 'IRV' &&
+      { ballotContext.race.voting_method === 'IRV' &&
         <Typography align='left' component="li">
           Equal ranks are not recommended, since they risk your vote being exhausted early
         </Typography>
@@ -41,14 +39,14 @@ export default function RankedBallotView({
 
   const footer = (
     <>
-    { race.voting_method === 'RankedRobin' &&
+    { ballotContext.race.voting_method === 'RankedRobin' &&
       <Typography align='left' component="li">
         Candidates are compared in 1-on-1 match-ups.<br/>
         A candidates wins a match-up if they are ranked
         higher than the opponent by more voters <br/>
       </Typography>
     }
-    { race.voting_method == 'IRV' &&
+    { ballotContext.race.voting_method == 'IRV' &&
     <>
       <Typography align='left' component="li">
         The winner is selected after a series of elimination rounds.
@@ -76,17 +74,15 @@ export default function RankedBallotView({
   //}
 
   return (
-    <DynamicBallotView
+    <GenericBallotView
       key="rankedBallot"
-      race={race}
-      candidates={candidates}
       columns={['1st', '2nd', '3rd', '4th', '5th']}
       columnValues={[1, 2, 3, 4, 5]}
       instructions={instructions}
       onClick={(i, j) => {
-        const newScores = candidates.map(c => c.score);
+        const newScores = ballotContext.candidates.map(c => c.score);
         newScores[i] = newScores[i] === j ? null : j;
-        onUpdate(newScores);
+        ballotContext.onUpdate(newScores);
       }}
       headingPrefix="Rank Candidates:"
       footer={footer}
