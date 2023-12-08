@@ -32,7 +32,7 @@ const CreateElectionTemplates = () => {
             public_results: true,
             time_zone: DateTime.now().zone.name,
             random_candidate_order: true,
-            require_instruction_confirmation: false,
+            require_instruction_confirmation: true,
         }
     }
 
