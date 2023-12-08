@@ -13,6 +13,8 @@ import Button from "@mui/material/Button";
 import { usePostBallot } from "../../../hooks/useAPI";
 import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecordOutlined';
 import useElection from "../../ElectionContextProvider";
+import { Candidate } from "../../../../../domain_model/Candidate";
+import { Race } from "../../../../../domain_model/Race";
 
 // I'm using the icon codes instead of an import because there was padding I couldn't get rid of
 // https://stackoverflow.com/questions/65721218/remove-material-ui-icon-margin
@@ -21,7 +23,15 @@ const CHECKED_BOX = "M 19 3 H 5 c -1.11 0 -2 0.9 -2 2 v 14 c 0 1.1 0.89 2 2 2 h 
 //const UNCHECKED_BOX = "M 19 5 v 14 H 5 V 5 h 14 m 0 -2 H 5 c -1.1 0 -2 0.9 -2 2 v 14 c 0 1.1 0.9 2 2 2 h 14 c 1.1 0 2 -0.9 2 -2 V 5 c 0 -1.1 -0.9 -2 -2 -2 Z"
 const DOT_ICON = "M12 6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6 2.69-6 6-6m0-2c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8z"
 
-export const BallotContext = createContext({})
+export interface IBallotContext {
+    instructionsRead: Boolean,
+    setInstructionsRead: Function,
+    candidates: Candidate[],
+    race: Race,
+    onUpdate: Function
+}
+
+export const BallotContext = createContext<IBallotContext>(null);
 
 function shuffle(array) {
   // From: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
