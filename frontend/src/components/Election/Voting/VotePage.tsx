@@ -45,29 +45,11 @@ const VotePage = () => {
     let pages = election.races.map((race, i) => {
       let candidates = race.candidates.map(c=> ({...c, score: null}))
       return {
-        type: "ballot",
         candidates: election.settings.random_candidate_order ? shuffle(candidates) : candidates,
         voting_method : race.voting_method,
         race_index: i
-    }
-  })
-
-    // determine where to add info pages
-    // commented out for now in case we want to return to this
-    // for(var i = 0; i < pages.length; i++){
-    //   if(pages[i].type != "ballot") continue;
-
-    //   // check if page is the first race with the voting method
-    //   var info_exists = pages.some((p) => p.type == 'info' && p.voting_method == pages[i].voting_method);
-    //   if(info_exists) continue;
-      
-    //   // add info page for method
-    //   pages.splice(i, 0, {
-    //     type: "info",
-    //     voting_method: pages[i].voting_method
-    //   })
-    // }
-
+      }
+    })
     return pages
   }
   const { id } = useParams();
@@ -82,7 +64,7 @@ const VotePage = () => {
     setPages(newPages)
   }
   const submit = async () => {
-    var candidateScores = pages.filter((p) => p.type == "ballot").map((p) => p.candidates)
+    var candidateScores = pages.map((p) => p.candidates)
     // create arrays of candidate IDs for each race. Ballots will be sorted into this order
     const candidateIDs = election.races.map(race => race.candidates.map(candidate => candidate.candidate_id))
 
@@ -134,8 +116,7 @@ const VotePage = () => {
                   <StepLabel>
                     {/*TODO: I can probably do this in css using the :selected property*/}
                     <SvgIcon style={{color: (n === currentPage)? 'var(--brand-black)' : 'var(--ballot-race-icon-teal)'}}>
-                      {page.type == 'info' && <path d={INFO_ICON}/>}
-                      {page.type == 'ballot' && (page.candidates.some((c) => ( c.score > 0 ))? <path d={CHECKED_BOX}/> : <path d={DOT_ICON}/> )}
+                      {page.candidates.some((c) => ( c.score > 0 ))? <path d={CHECKED_BOX}/> : <path d={DOT_ICON}/> }
                     </SvgIcon>
                   </StepLabel> 
                 </Step>
