@@ -25,16 +25,13 @@ export default function StarBallotView() {
         Give your favorite(s) five stars.
       </Typography>
       <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
-        Give your last choice(s) zero stars.
+        Give your last choice(s) zero stars or leave blank.
       </Typography>
       <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
-      Score other candidates as desired.
+        Score other candidates as desired.
       </Typography>
       <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
         Equal scores indicate no preference.
-      </Typography>
-      <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
-        Those left blank receive zero stars.
       </Typography>
     </>
   )
