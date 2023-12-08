@@ -25,10 +25,10 @@ const DOT_ICON = "M12 6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6 2.69-6 6-6m0-2c
 
 export interface IBallotContext {
     instructionsRead: Boolean,
-    setInstructionsRead: Function,
+    setInstructionsRead: () => void,
     candidates: Candidate[],
     race: Race,
-    onUpdate: Function
+    onUpdate: () => void
 }
 
 export const BallotContext = createContext<IBallotContext>(null);
