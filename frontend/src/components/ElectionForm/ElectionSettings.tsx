@@ -141,7 +141,6 @@ export default function ElectionSettings() {
                                     Set greetings and instructions for your email invitations.
                                 </FormHelperText>
                                 <FormControlLabel
-                                    disabled={true}
                                     control={
                                         <Checkbox
                                             id="require-instructions-confirmations"
