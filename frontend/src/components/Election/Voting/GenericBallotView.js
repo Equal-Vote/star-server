@@ -23,31 +23,29 @@ function HasExpandedData(candidate) {
 }
 
 // Represents a single score of a single candidate
-const Choice = ({ enabled, divKey, score, filled, onClick }) => {
-  return <div
+const Choice = ({ enabled, divKey, score, filled, onClick }) =>
+  <div
     key={divKey}
     className={`circle ${filled ? "filled" : ""} ${enabled? 'unblurred' : ''}`}
     onClick={onClick}
   >
     <p> {score} </p>
   </div>
-};
 
 // Represents the set of possible scores for a single candidate
-const Choices = ({ enabled, rowIndex, onClick, score, columns }) =>{
-  return columns.map((columnValue, n) => (
-      <Grid item xs={1} align='center'>
-        <Choice
-          key={`starChoice${rowIndex}-${n}`}
-          divKey={`starDiv${rowIndex}-${n}`}
-          score={columns.length == 1 ? ' ' : columnValue}
-          filled={columnValue === score}
-          enabled={enabled}
-          onClick={() => onClick(columnValue)}
-        />
-      </Grid>
-    ));
-  };
+const Choices = ({ enabled, rowIndex, onClick, score, columns }) =>
+  columns.map((columnValue, n) => (
+    <Grid item xs={1} align='center'>
+      <Choice
+        key={`starChoice${rowIndex}-${n}`}
+        divKey={`starDiv${rowIndex}-${n}`}
+        score={columns.length == 1 ? ' ' : columnValue}
+        filled={columnValue === score}
+        enabled={enabled}
+        onClick={() => onClick(columnValue)}
+      />
+    </Grid>
+  ));
 
 // Represents the row of all data for a single candidate
 const Row = ({ enabled, rowIndex, candidate, onClick, columns }) => {
