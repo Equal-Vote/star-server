@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { createContext, useState } from "react"
 import BallotPageSelector from "./BallotPageSelector";
 import Grid from "@mui/material/Grid";
 import { useParams } from "react-router";
@@ -20,6 +20,8 @@ const INFO_ICON = "M 11 7 h 2 v 2 h -2 Z m 0 4 h 2 v 6 h -2 Z m 1 -9 C 6.48 2 2 
 const CHECKED_BOX = "M 19 3 H 5 c -1.11 0 -2 0.9 -2 2 v 14 c 0 1.1 0.89 2 2 2 h 14 c 1.11 0 2 -0.9 2 -2 V 5 c 0 -1.1 -0.89 -2 -2 -2 Z m -9 14 l -5 -5 l 1.41 -1.41 L 10 14.17 l 7.59 -7.59 L 19 8 l -9 9 Z"
 //const UNCHECKED_BOX = "M 19 5 v 14 H 5 V 5 h 14 m 0 -2 H 5 c -1.1 0 -2 0.9 -2 2 v 14 c 0 1.1 0.9 2 2 2 h 14 c 1.1 0 2 -0.9 2 -2 V 5 c 0 -1.1 -0.9 -2 -2 -2 Z"
 const DOT_ICON = "M12 6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6 2.69-6 6-6m0-2c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8z"
+
+export const BallotContext = createContext({})
 
 function shuffle(array) {
   // From: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
@@ -45,6 +47,7 @@ const VotePage = () => {
     let pages = election.races.map((race, i) => {
       let candidates = race.candidates.map(c=> ({...c, score: null}))
       return {
+        instructionsRead: false,
         candidates: election.settings.random_candidate_order ? shuffle(candidates) : candidates,
         voting_method : race.voting_method,
         race_index: i
@@ -52,10 +55,18 @@ const VotePage = () => {
     })
     return pages
   }
+
   const { id } = useParams();
   const [pages, setPages] = useState(makePages())
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(0)
+
+  const setInstructionsRead = () => {
+    pages[currentPage].instructionsRead = true;
+    // shallow copy to trigger a refresh
+    setPages([...pages])
+  }
+
   const { data, isPending, error, makeRequest: postBallot } = usePostBallot(election.election_id)
   const onUpdate = (pageIndex, newRaceScores) => {
     var newPages = [...pages]
@@ -90,13 +101,19 @@ const VotePage = () => {
     }
     navigate(`/Election/${id}/thanks`)
   }        
+
   return (
     <Container disableGutters={true} maxWidth="sm">
-      <BallotPageSelector
-        page={pages[currentPage]}
-        races={election.races}
-        onUpdate={newRankings => { onUpdate(currentPage, newRankings) }}
-      />
+      <BallotContext.Provider value={{
+        instructionsRead: pages[currentPage].instructionsRead,
+        setInstructionsRead: setInstructionsRead,
+        candidates: pages[currentPage].candidates,
+        race: election.races[currentPage],
+        onUpdate: newRankings => { onUpdate(currentPage, newRankings) }
+      }}>
+        <BallotPageSelector votingMethod={pages[currentPage].voting_method} />
+      </BallotContext.Provider>
+
       {pages.length > 1 &&
         <Box sx={{ display: 'flex', justifyContent: "space-between" }}>
           <Button

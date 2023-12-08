@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import GenericBallotView from "./GenericBallotView.js";
 import Typography from '@mui/material/Typography';
+import { BallotContext } from "./VotePage";
 
 function scoresAreUnderVote({scores}){
   let five_selected = false
@@ -15,11 +16,9 @@ function scoresAreUnderVote({scores}){
 }
 
 // Renders a complete RCV ballot for a single race
-export default function StarBallotView({
-  race,
-  candidates,
-  onUpdate
-}) {
+export default function StarBallotView() {
+  const ballotContext = useContext(BallotContext);
+
   const instructions = (
     <>
       <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
@@ -41,14 +40,14 @@ export default function StarBallotView({
   )
   const footer = (
     <>
-    {race.num_winners == 1 &&
+    {ballotContext.race.num_winners == 1 &&
       <Typography align='center' component="p">
         The two highest scoring candidates are finalists.<br/>Your full vote goes to the finalist you prefer.
       </Typography>
     }
-    {race.num_winners > 1 && 
+    {ballotContext.race.num_winners > 1 && 
       <Typography align='center' component="p">
-        {`This election uses STAR Voting and will elect ${race.num_winners} winners. In STAR Voting the two highest scoring candidates are finalists and the finalist preferred by more voters wins.`}
+        {`This election uses STAR Voting and will elect ${ballotContext.race.num_winners} winners. In STAR Voting the two highest scoring candidates are finalists and the finalist preferred by more voters wins.`}
       </Typography>
     }
     </>
@@ -67,16 +66,14 @@ export default function StarBallotView({
   return (
     <GenericBallotView
       key="starBallot"
-      race={race}
-      candidates={candidates}
       columns={[0, 1, 2, 3, 4, 5]}
       instructions={instructions}
       leftTitle='Worst'
       rightTitle='Best'
       onClick={(i, j) => {
-        const newScores = candidates.map(c => c.score);
+        const newScores = ballotContext.candidates.map(c => c.score);
         newScores[i] = newScores[i] === j ? null : j;
-        onUpdate(newScores);
+        ballotContext.onUpdate(newScores);
       }}
       footer={footer}
       starHeadings={true}

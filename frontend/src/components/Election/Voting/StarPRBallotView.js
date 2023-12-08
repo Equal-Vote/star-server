@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import GenericBallotView from "./GenericBallotView.js";
 import Typography from '@mui/material/Typography';
+import { BallotContext } from "./VotePage";
 
 function scoresAreUnderVote({ scores }) {
   let five_selected = false
@@ -20,6 +21,7 @@ export default function StarPRBallotView({
   candidates,
   onUpdate
 }) {
+  const ballotContext = useContext(BallotContext);
   const instructions = (
     <>
       <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
@@ -58,16 +60,14 @@ export default function StarPRBallotView({
   return (
     <GenericBallotView
       key="starBallot"
-      race={race}
-      candidates={candidates}
       columns={[0, 1, 2, 3, 4, 5]}
       instructions={instructions}
       leftTitle='Worst'
       rightTitle='Best'
       onClick={(i, j) => {
-        const newScores = candidates.map(c => c.score);
+        const newScores = ballotContext.candidates.map(c => c.score);
         newScores[i] = newScores[i] === j ? null : j;
-        onUpdate(newScores);
+        ballotContext.onUpdate(newScores);
       }}
       footer={footer}
       starHeadings={true}

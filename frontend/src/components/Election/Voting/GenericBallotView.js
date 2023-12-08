@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import Grid from "@mui/material/Grid";
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
@@ -10,6 +10,7 @@ import {FaRegStar} from 'react-icons/fa';
 import { Checkbox, FormControlLabel, FormGroup, Link } from "@mui/material";
 import Box from '@mui/material/Box';
 import useSnackbar from "../../SnackbarContext";
+import { BallotContext } from "./VotePage";
 
 function HasExpandedData(candidate) {
   if (candidate.full_name) return true
@@ -214,8 +215,6 @@ const ScoreColumnHeadings = ({starHeadings, columns}) =>
   ));
 
 export default function GenericBallotView({
-  race,
-  candidates,
   onClick,
   columns,
   instructions,
@@ -231,8 +230,9 @@ export default function GenericBallotView({
     columnValues = columns
   }
 
-  let [isRead, setRead] = useState(false);
   const {snack, setSnack} = useSnackbar();
+
+  const ballotContext = useContext(BallotContext);
 
   return (
       <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }} className="ballot">
@@ -240,13 +240,13 @@ export default function GenericBallotView({
 
           <Grid item sx={{ p: 3 }}>
             <Typography align='center' variant="h5" component="h4" fontWeight={'bold'}>
-              {race.title}
+              {ballotContext.race.title}
             </Typography>
           </Grid>
-          {race.description && 
+          {ballotContext.race.description && 
             <Grid item sx={{ pb: 5, px: 3 }}>
             <Typography align='center' component="p" style={{whiteSpace: 'pre-line'}}>
-              {race.description}
+              {ballotContext.race.description}
             </Typography>
           </Grid>}
 
@@ -257,15 +257,19 @@ export default function GenericBallotView({
               <FormControlLabel
                 sx={{pb:5, pl:4, pt: 1}}
                 control={
-                  <Checkbox disabled={isRead} checked={isRead} onChange={() => setRead(r => !r)}/>
+                  <Checkbox
+                    disabled={ballotContext.instructionsRead}
+                    checked={ballotContext.instructionsRead}
+                    onChange={() => ballotContext.setInstructionsRead()}
+                  />
                 }
                 label="I have read the instructions"
               />
             </FormGroup>
           </Grid>
 
-          <Box sx={{width: '100%', filter: isRead? '' : 'blur(.4rem)'}} onClick={() => {
-            if(isRead) return;
+          <Box sx={{width: '100%', filter: ballotContext.instructionsRead? '' : 'blur(.4rem)'}} onClick={() => {
+            if(ballotContext.instructionsRead) return;
             setSnack({
               message: 'Must read instructions first',
               severity: 'info',
@@ -281,7 +285,7 @@ export default function GenericBallotView({
               headingPrefix={headingPrefix}
             />
             <Divider className="rowDivider"/>
-            <Rows candidates={candidates} enabled={isRead} onClick={onClick} columns={columnValues}/>
+            <Rows candidates={ballotContext.candidates} enabled={ballotContext.instructionsRead} onClick={onClick} columns={columnValues}/>
           </Box>
 
           <Grid item xs={10} sx={{ p:5, px:0 }} className="footer">
