@@ -225,8 +225,8 @@ code {
 .circle {
   display: inline-flex;
   flex-direction:column;
-  height: 1.9em;
-  width: 1.9em;
+  width: calc(6*.32em);
+  height: calc(5*.32em);
   font-size: .8em;
   border: 2px solid var(--ballot-bubble-border-gray);
   border-radius: 50%;
