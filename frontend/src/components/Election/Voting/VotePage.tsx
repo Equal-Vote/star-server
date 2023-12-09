@@ -24,11 +24,11 @@ const CHECKED_BOX = "M 19 3 H 5 c -1.11 0 -2 0.9 -2 2 v 14 c 0 1.1 0.89 2 2 2 h 
 const DOT_ICON = "M12 6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6 2.69-6 6-6m0-2c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8z"
 
 export interface IBallotContext {
-    instructionsRead: Boolean,
-    setInstructionsRead: () => void,
-    candidates: Candidate[],
-    race: Race,
-    onUpdate: () => void
+  instructionsRead: Boolean,
+  setInstructionsRead: () => void,
+  candidates: Candidate[],
+  race: Race,
+  onUpdate: (any) => void
 }
 
 export const BallotContext = createContext<IBallotContext>(null);
@@ -50,14 +50,13 @@ function shuffle(array) {
 }
 
 const VotePage = () => {
-  
   const { election } = useElection()
   const makePages = () => {
     // generate ballot pages
     let pages = election.races.map((race, i) => {
       let candidates = race.candidates.map(c=> ({...c, score: null}))
       return {
-        instructionsRead: false,
+        instructionsRead: election.settings.require_instruction_confirmation? false : true, // I could just do !require_... , but this is more clear
         candidates: election.settings.random_candidate_order ? shuffle(candidates) : candidates,
         voting_method : race.voting_method,
         race_index: i
@@ -119,7 +118,7 @@ const VotePage = () => {
         setInstructionsRead: setInstructionsRead,
         candidates: pages[currentPage].candidates,
         race: election.races[currentPage],
-        onUpdate: newRankings => { onUpdate(currentPage, newRankings) }
+        onUpdate: newRankings => onUpdate(currentPage, newRankings),
       }}>
         <BallotPageSelector votingMethod={pages[currentPage].voting_method} />
       </BallotContext.Provider>

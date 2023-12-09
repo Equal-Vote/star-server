@@ -11,6 +11,8 @@ import { Checkbox, FormControlLabel, FormGroup, Link } from "@mui/material";
 import Box from '@mui/material/Box';
 import useSnackbar from "../../SnackbarContext";
 import { BallotContext } from "./VotePage";
+import Elections from "../../Elections";
+import useElection from "../../ElectionContextProvider";
 
 function HasExpandedData(candidate) {
   if (candidate.full_name) return true
@@ -230,6 +232,8 @@ export default function GenericBallotView({
 
   const {snack, setSnack} = useSnackbar();
 
+  const { election } = useElection();
+
   const ballotContext = useContext(BallotContext);
 
   return (
@@ -250,7 +254,7 @@ export default function GenericBallotView({
 
           <Grid item xs={8} sx={{ pb:1, px:0 }} className="instructions">
             {instructions}
-
+            { election.settings.require_instruction_confirmation &&
             <FormGroup>
               <FormControlLabel
                 sx={{pb:5, pl:4, pt: 1}}
@@ -264,6 +268,7 @@ export default function GenericBallotView({
                 label="I have read the instructions"
               />
             </FormGroup>
+            }
           </Grid>
 
           <Box sx={{width: '100%', filter: ballotContext.instructionsRead? '' : 'blur(.4rem)'}} onClick={() => {
