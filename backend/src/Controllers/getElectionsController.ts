@@ -34,9 +34,8 @@ const getElections = async (req: IElectionRequest, res: Response, next: NextFunc
     if (email !== '') {
         let myRolls = await ElectionRollModel.getByEmail(email, req)
         let election_ids = myRolls?.map(election => election.election_id)
-        if (election_ids) {
+        if (election_ids && election_ids.length > 0) {
             elections_as_voter = await ElectionsModel.getElectionByIDs(election_ids,req)
-            console.log(elections_as_voter)
         }
     }
 
