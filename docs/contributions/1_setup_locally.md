@@ -13,8 +13,8 @@ Follow these guidelines for setting up star.vote locally on your system. This is
 
 Some of these contribution workflows – like fixing bugs in the codebase – need you to run star.vote locally on your computer.
 
-> **What's the difference between star.vote and star-vote.herokuapp.com ?**<br>
-> The current star.vote is an old implementation with a separate codebase. star-vote.herokuapp.com is a work in progress, and will eventually become the new star.vote. When I mention star.vote in the guide I'm referring to the new star.vote
+> **What's the difference between star.vote and dev.star.vote ?**<br>
+> The current star.vote is an old implementation with a separate codebase. dev.star.vote is a work in progress, and will eventually become the new star.vote. When I mention star.vote in the guide I'm referring to the new star.vote
 
 ## Prepare your local machine
 
@@ -148,7 +148,7 @@ npm install
 npm start
 ```
 
-To run the web client run the following commands. If you want to just run the web client without setting up the server you can change the proxy under frontend/package.json to "proxy": "https://star-vote-staging.herokuapp.com/". 
+To run the web client run the following commands. If you want to just run the web client without setting up the server you can change the proxy under frontend/package.json to "proxy": "dev.star.vote". 
 ```
 # terminal 2
 cd frontend
@@ -216,7 +216,7 @@ If you want to login, follow these steps to retrieve the ``KEYCLOAK_SECRET`` val
 1. Navigate to Clients > star_vote_web > credentials
 1. Copy the secret and paste it to your .env file (DONT HIT "Regenerate Secret", this will invalidate the previous secret and break login for everyone)
 
-![](images/keycloak_secret.png)
+![](../images/keycloak_secret.png)
 
 </details>
 
