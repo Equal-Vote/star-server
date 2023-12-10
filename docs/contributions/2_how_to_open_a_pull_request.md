@@ -1,7 +1,8 @@
 ---
 layout: default
-title: How to open a pull request
-nav_order: 3000
+title: 📤 Opening a Pull Request
+nav_order: 2
+parent: Contribution Guide
 ---
 
 # How to open a Pull Request (PR)

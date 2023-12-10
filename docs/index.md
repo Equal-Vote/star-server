@@ -1,18 +1,11 @@
 ---
 layout: default
-title: STAR.VOTE contribution guide
-nav_order: 1
+title: Star Elections Documentation
+nav_order: 0
 ---
 
-# STAR.VOTE contribution guide
+# STAR.VOTE Documentation
 
-We're developing a 2.0 version for the STAR.vote website. Visit https://star-vote.herokuapp.com/ to see the latest build
+Welcome to our documentation!
 
-If you new here and want to make a contribution, head over to [Set up star.vote locally](setup_locally.html) to get started!
-
----
-## Volunteer List: Name | Slack 
-Mike Franze | @Mike Franze
-Arend Peter Castelein | @Arend Peter
-Evans Tucker | @evans
-Simeon Cekov | @Simeon Cekov
+So far we've only got the contribution documentation fleshed out, but there's more coming soon
