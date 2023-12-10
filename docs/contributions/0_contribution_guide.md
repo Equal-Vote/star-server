@@ -13,4 +13,4 @@ Start by joining our community [here](https://starvoting.us/join). Once you fill
 
 You can also view our calendar [here](https://www.starvoting.org/calendar) and join our weekly software meetings. 
  
-Once you're ready to start contributing you can go to [the next step](contributions/setup_locally.html) for building your local setup
+Once you're ready to start contributing you can go to [the next step](contributions/1_local_setup.html) for building your local setup
