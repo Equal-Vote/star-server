@@ -1,7 +1,9 @@
 ---
 layout: default
-title: Configure Keycloak
-nav_order: 3000
+title: 🔑 Configure Keycloak
+nav_order: 2
+parent: Infrastructure
+grand_parent: Contribution Guide
 ---
 
 # Keycloak Configuration Guide

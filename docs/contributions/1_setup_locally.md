@@ -1,7 +1,8 @@
 ---
 layout: default
-title: Set up star.vote locally
-nav_order: 2000
+title: 📤🌱First time Local Setup
+nav_order: 1
+parent: Contribution Guide
 ---
 
 # Set up star.vote locally

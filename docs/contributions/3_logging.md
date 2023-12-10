@@ -2,7 +2,10 @@
 layout: default
 title: logging
 nav_order: 6000
+parent: Contribution Guide
 ---
+
+> ⚠️ This article is outdated, and needs to be rewritten for azure
 
 # External Logging Service
 
