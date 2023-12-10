@@ -2,7 +2,7 @@
 layout: default
 title: 💎️ Azure Onboarding
 nav_order: 1
-parent: Infrastructure
+parent: ☁️ Infrastructure
 grand_parent: Contribution Guide
 ---
 
@@ -32,6 +32,7 @@ Executed by You
 1. Login using the new email (should be ...@starvoting.onmicrosoft.com ), and the temp password
 1. You'll be prompted to reset your password
 1. You'll also be prompted to get the Microsoft Authenticator app and link it with a QR code
+1. Make sure to select "work or school" when logging into the app
 1. Congrats! You're in 🎉
 
 ## Assign Subscription Permissions
@@ -54,7 +55,6 @@ Executed by Buddy
 1. Select User > Assigned Roles
 1. Add "User Administrator" for creating users
 1. (Optional) If they'll need to create other user admins users you can assign "Global Administrator" instead
-
 
 ## (Optional) GitHub Write Access
 
