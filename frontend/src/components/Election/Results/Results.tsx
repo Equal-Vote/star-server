@@ -16,6 +16,13 @@ import ApprovalResultSummaryWidget from "./Approval/ApprovalResultSummaryWidget"
 import { Race } from "../../../../../domain_model/Race";
 import { ElectionResults, allocatedScoreResults, approvalResults, irvResults, pluralityResults, rankedRobinResults, starResults } from "../../../../../domain_model/ITabulators";
 
+declare namespace Intl {
+  class ListFormat {
+    constructor(locales?: string | string[], options?: {});
+    public format: (items: string[]) => string;
+  }
+}
+
 const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
 function STARResultViewer({ results, rounds }: {results: starResults, rounds: number }) {
@@ -30,7 +37,7 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
       <DetailExpander title='Details'>
         <DetailExpanderGroup defaultSelectedIndex={-1}>
           <STARResultTableWidget title="Election Results" results={results} rounds={rounds}/>
-          <STARResultDetailedStepsWidget results={results} rounds={rounds}/>
+          <STARResultDetailedStepsWidget title='Detailed Steps' results={results} rounds={rounds}/>
           <div title="How STAR Voting works" style={{maxWidth: '100%'}}>
             <img style={{display: 'block', width: '100%', maxWidth: '400px', margin: '0 auto 0 auto'}} src="/images/star_info_vertical.png"/>
             <hr/>
@@ -240,15 +247,15 @@ function ApprovalResultsViewer({ results }: {results: approvalResults}) {
   );
 }
 
-function SummaryViewer({ votingMethod, results }:{votingMethod: string, results:ElectionResults}) {
+function SummaryViewer({ votingMethod, results }:{votingMethod: string, results:irvResults|pluralityResults|rankedRobinResults}) {
   return (
     <>
       <h2>Summary</h2>
       <p>{`Voting Method: ${votingMethod}`}</p>
-      <p>{`${results.results.elected.length > 1 ? 'Winners' : 'Winner'}: ${results.results.elected.map(c => c.name).join(', ')}`}</p>
-      {results.results.tied?.length > 0 &&
-        <p>{`Tied: ${results.results.tied.map(c => c.name).join(', ')}`}</p>}
-      <p>{`Number of voters: ${results.results.summaryData.nValidVotes}`}</p>
+      <p>{`${results.elected.length > 1 ? 'Winners' : 'Winner'}: ${results.elected.map(c => c.name).join(', ')}`}</p>
+      {results.tied?.length > 0 &&
+        <p>{`Tied: ${results.tied.map(c => c.name).join(', ')}`}</p>}
+      <p>{`Number of voters: ${results.summaryData.nValidVotes}`}</p>
     </>
   );
 }
@@ -330,20 +337,20 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
 
           {result.votingMethod === "RankedRobin" &&
             <>
-              <SummaryViewer votingMethod='Ranked Robin' results={result} />
+              <SummaryViewer votingMethod='Ranked Robin' results={result.results} />
               <RankedRobinViewer results={result.results} />
             </>}
 
           {result.votingMethod === "Plurality" &&
             <>
-              <SummaryViewer votingMethod='Plurality' results={result} />
+              <SummaryViewer votingMethod='Plurality' results={result.results} />
               <PluralityResultsViewer results={result.results} />
             </>}
 
 
           {result.votingMethod === "IRV" &&
             <>
-              <SummaryViewer votingMethod='Ranked Choice Voting' results={result} />
+              <SummaryViewer votingMethod='Ranked Choice Voting' results={result.results} />
               <IRVResultsViewer results={result.results} />
             </>}
         </>}
