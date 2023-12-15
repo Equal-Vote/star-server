@@ -10,9 +10,11 @@ import Box from '@mui/material/Box';
 import { Checkbox, FormGroup, FormControlLabel } from '@mui/material';
 import { usePostRolls } from "../../../hooks/useAPI";
 import useElection from "../../ElectionContextProvider";
+import useSnackbar from "../../SnackbarContext";
 
 
 const AddElectionRoll = ({ onClose }) => {
+    const { snack, setSnack } = useSnackbar()
     const { election } = useElection()
     const [voterIDList, setVoterIDList] = useState('')
     const postRoll = usePostRolls(election.election_id)
@@ -26,7 +28,6 @@ const AddElectionRoll = ({ onClose }) => {
     const submitRolls = async (rolls) => {
 
         const newRolls = await postRoll.makeRequest({ electionRoll: rolls })
-        console.log(rolls)
         if (!newRolls) {
             throw Error("Error submitting rolls");
         }
@@ -42,8 +43,14 @@ const AddElectionRoll = ({ onClose }) => {
             rows.forEach((row) => {
                 const csvSplit = row.split(',')
                 if (csvSplit.length !== expectedCounts) {
-                    alert(`Incorrect number of columns: ${row}`)
-                    return
+                    let err = `Incorrect number of columns: ${row}`
+                    setSnack({
+                        message: err,
+                        severity: "error",
+                        open: true,
+                        autoHideDuration: null
+                    })
+                    throw err;
                 }
                 let count = 0
                 let roll = {
@@ -66,7 +73,6 @@ const AddElectionRoll = ({ onClose }) => {
                 }       
                 rolls.push(roll)
             })
-            console.log(rolls)
             submitRolls(rolls)
         } catch (error) {
             console.log(error)
@@ -111,7 +117,7 @@ const AddElectionRoll = ({ onClose }) => {
                     </Typography>
 
                     <Typography align='center' component="p">
-                        Enter your voter roll data in the field below. Check which fields you will be entering and enter one voter per line with fields seperated by commas, without spaces, in the order checked.
+                        Enter your voter roll data in the field below.<br/>(1 voter per row, no spaces)
                     </Typography>
 
                     <Grid item sx={{ p: 1 }}>
@@ -155,6 +161,25 @@ const AddElectionRoll = ({ onClose }) => {
                             id="email-list"
                             name="email-list"
                             label="Voter Data"
+                            required
+                            rows={3}
+                            placeholder={
+                                (enableVoterID || enableEmail || enablePrecinct ? 
+                                    //https://stackoverflow.com/questions/5501581/why-does-the-map-method-apparently-not-work-on-arrays-created-via-new-arrayc
+                                    new Array(2).fill(undefined).map((_, i) => {
+                                        let a = [];
+                                        if(enableVoterID) a.push(`id${i+1}`)
+                                        if(enableEmail) a.push(`email${i+1}`)
+                                        if(enablePrecinct) a.push(`precinct${i+1}`)
+                                        return a.join(',');
+                                    }).join("\n")+"\netc"
+                                :
+                                    '(pick at least one field)'
+                                )
+                            }
+                            InputLabelProps={{
+                                shrink: true
+                            }}
                             multiline
                             fullWidth
                             type="text"
