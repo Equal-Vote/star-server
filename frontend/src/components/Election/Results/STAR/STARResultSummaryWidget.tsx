@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, ResponsiveContainer, Legend} from 'recharts';
 import { Paper, Typography } from '@mui/material';
+import { starResults } from '../../../../../../domain_model/ITabulators';
 
 // NOTE: I tried using brand.gold here, but it didn't work
 const COLORS = [
@@ -22,7 +23,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
     );
 };
 
-const STARResultSummaryWidget = ({ results, roundIndex }) => {
+const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults, roundIndex: number }) => {
     const prevWinners = results.roundResults
         .filter((_, i) => i < roundIndex)
         .map(round => round.winners)
