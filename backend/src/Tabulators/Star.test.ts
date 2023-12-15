@@ -1,5 +1,5 @@
 import { Star, runStarRound } from './Star'
-import { summaryData } from './ITabulators'
+import { summaryData } from './../../../domain_model/ITabulators'
 
 describe("STAR Tests", () => {
     test("Condorcet Winner", () => {

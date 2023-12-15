@@ -1,4 +1,4 @@
-import { ballot, candidate, fiveStarCount, results, roundResults, summaryData, totalScore } from "./../../../domain_model/ITabulators";
+import { ballot, candidate, fiveStarCount, starResults, roundResults, summaryData, totalScore } from "./../../../domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
 const ParseData = require("./ParseData");
@@ -31,7 +31,7 @@ export function Star(candidates: string[], votes: ballot[], nWinners = 1, random
   const summaryData = getSummaryData(candidates, parsedData,randomTiebreakOrder)
 
   // Initialize output data structure
-  const results: results = {
+  const results: starResults = {
     elected: [],
     tied: [],
     other: [],

@@ -93,7 +93,7 @@ export interface roundResults {
     logs: string[],
 }
 
-export interface results {
+export interface starResults {
     elected: candidate[],
     tied: candidate[],
     other: candidate[],
@@ -139,3 +139,25 @@ export interface irvResults {
     exhaustedVoteCounts: number[],
     overVoteCounts: number[]
 }
+
+export type ElectionResults = {
+    votingMethod: 'STAR',
+    results: starResults,
+} | {
+    votingMethod: 'STAR_PR',
+    results: allocatedScoreResults
+} | {
+    votingMethod: 'Approval',
+    results: approvalResults
+} | {
+    votingMethod: 'RankedRobin',
+    results: rankedRobinResults
+} | {
+    votingMethod: 'IRV',
+    results: irvResults
+} | {
+    votingMethod: 'Plurality',
+    results: pluralityResults
+}
+
+
