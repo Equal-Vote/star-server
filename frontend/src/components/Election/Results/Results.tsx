@@ -34,7 +34,7 @@ function STARResultViewer({ raceIndex, results, rounds }) {
             <hr/>
             {/*https://faq.dailymotion.com/hc/en-us/articles/360022841393-How-to-preserve-the-player-aspect-ratio-on-a-responsive-page#:~:text=In%20the%20HTML%2C%20put%20the,56.25%25%20%3D%2016%3A9.*/}
             <div style={{position: 'relative', paddingBottom: "56.25%"}}>
-              <iframe style={{position: 'absolute', width: '100%', height: '100%'}} src="https://www.youtube.com/embed/3-mOeUXAkV0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              <iframe style={{position: 'absolute', width: '100%', height: '100%'}} src="https://www.youtube.com/embed/3-mOeUXAkV0" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
             </div>
           </div>
         </DetailExpanderGroup>
@@ -230,7 +230,7 @@ function ApprovalResultsViewer({ raceIndex, results, rounds }) {
       <ApprovalResultSummaryWidget results={results}/>
       <DetailExpander title='How Approval Voting works'>
         <div style={{position: 'relative', paddingBottom: "56.25%"}}>
-          <iframe style={{position: 'absolute', left: 0, width: '100%', height: '100%'}} src="https://www.youtube.com/embed/db6Syys2fmE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <iframe style={{position: 'absolute', left: 0, width: '100%', height: '100%'}} src="https://www.youtube.com/embed/db6Syys2fmE" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
         </div>
       </DetailExpander>
     </div>
