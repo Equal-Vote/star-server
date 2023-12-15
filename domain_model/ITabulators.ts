@@ -24,8 +24,11 @@ export interface fiveStarCount {
 }
 
 type scoreHist = number[][]
+
 type rankHist = number[][]
+
 type preferenceMatrix = number[][]
+
 type pairwiseMatrix = number[][]
 
 interface genericSummaryData {
@@ -35,7 +38,6 @@ interface genericSummaryData {
     nInvalidVotes: number,
     nUnderVotes: number,
     nBulletVotes?: number
-
 }
 
 export interface starSummaryData extends genericSummaryData {
@@ -44,22 +46,24 @@ export interface starSummaryData extends genericSummaryData {
     pairwiseMatrix: pairwiseMatrix,
 }
 
-export interface allocatedScoreSummaryData extends starSummaryData{
+export interface allocatedScoreSummaryData extends starSummaryData {
     splitPoints: number[],
-    spentAboves: number[], 
+    spentAboves: number[],
     weight_on_splits: number[],
     weightedScoresByRound: number[][]
 }
-export interface approvalSummaryData extends genericSummaryData {}
-export interface pluralitySummaryData extends genericSummaryData {
-}
+export interface approvalSummaryData extends genericSummaryData { }
+
+export interface pluralitySummaryData extends genericSummaryData { }
 
 export interface rankedRobinSummaryData extends genericSummaryData {
     rankHist: rankHist,
     preferenceMatrix: preferenceMatrix,
     pairwiseMatrix: pairwiseMatrix,
 }
-export interface irvSummaryData extends rankedRobinSummaryData {}
+
+export interface irvSummaryData extends rankedRobinSummaryData { }
+
 export interface roundResults {
     winners: candidate[],
     runner_up: candidate[],
@@ -77,6 +81,7 @@ interface genericResults {
 export interface starResults extends genericResults {
     summaryData: starSummaryData,
 }
+
 export interface allocatedScoreResults extends Omit<genericResults, 'tied'> {
     tied: candidate[][],
     summaryData: allocatedScoreSummaryData,
@@ -85,12 +90,15 @@ export interface allocatedScoreResults extends Omit<genericResults, 'tied'> {
 export interface approvalResults extends genericResults {
     summaryData: approvalSummaryData,
 }
+
 export interface pluralityResults extends genericResults {
     summaryData: pluralitySummaryData,
 }
+
 export interface rankedRobinResults extends genericResults {
     summaryData: rankedRobinSummaryData,
 }
+
 export interface irvResults extends Omit<genericResults, 'roundResults'> {
     summaryData: rankedRobinSummaryData,
     logs: string[],
