@@ -1,4 +1,4 @@
-import { ballot, candidate, fiveStarCount, allocatedScoreResults, allocatedScoreSummaryData, summaryData, totalScore } from "./../../../domain_model/ITabulators";
+import { ballot, candidate, fiveStarCount, allocatedScoreResults, allocatedScoreSummaryData, totalScore } from "./../../../domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
 import Fraction from 'fraction.js'

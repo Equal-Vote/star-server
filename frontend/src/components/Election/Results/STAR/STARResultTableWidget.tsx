@@ -1,6 +1,6 @@
 import React, { useState }  from 'react'
 import { TableContainer} from "@mui/material";
-import { roundResults, starResults, summaryData } from '../../../../../../domain_model/ITabulators';
+import { roundResults, starResults, starSummaryData } from '../../../../../../domain_model/ITabulators';
 
 type candidateTableEntry = {
   name: string,
@@ -8,7 +8,7 @@ type candidateTableEntry = {
   index: number,
 }
 
-function RoundViewer({ summaryData, candidate, round }: {summaryData: summaryData, candidate: candidateTableEntry, round: roundResults }) {
+function RoundViewer({ summaryData, candidate, round }: {summaryData: starSummaryData, candidate: candidateTableEntry, round: roundResults }) {
   const winnerIndex = round.winners[0].index
   const runnerUpIndex = round.runner_up[0].index
   const totalRunoffVotes = summaryData.nValidVotes

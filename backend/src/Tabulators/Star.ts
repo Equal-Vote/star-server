@@ -1,4 +1,4 @@
-import { ballot, candidate, fiveStarCount, starResults, roundResults, summaryData, totalScore } from "./../../../domain_model/ITabulators";
+import { ballot, candidate, fiveStarCount, starResults, roundResults, starSummaryData, totalScore } from "./../../../domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
 const ParseData = require("./ParseData");
@@ -66,7 +66,7 @@ export function Star(candidates: string[], votes: ballot[], nWinners = 1, random
   return results
 }
 
-function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: number[]): summaryData {
+function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: number[]): starSummaryData {
   const nCandidates = candidates.length
   if (randomTiebreakOrder.length < nCandidates) {
     randomTiebreakOrder = candidates.map((c,index) => index)
@@ -140,7 +140,7 @@ function getSummaryData(candidates: string[], parsedData: IparsedData, randomTie
   }
 }
 
-function sortData(summaryData: summaryData, order: candidate[]): summaryData {
+function sortData(summaryData: starSummaryData, order: candidate[]): starSummaryData {
   // sorts summary data to be in specified order
   const indexOrder = order.map(c => c.index)
   const candidates = indexOrder.map(ind => (summaryData.candidates[ind]))
@@ -164,7 +164,7 @@ function sortData(summaryData: summaryData, order: candidate[]): summaryData {
   }
 }
 
-export function runStarRound(summaryData: summaryData, remainingCandidates: candidate[], breakTiesRandomly = true, enablefiveStarTiebreaker = true) {
+export function runStarRound(summaryData: starSummaryData, remainingCandidates: candidate[], breakTiesRandomly = true, enablefiveStarTiebreaker = true) {
   // Initialize output results data structure
   const roundResults: roundResults = {
     winners: [],
@@ -331,7 +331,7 @@ export function runStarRound(summaryData: summaryData, remainingCandidates: cand
   return roundResults
 }
 
-function getScoreWinners(summaryData: summaryData, eligibleCandidates: candidate[]) {
+function getScoreWinners(summaryData: starSummaryData, eligibleCandidates: candidate[]) {
   // Searches for candidate(s) with highest score
 
   // Sort candidate total scores 
@@ -355,7 +355,7 @@ function getScoreWinners(summaryData: summaryData, eligibleCandidates: candidate
 }
 
 
-function runRunoffTiebreaker(summaryData: summaryData, runoffCandidates: candidate[]) {
+function runRunoffTiebreaker(summaryData: starSummaryData, runoffCandidates: candidate[]) {
   // Search for candidate with highest score between two runoff candidates
   if (summaryData.totalScores[runoffCandidates[0].index].score > summaryData.totalScores[runoffCandidates[1].index].score) {
     return 0
@@ -386,7 +386,7 @@ function sortMatrix(matrix: number[][], order: number[]) {
   return newMatrix
 }
 
-function fiveStarTiebreaker(summaryData: summaryData, candidates: candidate[], nCandidatesNeeded: number) {
+function fiveStarTiebreaker(summaryData: starSummaryData, candidates: candidate[], nCandidatesNeeded: number) {
   // Search for candidates with most five-star votes
   let maxFiveStarVotes = 0
   let fiveStarWinners: candidate[] = []
@@ -403,7 +403,7 @@ function fiveStarTiebreaker(summaryData: summaryData, candidates: candidate[], n
   return fiveStarWinners
 }
 
-function getFiveStarCounts(summaryData: summaryData, tiedCandidates: candidate[]) {
+function getFiveStarCounts(summaryData: starSummaryData, tiedCandidates: candidate[]) {
   // Returns five star counts of tied candidates, sorted from most to least
   const fiveStarCounts: fiveStarCount[] = []
   tiedCandidates.forEach((candidate) => {
@@ -424,7 +424,7 @@ function getFiveStarLosers(fiveStarCounts: fiveStarCount[]) {
   return fiveStarLosers.map(fiveStarLoser => fiveStarLoser.candidate)
 }
 
-function getHeadToHeadLosers(summaryData: summaryData, tiedCandidates: candidate[]) {
+function getHeadToHeadLosers(summaryData: starSummaryData, tiedCandidates: candidate[]) {
   // Search for candidates with most head to head losses
   let headToHeadLosers: candidate[] = []
   let maxLosses: number = 0
