@@ -15,7 +15,6 @@ export interface IElectionContext {
     refreshElection: Function;
     updateElection: Function;
     permissions: string[];
-    voterLimit: number;
 }
 
 
@@ -25,7 +24,6 @@ export const ElectionContext = createContext<IElectionContext>({
     refreshElection: () => false,
     updateElection: () => false,
     permissions: [],
-    voterLimit: 0
 }
 )
 
@@ -53,7 +51,6 @@ export const ElectionContextProvider = ({ id, children }) => {
             refreshElection: fetchData,
             updateElection: applyElectionUpdate,
             permissions: data?.voterAuth?.permissions,
-            voterLimit: sharedConfig.ELECTION_VOTER_LIMIT_OVERRIDES[id] ?? sharedConfig.FREE_TIER_PRIVATE_VOTER_LIMIT
         }}>
         {data && children}
     </ElectionContext.Provider>

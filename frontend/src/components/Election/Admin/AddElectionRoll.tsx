@@ -11,10 +11,11 @@ import { Checkbox, FormGroup, FormControlLabel } from '@mui/material';
 import { usePostRolls } from "../../../hooks/useAPI";
 import useElection from "../../ElectionContextProvider";
 import useSnackbar from "../../SnackbarContext";
+import { sharedConfig } from '@shared/SharedConfig';
 
 const AddElectionRoll = ({ onClose }) => {
     const { snack, setSnack } = useSnackbar()
-    const { election, voterLimit } = useElection()
+    const { election } = useElection()
     const [voterIDList, setVoterIDList] = useState('')
     const postRoll = usePostRolls(election.election_id)
     const [file, setFile] = useState()
@@ -119,9 +120,15 @@ const AddElectionRoll = ({ onClose }) => {
                         Enter your voter roll data in the field below.<br/>(1 voter per row, no spaces)
                     </Typography>
 
-                    <Typography align='center' component="p">
-                        * Free tier elections are limited to {voterLimit} voters
-                    </Typography>
+                    { election.settings.voter_access == 'closed' && 
+                        <Typography align='center' component="p">
+                        { election.election_id in sharedConfig.ELECTION_VOTER_LIMIT_OVERRIDES?
+                            `* Your election is approved for ${sharedConfig.ELECTION_VOTER_LIMIT_OVERRIDES[election.election_id]} voters`
+                        :
+                            `* Free tier elections are limited to {sharedConfig.FREE_TIER_PRIVATE_VOTER_LIMIT} voters`
+                        }
+                        </Typography>
+                    }
 
                     <Grid item sx={{ p: 1 }}>
                         <FormGroup row>
