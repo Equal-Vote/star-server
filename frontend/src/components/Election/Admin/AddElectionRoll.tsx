@@ -125,7 +125,7 @@ const AddElectionRoll = ({ onClose }) => {
                         { election.election_id in sharedConfig.ELECTION_VOTER_LIMIT_OVERRIDES?
                             `* Your election is approved for ${sharedConfig.ELECTION_VOTER_LIMIT_OVERRIDES[election.election_id]} voters`
                         :
-                            `* Free tier elections are limited to {sharedConfig.FREE_TIER_PRIVATE_VOTER_LIMIT} voters`
+                            `* Free tier elections are limited to ${sharedConfig.FREE_TIER_PRIVATE_VOTER_LIMIT} voters, email us at elections@equal.vote for an override`
                         }
                         </Typography>
                     }
