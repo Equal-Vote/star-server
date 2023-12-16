@@ -16,8 +16,8 @@ import { CardActionArea } from "@mui/material";
 import Typography from '@mui/material/Typography';
 import { StyledButton } from '../styles';
 import SummaryPage from "./SummaryPage";
-import { Election } from "./../../../../domain_model/Election";
-import { Candidate } from "../../../../domain_model/Candidate";
+import { Election } from "@domain_model/Election";
+import { Candidate } from "@domain_model/Candidate";
 
 
 type Pages = 'ElectionDetails' | 'RaceDetails' | 'Open?' | 'Limit?' | 'VoterList?' | 'Emails?' | 'Invitations?' | 'Login?' | 'Register?' | 'CustomRegister?' |
