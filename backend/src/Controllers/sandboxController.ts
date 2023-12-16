@@ -23,7 +23,9 @@ const getSandboxResults = async (req: Request, res: Response, next: NextFunction
 
     res.json(
         {
-            results: results
+            results: results,
+            nWinners: num_winners,
+            candidates: candidateNames,
         }
     );
 }

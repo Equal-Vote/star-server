@@ -4,6 +4,7 @@ import { ElectionRoll } from "../../../domain_model/ElectionRoll";
 import useFetch from "./useFetch";
 import { Ballot } from "../../../domain_model/Ballot";
 import { ElectionResults } from "../../../domain_model/ITabulators";
+import { VotingMethod } from "../../../domain_model/Race";
 
 export const useGetElection = (electionID: string | undefined) => {
     return useFetch<undefined, { election: Election, voterAuth: VoterAuth }>(`/API/Election/${electionID}`, 'get')
@@ -96,4 +97,11 @@ export const usePostBallot = (election_id: string | undefined) => {
     return useFetch<{ ballot: Ballot }, {ballot: Ballot}>(`/API/Election/${election_id}/vote`, 'post')
 }
 
-
+export const useGetSandboxResults = () => {
+    return useFetch<{
+        cvr: number[][],
+        candidates: string[],
+        num_winners: number,
+        votingMethod: VotingMethod}, { results: ElectionResults, nWinners: number, candidates: string[]}>
+        (`/API/Sandbox`, 'post')
+}
