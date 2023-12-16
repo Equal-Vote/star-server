@@ -7,6 +7,7 @@ import { Card, CardActionArea, CardMedia, CardContent, Typography, Box, Grid } f
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import useAuthSession from '../AuthSessionContextProvider';
 import { useThemeSelector } from '../../theme';
+import { sharedConfig } from '@shared/SharedConfig';
 
 const CreateElectionTemplates = () => {
     const authSession = useAuthSession()
@@ -79,7 +80,6 @@ const CreateElectionTemplates = () => {
                     margin={10}>
                     <Grid container spacing={3} maxWidth={1000}>
                         <Grid item xs={12} sm={6} md={3}>
-
                             <Card sx={{ backgroundColor: cardColor, minHeight: cardHeight }}>
                                 <CardActionArea
                                     onClick={() => onAddElection(election => {
@@ -145,6 +145,7 @@ const CreateElectionTemplates = () => {
                         <Grid item xs={12} sm={6} md={3}>
                             <Card sx={{ backgroundColor: cardColor, minHeight: cardHeight }}>
                                 <CardActionArea
+                                    disabled={!sharedConfig.ACCOUNT_CUSTOM_REGISTRATION_OVERRIDES.includes(authSession.getIdField('sub'))}
                                     onClick={() => onAddElection(election => {
                                         election.settings.voter_access = 'registration'
                                         election.settings.voter_authentication.voter_id = false
@@ -154,7 +155,7 @@ const CreateElectionTemplates = () => {
                                     })}>
                                     <CardContent>
                                         <Typography gutterBottom variant="h6">
-                                            Open Access With Custom Registration
+                                            Open Access With Custom Registration *
                                         </Typography>
                                         <Typography variant="body2" color="text.secondary">
                                             Voters must register and be approved by election admins
@@ -175,7 +176,7 @@ const CreateElectionTemplates = () => {
                                     })}>
                                     <CardContent>
                                         <Typography gutterBottom variant="h6">
-                                            Closed voter list with unique email invites
+                                            Closed voter list with unique email invites **
                                         </Typography>
                                         <Typography variant="body2" color="text.secondary">
                                             Voters receive unique email invitations, no log in required
@@ -196,7 +197,7 @@ const CreateElectionTemplates = () => {
                                     })}>
                                     <CardContent>
                                         <Typography gutterBottom variant="h6">
-                                            Closed voter list with login required
+                                            Closed voter list with login required **
                                         </Typography>
                                         <Typography variant="body2" color="text.secondary">
                                             Voters receive email invitations but must create star.vote account in order to vote
@@ -217,7 +218,7 @@ const CreateElectionTemplates = () => {
                                     })}>
                                     <CardContent>
                                         <Typography gutterBottom variant="h6">
-                                            Closed voter id list with voter-IDs
+                                            Closed voter id list with voter-IDs **
                                         </Typography>
                                         <Typography variant="body2" color="text.secondary">
                                             Election provide list of valid voter IDs and distribute them to voters
@@ -225,6 +226,11 @@ const CreateElectionTemplates = () => {
                                     </CardContent>
                                 </CardActionArea>
                             </Card>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography component="p">* = Accounts must be approved fist to create elections with custom registration</Typography>
+                            <Typography component="p">** = Free Tier elections are limited to {sharedConfig.FREE_TIER_PRIVATE_VOTER_LIMIT} voters</Typography>
+                            <Typography component="p">Email us at elections@equal.vote to be upgraded</Typography>
                         </Grid>
                     </Grid>
                 </Box>
