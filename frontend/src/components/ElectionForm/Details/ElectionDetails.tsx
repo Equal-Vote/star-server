@@ -8,7 +8,7 @@ import { StyledButton } from '../../styles';
 import { Input } from '@mui/material';
 import { DateTime } from 'luxon'
 import { timeZones } from './TimeZones'
-import { Election } from '../../../../../domain_model/Election';
+import { Election } from '@domain_model/Election';
 
 
 type Props = {
