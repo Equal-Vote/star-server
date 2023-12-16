@@ -32,11 +32,12 @@
     "recharts": "^2.6.2",
     "typescript": "^3.9.10",
     "uuid": "^9.0.1",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^1.1.2",
+    "rewire": "^7.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "node ./start.js",
+    "build": "node ./build.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

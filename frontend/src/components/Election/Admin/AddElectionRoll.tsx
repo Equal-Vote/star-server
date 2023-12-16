@@ -12,10 +12,9 @@ import { usePostRolls } from "../../../hooks/useAPI";
 import useElection from "../../ElectionContextProvider";
 import useSnackbar from "../../SnackbarContext";
 
-
 const AddElectionRoll = ({ onClose }) => {
     const { snack, setSnack } = useSnackbar()
-    const { election } = useElection()
+    const { election, voterLimit } = useElection()
     const [voterIDList, setVoterIDList] = useState('')
     const postRoll = usePostRolls(election.election_id)
     const [file, setFile] = useState()
@@ -118,6 +117,10 @@ const AddElectionRoll = ({ onClose }) => {
 
                     <Typography align='center' component="p">
                         Enter your voter roll data in the field below.<br/>(1 voter per row, no spaces)
+                    </Typography>
+
+                    <Typography align='center' component="p">
+                        * Free tier elections are limited to {voterLimit} voters
                     </Typography>
 
                     <Grid item sx={{ p: 1 }}>

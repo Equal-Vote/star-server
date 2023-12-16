@@ -5,6 +5,8 @@ import { useEditElection, useGetElection } from '../hooks/useAPI';
 import { Election as IElection } from '@domain_model/Election';
 import { VoterAuth } from '@domain_model/VoterAuth';
 import structuredClone from '@ungap/structured-clone';
+import { sharedConfig } from '@shared/SharedConfig';
+import { Share } from '@mui/icons-material';
 
 
 export interface IElectionContext {
@@ -13,6 +15,7 @@ export interface IElectionContext {
     refreshElection: Function;
     updateElection: Function;
     permissions: string[];
+    voterLimit: number;
 }
 
 
@@ -21,7 +24,8 @@ export const ElectionContext = createContext<IElectionContext>({
     voterAuth: null,
     refreshElection: () => false,
     updateElection: () => false,
-    permissions: []
+    permissions: [],
+    voterLimit: 0
 }
 )
 
@@ -48,7 +52,8 @@ export const ElectionContextProvider = ({ id, children }) => {
             voterAuth: data?.voterAuth,
             refreshElection: fetchData,
             updateElection: applyElectionUpdate,
-            permissions: data?.voterAuth?.permissions
+            permissions: data?.voterAuth?.permissions,
+            voterLimit: sharedConfig.ELECTION_VOTER_LIMIT_OVERRIDES[id] ?? sharedConfig.FREE_TIER_PRIVATE_VOTER_LIMIT
         }}>
         {data && children}
     </ElectionContext.Provider>
