@@ -21,9 +21,10 @@
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "@domain_model/*": ["../domain_model/*"]
+      "@domain_model/*": ["../domain_model/*"],
+      "@shared/*": ["../shared/*"]
     }
   },
   
-  "include": ["@domain_model/**/*", "./src/**/*"],
+  "include": ["@shared/**/*", "@domain_model/**/*", "./src/**/*"],
 }
