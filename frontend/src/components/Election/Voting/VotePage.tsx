@@ -5,16 +5,16 @@ import { useParams } from "react-router";
 import React from 'react'
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import { useNavigate } from "react-router";
-import { Ballot } from "../../../../../domain_model/Ballot";
-import { Vote } from "../../../../../domain_model/Vote";
-import { Score } from "../../../../../domain_model/Score";
+import { Ballot } from "@domain_model/Ballot";
+import { Vote } from "@domain_model/Vote";
+import { Score } from "@domain_model/Score";
 import { Box, Container, Step, StepLabel, Stepper, SvgIcon } from "@mui/material";
 import Button from "@mui/material/Button";
 import { usePostBallot } from "../../../hooks/useAPI";
 import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecordOutlined';
 import useElection from "../../ElectionContextProvider";
-import { Candidate } from "../../../../../domain_model/Candidate";
-import { Race } from "../../../../../domain_model/Race";
+import { Candidate } from "@domain_model/Candidate";
+import { Race } from "@domain_model/Race";
 
 // I'm using the icon codes instead of an import because there was padding I couldn't get rid of
 // https://stackoverflow.com/questions/65721218/remove-material-ui-icon-margin

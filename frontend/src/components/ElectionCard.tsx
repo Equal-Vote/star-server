@@ -1,7 +1,7 @@
 import Button from "./Button"
 import { Link } from "react-router-dom"
 import React from 'react'
-import { Election } from "../../../domain_model/Election"
+import { Election } from "@domain_model/Election"
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';

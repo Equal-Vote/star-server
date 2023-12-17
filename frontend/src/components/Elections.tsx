@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Election } from "../../../domain_model/Election"
+import { Election } from "@domain_model/Election"
 import Typography from '@mui/material/Typography';
 import { Box, Container } from "@mui/material"
 import Button from "@mui/material/Button";

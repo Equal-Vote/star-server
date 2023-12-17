@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback } from 'react'
-import { Candidate } from "../../../../../domain_model/Candidate"
+import { Candidate } from "@domain_model/Candidate"
 import React from 'react'
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
