@@ -1,4 +1,4 @@
-import { ballot, candidate, rankedRobinResults, rankedRobinSummaryData, results, roundResults, summaryData, totalScore } from "./ITabulators";
+import { ballot, candidate, rankedRobinResults, rankedRobinSummaryData, roundResults, totalScore } from "./../../../domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
 import { sortByTieBreakOrder } from "./Star";
@@ -242,24 +242,6 @@ function getWinners(summaryData: rankedRobinSummaryData, eligibleCandidates: can
     }
   }
   return winners
-}
-
-function runScoreTiebreaker(summaryData: summaryData, scoreWinners: candidate[]) {
-  // Search for weak condorcet winner between tied candidates
-  // Iterates through each candidate, if candidate does not lose to any other tied candidate, mark as winner
-  const condorcetWinners: candidate[] = [];
-  scoreWinners.forEach(a => {
-    let isWinner = true
-    scoreWinners.forEach(b => {
-      if (summaryData.pairwiseMatrix[b.index][a.index] === 1) {
-        isWinner = false
-      }
-    })
-    if (isWinner) condorcetWinners.push(a)
-  })
-  if (condorcetWinners.length === 1) return condorcetWinners
-  else if (condorcetWinners.length === 0) return scoreWinners
-  else return condorcetWinners
 }
 
 function sortMatrix(matrix: number[][], order: number[]) {

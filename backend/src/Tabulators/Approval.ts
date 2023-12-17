@@ -1,4 +1,4 @@
-import { approvalResults, approvalSummaryData, ballot, candidate, totalScore } from "./ITabulators";
+import { approvalResults, approvalSummaryData, ballot, candidate, totalScore } from "./../../../domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
 const ParseData = require("./ParseData");

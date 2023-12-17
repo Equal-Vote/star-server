@@ -33,7 +33,7 @@ const ViewElectionResults = () => {
                 {isPending && <div> Loading Election... </div>}
 
                 <DetailExpanderGroup defaultSelectedIndex={-1}>
-                    {data?.Results.map((result, race_index) => (
+                    {data?.results.map((result, race_index) => (
                         <Results 
                             title={`Race ${race_index+1}: ${election.races[race_index].title}`}
                             raceIndex={race_index}

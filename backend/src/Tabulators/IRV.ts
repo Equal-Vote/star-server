@@ -1,4 +1,4 @@
-import { ballot, candidate, irvResults, irvSummaryData, totalScore } from "./ITabulators";
+import { ballot, candidate, irvResults, irvSummaryData, totalScore } from "./../../../domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
 const ParseData = require("./ParseData");

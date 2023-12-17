@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, ResponsiveContainer, Legend} from 'recharts';
 import { Paper, Typography } from '@mui/material';
+import { approvalResults } from '../../../../../../domain_model/ITabulators';
 
 const COLORS = [
     'var(--ltbrand-blue)',
@@ -8,7 +9,7 @@ const COLORS = [
     'var(--ltbrand-lime)',
 ];
 
-export default ({ results }) => {
+export default ({ results }: {results: approvalResults}) => {
     const histData = results.summaryData.totalScores
         .map((candidate, i) => ({
                 name: results.summaryData.candidates[candidate.index].name,

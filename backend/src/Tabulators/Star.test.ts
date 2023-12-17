@@ -1,5 +1,5 @@
 import { Star, runStarRound } from './Star'
-import { summaryData } from './ITabulators'
+import { starSummaryData } from './../../../domain_model/ITabulators'
 
 describe("STAR Tests", () => {
     test("Condorcet Winner", () => {
@@ -147,7 +147,7 @@ function buildTestSummaryData(candidates: string[], scores: number[], pairwiseMa
         nInvalidVotes: 0,
         nUnderVotes: 0,
         nBulletVotes: 0
-    } as summaryData
+    } as starSummaryData
 }
 
 describe("STAR Score Round Tests", () => {

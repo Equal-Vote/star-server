@@ -155,11 +155,13 @@ const Sandbox = () => {
                     {data && (
                         <Results
                             title=''
-                            raceIndex='0'
-                            result={data.Results}
+                            raceIndex={0}
+                            result={data.results}
                             race={{
-                                candidates: candidates.split(',').map((candidate) => [{ candidate_name: candidate }]),
-                                voting_method: data.voting_method,
+                                race_id: '',
+                                title: '',
+                                candidates: candidates.split(',').map((candidate,index) =>  { return { candidate_id: index.toString(), candidate_name: candidate }}),
+                                voting_method: data.results.voting_method,
                                 num_winners: nWinners,
                             }}
                         />)}
