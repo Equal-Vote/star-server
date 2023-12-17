@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Results from './Election/Results/Results';
-import { Grid, Typography } from "@mui/material";
+import { FormHelperText, Grid, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -148,11 +148,11 @@ const Sandbox = () => {
                     helperText="Comma seperated scores, one ballot per line, optional 'x:' in front of ballot to indicate x number of that ballot"
                     onChange={(e) => setCvr(e.target.value)}
                 />
+                <FormHelperText error>
+                    {errorText}
+                </FormHelperText>
             </Grid>
             <Button variant='outlined' onClick={() => getResults()} > Get Results </Button>
-                <Typography variant='h3'>
-                    {errorText}
-                </Typography>
             <Grid item xs={12}>
                 <Box border={2} sx={{ mt: 5, width: '100%', p: 2 }}>
                     {/* {isPending && <div> Loading Results... </div>} */}
