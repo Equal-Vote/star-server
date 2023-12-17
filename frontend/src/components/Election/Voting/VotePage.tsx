@@ -187,7 +187,7 @@ const VotePage = () => {
         open={isOpen}
         fullWidth
       >
-        <DialogTitle>Submit</DialogTitle>
+        <DialogTitle>Submit Ballot?</DialogTitle>
         <DialogContent>
           <DialogContentText>
 
