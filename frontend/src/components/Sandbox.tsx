@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import { Box, InputLabel } from "@mui/material";
 import { useGetSandboxResults } from '../hooks/useAPI';
-import { VotingMethod } from '../../../domain_model/Race';
+import { VotingMethod } from '@domain_model/Race';
 
 const Sandbox = () => {
 
