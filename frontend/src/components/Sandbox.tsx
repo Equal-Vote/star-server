@@ -23,7 +23,7 @@ const Sandbox = () => {
     const getResults = async () => {
         const cvrRows = cvr.split("\n")
         const cvrSplit = [];
-        const parsedCandidates = candidates.split(",").filter(d=> (d !== ' ' && d !== ''))
+        const parsedCandidates = candidates.split(",").filter(d => (d !== ' ' && d !== ''))
         const nCandidates = parsedCandidates.length
 
         if (nCandidates < nWinners) {
@@ -35,7 +35,7 @@ const Sandbox = () => {
             const data = row.split(':')
             if (data.length == 2) {
                 const nBallots = parseInt(data[0]);
-                const vote = data[1].split(/[\s,]+/).filter(d=> d !== ' ').map((score) => parseInt(score)).filter(d => !isNaN(d))
+                const vote = data[1].split(/[\s,]+/).filter(d => d !== ' ').map((score) => parseInt(score)).filter(d => !isNaN(d))
                 console.log(vote)
                 if (vote.length !== nCandidates) {
                     setErrorText('Each ballot must have the same length as the number of candidates')
@@ -44,7 +44,7 @@ const Sandbox = () => {
                 }
                 cvrSplit.push(...Array(nBallots).fill(vote))
             } else {
-                const vote = data[0].split(/[\s,]+/).filter(d=> d !== ' ').map((score) => parseInt(score)).filter(d => !isNaN(d))
+                const vote = data[0].split(/[\s,]+/).filter(d => d !== ' ').map((score) => parseInt(score)).filter(d => !isNaN(d))
                 console.log(vote)
                 if (vote.length !== nCandidates) {
                     setErrorText('Each ballot must have the same length as the number of candidates')
@@ -65,47 +65,45 @@ const Sandbox = () => {
 
     }
 
-    useEffect( () => {
+    useEffect(() => {
         getResults()
     }, [nWinners, cvr, votingMethod, candidates])
 
     return (
         //Using grid to force results into the center and fill screen on smaller screens.
         //Using theme settings and css can probably replace the grids
-        <Grid container spacing={0}>
+        <Grid container spacing={0} sx={{ p: 3 }}>
             <Grid item xs={12}>
-                <Box sx={{ minWidth: 120 }}>
-                    <FormControl fullWidth>
-                        <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                            Voting Method
-                        </InputLabel>
-                        <Select
-                            name="Voting Method"
-                            label="Voting Method"
-                            value={votingMethod}
-                            onChange={(e) => setVotingMethod(e.target.value as VotingMethod)}
-                        >
-                            <MenuItem key="STAR" value="STAR">
-                                STAR
-                            </MenuItem>
-                            <MenuItem key="STAR_PR" value="STAR_PR">
-                                STAR-PR
-                            </MenuItem>
-                            <MenuItem key="RankedRobin" value="RankedRobin">
-                                Ranked Robin
-                            </MenuItem>
-                            <MenuItem key="Approval" value="Approval">
-                                Approval
-                            </MenuItem>
-                            <MenuItem key="Plurality" value="Plurality">
-                                Plurality
-                            </MenuItem>
-                            <MenuItem key="IRV" value="IRV">
-                                Ranked Choice Voting (IRV)
-                            </MenuItem>
-                        </Select>
-                    </FormControl>
-                </Box>
+                <FormControl fullWidth>
+                    <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                        Voting Method
+                    </InputLabel>
+                    <Select
+                        name="Voting Method"
+                        label="Voting Method"
+                        value={votingMethod}
+                        onChange={(e) => setVotingMethod(e.target.value as VotingMethod)}
+                    >
+                        <MenuItem key="STAR" value="STAR">
+                            STAR
+                        </MenuItem>
+                        <MenuItem key="STAR_PR" value="STAR_PR">
+                            STAR-PR
+                        </MenuItem>
+                        <MenuItem key="RankedRobin" value="RankedRobin">
+                            Ranked Robin
+                        </MenuItem>
+                        <MenuItem key="Approval" value="Approval">
+                            Approval
+                        </MenuItem>
+                        <MenuItem key="Plurality" value="Plurality">
+                            Plurality
+                        </MenuItem>
+                        <MenuItem key="IRV" value="IRV">
+                            Ranked Choice Voting (IRV)
+                        </MenuItem>
+                    </Select>
+                </FormControl>
             </Grid>
             <Grid item xs={12}>
 
@@ -156,7 +154,7 @@ const Sandbox = () => {
             <Grid item xs={12}>
                 <Box border={2} sx={{ mt: 5, width: '100%', p: 2 }}>
                     {/* {isPending && <div> Loading Results... </div>} */}
-                    {data && !error &&  (
+                    {data && !error && (
                         <Results
                             title=''
                             raceIndex={0}
