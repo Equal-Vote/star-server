@@ -1,3 +1,4 @@
+import { ElectionResults } from '../../../domain_model/ITabulators';
 import Logger from '../Services/Logging/Logger';
 const className = "Elections.Controllers";
 import { VotingMethods } from '../Tabulators/VotingMethodSelecter'
@@ -14,11 +15,17 @@ const getSandboxResults = async (req: Request, res: Response, next: NextFunction
     if (!VotingMethods[voting_method]) {
         throw new Error('Invalid Voting Method')
     }
-    let results = VotingMethods[voting_method](candidateNames, cvr, num_winners)
+
+    let results: ElectionResults = {
+        votingMethod: voting_method,
+        results: VotingMethods[voting_method](candidateNames, cvr, num_winners)
+    }
+
     res.json(
         {
-            Results: results,
-            voting_method: voting_method
+            results: results,
+            nWinners: num_winners,
+            candidates: candidateNames,
         }
     );
 }

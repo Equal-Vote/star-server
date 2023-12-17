@@ -1,4 +1,4 @@
-import { ballot, voter } from "./ITabulators";
+import { ballot, voter } from "./../../../domain_model/ITabulators";
 
 // Functions to parse STAR scores
 export interface IparsedData {

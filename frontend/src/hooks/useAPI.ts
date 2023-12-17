@@ -1,8 +1,10 @@
-import { Election } from "../../../domain_model/Election";
-import { VoterAuth } from '../../../domain_model/VoterAuth';
-import { ElectionRoll } from "../../../domain_model/ElectionRoll";
+import { Election } from "@domain_model/Election";
+import { VoterAuth } from '@domain_model/VoterAuth';
+import { ElectionRoll } from "@domain_model/ElectionRoll";
 import useFetch from "./useFetch";
-import { Ballot } from "../../../domain_model/Ballot";
+import { VotingMethod } from "@domain_model/Race";
+import { ElectionResults } from "@domain_model/ITabulators";
+import { Ballot } from "@domain_model/Ballot";
 
 export const useGetElection = (electionID: string | undefined) => {
     return useFetch<undefined, { election: Election, voterAuth: VoterAuth }>(`/API/Election/${electionID}`, 'get')
@@ -88,11 +90,18 @@ export const useGetBallots = (election_id: string | undefined) => {
 }
 
 export const useGetResults = (election_id: string | undefined) => {
-    return useFetch<undefined, any>(`/API/ElectionResult/${election_id}`, 'get')
+    return useFetch<undefined, {election: Election, results: ElectionResults[]}>(`/API/ElectionResult/${election_id}`, 'get')
 }
 
 export const usePostBallot = (election_id: string | undefined) => {
     return useFetch<{ ballot: Ballot, receiptEmail?: string }, {ballot: Ballot}>(`/API/Election/${election_id}/vote`, 'post')
 }
 
-
+export const useGetSandboxResults = () => {
+    return useFetch<{
+        cvr: number[][],
+        candidates: string[],
+        num_winners: number,
+        votingMethod: VotingMethod}, { results: ElectionResults, nWinners: number, candidates: string[]}>
+        (`/API/Sandbox`, 'post')
+}

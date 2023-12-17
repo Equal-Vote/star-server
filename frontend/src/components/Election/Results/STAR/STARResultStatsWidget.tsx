@@ -1,7 +1,8 @@
 import { Typography } from '@mui/material';
 import React, { useState }  from 'react'
+import { starResults } from '../../../../../../domain_model/ITabulators';
 
-const STARResultStatsWidget = ({title, results}) => {
+const STARResultStatsWidget = ({ results}: {results: starResults }) => {
     return <div className="statsWidget">
         <Typography>
             <strong>{results.summaryData.nValidVotes}</strong> valid votes cast

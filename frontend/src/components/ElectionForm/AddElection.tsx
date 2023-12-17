@@ -1,7 +1,7 @@
 import React from 'react'
 import ElectionForm from "./ElectionForm";
 import { useNavigate } from "react-router"
-import { Election } from '../../../../domain_model/Election';
+import { Election } from '@domain_model/Election';
 import { usePostElection } from '../../hooks/useAPI';
 import useAuthSession from '../AuthSessionContextProvider';
 

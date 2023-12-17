@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import PermissionHandler from "../../PermissionHandler";
 import { usePutElectionRoles } from "../../../hooks/useAPI";
-import { Election } from "../../../../../domain_model/Election";
+import { Election } from "@domain_model/Election";
 import { StyledButton } from "../../styles";
 import useAuthSession from "../../AuthSessionContextProvider";
 import useElection from "../../ElectionContextProvider";

@@ -1,7 +1,14 @@
 import React, { useState }  from 'react'
 import { TableContainer} from "@mui/material";
+import { roundResults, starResults, starSummaryData } from '../../../../../../domain_model/ITabulators';
 
-function RoundViewer({ summaryData, candidate, round }) {
+type candidateTableEntry = {
+  name: string,
+  votes: number,
+  index: number,
+}
+
+function RoundViewer({ summaryData, candidate, round }: {summaryData: starSummaryData, candidate: candidateTableEntry, round: roundResults }) {
   const winnerIndex = round.winners[0].index
   const runnerUpIndex = round.runner_up[0].index
   const totalRunoffVotes = summaryData.nValidVotes
@@ -37,8 +44,8 @@ function RoundViewer({ summaryData, candidate, round }) {
   )
 }
 
-const STARResultTableWidget = ({title, results, rounds}) => {
-    const tableData = results.summaryData.candidates.map((c, n) => ({
+const STARResultTableWidget = ({title, results, rounds}: {title: string, results: starResults, rounds: number }) => {
+    const tableData: candidateTableEntry[] = results.summaryData.candidates.map((c, n) => ({
         name: c.name,
         votes: results.summaryData.totalScores[n].score,
         index: n
