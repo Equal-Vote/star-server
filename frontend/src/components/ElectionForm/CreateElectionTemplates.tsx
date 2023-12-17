@@ -228,8 +228,8 @@ const CreateElectionTemplates = () => {
                             </Card>
                         </Grid>
                         <Grid item xs={12}>
-                            <Typography component="p">* = Accounts must be approved fist to create elections with custom registration</Typography>
-                            <Typography component="p">** = Free Tier elections are limited to {sharedConfig.FREE_TIER_PRIVATE_VOTER_LIMIT} voters</Typography>
+                            <Typography component="p">* Accounts must be approved first to create elections with custom registration</Typography>
+                            <Typography component="p">** Free Tier elections are limited to {sharedConfig.FREE_TIER_PRIVATE_VOTER_LIMIT} voters</Typography>
                             <Typography component="p">Email us at elections@equal.vote to be upgraded</Typography>
                         </Grid>
                     </Grid>
