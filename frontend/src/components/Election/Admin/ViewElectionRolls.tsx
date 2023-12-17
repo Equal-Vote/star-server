@@ -11,7 +11,7 @@ import { Typography } from "@mui/material";
 import EnhancedTable, { HeadCell, TableData } from "./../../EnhancedTable";
 import { useGetRolls, useSendInvites } from "../../../hooks/useAPI";
 import useElection from "../../ElectionContextProvider";
-import { ElectionRoll } from "../../../../../domain_model/ElectionRoll";
+import { ElectionRoll } from "@domain_model/ElectionRoll";
 
 interface Data extends TableData {
     voter_id: string;

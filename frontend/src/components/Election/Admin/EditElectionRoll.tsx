@@ -9,7 +9,7 @@ import PermissionHandler from "../../PermissionHandler";
 import { useApproveRoll, useFlagRoll, useInvalidateRoll, useSendInvite, useUnflagRoll } from "../../../hooks/useAPI";
 import { formatDate } from "../../util";
 import useElection from "../../ElectionContextProvider";
-import { ElectionRoll } from "../../../../../domain_model/ElectionRoll";
+import { ElectionRoll } from "@domain_model/ElectionRoll";
 type Props = {
     roll: ElectionRoll,
     onClose: Function,

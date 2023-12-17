@@ -1,6 +1,6 @@
-import { Election } from "../../../domain_model/Election";
-import { VoterAuth } from '../../../domain_model/VoterAuth';
-import { ElectionRoll } from "../../../domain_model/ElectionRoll";
+import { Election } from "@domain_model/Election";
+import { VoterAuth } from '@domain_model/VoterAuth';
+import { ElectionRoll } from "@domain_model/ElectionRoll";
 import useFetch from "./useFetch";
 import { Ballot } from "../../../domain_model/Ballot";
 import { ElectionResults } from "../../../domain_model/ITabulators";

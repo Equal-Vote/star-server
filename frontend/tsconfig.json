@@ -18,8 +18,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["node"]
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@domain_model/*": ["../domain_model/*"]
+    }
   },
   
-  "include": ["../domain_model/**/*", "./src/**/*"],
+  "include": ["@domain_model/**/*", "./src/**/*"],
 }

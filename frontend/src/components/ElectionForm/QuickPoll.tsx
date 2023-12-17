@@ -11,7 +11,7 @@ import { useLocalStorage } from '../../hooks/useLocalStorage';
 import Typography from '@mui/material/Typography';
 import { usePostElection } from '../../hooks/useAPI';
 import { useCookie } from '../../hooks/useCookie';
-import { Election } from '../../../../domain_model/Election.js';
+import { Election } from '@domain_model/Election.js';
 
 const QuickPoll = ({ authSession }) => {
     const [tempID, setTempID] = useCookie('temp_id', '0')
