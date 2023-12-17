@@ -2,9 +2,9 @@ import { Election } from "@domain_model/Election";
 import { VoterAuth } from '@domain_model/VoterAuth';
 import { ElectionRoll } from "@domain_model/ElectionRoll";
 import useFetch from "./useFetch";
-import { Ballot } from "../../../domain_model/Ballot";
-import { ElectionResults } from "../../../domain_model/ITabulators";
-import { VotingMethod } from "../../../domain_model/Race";
+import { VotingMethod } from "@domain_model/Race";
+import { ElectionResults } from "@domain_model/ITabulators";
+import { Ballot } from "@domain_model/Ballot";
 
 export const useGetElection = (electionID: string | undefined) => {
     return useFetch<undefined, { election: Election, voterAuth: VoterAuth }>(`/API/Election/${electionID}`, 'get')
