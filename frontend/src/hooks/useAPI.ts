@@ -92,7 +92,7 @@ export const useGetResults = (election_id: string | undefined) => {
 }
 
 export const usePostBallot = (election_id: string | undefined) => {
-    return useFetch<{ ballot: Ballot }, {ballot: Ballot}>(`/API/Election/${election_id}/vote`, 'post')
+    return useFetch<{ ballot: Ballot, receiptEmail?: string }, {ballot: Ballot}>(`/API/Election/${election_id}/vote`, 'post')
 }
 
 
