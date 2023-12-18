@@ -22,6 +22,7 @@ RUN npm ci --only=production
 # Run "npm build" steps after "npm ci" to take advantage of caching.
 WORKDIR /usr/src/app
 COPY --chown=node:node domain_model domain_model
+COPY --chown=node:node shared shared
 COPY --chown=node:node package*.json ./
 WORKDIR /usr/src/app/frontend
 COPY --chown=node:node frontend .
@@ -47,6 +48,7 @@ ENV NODE_ENV production
 COPY --from=build /usr/bin/dumb-init /usr/bin/dumb-init
 USER node
 WORKDIR /usr/src/app
+COPY --chown=node:node --from=build /usr/src/app/shared shared
 COPY --chown=node:node --from=build /usr/src/app/domain_model domain_model
 COPY --chown=node:node --from=build /usr/src/app/frontend/build /usr/src/app/frontend/build
 COPY --chown=node:node --from=build /usr/src/app/backend/build /usr/src/app/backend/build
