@@ -8,6 +8,7 @@ import { BadRequest, InternalServerError } from "@curveball/http-errors";
 import { randomUUID } from "crypto";
 import { IElectionRequest } from "../IRequest";
 import { Response, NextFunction } from 'express';
+import { sharedConfig } from "../../../shared/SharedConfig";
 
 const ElectionRollModel = ServiceLocator.electionRollDb();
 
@@ -30,10 +31,11 @@ const addElectionRoll = async (req: IElectionRequest, res: Response, next: NextF
         state: roll.state || ElectionRollState.approved,
         history: history,
     }))
-    // Check if rolls already exist
     // TODO: move this to a dedicated database querry
     const existingRolls = await ElectionRollModel.getRollsByElectionID(req.election.election_id, req)
+
     if (existingRolls) {
+        // Check if rolls already exist
         const duplicateRolls = req.body.electionRoll.filter((roll: ElectionRoll) => {
             return existingRolls.some(existingRoll => {
                 if (existingRoll.email && roll.email && existingRoll.email === roll.email) return true
@@ -44,7 +46,15 @@ const addElectionRoll = async (req: IElectionRequest, res: Response, next: NextF
         if (duplicateRolls.length > 0) {
             throw new BadRequest(`Some submitted voters already exist: ${duplicateRolls.map( (roll: ElectionRoll) => `${roll.voter_id ? roll.voter_id : ''} ${roll.email ? roll.email : ''}`).join(',')}`)
         }
+
+        // Check for roll limit
+        let overrides = sharedConfig.ELECTION_VOTER_LIMIT_OVERRIDES as { [key: string]: number};
+        let voterLimit = overrides[req.election.election_id] ?? sharedConfig.FREE_TIER_PRIVATE_VOTER_LIMIT;
+        if(req.election.settings.voter_access == 'closed' && existingRolls.length + req.body.electionRoll.length > voterLimit){
+            throw new BadRequest(`Request Denied: this election is limited to ${voterLimit} voters`);
+        }
     }
+
 
     const newElectionRoll = await ElectionRollModel.submitElectionRoll(rolls, req, `User adding Election Roll??`)
     if (!newElectionRoll) {
