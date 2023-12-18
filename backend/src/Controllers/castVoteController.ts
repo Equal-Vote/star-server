@@ -54,7 +54,8 @@ async function castVoteController(req: IElectionRequest, res: Response, next: Ne
     const voterAuthorization = getVoterAuthorization(roll,missingAuthData)
     assertVoterMayVote(voterAuthorization, req);
 
-   const inputBallot:Ballot = req.body.ballot;
+   const inputBallot: Ballot = req.body.ballot;
+   const receiptEmail: string = req.body.receiptEmail
    //TODO: currently we have both a value on the input Ballot, and the route param.
     //do we want to keep both?  enforce that they match?
     inputBallot.election_id = targetElection.election_id;
@@ -97,7 +98,7 @@ async function castVoteController(req: IElectionRequest, res: Response, next: Ne
     }
 
     const reqId = req.contextId ? req.contextId : randomUUID();
-    const userEmail = user?.email;
+    const userEmail = receiptEmail;
     const event = {
         requestId:reqId,
         inputBallot:inputBallot,
