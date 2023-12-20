@@ -15,6 +15,7 @@ import WinnerResultTabs from "./WinnerResultTabs";
 import ApprovalResultSummaryWidget from "./Approval/ApprovalResultSummaryWidget";
 import { Race } from "../../../../../domain_model/Race";
 import { ElectionResults, allocatedScoreResults, approvalResults, irvResults, pluralityResults, rankedRobinResults, starResults } from "../../../../../domain_model/ITabulators";
+import useElection from "../../ElectionContextProvider";
 
 declare namespace Intl {
   class ListFormat {
@@ -24,6 +25,19 @@ declare namespace Intl {
 }
 
 const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
+
+const GenericDetailedStepsWidget = ({ title, results, rounds}: {title: string, results: approvalResults|rankedRobinResults, rounds: number }) => {
+  return <div className='detailedSteps'>
+      {results.roundResults.map((round, r) => (
+          <>
+          {rounds > 1 && <Typography variant="h4">{`Winner ${r + 1}`}</Typography>}
+          <ol>
+              {round.logs.map(log => (<li>{log}</li>))}
+          </ol>
+          </>
+      ))}
+  </div>
+}
 
 function STARResultViewer({ results, rounds }: {results: starResults, rounds: number }) {
   let i = 0;
@@ -233,17 +247,19 @@ function PluralityResultsViewer({ results }: {results: pluralityResults}) {
     </div>
   );
 }
-function ApprovalResultsViewer({ results }: {results: approvalResults}) {
+function ApprovalResultsViewer({ results , rounds}: {results: approvalResults, rounds: number}) {
   return (
     <div className="resultViewer">
       <ApprovalResultSummaryWidget results={results}/>
-      <DetailExpander title='How Approval Voting works'>
-        <div style={{position: 'relative', paddingBottom: "56.25%"}}>
-          <iframe style={{position: 'absolute', left: 0, width: '100%', height: '100%'}} src="https://www.youtube.com/embed/db6Syys2fmE" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
-        </div>
+      <DetailExpander title='Details'>
+        <DetailExpanderGroup defaultSelectedIndex={-1}>
+          <GenericDetailedStepsWidget title='Detailed Steps' results={results} rounds={rounds}/>
+          <div title='How Approval Voting works' style={{position: 'relative', paddingBottom: "56.25%"}}>
+            <iframe style={{position: 'absolute', left: 0, width: '100%', height: '100%'}} src="https://www.youtube.com/embed/db6Syys2fmE" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+          </div>
+        </DetailExpanderGroup>
       </DetailExpander>
     </div>
-
   );
 }
 
@@ -315,18 +331,30 @@ type ResultsProps = {
 }
 
 export default function Results({ title, raceIndex, race, result }: ResultsProps) {
+  const { election, voterAuth, refreshElection, permissions, updateElection } = useElection();
+  let showTitleAsTie = ['random', '5-star'].includes(result.results.tieBreakType);
+  let removeTieBreakFromTitle = election.settings.break_ties_randomly && result.results.tieBreakType == 'random';
   return (
     <div>
       <div className="flexContainer" style={{textAlign: 'center'}}>
         {result.results.summaryData.nValidVotes == 0 && <h2>Still waiting for results<br/>No votes have been cast</h2>}
-        {result.results.summaryData.nValidVotes >= 1 &&
-          <Typography variant="h5" sx={{fontWeight: 'bold'}}>⭐ { formatter.format(result.results.elected.map(c => c.name))} Wins! ⭐</Typography>
-        }
+        {result.results.summaryData.nValidVotes >= 1 && <>
+          {showTitleAsTie?
+            <>
+            <Typography variant="h5" sx={{fontWeight: 'bold'}}>Tied!</Typography>
+            {!removeTieBreakFromTitle &&
+              <Typography component="p" sx={{fontWeight: 'bold'}}>({ formatter.format(result.results.elected.map(c => c.name))} won after tie breaker)</Typography>
+            }
+            </>
+          :
+            <Typography variant="h5" sx={{fontWeight: 'bold'}}>⭐ { formatter.format(result.results.elected.map(c => c.name))} Wins! ⭐</Typography>
+          }
+        </>}
         {result.results.summaryData.nValidVotes == 1 && <p>There's only one vote so far<br/>Full results will be displayed once there's more votes</p> }
         {result.results.summaryData.nValidVotes > 1 &&
           <>
           {result.votingMethod === "STAR" && <STARResultViewer results={result.results} rounds={race.num_winners} /> }
-          {result.votingMethod === "Approval" && <ApprovalResultsViewer results={result.results} />}
+          {result.votingMethod === "Approval" && <ApprovalResultsViewer results={result.results} rounds={race.num_winners} />}
 
           {result.votingMethod === "STAR_PR" &&
             <>

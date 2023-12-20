@@ -12,6 +12,7 @@ export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, r
     other: [],
     roundResults: [],
     summaryData: summaryData,
+    tieBreakType: 'none',
   }
   const sortedScores = summaryData.totalScores.sort((a: totalScore, b: totalScore) => {
     if (a.score > b.score) return -1

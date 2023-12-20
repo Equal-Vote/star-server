@@ -29,6 +29,7 @@ export function RankedRobin(candidates: string[], votes: ballot[], nWinners = 1,
     other: [],
     roundResults: [],
     summaryData: summaryData,
+    tieBreakType: 'none',
   }
   var remainingCandidates = [...summaryData.candidates]
   // Run election rounds until there are no remaining candidates

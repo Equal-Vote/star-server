@@ -24,4 +24,5 @@ export interface ElectionSettings {
     time_zone?:           string; // Time zone for displaying election start/end times 
     random_candidate_order?: boolean; // Randomize order of candidates on the ballot
     require_instruction_confirmation?: boolean // Require voter to confirm that they've read the instructions in order to vote
-  }
+    break_ties_randomly?: boolean // whether true ties should be broken randomly
+}

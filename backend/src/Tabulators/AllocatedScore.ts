@@ -48,6 +48,7 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
         other: [],
         roundResults: [],
         summaryData: summaryData,
+        tieBreakType: 'none',
     }
     var remainingCandidates = [...summaryData.candidates]
     // Run election rounds until there are no remaining candidates

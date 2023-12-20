@@ -1,6 +1,25 @@
+import { candidate, totalScore } from "./../../../domain_model/ITabulators";
+
+declare namespace Intl {
+  class ListFormat {
+    constructor(locales?: string | string[], options?: {});
+    public format: (items: string[]) => string;
+  }
+}
+// converts list of strings to string with correct grammar ([a,b,c] => 'a, b, and c')
+export const commaListFormatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
+
+export function sortTotalScores(totalScores : totalScore[], candidates : candidate[]){
+  return totalScores.sort((a: totalScore, b: totalScore) => {
+    if (a.score > b.score) return -1
+    if (a.score < b.score) return 1
+    if (candidates[a.index].tieBreakOrder < candidates[b.index].tieBreakOrder) return -1
+    return 1
+  });
+}
 
 // Format a Timestamp value into a compact string for display;
-function formatTimestamp(value) {
+function formatTimestamp(value : string) {
   const d = new Date(Date.parse(value));
   const month = d.getMonth() + 1;
   const date = d.getDate();
@@ -20,32 +39,25 @@ function formatTimestamp(value) {
   return timeStamp;
 }
 
-function position(number) {
-  const numberString = Number(number).toFixed(0).toString();
-  const lastDigit = numberString.substr(-1);
-  const suffix =
-    lastDigit === "1"
-      ? "st"
-      : lastDigit === "2"
-        ? "nd"
-        : lastDigit === "3"
-          ? "rd"
-          : "th";
-  return `${numberString}${suffix}`;
+
+
+const isScore = (value : any) =>
+  !isNaN(value) && (value === null || (value > -10 && value < 10));
+
+const transformScore = (value : number) => {
+  // minScore and maxScore were undefined when moving the file to typescript, so I'm hard coding them for now
+  const minScore = 0;
+  const maxScore = 5;
+  value ? Math.min(maxScore, Math.max(minScore, value)) : 0;
 }
 
-const isScore = (value) =>
-  !isNaN(value) && (value === null || (value > -10 && value < 10));
-const transformScore = (value) =>
-  value ? Math.min(maxScore, Math.max(minScore, value)) : 0;
-
 // Functions to parse Timestamps
-const isTimestamp = (value) => !isNaN(Date.parse(value));
-const transformTimestamp = (value) => formatTimestamp(value);
+const isTimestamp = (value : any) => !isNaN(Date.parse(value));
+const transformTimestamp = (value : any) => formatTimestamp(value);
 
 // Functions to parse everything else
-const isAny = (value) => true;
-const transformAny = (value) => (value ? value.toString().trim() : "");
+const isAny = (value : any) => true;
+const transformAny = (value : any) => (value ? value.toString().trim() : "");
 
 // Column types to recognize in Cast Vote Records passed as CSV data
 const columnTypes = [
@@ -55,10 +67,10 @@ const columnTypes = [
   { test: isAny, transform: transformAny }
 ];
 
-function getTransforms(header, data) {
-  const transforms = [];
+function getTransforms(header : any, data : string[][]) {
+  const transforms : any[] = [];
   const rowCount = Math.min(data.length, 3);
-  header.forEach((title, n) => {
+  header.forEach((title : string, n : number) => {
     var transformIndex = 0;
     if (title === "Timestamp") {
       transformIndex = 1;

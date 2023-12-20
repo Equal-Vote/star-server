@@ -37,6 +37,7 @@ export function Star(candidates: string[], votes: ballot[], nWinners = 1, random
     other: [],
     roundResults: [],
     summaryData: summaryData,
+    tieBreakType: 'none',
   }
   var remainingCandidates = [...summaryData.candidates]
   // Run election rounds until there are no remaining candidates
