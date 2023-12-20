@@ -1,9 +1,12 @@
-import { approvalResults, approvalSummaryData, ballot, candidate, totalScore } from "./../../../domain_model/ITabulators";
+import { approvalResults, approvalSummaryData, ballot, candidate, roundResults, totalScore } from "./../../../domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
+import { commaListFormatter, sortTotalScores } from "./Util";
 const ParseData = require("./ParseData");
 
 export function Approval(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true) {
+  breakTiesRandomly = true // hard coding this for now
+
   const parsedData = ParseData(votes, getApprovalBallotValidity)
   const summaryData = getSummaryData(candidates, parsedData, randomTiebreakOrder)
   const results: approvalResults = {
@@ -12,39 +15,55 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
     other: [],
     roundResults: [],
     summaryData: summaryData,
+    tieBreakType: 'none',
+  };
+
+  let scoresLeft = [...summaryData.totalScores];
+
+  for(let w = 0; w < nWinners; w++){
+    let {roundResults, tieBreakType, tiedCandidates} = SingleWinnerApproval(scoresLeft, summaryData.candidates);
+
+    results.elected.push(...roundResults.winners);
+    results.roundResults.push(roundResults);
+
+    // remove winner for next round
+    scoresLeft.shift();
+
+    // only save the tie breaker info if we're in the final round
+    if(w == nWinners-1){
+      results.tied = tiedCandidates; 
+      results.tieBreakType = tieBreakType; // only save the tie breaker info if we're in the final round
+    }
   }
-  const sortedScores = summaryData.totalScores.sort((a: totalScore, b: totalScore) => {
-    if (a.score > b.score) return -1
-    if (a.score < b.score) return 1
-    if (summaryData.candidates[a.index].tieBreakOrder < summaryData.candidates[b.index].tieBreakOrder) return -1
-    return 1
-  })
-  
-  var remainingCandidates = [...summaryData.candidates]
-  while (remainingCandidates.length>0) {
-    const topScore = sortedScores[results.elected.length + results.tied.length + results.other.length]
-    let scoreWinners = [summaryData.candidates[topScore.index]]
-    for (let i = sortedScores.length-remainingCandidates.length+1; i < sortedScores.length; i++) {
-      if (sortedScores[i].score === topScore.score) {
-        scoreWinners.push(summaryData.candidates[sortedScores[i].index])
-      }
-    }
-    if (breakTiesRandomly && scoreWinners.length>1) {
-      scoreWinners = [scoreWinners[0]]
-    }
-    if ((results.elected.length + results.tied.length + scoreWinners.length)<=nWinners) {
-      results.elected.push(...scoreWinners)
-    }
-    else if (results.tied.length===0 && results.elected.length<nWinners){
-      results.tied.push(...scoreWinners)
-    }
-    else {
-      results.other.push(...scoreWinners)
-    }
-    remainingCandidates = remainingCandidates.filter(c => !scoreWinners.includes(c))
-  }
+
+  results.other = scoresLeft.map(s => summaryData.candidates[s.index]); // remaining candidates in sortedScores
   
   return results;
+}
+
+const SingleWinnerApproval = (scoresLeft: totalScore[], candidates: candidate[]) => {
+  let topScore = scoresLeft[0];
+  let tiedCandidates = scoresLeft
+    .filter(s => s.score == topScore.score)
+    .map(s => candidates[s.index]);
+  let winner = candidates[topScore.index];
+
+  let roundResults: roundResults  = {
+    winners: [winner],
+    runner_up: [],
+    logs: (tiedCandidates.length == 1)? [
+      `${winner.name} has the most approvals and wins the round`
+    ] : [
+      `${commaListFormatter.format(tiedCandidates.map(c => c.name))} all tied with the most approvals`,
+      `${winner.name} wins the round after a random tiebreaker`
+    ]
+  }
+  
+  return {
+    roundResults,
+    tieBreakType: (tiedCandidates.length == 1)? 'none' : 'random',
+    tiedCandidates,
+  };
 }
 
 function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder:number[]): approvalSummaryData {
@@ -72,6 +91,7 @@ function getSummaryData(candidates: string[], parsedData: IparsedData, randomTie
     }
   })
   const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
+  sortTotalScores(totalScores, candidatesWithIndexes);
   return {
     candidates: candidatesWithIndexes,
     totalScores,

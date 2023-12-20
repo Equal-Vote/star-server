@@ -76,6 +76,7 @@ interface genericResults {
     other: candidate[],
     roundResults: roundResults[],
     summaryData: genericSummaryData,
+    tieBreakType: string,
 }
 
 export interface starResults extends genericResults {

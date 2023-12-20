@@ -26,7 +26,8 @@ export function IRV(candidates: string[], votes: ballot[], nWinners = 1, randomT
         logs: [],
         voteCounts: [],
         exhaustedVoteCounts: [],
-        overVoteCounts: []
+        overVoteCounts: [],
+        tieBreakType: 'none',
     }
 
     let remainingCandidates = [...summaryData.candidates]
