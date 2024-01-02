@@ -6,8 +6,8 @@ import {
   RootOperationNode,
   QueryResult
 } from 'kysely'
-import { SerializeParametersTransformer } from './serialize-parameters-transformer.js'
-import { Caster, Serializer } from './serialize-parameters.js'
+import { SerializeParametersTransformer } from './serialize-parameters-transformer'
+import { Caster, Serializer } from './serialize-parameters'
 
 export interface SerializeParametersPluginOptions {
   /**

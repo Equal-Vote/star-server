@@ -12,7 +12,7 @@ import {
   Caster,
   defaultSerializer,
   Serializer,
-} from './serialize-parameters.js'
+} from './serialize-parameters'
 
 export class SerializeParametersTransformer extends OperationNodeTransformer {
   readonly #caster: Caster | undefined
