@@ -3,6 +3,7 @@ import { PaletteOptions, Theme, createTheme, responsiveFontSizes, ThemeProvider 
 import { createContext } from 'react';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { TypographyOptions } from '@mui/material/styles/createTypography';
+import { useMediaQuery } from '@mui/material';
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -140,7 +141,7 @@ const themes = {
   })),
 }
 
-type mode = keyof typeof themes
+type mode = keyof typeof themes | 'browserDefault'
 type ThemeContextType = {
   mode: mode,
   modes: mode[],
@@ -151,17 +152,26 @@ type ThemeContextType = {
 export const ThemeContext = createContext<ThemeContextType>({ mode: 'base', modes: Object.keys(themes) as mode[], selectColorMode: () => { }, theme: themes.turquoise })
 
 export const ThemeContextProvider = ({ children }) => {
-  const [mode, setMode] = useLocalStorage<mode>('themeMode', 'turquoise')
+  // https://mui.com/material-ui/customization/dark-mode/#system-preference
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const [mode, setMode] = useLocalStorage<mode>('themeMode', 'browserDefault');
+  let theme;
+  if(mode === 'browserDefault'){
+    theme = themes[prefersDarkMode? 'darkMode' : 'base'];
+  }else{
+    theme = themes[mode];
+  }
+
   const value: ThemeContextType = {
     mode: mode,
     modes: Object.keys(themes) as mode[],
     selectColorMode: newMode => setMode(newMode),
-    theme: themes[mode]
+    theme
   }
 
   return (
     <ThemeContext.Provider value={value} >
-      <ThemeProvider theme={themes[mode]}>
+      <ThemeProvider theme={theme}>
         {children}
       </ThemeProvider>
     </ThemeContext.Provider>
