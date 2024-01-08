@@ -157,7 +157,7 @@ export const ThemeContextProvider = ({ children }) => {
   const [mode, setMode] = useLocalStorage<mode>('themeMode', 'browserDefault');
   let theme;
   if(mode === 'browserDefault'){
-    theme = themes[prefersDarkMode? 'darkMode' : 'base'];
+    theme = themes[prefersDarkMode? 'darkMode' : 'turquoise'];
   }else{
     theme = themes[mode];
   }
