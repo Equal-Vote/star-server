@@ -1,5 +1,5 @@
 export const sharedConfig = {
-    FREE_TIER_PRIVATE_VOTER_LIMIT: 2, // making really low at first so it's easy to test
+    FREE_TIER_PRIVATE_VOTER_LIMIT: 20,
     ELECTION_VOTER_LIMIT_OVERRIDES: {
         'ee948c52-f79e-4449-acb1-1296debc0884': 10
     },
