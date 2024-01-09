@@ -176,6 +176,12 @@ const Header = () => {
                             >
                                 Logout
                             </MenuItem>
+                            <MenuItem
+                                color='inherit'
+                                onClick={() => themeSelector.selectColorMode('browserDefault')}
+                            >
+                                browser default
+                            </MenuItem>
                             {themeSelector.modes.map(mode => (
                                 <MenuItem
                                     color='inherit'
