@@ -7,9 +7,10 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button'
-import { Box, IconButton, Link, Menu, MenuItem } from '@mui/material'
+import { Box, IconButton, InputAdornment, InputBase, Link, Menu, MenuItem, Paper, TextField } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Search from '@mui/icons-material/Search';
 import { useCookie } from '../hooks/useCookie'
 import { v4 } from 'uuid'
 import useAuthSession from './AuthSessionContextProvider';
@@ -120,23 +121,10 @@ const Header = () => {
                             About
                         </Typography>
                     </Button>
-                    {authSession.isLoggedIn() &&
-                        <Button color='inherit' href='/CreateElection'>
-                            <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
-                                New Election
-                            </Typography>
-                        </Button>
-                    }
-                    <Button color='inherit' href='/Elections' target="_blank">
-                        <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
-                            Elections
-                        </Typography>
-                    </Button>
-                    <Button color='inherit' href='/sandbox' >
-                        <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
-                            Sandbox
-                        </Typography>
-                    </Button>
+                    <Paper sx={{display: 'flex', alignItems: 'center', background: 'white', align: 'center', marginTop: 'auto', marginBottom: 'auto', padding: 1}}>
+                        <Search />
+                        <InputBase placeholder="Search Public Elections"/>
+                    </Paper>
                 </Box>
 
                 {/**** LOG IN/OUT ****/}
@@ -167,8 +155,20 @@ const Header = () => {
                             onClose={handleCloseUserMenu}
                             sx={{ display: 'block'}}
                         >
+                            <MenuItem sx={{color: 'gray'}}>
+                                Hello Arend!
+                            </MenuItem>
                             <MenuItem>
-                                {authSession.getIdField('email')}
+                                New Election
+                            </MenuItem>
+                            <MenuItem>
+                                Election Invitations
+                            </MenuItem>
+                            <MenuItem>
+                                Elections you Manage
+                            </MenuItem>
+                            <MenuItem>
+                                Past Elections
                             </MenuItem>
                             <MenuItem
                                 color='inherit'
