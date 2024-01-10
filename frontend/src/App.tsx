@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ThemeContextProvider } from './theme'
 import Header from './components/Header'
-import Elections from './components/Elections'
+import Elections from './components/Elections/OpenElections'
 import Login from './components/Login'
 import CreateElectionTemplates from './components/ElectionForm/CreateElectionTemplates'
 import Election from './components/Election/Election'
@@ -14,6 +14,10 @@ import Footer from './components/Footer'
 import { ConfirmDialogProvider } from './components/ConfirmationDialogProvider'
 import About from './components/About'
 import { AuthSessionContextProvider } from './components/AuthSessionContextProvider'
+import ElectionInvitations from './components/Elections/ElectionInvitations'
+import ElectionsYouManage from './components/Elections/ElectionsYouManage'
+import ElectionsYouVotedIn from './components/Elections/ElectionsYouVotedIn'
+import OpenElections from './components/Elections/OpenElections'
 
 const App = () => {
   return (
@@ -32,7 +36,10 @@ const App = () => {
                   <Routes>
                     <Route path='/' element={<LandingPage />} />
                     <Route path='/About' element={<About />} />
-                    <Route path='/Elections' element={<Elections />} />
+                    <Route path='/ElectionInvitations' element={<ElectionInvitations />} />
+                    <Route path='/ElectionsYouManage' element={<ElectionsYouManage />} />
+                    <Route path='/ElectionsYouVotedIn' element={<ElectionsYouVotedIn />} />
+                    <Route path='/OpenElections' element={<OpenElections />} />
                     <Route path='/Login' element={<Login />} />
                     <Route path='/CreateElection' element={<CreateElectionTemplates />} />
                     <Route path='/Election/:id/*' element={<Election />} />
