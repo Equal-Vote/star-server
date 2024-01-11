@@ -83,7 +83,7 @@ This is essential, as it allows you to work on your own copy of star.vote on Git
 
 ## Clone your fork from GitHub
 
-[Cloning](https://help.github.com/articles/cloning-a-repository/) is where you **download** a copy of a repository from a `remote` location that is either owned by you or by someone else. In your case, this remote location is your `fork` of freeCodeCamp's repository that should be available at `https://github.com/YOUR_USER_NAME/star-server`. (`YOUR_USER_NAME` would be replaced with your GitHub user name.)
+[Cloning](https://help.github.com/articles/cloning-a-repository/) is where you **download** a copy of a repository from a `remote` location that is either owned by you or by someone else. In your case, this remote location is your `fork` of star.vote's repository that should be available at `https://github.com/YOUR_USER_NAME/star-server`. (`YOUR_USER_NAME` would be replaced with your GitHub user name.)
 
 Run these commands on your local machine:
 
@@ -97,7 +97,7 @@ Run these commands on your local machine:
    git clone --depth=1 https://github.com/YOUR_USER_NAME/star-server.git
    ```
 
-This will download the entire freeCodeCamp repository to your projects directory.
+This will download the entire star.vote repository to your projects directory.
 
 Note: `--depth=1` creates a shallow clone of your fork, with only the most recent history/commit.
 
@@ -140,22 +140,6 @@ You need a reference from your local clone to the `upstream` repository in addit
 
 Now that you have a local copy of star.vote, you can follow these instructions to run it locally.
 
-To run the server locally run the following commands
-```
-# terminal 1
-cd backend
-npm install
-npm start
-```
-
-To run the web client run the following commands. If you want to just run the web client without setting up the server you can change the proxy under frontend/package.json to "proxy": "dev.star.vote". 
-```
-# terminal 2
-cd frontend
-npm install
-npm start
-```
-
 This will allow you to:
 
 - Preview edits to pages as they would appear on star.vote.
@@ -176,14 +160,14 @@ And as always, feel free to ask questions on the [#_software-dev slack channel](
 
 ### Configuring dependencies
 
-#### Step 1: Set up the environment variable file
+#### Step 1: Set up the backend environment variable file
 
-The default environment variables are stored in the file `sample.env`. This file needs to be copied to a new file named `.env` that is accessed dynamically during the installation step.
+Copy dev access credentials for the server.  After obtaining access, copy the "Sample.env (Azure)" section of the [dev credentials doc](https://docs.google.com/document/d/1D4CJ9l6lnR39YYPUvw_HbeUVXNR-tAbNF6eT89oxEuk) to `./backend/.env` (you will have to create this file).
 
-```
-# Create a copy of the "sample.env" and name it ".env".
-```
 
+
+#### Step 2: Set up the frontend environment variable file
+Copy default environment variables for the frontend by running one of the following commands in the root of the frontend source directory `./frontend`.
 <!-- Note: This tabs feature looks cool, we should look into it -->
 
 <!-- tabs:start -->
@@ -202,41 +186,7 @@ copy sample.env .env
 
 <!-- tabs:end -->
 
-All the secret keys are left blank in `sample.env` but you can request access to [this](https://docs.google.com/document/d/1D4CJ9l6lnR39YYPUvw_HbeUVXNR-tAbNF6eT89oxEuk) google doc to see those
-
-The keys in the `.env` file are _not_ required to be changed to run the app locally. You can leave the default values copied over from `sample.env` as-is.
-
-<details markdown="1">
-<summary>
-If you want to login, follow these steps to retrieve the ``KEYCLOAK_SECRET`` value
-</summary>
-1. In the [#_software-dev slack channel](https://starvoting.slack.com/archives/C01EBAT283H), ask for keycloak admin access, and we can set you up with an account (assuming we trust you of course ;) )
-1. Navigate to https://keycloak.6j0.org/ and click Administration Console
-1. Login w/ your admin credentials (this is using the master realm, so it's different from your star.vote credentials)
-1. Navigate to Clients > star_vote_web > credentials
-1. Copy the secret and paste it to your .env file (DONT HIT "Regenerate Secret", this will invalidate the previous secret and break login for everyone)
-
-![](../images/keycloak_secret.png)
-
-</details>
-
-#### Step 2: Install dependencies
-
-Install the frontend dependencies
-
-```
-cd frontend
-npm install
-```
-
-Install the backend dependencies
-
-```bash
-cd backend
-npm install
-```
-
-#### Step 3: Start the star.vote client application and API server
+#### Step 3: Install dependencies and start the star.vote client application and API server
 
 You can now start up the API server and the client applications.
 
@@ -244,17 +194,17 @@ Launch backend
 
 ```bash
 cd backend
+npm install
 npm run dev
 ```
 
-Launch frontend
+Launch frontend. If you want to just run the web client without setting up the server you can change the proxy under frontend/package.json to "proxy": "dev.star.vote". 
 
 ```bash
+npm install
 cd frontend
 npm start
 ```
-
-This will open the webpage on localhost, and it should contact the backend to load the elections
 
 ## Login
 
@@ -305,7 +255,7 @@ Follow these steps:
    git fetch upstream
    ```
 
-   Hard reset your main branch with the freeCodeCamp main:
+   Hard reset your main branch with the star.vote main:
 
    ```
    git reset --hard upstream/main
@@ -457,7 +407,7 @@ Follow these steps:
 
 ## Proposing a Pull Request (PR)
 
-After you've committed your changes, check here for [how to open a Pull Request](how-to-open-a-pull-request.md).
+After you've committed your changes, check here for [how to open a Pull Request](2_how_to_open_a_pull_request.md).
 
 ## Troubleshooting
 
@@ -469,17 +419,6 @@ The first time setup can take a while depending on your network bandwidth. Be pa
 
 > [!NOTE]
 > If you are using Apple Devices with M1 Chip to run the application locally, it is suggested to use Node v14.7 or above. You might run into issues with dependencies like Sharp otherwise.
-
-### Frontend Issues
-
-Your frontend may throw an error:
-
-Invalid options object. Dev Server has been initialized using an options object that does not match the API schema.
- - options.allowedHosts[0] should be a non-empty string.
-
-This is discussed more thoroughly on [stack overflow](https://stackoverflow.com/questions/70374005/invalid-options-object-dev-server-has-been-initialized-using-an-options-object)
-
-To fix this, locate `./frontend/sample.env`, and copy it to a new file named  `./frontend/.env`
 
 ### Backend: too many connections for role "abcd..."
 
