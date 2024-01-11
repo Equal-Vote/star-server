@@ -185,10 +185,11 @@ const Header = () => {
                             >
                                 browser default
                             </MenuItem>
-                            {themeSelector.modes.map(mode => (
+                            {themeSelector.modes.map((mode, i) => (
                                 <MenuItem
                                     color='inherit'
                                     onClick={() => themeSelector.selectColorMode(mode)}
+                                    key={`color-${i}`}
                                 >
                                     {mode}
                                 </MenuItem>

@@ -98,6 +98,7 @@ export const DetailExpanderGroup = ({children, defaultSelectedIndex}) => {
 }
 
 export const formatDate = (time, displayTimezone=null) => {
+    if(!time) return '';
     if(displayTimezone === null) displayTimezone = DateTime.now().zone.name;
 
     return DateTime.fromJSDate(new Date(time))

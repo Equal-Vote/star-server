@@ -71,7 +71,8 @@ export interface HeadCell {
   filterType?: 'search' | 'groups';
   filterGroups?: {
     [key: string]: boolean
-  }
+  };
+  formatter?: Function;
 }
 
 function filterData<T>(array: readonly T[], headCells: HeadCell[], filters: any[]) {
@@ -168,13 +169,13 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
                   value={Object.keys(props.filters[cellInd]).filter(group => props.filters[cellInd][group])}
                   renderValue={(selected) => selected.join(', ')}
                 >
-                  {console.log(Object.keys(props.filters[cellInd]).filter(group => headCell.filterGroups[group]===true))}
-                  {Object.keys(headCell.filterGroups).map(group => (
+                  {Object.keys(headCell.filterGroups).map((group, i) => (
                     <MenuItem 
-                      onClick={(e) => handleGroupFilterChange(cellInd, group, !props.filters[cellInd][group])}>
+                      onClick={(e) => handleGroupFilterChange(cellInd, group, !props.filters[cellInd][group])}
+                      key={`group-${i}`}
+                    >
                       <Checkbox
                         checked={props.filters[cellInd][group] == true}
-
                       />
                       <ListItemText primary={group} />
                     </MenuItem>
@@ -235,7 +236,7 @@ export default function EnhancedTable(props: EnhancedTableProps) {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(true);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const [filters, setFilters] = React.useState(props.headCells.map(col => {
     if (!col.filterType) {
       return null
@@ -318,21 +319,23 @@ export default function EnhancedTable(props: EnhancedTableProps) {
                     hover
                     onClick={() => props.handleOnClick(row)}
                     tabIndex={-1}
-                    key={row.name}
+                    key={labelId}
                     sx={{ cursor: 'pointer' }}
-                    
                   >
                     {props.headCells.map((col, colInd) => {
                       if (colInd == 0) {
                         return <TableCell
                           component="th"
                           id={labelId}
+                          key={`${labelId}-${colInd}`}
                           scope="row">
                           {row[col.id]}
                         </TableCell>
                       } else {
                         return <TableCell
-                          align={col.numeric ? 'right' : 'left'} >
+                          align={col.numeric ? 'right' : 'left'}
+                          key={`${labelId}-${colInd}`}
+                        >
                           {row[col.id]}
                         </TableCell>
                       }
