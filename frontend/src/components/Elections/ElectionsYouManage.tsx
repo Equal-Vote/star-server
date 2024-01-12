@@ -33,7 +33,7 @@ export default () => {
     }
 
     let managedElectionsData = useMemo(() => {
-        if(data && data.elections_as_official){
+        if(data?.elections_as_official){
             return data.elections_as_official.map(election => ({
                ...election,
                roles: getRoles(election)
