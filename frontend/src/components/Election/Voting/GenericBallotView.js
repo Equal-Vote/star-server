@@ -11,7 +11,6 @@ import { Checkbox, FormControlLabel, FormGroup, Link } from "@mui/material";
 import Box from '@mui/material/Box';
 import useSnackbar from "../../SnackbarContext";
 import { BallotContext } from "./VotePage";
-import Elections from "../../Elections/OpenElections";
 import useElection from "../../ElectionContextProvider";
 
 function HasExpandedData(candidate) {
