@@ -9,7 +9,7 @@ export default () => {
     useEffect(() => {fetchElections()}, []);
 
     let openElectionsData = useMemo(
-        () => data && data.open_elections ? [...data.open_elections] : [],
+        () => data?.open_elections ? [...data.open_elections] : [],
         [data]
     );
             
