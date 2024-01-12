@@ -71,7 +71,7 @@ const QuickPoll = ({ authSession }) => {
         if ((!newElection)) {
             throw Error("Error submitting election");
         }
-        setElectionData(null)
+        setElectionData(QuickPollTemplate)
         navigate(`/Election/${newElection.election.election_id}`)
     }
     const applyElectionUpdate = (updateFunc) => {
