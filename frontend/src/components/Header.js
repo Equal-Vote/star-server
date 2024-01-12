@@ -43,6 +43,17 @@ const Header = () => {
 
     const navVariant = 'h6';
 
+    const navItems = [
+        {
+            text: 'About',
+            href: '/About',
+        },
+        {
+            text: 'Public Elections',
+            href: '/OpenElections',
+        }
+    ];
+
     return (
         <AppBar position="sticky" sx={{ backgroundColor: "primary.main" }}>
             <Toolbar>
@@ -75,31 +86,15 @@ const Header = () => {
                             display: { xs: 'block', md: 'none' },
                         }}
                     >
-                        <MenuItem
-                            component={Link}
-                            href='/About'
-                            target="_blank">
-                            About
-                        </MenuItem>
-                        {authSession.isLoggedIn() &&
+                        {navItems.map((item, i) => 
                             <MenuItem
+                                key={`mobile-nav-${i}`}
                                 component={Link}
-                                href='/CreateElection'>
-                                New Election
+                                href={item.href}
+                            >
+                                {item.text}
                             </MenuItem>
-                        }
-                        <MenuItem
-                            component={Link}
-                            href='/Elections'
-                            target="_blank">
-                            Elections
-                        </MenuItem>
-                        <MenuItem
-                            component={Link}
-                            href='/sandbox' >
-                            Sandbox
-                        </MenuItem>
-
+                        )}
                     </Menu>
                 </Box>
 
@@ -116,20 +111,29 @@ const Header = () => {
                 {/**** DESKTOP OPTIONS ****/}
                 <Box
                     sx={{ flexGrow: 100, flexWrap: 'wrap', display: { xs: 'none', md: 'flex' }, gap: 2, rowGap: 0 }}>
-                    <Button color='inherit' href='/About' target="_blank">
-                        <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
-                            About
-                        </Typography>
-                    </Button>
+                    {navItems.map((item, i) => 
+                        <Button key={`desktop-nav-${i}`}color='inherit' href={item.href}>
+                            <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                                {item.text}
+                            </Typography>
+                        </Button>
+                    )}
+                    {/* Saving this for when we have a search bar
                     <Paper sx={{display: 'flex', alignItems: 'center', background: 'white', align: 'center', marginTop: 'auto', marginBottom: 'auto', padding: 1}}>
                         <Search />
                         <InputBase placeholder="Search Public Elections"/>
                     </Paper>
+                    */}
                 </Box>
 
-                {/**** LOG IN/OUT ****/}
+                {/**** ACCOUNT OPTIONS ****/}
                 <Box sx={{ flexGrow: 0, display: 'flex' }}>
                     {authSession.isLoggedIn() && <>
+                        <Button color='inherit' href='/CreateElection' sx={{display: { xs: 'none', md: 'flex' }}}>
+                            <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                                New Election
+                            </Typography>
+                        </Button>
                         <IconButton
                             size="large"
                             aria-label="account of current user"
@@ -155,19 +159,19 @@ const Header = () => {
                             onClose={handleCloseUserMenu}
                             sx={{ display: 'block'}}
                         >
-                            <MenuItem sx={{color: 'gray'}}>
-                                Hello Arend!
+                            <MenuItem disabled>
+                                Hello {authSession.getIdField('given_name')}!
                             </MenuItem>
-                            <MenuItem>
+                            <MenuItem component={Link} href='/CreateElection'>
                                 New Election
                             </MenuItem>
-                            <MenuItem>
+                            <MenuItem component={Link} href='/ElectionInvitations'>
                                 Election Invitations
                             </MenuItem>
-                            <MenuItem>
+                            <MenuItem component={Link} href='/ElectionsYouManage'>
                                 Elections you Manage
                             </MenuItem>
-                            <MenuItem>
+                            <MenuItem component={Link} href='/ElectionsYouVotedIn'>
                                 Past Elections
                             </MenuItem>
                             <MenuItem
