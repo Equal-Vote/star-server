@@ -20,7 +20,8 @@ const keycloakAuthConfig = {
         logout: `${keycloakBaseUrl}/logout`,
         token: `${keycloakBaseUrl}/token`,
         authorize: `${keycloakBaseUrl}/auth`,
-        userinfo: `${keycloakBaseUrl}/userinfo`
+        userinfo: `${keycloakBaseUrl}/userinfo`,
+        account: `${keycloakBaseUrl.split('/protocol')[0]}/account` // unlike the other endpoints account doesn't require /protocol/openid-connect
     },
 }
 
@@ -33,6 +34,7 @@ export interface IAuthSession {
     openLogin: () => void
     openLogout: () => void
     getIdField: (fieldName: any) => any
+    accountUrl: string
 }
 
 const AuthSessionContext = createContext<IAuthSession>(null);
@@ -161,6 +163,7 @@ export function AuthSessionContextProvider({ children }) {
                 openLogin: openLogin,
                 openLogout: openLogout,
                 getIdField: getIdField,
+                accountUrl: authConfig.endpoints.account
             }}>
             {children}
         </AuthSessionContext.Provider>

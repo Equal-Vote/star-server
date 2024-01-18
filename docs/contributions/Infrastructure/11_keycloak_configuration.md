@@ -66,7 +66,9 @@ Repeat all the the following steps for the STAR Voting realm and the STAR Voting
 
 1. Hover over "Master" in the top left, and click "Add Realm"
 1. Give it a name (STARVoting or STARVotingDev), and hit create
-1. Under "Realm Settings", set the display name to include spaces
+1. Under "Realm Settings"
+    * Set the display name to include spaces
+    * Enable User-Managed Access
 1. Under "Realm Settings" > "Login". Enable the following
     * User Registration
     * Forgot password
@@ -105,7 +107,6 @@ We have all google api stuff under mike@equal.vote
 Follow the guide here to set that up
 
 https://keycloakthemes.com/blog/how-to-setup-sign-in-with-google-using-keycloak
-
 
 ## Point website to new endpoint
 
