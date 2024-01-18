@@ -162,6 +162,9 @@ const Header = () => {
                             <MenuItem disabled>
                                 Hello {authSession.getIdField('given_name')}!
                             </MenuItem>
+                            <MenuItem component={Link} href={authSession.accountUrl} target='_blank'>
+                                Your Account
+                            </MenuItem>
                             <MenuItem component={Link} href='/CreateElection'>
                                 New Election
                             </MenuItem>
