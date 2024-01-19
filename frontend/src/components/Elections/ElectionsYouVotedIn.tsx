@@ -9,15 +9,15 @@ export default () => {
 
     useEffect(() => {fetchElections()}, []);
 
-    const electionInvitations = React.useMemo(
-        () => data?.elections_as_voter ? data.elections_as_voter : [],
+    const previousElections = React.useMemo(
+        () => data?.elections_as_submitted_voter ? data.elections_as_submitted_voter : [],
         [data],
     );
             
     return <ElectionsTable
-        title='Elections You Can Vote In'
+        title='Elections You Voted In'
         headKeys={['title', 'state', 'start_time', 'end_time', 'description']}
         isPending={isPending}
-        electionData={electionInvitations}
+        electionData={previousElections}
     />
 }

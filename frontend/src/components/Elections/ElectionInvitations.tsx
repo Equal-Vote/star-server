@@ -9,7 +9,7 @@ export default () => {
     useEffect(() => {fetchElections()}, []);
 
     const electionInvitations = React.useMemo(
-        () => data?.elections_as_voter ? data.elections_as_voter : [],
+        () => data?.elections_as_unsubmitted_voter ? data.elections_as_unsubmitted_voter : [],
         [data],
     );
             

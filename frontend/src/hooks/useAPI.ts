@@ -11,7 +11,12 @@ export const useGetElection = (electionID: string | undefined) => {
 }
 
 export const useGetElections = () => {
-    return useFetch<undefined, { elections_as_official: Election[] | null, elections_as_voter: Election[] | null, open_elections: Election[] | null }>('/API/Elections', 'get')
+    return useFetch<undefined, {
+        elections_as_official: Election[] | null,
+        elections_as_unsubmitted_voter: Election[] | null,
+        elections_as_submitted_voter: Election[] | null,
+        open_elections: Election[] | null
+    }>('/API/Elections', 'get')
 }
 
 export const usePostElection = () => {
