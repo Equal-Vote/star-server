@@ -74,6 +74,36 @@ export default class ElectionRollDB implements IElectionRollStore {
             }))
     }
 
+    getByEmailAndSubmitted(email: string, ctx: ILoggingContext): Promise<ElectionRoll[] | null> {
+        Logger.debug(ctx, `${tableName}.getByEmail`);
+
+        return this._postgresClient
+            .selectFrom(tableName)
+            .where('email', '=', email)
+            .where('submitted', '=', true)
+            .selectAll()
+            .execute()
+            .catch(((reason: any) => {
+                Logger.debug(ctx, reason);
+                return null
+            }))
+    }
+
+    getByEmailAndUnsubmitted(email: string, ctx: ILoggingContext): Promise<ElectionRoll[] | null> {
+        Logger.debug(ctx, `${tableName}.getByEmail`);
+
+        return this._postgresClient
+            .selectFrom(tableName)
+            .where('email', '=', email)
+            .where('submitted', '=', false)
+            .selectAll()
+            .execute()
+            .catch(((reason: any) => {
+                Logger.debug(ctx, reason);
+                return null
+            }))
+    }
+
     getElectionRoll(election_id: string, voter_id: string | null, email: string | null, ip_address: string | null, ctx: ILoggingContext): Promise<ElectionRoll[] | null> {
         Logger.debug(ctx, `${tableName}.get election:${election_id}, voter:${voter_id}`);
 

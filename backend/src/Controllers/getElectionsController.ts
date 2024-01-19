@@ -30,12 +30,23 @@ const getElections = async (req: IElectionRequest, res: Response, next: NextFunc
     }
 
     /////////// ELECTIONS WE'RE INVITED TO ////////////////
-    var elections_as_voter = null;
+    var elections_as_unsubmitted_voter = null;
     if (email !== '') {
-        let myRolls = await ElectionRollModel.getByEmail(email, req)
+        let myRolls = await ElectionRollModel.getByEmailAndUnsubmitted(email, req)
+        console.log('unsubmitted output', myRolls);
         let election_ids = myRolls?.map(election => election.election_id)
         if (election_ids && election_ids.length > 0) {
-            elections_as_voter = await ElectionsModel.getElectionByIDs(election_ids,req)
+            elections_as_unsubmitted_voter = await ElectionsModel.getElectionByIDs(election_ids,req)
+        }
+    }
+
+    /////////// ELECTIONS WE'VE VOTED IN ////////////////
+    var elections_as_submitted_voter = null;
+    if (email !== '') {
+        let myRolls = await ElectionRollModel.getByEmailAndSubmitted(email, req)
+        let election_ids = myRolls?.map(election => election.election_id)
+        if (election_ids && election_ids.length > 0) {
+            elections_as_submitted_voter = await ElectionsModel.getElectionByIDs(election_ids,req)
         }
     }
 
@@ -43,9 +54,10 @@ const getElections = async (req: IElectionRequest, res: Response, next: NextFunc
     var open_elections = await ElectionsModel.getOpenElections(req);
 
     res.json({
-        elections_as_official: elections_as_official,
-        elections_as_voter: elections_as_voter,
-        open_elections: open_elections
+        elections_as_official,
+        elections_as_unsubmitted_voter,
+        elections_as_submitted_voter,
+        open_elections
     });
 }
 
