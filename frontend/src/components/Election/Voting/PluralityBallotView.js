@@ -17,7 +17,9 @@ export default function PluralityBallotView() {
     <GenericBallotView
       key="pluralityBallot"
       columns={[1]}
+      methodName='Choose One Voting'
       instructions={instructions}
+      learnMoreLink='https://electionscience.org/voting-methods/spoiler-effect-top-5-ways-plurality-voting-fails/'
       onClick={(row, score) => {
         const newScores = ballotContext.candidates.map(c => c.score);
         // bubble becomes null

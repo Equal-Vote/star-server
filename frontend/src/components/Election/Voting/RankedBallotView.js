@@ -76,6 +76,14 @@ export default function RankedBallotView() {
   return (
     <GenericBallotView
       key="rankedBallot"
+      methodName={
+        (ballotContext.race.voting_method == 'IRV' ? 'Ranked Choice Voting' : '') + 
+        (ballotContext.race.voting_method == 'RankedRobin' ? 'Ranked Robin Voting' : '')
+      }
+      learnMoreLink={
+        (ballotContext.race.voting_method == 'IRV' ? 'https://www.starvoting.org/rcv_v_star' : '') + 
+        (ballotContext.race.voting_method == 'RankedRobin' ? 'https://www.equal.vote/ranked_robin' : '')
+      }
       columns={['1st', '2nd', '3rd', '4th', '5th']}
       columnValues={[1, 2, 3, 4, 5]}
       instructions={instructions}
