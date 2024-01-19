@@ -22,7 +22,9 @@ export default function ApprovalBallotView() {
     <GenericBallotView
       key="approvalBallot"
       columns={[1]}
+      methodName='Approval Voting'
       instructions={instructions}
+      learnMoreLink='https://electionscience.org/approval-voting-101/'
       onClick={(row, score) => {
         const newScores = ballotContext.candidates.map(c => c.score);
         newScores[row] = newScores[row] === score ? null : score;

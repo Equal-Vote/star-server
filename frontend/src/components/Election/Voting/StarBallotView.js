@@ -64,7 +64,9 @@ export default function StarBallotView() {
     <GenericBallotView
       key="starBallot"
       columns={[0, 1, 2, 3, 4, 5]}
+      methodName="STAR Voting"
       instructions={instructions}
+      learnMoreLink="https://www.starvoting.org/star"
       leftTitle='Worst'
       rightTitle='Best'
       onClick={(i, j) => {

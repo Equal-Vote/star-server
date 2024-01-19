@@ -216,7 +216,9 @@ const ScoreColumnHeadings = ({starHeadings, columns}) =>
 export default function GenericBallotView({
   onClick,
   columns,
+  methodName,
   instructions,
+  learnMoreLink,
   columnValues=null,
   leftTitle='',
   rightTitle='',
@@ -252,6 +254,10 @@ export default function GenericBallotView({
           </Grid>}
 
           <Grid item xs={8} sx={{ pb:1, px:0 }} className="instructions">
+            <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }}>
+              This election uses {methodName}
+            </Typography>
+
             {instructions}
             { election.settings.require_instruction_confirmation &&
             <FormGroup>
@@ -292,6 +298,8 @@ export default function GenericBallotView({
 
           <Grid item xs={10} sx={{ p:5, px:0 }} className="footer">
             {footer}
+            <br/>
+            <Link href={learnMoreLink} target='_blank'>Learn more about {methodName}</Link>
           </Grid>
 
           { warning !== null &&

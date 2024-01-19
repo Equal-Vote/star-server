@@ -61,7 +61,9 @@ export default function StarPRBallotView({
     <GenericBallotView
       key="starBallot"
       columns={[0, 1, 2, 3, 4, 5]}
+      methodName="STAR PR Voting"
       instructions={instructions}
+      learnMoreLink='https://www.starvoting.org/star-pr'
       leftTitle='Worst'
       rightTitle='Best'
       onClick={(i, j) => {
