@@ -95,6 +95,12 @@ const Header = () => {
                                 {item.text}
                             </MenuItem>
                         )}
+                        <MenuItem onClick={() => {
+                            // simulate clicking the feedback button
+                            document.getElementById('launcher-frame').contentWindow.document.getElementsByClassName('launcher-button')[0].click()
+                        }}>
+                            Feedback?
+                        </MenuItem>
                     </Menu>
                 </Box>
 

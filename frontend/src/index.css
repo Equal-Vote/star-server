@@ -385,3 +385,10 @@ code {
     0px 8px 10px 1px rgba(var(--brand-ltblue-comma), 0.28),
     0px 3px 14px 2px rgba(var(--brand-ltblue-comma), 0.24);
 }
+
+/* hide feedback button on mobile */
+@media(max-width: 900px){
+  #launcher-frame{
+    display: none;
+  }
+}
