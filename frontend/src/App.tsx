@@ -17,6 +17,7 @@ import ElectionInvitations from './components/Elections/ElectionInvitations'
 import ElectionsYouManage from './components/Elections/ElectionsYouManage'
 import ElectionsYouVotedIn from './components/Elections/ElectionsYouVotedIn'
 import OpenElections from './components/Elections/OpenElections'
+import ClassicPrompt from './components/ClassicPrompt'
 
 const App = () => {
   return (
@@ -47,6 +48,7 @@ const App = () => {
                 </Box>
                 <Footer />
               </Box>
+              <ClassicPrompt/>
             </SnackbarContextProvider>
           </ConfirmDialogProvider>
         </AuthSessionContextProvider>

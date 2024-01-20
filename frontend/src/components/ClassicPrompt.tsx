@@ -1,61 +1,73 @@
 import React, { useState, useEffect } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useNavigate } from 'react-router'
+import { BallotContext } from './Election/Voting/VotePage';
+import {Typography, Stack, Button, Dialog, Box} from '@mui/material';
 
 const ClassicPrompt = () => {
     const navigate = useNavigate()
 
     const [prevClassicPrompt, setPrevClassicPrompt] = useLocalStorage('prev_classic_prompt', '')
-    const [rememberPrompt, setRememberPrompt] = useState(false)
 
     function goToOriginal(){
-        if(rememberPrompt) setPrevClassicPrompt('classic')
+        setPrevClassicPrompt('classic')
 
-        window.location.href = 'https://www.star.vote';
+        window.location.href = 'https://www.classic.star.vote';
     }
 
     function goToNewVersion(){
-
-        // navigate({ pathname: '/Landing'});
-
-        window.location.href = 'Landing';
-
-        if(rememberPrompt) setPrevClassicPrompt('new_version')
+        setPrevClassicPrompt('new_version')
     }
-
-    function handleCheckbox(event){
-       setRememberPrompt(event.target.checked) 
-    }
-
-    useEffect(() => {
-        if(prevClassicPrompt == 'classic'){
-            goToOriginal()
-        }
-
-        if(prevClassicPrompt == 'new_version'){
-            goToNewVersion()
-        }
-    });
 
     if(prevClassicPrompt != '') return <></> // save on rendering time so the redirect is faster
 
     return (
         <>
-            <div className="classicPageWrapper">
-                <iframe src='classic_star_vote.html' style={{width: '100%', height: '100%'}} scrolling="no"></iframe>
-            </div>
-            <div className="classicPopupBkg">
-                <div className="classicPopupInner">
-                    We're working on a new and improved version of star.vote!
+            <Box className="classicPageWrapper">
+                <iframe src='/classic_star_vote.html' style={{width: '100%', height: '100%'}} scrolling="no"></iframe>
+            </Box>
+            <Dialog open={true} className="classicPopupBkg" keepMounted>
+                <Stack className="classicPopupInner">
+                    <Typography align='center' component='h4'>
+                        The original star.vote has been moved to classic.star.vote, but the new and improved version is live!
+                    </Typography>
                     <br/>
-                    Want to try it?
+                    <Typography align='center' component='h4'>
+                        Want to try new version?
+                    </Typography>
                     <br/>
-                    <button onClick={goToOriginal}>Continue to Original</button>
-                    <button onClick={goToNewVersion}>Try New Verison</button>
-                    <br/>
-                    <input type="checkbox" onChange={handleCheckbox}/> Remember my selection
-                </div>
-            </div>
+                    <Button
+                        variant="contained"
+                        sx={{
+                            width: '80%',
+                            m: 'auto',
+                            p: 1,
+                            boxShadow: 2,
+                            backgroundColor: 'primary.main',
+                            fontWeight: 'bold',
+                            fontSize: 18,
+                        }}
+                        onClick={goToNewVersion}
+                    >
+                        Try the New Version!
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            width: '70%',
+                            m: 'auto',
+                            mt: 2,
+                            p: 1,
+                            boxShadow: 2,
+                            fontWeight: 'bold',
+                            fontSize: 18,
+                        }}
+                        onClick={goToNewVersion}
+                    >
+                        Return to Classic
+                    </Button>
+                </Stack>
+            </Dialog>
         </>
     )
 }
