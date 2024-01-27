@@ -19,5 +19,15 @@ services:
       - POSTGRES_PASSWORD=ChangeMeOrDontTest2020
     restart:
       on-failure
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.1
+    command:
+      - start-dev
+      - --import-realm
+    ports:
+      - '8080:8080'
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
 networks:
   star-net: {}
