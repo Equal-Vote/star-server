@@ -1,10 +1,11 @@
+require('dotenv').config()
 import { createMigrator, handleMigration } from "./migration-utils"
 
-async function migrateToLatest() {
+async function migrateUp() {
     const { migrator, db } = createMigrator()
     handleMigration(await migrator.migrateUp())
   
     await db.destroy()
   }
   
-  migrateToLatest()
+  migrateUp()

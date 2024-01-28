@@ -8,7 +8,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .execute()
 
     await db.updateTable('electionDB')
-        .set({create_date: Date.now().toString()})
+        .set({create_date: new Date().toISOString()})
         .execute()
 
     await db.schema.alterTable('electionDB')

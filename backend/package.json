@@ -9,8 +9,8 @@
     "dev": "nodemon ./src/index.ts",
     "build": "tsc --project ./",
     "migrate:latest": "node ./build/backend/src/Migrators/migrate-to-latest.js",
-    "migrate:up": "node ./build/backend/src/Migrators/migrate-down.js",
-    "migrate:down": "node ./build/backend/src/Migrators/migrate-to-latest.js"
+    "migrate:up": "node ./build/backend/src/Migrators/migrate-up.js",
+    "migrate:down": "node ./build/backend/src/Migrators/migrate-down.js"
   },
   "keywords": [],
   "author": "",
