@@ -7,7 +7,7 @@ export interface ElectionRoll {
     email?: string; // Email address of voter
     submitted: boolean; //has ballot been submitted
     ballot_id?:  Uid; //ID of ballot, unsure if this is needed
-    ip_address?: string; //IP Address of voter
+    ip_hash?: string; //IP Address of voter
     address?: string; // Address of voter
     state: ElectionRollState; //state of election roll 
     history?: ElectionRollAction[];// history of changes to election roll

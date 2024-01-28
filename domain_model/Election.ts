@@ -19,6 +19,9 @@ export interface Election {
     races:          Race[]; // one or more race definitions
     settings:       ElectionSettings;
     auth_key?:      string;
+    claim_key_hash: string;
+    is_public:      Boolean;
+    create_date:    Date | string;
 }
 
 
