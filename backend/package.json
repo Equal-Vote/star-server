@@ -8,7 +8,9 @@
     "start": "npm run-script build && node ./build/backend/src/index.js",
     "dev": "nodemon ./src/index.ts",
     "build": "tsc --project ./",
-    "migrate:latest": "node ./build/backend/src/migrate-to-latest.js"
+    "migrate:latest": "node ./build/backend/src/Migrators/migrate-to-latest.js",
+    "migrate:up": "node ./build/backend/src/Migrators/migrate-down.js",
+    "migrate:down": "node ./build/backend/src/Migrators/migrate-to-latest.js"
   },
   "keywords": [],
   "author": "",
