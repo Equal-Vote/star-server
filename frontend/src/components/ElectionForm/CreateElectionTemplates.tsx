@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from "react-router"
-import { Election } from '@domain_model/Election';
+import { Election, NewElection } from '@domain_model/Election';
 import { usePostElection } from '../../hooks/useAPI';
 import { DateTime } from 'luxon'
 import { Card, CardActionArea, CardMedia, CardContent, Typography, Box, Grid } from '@mui/material';
@@ -14,15 +14,14 @@ const CreateElectionTemplates = () => {
     const themeSelector = useThemeSelector()
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = usePostElection()
-    const [quickPoll, setQuickPoll] = useLocalStorage<Election>('QuickPoll', null)
+    const [quickPoll, setQuickPoll] = useLocalStorage<NewElection>('QuickPoll', null)
     const cardColor = themeSelector.mode === 'darkMode' ? 'brand.gray5' : 'brand.gray1'
-    const defaultElection: Election = {
+    const defaultElection: NewElection = {
         title: '',
-        election_id: '0',
+        owner_id: '',
         description: '',
         state: 'draft',
         frontend_url: '',
-        owner_id: '',
         races: [],
         settings: {
             voter_access: 'open',
@@ -37,7 +36,7 @@ const CreateElectionTemplates = () => {
         }
     }
 
-    const onAddElection = async (updateFunc: (election: Election) => any) => {
+    const onAddElection = async (updateFunc: (election: NewElection) => any) => {
         const election = defaultElection
         updateFunc(election)
         // calls post election api, throws error if response not ok

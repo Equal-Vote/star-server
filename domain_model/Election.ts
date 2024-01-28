@@ -23,7 +23,10 @@ export interface Election {
     is_public?:      Boolean;
     create_date:    Date | string;
 }
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
+type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
+export interface NewElection extends PartialBy<Election,'election_id'|'create_date'> {}
 
 export function electionValidation(obj:Election): string | null {
   if (!obj){
