@@ -10,7 +10,8 @@
     "build": "tsc --project ./",
     "migrate:latest": "node ./build/backend/src/Migrators/migrate-to-latest.js",
     "migrate:up": "node ./build/backend/src/Migrators/migrate-up.js",
-    "migrate:down": "node ./build/backend/src/Migrators/migrate-down.js"
+    "migrate:down": "node ./build/backend/src/Migrators/migrate-down.js",
+    "db_sandbox": "npm run-script build && node ./build/backend/src/test/database_sandbox.js"
   },
   "keywords": [],
   "author": "",
