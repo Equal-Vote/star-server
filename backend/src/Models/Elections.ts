@@ -73,14 +73,14 @@ export default class ElectionsDB {
         let querry = this._postgresClient
             .selectFrom(tableName)
             .selectAll()
+            
         if (id !== '' || email !== '') {
-            querry = querry.where(({ or, cmpr }) =>
-                or([
-                    cmpr('owner_id', '=', id),
-                    cmpr(sql`admin_ids::jsonb`, '?', email),
-                    cmpr(sql`audit_ids::jsonb`, '?', email),
-                    cmpr(sql`credential_ids::jsonb`, '?', email)
-                ]))
+            querry = querry.where(({ eb }) =>
+                eb('owner_id', '=', id)
+                    .or(sql`admin_ids::jsonb`, '?', email)
+                    .or(sql`audit_ids::jsonb`, '?', email)
+                    .or(sql`credential_ids::jsonb`, '?', email)
+            )
         }
         const elections = querry.execute()
 
