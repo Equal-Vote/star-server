@@ -35,7 +35,7 @@
     "express-async-handler": "^1.2.0",
     "fraction.js": "^4.2.0",
     "jsonwebtoken": "^9.0.0",
-    "kysely": "^0.25.0",
+    "kysely": "^0.27.2",
     "luxon": "^3.3.0",
     "multer": "^1.4.5-lts.1",
     "node-fetch": "^3.2.3",

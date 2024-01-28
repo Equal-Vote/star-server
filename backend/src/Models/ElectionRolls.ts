@@ -110,22 +110,20 @@ export default class ElectionRollDB implements IElectionRollStore {
         return this._postgresClient
             .selectFrom(tableName)
             .where('election_id', '=', election_id)
-            .where((eb) => {
-                const ors: Expression<boolean>[] = []
-
+            .where(({ eb, or }) => {
+                const ors = []
                 if (voter_id) {
-                    ors.push(eb.cmpr('voter_id', '=', voter_id))
+                    ors.push(eb('voter_id', '=', voter_id))
                 }
 
                 if (email) {
-                    ors.push(eb.cmpr('email', '=', email))
+                    ors.push(eb('email', '=', email))
                 }
 
                 if (ip_hash) {
-                    ors.push(eb.cmpr('ip_hash', '=', ip_hash))
+                    ors.push(eb('ip_hash', '=', ip_hash))
                 }
-
-                return eb.or(ors)
+                return or(ors)
             })
             .selectAll()
             .execute()
