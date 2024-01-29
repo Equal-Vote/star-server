@@ -206,6 +206,46 @@ cd frontend
 npm start
 ```
 
+## Hosting database and Keycloak locally
+
+If you want to make changes to database schemas or keycloak settings, or don't have access to dev credentials, you can host the database and keycloak server locally with Docker.
+
+Follow the instructions [here](https://docs.docker.com/engine/install/) to install docker, check system requirements for turning on WSL if using Windows. After installed start Docker Desktop.
+
+docker-compose.yml in the project directory contains the configuration launching the server, database, and keycloak. Not much work has been done yet on running all three together, however you can launch the database with
+
+```bash
+docker compose  -f "docker-compose.yml" up -d --build my-db 
+```
+
+Next, update the database variables in your backend .env with 
+
+```bash
+DATABASE_URL=postgresql://postgres:ChangeMeOrDontTest2020@localhost:5432/postgres
+DEV_DATABASE=FALSE
+```
+
+and run the commands
+
+```bash
+cd backend
+npm run build
+npm run migrate:latest
+```
+
+Migrate:latest will initialize the database tables with the latest migrations.
+
+To run keycloak:
+
+```bash
+docker compose  -f "docker-compose.yml" up -d --build keycloak
+```
+
+You can then access keycloak at http://localhost:8080/ 
+
+See the keycloak [deployment](contributions/Infrastructure/10_keycloak_deployment.md) and [configuration](contributions/Infrastructure/11_keycloak_configuration.md) documentation for next steps.
+
+
 ## Login
 
 Deploying to localhost still uses the same KeyCloak userbase as production (at least for now). If you want to login to the production keycloak make sure you followed the keycloak step in [the environment variable setup](#step-1-set-up-the-environment-variable-file). That said logging in through localhost does require some extra steps, so be sure to follow these additional steps
