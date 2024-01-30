@@ -41,5 +41,5 @@ export function expectPermission(roles:roles[],permission:permission):any {
 }
 
 export function hashString(inputString: string) {
-    return createHash('sha1').update(inputString).digest('hex')
+    return createHash('sha256').update(inputString).digest('hex')
 }
