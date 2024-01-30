@@ -19,8 +19,14 @@ export interface Election {
     races:          Race[]; // one or more race definitions
     settings:       ElectionSettings;
     auth_key?:      string;
+    claim_key_hash?: string;
+    is_public?:      Boolean;
+    create_date:    Date | string;
 }
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
+type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
+export interface NewElection extends PartialBy<Election,'election_id'|'create_date'> {}
 
 export function electionValidation(obj:Election): string | null {
   if (!obj){

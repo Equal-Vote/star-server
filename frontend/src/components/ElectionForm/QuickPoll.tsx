@@ -11,16 +11,15 @@ import { useLocalStorage } from '../../hooks/useLocalStorage';
 import Typography from '@mui/material/Typography';
 import { usePostElection } from '../../hooks/useAPI';
 import { useCookie } from '../../hooks/useCookie';
-import { Election } from '@domain_model/Election.js';
+import { Election, NewElection } from '@domain_model/Election.js';
 
 const QuickPoll = ({ authSession }) => {
     const [tempID, setTempID] = useCookie('temp_id', '0')
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = usePostElection()
 
-    const QuickPollTemplate: Election = {
+    const QuickPollTemplate: NewElection = {
         title: '',
-        election_id: '0',
         state: 'open',
         frontend_url: '',
         owner_id: '0',
@@ -60,7 +59,7 @@ const QuickPoll = ({ authSession }) => {
     }
 
 
-    const [election, setElectionData] = useLocalStorage<Election>('QuickPoll', QuickPollTemplate)
+    const [election, setElectionData] = useLocalStorage<NewElection>('QuickPoll', QuickPollTemplate)
     const [titleError, setTitleError] = useState(false)
     const onSubmitElection = async (election) => {
         // calls post election api, throws error if response not ok

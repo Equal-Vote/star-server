@@ -1,4 +1,4 @@
-import { Election } from "@domain_model/Election";
+import { Election, NewElection } from "@domain_model/Election";
 import { VoterAuth } from '@domain_model/VoterAuth';
 import { ElectionRoll } from "@domain_model/ElectionRoll";
 import useFetch from "./useFetch";
@@ -20,7 +20,7 @@ export const useGetElections = () => {
 }
 
 export const usePostElection = () => {
-    return useFetch<{ Election: Election }, { election: Election }>('/API/Elections', 'post')
+    return useFetch<{ Election: NewElection }, { election: Election }>('/API/Elections', 'post')
 }
 
 export const useEditElection = (election_id: string | undefined) => {

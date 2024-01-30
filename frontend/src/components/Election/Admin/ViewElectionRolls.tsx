@@ -138,7 +138,7 @@ const ViewElectionRolls = () => {
                         voter_id: roll.voter_id,
                         email: roll.email || '',
                         invite_status: invite_status,
-                        ip: roll.ip_address || '',
+                        ip: roll.ip_hash || '',
                         precinct: roll.precinct || '',
                         has_voted: roll.submitted.toString(),
                         state: roll.state.toString()

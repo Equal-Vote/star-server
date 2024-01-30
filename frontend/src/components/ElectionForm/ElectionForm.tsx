@@ -172,6 +172,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
         state: 'draft',
         frontend_url: '',
         owner_id: '',
+        create_date: '',
         races: [
             {
                 race_id: '0',

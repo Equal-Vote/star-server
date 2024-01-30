@@ -10,6 +10,7 @@ import { Election } from "../../../domain_model/Election";
 import { randomUUID } from "crypto";
 import { IElectionRequest } from "../IRequest";
 import { Response, NextFunction } from 'express';
+import { hashString } from "./controllerUtils";
 
 const registerVoter = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.registerVoter ${req.election.election_id}`);
@@ -43,7 +44,7 @@ const registerVoter = async (req: IElectionRequest, res: Response, next: NextFun
             election_id: req.election.election_id,
             email: req.user?.email,
             submitted: false,
-            ip_address: targetElection.settings.voter_authentication.ip_address ? req.ip : undefined,
+            ip_hash: targetElection.settings.voter_authentication.ip_address ? hashString(req.ip) : undefined,
             state: ElectionRollState.registered,
             history: [],
             registration: req.body.registration,

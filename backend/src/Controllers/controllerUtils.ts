@@ -5,14 +5,14 @@ import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-e
 import { Request, Response } from 'express';
 import { roles } from "../../../domain_model/roles";
 import { hasPermission, permission, permissions } from '../../../domain_model/permissions';
-import { randomUUID } from "crypto";
+import { randomUUID, createHash } from "crypto";
 import ServiceLocator from "../ServiceLocator";
-
 const accountService = ServiceLocator.accountService();
 
 export function expectValidElectionFromRequest(req:IRequest):Election {
     const inputElection = req.body.Election;
     inputElection.election_id = randomUUID();
+    inputElection.create_date = new Date().toISOString()
     const validationErr = electionValidation(inputElection);
     if (validationErr) {
         Logger.info(req, "Invalid Election: " + validationErr, inputElection);
@@ -38,4 +38,8 @@ export function expectPermission(roles:roles[],permission:permission):any {
         if (!roles.some( (role) => permission.includes(role))){
             throw new Unauthorized("Does not have permission")
       }
+}
+
+export function hashString(inputString: string) {
+    return createHash('sha256').update(inputString).digest('hex')
 }

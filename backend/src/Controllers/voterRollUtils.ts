@@ -6,15 +6,16 @@ import Logger from "../Services/Logging/Logger";
 import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-errors";
 import { ILoggingContext } from "../Services/Logging/ILogger";
 import { randomUUID } from "crypto";
+import { hashString } from "./controllerUtils";
 
 const ElectionRollModel = ServiceLocator.electionRollDb();
 
 export async function getOrCreateElectionRoll(req: IRequest, election: Election, ctx: ILoggingContext): Promise<ElectionRoll | null> {
     // Checks for existing election roll for user
     Logger.info(req, `getOrCreateElectionRoll`)
-
+    const ip_hash = hashString(req.ip)
     // Get data that is used for voter authentication
-    const ip_address = election.settings.voter_authentication.ip_address ? req.ip : null
+    const require_ip_hash = election.settings.voter_authentication.ip_address ? ip_hash : null
     const email = election.settings.voter_authentication.email ? req.user?.email : null
     let voter_id = election.settings.voter_authentication.voter_id ? req.cookies?.voter_id : null
 
@@ -22,8 +23,8 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
     // This is an odd way of going about this, rather than getting a roll that matches all three we get all that match any of the fields and
     // check the output for a number of edge cases.
     var electionRollEntries = null
-    if ((ip_address || email || voter_id)) {
-        electionRollEntries = await ElectionRollModel.getElectionRoll(String(election.election_id), voter_id, email, ip_address, ctx);
+    if ((require_ip_hash || email || voter_id)) {
+        electionRollEntries = await ElectionRollModel.getElectionRoll(String(election.election_id), voter_id, email, require_ip_hash, ctx);
     }
 
 
@@ -46,12 +47,12 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
             election_id: String(election.election_id),
             email: req.user?.email ? req.user.email : undefined,
             voter_id: new_voter_id,
-            ip_address: req.ip,
+            ip_hash: ip_hash,
             submitted: false,
             state: ElectionRollState.approved,
             history: history,
         }]
-        if ((ip_address || email || voter_id)) {
+        if ((require_ip_hash || email || voter_id)) {
             const newElectionRoll = await ElectionRollModel.submitElectionRoll(roll, ctx, `User requesting Roll and is authorized`)
             if (!newElectionRoll) {
                 Logger.error(ctx, "Failed to update ElectionRoll");
@@ -71,8 +72,8 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
         Logger.error(req, "Multiple election roll entries found", electionRollEntries);
         throw new InternalServerError('Multiple election roll entries found');
     }
-    if (election.settings.voter_authentication.ip_address && electionRollEntries[0].ip_address) {
-        if (electionRollEntries[0].ip_address !== ip_address) {
+    if (election.settings.voter_authentication.ip_address && electionRollEntries[0].ip_hash) {
+        if (electionRollEntries[0].ip_hash !== ip_hash) {
             Logger.error(req, "IP Address does not match saved voter roll", electionRollEntries);
             throw new Unauthorized('IP Address does not match saved voter roll');
         }

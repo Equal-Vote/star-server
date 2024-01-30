@@ -104,7 +104,7 @@ export default class ElectionRollDB implements IElectionRollStore {
             }))
     }
 
-    getElectionRoll(election_id: string, voter_id: string | null, email: string | null, ip_address: string | null, ctx: ILoggingContext): Promise<ElectionRoll[] | null> {
+    getElectionRoll(election_id: string, voter_id: string | null, email: string | null, ip_hash: string | null, ctx: ILoggingContext): Promise<ElectionRoll[] | null> {
         Logger.debug(ctx, `${tableName}.get election:${election_id}, voter:${voter_id}`);
 
         return this._postgresClient
@@ -121,8 +121,8 @@ export default class ElectionRollDB implements IElectionRollStore {
                     ors.push(eb.cmpr('email', '=', email))
                 }
 
-                if (ip_address) {
-                    ors.push(eb.cmpr('ip_address', '=', ip_address))
+                if (ip_hash) {
+                    ors.push(eb.cmpr('ip_hash', '=', ip_hash))
                 }
 
                 return eb.or(ors)

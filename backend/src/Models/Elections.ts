@@ -28,7 +28,6 @@ export default class ElectionsDB {
 
     createElection(election: Election, ctx: ILoggingContext, reason: string): Promise<Election> {
         Logger.debug(ctx, `${tableName}.createElection`, election);
-
         const newElection = this._postgresClient
             .insertInto(tableName)
             .values(election)

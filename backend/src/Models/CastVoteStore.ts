@@ -27,14 +27,13 @@ export default class CastVoteStore {
             ballot.user_id,
             ballot.status,
             ballot.date_submitted,
-            ballot.ip_address,
             JSON.stringify(ballot.votes),
             JSON.stringify(ballot.history),
             ballot.precinct,
         ];
 
         const ballotSQL = pgFormat(
-            `INSERT INTO ${this._ballotTableName} (ballot_id,election_id,user_id,status,date_submitted,ip_address,votes,history,precinct)
+            `INSERT INTO ${this._ballotTableName} (ballot_id,election_id,user_id,status,date_submitted,ip_hash,votes,history,precinct)
         VALUES (%L);`,
             ballotValues
         );

@@ -48,11 +48,11 @@ export default class ElectionRollDB implements IElectionRollStore{
         return Promise.resolve(res)
     }
 
-    getElectionRoll(election_id: string, voter_id: string|null, email: string|null, ip_address: string|null, ctx:ILoggingContext): Promise<[ElectionRoll] | null> {
-        Logger.debug(ctx, `MockElectionRolls get election:${election_id}, voter_id:${voter_id}, email: ${email}, ip_address: ${ip_address}`);
+    getElectionRoll(election_id: string, voter_id: string|null, email: string|null, ip_hash: string|null, ctx:ILoggingContext): Promise<[ElectionRoll] | null> {
+        Logger.debug(ctx, `MockElectionRolls get election:${election_id}, voter_id:${voter_id}, email: ${email}, ip_hash: ${ip_hash}`);
         let roll = this._electionRolls.filter(electionRolls => {
             if (electionRolls.election_id!==election_id) return false
-            if (ip_address && electionRolls.ip_address===ip_address) return true
+            if (ip_hash && electionRolls.ip_hash===ip_hash) return true
             if (voter_id && electionRolls.voter_id ===voter_id) return true
             if (email && electionRolls.email === email) return true
             return false
