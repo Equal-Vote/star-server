@@ -36,9 +36,6 @@ export function ballotValidation(election: Election, obj:Ballot): string | null 
     if (!obj.election_id || typeof obj.election_id !== 'string'){
         return "Invalid Election ID";
     }
-    if (!obj.ballot_id || typeof obj.ballot_id !== 'string'){
-        return "Invalid Ballot ID";
-    }
     if (!obj.votes){
         return "Invalid Votes";
     }
