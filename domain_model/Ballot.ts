@@ -14,8 +14,10 @@ export interface Ballot {
     votes: Vote[];         // One per poll
     history?: BallotAction[];
     precinct?: string; // Precint of voter
+    create_date:    Date | string; // Date this object was created
+    update_date:    Date | string;  // Date this object was last updated
+    head:           boolean;// Head version of this object
 }
-
 
 export interface BallotAction {
     action_type:string;

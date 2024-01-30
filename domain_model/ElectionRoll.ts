@@ -16,7 +16,10 @@ export interface ElectionRoll {
     email_data?: {
         inviteResponse?: any,
         reminderResponse?: any,
-    }
+    };
+    create_date:    Date | string; // Date this object was created
+    update_date:    Date | string;  // Date this object was last updated
+    head:           boolean;// Head version of this object
 }
 
 export interface ElectionRollAction {

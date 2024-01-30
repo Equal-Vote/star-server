@@ -29,6 +29,11 @@ export default class ElectionRollDB implements IElectionRollStore {
 
     submitElectionRoll(electionRolls: ElectionRoll[], ctx: ILoggingContext, reason: string): Promise<boolean> {
         Logger.debug(ctx, `${tableName}.submit`);
+        electionRolls.forEach(roll => {
+            roll.update_date = Date.now().toString()
+            roll.head = true
+            roll.create_date = new Date().toISOString()
+        })
 
         return this._postgresClient
             .insertInto(tableName)
@@ -42,6 +47,7 @@ export default class ElectionRollDB implements IElectionRollStore {
         return this._postgresClient
             .selectFrom(tableName)
             .where('election_id', '=', election_id)
+            .where('head', '=', true)
             .selectAll()
             .execute()
     }
@@ -53,6 +59,7 @@ export default class ElectionRollDB implements IElectionRollStore {
             .selectFrom(tableName)
             .where('election_id', '=', election_id)
             .where('voter_id', '=', voter_id)
+            .where('head', '=', true)
             .selectAll()
             .executeTakeFirstOrThrow()
             .catch(((reason: any) => {
@@ -66,6 +73,7 @@ export default class ElectionRollDB implements IElectionRollStore {
         return this._postgresClient
             .selectFrom(tableName)
             .where('email', '=', email)
+            .where('head', '=', true)
             .selectAll()
             .execute()
             .catch(((reason: any) => {
@@ -81,6 +89,7 @@ export default class ElectionRollDB implements IElectionRollStore {
             .selectFrom(tableName)
             .where('email', '=', email)
             .where('submitted', '=', true)
+            .where('head', '=', true)
             .selectAll()
             .execute()
             .catch(((reason: any) => {
@@ -96,6 +105,7 @@ export default class ElectionRollDB implements IElectionRollStore {
             .selectFrom(tableName)
             .where('email', '=', email)
             .where('submitted', '=', false)
+            .where('head', '=', true)
             .selectAll()
             .execute()
             .catch(((reason: any) => {
@@ -110,6 +120,7 @@ export default class ElectionRollDB implements IElectionRollStore {
         return this._postgresClient
             .selectFrom(tableName)
             .where('election_id', '=', election_id)
+            .where('head', '=', true)
             .where(({ eb, or }) => {
                 const ors = []
                 if (voter_id) {
@@ -141,18 +152,25 @@ export default class ElectionRollDB implements IElectionRollStore {
     update(election_roll: ElectionRoll, ctx: ILoggingContext, reason: string): Promise<ElectionRoll | null> {
         Logger.debug(ctx, `${tableName}.updateRoll`);
         Logger.debug(ctx, "", election_roll)
+        election_roll.update_date = Date.now().toString()
+        election_roll.head = true
+        // Transaction to insert updated roll and set old version's head to false
+        return this._postgresClient.transaction().execute(async (trx) => {
+            await trx.updateTable(tableName)
+                .where('election_id', '=', election_roll.election_id)
+                .where('voter_id', '=', election_roll.voter_id)
+                .where('head', '=', true)
+                .set('head', false)
+                .execute()
 
-        return this._postgresClient
-            .updateTable(tableName)
-            .where('election_id', '=', election_roll.election_id)
-            .where('voter_id', '=', election_roll.voter_id)
-            .set(election_roll)
-            .returningAll()
-            .executeTakeFirstOrThrow()
-            .catch((reason: any) => {
-                Logger.debug(ctx, ".get null");
-                return null;
-            })
+            return await trx.insertInto(tableName)
+                .values(election_roll)
+                .returningAll()
+                .executeTakeFirstOrThrow()
+        }).catch((reason: any) => {
+            Logger.debug(ctx, ".get null");
+            return null;
+        })
     }
 
     delete(election_roll: ElectionRoll, ctx: ILoggingContext, reason: string): Promise<boolean> {
