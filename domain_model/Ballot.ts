@@ -1,4 +1,4 @@
-import { Election, getApprovedRaces } from "./Election";
+import { Election, PartialBy, getApprovedRaces } from "./Election";
 import { ElectionRoll } from "./ElectionRoll";
 import { Race } from "./Race";
 import { Uid } from "./Uid";
@@ -25,6 +25,7 @@ export interface BallotAction {
     timestamp:number;
 }
 
+export interface NewBallot extends PartialBy<Ballot,'ballot_id'|'create_date'|'update_date'|'head'> {}
 
 export function ballotValidation(election: Election, obj:Ballot): string | null {
     if (!obj){

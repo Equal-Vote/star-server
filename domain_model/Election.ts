@@ -26,9 +26,9 @@ export interface Election {
     head:           boolean;// Head version of this object
 }
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
-type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
-export interface NewElection extends PartialBy<Election,'election_id'|'create_date'|'update_date'> {}
+export interface NewElection extends PartialBy<Election,'election_id'|'create_date'|'update_date'|'head'> {}
 
 export function electionValidation(obj:Election): string | null {
   if (!obj){

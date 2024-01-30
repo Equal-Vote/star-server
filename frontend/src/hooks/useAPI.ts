@@ -4,7 +4,7 @@ import { ElectionRoll } from "@domain_model/ElectionRoll";
 import useFetch from "./useFetch";
 import { VotingMethod } from "@domain_model/Race";
 import { ElectionResults } from "@domain_model/ITabulators";
-import { Ballot } from "@domain_model/Ballot";
+import { Ballot, NewBallot } from "@domain_model/Ballot";
 
 export const useGetElection = (electionID: string | undefined) => {
     return useFetch<undefined, { election: Election, voterAuth: VoterAuth }>(`/API/Election/${electionID}`, 'get')
@@ -99,7 +99,7 @@ export const useGetResults = (election_id: string | undefined) => {
 }
 
 export const usePostBallot = (election_id: string | undefined) => {
-    return useFetch<{ ballot: Ballot, receiptEmail?: string }, {ballot: Ballot}>(`/API/Election/${election_id}/vote`, 'post')
+    return useFetch<{ ballot: NewBallot, receiptEmail?: string }, {ballot: Ballot}>(`/API/Election/${election_id}/vote`, 'post')
 }
 
 export const useGetSandboxResults = () => {
