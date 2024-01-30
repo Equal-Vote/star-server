@@ -48,6 +48,9 @@ const registerVoter = async (req: IElectionRequest, res: Response, next: NextFun
             state: ElectionRollState.registered,
             history: [],
             registration: req.body.registration,
+            update_date: Date.now().toString(),
+            head: true,
+            create_date: new Date().toISOString(),
         }
     } else {
         roll = tempRoll

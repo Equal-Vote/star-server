@@ -51,6 +51,9 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
             submitted: false,
             state: ElectionRollState.approved,
             history: history,
+            update_date: Date.now().toString(),
+            head: true,
+            create_date: new Date().toISOString(),
         }]
         if ((ip_hash || email || voter_id)) {
             const newElectionRoll = await ElectionRollModel.submitElectionRoll(roll, ctx, `User requesting Roll and is authorized`)
