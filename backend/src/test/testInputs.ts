@@ -1,5 +1,5 @@
 
-import { Ballot } from '../../../domain_model/Ballot';
+import { Ballot, NewBallot } from '../../../domain_model/Ballot';
 import { Election } from '../../../domain_model/Election';
 import { ElectionSettings } from '../../../domain_model/ElectionSettings';
 import { Race } from '../../../domain_model/Race';
@@ -162,7 +162,7 @@ export default {
             }
             ]
         }]
-    } as Ballot,
+    } as NewBallot,
 
     IDRollElection : {
         election_id: "0",
@@ -228,7 +228,7 @@ export default {
             }
             ]
         }]
-    },
+    } as NewBallot,
     MultiRaceElection : {
         election_id: "0",
         title: 'Election 1',
@@ -305,7 +305,7 @@ export default {
             }
             ]
         }]
-    } as Ballot,
+    } as NewBallot,
     MultiRaceBallotValid2: {
         ballot_id: "1",
         election_id: "0",
@@ -345,7 +345,7 @@ export default {
             }
             ]
         }]
-    } as Ballot,
+    } as NewBallot,
     MultiRaceBallotInvalid1: {
         ballot_id: "2",
         election_id: "0",
@@ -402,7 +402,7 @@ export default {
             }
             ]
         }]
-    } as Ballot,
+    } as NewBallot,
     MultiRaceBallotInvalid2: {
         ballot_id: "3",
         election_id: "0",
@@ -459,7 +459,7 @@ export default {
             }
             ]
         }]
-    } as Ballot,
+    } as NewBallot,
 
     
     PrecinctElection : {
@@ -567,7 +567,7 @@ export default {
             }
             ]
         }]
-    } as Ballot,
+    } as NewBallot,
     Precinct1Ballot: {
         ballot_id: "0",
         election_id: "0",
@@ -590,6 +590,6 @@ export default {
             }
             ]
         }]
-    } as Ballot,
+    } as NewBallot,
 }
 
