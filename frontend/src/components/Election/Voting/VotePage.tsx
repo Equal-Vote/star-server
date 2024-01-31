@@ -5,7 +5,7 @@ import React from 'react'
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import { useNavigate } from "react-router";
 import { Box, Checkbox, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Step, StepLabel, Stepper, SvgIcon, TextField, Typography } from "@mui/material";
-import { Ballot } from "@domain_model/Ballot";
+import { Ballot, NewBallot } from "@domain_model/Ballot";
 import { Vote } from "@domain_model/Vote";
 import { Score } from "@domain_model/Score";
 import Button from "@mui/material/Button";
@@ -106,8 +106,7 @@ const VotePage = () => {
             return candidateIDs[race_index].indexOf(a.candidate_id) - candidateIDs[race_index].indexOf(b.candidate_id)
           })
         }))
-    const ballot: Ballot = {
-      ballot_id: '0', //Defaults to zero but is assigned ballot id by server when submitted
+    const ballot: NewBallot = {
       election_id: election.election_id,
       votes: votes,
       date_submitted: Date.now(),

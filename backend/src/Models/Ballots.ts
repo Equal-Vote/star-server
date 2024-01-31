@@ -31,6 +31,9 @@ export default class BallotsDB implements IBallotStore {
 
     submitBallot(ballot: Ballot, ctx: ILoggingContext, reason: string): Promise<Ballot> {
         Logger.debug(ctx, `${tableName}.submit`, ballot);
+        ballot.update_date = Date.now().toString()// Use now() because it doesn't change with time zone 
+        ballot.head = true
+        ballot.create_date = new Date().toISOString()
 
         return this._postgresClient
             .insertInto(tableName)
@@ -50,6 +53,7 @@ export default class BallotsDB implements IBallotStore {
             .selectFrom(tableName)
             .selectAll()
             .where('ballot_id', '=', ballot_id)
+            .where('head', '=', true)
             .executeTakeFirstOrThrow()
             .catch((reason: any) => {
                 Logger.debug(ctx, `${tableName}.get null`, reason);
@@ -65,6 +69,7 @@ export default class BallotsDB implements IBallotStore {
             .selectFrom(tableName)
             .selectAll()
             .where('election_id', '=', election_id)
+            .where('head', '=', true)
             .execute()
     }
 

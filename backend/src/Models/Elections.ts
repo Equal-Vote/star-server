@@ -28,6 +28,10 @@ export default class ElectionsDB {
 
     createElection(election: Election, ctx: ILoggingContext, reason: string): Promise<Election> {
         Logger.debug(ctx, `${tableName}.createElection`, election);
+        election.update_date = Date.now().toString()// Use now() because it doesn't change with time zone 
+        election.head = true
+        election.create_date = new Date().toISOString()
+
         const newElection = this._postgresClient
             .insertInto(tableName)
             .values(election)
@@ -38,13 +42,21 @@ export default class ElectionsDB {
 
     updateElection(election: Election, ctx: ILoggingContext, reason: string): Promise<Election> {
         Logger.debug(ctx, `${tableName}.updateElection`, election);
+        election.update_date = Date.now().toString()
+        election.head = true
+        // Transaction to insert updated election and set old version's head to false
+        const updatedElection = this._postgresClient.transaction().execute(async (trx) => {
+            await trx.updateTable('electionDB')
+                .where('election_id', '=', election.election_id)
+                .where('head', '=', true)
+                .set('head', false)
+                .execute()
 
-        const updatedElection = this._postgresClient
-            .updateTable(tableName)
-            .set(election)
-            .where('election_id', '=', election.election_id)
-            .returningAll()
-            .executeTakeFirstOrThrow()
+            return await trx.insertInto('electionDB')
+                .values(election)
+                .returningAll()
+                .executeTakeFirstOrThrow()
+        })
 
         return updatedElection
     }
@@ -57,6 +69,7 @@ export default class ElectionsDB {
         const openElections = await this._postgresClient
             .selectFrom(tableName)
             .where('state', '=', 'open')
+            .where('head', '=', true)
             .selectAll()
             .execute()
 
@@ -70,19 +83,20 @@ export default class ElectionsDB {
         // When I filter in trello it adds "filter=member:arendpetercastelein,overdue:true" to the URL, I'm following the same pattern here
         Logger.debug(ctx, `${tableName}.getAll ${id}`);
 
-        let querry = this._postgresClient
+        let query = this._postgresClient
             .selectFrom(tableName)
+            .where('head', '=', true)
             .selectAll()
+
         if (id !== '' || email !== '') {
-            querry = querry.where(({ or, cmpr }) =>
-                or([
-                    cmpr('owner_id', '=', id),
-                    cmpr(sql`admin_ids::jsonb`, '?', email),
-                    cmpr(sql`audit_ids::jsonb`, '?', email),
-                    cmpr(sql`credential_ids::jsonb`, '?', email)
-                ]))
+            query = query.where(({ eb }) =>
+                eb('owner_id', '=', id)
+                    .or(sql`admin_ids::jsonb`, '?', email)
+                    .or(sql`audit_ids::jsonb`, '?', email)
+                    .or(sql`credential_ids::jsonb`, '?', email)
+            )
         }
-        const elections = querry.execute()
+        const elections = query.execute()
 
         return elections
     }
@@ -93,6 +107,7 @@ export default class ElectionsDB {
         const election = this._postgresClient
             .selectFrom(tableName)
             .where('election_id', '=', election_id)
+            .where('head', '=', true)
             .selectAll()
             .executeTakeFirstOrThrow()
 
@@ -105,6 +120,7 @@ export default class ElectionsDB {
         const elections = this._postgresClient
             .selectFrom(tableName)
             .where('election_id', 'in', election_ids)
+            .where('head', '=', true)
             .selectAll()
             .execute()
 
@@ -126,6 +142,28 @@ export default class ElectionsDB {
             } else {
                 return false
             }
+        }
+        )
+    }
+
+    deleteAllElectionData(election_id: Uid, ctx: ILoggingContext, reason: string): Promise<void> {
+        Logger.debug(ctx, `${tableName}.delete ${election_id}`);
+
+        return this._postgresClient.transaction().execute(async (trx) => {
+            await trx
+                .deleteFrom('electionDB')
+                .where('election_id', '=', election_id)
+                .execute()
+
+            await trx
+                .deleteFrom('ballotDB')
+                .where('election_id', '=', election_id)
+                .execute()
+
+            await trx
+                .deleteFrom('electionRollDB')
+                .where('election_id', '=', election_id)
+                .execute()
         }
         )
     }

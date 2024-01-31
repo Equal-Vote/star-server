@@ -1,4 +1,4 @@
-import { Ballot } from "../../../domain_model/Ballot";
+import { Ballot, NewBallot } from "../../../domain_model/Ballot";
 import { Election } from "../../../domain_model/Election";
 import { Uid } from "../../../domain_model/Uid";
 import { VoterAuth } from "../../../domain_model/VoterAuth";
@@ -133,7 +133,7 @@ export class TestHelper {
 
     async submitBallot(
         electionId: Uid,
-        ballot: Ballot,
+        ballot: Ballot | NewBallot,
         userToken: string | null
     ): Promise<any> {
         return this.postRequest(
@@ -193,7 +193,7 @@ export class TestHelper {
 
     async submitBallotWithId(
         electionId: Uid,
-        ballot: Ballot,
+        ballot: Ballot | NewBallot,
         userToken: string | null,
         voterId: string | null,
         customToken: string| null = null

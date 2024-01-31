@@ -1,4 +1,4 @@
-import { Election, getApprovedRaces } from "./Election";
+import { Election, PartialBy, getApprovedRaces } from "./Election";
 import { ElectionRoll } from "./ElectionRoll";
 import { Race } from "./Race";
 import { Uid } from "./Uid";
@@ -14,8 +14,10 @@ export interface Ballot {
     votes: Vote[];         // One per poll
     history?: BallotAction[];
     precinct?: string; // Precint of voter
+    create_date:    Date | string; // Date this object was created
+    update_date:    Date | string;  // Date this object was last updated
+    head:           boolean;// Head version of this object
 }
-
 
 export interface BallotAction {
     action_type:string;
@@ -23,6 +25,7 @@ export interface BallotAction {
     timestamp:number;
 }
 
+export interface NewBallot extends PartialBy<Ballot,'ballot_id'|'create_date'|'update_date'|'head'> {}
 
 export function ballotValidation(election: Election, obj:Ballot): string | null {
     if (!obj){
@@ -32,9 +35,6 @@ export function ballotValidation(election: Election, obj:Ballot): string | null 
     //technically Uid expects a string, but the DB currently using numbers
     if (!obj.election_id || typeof obj.election_id !== 'string'){
         return "Invalid Election ID";
-    }
-    if (!obj.ballot_id || typeof obj.ballot_id !== 'string'){
-        return "Invalid Ballot ID";
     }
     if (!obj.votes){
         return "Invalid Votes";
