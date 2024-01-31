@@ -122,13 +122,14 @@ async function UpdateElection(election: Election) {
 }
 
 async function RunTest() {
-    await ResetDatabases()
-    const id = hashString('id')
-    await AddElections(buildElection(id, '0', true))
+    // await ResetDatabases()
+    // const id = hashString('id')
+    // await AddElections(buildElection(id, '0', true))
 
-    for (let j = 1; j < 99; j++) {
-        await UpdateElection(buildElection(id, j.toString(), true))
-    }
+    // for (let j = 1; j < 99; j++) {
+    //     await UpdateElection(buildElection(id, j.toString(), true))
+    // }
+    // console.log(await db.selectFrom('electionDB').select(['head', 'update_date']).execute())
     console.log(await db.selectFrom('electionDB').select(['head', 'update_date']).execute())
 }
 
