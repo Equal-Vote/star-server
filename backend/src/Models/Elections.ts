@@ -83,20 +83,20 @@ export default class ElectionsDB {
         // When I filter in trello it adds "filter=member:arendpetercastelein,overdue:true" to the URL, I'm following the same pattern here
         Logger.debug(ctx, `${tableName}.getAll ${id}`);
 
-        let querry = this._postgresClient
+        let query = this._postgresClient
             .selectFrom(tableName)
             .where('head', '=', true)
             .selectAll()
 
         if (id !== '' || email !== '') {
-            querry = querry.where(({ eb }) =>
+            query = query.where(({ eb }) =>
                 eb('owner_id', '=', id)
                     .or(sql`admin_ids::jsonb`, '?', email)
                     .or(sql`audit_ids::jsonb`, '?', email)
                     .or(sql`credential_ids::jsonb`, '?', email)
             )
         }
-        const elections = querry.execute()
+        const elections = query.execute()
 
         return elections
     }
