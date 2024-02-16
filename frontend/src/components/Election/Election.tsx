@@ -21,7 +21,7 @@ const Election = () => {
         <Grid item xs={12} sm={2}>
           <Sidebar />
         </Grid>
-        <Grid xs={12} sm={8}>
+        <Grid item xs={12} sm={10}>
           <Routes>
             <Route path='/' element={<ElectionHome />} />
             <Route path='/vote' element={<VotePage />} />

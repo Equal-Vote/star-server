@@ -8,19 +8,10 @@ import EditElectionRoll from "./EditElectionRoll";
 import AddElectionRoll from "./AddElectionRoll";
 import PermissionHandler from "../../PermissionHandler";
 import { Typography } from "@mui/material";
-import EnhancedTable, { HeadCell, TableData } from "./../../EnhancedTable";
+import EnhancedTable  from "./../../EnhancedTable";
 import { useGetRolls, useSendInvites } from "../../../hooks/useAPI";
 import useElection from "../../ElectionContextProvider";
 import { ElectionRoll } from "@domain_model/ElectionRoll";
-
-interface Data extends TableData {
-    voter_id: string;
-    email: string;
-    ip: string;
-    precinct: string;
-    has_voted: string;
-    state: string;
-}
 
 const ViewElectionRolls = () => {
     const { election, permissions } = useElection()
@@ -53,113 +44,23 @@ const ViewElectionRolls = () => {
         setEditedRoll(currentRoll => results.electionRoll.find(roll => roll.voter_id === currentRoll.voter_id))
     }
 
-    const headCells: HeadCell[] = [
-        {
-            id: 'voter_id',
-            numeric: false,
-            disablePadding: false,
-            label: 'Voter ID',
-            filterType: 'search'
-        },
-        {
-            id: 'email',
-            numeric: false,
-            disablePadding: false,
-            label: 'Email',
-            filterType: 'search'
-        },
-        {
-            id: 'invite_status',
-            numeric: false,
-            disablePadding: false,
-            label: 'Email Invites',
-            filterType: 'groups',
-            filterGroups: {
-                'Not Sent': true,
-                'Sent': true,
-                'Failed': true,
-            }
-        },
-        {
-            id: 'has_voted',
-            numeric: false,
-            disablePadding: false,
-            label: 'Has Voted',
-            filterType: 'groups',
-            filterGroups: {
-                'false': true,
-                'true': true,
-            }
-        },
-        {
-            id: 'state',
-            numeric: false,
-            disablePadding: false,
-            label: 'State',
-            filterType: 'groups',
-            filterGroups: {
-                approved: true,
-                registered: true,
-            }
-        },
-        {
-            id: 'ip',
-            numeric: false,
-            disablePadding: false,
-            label: 'IP',
-            filterType: 'search'
-        },
-    ];
+    const headKeys = ['voter_id', 'email', 'invite_status', 'has_voted', 'voter_state', 'ip']
 
     if (process.env.REACT_APP_FF_PRECINCTS === 'true') {
-        headCells.push({
-            id: 'precinct',
-            numeric: false,
-            disablePadding: false,
-            label: 'Precinct',
-            filterType: 'search'
-        });
+        headKeys.push('precinct');
     }
 
-    const tableData = React.useMemo(
-        () => {
-            if (data && data.electionRoll) {
-                const invite_status = 'Not Sent';
-                return data.electionRoll.map(roll => {
-                    let invite_status = 'Not Sent'
-                    if (roll.email_data && roll.email_data.inviteResponse) {
-                        if (roll.email_data.inviteResponse.length > 0 && roll.email_data.inviteResponse[0].statusCode < 400) {
-                            invite_status = 'Sent'
-                        } else {
-                            invite_status = 'Failed'
-                        }
-                    }
-                    return {
-                        voter_id: roll.voter_id,
-                        email: roll.email || '',
-                        invite_status: invite_status,
-                        ip: roll.ip_hash || '',
-                        precinct: roll.precinct || '',
-                        has_voted: roll.submitted.toString(),
-                        state: roll.state.toString()
-                    }
-                })
-            } else {
-                return null
-            }
-        },
-        [data],
+    let electionRollData = React.useMemo(
+        () => data?.electionRoll ? [...data.electionRoll] : [],
+        [data]
     );
+
     return (
-        <Container >
+        <Container>
             <Typography align='center' gutterBottom variant="h4" component="h4">
                 {election.title}
             </Typography>
-            <Typography align='center' gutterBottom variant="h5" component="h5">
-                Voters
-            </Typography>
-            {isPending && <div> Loading Data... </div>}
-            {data && data.electionRoll && !isEditing && !addRollPage &&
+            {!isEditing && !addRollPage &&
                 <>
                     {election.settings.voter_access === 'closed' &&
                         <PermissionHandler permissions={permissions} requiredPermission={'canAddToElectionRoll'}>
@@ -169,16 +70,16 @@ const ViewElectionRolls = () => {
                     {election.settings.invitation === 'email' &&
                         < Button variant='outlined' onClick={() => onSendInvites()} > Send Invites </Button>
                     }
-                    {tableData.length == 0 && <p>This election doesn't have any voters yet</p>}
-                    {tableData.length > 0 &&
-                        <EnhancedTable
-                            headCells={headCells}
-                            data={tableData}
-                            defaultSortBy="voter_id"
-                            tableTitle="Voters"
-                            handleOnClick={(voter) => onOpen(voter)}
-                        />
-                    }
+                    <EnhancedTable
+                        headKeys={headKeys}
+                        data={electionRollData}
+                        isPending={isPending && data?.electionRoll !== undefined}
+                        pendingMessage='Loading Voters...'
+                        defaultSortBy="voter_id"
+                        title="Voters"
+                        handleOnClick={(voter) => onOpen(voter)}
+                        emptyContent={<p>This election doesn't have any voters yet</p>}
+                    />
                 </>
             }
             {

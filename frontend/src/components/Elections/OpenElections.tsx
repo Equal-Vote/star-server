@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo } from 'react'
 import { useGetElections } from "../../hooks/useAPI";
-import ElectionsTable from './ElectionsTable';
+import { useNavigate } from 'react-router';
+import EnhancedTable from '../EnhancedTable';
 
 export default () => {
+    const navigate = useNavigate();
 
     const { data, isPending, error, makeRequest: fetchElections } = useGetElections();
 
@@ -13,10 +15,14 @@ export default () => {
         [data]
     );
             
-    return <ElectionsTable
+    return <EnhancedTable
         title='Open Elections'
         headKeys={['title', 'start_time', 'end_time', 'description']}
+        data={openElectionsData}
         isPending={isPending}
-        electionData={openElectionsData}
+        pendingMessage='Loading Elections...'
+        handleOnClick={(election) => navigate(`/Election/${String(election.election_id)}`)}
+        defaultSortBy='title'
+        emptyContent='No Election Invitations'
     />
 }

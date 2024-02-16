@@ -32,7 +32,7 @@ export default function Sidebar() {
                     alignItems="center"
                     sx={{ width: '100%' }}>
                     <Paper elevation={3} sx={{ width: 600 }} >
-                        <Grid direction="column" >
+                        <Grid container direction="column" >
                             <ListItem text='Voting Page' link={`/Election/${id}/`} />
                             <ListItem text='Admin Home' link={`/Election/${id}/admin`} />
                             {election.state === 'draft' &&

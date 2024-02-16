@@ -1,23 +1,29 @@
 import React, { useEffect } from 'react'
 import { useGetElections } from "../../hooks/useAPI";
-import ElectionsTable from './ElectionsTable';
+import EnhancedTable from '../EnhancedTable';
+import { useNavigate } from 'react-router';
 
-// NOTE: this is just a copy of ElectionInvitations for now, but this will be refactored later
 export default () => {
+    const navigate = useNavigate();
 
     const { data, isPending, error, makeRequest: fetchElections } = useGetElections();
 
     useEffect(() => {fetchElections()}, []);
 
-    const previousElections = React.useMemo(
-        () => data?.elections_as_submitted_voter ? data.elections_as_submitted_voter : [],
+    const electionInvitations = React.useMemo(
+        () => data?.elections_as_unsubmitted_voter ? data.elections_as_unsubmitted_voter : [],
         [data],
     );
             
-    return <ElectionsTable
-        title='Elections You Voted In'
+    return <EnhancedTable
+        title='Elections You Can Vote In'
         headKeys={['title', 'state', 'start_time', 'end_time', 'description']}
+        handleOnClick={(election) => navigate(`/Election/${String(election.election_id)}`)}
         isPending={isPending}
-        electionData={previousElections}
+        pendingMessage='Loading Elections...'
+        data={electionInvitations}
+        defaultSortBy='title'
+        emptyContent='No Election Invitations'
     />
 }
+
