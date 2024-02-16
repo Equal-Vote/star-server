@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -15,10 +16,204 @@ import Paper from '@mui/material/Paper';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { visuallyHidden } from '@mui/utils';
+import { formatDate } from './util';
 import { Checkbox, FormControl, ListItemText, MenuItem, Select, TextField } from '@mui/material';
 
-export interface TableData {
+type Order = 'asc' | 'desc';
+
+interface TableData {
   [key: string]: string | number
+}
+
+interface EnhancedTableToolbarProps {
+  numSelected: number;
+  tableTitle: string;
+}
+
+interface HeadCellPool {
+    [key: string]: HeadCell
+}
+
+interface HeadCell {
+  disablePadding: boolean;
+  id: keyof TableData;
+  label: string;
+  numeric: boolean;
+  filterType?: 'search' | 'groups';
+  filterGroups?: {
+    [key: string]: boolean
+  };
+  formatter?: Function;
+}
+
+interface EnhancedTableHeadProps {
+  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof TableData) => void;
+  order: Order;
+  orderBy: string;
+  headCells: HeadCell[];
+  filters: any[];
+  setFilters: Function
+}
+
+interface EnhancedTableProps {
+  title: string,
+  headKeys: string[]
+  data: any[] // we'll use a formatter to convert it to TableData
+  defaultSortBy: Extract<keyof TableData, string>
+  handleOnClick: Function
+  isPending: boolean
+  pendingMessage: string,
+  emptyContent: any
+}
+
+const limit = (string = '', limit = 0) => {
+    if (!string) return ''
+    return string.substring(0, limit)
+}
+
+const headCellPool: HeadCellPool = {
+    voter_id: {
+        id: 'voter_id',
+        numeric: false,
+        disablePadding: false,
+        label: 'Voter ID',
+        filterType: 'search',
+        formatter: a => a,
+    },
+    email: {
+        id: 'email',
+        numeric: false,
+        disablePadding: false,
+        label: 'Email',
+        filterType: 'search',
+        formatter: a => a || '',
+    },
+    invite_status: {
+        id: 'invite_status',
+        numeric: false,
+        disablePadding: false,
+        label: 'Email Invites',
+        filterType: 'groups',
+        filterGroups: {
+            'Not Sent': true,
+            'Sent': true,
+            'Failed': true,
+        },
+        formatter: (_, roll) => {
+          if (!roll?.email_data?.inviteResponse) return 'Not Sent';
+          if (roll.email_data.inviteResponse.length == 0 || roll.email_data.inviteResponse[0].statusCode >= 400) return 'Failed'
+          return 'Sent'
+        }
+    },
+    has_voted: {
+        id: 'has_voted',
+        numeric: false,
+        disablePadding: false,
+        label: 'Has Voted',
+        filterType: 'groups',
+        filterGroups: {
+            'false': true,
+            'true': true,
+        },
+        formatter: (_, roll) => roll.submitted.toString(),
+    },
+    voter_state: {
+        id: 'voter_state',
+        numeric: false,
+        disablePadding: false,
+        label: 'State',
+        filterType: 'groups',
+        filterGroups: {
+            approved: true,
+            registered: true,
+        },
+        formatter: (_, roll) => roll.state.toString(),
+    },
+    precint: {
+        id: 'precinct',
+        numeric: false,
+        disablePadding: false,
+        label: 'Precinct',
+        filterType: 'search',
+        formatter: a => a || '',
+    },
+    ip: {
+        id: 'ip',
+        numeric: false,
+        disablePadding: false,
+        label: 'IP',
+        filterType: 'search',
+        formatter: (_, roll) => roll.ip_hash || '',
+    },
+    title: {
+        id: 'title',
+        numeric: false,
+        disablePadding: false,
+        label: 'Election Title',
+        filterType: 'search',
+        formatter: a => a
+    },
+    roles: {
+        id: 'roles',
+        numeric: false,
+        disablePadding: false,
+        label: 'Role',
+        filterType: 'search',
+        formatter: a => a
+    },
+    election_state: {
+        id: 'election_state',
+        numeric: false,
+        disablePadding: false,
+        label: 'State',
+        filterType: 'groups',
+        filterGroups: {
+            draft: true,
+            finalized: true,
+            open: true,
+            closed: true,
+            archived: false
+        },
+        formatter: (_, election) => {
+          return election.state || ''
+        }
+    },
+    start_time: {
+        id: 'start_time',
+        numeric: false,
+        disablePadding: false,
+        label: 'Start Time',
+        filterType: 'search',
+        formatter: formatDate
+    },
+    end_time: {
+        id: 'end_time',
+        numeric: false,
+        disablePadding: false,
+        label: 'End Time',
+        filterType: 'search',
+        formatter: formatDate
+    },
+    description: {
+        id: 'description',
+        numeric: false,
+        disablePadding: false,
+        label: 'Description',
+        filterType: 'search',
+        formatter: descr => limit(descr, 30)
+    },
+}
+
+const formatTableData = (headKeys, data) => {
+    let fData = data.map(item => {
+        let fItem = {};
+        headKeys.forEach( key => {
+            fItem[key] = key in headCellPool ? headCellPool[key].formatter(item[key], item) : item[key];
+        });
+        fItem['raw'] = item;
+        return fItem;
+    });
+    return fData;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -30,8 +225,6 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   }
   return 0;
 }
-
-type Order = 'asc' | 'desc';
 
 function getComparator<Key extends keyof any>(
   order: Order,
@@ -63,18 +256,6 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
 
 type filterTypes = 'search' | 'groups' | null
 
-export interface HeadCell {
-  disablePadding: boolean;
-  id: keyof TableData;
-  label: string;
-  numeric: boolean;
-  filterType?: 'search' | 'groups';
-  filterGroups?: {
-    [key: string]: boolean
-  };
-  formatter?: Function;
-}
-
 function filterData<T>(array: readonly T[], headCells: HeadCell[], filters: any[]) {
 
   return array.filter(row => {
@@ -92,22 +273,9 @@ function filterData<T>(array: readonly T[], headCells: HeadCell[], filters: any[
   })
 }
 
-
-
-
-
-interface EnhancedTableHeadProps {
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof TableData) => void;
-  order: Order;
-  orderBy: string;
-  headCells: HeadCell[];
-  filters: any[];
-  setFilters: Function
-}
-
 function EnhancedTableHead(props: EnhancedTableHeadProps) {
-  const { order, orderBy, onRequestSort } =
-    props;
+  const { order, orderBy, onRequestSort } = props;
+
   const createSortHandler =
     (property: keyof TableData) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
@@ -190,10 +358,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
   );
 }
 
-interface EnhancedTableToolbarProps {
-  numSelected: number;
-  tableTitle: string;
-}
+
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
@@ -222,13 +387,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   );
 }
 
-interface EnhancedTableProps {
-  headCells: HeadCell[]
-  data: TableData[]
-  defaultSortBy: Extract<keyof TableData, string>
-  tableTitle: string,
-  handleOnClick: Function
-}
+
 
 export default function EnhancedTable(props: EnhancedTableProps) {
   const [order, setOrder] = React.useState<Order>('asc');
@@ -237,7 +396,8 @@ export default function EnhancedTable(props: EnhancedTableProps) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
-  const [filters, setFilters] = React.useState(props.headCells.map(col => {
+  const headCells = props.headKeys.map(key => headCellPool[key]);
+  const [filters, setFilters] = React.useState(headCells.map(col => {
     if (!col.filterType) {
       return null
     }
@@ -274,7 +434,7 @@ export default function EnhancedTable(props: EnhancedTableProps) {
   const filteredRows = React.useMemo(
     () => {
       setPage(0);
-      return filterData(props.data, props.headCells, filters)
+      return filterData(formatTableData(props.headKeys, props.data), headCells, filters);
     },
     [filters, props.data],
   );
@@ -293,10 +453,18 @@ export default function EnhancedTable(props: EnhancedTableProps) {
     [order, orderBy, page, rowsPerPage, filteredRows],
   );
 
+
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper elevation={8} sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} tableTitle={props.tableTitle} />
+    <Container>
+    <Box 
+        display='flex'
+        justifyContent="center"
+        alignItems="center"
+        flexDirection="column"
+        sx={{ pt: 2, width: '100%' }}>
+      {props.isPending && <Typography align='center' variant="h3" component="h2"> {props.pendingMessage} </Typography> }
+      {!props.isPending && <Paper elevation={8} sx={{ width: '100%', mb: 2 }}>
+        <EnhancedTableToolbar numSelected={selected.length} tableTitle={props.title} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -307,7 +475,7 @@ export default function EnhancedTable(props: EnhancedTableProps) {
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
-              headCells={props.headCells}
+              headCells={headCells}
               filters={filters}
               setFilters={setFilters}
             />
@@ -322,7 +490,7 @@ export default function EnhancedTable(props: EnhancedTableProps) {
                     key={labelId}
                     sx={{ cursor: 'pointer' }}
                   >
-                    {props.headCells.map((col, colInd) => {
+                    {headCells.map((col, colInd) => {
                       if (colInd == 0) {
                         return <TableCell
                           component="th"
@@ -365,7 +533,8 @@ export default function EnhancedTable(props: EnhancedTableProps) {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </Paper>
+      </Paper> }
     </Box>
+  </Container>
   );
 }

@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react'
 import { useGetElections } from "../../hooks/useAPI";
-import ElectionsTable from './ElectionsTable';
+import EnhancedTable from '../EnhancedTable';
+import { useNavigate } from 'react-router';
 
 export default () => {
+    const navigate = useNavigate();
 
     const { data, isPending, error, makeRequest: fetchElections } = useGetElections();
 
@@ -13,10 +15,14 @@ export default () => {
         [data],
     );
             
-    return <ElectionsTable
+    return <EnhancedTable
         title='Elections You Can Vote In'
         headKeys={['title', 'state', 'start_time', 'end_time', 'description']}
+        handleOnClick={(election) => navigate(`/Election/${String(election.election_id)}`)}
         isPending={isPending}
-        electionData={electionInvitations}
+        pendingMessage='Loading Elections...'
+        data={electionInvitations}
+        defaultSortBy='title'
+        emptyContent='No Election Invitations'
     />
 }

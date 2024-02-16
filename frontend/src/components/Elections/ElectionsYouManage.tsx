@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo } from 'react'
 import { Election } from "@domain_model/Election"
 import useAuthSession from '../AuthSessionContextProvider';
-import ElectionsTable from './ElectionsTable';
 import { useGetElections } from 'src/hooks/useAPI';
+import { useNavigate } from 'react-router';
+import EnhancedTable from '../EnhancedTable';
 
 export default () => {
+    const navigate = useNavigate();
     const authSession = useAuthSession()
 
     const { data, isPending, error, makeRequest: fetchElections } = useGetElections()
@@ -43,10 +45,14 @@ export default () => {
         }
     }, [data]);
             
-    return <ElectionsTable
+    return <EnhancedTable
         title='Elections You Manage'
-        headKeys={['title', 'roles', 'state', 'start_time', 'end_time', 'description']}
+        headKeys={['title', 'roles', 'election_state', 'start_time', 'end_time', 'description']}
         isPending={isPending}
-        electionData={managedElectionsData}
+        pendingMessage='Loading Elections...'
+        data={managedElectionsData}
+        handleOnClick={(row) => navigate(`/Election/${String(row.raw.election_id)}`)}
+        defaultSortBy='title'
+        emptyContent={<>"You don't have any elections yet"<button>Create Election</button></>}
     />
 }
