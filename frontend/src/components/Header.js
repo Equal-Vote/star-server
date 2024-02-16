@@ -48,11 +48,15 @@ const Header = () => {
             text: 'About',
             href: '/About',
         },
-        {
+        
+    ];
+
+    if(process.env.REACT_APP_FF_PUBLIC_ELECTIONS === 'true'){
+        navItems.push({
             text: 'Public Elections',
             href: '/OpenElections',
-        }
-    ];
+        });
+    }
 
     return (
         <AppBar position="sticky" sx={{ backgroundColor: "primary.main" }}>
