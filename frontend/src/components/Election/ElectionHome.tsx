@@ -63,7 +63,7 @@ const ElectionHome = () => {
               {election.end_time &&
                 <Box sx={{ flexGrow: 1 }}>
                   < Typography align='center' variant="h6" component="h6">
-                    {`Election ends on ${formatDate(election.start_time, election.settings.time_zone)}`}
+                    {`Election ends on ${formatDate(election.end_time, election.settings.time_zone)}`}
                   </Typography>
                 </Box>}
               {
