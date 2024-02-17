@@ -8,7 +8,7 @@ grand_parent: Contribution Guide
 
 # DevOps Onboarding
 
-Here's how you get setup for Devops development on your loca machine
+Here's how you get setup for Devops development on your local machine
 
 ## Repos
 
@@ -25,13 +25,13 @@ The vision is to represent all our services using Kubernetes (including star.vot
 Install the following CLI clients
 
  * [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli) : For managing Azure resources
- * [KubeCTL](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/): For managing Kubernetes cluster
+ * [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl): For managing Kubernetes cluster
  * [Terraform](https://developer.hashicorp.com/terraform/install): For deploying terraform configuration to Azure
  * [Helm](https://helm.sh/docs/intro/install/): A tool for installing kubernetes configurations from the community (Kubernetes equivalent of brew or pip install)
 
  > For Windows Only: I recommend creating a bin foler under `C:\Users\<your user>\bin`, then to add it to your path search "Edit the system environment variables" > "Environment Variables..." > "Path" and add the folder
 
-## Login to Azure
+## Add equalvote cluster to your kubeconfig
 
 The following command will open a browser for you to login
 
@@ -95,4 +95,4 @@ TODO
 
 * [Cloud Native Landscape](https://landscape.cncf.io/): Coalition of open source projects. CNCF helps guide which projects are mature ("graduated") and ready for production use
 * [Kubernetes Crash Course](https://www.youtube.com/watch?v=s_o8dwzRlu4)
-* [KubeCTL Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/quick-reference/)
+* [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/quick-reference/)
