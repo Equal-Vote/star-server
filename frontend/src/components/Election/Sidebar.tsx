@@ -43,9 +43,9 @@ export default function Sidebar() {
                                         </PermissionHandler>
                                     }
                                 </>}
-                            <PermissionHandler permissions={permissions} requiredPermission={'canViewElectionRoll'}>
+                            {election.settings.voter_access != 'open' && <PermissionHandler permissions={permissions} requiredPermission={'canViewElectionRoll'}>
                                 <ListItem text='Voters' link={`/Election/${id}/admin/voters`} />
-                            </PermissionHandler>
+                            </PermissionHandler>}
                             <PermissionHandler permissions={permissions} requiredPermission={'canViewBallots'}>
                                 <ListItem text='Ballots' link={`/Election/${id}/admin/ballots`} />
                             </PermissionHandler>

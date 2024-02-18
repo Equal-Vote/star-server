@@ -55,6 +55,8 @@ const ViewElectionRolls = () => {
         [data]
     );
 
+    console.log(election);
+
     return (
         <Container>
             <Typography align='center' gutterBottom variant="h4" component="h4">

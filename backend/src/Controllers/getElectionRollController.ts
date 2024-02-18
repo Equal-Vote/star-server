@@ -2,7 +2,7 @@ import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
 import { permissions } from '../../../domain_model/permissions';
 import { expectPermission } from "./controllerUtils";
-import { BadRequest } from "@curveball/http-errors";
+import { BadRequest, Unauthorized } from "@curveball/http-errors";
 import { IElectionRequest } from "../IRequest";
 import { Response, NextFunction } from 'express';
 
@@ -12,6 +12,9 @@ const className = "VoterRolls.Controllers";
 
 const getRollsByElectionID = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     expectPermission(req.user_auth.roles, permissions.canViewElectionRoll)
+    if(req.election.settings.voter_access === 'open'){
+        throw new Unauthorized("Can't view voter roll for open elections")
+    }
     const electionId = req.election.election_id;
     Logger.info(req, `${className}.getRollsByElectionID ${electionId}`);
     //requires election data in req, adds entire election roll 
