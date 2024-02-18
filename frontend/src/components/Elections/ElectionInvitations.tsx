@@ -16,8 +16,8 @@ export default () => {
     );
             
     return <EnhancedTable
-        title='Elections You Can Vote In'
-        headKeys={['title', 'state', 'start_time', 'end_time', 'description']}
+        title='Election Invitations'
+        headKeys={['title', 'election_state', 'start_time', 'end_time', 'description']}
         handleOnClick={(election) => navigate(`/Election/${String(election.election_id)}`)}
         isPending={isPending}
         pendingMessage='Loading Elections...'
