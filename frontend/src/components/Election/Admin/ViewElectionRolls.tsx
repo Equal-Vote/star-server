@@ -44,7 +44,10 @@ const ViewElectionRolls = () => {
         setEditedRoll(currentRoll => results.electionRoll.find(roll => roll.voter_id === currentRoll.voter_id))
     }
 
-    const headKeys = ['voter_id', 'email', 'invite_status', 'has_voted', 'voter_state', 'ip']
+    let headKeys = (election.settings.invitation === 'email')?
+        ['voter_id', 'email', 'invite_status', 'has_voted']
+    :
+        ['voter_id', 'email', 'has_voted'];
 
     if (process.env.REACT_APP_FF_PRECINCTS === 'true') {
         headKeys.push('precinct');
@@ -54,8 +57,6 @@ const ViewElectionRolls = () => {
         () => data?.electionRoll ? [...data.electionRoll] : [],
         [data]
     );
-
-    console.log(election);
 
     return (
         <Container>
