@@ -88,7 +88,8 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
         return (a.name.length > b.name.length)? a : b;
     })
 
-    const axisWidth = 15 * ((candidateWithLongestName.name.length > 20)? 20 : candidateWithLongestName.name.length);
+    // 200 is about the max width I'd want for a small mobile device, still looking for a better solution though
+    const axisWidth = Math.min(200, 15 * ((candidateWithLongestName.name.length > 20)? 20 : candidateWithLongestName.name.length));
     
     const pieAngle = 90 + 360 * (1 - (pieData[0].votes/results.summaryData.nValidVotes))
 
