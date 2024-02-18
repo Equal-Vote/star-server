@@ -11,19 +11,19 @@ export default () => {
     useEffect(() => {fetchElections()}, []);
 
     const electionInvitations = React.useMemo(
-        () => data?.elections_as_unsubmitted_voter ? data.elections_as_unsubmitted_voter : [],
+        () => data?.elections_as_submitted_voter ? data.elections_as_submitted_voter : [],
         [data],
     );
             
     return <EnhancedTable
-        title='Elections You Can Vote In'
-        headKeys={['title', 'state', 'start_time', 'end_time', 'description']}
+        title='Elections You Voted In'
+        headKeys={['title', 'election_state', 'start_time', 'end_time', 'description']}
         handleOnClick={(election) => navigate(`/Election/${String(election.election_id)}`)}
         isPending={isPending}
         pendingMessage='Loading Elections...'
         data={electionInvitations}
         defaultSortBy='title'
-        emptyContent='No Election Invitations'
+        emptyContent="You haven't voted in any elections"
     />
 }
 

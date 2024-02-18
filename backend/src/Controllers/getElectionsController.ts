@@ -37,6 +37,10 @@ const getElections = async (req: IElectionRequest, res: Response, next: NextFunc
         let election_ids = myRolls?.map(election => election.election_id)
         if (election_ids && election_ids.length > 0) {
             elections_as_unsubmitted_voter = await ElectionsModel.getElectionByIDs(election_ids,req)
+            // we only want the election to show up in the invited list if it's private
+            // if it's public then it's possible for you to be added to the voter roll by opening the election, and that shouldn't count as an invitation
+            // NOTE: I can't add this to getByEmailAndUnsubmitted because we can't query for voter_access directly
+            elections_as_unsubmitted_voter = elections_as_unsubmitted_voter?.filter(election => election.settings.voter_access != 'open');
         }
     }
 
