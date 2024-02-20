@@ -66,7 +66,7 @@ const ViewBallots = () => {
                     <TableContainer component={Paper}>
                         <Table style={{ width: '100%' }} aria-label="simple table">
                             <TableHead>
-                                <TableCell> Voter </TableCell>
+                                <TableCell> Ballot ID </TableCell>
                                 {process.env.REACT_APP_FF_VOTER_FLAGGING === 'true' &&
                                     <TableCell> Precinct </TableCell>
                                 }

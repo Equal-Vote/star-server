@@ -19,6 +19,8 @@ import { visuallyHidden } from '@mui/utils';
 import { formatDate } from './util';
 import { Checkbox, FormControl, ListItemText, MenuItem, Select, TextField } from '@mui/material';
 
+export type HeadKey = keyof typeof headCellPool;
+
 type Order = 'asc' | 'desc';
 
 interface TableData {
@@ -28,10 +30,6 @@ interface TableData {
 interface EnhancedTableToolbarProps {
   numSelected: number;
   tableTitle: string;
-}
-
-interface HeadCellPool {
-    [key: string]: HeadCell
 }
 
 interface HeadCell {
@@ -55,23 +53,8 @@ interface EnhancedTableHeadProps {
   setFilters: Function
 }
 
-interface EnhancedTableProps {
-  title: string,
-  headKeys: string[]
-  data: any[] // we'll use a formatter to convert it to TableData
-  defaultSortBy: Extract<keyof TableData, string>
-  handleOnClick: Function
-  isPending: boolean
-  pendingMessage: string,
-  emptyContent: any
-}
 
-const limit = (string = '', limit = 0) => {
-    if (!string) return ''
-    return string.substring(0, limit)
-}
-
-const headCellPool: HeadCellPool = {
+const headCellPool = {
     voter_id: {
         id: 'voter_id',
         numeric: false,
@@ -129,7 +112,7 @@ const headCellPool: HeadCellPool = {
         },
         formatter: (_, roll) => roll.state.toString(),
     },
-    precint: {
+    precinct: {
         id: 'precinct',
         numeric: false,
         disablePadding: false,
@@ -202,6 +185,23 @@ const headCellPool: HeadCellPool = {
         filterType: 'search',
         formatter: descr => limit(descr, 30)
     },
+}
+
+
+interface EnhancedTableProps {
+  title: string,
+  headKeys: HeadKey[]
+  data: any[] // we'll use a formatter to convert it to TableData
+  defaultSortBy: Extract<keyof TableData, string>
+  handleOnClick: Function
+  isPending: boolean
+  pendingMessage: string,
+  emptyContent: any
+}
+
+const limit = (string = '', limit = 0) => {
+    if (!string) return ''
+    return string.substring(0, limit)
 }
 
 const formatTableData = (headKeys, data) => {
@@ -396,13 +396,13 @@ export default function EnhancedTable(props: EnhancedTableProps) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
-  const headCells = props.headKeys.map(key => headCellPool[key]);
+  const headCells: HeadCell[] = props.headKeys.map(key => headCellPool[key] as HeadCell);
   const [filters, setFilters] = React.useState(headCells.map(col => {
     if (!col.filterType) {
       return null
     }
     else if (col.filterType === 'groups') {
-      return col.filterGroups
+      return (col as HeadCell).filterGroups
     }
     else if (col.filterType === 'search') {
       return ''

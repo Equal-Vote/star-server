@@ -8,7 +8,7 @@ import EditElectionRoll from "./EditElectionRoll";
 import AddElectionRoll from "./AddElectionRoll";
 import PermissionHandler from "../../PermissionHandler";
 import { Typography } from "@mui/material";
-import EnhancedTable  from "./../../EnhancedTable";
+import EnhancedTable, { HeadKey }  from "./../../EnhancedTable";
 import { useGetRolls, useSendInvites } from "../../../hooks/useAPI";
 import useElection from "../../ElectionContextProvider";
 import { ElectionRoll } from "@domain_model/ElectionRoll";
@@ -44,7 +44,7 @@ const ViewElectionRolls = () => {
         setEditedRoll(currentRoll => results.electionRoll.find(roll => roll.voter_id === currentRoll.voter_id))
     }
 
-    let headKeys = (election.settings.invitation === 'email')?
+    let headKeys:HeadKey[] = (election.settings.invitation === 'email')?
         ['voter_id', 'email', 'invite_status', 'has_voted']
     :
         ['voter_id', 'email', 'has_voted'];
