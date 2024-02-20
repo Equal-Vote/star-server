@@ -17,7 +17,7 @@ export default () => {
             
     return <EnhancedTable
         title='Open Elections'
-        headKeys={['title', 'start_time', 'end_time', 'description']}
+        headKeys={['title', 'start_time', 'end_time']}
         data={openElectionsData}
         isPending={isPending}
         pendingMessage='Loading Elections...'
