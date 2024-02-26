@@ -114,6 +114,19 @@ export default class ElectionsDB {
         return election
     }
 
+    async electionExistsByID(election_id: Uid, ctx: ILoggingContext): Promise<Boolean> {
+        Logger.debug(ctx, `${tableName}.getElectionByID ${election_id}`);
+
+        const elections = await this._postgresClient
+            .selectFrom(tableName)
+            .where('election_id', '=', election_id)
+            .where('head', '=', true)
+            .selectAll()
+            .execute()
+            
+        return elections.length > 0;
+    }
+
     getElectionByIDs(election_ids: Uid[], ctx: ILoggingContext): Promise<Election[] | null> {
         Logger.debug(ctx, `${tableName}.getElectionByIDs ${election_ids.join(',')}`);
 

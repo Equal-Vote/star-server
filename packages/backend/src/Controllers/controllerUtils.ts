@@ -7,11 +7,14 @@ import { roles } from "shared/domain_model/roles";
 import { hasPermission, permission, permissions } from 'shared/domain_model/permissions';
 import { randomUUID, createHash } from "crypto";
 import ServiceLocator from "../ServiceLocator";
+import { makeID } from "../Util";
+import { Uid } from "../../../domain_model/Uid";
 const accountService = ServiceLocator.accountService();
+const ElectionsModel =  ServiceLocator.electionsDb();
 
-export function expectValidElectionFromRequest(req:IRequest):Election {
+export async function expectValidElectionFromRequest(req:IRequest):Promise<Election> {
     const inputElection = req.body.Election;
-    inputElection.election_id = randomUUID();
+    inputElection.election_id = await makeID(async (id: Uid) => await ElectionsModel.electionExistsByID(id, req));
     inputElection.create_date = new Date().toISOString()
     const validationErr = electionValidation(inputElection);
     if (validationErr) {
