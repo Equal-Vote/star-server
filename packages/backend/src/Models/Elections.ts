@@ -135,9 +135,12 @@ export default class ElectionsDB {
         const controller = new AbortController();
         const errorMessage = 'ERROR: the requested page does not appear to exist.<br />'
         setTimeout(() => controller.abort(), 3000);
-        let content = await fetch(`${sharedConfig.CLASSIC_DOMAIN}sdfasd/${election_id}`, {signal: controller.signal})
+        let content = await fetch(`${sharedConfig.CLASSIC_DOMAIN}/${election_id}`, {signal: controller.signal})
             .then((res) => res.text())
-            .catch(() => errorMessage)
+            .catch((err) => {
+                console.log('error pinging star.vote', err)
+                return errorMessage;
+        })
 
         if(content != errorMessage) return 'classic';
 
