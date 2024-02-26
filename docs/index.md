@@ -2,6 +2,7 @@
 layout: default
 title: Star Elections Documentation
 nav_order: 0
+has_children: true
 ---
 
 # STAR.VOTE Documentation
