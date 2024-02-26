@@ -1,16 +1,12 @@
 import React from 'react'
 import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
-import { Link, useParams } from "react-router-dom"
 import Box from '@mui/material/Box';
-import { IconButton, Paper, Tooltip } from "@mui/material";
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { Paper } from "@mui/material";
 import ShareButton from "./ShareButton";
 import VoterAuth from "./VoterAuth";
 import { formatDate } from '../util';
 import useElection from '../ElectionContextProvider';
-import { sharedConfig } from '@shared/SharedConfig';
-import { useElectionExists } from 'src/hooks/useAPI';
 
 const ElectionHome = () => {
   const { election, voterAuth, refreshElection, permissions, updateElection } = useElection();
