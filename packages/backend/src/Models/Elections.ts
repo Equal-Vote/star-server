@@ -4,6 +4,7 @@ import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
 import { Kysely, sql } from 'kysely'
 import { Election } from 'shared/domain_model/Election';
+import { sharedConfig } from 'shared/SharedConfig';
 const tableName = 'electionDB';
 
 export default class ElectionsDB {
@@ -117,41 +118,28 @@ export default class ElectionsDB {
     async electionExistsByID(election_id: Uid, ctx: ILoggingContext): Promise<Boolean | string> {
         Logger.debug(ctx, `${tableName}.electionExistsByID ${election_id}`);
 
-        let newElectionExists=true; // default to true, if there's an issue we don't want to risk a false assignment
-        let classicElectionExists=false; // default to false, if classic.star.vote is down we don't want it to disable election creation
+        // Q: Why are you calling these in serial when it could be parallel?
+        // A: I feel weird about calling classic.star.vote that frequently, so I'm only doing it when the id doesn't exist on our DB
 
-        await Promise.allSettled([
-            // new star.vote
-            new Promise((resolve, reject) => {
-                this._postgresClient
-                    .selectFrom(tableName)
-                    .where('election_id', '=', election_id)
-                    .where('head', '=', true)
-                    .selectAll()
-                    .execute()
-                    .then(elections => {
-                        newElectionExists = elections.length > 0;
-                        resolve(undefined);
-                    }).catch(reject);
-            }),
-            // classic.star.vote
-            new Promise((resolve, reject) => {
-                // https://stackoverflow.com/questions/46946380/fetch-api-request-timeout
-                const controller = new AbortController();
-                setTimeout(() => controller.abort(), 3000);
-                return fetch(`https://star.vote/${election_id}`, {signal: controller.signal})
-                    .then((res) => res.text())
-                    .then((content) => {
-                        classicElectionExists = content != 'ERROR: the requested page does not appear to exist.<br />'
-                        resolve(undefined)
-                    })
-                    .catch(reject)
-            })
-        ])
+        // Check New DB
+        let newElections = await this._postgresClient
+            .selectFrom(tableName)
+            .where('election_id', '=', election_id)
+            .where('head', '=', true)
+            .selectAll()
+            .execute()
+        if(newElections.length > 0) return true;
 
-        if(classicElectionExists) return 'classic';
+        // Check Classic DB
+        // https://stackoverflow.com/questions/46946380/fetch-api-request-timeout
+        const controller = new AbortController();
+        setTimeout(() => controller.abort(), 3000);
+        let content = await fetch(`${sharedConfig.CLASSIC_DOMAIN}/${election_id}`, {signal: controller.signal})
+            .then((res) => res.text())
 
-        return newElectionExists;
+        if(content != 'ERROR: the requested page does not appear to exist.<br />') return 'classic';
+
+        return false;
     }
 
     getElectionByIDs(election_ids: Uid[], ctx: ILoggingContext): Promise<Election[] | null> {

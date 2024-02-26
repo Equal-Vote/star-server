@@ -5,5 +5,6 @@ export const sharedConfig = {
     },
     ACCOUNT_CUSTOM_REGISTRATION_OVERRIDES: [
         '84724136-bb4d-41be-8202-3373a1a1c934', // Arend's Keycloak sub
-    ]
+    ],
+    CLASSIC_DOMAIN: 'https://star.vote'
 };
