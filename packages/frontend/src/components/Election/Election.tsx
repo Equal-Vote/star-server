@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import React from 'react'
+import React, { useEffect } from 'react'
 import ElectionHome from "./ElectionHome";
 import EditElection from '../ElectionForm/EditElection'
 import VotePage from './Voting/VotePage'
@@ -10,10 +10,20 @@ import Sidebar from "./Sidebar";
 import { Box, Grid } from "@mui/material";
 import Thanks from "./Voting/Thanks";
 import ViewBallot from "./Admin/ViewBallot";
-import { ElectionContextProvider } from "../ElectionContextProvider";
+import useElection, { ElectionContextProvider } from "../ElectionContextProvider";
+import { useElectionExists } from "src/hooks/useAPI";
+import { sharedConfig } from "@shared/SharedConfig";
 
 const Election = () => {
   const { id } = useParams();
+  const {data, makeRequest: fetchExists } = useElectionExists(id)
+  if(data?.exists === 'classic'){
+    window.location.href = `${sharedConfig.CLASSIC_DOMAIN}/${id}`;
+  }
+
+  useEffect(() => {
+      fetchExists()
+  }, [id])
 
   return (
     <ElectionContextProvider id={id} >

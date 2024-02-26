@@ -29,6 +29,8 @@ const { sendInvitationsController, sendInvitationController } = require('../Cont
 const asyncHandler = require('express-async-handler')
 
 router.get('/Election/:id', asyncHandler(electionController.returnElection))
+// using _id so that it doesn't trigger async handers in routes.params
+router.get('/Election/:_id/exists', asyncHandler(electionController.electionExistsByID))
 router.delete('/Election/:id', asyncHandler(deleteElection))
 router.post('/Election/:id/ballot', asyncHandler(electionController.returnElection))
 router.post('/Election/:id/register',asyncHandler(registerVoter))

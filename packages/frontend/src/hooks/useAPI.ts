@@ -10,6 +10,10 @@ export const useGetElection = (electionID: string | undefined) => {
     return useFetch<undefined, { election: Election, voterAuth: VoterAuth }>(`/API/Election/${electionID}`, 'get')
 }
 
+export const useElectionExists = (electionID: string | undefined) => {
+    return useFetch<undefined, { exists: Boolean | string}>(`/API/Election/${electionID}/exists`, 'get')
+}
+
 export const useGetElections = () => {
     return useFetch<undefined, {
         elections_as_official: Election[] | null,
