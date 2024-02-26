@@ -33,6 +33,7 @@ const App = () => {
                     width: '100%',
                   }}>
                   <Routes>
+                    {/* Routes should always include some upper case so that they don't conflict with custom slugs */}
                     <Route path='/' element={<LandingPage />} />
                     <Route path='/About' element={<About />} />
                     <Route path='/ElectionInvitations' element={<ElectionInvitations />} />
@@ -42,8 +43,8 @@ const App = () => {
                     <Route path='/Login' element={<Login />} />
                     <Route path='/CreateElection' element={<CreateElectionTemplates />} />
                     <Route path='/Election/:id/*' element={<Election />} /> {/*Only supporting the old path for legacy reasons*/}
-                    <Route path='/:id/*' element={<Election />} />
                     <Route path='/Sandbox' element={<Sandbox />} />
+                    <Route path='/:id/*' element={<Election />} />
                   </Routes>
                 </Box>
                 <Footer />

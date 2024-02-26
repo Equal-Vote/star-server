@@ -114,17 +114,44 @@ export default class ElectionsDB {
         return election
     }
 
-    async electionExistsByID(election_id: Uid, ctx: ILoggingContext): Promise<Boolean> {
-        Logger.debug(ctx, `${tableName}.getElectionByID ${election_id}`);
+    async electionExistsByID(election_id: Uid, ctx: ILoggingContext): Promise<Boolean | string> {
+        Logger.debug(ctx, `${tableName}.electionExistsByID ${election_id}`);
 
-        const elections = await this._postgresClient
-            .selectFrom(tableName)
-            .where('election_id', '=', election_id)
-            .where('head', '=', true)
-            .selectAll()
-            .execute()
-            
-        return elections.length > 0;
+        let newElectionExists=true; // default to true, if there's an issue we don't want to risk a false assignment
+        let classicElectionExists=false; // default to false, if classic.star.vote is down we don't want it to disable election creation
+
+        await Promise.allSettled([
+            // new star.vote
+            new Promise((resolve, reject) => {
+                this._postgresClient
+                    .selectFrom(tableName)
+                    .where('election_id', '=', election_id)
+                    .where('head', '=', true)
+                    .selectAll()
+                    .execute()
+                    .then(elections => {
+                        newElectionExists = elections.length > 0;
+                        resolve(undefined);
+                    }).catch(reject);
+            }),
+            // classic.star.vote
+            new Promise((resolve, reject) => {
+                // https://stackoverflow.com/questions/46946380/fetch-api-request-timeout
+                const controller = new AbortController();
+                setTimeout(() => controller.abort(), 3000);
+                return fetch(`https://star.vote/${election_id}`, {signal: controller.signal})
+                    .then((res) => res.text())
+                    .then((content) => {
+                        classicElectionExists = content != 'ERROR: the requested page does not appear to exist.<br />'
+                        resolve(undefined)
+                    })
+                    .catch(reject)
+            })
+        ])
+
+        if(classicElectionExists) return 'classic';
+
+        return newElectionExists;
     }
 
     getElectionByIDs(election_ids: Uid[], ctx: ILoggingContext): Promise<Election[] | null> {
