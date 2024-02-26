@@ -35,7 +35,7 @@ export function electionValidation(obj:Election): string | null {
     return "Election is null";
   }
   const election_id = obj.election_id;
-  // Adding toLowerCase as a future proof measure so that custom slugs don't conflict with our other routs
+  // Adding toLowerCase as a future proof measure so that custom slugs don't conflict with our other routes
   if (!election_id || typeof election_id !== 'string' || election_id !== election_id.toLowerCase()){
     return "Invalid Election ID";
   }

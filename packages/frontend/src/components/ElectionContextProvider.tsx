@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { createContext, Dispatch, SetStateAction } from 'react'
 import { Election } from 'shared/domain_model/Election';
-import { useEditElection, useGetElection, useGetElection  } from '../hooks/useAPI';
+import { useEditElection, useGetElection } from '../hooks/useAPI';
 import { Election as IElection } from 'shared/domain_model/Election';
 import { VoterAuth } from 'shared/domain_model/VoterAuth';
 import structuredClone from '@ungap/structured-clone';
