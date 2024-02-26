@@ -43,7 +43,7 @@ const Thanks = () => {
                                     type='button'
                                     variant='contained'
                                     fullwidth
-                                    href={`/e/${election.election_id}/results`} >
+                                    href={`/${election.election_id}/results`} >
                                     Results
                                 </StyledButton>
                             </Box>

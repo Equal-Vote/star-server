@@ -18,7 +18,7 @@ const ElectionCard = ({ election }: ElectionCardProps) => {
     return (
         <Card >
             {/* //sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} */}
-            <CardActionArea href={`/e/${String(election.election_id)}`} >
+            <CardActionArea href={`/${String(election.election_id)}`} >
                 <CardContent>
                     <Typography align='center' gutterBottom variant="h4" component="h4">
                         {election.title}

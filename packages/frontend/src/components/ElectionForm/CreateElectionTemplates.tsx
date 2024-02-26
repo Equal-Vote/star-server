@@ -66,7 +66,7 @@ const CreateElectionTemplates = () => {
             throw Error("Error submitting election");
         }
         setQuickPoll(null)
-        navigate(`/e/${newElection.election.election_id}/admin`)
+        navigate(`/${newElection.election.election_id}/admin`)
     }
     const cardHeight = 220
     return (

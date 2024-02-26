@@ -41,8 +41,8 @@ const App = () => {
                     <Route path='/OpenElections' element={<OpenElections />} />
                     <Route path='/Login' element={<Login />} />
                     <Route path='/CreateElection' element={<CreateElectionTemplates />} />
-                    <Route path='/Election/:id/*' element={<Election />} />
-                    <Route path='/e/:id/*' element={<Election />} />
+                    <Route path='/Election/:id/*' element={<Election />} /> {/*Only supporting the old path for legacy reasons*/}
+                    <Route path='/:id/*' element={<Election />} />
                     <Route path='/Sandbox' element={<Sandbox />} />
                   </Routes>
                 </Box>
