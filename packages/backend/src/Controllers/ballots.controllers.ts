@@ -3,7 +3,6 @@ import { reqIdSuffix } from "../IRequest";
 import Logger from "../Services/Logging/Logger";
 import ServiceLocator from "../ServiceLocator";
 import { responseErr } from '../Util';
-import { randomUUID } from 'crypto';
 
 var BallotModel =  ServiceLocator.ballotsDb();
 const className = 'Ballots.Controllers';

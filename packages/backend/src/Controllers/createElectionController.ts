@@ -14,7 +14,7 @@ const className = "createElectionController";
 const failMsgPrfx = "CATCH:  create error electio err: ";
 async function createElectionController(req: IRequest, res: Response, next: NextFunction) {
     Logger.info(req, "Create Election Controller");
-    const inputElection = expectValidElectionFromRequest(req);
+    const inputElection = await expectValidElectionFromRequest(req);
 
     const resElection = await createAndCheckElection(inputElection, req);
 
