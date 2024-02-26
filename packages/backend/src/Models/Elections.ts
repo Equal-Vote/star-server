@@ -133,11 +133,13 @@ export default class ElectionsDB {
         // Check Classic DB
         // https://stackoverflow.com/questions/46946380/fetch-api-request-timeout
         const controller = new AbortController();
+        const errorMessage = 'ERROR: the requested page does not appear to exist.<br />'
         setTimeout(() => controller.abort(), 3000);
-        let content = await fetch(`${sharedConfig.CLASSIC_DOMAIN}/${election_id}`, {signal: controller.signal})
+        let content = await fetch(`${sharedConfig.CLASSIC_DOMAIN}sdfasd/${election_id}`, {signal: controller.signal})
             .then((res) => res.text())
+            .catch(() => errorMessage)
 
-        if(content != 'ERROR: the requested page does not appear to exist.<br />') return 'classic';
+        if(content != errorMessage) return 'classic';
 
         return false;
     }
