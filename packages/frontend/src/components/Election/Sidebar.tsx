@@ -35,21 +35,21 @@ export default function Sidebar() {
                     sx={{ width: '100%' }}>
                     <Paper elevation={3} sx={{ width: 600 }} >
                         <Grid container direction="column" >
-                            <ListItem text='Voting Page' link={`/Election/${id}/`} />
-                            <ListItem text='Admin Home' link={`/Election/${id}/admin`} />
+                            <ListItem text='Voting Page' link={`/e/${id}/`} />
+                            <ListItem text='Admin Home' link={`/e/${id}/admin`} />
                             {election.state === 'draft' &&
                                 <>
                                     {flags.isSet('ELECTION_ROLES') &&
                                         <PermissionHandler permissions={permissions} requiredPermission={'canEditElectionRoles'}>
-                                            <ListItem text='Edit Election Roles' link={`/Election/${id}/admin/roles`} />
+                                            <ListItem text='Edit Election Roles' link={`/e/${id}/admin/roles`} />
                                         </PermissionHandler>
                                     }
                                 </>}
                             {election.settings.voter_access != 'open' && <PermissionHandler permissions={permissions} requiredPermission={'canViewElectionRoll'}>
-                                <ListItem text='Voters' link={`/Election/${id}/admin/voters`} />
+                                <ListItem text='Voters' link={`/e/${id}/admin/voters`} />
                             </PermissionHandler>}
                             <PermissionHandler permissions={permissions} requiredPermission={'canViewBallots'}>
-                                <ListItem text='Ballots' link={`/Election/${id}/admin/ballots`} />
+                                <ListItem text='Ballots' link={`/e/${id}/admin/ballots`} />
                             </PermissionHandler>
                         </Grid>
                     </Paper>

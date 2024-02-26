@@ -20,7 +20,7 @@ export default ({electionId}) => {
         fetchElections()
     }, []);
 
-    return <Card className='featuredElection' onClick={() => navigate(`/Election/${electionId}`)} elevation={8} sx={{
+    return <Card className='featuredElection' onClick={() => navigate(`/e/${electionId}`)} elevation={8} sx={{
         width: '100%',
         maxWidth: '20rem',
         display: 'flex',
