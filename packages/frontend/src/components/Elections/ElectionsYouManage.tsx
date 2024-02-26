@@ -51,7 +51,7 @@ export default () => {
         isPending={isPending}
         pendingMessage='Loading Elections...'
         data={managedElectionsData}
-        handleOnClick={(row) => navigate(`/e/${String(row.raw.election_id)}`)}
+        handleOnClick={(row) => navigate(`/${String(row.raw.election_id)}`)}
         defaultSortBy='title'
         emptyContent={<>"You don't have any elections yet"<button>Create Election</button></>}
     />

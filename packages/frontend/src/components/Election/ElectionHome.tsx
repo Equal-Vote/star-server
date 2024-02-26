@@ -70,7 +70,7 @@ const ElectionHome = () => {
                 voterAuth.has_voted == false && voterAuth.authorized_voter && !voterAuth.required &&
 
                 <Box sx={{ flexGrow: 1, p: 1 }}>
-                  <Button fullWidth variant='outlined' href={`/e/${String(election?.election_id)}/vote`} >
+                  <Button fullWidth variant='outlined' href={`/${String(election?.election_id)}/vote`} >
                     <Typography align='center' variant="h3" component="h3" fontWeight='bold' sx={{ p: 2 }}>
                       Vote
                     </Typography>
@@ -97,7 +97,7 @@ const ElectionHome = () => {
             {(election.settings.public_results === true &&
               (election.state === 'open' && voterAuth.has_voted) || election.state === 'closed') &&
               <Box sx={{ p: 1, flexGrow: 0 }}>
-                <Button fullWidth variant='outlined' href={`/e/${election.election_id}/results`} >
+                <Button fullWidth variant='outlined' href={`/${election.election_id}/results`} >
                   View Results
                 </Button>
               </Box>

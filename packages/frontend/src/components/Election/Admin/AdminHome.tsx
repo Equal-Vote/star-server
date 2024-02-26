@@ -64,7 +64,7 @@ const EditRolesSection = ({ election, permissions }: { election: Election, permi
                 variant='contained'
                 disabled={!hasPermission(permissions, 'canEditElectionRoles')}
                 fullwidth
-                component={Link} to={`/e/${election.election_id}/admin/roles`}
+                component={Link} to={`/${election.election_id}/admin/roles`}
             >
                 <Typography align='center' variant="body2">
                     Edit Election Roles
@@ -94,7 +94,7 @@ const ViewBallotSection = ({ election, permissions }: { election: Election, perm
                 variant='contained'
                 disabled={!hasPermission(permissions, 'canViewBallots')}
                 fullwidth
-                component={Link} to={`/e/${election.election_id}/admin/ballots`}
+                component={Link} to={`/${election.election_id}/admin/ballots`}
             >
                 View ballots
             </StyledButton>
@@ -122,7 +122,7 @@ const EditElectionSection = ({ election, permissions }: { election: Election, pe
                 variant='contained'
                 disabled={!hasPermission(permissions, 'canEditElection')}
                 fullwidth
-                component={Link} to={`/e/${election.election_id}/edit`}
+                component={Link} to={`/${election.election_id}/edit`}
             >
                 <Typography align='center' variant="body2">
                     Edit Election
@@ -155,7 +155,7 @@ const VotersSection = ({ election, permissions }: { election: Election, permissi
                 variant='contained'
                 disabled={!hasPermission(permissions, 'canViewElectionRoll')}
                 fullwidth
-                component={Link} to={`/e/${election.election_id}/admin/voters`}
+                component={Link} to={`/${election.election_id}/admin/voters`}
             >
                 <Typography align='center' variant="body2">
                     {election.state === 'draft' ? 'Add voters' : 'View voters'}
@@ -184,7 +184,7 @@ const PreviewBallotSection = ({ election, permissions }: { election: Election, p
                 type='button'
                 variant='contained'
                 fullwidth
-                component={Link} to={`/e/${election.election_id}/vote`}
+                component={Link} to={`/${election.election_id}/vote`}
             >
                 <Typography align='center' variant="body2">
                     Preview ballot
@@ -242,7 +242,7 @@ const ResultsSection = ({ election, permissions, preliminary }: { election: Elec
                 variant='contained'
                 disabled={!(hasPermission(permissions, 'canViewPreliminaryResults') || election.settings.public_results === true)}
                 fullwidth
-                component={Link} to={`/e/${election.election_id}/results`}
+                component={Link} to={`/${election.election_id}/results`}
             >
                 View results
             </StyledButton>
@@ -516,7 +516,7 @@ const AdminHome = () => {
         if ((!newElection)) {
             throw Error("Error submitting election");
         }
-        navigate(`/e/${newElection.election.election_id}/admin`)
+        navigate(`/${newElection.election.election_id}/admin`)
     }
     
 
