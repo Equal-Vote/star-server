@@ -71,7 +71,7 @@ const QuickPoll = ({ authSession }) => {
             throw Error("Error submitting election");
         }
         setElectionData(QuickPollTemplate)
-        navigate(`/Election/${newElection.election.election_id}`)
+        navigate(`/e/${newElection.election.election_id}`)
     }
     const applyElectionUpdate = (updateFunc) => {
         const electionCopy = structuredClone(election)

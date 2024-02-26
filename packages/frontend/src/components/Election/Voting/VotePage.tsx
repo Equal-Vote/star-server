@@ -122,7 +122,7 @@ const VotePage = () => {
       ))) {
       return
     }
-    navigate(`/Election/${id}/thanks`)
+    navigate(`/e/${id}/thanks`)
   }
 
   return (

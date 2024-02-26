@@ -25,7 +25,7 @@ const EditElection = () => {
         
         localStorage.removeItem('Election')
         refreshElection()
-        navigate(`/Election/${election.election_id}/admin`)
+        navigate(`/e/${election.election_id}/admin`)
     }
 
     return (
