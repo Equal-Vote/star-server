@@ -123,6 +123,12 @@ const Header = () => {
                         href="https://equal.vote"
                         sx={{display: 'flex', gap: 1}}>
                             <ArrowBackIosNewIcon sx={{display: {xs: 'none', md: 'inline'}}}/>
+                    </IconButton>
+                    <IconButton
+                        size="large"
+                        color="inherit"
+                        href="/"
+                        sx={{display: 'flex', gap: 1}}>
                             <Avatar src='favicon.png'/>
                     </IconButton>
                 </Box>
