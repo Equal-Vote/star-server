@@ -132,6 +132,24 @@ const themes = {
     },
     typography: brandTypeography
   })),
+  black: responsiveFontSizes(createTheme({
+    palette: {
+      primary: {
+        light: '#FFE156',
+        main: '#000000',
+        dark: '#202020',
+        contrastText: '#ffffff',
+      },
+      secondary: {
+        light: '#ffca47',
+        main: '#ff9900',
+        dark: '#c66a00',
+        contrastText: '#000',
+      },
+      brand: brandPalette.brand
+    },
+    typography: brandTypeography
+  })),
   darkMode: responsiveFontSizes(createTheme({
     palette: {
       mode: 'dark',
