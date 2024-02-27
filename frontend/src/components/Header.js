@@ -7,9 +7,10 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button'
-import { Box, IconButton, InputAdornment, InputBase, Link, Menu, MenuItem, Paper, TextField } from '@mui/material'
+import { Avatar, Box, IconButton, InputAdornment, InputBase, Link, Menu, MenuItem, Paper, TextField } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Search from '@mui/icons-material/Search';
 import { useCookie } from '../hooks/useCookie'
 import { v4 } from 'uuid'
@@ -50,7 +51,10 @@ const Header = () => {
             text: 'About',
             href: '/About',
         },
-        
+        {
+            text: 'Help',
+            href: 'https://equal-vote.github.io/star-server/'
+        },
     ];
 
     if(flags.isSet('PUBLIC_ELECTIONS')){
@@ -113,11 +117,14 @@ const Header = () => {
                 {/**** TITLE ****/}
                 <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: "center", marginRight: 2 }}
                 >
-                    <Button color='inherit' href="/">
-                        <Typography align='center' variant={navVariant} color={headerTextColor} sx={{ fontWeight: 'bold' }}>
-                            STAR Vote 2.0
-                        </Typography>
-                    </Button>
+                    <IconButton
+                        size="large"
+                        color="inherit"
+                        href="https://equal.vote"
+                        sx={{display: 'flex', gap: 1}}>
+                            <ArrowBackIosNewIcon/>
+                            <Avatar src='favicon.png'/>
+                    </IconButton>
                 </Box>
 
                 {/**** DESKTOP OPTIONS ****/}
