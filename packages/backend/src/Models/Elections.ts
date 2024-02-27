@@ -5,9 +5,10 @@ import Logger from '../Services/Logging/Logger';
 import { Kysely, sql } from 'kysely'
 import { Election } from 'shared/domain_model/Election';
 import { sharedConfig } from 'shared/SharedConfig';
+import { IElectionStore } from './IElectionStore';
 const tableName = 'electionDB';
 
-export default class ElectionsDB {
+export default class ElectionsDB implements IElectionStore {
     _postgresClient;
     _tableName: string = tableName;
 
