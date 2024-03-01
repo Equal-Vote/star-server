@@ -1,0 +1,99 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "description": "Common components/config",
+  "main": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "scripts": {
+    "test": "npm install && npm test",
+    "build": "tsc --project ./"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./config": {
+      "types": "./dist/types/config/index.d.ts",
+      "default": "./dist/config/index.js"
+    },
+    "./domain_model": {
+      "types": "./dist/types/domain_model/index.d.ts",
+      "default": "./dist/domain_model/index.js"
+    },
+    "./domain_model/Ballot": {
+      "types": "./dist/types/domain_model/Ballot.d.ts",
+      "default": "./dist/domain_model/Ballot.js"
+    },
+    "./domain_model/Credentials": {
+      "types": "./dist/types/domain_model/Credentials.d.ts",
+      "default": "./dist/domain_model/Credentials.js"
+    },
+    "./domain_model/Credentials": {
+      "types": "./dist/types/domain_model/Credentials.d.ts",
+      "default": "./dist/domain_model/Credentials.js"
+    },
+    "./domain_model/Candidate": {
+      "types": "./dist/types/domain_model/Candidate.d.ts",
+      "default": "./dist/domain_model/Candidate.js"
+    },
+    "./domain_model/Election": {
+      "types": "./dist/types/domain_model/Election.d.ts",
+      "default": "./dist/domain_model/Election.js"
+    },
+    "./domain_model/ElectionSettings": {
+      "types": "./dist/types/domain_model/ElectionSettings.d.ts",
+      "default": "./dist/domain_model/ElectionSettings.js"
+    },
+    "./domain_model/ElectionRoll": {
+      "types": "./dist/types/domain_model/ElectionRoll.d.ts",
+      "default": "./dist/domain_model/ElectionRoll.js"
+    },
+    "./domain_model/Email": {
+      "types": "./dist/types/domain_model/Email.d.ts",
+      "default": "./dist/domain_model/Email.js"
+    },
+    "./domain_model/ITabulators": {
+      "types": "./dist/types/domain_model/ITabulators.d.ts",
+      "default": "./dist/domain_model/ITabulators.js"
+    },
+    "./domain_model/roles": {
+      "types": "./dist/types/domain_model/roles.d.ts",
+      "default": "./dist/domain_model/roles.js"
+    },
+    "./domain_model/permissions": {
+      "types": "./dist/types/domain_model/permissions.d.ts",
+      "default": "./dist/domain_model/permissions.js"
+    },
+    "./domain_model/VoterAuth": {
+      "types": "./dist/types/domain_model/VoterAuth.d.ts",
+      "default": "./dist/domain_model/VoterAuth.js"
+    },
+    "./domain_model/Vote": {
+      "types": "./dist/types/domain_model/Vote.d.ts",
+      "default": "./dist/domain_model/Vote.js"
+    },
+    "./domain_model/Uid": {
+      "types": "./dist/types/domain_model/Uid.d.ts",
+      "default": "./dist/domain_model/Uid.js"
+    },
+    "./domain_model/Score": {
+      "types": "./dist/types/domain_model/Score.d.ts",
+      "default": "./dist/domain_model/Score.js"
+    },
+    "./domain_model/Race": {
+      "types": "./dist/types/domain_model/Race.d.ts",
+      "default": "./dist/domain_model/Race.js"
+    },
+    "./domain_model/NewPassword": {
+      "types": "./dist/types/domain_model/NewPassword.d.ts",
+      "default": "./dist/domain_model/NewPassword.js"
+    }
+  }
+}

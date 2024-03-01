@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "star-server is built using Express (For now) for the back end server and React for the front end user interface",
   "main": "index.js",
+  "workspaces": ["./packages/shared", "./packages/backend", "./packages/frontend"], 
   "scripts": {
-    "test": "cd backend && npm install && npm test",
-    "start": "node ./backend/build/backend/src/Migrators/migrate-to-latest.js && node ./backend/build/backend/src/index.js",
-    "heroku-postbuild": "cd frontend && npm install && npm run build && cd ../backend && npm install && npm run-script build"
+    "test": "cd packages/backend && npm install && npm test",
+    "start": "node ./packages/backend/build/src/Migrators/migrate-to-latest.js && node ./packages/backend/build/src/index.js",
+    "heroku-postbuild": "cd packages/frontend && npm install && npm run build && cd ../backend && npm install && npm run-script build"
   },
   "repository": {
     "type": "git",
