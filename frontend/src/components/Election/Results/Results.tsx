@@ -357,7 +357,7 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
             <Typography variant="h5" sx={{fontWeight: 'bold'}}>⭐ { formatter.format(result.results.elected.map(c => c.name))} Wins! ⭐</Typography>
           }
         </>}
-        {result.results.summaryData.nValidVotes == 1 && <p>There's only one vote so far<br/>Full results will be displayed once there's more votes</p> }
+        {result.results.summaryData.nValidVotes == 1 && <p>There's only one vote so far.<br/>Full results will be displayed once there's more votes.</p> }
         {result.results.summaryData.nValidVotes > 1 &&
           <>
           {result.votingMethod === "STAR" && <STARResultViewer results={result.results} rounds={race.num_winners} /> }
