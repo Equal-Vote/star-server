@@ -9,6 +9,7 @@ import useAuthSession from '../AuthSessionContextProvider';
 import { useThemeSelector } from '../../theme';
 import { sharedConfig } from 'shared/config';
 
+
 const CreateElectionTemplates = () => {
     const authSession = useAuthSession()
     const themeSelector = useThemeSelector()

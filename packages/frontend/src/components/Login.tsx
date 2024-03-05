@@ -10,7 +10,7 @@ const Login = () => {
     // TODO: we'll probably eventually need more fields than this for register
 
 
-    const clearInputs = (e) => {
+    const clearInputs = () => {
         setLoginEmail('')
         setLoginPassword('')
 

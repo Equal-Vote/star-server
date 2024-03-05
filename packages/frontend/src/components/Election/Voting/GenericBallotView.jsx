@@ -11,7 +11,7 @@ import Box from '@mui/material/Box';
 import useSnackbar from "../../SnackbarContext";
 import { BallotContext } from "./VotePage";
 import useElection from "../../ElectionContextProvider";
-import useFeatureFlags from "src/components/FeatureFlagContextProvider";
+import useFeatureFlags from "../../FeatureFlagContextProvider";
 
 function HasExpandedData(candidate) {
   if (candidate.full_name) return true

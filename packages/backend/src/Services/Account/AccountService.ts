@@ -1,6 +1,7 @@
 import Logger from '../Logging/Logger';
 import axios from 'axios';
 import qs from 'qs';
+import 'dotenv/config';
 import { InternalServerError, Unauthorized } from "@curveball/http-errors";
 import { IRequest } from '../../IRequest';
 import { Election } from 'shared/domain_model/Election';

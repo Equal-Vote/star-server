@@ -14,7 +14,7 @@ import { StyledButton } from '../../styles';
 import useConfirm from '../../ConfirmationDialogProvider';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import useFeatureFlags from 'src/components/FeatureFlagContextProvider';
+import useFeatureFlags from '../../FeatureFlagContextProvider';
 
 type CandidateProps = {
     onEditCandidate: Function,

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import Typography from '@mui/material/Typography';
 import { BallotContext } from "./VotePage";
-import GenericBallotView from "./GenericBallotView.js";
+import GenericBallotView from "./GenericBallotView";
 
 function scoresAreOverVote({scores}){
   let uniqueScores = new Set();

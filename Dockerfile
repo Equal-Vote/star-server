@@ -20,6 +20,8 @@ COPY --chown=node:node package*.json ./
 
 # Run "npm build" steps after "npm ci" to take advantage of caching.
 RUN npm ci --only=production
+RUN npm i typescript
+
 ENV REACT_APP_FEATURED_ELECTIONS 4e7b3f9d-ce53-4b25-8747-b5927c6745aa,753bb873-12de-4aca-af25-e96ec72f0b49,18ad9f37-94a8-4fed-a784-83761c692052
 ENV REACT_APP_KEYCLOAK_URL https://auth.star.vote:8443/realms/STARVotingDev/protocol/openid-connect
 ENV REACT_APP_TITLE dev.star.vote
@@ -39,7 +41,7 @@ ENV REACT_APP_FF_ELECTION_TALLY false
 ENV REACT_APP_FF_ELECTION_TESTIMONIALS false
 
 COPY --chown=node:node . /usr/src/app/
-RUN npm run build --workspaces
+RUN npm run build -ws
 
 ####################
 # Production Stage #

@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import StarBallotView from "./StarBallotView";
-import PluralityBallotView from "./PluralityBallotView.js";
-import RankedBallotView from "./RankedBallotView.js";
-import ApprovalBallotView from "./ApprovalBallotView.js";
+import PluralityBallotView from "./PluralityBallotView";
+import RankedBallotView from "./RankedBallotView";
+import ApprovalBallotView from "./ApprovalBallotView";
 import StarPRBallotView from "./StarPRBallotView";
 import { DetailExpander } from '../../util';
 

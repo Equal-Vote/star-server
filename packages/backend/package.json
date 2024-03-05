@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --forceExit --detectOpenHandles",
-    "start": "npm run-script build && node ./build/src/index.js",
-    "dev": "nodemon ./src/index.ts",
+    "start": "npm run build && node ./build/src/index.js",
+    "dev": "tsx watch ./src",
     "build": "tsc --project ./",
     "migrate:latest": "node ./build/src/Migrators/migrate-to-latest.js",
     "migrate:up": "node ./build/src/Migrators/migrate-up.js",
@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@curveball/http-errors": "^0.4.1",
-    "@sendgrid/mail": "^7.6.2",
+    "@sendgrid/mail": "^8.1.1",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
@@ -31,7 +31,7 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.4.5",
     "express": "^4.17.3",
     "express-async-handler": "^1.2.0",
     "fraction.js": "^4.3.7",
@@ -44,15 +44,14 @@
     "pg-boss": "^8.0.0",
     "pg-format": "^1.0.4",
     "qs": "^6.10.3",
-    "seedrandom": "^3.0.5",
-    "ts-node": "^10.7.0",
-    "typescript": "^4.6.3"
+    "seedrandom": "^3.0.5"
   },
   "devDependencies": {
     "@types/supertest": "^2.0.12",
     "jest": "^29.7.0",
-    "nodemon": "^3.1.0",
     "supertest": "^6.2.2",
-    "ts-jest": "^29.1.2"
+    "ts-jest": "^29.1.2",
+    "tsx": "^4.7.1",
+    "typescript": "5.3.x"
   }
 }

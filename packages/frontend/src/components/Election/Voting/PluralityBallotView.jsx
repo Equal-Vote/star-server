@@ -1,33 +1,37 @@
 import React, { useContext } from "react";
-import GenericBallotView from "./GenericBallotView.js";
+import GenericBallotView from "./GenericBallotView";
 import Typography from '@mui/material/Typography';
 import { BallotContext } from "./VotePage";
 
 // Renders a complete RCV ballot for a single race
-export default function ApprovalBallotView() {
+export default function PluralityBallotView() {
   const ballotContext = useContext(BallotContext);
-
   const instructions = (
     <>
       <Typography align='left' component="li">
         Fill in the bubble next to your favorite
       </Typography>
-      <Typography align='left' component="li">
-        You can select as many candidates as you like
-      </Typography>
     </>
   )
-
   return (
     <GenericBallotView
-      key="approvalBallot"
+      key="pluralityBallot"
       columns={[1]}
-      methodName='Approval Voting'
+      methodName='Choose One Voting'
       instructions={instructions}
-      learnMoreLink='https://electionscience.org/approval-voting-101/'
+      learnMoreLink='https://electionscience.org/voting-methods/spoiler-effect-top-5-ways-plurality-voting-fails/'
       onClick={(row, score) => {
         const newScores = ballotContext.candidates.map(c => c.score);
-        newScores[row] = newScores[row] === score ? null : score;
+        // bubble becomes null
+        if(newScores[row] === score){
+          newScores[row] = 0
+
+        // bubble becomes 1, all others become 0
+        }else{
+          for(let i = 0; i < newScores.length; i++){
+            newScores[i] = (i===row)? score : null;
+          }
+        }
         ballotContext.onUpdate(newScores);
       }}
       footer="The candidate with the most votes wins"
