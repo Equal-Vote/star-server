@@ -15,7 +15,7 @@ import Races from '../../ElectionForm/Races/Races';
 import ElectionSettings from '../../ElectionForm/ElectionSettings';
 import structuredClone from '@ungap/structured-clone';
 import useAuthSession from '../../AuthSessionContextProvider';
-import useFeatureFlags from 'src/components/FeatureFlagContextProvider';
+import useFeatureFlags from '../../FeatureFlagContextProvider';
 const hasPermission = (permissions: string[], requiredPermission: string) => {
     return (permissions && permissions.includes(requiredPermission))
 }

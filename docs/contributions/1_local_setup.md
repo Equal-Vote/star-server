@@ -190,20 +190,23 @@ copy sample.env .env
 
 You can now start up the API server and the client applications.
 
+Install and build dependencies
+
+```bash
+npm -i -ws
+npm run build -w shared
+```
+
 Launch backend 
 
 ```bash
-cd backend
-npm install
-npm run dev
+npm run dev -ws backend
 ```
 
 Launch frontend. If you want to just run the web client without setting up the server you can change the proxy under frontend/package.json to "proxy": "dev.star.vote". 
 
 ```bash
-npm install
-cd frontend
-npm start
+npm run dev -w star-vote
 ```
 
 ## Hosting database and Keycloak locally

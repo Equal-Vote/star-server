@@ -10,7 +10,7 @@ import { CSVLink } from "react-csv";
 import { useGetBallots } from "../../../hooks/useAPI";
 import { formatDate } from "../../util";
 import useElection from "../../ElectionContextProvider";
-import useFeatureFlags from "src/components/FeatureFlagContextProvider";
+import useFeatureFlags from "../../FeatureFlagContextProvider";
 
 const ViewBallots = () => {
     const { election } = useElection()

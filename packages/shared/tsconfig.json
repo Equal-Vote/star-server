@@ -3,14 +3,14 @@
     "allowJs": true,
     "lib": ["es2016"],
     "target": "es6",
-    "module": "commonjs",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "rootDir": "./src",
     "outDir": "./dist",
     "esModuleInterop": true,
     "strictNullChecks": true,
     "strict": true,
     "types": [],
-    "baseUrl": ".",
     // Generate d.ts files
     "declaration": true,
     // go to js file when using IDE functions like

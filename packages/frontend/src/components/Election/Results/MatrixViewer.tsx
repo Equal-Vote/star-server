@@ -3,7 +3,7 @@ import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from
 import { Paper } from "@mui/material";
 
 function CellViewer({ cell }) {
-  if (cell === null) return "";
+  if (cell === null) return <></>;
 
   return (
     <h3 className='cell'>

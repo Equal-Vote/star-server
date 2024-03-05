@@ -5,7 +5,6 @@ import { useEditElection, useGetElection } from '../hooks/useAPI';
 import { Election as IElection } from 'shared/domain_model/Election';
 import { VoterAuth } from 'shared/domain_model/VoterAuth';
 import structuredClone from '@ungap/structured-clone';
-import { sharedConfig } from 'shared/config';
 import { Share } from '@mui/icons-material';
 
 

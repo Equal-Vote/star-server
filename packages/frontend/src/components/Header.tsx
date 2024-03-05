@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types'
-// import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router'
-// import Button from './Button'
 import React, { useState } from 'react'
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -116,7 +114,9 @@ const Header = () => {
                         )}
                         <MenuItem onClick={() => {
                             // simulate clicking the feedback button
-                            document.getElementById('launcher-frame').contentWindow.document.getElementsByClassName('launcher-button')[0].click()
+                            const launcherFrame = document.getElementById('launcher-frame') as HTMLIFrameElement;
+                            const button= launcherFrame.contentWindow.document.getElementsByClassName('launcher-button')[0] as HTMLButtonElement  ;
+                            button.click()
                         }}>
                             Feedback?
                         </MenuItem>

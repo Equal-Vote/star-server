@@ -15,7 +15,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import useElection from '../../ElectionContextProvider';
 import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
-import useFeatureFlags from 'src/components/FeatureFlagContextProvider';
+import useFeatureFlags from '../../FeatureFlagContextProvider';
 
 export default function RaceForm({ race_index, editedRace, errors, setErrors, applyRaceUpdate }) {
     const flags = useFeatureFlags();
