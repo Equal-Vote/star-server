@@ -82,7 +82,7 @@ const ElectionHome = () => {
             {election.state === 'closed' && election.end_time &&
               <Box sx={{ flexGrow: 1 }}>
                 <Typography align='center' variant="h6" component="h6">
-                  {`Election ended on ${formatDate(election.start_time, election.settings.time_zone)}`}
+                  {`Election ended on ${formatDate(election.end_time, election.settings.time_zone)}`}
                 </Typography>
               </Box>
             }
