@@ -47,10 +47,8 @@ const flagDefinitions = {
 
 export function FeatureFlagContextProvider({ children }) {
     const [flagOverrides, setFlagOverrides] = useLocalStorage('flag_overrides', {});
-    console.log('new overrides', flagOverrides);
 
     const isSet = (flagName: FeatureFlag) => {
-        console.log('checking is set', flagOverrides);
         // check overrides
         if(flagName in flagOverrides) return flagOverrides[flagName];
         
