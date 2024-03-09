@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ThemeContextProvider } from './theme'
 import Header from './components/Header'
@@ -17,11 +17,13 @@ import ElectionInvitations from './components/Elections/ElectionInvitations'
 import ElectionsYouManage from './components/Elections/ElectionsYouManage'
 import ElectionsYouVotedIn from './components/Elections/ElectionsYouVotedIn'
 import OpenElections from './components/Elections/OpenElections'
+import { FeatureFlagContextProvider } from './components/FeatureFlagContextProvider'
 
 const App = () => {
   return (
     <Router>
       <ThemeContextProvider>
+        <FeatureFlagContextProvider>
         <AuthSessionContextProvider>
           <ConfirmDialogProvider>
             <SnackbarContextProvider>
@@ -50,6 +52,7 @@ const App = () => {
             </SnackbarContextProvider>
           </ConfirmDialogProvider>
         </AuthSessionContextProvider>
+        </FeatureFlagContextProvider>
       </ThemeContextProvider>
     </Router>
   );

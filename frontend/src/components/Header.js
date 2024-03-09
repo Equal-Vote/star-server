@@ -15,9 +15,11 @@ import { useCookie } from '../hooks/useCookie'
 import { v4 } from 'uuid'
 import useAuthSession from './AuthSessionContextProvider';
 import { useThemeSelector } from '../theme';
+import useFeatureFlags from './FeatureFlagContextProvider';
 
 const headerTextColor = 'primary.contrastText'
 const Header = () => {
+    const flags = useFeatureFlags();
     const themeSelector = useThemeSelector()
     const authSession = useAuthSession()
     const navigate = useNavigate()
@@ -51,7 +53,8 @@ const Header = () => {
         
     ];
 
-    if(process.env.REACT_APP_FF_PUBLIC_ELECTIONS === 'true'){
+    console.log('public elections set', flags.isSet('PUBLIC_ELECTIONS'));
+    if(flags.isSet('PUBLIC_ELECTIONS')){
         navItems.push({
             text: 'Public Elections',
             href: '/OpenElections',
