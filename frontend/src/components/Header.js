@@ -180,9 +180,9 @@ const Header = () => {
                             <MenuItem component={Link} href='/CreateElection'>
                                 New Election
                             </MenuItem>
-                            <MenuItem component={Link} href='/ElectionInvitations'>
+                            {/*<MenuItem component={Link} href='/ElectionInvitations'>
                                 Election Invitations
-                            </MenuItem>
+                        </MenuItem>*/}
                             <MenuItem component={Link} href='/ElectionsYouManage'>
                                 Elections you Manage
                             </MenuItem>
