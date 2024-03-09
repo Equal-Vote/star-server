@@ -4,6 +4,7 @@ import { createContext } from 'react';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { TypographyOptions } from '@mui/material/styles/createTypography';
 import { useMediaQuery } from '@mui/material';
+import useFeatureFlags from './components/FeatureFlagContextProvider';
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -152,14 +153,19 @@ type ThemeContextType = {
 export const ThemeContext = createContext<ThemeContextType>({ mode: 'base', modes: Object.keys(themes) as mode[], selectColorMode: () => { }, theme: themes.turquoise })
 
 export const ThemeContextProvider = ({ children }) => {
+  const flags = useFeatureFlags();
   // https://mui.com/material-ui/customization/dark-mode/#system-preference
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [mode, setMode] = useLocalStorage<mode>('themeMode', 'browserDefault');
   let theme;
-  if(mode === 'browserDefault'){
-    theme = themes[prefersDarkMode? 'darkMode' : 'turquoise'];
+  if(flags.isSet('THEMES')){
+    if(mode === 'browserDefault'){
+      theme = themes[prefersDarkMode? 'darkMode' : 'turquoise'];
+    }else{
+      theme = themes[mode];
+    }
   }else{
-    theme = themes[mode];
+    theme = themes['turquoise']
   }
 
   const value: ThemeContextType = {

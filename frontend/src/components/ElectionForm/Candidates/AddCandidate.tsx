@@ -14,6 +14,7 @@ import { StyledButton } from '../../styles';
 import useConfirm from '../../ConfirmationDialogProvider';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import useFeatureFlags from 'src/components/FeatureFlagContextProvider';
 
 type CandidateProps = {
     onEditCandidate: Function,
@@ -22,6 +23,7 @@ type CandidateProps = {
 }
 
 const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, handleClose }) => {
+    const flags = useFeatureFlags();
 
     const onApplyEditCandidate = (updateFunc) => {
         const newCandidate = { ...candidate }
@@ -106,7 +108,7 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
                         />
                     </Grid>
                     <Grid item xs={12} sx={{ position: 'relative', display: 'flex', flexDirection: { sm: 'row', xs: 'column' }, justifyContent: 'flex-start', alignItems: 'top' }}>
-                        {(process.env.REACT_APP_FF_CANDIDATE_PHOTOS === 'true') && <>
+                        {flags.isSet('CANDIDATE_PHOTOS') && <>
                             <Box>
                                 {!candidatePhotoFile &&
                                     <>

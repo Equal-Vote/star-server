@@ -18,6 +18,7 @@ import { StyledButton } from '../styles';
 import SummaryPage from "./SummaryPage";
 import { Election } from "@domain_model/Election";
 import { Candidate } from "@domain_model/Candidate";
+import useFeatureFlags from "../FeatureFlagContextProvider";
 
 
 type Pages = 'ElectionDetails' | 'RaceDetails' | 'Open?' | 'Limit?' | 'VoterList?' | 'Emails?' | 'Invitations?' | 'Login?' | 'Register?' | 'CustomRegister?' |
@@ -163,6 +164,7 @@ type Props = {
 }
 
 const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitText, disableSubmit }: Props) => {
+    const flags = useFeatureFlags();
     // I'm referencing 4th option here
     // https://daveceddia.com/usestate-hook-examples/
     const defaultElection: Election = {
@@ -438,7 +440,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                         Option1={{
                             Answer: 'Yes',
                             HelpText: 'Voters will create an account and verify their email adress.',
-                            GotoPage: (process.env.REACT_APP_FF_CUSTOM_REGISTER === 'true')? 'CustomRegister?': 'Scenario8',
+                            GotoPage: (flags.isSet('CUSTOM_REGISTRATION')? 'CustomRegister?': 'Scenario8'),
                             election: election,
                             setPage: setPage,
                         }}

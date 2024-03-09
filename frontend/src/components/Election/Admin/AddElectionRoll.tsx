@@ -12,9 +12,11 @@ import { usePostRolls } from "../../../hooks/useAPI";
 import useElection from "../../ElectionContextProvider";
 import useSnackbar from "../../SnackbarContext";
 import { sharedConfig } from '@shared/SharedConfig';
+import useFeatureFlags from "src/components/FeatureFlagContextProvider";
 
 const AddElectionRoll = ({ onClose }) => {
     const { snack, setSnack } = useSnackbar()
+    const flags = useFeatureFlags();
     const { election } = useElection()
     const [voterIDList, setVoterIDList] = useState('')
     const postRoll = usePostRolls(election.election_id)
@@ -152,7 +154,7 @@ const AddElectionRoll = ({ onClose }) => {
                                 }
                                 label='Email'
                             />
-                            {process.env.REACT_APP_FF_PRECINCTS === 'true' &&
+                            {flags.isSet('PRECINCTS') &&
                                 <FormControlLabel
                                     control={
                                         <Checkbox

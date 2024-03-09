@@ -10,10 +10,12 @@ import { CSVLink } from "react-csv";
 import { useGetBallots } from "../../../hooks/useAPI";
 import { formatDate } from "../../util";
 import useElection from "../../ElectionContextProvider";
+import useFeatureFlags from "src/components/FeatureFlagContextProvider";
 
 const ViewBallots = () => {
     const { election } = useElection()
     const { data, isPending, error, makeRequest: fetchBallots } = useGetBallots(election.election_id)
+    const flags = useFeatureFlags();
     useEffect(() => { fetchBallots() }, [])
     const [isViewing, setIsViewing] = useState(false)
     const [addRollPage, setAddRollPage] = useState(false)
@@ -67,7 +69,7 @@ const ViewBallots = () => {
                         <Table style={{ width: '100%' }} aria-label="simple table">
                             <TableHead>
                                 <TableCell> Ballot ID </TableCell>
-                                {process.env.REACT_APP_FF_VOTER_FLAGGING === 'true' &&
+                                {flags.isSet('VOTER_FLAGGING') &&
                                     <TableCell> Precinct </TableCell>
                                 }
                                 <TableCell> Date Submitted </TableCell>
@@ -85,7 +87,7 @@ const ViewBallots = () => {
                                 {data.ballots.map((ballot) => (
                                     <TableRow key={ballot.ballot_id} >
                                         <TableCell component="th" scope="row">{ballot.ballot_id}</TableCell>
-                                        {process.env.REACT_APP_FF_VOTER_FLAGGING === 'true' &&
+                                        {flags.isSet('VOTER_FLAGGING') &&
                                             <TableCell >{ballot.precinct || ''}</TableCell>
                                         }
                                         <TableCell >{formatDate(Number(ballot.date_submitted), election.settings.time_zone)}</TableCell>

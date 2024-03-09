@@ -22,38 +22,38 @@ import { FeatureFlagContextProvider } from './components/FeatureFlagContextProvi
 const App = () => {
   return (
     <Router>
-      <ThemeContextProvider>
-        <FeatureFlagContextProvider>
-        <AuthSessionContextProvider>
-          <ConfirmDialogProvider>
-            <SnackbarContextProvider>
-              <CssBaseline />
-              <Box display='flex' flexDirection='column' minHeight={'100vh'} >
-                <Header />
-                <Box
-                  sx={{
-                    width: '100%',
-                  }}>
-                  <Routes>
-                    <Route path='/' element={<LandingPage />} />
-                    <Route path='/About' element={<About />} />
-                    <Route path='/ElectionInvitations' element={<ElectionInvitations />} />
-                    <Route path='/ElectionsYouManage' element={<ElectionsYouManage />} />
-                    <Route path='/ElectionsYouVotedIn' element={<ElectionsYouVotedIn />} />
-                    <Route path='/OpenElections' element={<OpenElections />} />
-                    <Route path='/Login' element={<Login />} />
-                    <Route path='/CreateElection' element={<CreateElectionTemplates />} />
-                    <Route path='/Election/:id/*' element={<Election />} />
-                    <Route path='/Sandbox' element={<Sandbox />} />
-                  </Routes>
+      <FeatureFlagContextProvider>
+        <ThemeContextProvider>
+          <AuthSessionContextProvider>
+            <ConfirmDialogProvider>
+              <SnackbarContextProvider>
+                <CssBaseline />
+                <Box display='flex' flexDirection='column' minHeight={'100vh'} >
+                  <Header />
+                  <Box
+                    sx={{
+                      width: '100%',
+                    }}>
+                    <Routes>
+                      <Route path='/' element={<LandingPage />} />
+                      <Route path='/About' element={<About />} />
+                      <Route path='/ElectionInvitations' element={<ElectionInvitations />} />
+                      <Route path='/ElectionsYouManage' element={<ElectionsYouManage />} />
+                      <Route path='/ElectionsYouVotedIn' element={<ElectionsYouVotedIn />} />
+                      <Route path='/OpenElections' element={<OpenElections />} />
+                      <Route path='/Login' element={<Login />} />
+                      <Route path='/CreateElection' element={<CreateElectionTemplates />} />
+                      <Route path='/Election/:id/*' element={<Election />} />
+                      <Route path='/Sandbox' element={<Sandbox />} />
+                    </Routes>
+                  </Box>
+                  <Footer />
                 </Box>
-                <Footer />
-              </Box>
-            </SnackbarContextProvider>
-          </ConfirmDialogProvider>
-        </AuthSessionContextProvider>
-        </FeatureFlagContextProvider>
-      </ThemeContextProvider>
+              </SnackbarContextProvider>
+            </ConfirmDialogProvider>
+          </AuthSessionContextProvider>
+        </ThemeContextProvider>
+      </FeatureFlagContextProvider>
     </Router>
   );
 }

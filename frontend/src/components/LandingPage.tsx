@@ -10,8 +10,10 @@ import LandingPageSignUpBar from './LandingPage/LandingPageSignUpBar';
 import LandingPageTestimonials from './LandingPage/LandingPageTestimonials';
 import { Paper } from '@mui/material';
 import LandingPagePricing from './LandingPage/LandingPagePricing';
+import useFeatureFlags from './FeatureFlagContextProvider';
 
 const LandingPage = () => {
+    const flags = useFeatureFlags();
     return (
         <Box sx={{
             width: '100%',
@@ -29,7 +31,7 @@ const LandingPage = () => {
             }/>
             <LandingPageFeatures/>
             <LandingPageSignUpBar />
-            {process.env.REACT_APP_FF_ELECTION_TESTIMONIALS === 'true' && <LandingPageTestimonials testimonials={[
+            {flags.isSet('ELECTION_TESTIMONIALS') && <LandingPageTestimonials testimonials={[
                 {
                     quote: 'STAR Voting is Awesome!',
                     name: 'John Doe',

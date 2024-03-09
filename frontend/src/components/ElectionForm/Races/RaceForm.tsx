@@ -15,14 +15,14 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import useElection from '../../ElectionContextProvider';
 import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
+import useFeatureFlags from 'src/components/FeatureFlagContextProvider';
 
 export default function RaceForm({ race_index, editedRace, errors, setErrors, applyRaceUpdate }) {
+    const flags = useFeatureFlags();
     const [showsAllMethods, setShowsAllMethods] = useState(false)
     const { election } = useElection()
 
     const confirm = useConfirm();
-
-
 
     const onEditCandidate = (candidate: Candidate, index) => {
         setErrors({ ...errors, candidates: '', raceNumWinners: '' })
@@ -68,7 +68,6 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
             moveCandidate(index, index + 1)
         }
     }
-
 
     const onDeleteCandidate = async (index: number) => {
         const confirmed = await confirm({ title: 'Confirm Delete Candidate', message: 'Are you sure?' })
@@ -130,7 +129,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                 </Grid>
 
                 {
-                    process.env.REACT_APP_FF_PRECINCTS === 'true' && election.settings.voter_access !== 'open' &&
+                    flags.isSet('PRECINCTS') && election.settings.voter_access !== 'open' &&
                     <Grid item xs={12}>
                         <TextField
                             id={`race-precincts-${String(race_index)}`}
@@ -156,7 +155,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                     </Grid>
                 }
                 {
-                    process.env.REACT_APP_FF_MULTI_WINNER === 'true' &&
+                    flags.isSet('MULTI_WINNER') &&
                     <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                         <Typography gutterBottom variant="h6" component="h6">
                             Number of Winners
@@ -199,21 +198,21 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                                 Score candidates 0-5, single winner or multi-winner
                             </FormHelperText>
 
-                            {(process.env.REACT_APP_FF_METHOD_STAR_PR === 'true') && <>
+                            {flags.isSet('METHOD_STAR_PR') && <>
                                 <FormControlLabel value="STAR_PR" control={<Radio />} label="Proportional STAR" />
                                 <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                     Score candidates 0-5, proportional multi-winner
                                 </FormHelperText>
                             </>}
 
-                            {(process.env.REACT_APP_FF_METHOD_RANKED_ROBIN === 'true') && <>
+                            {flags.isSet('METHOD_RANKED_ROBIN') && <>
                                 <FormControlLabel value="RankedRobin" control={<Radio />} label="Ranked Robin" />
                                 <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                     Rank candidates in order of preference, single winner or multi-winner
                                 </FormHelperText>
                             </>}
 
-                            {(process.env.REACT_APP_FF_METHOD_APPROVAL === 'true') && <>
+                            {flags.isSet('METHOD_APPROVAL') && <>
                                 <FormControlLabel value="Approval" control={<Radio />} label="Approval" />
                                 <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                     Mark all candidates you approve of, single winner or multi-winner
@@ -257,7 +256,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                                         Mark one candidate only. Not recommended with more than 2 candidates.
                                     </FormHelperText>
 
-                                    {(process.env.REACT_APP_FF_METHOD_RANKED_CHOICE === 'true') && <>
+                                    {flags.isSet('METHOD_RANKED_CHOICE') && <>
                                         <FormControlLabel value="IRV" control={<Radio />} label="Ranked Choice" />
                                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                             Rank candidates in order of preference, single winner, only recommended for educational purposes

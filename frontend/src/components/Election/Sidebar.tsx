@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Paper } from '@mui/material';
 import PermissionHandler from '../PermissionHandler';
 import useElection from '../ElectionContextProvider';
+import useFeatureFlags from '../FeatureFlagContextProvider';
 
 const ListItem = ({ text, link }) => {
     return (
@@ -23,6 +24,7 @@ export default function Sidebar() {
     
     const { election, voterAuth, permissions } = useElection()
     const id = election.election_id;
+    const flags = useFeatureFlags();
     return (
         <>
             {voterAuth?.roles?.length > 0 &&
@@ -37,7 +39,7 @@ export default function Sidebar() {
                             <ListItem text='Admin Home' link={`/Election/${id}/admin`} />
                             {election.state === 'draft' &&
                                 <>
-                                    {process.env.REACT_APP_FF_METHOD_ELECTION_ROLES === 'true' &&
+                                    {flags.isSet('ELECTION_ROLES') &&
                                         <PermissionHandler permissions={permissions} requiredPermission={'canEditElectionRoles'}>
                                             <ListItem text='Edit Election Roles' link={`/Election/${id}/admin/roles`} />
                                         </PermissionHandler>
