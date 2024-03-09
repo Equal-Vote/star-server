@@ -14,7 +14,7 @@ These could be a variety of things including voting methods or advanced election
 Here's how you enable these features
 
 1. Make sure you're using a browser that's compatible with the chrome web store (like Google Chrome or Opera)
-2. ![Install the feature flags plugin](https://chromewebstore.google.com/detail/feature-flags/hmflgmhoghcbmckbbgahfmklegllkggn?pli=1)
+2. [Install the feature flags plugin](https://chromewebstore.google.com/detail/feature-flags/hmflgmhoghcbmckbbgahfmklegllkggn?pli=1)
 3. Once it's installed you can select the plugin at the top-right of the screen to choose between the features
 
 ![](images/feature_flags.png)
