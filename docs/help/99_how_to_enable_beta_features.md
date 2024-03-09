@@ -17,7 +17,7 @@ Here's how you enable these features
 2. [Install the feature flags plugin](https://chromewebstore.google.com/detail/feature-flags/hmflgmhoghcbmckbbgahfmklegllkggn?pli=1)
 3. Once it's installed you can select the plugin at the top-right of the screen to choose between the features
 
-![](images/feature_flags.png)
+![](../images/feature_flags.png)
 
 By default the flags to whatever the current default is for the website. If you'd like to return to the default you can toggle the Reset flag
 
