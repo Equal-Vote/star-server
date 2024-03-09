@@ -196,24 +196,26 @@ const Header = () => {
                             >
                                 Logout
                             </MenuItem>
-                            <br/>
-                            <br/>
-                            <br/>
-                            <MenuItem
-                                color='inherit'
-                                onClick={() => themeSelector.selectColorMode('browserDefault')}
-                            >
-                                browser default
-                            </MenuItem>
-                            {themeSelector.modes.map((mode, i) => (
+                            {flags.isSet('THEMES') && <>
+                                <br/>
+                                <br/>
+                                <br/>
                                 <MenuItem
                                     color='inherit'
-                                    onClick={() => themeSelector.selectColorMode(mode)}
-                                    key={`color-${i}`}
+                                    onClick={() => themeSelector.selectColorMode('browserDefault')}
                                 >
-                                    {mode}
+                                    browser default
                                 </MenuItem>
-                            ))}
+                                {themeSelector.modes.map((mode, i) => (
+                                    <MenuItem
+                                        color='inherit'
+                                        onClick={() => themeSelector.selectColorMode(mode)}
+                                        key={`color-${i}`}
+                                    >
+                                        {mode}
+                                    </MenuItem>
+                                ))}
+                            </>}
                         </Menu>
                     </>}
                     {!authSession.isLoggedIn() &&

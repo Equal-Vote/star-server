@@ -5,10 +5,12 @@ import React from 'react'
 import QuickPoll from '../ElectionForm/QuickPoll'
 import useAuthSession from '../AuthSessionContextProvider'
 import { useThemeSelector } from '../../theme'
+import useFeatureFlags from '../FeatureFlagContextProvider'
 
 export default ({}) => {
-    const authSession = useAuthSession()
-    const themeSelector = useThemeSelector()
+    const authSession = useAuthSession();
+    const themeSelector = useThemeSelector();
+    const flags = useFeatureFlags();
     return (
         <Box sx={{
             maxWidth: '1300px',
@@ -36,7 +38,7 @@ export default ({}) => {
                     }}>
                         Voting methods approved by the <a target="_blank" href={'https://www.equal.vote'} style={{ color: 'inherit', textDecoration: 'underline' }}>Equal Vote Coalition</a>
                     </Typography>
-                    {process.env.REACT_APP_FF_ELECTION_TALLY === 'true' && 
+                    {flags.isSet('ELECTION_TALLY') &&
                         <Box sx={{
                             display: 'flex',
                             flexDirection: 'column',

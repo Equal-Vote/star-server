@@ -10,6 +10,7 @@ import { useApproveRoll, useFlagRoll, useInvalidateRoll, useSendInvite, useUnfla
 import { formatDate } from "../../util";
 import useElection from "../../ElectionContextProvider";
 import { ElectionRoll } from "@domain_model/ElectionRoll";
+import useFeatureFlags from "src/components/FeatureFlagContextProvider";
 type Props = {
     roll: ElectionRoll,
     onClose: Function,
@@ -18,6 +19,7 @@ type Props = {
 const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
     const { election, permissions } = useElection()
     const [updatedRoll, setUpdatedRoll] = useState(roll)
+    const flags = useFeatureFlags();
 
     const approve = useApproveRoll(election.election_id)
     const flag = useFlagRoll(election.election_id)
@@ -114,7 +116,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
                             <Button variant='outlined' onClick={() => { onApprove() }} > Approve </Button>
                         </PermissionHandler>
                     </Grid>}
-                {process.env.REACT_APP_FF_VOTER_FLAGGING === 'true' && <>
+                {flags.isSet('VOTER_FLAGGING') && <>
                     {roll.state !== 'flagged' &&
                         <Grid item sm={4} sx={{py:1}}>
 

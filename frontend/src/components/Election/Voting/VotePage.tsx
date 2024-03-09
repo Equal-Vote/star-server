@@ -16,6 +16,7 @@ import useAuthSession from "../../AuthSessionContextProvider";
 import { StyledButton } from "../../styles";
 import { Candidate } from "@domain_model/Candidate";
 import { Race } from "@domain_model/Race";
+import useFeatureFlags from "src/components/FeatureFlagContextProvider";
 
 // I'm using the icon codes instead of an import because there was padding I couldn't get rid of
 // https://stackoverflow.com/questions/65721218/remove-material-ui-icon-margin
@@ -57,6 +58,7 @@ function shuffle<T>(array: T[]): T[] {
 }
 
 const VotePage = () => {
+  const flags = useFeatureFlags();
   const { election } = useElection()
   const authSession = useAuthSession()
   const makePages = () => {
@@ -64,8 +66,8 @@ const VotePage = () => {
     let pages = election.races.map((race, i) => {
       let candidates = race.candidates.map(c => ({ ...c, score: null }))
       return {
-        instructionsRead: election.settings.require_instruction_confirmation ? false : true, // I could just do !require_... , but this is more clear
-        candidates: election.settings.random_candidate_order ? shuffle(candidates) : candidates,
+        instructionsRead: (flags.isSet('FORCE_DISABLE_INSTRUCTION_CONFIRMATION') || !election.settings.require_instruction_confirmation)? true : false, // I could just do !require_... , but this is more clear
+        candidates: (flags.isSet('FORCE_DISABLE_RANDOM_CANDIDATES') || !election.settings.random_candidate_order) ? candidates : shuffle(candidates),
         voting_method: race.voting_method,
         race_index: i
       }

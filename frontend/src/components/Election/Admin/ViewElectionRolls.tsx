@@ -12,6 +12,7 @@ import EnhancedTable, { HeadKey }  from "./../../EnhancedTable";
 import { useGetRolls, useSendInvites } from "../../../hooks/useAPI";
 import useElection from "../../ElectionContextProvider";
 import { ElectionRoll } from "@domain_model/ElectionRoll";
+import useFeatureFlags from "src/components/FeatureFlagContextProvider";
 
 const ViewElectionRolls = () => {
     const { election, permissions } = useElection()
@@ -21,6 +22,7 @@ const ViewElectionRolls = () => {
     const [isEditing, setIsEditing] = useState(false)
     const [addRollPage, setAddRollPage] = useState(false)
     const [editedRoll, setEditedRoll] = useState<ElectionRoll|null>(null)
+    const flags = useFeatureFlags();
 
     const onOpen = (voter) => {
         setIsEditing(true)
@@ -49,9 +51,7 @@ const ViewElectionRolls = () => {
     :
         ['voter_id', 'email', 'has_voted'];
 
-    if (process.env.REACT_APP_FF_PRECINCTS === 'true') {
-        headKeys.push('precinct');
-    }
+    if (flags.isSet('PRECINCTS')) headKeys.push('precinct');
 
     let electionRollData = React.useMemo(
         () => data?.electionRoll ? [...data.electionRoll] : [],

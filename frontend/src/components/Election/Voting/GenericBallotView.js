@@ -12,6 +12,7 @@ import Box from '@mui/material/Box';
 import useSnackbar from "../../SnackbarContext";
 import { BallotContext } from "./VotePage";
 import useElection from "../../ElectionContextProvider";
+import useFeatureFlags from "src/components/FeatureFlagContextProvider";
 
 function HasExpandedData(candidate) {
   if (candidate.full_name) return true
@@ -233,6 +234,7 @@ export default function GenericBallotView({
 
   const {snack, setSnack} = useSnackbar();
 
+  const flags = useFeatureFlags();
   const { election } = useElection();
 
   const ballotContext = useContext(BallotContext);
@@ -259,7 +261,7 @@ export default function GenericBallotView({
             </Typography>
 
             {instructions}
-            { election.settings.require_instruction_confirmation &&
+            { !flags.isSet('FORCE_DISABLE_INSTRUCTION_CONFIRMATION') && election.settings.require_instruction_confirmation &&
             <FormGroup>
               <FormControlLabel
                 sx={{pb:5, pl:4, pt: 1}}

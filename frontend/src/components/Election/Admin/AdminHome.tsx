@@ -15,6 +15,7 @@ import Races from '../../ElectionForm/Races/Races';
 import ElectionSettings from '../../ElectionForm/ElectionSettings';
 import structuredClone from '@ungap/structured-clone';
 import useAuthSession from '../../AuthSessionContextProvider';
+import useFeatureFlags from 'src/components/FeatureFlagContextProvider';
 const hasPermission = (permissions: string[], requiredPermission: string) => {
     return (permissions && permissions.includes(requiredPermission))
 }
@@ -41,7 +42,8 @@ const Section = ({ Description, Button }: SectionProps) => {
 }
 
 const EditRolesSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-    if (process.env.REACT_APP_FF_METHOD_PLURALITY !== 'true') return <></>;
+    const flags = useFeatureFlags();
+    if (!flags.isSet('ELECTION_ROLES')) return <></>;
     return <Section
         Description={
             (<>
