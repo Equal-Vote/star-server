@@ -13,7 +13,6 @@ const getUser = (req: any, res: any, next: any) => {
   Logger.info(req, `${className}.getUser`);
   const user = accountService.extractUserFromRequest(req);
   if (user){
-    console.log('get user success');
     req.user = user;
   }
   next()
