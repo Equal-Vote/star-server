@@ -1,7 +1,7 @@
 ---
 layout: default
 title: How to enable beta features
-nav_order: 0
+nav_order: 99
 parent: Star Elections Documentation
 ---
 
