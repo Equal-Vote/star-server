@@ -9,7 +9,7 @@ parent: Star Elections Documentation
 
 We have a lot of features in progress that are mostly ready, but aren't quite polished enough to be enabled by default yet.
 
-These could be a variety of things including voting methods or advanced election admin features. It also includes features that make it easier for testers to use the tool.
+These could be a variety of things including voting methods or advanced election admin features. It also includes features that make it easier for testers to run regression testing.
 
 Here's how you enable these features
 

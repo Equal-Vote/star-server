@@ -53,7 +53,6 @@ const Header = () => {
         
     ];
 
-    console.log('public elections set', flags.isSet('PUBLIC_ELECTIONS'));
     if(flags.isSet('PUBLIC_ELECTIONS')){
         navItems.push({
             text: 'Public Elections',
