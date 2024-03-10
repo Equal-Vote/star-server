@@ -58,7 +58,7 @@ const Thanks = () => {
                                 type='button'
                                 variant='contained'
                                 fullwidth
-                                href={'https://www.starvoting.org/donate'} >
+                                href={'https://www.equal.vote/donate'} >
                                 Donate
                             </StyledButton>
                         </Box>
