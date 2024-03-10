@@ -17,9 +17,9 @@ const Election = () => {
 
   return (
     <ElectionContextProvider id={id} >
-      <Box display='flex' flexDirection='row' sx={{mt: {xs: 0, sm: 5}, mb: {xs: 0, sm: 5}}}>
-        <Box sx={{width: '16%'}}>
-        <Sidebar />
+      <Box sx={{mt: {xs: 0, sm: 5}, mb: {xs: 0, sm: 5}}}>
+        <Box sx={{maxWidth: '16%'}}>
+          <Sidebar />
         </Box>
         <Box sx={{margin: 'auto'}}>
           <Routes>
