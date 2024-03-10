@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "lib": ["es2016"],
+    "target": "es6",
+    "module": "commonjs",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "strict": true,
+    "types": [],
+    "baseUrl": ".",
+    // Generate d.ts files
+    "declaration": true,
+    // go to js file when using IDE functions like
+    // "Go to Definition" in VSCode
+    "declarationMap": true,
+    "declarationDir": "./dist/types"
+  },
+  "include": ["./src/**/*"]
+}

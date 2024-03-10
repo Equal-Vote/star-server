@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "target": "es6",
+    "rootDir": ".",
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "strict": true,
+    "types": [
+      "jest"
+    ],
+    "baseUrl": ".",
+    "paths": { }
+  },
+  "include": ["./src/**/*"]
+}
