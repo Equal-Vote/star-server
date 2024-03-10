@@ -6,7 +6,7 @@ import QuickPoll from '../ElectionForm/QuickPoll'
 import useAuthSession from '../AuthSessionContextProvider'
 import { useThemeSelector } from '../../theme'
 import useFeatureFlags from '../FeatureFlagContextProvider'
-import { useLocalStorage } from 'src/hooks/useLocalStorage'
+import { useLocalStorage } from '../../hooks/useLocalStorage'
 
 export default ({}) => {
     const authSession = useAuthSession();

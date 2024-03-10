@@ -17,7 +17,7 @@ import { v4 } from 'uuid'
 import useAuthSession from './AuthSessionContextProvider';
 import { useThemeSelector } from '../theme';
 import useFeatureFlags from './FeatureFlagContextProvider';
-import { useLocalStorage } from 'src/hooks/useLocalStorage';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 const headerTextColor = 'primary.contrastText'
 const Header = () => {

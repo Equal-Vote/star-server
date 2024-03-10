@@ -6,7 +6,7 @@ import React, {
     useState,
 } from 'react';
 import { useEffect } from "react";
-import { useLocalStorage } from 'src/hooks/useLocalStorage';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 type FeatureFlag = keyof typeof flagDefinitions;
 
