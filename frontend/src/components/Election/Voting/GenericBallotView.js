@@ -6,7 +6,6 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import {FaRegStar} from 'react-icons/fa';
 import { Checkbox, FormControlLabel, FormGroup, Link } from "@mui/material";
 import Box from '@mui/material/Box';
 import useSnackbar from "../../SnackbarContext";
@@ -187,13 +186,13 @@ const ColumnHeadings = ({starHeadings, columns, leftTitle, rightTitle, headingPr
   </>
 );
 
-const ScoreIcon = ({color, value}) => (
-  <div align='center' style={{ position: 'relative', height: '50px'}}>
-    <FaRegStar style={{color: color}} className="starIcon"/>
+const ScoreIcon = ({opacity, value}) => (
+  <Box align='center' sx={{ position: 'relative', aspectRatio: '1 / 1'}}>
+    <Box component="img" src="/images/star_icon.png" sx={{opacity: opacity, aspectRatio: '1 / 1', height: {xs: '100%', sm: '80%'}}} className="starIcon"/>
     <Typography className="scoreColumnHeading">
       {value}
     </Typography>
-  </div>
+  </Box>
 )
 
 const ScoreColumnHeadings = ({starHeadings, columns}) =>
@@ -202,7 +201,7 @@ const ScoreColumnHeadings = ({starHeadings, columns}) =>
       { starHeadings &&
         <ScoreIcon
           // NOTE: I tried doing this in CSS with :first-child but it didn't work
-          color={(n != 0)? 'var(--ballot-star-teal)' : 'var(--brand-white)'}
+          opacity={n == 0? '0' : '1'}
           value={columnTitle}
         />
       }

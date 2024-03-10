@@ -33,8 +33,8 @@
   --brand-gray-alpha: #7B7B7B7D; /* For graying out candidates for the "How does STAR Voting Work?" Graphic (has transparency)
 
   /* teal / blue */
-  --ballot-even-row-teal: #E3EDEF;
-  --ballot-border-teal: #B5D0D4;
+  --ballot-even-row-teal: #E0F0F3;
+  --ballot-border-teal: #A9C8CC;
   --ballot-star-teal: #A2C4C9;
   --logo-teal: #76A5AF;
   --ballot-bubble-hover-ltblue: #B5EBEB;
@@ -214,11 +214,10 @@ code {
 .ballot .starIcon {
   position: absolute;
   transform: translate(-50%, -50%);
-  height: 100%;
-  width: 100%;
   top: 50%;
   left: 50%;
   font-size: 2.2em;
+  stroke-width: 1px;
 }
 
 /* Ballot Bubbles*/
@@ -228,7 +227,7 @@ code {
   width: calc(6*.32em);
   height: calc(5*.32em);
   font-size: .8em;
-  border: 2px solid var(--ballot-bubble-border-gray);
+  border: 2px solid black;
   border-radius: 50%;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
