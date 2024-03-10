@@ -3,6 +3,7 @@ import React from 'react'
 import { StyledButton } from './styles'
 
 const About = () => {
+  // The Id can be found by copying the image address of their gihtub profile
   const allContributors = [
     ['mikefranze', '41272412'],
     ['ArendPeter', '9289903'],
