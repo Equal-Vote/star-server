@@ -114,24 +114,25 @@ const Header = () => {
                     </Menu>
                 </Box>
 
-                {/**** TITLE ****/}
-                <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: "center", marginRight: 2 }}
-                >
-                    <IconButton
-                        size="large"
-                        color="inherit"
-                        href="https://equal.vote"
-                        sx={{display: 'flex', gap: 1}}>
-                            <ArrowBackIosNewIcon sx={{display: {xs: 'none', md: 'inline'}}}/>
-                    </IconButton>
-                    <IconButton
-                        size="large"
-                        color="inherit"
-                        href="/"
-                        sx={{display: 'flex', gap: 1}}>
-                            <Avatar src='favicon.png'/>
-                    </IconButton>
-                </Box>
+                {/**** Equal Vote ****/}
+                <IconButton
+                    size="large"
+                    color="inherit"
+                    href="/"
+                    sx={{display: 'flex', gap: 1}}>
+                        <Avatar src='/favicon.png'/>
+                </IconButton>
+
+                {/**** Title ****/}
+                <IconButton
+                    size="large"
+                    color="inherit"
+                    href="/"
+                    sx={{display: 'flex', gap: 1}}>
+                        <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                            dev.star.vote
+                        </Typography>
+                </IconButton>
 
                 {/**** DESKTOP OPTIONS ****/}
                 <Box
