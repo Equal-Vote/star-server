@@ -1,6 +1,7 @@
 import { Box, Button, Container, Divider, Paper, Typography } from '@mui/material'
 import React from 'react'
 import { StyledButton } from './styles'
+import { useLocalStorage } from 'src/hooks/useLocalStorage';
 
 const About = () => {
   // The Id can be found by copying the image address of their gihtub profile
@@ -18,13 +19,15 @@ const About = () => {
     ['mjpauly', '16432322'],
   ];
 
+  const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
+
   return (
     <Container>
       <Paper elevation={6} sx={{margin: 'auto', maxWidth: '1300px', marginTop: '4rem', marginBottom: '8rem', padding: '1rem 2rem 2rem 2rem'}}>
-        <h1>About dev.star.vote</h1>
+        <h1>About {title}</h1>
 
         <Typography>
-        dev.star.vote is the successor to star.vote that's <b>currently under construction</b>.
+        {title} is the successor to star.vote that's <b>currently under construction</b>.
         </Typography>
         <br/>
         <Typography>
@@ -38,7 +41,7 @@ const About = () => {
         <br/>
         <Typography>
         It's also flexible to fit your voting scenario, whether it's a massive public poll, a high stakes board election, or just a casual poll picking a restaurant
-        dev.star.vote can fit your needs and provide a secure, auditable election
+        {title} can fit your needs and provide a secure, auditable election
         </Typography>
 
         <h1>The Team</h1>

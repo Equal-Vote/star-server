@@ -6,11 +6,13 @@ import QuickPoll from '../ElectionForm/QuickPoll'
 import useAuthSession from '../AuthSessionContextProvider'
 import { useThemeSelector } from '../../theme'
 import useFeatureFlags from '../FeatureFlagContextProvider'
+import { useLocalStorage } from 'src/hooks/useLocalStorage'
 
 export default ({}) => {
     const authSession = useAuthSession();
     const themeSelector = useThemeSelector();
     const flags = useFeatureFlags();
+    const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
     return (
         <Box sx={{
             maxWidth: '1300px',
@@ -20,7 +22,7 @@ export default ({}) => {
             <Grid container spacing={2}>
                 <Grid item xs={12} md={7}>
                     <Typography variant="h3" style={{ fontWeight: 700 }} >
-                        STAR Elections
+                        {title}
                     </Typography>
                     <Typography variant="h5" style={{
                         opacity: '0.7',
