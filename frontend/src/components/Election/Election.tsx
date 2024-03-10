@@ -17,11 +17,11 @@ const Election = () => {
 
   return (
     <ElectionContextProvider id={id} >
-      <Box sx={{mt: {xs: 0, sm: 5}, mb: {xs: 0, sm: 5}}}>
+      <Box display='flex' flexDirection='row' sx={{mt: {xs: 0, sm: 5}, mb: {xs: 0, sm: 5}}}>
         <Box sx={{maxWidth: '16%'}}>
           <Sidebar />
         </Box>
-        <Box sx={{margin: 'auto'}}>
+        <Box sx={{ml: 'auto', mr: 'auto', mt: '0'}}>
           <Routes>
             <Route path='/' element={<ElectionHome />} />
             <Route path='/vote' element={<VotePage />} />

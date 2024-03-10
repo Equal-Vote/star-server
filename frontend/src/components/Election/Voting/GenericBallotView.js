@@ -239,7 +239,7 @@ export default function GenericBallotView({
   const ballotContext = useContext(BallotContext);
 
   return (
-      <Box border={2} sx={{ mt: 5, ml: 0, mr: 0, width: '100%' }} className="ballot">
+      <Box border={2} sx={{ mt: 0, ml: 0, mr: 0, width: '100%' }} className="ballot">
         <Grid container alignItems="center" justify="center" direction="column">
 
           <Grid item sx={{ p: 3 }}>
