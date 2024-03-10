@@ -1,7 +1,7 @@
 import { Box, Button, Container, Divider, Paper, Typography } from '@mui/material'
 import React from 'react'
 import { StyledButton } from './styles'
-import { useLocalStorage } from 'src/hooks/useLocalStorage';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 const About = () => {
   // The Id can be found by copying the image address of their gihtub profile
