@@ -17,6 +17,7 @@ import { v4 } from 'uuid'
 import useAuthSession from './AuthSessionContextProvider';
 import { useThemeSelector } from '../theme';
 import useFeatureFlags from './FeatureFlagContextProvider';
+import { useLocalStorage } from 'src/hooks/useLocalStorage';
 
 const headerTextColor = 'primary.contrastText'
 const Header = () => {
@@ -64,8 +65,10 @@ const Header = () => {
         });
     }
 
+    const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
+
     return (
-        <AppBar position="sticky" sx={{ backgroundColor: "primary.main" }}>
+        <AppBar position="sticky" sx={{ backgroundColor: "black" }}>
             <Toolbar>
                 {/**** MOBILE HAMBURGER MENU ****/}
                 <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
@@ -118,8 +121,9 @@ const Header = () => {
                 <IconButton
                     size="large"
                     color="inherit"
-                    href="/"
+                    href="https://equal.vote"
                     sx={{display: 'flex', gap: 1}}>
+                        <ArrowBackIosNewIcon sx={{display: {xs: 'none', md: 'inline'}}}/>
                         <Avatar src='/favicon.png'/>
                 </IconButton>
 
@@ -130,7 +134,7 @@ const Header = () => {
                     href="/"
                     sx={{display: 'flex', gap: 1}}>
                         <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
-                            dev.star.vote
+                            {title}
                         </Typography>
                 </IconButton>
 
