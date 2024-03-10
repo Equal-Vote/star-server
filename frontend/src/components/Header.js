@@ -99,6 +99,12 @@ const Header = () => {
                             display: { xs: 'block', md: 'none' },
                         }}
                     >
+                        <MenuItem
+                            component={Link}
+                            href={'https://equal.vote'}
+                        >
+                            Return to Equal Vote
+                        </MenuItem>
                         {navItems.map((item, i) => 
                             <MenuItem
                                 key={`mobile-nav-${i}`}
@@ -122,27 +128,25 @@ const Header = () => {
                     size="large"
                     color="inherit"
                     href="https://equal.vote"
-                    sx={{display: 'flex', gap: 1}}>
+                    sx={{display: {xs: 'none', md: 'flex'}, gap: 1}}>
                         <ArrowBackIosNewIcon sx={{display: {xs: 'none', md: 'inline'}}}/>
                         <Avatar src='/favicon.png'/>
                 </IconButton>
 
                 {/**** Title ****/}
-                <IconButton
-                    size="large"
-                    color="inherit"
+                <Button
                     href="/"
                     sx={{display: 'flex', gap: 1}}>
                         <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                             {title}
                         </Typography>
-                </IconButton>
+                </Button>
 
                 {/**** DESKTOP OPTIONS ****/}
                 <Box
                     sx={{ flexGrow: 100, flexWrap: 'wrap', display: { xs: 'none', md: 'flex' }, gap: 2, rowGap: 0 }}>
                     {navItems.map((item, i) => 
-                        <Button key={`desktop-nav-${i}`}color='inherit' href={item.href}>
+                        <Button key={`desktop-nav-${i}`} href={item.href}>
                             <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                                 {item.text}
                             </Typography>
