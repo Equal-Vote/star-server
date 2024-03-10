@@ -136,7 +136,7 @@ const Header = () => {
                 {/**** Title ****/}
                 <Button
                     href="/"
-                    sx={{display: 'flex', gap: 1}}>
+                    sx={{display: 'flex', gap: 1, flexGrow: {xs: '1', md: '0'}}}>
                         <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                             {title}
                         </Typography>
