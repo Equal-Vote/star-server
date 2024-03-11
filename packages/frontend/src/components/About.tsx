@@ -88,7 +88,7 @@ const About = () => {
                 fontWeight: 'bold',
                 fontSize: 18,
             }}
-            href="https://www.starvoting.us/donate"
+            href="https://www.equal.vote/donate"
         >
           Donate
         </Button>

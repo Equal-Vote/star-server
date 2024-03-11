@@ -46,7 +46,7 @@ export default function Footer() {
             <Typography variant="body2" color="text.secondary" sx={{
               pl: 1, pr: 1
             }}>
-              STAR Elections is here to help make your dream election accessible to vote in and easy to officiate. Our mission is to support and empower the adoption and use of STAR Voting and better voting methods for polling, surveys, and real elections at any scale and for any scenario.
+              Our mission is to support and empower the adoption and use of STAR Voting and better voting methods for polling, surveys, and real elections at any scale and for any scenario.
               <br /><br />STAR Elections is a project of the Equal Vote Coalition 501c3.  <a target="blank" href='https://www.equal.vote/donate'>Donations</a> are the best way to support our work. All proceeds from the STAR Elections project go directly to helping fund and support the adoption and use of STAR Voting.
             </Typography>
           </Grid>
