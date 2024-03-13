@@ -8,7 +8,7 @@ import { hasPermission, permission, permissions } from 'shared/domain_model/perm
 import { randomUUID, createHash } from "crypto";
 import ServiceLocator from "../ServiceLocator";
 import { makeID } from "../Util";
-import { Uid } from "../../../domain_model/Uid";
+import { Uid } from "shared/domain_model/Uid";
 const accountService = ServiceLocator.accountService();
 const ElectionsModel =  ServiceLocator.electionsDb();
 
