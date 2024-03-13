@@ -43,7 +43,9 @@ const App = () => {
                       <Route path='/OpenElections' element={<OpenElections />} />
                       <Route path='/Login' element={<Login />} />
                       <Route path='/CreateElection' element={<CreateElectionTemplates />} />
-                      <Route path='/Election/:id/*' element={<Election />} />
+                      {/*Keeping old path for legacy reasons, although we can probably remove it once the domain moves from dev.star.vote*/}
+                      <Route path='/Election/:id/*' element={<Election />} /> 
+                      <Route path='/:id/*' element={<Election />} />
                       <Route path='/Sandbox' element={<Sandbox />} />
                     </Routes>
                   </Box>
