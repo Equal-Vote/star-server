@@ -17,6 +17,7 @@ const About = () => {
     ['JonBlauvelt', '8998273'],
     ['AntonSax', '9059836'],
     ['mjpauly', '16432322'],
+    ['RahalBhupathi', '113255492'],
   ];
 
   const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
