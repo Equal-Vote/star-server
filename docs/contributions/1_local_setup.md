@@ -193,7 +193,7 @@ You can now start up the API server and the client applications.
 Install and build dependencies
 
 ```bash
-npm -i -ws
+npm i -ws
 npm run build -w shared
 ```
 
