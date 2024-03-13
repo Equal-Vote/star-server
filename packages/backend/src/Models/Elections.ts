@@ -4,7 +4,7 @@ import { ILoggingContext } from '../Services/Logging/ILogger';
 import Logger from '../Services/Logging/Logger';
 import { Kysely, sql } from 'kysely'
 import { Election } from 'shared/domain_model/Election';
-import { sharedConfig } from 'shared/SharedConfig';
+import { sharedConfig } from 'shared/config';
 import { IElectionStore } from './IElectionStore';
 const tableName = 'electionDB';
 
