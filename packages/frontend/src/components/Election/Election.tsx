@@ -11,8 +11,8 @@ import { Box, Grid } from "@mui/material";
 import Thanks from "./Voting/Thanks";
 import ViewBallot from "./Admin/ViewBallot";
 import useElection, { ElectionContextProvider } from "../ElectionContextProvider";
-import { useElectionExists } from "src/hooks/useAPI";
-import { sharedConfig } from "@shared/SharedConfig";
+import { useElectionExists } from "../../hooks/useAPI";
+import { sharedConfig } from "shared/config";
 
 const Election = () => {
   const { id } = useParams();
