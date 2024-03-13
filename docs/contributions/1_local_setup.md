@@ -200,7 +200,7 @@ npm run build -w shared
 Launch backend 
 
 ```bash
-npm run dev -ws backend
+npm run dev -w backend
 ```
 
 Launch frontend. If you want to just run the web client without setting up the server you can change the proxy under frontend/package.json to "proxy": "dev.star.vote". 
