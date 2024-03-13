@@ -1,6 +1,5 @@
-import { Ballot } from "../../../domain_model/Ballot";
-import { Election } from "../../../domain_model/Election";
-import { Uid } from "../../../domain_model/Uid";
+import { Election } from "shared/domain_model/Election";
+import { Uid } from "shared/domain_model/Uid";
 import { ILoggingContext } from "../Services/Logging/ILogger";
 
 export interface IElectionStore {

@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import { reqIdSuffix } from './IRequest';
 import { ILoggingContext } from './Services/Logging/ILogger';
-import Logger from './Services/Logging/Logger';
-import { Uid } from '../../domain_model/Uid';
 import { InternalServerError } from '@curveball/http-errors';
 
 export function assertNotNull<Type>(data:Type | null, message:string = 'unexpected null'):Type {
