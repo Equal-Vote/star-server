@@ -10,6 +10,35 @@ import { timeZones } from './TimeZones'
 import { isValidDate } from '../../util';
 import { dateToLocalLuxonDate } from './useEditElectionDetails';
 
+export const ElectionTitleField = ({value, onUpdateValue, errors, setErrors, showLabel=true}) => <>
+    <TextField
+        inputProps={{ pattern: "[a-z]{1,15}" }}
+        error={errors.title !== ''}
+        required
+        id="election-name"
+        name="name"
+        // TODO: This bolding method only works for the text fields, if we like it we should figure out a way to add it to other fields as well
+        // inputProps={getStyle('title')}
+        label={showLabel? "Election Title" : ""}
+        type="text"
+        value={value}
+        sx={{
+            m: 0,
+            p: 0,
+            boxShadow: 2,
+        }}
+        fullWidth
+        onChange={(e) => {
+            console.log('CHANGE')
+            setErrors({ ...errors, title: '' });
+            onUpdateValue(e.target.value);
+        }}
+    />
+    <FormHelperText error sx={{ pl: 1, pt: 0 }}>
+        {errors.title}
+    </FormHelperText>
+</>;
+
 
 export default function ElectionDetailsForm({editedElection, applyUpdate, errors, setErrors}) {
 
@@ -22,31 +51,14 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
     return (
         <Grid container>
             <Grid item xs={12} sx={{ m: 0, p: 1 }}>
-                <TextField
-                    inputProps={{ pattern: "[a-z]{1,15}" }}
-                    error={errors.title !== ''}
-                    required
-                    id="election-name"
-                    name="name"
-                    // TODO: This bolding method only works for the text fields, if we like it we should figure out a way to add it to other fields as well
-                    // inputProps={getStyle('title')}
-                    label="Election Title"
-                    type="text"
+                <ElectionTitleField
                     value={editedElection.title}
-                    sx={{
-                        m: 0,
-                        p: 0,
-                        boxShadow: 2,
-                    }}
-                    fullWidth
-                    onChange={(e) => {
-                        setErrors({ ...errors, title: '' })
-                        applyUpdate(election => { election.title = e.target.value })
-                    }}
+                    onUpdateValue={
+                        (value) => applyUpdate(election => { election.title = value })
+                    }
+                    errors={errors}
+                    setErrors={setErrors}
                 />
-                <FormHelperText error sx={{ pl: 1, pt: 0 }}>
-                    {errors.title}
-                </FormHelperText>
             </Grid>
             <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <TextField

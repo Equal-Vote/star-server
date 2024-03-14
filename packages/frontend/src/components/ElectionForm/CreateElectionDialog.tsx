@@ -1,6 +1,8 @@
-import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, MenuItem, Select, Step, StepConnector, StepContent, StepLabel, Stepper, TextField, Tooltip, Typography } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, IconButton, MenuItem, Radio, RadioGroup, Select, Step, StepConnector, StepContent, StepLabel, Stepper, TextField, Tooltip, Typography } from "@mui/material";
 import { StyledButton } from "../styles";
 import { Dispatch, SetStateAction, createContext, useContext, useState } from "react";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { ElectionTitleField } from "./Details/ElectionDetailsForm";
 
 
 export interface ICreateElectionContext{
@@ -20,11 +22,37 @@ export const CreateElectionContextProvider = ({children}) => {
     </CreateElectionContext.Provider>
 }
 
+const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
+    {activeStep < 2 && // hard coding this for now
+        <StyledButton
+            fullWidth={false}
+            variant="contained"
+            disabled={!canContinue}
+            onClick={() => setActiveStep(i => i+1)}
+            sx={{ mt: 1, mr: 1 }}
+        >
+            Continue
+        </StyledButton>
+    }
+    {activeStep > 0 &&
+        <StyledButton
+            fullWidth={false}
+            variant="text"
+            onClick={() => setActiveStep(i => i-1)}
+            sx={{ mt: 1, mr: 1 }}
+        >
+            Back
+        </StyledButton>
+    }
+</>
+
 export default () => {
     const createElectionContext = useContext(CreateElectionContext);
 
     const [activeStep, setActiveStep] = useState(0);
     const [electionTerm, setElectionTerm] = useState('');
+    const [electionTitle, setElectionTitle] = useState('');
+    const [errors, setErrors] = useState({title: ''});
     const onClose = () => {
         setActiveStep(0);
         createElectionContext.setOpen(false);
@@ -41,56 +69,48 @@ export default () => {
             margin: 'auto'
         }}
     >
-        <DialogTitle> Create Election/Poll </DialogTitle>
+        <DialogTitle> Create an Election or Poll </DialogTitle>
         <DialogContent>
             <Stepper activeStep={activeStep} orientation="vertical">
                 <Step>
-                    <StepLabel>Poll or Election? <bold>{electionTerm}</bold></StepLabel>
+                    <StepLabel>Poll or Election? <strong>{electionTerm}</strong></StepLabel>
                     <StepContent>
                         <Typography>Which term best describes your situation?
                             <Tooltip
-                                title="There's no functional difference between Poll & Election. This only impacts which terminology is shown to you and your voters">
-                            </ToolTip>
+                                title="There's no functional difference between polls and elections. This only impacts which terminology is shown to you and your voters">
+                                <IconButton>
+                                    <InfoOutlinedIcon />
+                                </IconButton>
+                            </Tooltip>
                         </Typography>
-                        <Select value='Election'>
-                            <MenuItem value='Election'>Election</MenuItem>
-                            <MenuItem value='Poll'>Poll</MenuItem>
-                        </Select>
+                        <RadioGroup row>
+                            <FormControlLabel value='Poll' control={<Radio/>} label='Poll' onClick={() => setElectionTerm('Poll')}/>
+                            <FormControlLabel value='Election' control={<Radio/>} label='Election' onClick={() => setElectionTerm('Election')}/>
+                        </RadioGroup>
+                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={electionTerm != ''}/>
                     </StepContent>
                 </Step>
                 <Step>
-                    <StepLabel>Poll or Election? <strong>{electionTerm}</strong></StepLabel>
+                    <StepLabel>Title? <strong>{electionTitle}</strong></StepLabel>
                     <StepContent>
-                        <Typography>Which term best describes your situation?</Typography>
-                        <TextField
-                            inputProps={{ pattern: "[a-z]{1,15}" }}
-                            required
-                            id="election-name"
-                            name="name"
-                            // TODO: This bolding method only works for the text fields, if we like it we should figure out a way to add it to other fields as well
-                            // inputProps={getStyle('title')}
-                            label="Election Title"
-                            type="text"
-                            value={'temp'}
-                            sx={{
-                                m: 0,
-                                p: 0,
-                                boxShadow: 2,
-                            }}
-                            fullWidth
+                        <Typography>What's the title for your {electionTerm.toLowerCase()}?</Typography>
+                        <ElectionTitleField
+                            value={electionTitle}
+                            onUpdateValue={
+                                (value) => setElectionTitle(value)
+                            }
+                            errors={errors}
+                            setErrors={setErrors}
+                            showLabel={false}
                         />
-                        <StyledButton
-                            variant="contained"
-                            onClick={() => setActiveStep(i => i+1)}
-                            sx={{ mt: 1, mr: 1 }}
-                        >
-                            Continue
-                        </StyledButton>
+                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={electionTitle != '' && errors.title == ''}/>
                     </StepContent>
                 </Step>
                 <Step>
-                    <StepLabel>Starting Point</StepLabel>
-                    <StepContent>blah</StepContent>
+                    <StepLabel>Choose starting point</StepLabel>
+                    <StepContent>
+                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={electionTitle != '' && errors.title == ''}/>
+                    </StepContent>
                 </Step>
             </Stepper>
         </DialogContent>
