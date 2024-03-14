@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -16,6 +16,7 @@ import useAuthSession from './AuthSessionContextProvider';
 import { useThemeSelector } from '../theme';
 import useFeatureFlags from './FeatureFlagContextProvider';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { CreateElectionContext, CreateElectionContextProvider } from './ElectionForm/CreateElectionDialog';
 
 const headerTextColor = 'primary.contrastText'
 const Header = () => {
@@ -26,6 +27,8 @@ const Header = () => {
     const [tempID, setTempID] = useCookie('temp_id', v4())
     const [anchorElNav, setAnchorElNav] = useState(null)
     const [anchorElUser, setAnchorElUser] = useState(null)
+
+    const createElectionContext = useContext(CreateElectionContext);
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -163,7 +166,7 @@ const Header = () => {
                 {/**** ACCOUNT OPTIONS ****/}
                 <Box sx={{ flexGrow: 0, display: 'flex' }}>
                     {authSession.isLoggedIn() && <>
-                        <Button color='inherit' href='/CreateElection' sx={{display: { xs: 'none', md: 'flex' }}}>
+                        <Button color='inherit' onClick={() => createElectionContext.setOpen(true)} sx={{display: { xs: 'none', md: 'flex' }}}>
                             <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                                 New Election
                             </Typography>
@@ -199,7 +202,7 @@ const Header = () => {
                             <MenuItem component={Link} href={authSession.accountUrl} target='_blank'>
                                 Your Account
                             </MenuItem>
-                            <MenuItem component={Link} href='/CreateElection'>
+                            <MenuItem component={Link} onClick={() => createElectionContext.setOpen(true)}>
                                 New Election
                             </MenuItem>
                             {/*<MenuItem component={Link} href='/ElectionInvitations'>

@@ -7,7 +7,7 @@ import CreateElectionTemplates from './components/ElectionForm/CreateElectionTem
 import Election from './components/Election/Election'
 import Sandbox from './components/Sandbox'
 import LandingPage from './components/LandingPage'
-import { Box, CssBaseline } from '@mui/material'
+import { Box, CssBaseline, Dialog } from '@mui/material'
 import { SnackbarContextProvider } from './components/SnackbarContext'
 import Footer from './components/Footer'
 import { ConfirmDialogProvider } from './components/ConfirmationDialogProvider'
@@ -18,44 +18,46 @@ import ElectionsYouManage from './components/Elections/ElectionsYouManage'
 import ElectionsYouVotedIn from './components/Elections/ElectionsYouVotedIn'
 import OpenElections from './components/Elections/OpenElections'
 import { FeatureFlagContextProvider } from './components/FeatureFlagContextProvider'
+import CreateElectionDialog, { CreateElectionContextProvider } from './components/ElectionForm/CreateElectionDialog'
+import ComposeContextProviders from './components/ComposeContextProviders'
 
 const App = () => {
   return (
     <Router>
-      <FeatureFlagContextProvider>
-        <ThemeContextProvider>
-          <AuthSessionContextProvider>
-            <ConfirmDialogProvider>
-              <SnackbarContextProvider>
-                <CssBaseline />
-                <Box display='flex' flexDirection='column' minHeight={'100vh'} >
-                  <Header />
-                  <Box
-                    sx={{
-                      width: '100%',
-                    }}>
-                    <Routes>
-                      <Route path='/' element={<LandingPage />} />
-                      <Route path='/About' element={<About />} />
-                      <Route path='/ElectionInvitations' element={<ElectionInvitations />} />
-                      <Route path='/ElectionsYouManage' element={<ElectionsYouManage />} />
-                      <Route path='/ElectionsYouVotedIn' element={<ElectionsYouVotedIn />} />
-                      <Route path='/OpenElections' element={<OpenElections />} />
-                      <Route path='/Login' element={<Login />} />
-                      <Route path='/CreateElection' element={<CreateElectionTemplates />} />
-                      {/*Keeping old path for legacy reasons, although we can probably remove it once the domain moves from dev.star.vote*/}
-                      <Route path='/Election/:id/*' element={<Election />} /> 
-                      <Route path='/:id/*' element={<Election />} />
-                      <Route path='/Sandbox' element={<Sandbox />} />
-                    </Routes>
-                  </Box>
-                  <Footer />
-                </Box>
-              </SnackbarContextProvider>
-            </ConfirmDialogProvider>
-          </AuthSessionContextProvider>
-        </ThemeContextProvider>
-      </FeatureFlagContextProvider>
+      <ComposeContextProviders providers={[
+        FeatureFlagContextProvider,
+        ThemeContextProvider,
+        AuthSessionContextProvider,
+        ConfirmDialogProvider,
+        SnackbarContextProvider,
+        CreateElectionContextProvider,
+      ]}>
+        <CssBaseline />
+        <Box display='flex' flexDirection='column' minHeight={'100vh'} >
+          <Header />
+          <CreateElectionDialog/>
+          <Box
+            sx={{
+              width: '100%',
+            }}>
+            <Routes>
+              <Route path='/' element={<LandingPage />} />
+              <Route path='/About' element={<About />} />
+              <Route path='/ElectionInvitations' element={<ElectionInvitations />} />
+              <Route path='/ElectionsYouManage' element={<ElectionsYouManage />} />
+              <Route path='/ElectionsYouVotedIn' element={<ElectionsYouVotedIn />} />
+              <Route path='/OpenElections' element={<OpenElections />} />
+              <Route path='/Login' element={<Login />} />
+              <Route path='/CreateElection' element={<CreateElectionTemplates />} />
+              {/*Keeping old path for legacy reasons, although we can probably remove it once the domain moves from dev.star.vote*/}
+              <Route path='/Election/:id/*' element={<Election />} /> 
+              <Route path='/:id/*' element={<Election />} />
+              <Route path='/Sandbox' element={<Sandbox />} />
+            </Routes>
+          </Box>
+          <Footer />
+        </Box>
+      </ComposeContextProviders>
     </Router>
   );
 }
