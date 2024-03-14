@@ -6,6 +6,7 @@ import { Kysely, sql } from 'kysely'
 import { Election } from 'shared/domain_model/Election';
 import { sharedConfig } from 'shared/config';
 import { IElectionStore } from './IElectionStore';
+
 const tableName = 'electionDB';
 
 export default class ElectionsDB implements IElectionStore {
@@ -136,12 +137,18 @@ export default class ElectionsDB implements IElectionStore {
         const controller = new AbortController();
         const errorMessage = 'ERROR: the requested page does not appear to exist.<br />'
         setTimeout(() => controller.abort(), 3000);
-        let content = await fetch(`${sharedConfig.CLASSIC_DOMAIN}/${election_id}`, {signal: controller.signal})
-            .then((res) => res.text())
-            .catch((err) => {
-                console.log('error pinging star.vote', err)
-                return errorMessage;
-        })
+        let content;
+        try {
+            content = await fetch(`${sharedConfig.CLASSIC_DOMAIN}/${election_id}`, {signal: controller.signal})
+                .then((res) => res.text())
+                .catch((err) => {
+                    console.log('error pinging star.vote', err)
+                    return errorMessage;
+            })
+        } catch (err) {
+            content = errorMessage;
+            Logger.debug(ctx, `Caught error while fetching classic domain: ${err}`);
+        }
 
         if(content != errorMessage) return 'classic';
 
