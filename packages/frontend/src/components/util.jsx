@@ -5,7 +5,6 @@ import React, { useState, useRef, useEffect }  from 'react'
 import _uniqueId from 'lodash/uniqueId';
 import { DateTime } from 'luxon'
 
-
 export const WidgetContainer = ({children}) => <Box display='flex' flexDirection='row' flexWrap='wrap' gap='30px' className="graphs" justifyContent='center' sx={{marginBottom: '30px'}}>{children}</Box>
 
 export const Widget = ({children, title}) => <Paper elevation={5} className='graph' sx={{
@@ -42,6 +41,13 @@ export const makeResultTable = (className, arr) => {
             </tbody>
         </table>
     </TableContainer>
+}
+
+export const openFeedback = () => {
+    // simulate clicking the feedback button
+    const launcherFrame = document.getElementById('launcher-frame');
+    const button= launcherFrame.contentWindow.document.getElementsByClassName('launcher-button')[0];
+    button.click()
 }
 
 export function scrollToElement(e){

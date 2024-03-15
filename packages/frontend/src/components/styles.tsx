@@ -27,6 +27,7 @@ export const Tip = (props: TipProps) => {
             onOpen={() => setHovered(true)}
             onClose={() => setHovered(false)}
             open={clicked || hovered}
+            placement='top'
         >
             <IconButton size='small' sx={{marginBottom: 1}} onClick={() => setClicked(true)}>
                 <InfoOutlinedIcon fontSize='inherit'/>

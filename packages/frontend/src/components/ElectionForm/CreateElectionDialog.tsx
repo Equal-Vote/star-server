@@ -1,8 +1,11 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, IconButton, MenuItem, Radio, RadioGroup, Select, Step, StepConnector, StepContent, StepLabel, Stepper, TextField, Tooltip, Typography } from "@mui/material";
 import { StyledButton, Tip } from "../styles";
-import { Dispatch, SetStateAction, createContext, useContext, useState } from "react";
+import { Dispatch, SetStateAction, createContext, useContext, useRef, useState } from "react";
 import { ElectionTitleField } from "./Details/ElectionDetailsForm";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ExpandLess from '@mui/icons-material/ExpandLess'
+import ExpandMore from '@mui/icons-material/ExpandMore'
+import { openFeedback } from "../util";
 
 export interface ICreateElectionContext{
     open: boolean
@@ -45,14 +48,14 @@ const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
     }
 </>
 
-const StartingOption = ({title, description, }) => <>
-    <Button color='inherit' fullWidth className='startingOption' sx={{justifyContent: 'flex-start'}}>
+const StartingOption = ({title, description}) => <>
+    <Button color='inherit' fullWidth className='startingOption' sx={{justifyContent: 'flex-start', textTransform: 'inherit'}}>
         <Box sx={{width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
-                <Typography variant="body2">{title}</Typography>
-                <Typography variant="h6">{description}</Typography>
+            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left'}}>
+                <Typography variant="body1">{title}</Typography>
+                <Typography color='gray' variant="body2">{description.split('. ').map(sentence => <>{`${sentence}.`}<br/></>)}</Typography>
             </Box>
-            <ArrowForwardIosIcon className="startingOptionArrow" sx={{transition: 'margin-right .2s'}}/>
+            <ArrowForwardIosIcon className="startingOptionArrow" sx={{transition: 'padding-left .2s'}}/>
         </Box>
     </Button>
     <Divider/>
@@ -61,10 +64,12 @@ const StartingOption = ({title, description, }) => <>
 export default () => {
     const createElectionContext = useContext(CreateElectionContext);
 
-    const [activeStep, setActiveStep] = useState(0);
+    const [activeStep, setActiveStep] = useState(2);
     const [electionTerm, setElectionTerm] = useState('');
+    const [allOptions, setAllOptions] = useState(false);
     const [electionTitle, setElectionTitle] = useState('');
     const [errors, setErrors] = useState({title: ''});
+    const contentRef = useRef(null);
     const onClose = () => {
         setActiveStep(0);
         createElectionContext.setOpen(false);
@@ -77,9 +82,10 @@ export default () => {
         sx={{maxHeight: '90%'}}
         keepMounted
         fullWidth
+        maxWidth='sm'
     >
         <DialogTitle> Create an Election or Poll </DialogTitle>
-        <DialogContent>
+        <DialogContent ref={contentRef}>
             <Stepper activeStep={activeStep} orientation="vertical">
                 <Step>
                     <StepLabel>Poll or Election? <strong>{electionTerm}</strong></StepLabel>
@@ -113,10 +119,41 @@ export default () => {
                 <Step>
                     <StepLabel>Choose starting point</StepLabel>
                     <StepContent>
-                        <StartingOption title='blah' description='asdfqwefasdbasdfwefasdfas'/>
-                        <StartingOption title='blah' description='asdfqwefasdbasdfwefasdfas'/>
-                        <StartingOption title='blah' description='asdfqwefasdbasdfwefasdfas'/>
-                        <StartingOption title='blah' description='asdfqwefasdbasdfwefasdfas'/>
+                        <StartingOption title={`Demo ${electionTerm}`} description='Unlimited votes per device. Great for demonstrations where multiple people are using the same device'/>
+                        <StartingOption title={`Public ${electionTerm}`} description={`1 person, 1 vote. ${electionTerm} will be open to anyone via the public polls & elections page`}/>
+                        <StartingOption title={`Unlisted ${electionTerm}`} description={`1 person, 1 vote. ${electionTerm} will be open to anyone via the public elections page`}/>
+                        <StartingOption title={`Email List`} description={`Provide a list of emails for your voters. Personal links will be sent to each of these voters once the election starts`}/>
+
+                        <Button
+                            sx={{ width: '100%', ml: -1, display: 'flex', justifyContent: 'left', alignItems: 'center' }}
+                            onClick={() => setAllOptions(all_options => {
+                                if(!all_options){ // !all_options means we're about to enable all options
+                                    setTimeout(() => {
+                                        contentRef.current.scrollTo({
+                                            left: 0,
+                                            top: contentRef.current.scrollHeight,
+                                            behavior: 'smooth'
+                                        })
+                                    }, 100);
+                                }
+                                return !all_options;
+                            }) }
+                        >
+                            {allOptions? <ExpandLess /> : <ExpandMore /> }
+                            <Typography>More Options</Typography>
+                        </Button>
+
+                        {allOptions && <>
+                            <StartingOption title={`Voter Id List`} description={`Distribute unique ids to your voters. Voters can then access a shared link and then authenticate themselves using their id`}/>
+                            <StartingOption title={`Login Required`} description={`${electionTerm} is open to everyone, but they're required to make an account with their email. This helps reduce spam`}/>
+                            <Box display='flex' flexDirection='row' gap={2} alignItems='center'
+                                sx={{pt: '6px', pb: '6px', pl: '8px', pr: '8px'}}> {/*Matching the button padding*/}
+                                <Typography>Don't see what you're looking for? </Typography>
+                                <Button variant='outlined' onClick={openFeedback}>Send us feedback</Button>
+                            </Box>
+                            <Divider/>
+                        </>}
+                        <Box sx={{height: 20}}/> {/*Hacky spacingj*/}
                         <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={electionTitle != '' && errors.title == ''}/>
                     </StepContent>
                 </Step>

@@ -17,6 +17,7 @@ import { useThemeSelector } from '../theme';
 import useFeatureFlags from './FeatureFlagContextProvider';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { CreateElectionContext, CreateElectionContextProvider } from './ElectionForm/CreateElectionDialog';
+import { openFeedback } from './util';
 
 const headerTextColor = 'primary.contrastText'
 const Header = () => {
@@ -115,12 +116,7 @@ const Header = () => {
                                 {item.text}
                             </MenuItem>
                         )}
-                        <MenuItem onClick={() => {
-                            // simulate clicking the feedback button
-                            const launcherFrame = document.getElementById('launcher-frame') as HTMLIFrameElement;
-                            const button= launcherFrame.contentWindow.document.getElementsByClassName('launcher-button')[0] as HTMLButtonElement  ;
-                            button.click()
-                        }}>
+                        <MenuItem onClick={openFeedback}>
                             Feedback?
                         </MenuItem>
                     </Menu>
