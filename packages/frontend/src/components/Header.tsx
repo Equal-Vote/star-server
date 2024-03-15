@@ -66,7 +66,7 @@ const Header = () => {
     const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
 
     return (
-        <AppBar position="sticky" sx={{ backgroundColor: "black" }}>
+        <AppBar className="navbar" position="sticky" sx={{ backgroundColor: "black", '@media print': {display: 'none', boxShadow: 'none'} }}>
             <Toolbar>
                 {/**** MOBILE HAMBURGER MENU ****/}
                 <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>

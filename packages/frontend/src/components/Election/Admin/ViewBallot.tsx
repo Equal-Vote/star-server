@@ -28,7 +28,6 @@ const ViewBallot = ({ ballot, onClose }) => {
 
     return (
         <Container>
-
             {isPending && <div> Loading Data... </div>}
             {myballot &&
                 <Grid container direction="column" >

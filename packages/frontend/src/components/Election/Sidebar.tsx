@@ -32,7 +32,13 @@ export default function Sidebar() {
                     display='flex'
                     justifyContent="center"
                     alignItems="center"
-                    sx={{ width: '100%' }}>
+                    sx={{ 
+                        display: 'flex',
+                        width: '100%',
+                        "@media print": {
+                            display: 'none',
+                        }
+                    }}>
                     <Paper elevation={3} sx={{ width: 600 }} >
                         <Grid container direction="column" >
                             <ListItem text='Voting Page' link={`/${id}/`} />

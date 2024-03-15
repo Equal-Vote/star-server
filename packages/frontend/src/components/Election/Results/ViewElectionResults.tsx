@@ -23,7 +23,7 @@ const ViewElectionResults = () => {
             alignItems="center"
             sx={{ width: '100%', textAlign: 'center'}}
         >
-            <Paper elevation={3} sx={{width: '100%', maxWidth: '1200px', m: 2, p:2, backgroundColor:'brand.white', marginBottom: 2}}  >
+            <Paper elevation={3} sx={{width: '100%', maxWidth: '1200px', m: 2, p:2, backgroundColor:'brand.white', marginBottom: 2, '@media print': { boxShadow: 'none'}}}>
                 <Typography variant="h3" component="h3" sx={{marginBottom: 4}}>
                     {election.state === 'closed' ? 'OFFICIAL RESULTS' : 'PRELIMINARY RESULTS'}
                 </Typography>
@@ -32,9 +32,10 @@ const ViewElectionResults = () => {
                 </Typography>
                 {isPending && <div> Loading Election... </div>}
 
-                <DetailExpanderGroup defaultSelectedIndex={-1}>
+                <DetailExpanderGroup defaultSelectedIndex={-1} allowMultiple>
                     {data?.results.map((result, race_index) => (
                         <Results 
+                            key={`results-${race_index}`}
                             title={`Race ${race_index+1}: ${election.races[race_index].title}`}
                             raceIndex={race_index}
                             race={election.races[race_index]}
