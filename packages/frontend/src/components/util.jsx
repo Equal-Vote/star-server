@@ -101,16 +101,14 @@ export const DetailExpander = ({children, title}) => {
 }
 
 export const DetailExpanderGroup = ({children, defaultSelectedIndex, allowMultiple=false}) => {
-    let isSingle = !Array.isArray(children) || children.length <= 1;
     const [openedWidgets, setOpenedWidgets] = useState([]);
 
     const groupRef = useRef(null);
 
-    if(isSingle) return <>{children}</>;
+    if(!Array.isArray(children) || children.length <= 1) return <>{children}</>;
 
     if(openedWidgets.length == 0) setOpenedWidgets(new Array(Array.isArray(children)? children.length : 0).fill(false));
 
-    console.log('not single', children, children.length, isSingle, Array.isArray(children), openedWidgets, );
     return <div ref={groupRef} className='detailExpanderGroup'>
         {children.map((child,i) => (
             <Paper
@@ -121,7 +119,6 @@ export const DetailExpanderGroup = ({children, defaultSelectedIndex, allowMultip
                     className='detailSection'
                     style={{display: 'flex', flexDirection: 'row', justifyContent: 'flexStart', cursor: 'pointer'}}
                     onClick={() => {
-                        console.log('on click', openedWidgets);
                         if(!openedWidgets[i]){
                             scrollToElement(groupRef.current.querySelectorAll(`.detailSection`)[i].parentNode);
                         }

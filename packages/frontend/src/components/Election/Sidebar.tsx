@@ -33,8 +33,6 @@ export default function Sidebar() {
                     justifyContent="center"
                     alignItems="center"
                     sx={{ 
-                        display: 'flex',
-                        width: '100%',
                         "@media print": {
                             display: 'none',
                         }
