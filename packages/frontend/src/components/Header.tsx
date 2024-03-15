@@ -129,7 +129,6 @@ const Header = () => {
                 {/**** Equal Vote ****/}
                 <IconButton
                     size="large"
-                    color="inherit"
                     href="https://equal.vote"
                     sx={{display: {xs: 'none', md: 'flex'}, gap: 1}}>
                         <ArrowBackIosNewIcon sx={{display: {xs: 'none', md: 'inline'}}}/>
