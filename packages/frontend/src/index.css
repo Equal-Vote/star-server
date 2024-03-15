@@ -380,10 +380,12 @@ code {
 }
 
 .startingOptionArrow{
-  margin-right: 30px;
+  min-width: 2em; /* font size (1em) + max padding left (1em), making width too small will shrink the arrow when it animates */
+  padding-left: 0px;
 }
 
 .startingOption:hover .startingOptionArrow{
+  padding-left: 1em;
   margin-right: 0;
 }
 
