@@ -378,6 +378,15 @@ code {
     display: none;
   }
 }
+
+.startingOptionArrow{
+  margin-right: 30px;
+}
+
+.startingOption:hover .startingOptionArrow{
+  margin-right: 0;
+}
+
 @media print{
   #launcher-frame{
     display: none;

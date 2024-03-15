@@ -1,9 +1,8 @@
-import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, IconButton, MenuItem, Radio, RadioGroup, Select, Step, StepConnector, StepContent, StepLabel, Stepper, TextField, Tooltip, Typography } from "@mui/material";
-import { StyledButton } from "../styles";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, IconButton, MenuItem, Radio, RadioGroup, Select, Step, StepConnector, StepContent, StepLabel, Stepper, TextField, Tooltip, Typography } from "@mui/material";
+import { StyledButton, Tip } from "../styles";
 import { Dispatch, SetStateAction, createContext, useContext, useState } from "react";
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { ElectionTitleField } from "./Details/ElectionDetailsForm";
-
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 export interface ICreateElectionContext{
     open: boolean
@@ -46,6 +45,19 @@ const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
     }
 </>
 
+const StartingOption = ({title, description, }) => <>
+    <Button color='inherit' fullWidth className='startingOption' sx={{justifyContent: 'flex-start'}}>
+        <Box sx={{width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
+                <Typography variant="body2">{title}</Typography>
+                <Typography variant="h6">{description}</Typography>
+            </Box>
+            <ArrowForwardIosIcon className="startingOptionArrow" sx={{transition: 'margin-right .2s'}}/>
+        </Box>
+    </Button>
+    <Divider/>
+</>
+
 export default () => {
     const createElectionContext = useContext(CreateElectionContext);
 
@@ -62,12 +74,9 @@ export default () => {
         open={createElectionContext.open}
         onClose={onClose}
         scroll={'paper'}
+        sx={{maxHeight: '90%'}}
         keepMounted
-        sx={{
-            width: '100%',
-            maxWidth: 800,
-            margin: 'auto'
-        }}
+        fullWidth
     >
         <DialogTitle> Create an Election or Poll </DialogTitle>
         <DialogContent>
@@ -76,12 +85,7 @@ export default () => {
                     <StepLabel>Poll or Election? <strong>{electionTerm}</strong></StepLabel>
                     <StepContent>
                         <Typography>Which term best describes your situation?
-                            <Tooltip
-                                title="There's no functional difference between polls and elections. This only impacts which terminology is shown to you and your voters">
-                                <IconButton>
-                                    <InfoOutlinedIcon />
-                                </IconButton>
-                            </Tooltip>
+                            <Tip name='polls_vs_elections'/>
                         </Typography>
                         <RadioGroup row>
                             <FormControlLabel value='Poll' control={<Radio/>} label='Poll' onClick={() => setElectionTerm('Poll')}/>
@@ -109,6 +113,10 @@ export default () => {
                 <Step>
                     <StepLabel>Choose starting point</StepLabel>
                     <StepContent>
+                        <StartingOption title='blah' description='asdfqwefasdbasdfwefasdfas'/>
+                        <StartingOption title='blah' description='asdfqwefasdbasdfwefasdfas'/>
+                        <StartingOption title='blah' description='asdfqwefasdbasdfwefasdfas'/>
+                        <StartingOption title='blah' description='asdfqwefasdbasdfwefasdfas'/>
                         <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={electionTitle != '' && errors.title == ''}/>
                     </StepContent>
                 </Step>
