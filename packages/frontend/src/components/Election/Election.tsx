@@ -31,7 +31,7 @@ const Election = () => {
         <Box sx={{maxWidth: {xs: '100%', md: '16%'}}}>
           <Sidebar />
         </Box>
-        <Box sx={{mt: '0', width: '100%'}}>
+        <Box sx={{mt: '0', width: '100%', '@media print': {maxWidth: '100%'}}}>
           <Routes>
             <Route path='/' element={<ElectionHome />} />
             <Route path='/vote' element={<VotePage />} />

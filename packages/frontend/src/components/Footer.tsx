@@ -14,7 +14,10 @@ export default function Footer() {
         backgroundColor: themeSelector.mode === 'darkMode' ? 'brand.gray5' : 'brand.gray1',
         p: 6,
         width: '100%',
-        mt: 'auto'
+        mt: 'auto',
+        '@media print': {
+          display: 'none'
+        }
       }}
     >
       <Container maxWidth="lg">

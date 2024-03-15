@@ -59,7 +59,7 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
   return (
     <>
       <WinnerResultTabs numWinners={rounds}>
-        {roundIndexes.map((i) => <STARResultSummaryWidget results={results} roundIndex={i}/>)}
+        {roundIndexes.map((i) => <STARResultSummaryWidget key={i} results={results} roundIndex={i}/>)}
       </WinnerResultTabs>
       <DetailExpander title='Details'>
         <STARDetailedResults results={results} rounds={rounds}/>

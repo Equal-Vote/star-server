@@ -23,7 +23,6 @@ export const Widget = ({children, title}) => <Paper elevation={5} className='gra
     {children}
 </Paper>
 
-
 export const makeResultTable = (className, arr) => {
     let c = `resultTable ${className}`;
 
@@ -81,49 +80,66 @@ export const DetailExpander = ({children, title}) => {
     const expanderId = _uniqueId('detailExpander-')
 
     return <>
-        <div className={`detailExpander ${expanderId}`} style={{display: 'flex', flexDirection: 'row', gap: 10, justifyContent: 'center', cursor: 'pointer', alignItems: 'center'}} onClick={() => {
-            if(!viewDetails){
-                scrollToElement(document.querySelector(`${expanderId}:first-child`))
-            }
-            setViewDetails(!viewDetails)
-        }}>
+        <Box className={`detailExpander ${expanderId}`}
+            sx={{
+                display: 'flex', flexDirection: 'row', gap: 10, justifyContent: 'center', cursor: 'pointer', alignItems: 'center',
+                '@media print': {
+                    display: 'none'
+                }
+            }}
+            onClick={() => {
+                if(!viewDetails) scrollToElement(document.querySelector(`${expanderId}:first-child`))
+                setViewDetails(!viewDetails)
+            }}
+        >
             <Typography variant='h6'>{title}</Typography>
             {!viewDetails && <ExpandMore />}
             {viewDetails && <ExpandLess />}
-        </div>
+        </Box>
         {viewDetails && children}
     </>
 }
 
-export const DetailExpanderGroup = ({children, defaultSelectedIndex}) => {
-    const [widgetIndex, setWidgetIndex] = useState(defaultSelectedIndex);
+export const DetailExpanderGroup = ({children, defaultSelectedIndex, allowMultiple=false}) => {
+    let isSingle = !Array.isArray(children) || children.length <= 1;
+    const [openedWidgets, setOpenedWidgets] = useState([]);
 
     const groupRef = useRef(null);
 
-    if(!Array.isArray(children) || children.length <= 1) return <>{children}</>;
+    if(isSingle) return <>{children}</>;
 
+    if(openedWidgets.length == 0) setOpenedWidgets(new Array(Array.isArray(children)? children.length : 0).fill(false));
+
+    console.log('not single', children, children.length, isSingle, Array.isArray(children), openedWidgets, );
     return <div ref={groupRef} className='detailExpanderGroup'>
         {children.map((child,i) => (
             <Paper
+                key={`detail-expander-group-${i}`}
                 elevation={5}
                 sx={{backgroundColor: 'brand.white', padding: '8px', width: '100%'}} >
                 <div
                     className='detailSection'
                     style={{display: 'flex', flexDirection: 'row', justifyContent: 'flexStart', cursor: 'pointer'}}
                     onClick={() => {
-                        if((widgetIndex != i)){
+                        console.log('on click', openedWidgets);
+                        if(!openedWidgets[i]){
                             scrollToElement(groupRef.current.querySelectorAll(`.detailSection`)[i].parentNode);
                         }
-                        setWidgetIndex((widgetIndex == i)? -1 : i);
+                        setOpenedWidgets(openedWidgets.map((v, j) => {
+                            if(allowMultiple){
+                                return (i == j)? !v : v
+                            }else{
+                                return i == j;
+                            }
+                        }))
                     }}
                 >
                     <Typography variant='h6'>{child.props.title}</Typography>
                     <IconButton>
-                        {(widgetIndex != i) && <ExpandMore />}
-                        {(widgetIndex == i) && <ExpandLess />}
+                        {openedWidgets[i]? <ExpandLess /> : <ExpandMore />}
                     </IconButton>
                 </div>
-                {(widgetIndex == i) && 
+                {openedWidgets[i] && 
                     <>
                         <hr/>
                         <div style={{textAlign: 'left'}}>
