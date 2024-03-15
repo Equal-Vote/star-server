@@ -50,7 +50,7 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
       </WinnerResultTabs>
       <DetailExpander title='Details'>
         <DetailExpanderGroup defaultSelectedIndex={-1}>
-          <STARResultTableWidget title="Election Results" results={results} rounds={rounds}/>
+          <STARResultTableWidget title="Equal Preference Details" results={results} rounds={rounds}/>
           <STARResultDetailedStepsWidget title='Detailed Steps' results={results} rounds={rounds}/>
           <div title="How STAR Voting works" style={{maxWidth: '100%'}}>
             <img style={{display: 'block', width: '100%', maxWidth: '400px', margin: '0 auto 0 auto'}} src="/images/star_info_vertical.png"/>

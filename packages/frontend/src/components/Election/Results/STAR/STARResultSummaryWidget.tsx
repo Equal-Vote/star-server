@@ -44,7 +44,7 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
     const runnerUpIndex = results.roundResults[roundIndex].runner_up[0].index;
     const winnerVotes = results.summaryData.preferenceMatrix[winnerIndex][runnerUpIndex];
     const runnerUpVotes = results.summaryData.preferenceMatrix[runnerUpIndex][winnerIndex];
-    const noPrefVotes = results.summaryData.nValidVotes - winnerVotes - runnerUpVotes;
+    //const noPrefVotes = results.summaryData.nValidVotes - winnerVotes - runnerUpVotes;
 
     histData.sort((a, b) => {
         if(a.index == winnerIndex) return -1;
@@ -73,16 +73,7 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
             name: results.summaryData.candidates[runnerUpIndex].name,
             votes: runnerUpVotes
         },
-        {
-            name: 'No Preference',
-            votes: noPrefVotes
-        },
     ];
-
-    if(noPrefVotes == 0){
-        pieColors.splice(2, 1);
-        pieData.splice(2, 1);
-    }
 
     const candidateWithLongestName = results.summaryData.candidates.reduce( function(a, b){
         return (a.name.length > b.name.length)? a : b;

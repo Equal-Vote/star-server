@@ -1,14 +1,22 @@
 import React, { useState }  from 'react'
-import { TableContainer} from "@mui/material";
+import { TableContainer, Typography} from "@mui/material";
 import { roundResults, starResults, starSummaryData } from 'shared/domain_model/ITabulators';
+import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
 type candidateTableEntry = {
   name: string,
   votes: number,
   index: number,
+  runoffVotes: number
 }
 
-function RoundViewer({ summaryData, candidate, round }: {summaryData: starSummaryData, candidate: candidateTableEntry, round: roundResults }) {
+const COLORS = [
+    'var(--ltbrand-blue)',
+    'var(--ltbrand-green)',
+    'var(--brand-gray-1)',
+];
+
+/*function RoundViewer({ summaryData, candidate, round }: {summaryData: starSummaryData, candidate: candidateTableEntry, round: roundResults }) {
   const winnerIndex = round.winners[0].index
   const runnerUpIndex = round.runner_up[0].index
   const totalRunoffVotes = summaryData.nValidVotes
@@ -42,58 +50,102 @@ function RoundViewer({ summaryData, candidate, round }: {summaryData: starSummar
       { !isFinalist && <><td/><td/></> }
     </>
   )
-}
+}*/
 
 const STARResultTableWidget = ({title, results, rounds}: {title: string, results: starResults, rounds: number }) => {
-    const tableData: candidateTableEntry[] = results.summaryData.candidates.map((c, n) => ({
+    const winnerIndex = results.roundResults[0].winners[0].index;
+    const runnerUpIndex = results.roundResults[0].runner_up[0].index;
+    console.log(results);
+
+    // NOTE: I'm only using the runoff data, but I'm still generating all the data in case I need them later
+    const tableData: candidateTableEntry[] = results.summaryData.candidates.map((c, i) => ({
         name: c.name,
-        votes: results.summaryData.totalScores[n].score,
-        index: n
+        votes: results.summaryData.totalScores[i].score,
+        runoffVotes:
+          i == winnerIndex ?
+            results.summaryData.preferenceMatrix[winnerIndex][runnerUpIndex] : (
+          i == runnerUpIndex ?
+            results.summaryData.preferenceMatrix[runnerUpIndex][winnerIndex] : 
+            0 ),
+        index: i
     }));
 
-    tableData.sort((a, b) => b.votes - a.votes);
+    tableData.sort((a, b) => {
+      if(a.runoffVotes != b.runoffVotes) return b.runoffVotes - a.runoffVotes;
+      return b.votes - a.votes;
+    })
 
-    return (
+    let runoffData = tableData.slice(0, 2);
+    let finalistVotes = (runoffData[0].runoffVotes + runoffData[1].runoffVotes)
+    runoffData.push({
+      name: 'Equal Preferences',
+      votes: 0,
+      runoffVotes: results.summaryData.nValidVotes - finalistVotes,
+      index: -1,
+    })
+
+    const axisWidth = Math.min(200, 15 * 20);
+
+    return ( <>
+      <Typography variant="h5">Runoff Votes</Typography>
+      <ResponsiveContainer width="90%" height={50*3}>
+        <BarChart data={runoffData} barCategoryGap={5} layout="vertical">
+            <XAxis hide axisLine={false} type="number" />
+            <YAxis
+                dataKey='name'
+                type="category"
+                axisLine={false}
+                tickLine={false}
+                tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
+                width={axisWidth}
+            />
+            <Bar dataKey='runoffVotes' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
+                {runoffData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[(index) % COLORS.length]} />
+                ))}
+            </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+      <Typography variant="h5">Runoff Votes Table</Typography>
       <TableContainer sx={{ marginLeft: 'auto', marginRight: 'auto', maxHeight: 600, maxWidth: {xs:300, sm: 500, md: 550, lg: 550}}}>
-        <table className='resultTable'>
-        <thead className='resultTable'>
+          <table className='resultTable'>
+          <thead className='resultTable'>
 
-        {rounds > 1 &&
-        <>
-          <th className='resultTable'> </th>
-          <th className='resultTable'> </th>
-          {results.roundResults.map((round, r) => (
-            r < rounds && <>
-              <th colSpan={2}> {`Round ${r + 1}`} </th>
-            </>))}
-        </>
-        }
-        <tr>
-        <th className='resultTable'> Candidate</th>
-        <th className='resultTable'> Total Score</th>
-        {results.roundResults.map((round, r) => (
-          r < rounds && <>
+          <tr>
+          <th className='resultTable'> Candidate</th>
             <th className='resultTable'> Runoff Votes</th>
             <th className='resultTable'> % Runoff Votes</th>
-          </>))}
-        </tr>
-        </thead>
-
-        <tbody>
-        {tableData.map((c, n) => (
-        <>
-          <tr className='resultTable' key={`h${n}`}>
-            <td className={`resultTable ${(n < 2)?'highlight':''}`} style={{paddingLeft: '8px'}}>{c.name}</td>
-            <td className={`resultTable ${(n < 2)?'highlight':''}`}> {c.votes} </td>
-            {results.roundResults.map((round, r) => (
-              r < rounds && <RoundViewer summaryData={results.summaryData} candidate={c} round={round} />))}
+            <th className='resultTable'> % Between Finalists</th>
           </tr>
-        </>
-        ))}
-        </tbody>
-      </table>
-    </TableContainer>
-    );
+          </thead>
+
+          <tbody>
+          {runoffData.map((c, i) => (
+          <>
+            <tr className='resultTable' key={`h${i}`}>
+              <td className='resultTable' style={{paddingLeft: '8px'}}>{c.name}</td>
+              <td className='resultTable'> {c.runoffVotes} </td>
+              <td className='resultTable'>
+                {`${Math.round(c.runoffVotes * 1000 / results.summaryData.nValidVotes) / 10}%`}
+              </td>
+              <td className='resultTable'>
+                {i == 2 ? '' : `${Math.round(c.runoffVotes * 1000 / finalistVotes) / 10}%`}
+              </td>
+            </tr>
+          </>
+          ))}
+          <tr className='resultTable'>
+            <td className='resultTable' style={{paddingLeft: '8px'}}>Total</td>
+            <td className='resultTable'> {results.summaryData.nValidVotes}</td>
+            <td className='resultTable'>100%</td>
+            <td className='resultTable'>100%</td>
+          </tr>
+          
+          </tbody>
+        </table>
+      </TableContainer>
+      <Typography variant="h5">Stars from Equal Preference Voters</Typography>
+    </>);
 }
 
 export default STARResultTableWidget;
