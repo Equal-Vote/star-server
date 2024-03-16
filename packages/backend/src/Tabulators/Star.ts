@@ -62,9 +62,24 @@ export function Star(candidates: string[], votes: ballot[], nWinners = 1, random
     remainingCandidates = remainingCandidates.filter(c => !roundResults.winners.includes(c))
   }
 
+  // NOTE: the proper way to handle no preferenceStars is to have a matrix of number[] in the summaryData. 
+  //       BUT that's super overkill for the moment since we just need 6 values and we're not running multi-winner elections yet
+  //       Also there's a chance we'll move advanced stats like this to an analytics api as some point
+  //       So TLDR I think the current approach is good enough for now
+  results.summaryData.noPreferenceStars = 
+    getNoPreferenceStars(parsedData, results.roundResults[0].winners[0].index, results.roundResults[0].runner_up[0].index);
+
   // Sort data in order of candidate placements
   results.summaryData = sortData(summaryData, results.elected.concat(results.tied).concat(results.other))
   return results
+}
+
+function getNoPreferenceStars(parsedData: IparsedData, cIndexI: number, cIndexJ: number): number[]{
+  return parsedData.scores.reduce((stars, vote) => {
+    if((vote[cIndexI] ?? 0) != (vote[cIndexJ] ?? 0)) return stars;
+    stars[vote[cIndexI] ?? 0]++;
+    return stars;
+  }, new Array(6).fill(0));
 }
 
 function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: number[]): starSummaryData {
@@ -137,7 +152,8 @@ function getSummaryData(candidates: string[], parsedData: IparsedData, randomTie
     nValidVotes: parsedData.validVotes.length,
     nInvalidVotes: parsedData.invalidVotes.length,
     nUnderVotes: parsedData.underVotes,
-    nBulletVotes: nBulletVotes
+    nBulletVotes: nBulletVotes,
+    noPreferenceStars: [], // this will be used later
   }
 }
 
@@ -162,10 +178,11 @@ function sortData(summaryData: starSummaryData, order: candidate[]): starSummary
     nInvalidVotes: summaryData.nInvalidVotes,
     nUnderVotes: summaryData.nUnderVotes,
     nBulletVotes: summaryData.nBulletVotes,
+    noPreferenceStars: summaryData.noPreferenceStars,
   }
 }
 
-export function runStarRound(summaryData: starSummaryData, remainingCandidates: candidate[], breakTiesRandomly = true, enablefiveStarTiebreaker = true) {
+export function runStarRound(summaryData: starSummaryData, remainingCandidates: candidate[], breakTiesRandomly = true, enablefiveStarTiebreaker = true): starRoundResults {
   // Initialize output results data structure
   const roundResults: roundResults = {
     winners: [],

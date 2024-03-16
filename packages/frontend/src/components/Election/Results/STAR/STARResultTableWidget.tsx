@@ -1,5 +1,5 @@
 import React, { useState }  from 'react'
-import { TableContainer, Typography} from "@mui/material";
+import { TableContainer, Typography, Paper} from "@mui/material";
 import { roundResults, starResults, starSummaryData } from 'shared/domain_model/ITabulators';
 import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
@@ -10,10 +10,16 @@ type candidateTableEntry = {
   runoffVotes: number
 }
 
-const COLORS = [
+const RUNOFF_COLORS = [
     'var(--ltbrand-blue)',
     'var(--ltbrand-green)',
     'var(--brand-gray-1)',
+];
+
+const COLORS = [
+    'var(--ltbrand-blue)',
+    'var(--ltbrand-green)',
+    'var(--ltbrand-lime)',
 ];
 
 /*function RoundViewer({ summaryData, candidate, round }: {summaryData: starSummaryData, candidate: candidateTableEntry, round: roundResults }) {
@@ -84,8 +90,12 @@ const STARResultTableWidget = ({title, results, rounds}: {title: string, results
       index: -1,
     })
 
-    const axisWidth = Math.min(200, 15 * 20);
+    let noPrefStarData = results.summaryData.noPreferenceStars.map((count, i) => ({
+      name: `${i}⭐`,
+      count: count,
+    }));
 
+    const axisWidth = Math.min(200, 15 * 20);
     return ( <>
       <Typography variant="h5">Runoff Votes</Typography>
       <ResponsiveContainer width="90%" height={50*3}>
@@ -101,7 +111,7 @@ const STARResultTableWidget = ({title, results, rounds}: {title: string, results
             />
             <Bar dataKey='runoffVotes' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
                 {runoffData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[(index) % COLORS.length]} />
+                    <Cell key={`cell-${index}`} fill={RUNOFF_COLORS[(index) % RUNOFF_COLORS.length]} />
                 ))}
             </Bar>
         </BarChart>
@@ -145,6 +155,24 @@ const STARResultTableWidget = ({title, results, rounds}: {title: string, results
         </table>
       </TableContainer>
       <Typography variant="h5">Stars from Equal Preference Voters</Typography>
+      <ResponsiveContainer width="90%" height={50*5}>
+        <BarChart data={noPrefStarData} barCategoryGap={5} layout="vertical">
+            <XAxis hide axisLine={false} type="number" />
+            <YAxis
+                dataKey='name'
+                type="category"
+                axisLine={false}
+                tickLine={false}
+                tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
+                width={50}
+            />
+            <Bar dataKey='count' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
+                {noPrefStarData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[(index) % COLORS.length]} />
+                ))}
+            </Bar>
+        </BarChart>
+      </ResponsiveContainer>
     </>);
 }
 
