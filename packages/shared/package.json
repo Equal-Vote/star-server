@@ -34,5 +34,8 @@
       "types": "./dist/types/domain_model/*.d.ts",
       "default": "./dist/domain_model/*.js"
     }
+  },
+  "dependencies": {
+    "i": "^0.3.7"
   }
 }

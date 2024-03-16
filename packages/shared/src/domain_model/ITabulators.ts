@@ -44,6 +44,7 @@ export interface starSummaryData extends genericSummaryData {
     scoreHist: scoreHist,
     preferenceMatrix: preferenceMatrix,
     pairwiseMatrix: pairwiseMatrix,
+    noPreferenceStars: number[],
 }
 
 export interface allocatedScoreSummaryData extends starSummaryData {

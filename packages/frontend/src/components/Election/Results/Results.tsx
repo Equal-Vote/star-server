@@ -339,7 +339,6 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
     // copied from STARResultDetailedStepsWidget.tsx
     const showTieBreakerWarning = (result.results as starResults).roundResults.some(round => (round.logs.some(log => (log.includes('tiebreaker')))));
     if(showTieBreakerWarning) showTitleAsTie = true;
-
   }
   return (
     <div>
