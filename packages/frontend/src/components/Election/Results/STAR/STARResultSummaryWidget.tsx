@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, ResponsiveContainer, Legend} from 'recharts';
-import { Paper, Typography } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 import { starResults } from 'shared/domain_model/ITabulators';
 
 // NOTE: I tried using brand.gold here, but it didn't work
@@ -82,11 +82,11 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
     // 200 is about the max width I'd want for a small mobile device, still looking for a better solution though
     const axisWidth = Math.min(200, 15 * ((candidateWithLongestName.name.length > 20)? 20 : candidateWithLongestName.name.length));
     
-    const pieAngle = 90 + 360 * (1 - (pieData[0].votes/results.summaryData.nValidVotes))
+    const pieAngle = 90;//90 + 360 * (1 - (pieData[0].votes/results.summaryData.nValidVotes))
 
     return (
         <div className="resultWidget">
-            <div className="graphs">
+            <Box className="graphs">
                 <Paper elevation={5} className='graph' sx={{backgroundColor: 'brand.white', borderRadius: '10px'}}>
                     <Typography variant="h5">Scoring Round</Typography>
                     <p>Add the stars from all the ballots.</p>  
@@ -139,7 +139,7 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
                         </PieChart>
                     </ResponsiveContainer>
                 </Paper>
-            </div>
+            </Box>
             <p className="votingMethod">Voting Method: STAR</p>
         </div>
     );
