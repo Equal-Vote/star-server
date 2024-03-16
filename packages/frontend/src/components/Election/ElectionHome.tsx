@@ -72,9 +72,11 @@ const ElectionHome = () => {
                       Vote
                     </Typography>
                   </Button>
+                  {election.settings.public_results === true &&
                   <Button variant='text' href={`/${String(election?.election_id)}/results`} >
                       or view results 
                   </Button>
+                  }
                 </Box>
               }
             </>}
@@ -87,10 +89,15 @@ const ElectionHome = () => {
               </Box>
             }
             {voterAuth.has_voted == true &&
-              <Box sx={{ flexGrow: 1 }}>
+              <Box display='flex' flexDirection='column' alignItems='center' gap={5} sx={{ p: 1}}>
                 <Typography align='center' variant="h6" component="h6">
                   Ballot Submitted
                 </Typography>
+                {election.settings.public_results === true &&
+                <Button variant='text' href={`/${String(election?.election_id)}/results`} >
+                    View results 
+                </Button>
+                }
               </Box>
             }
             {/* Show results button only if public_results enabled and voter has voted or election is closed */}
