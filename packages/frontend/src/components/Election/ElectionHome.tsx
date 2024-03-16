@@ -66,16 +66,14 @@ const ElectionHome = () => {
               {
                 voterAuth.has_voted == false && voterAuth.authorized_voter && !voterAuth.required &&
 
-                <Box display='flex' flexDirection='column' alignItems='center' sx={{ p: 1}}>
+                <Box display='flex' flexDirection='column' alignItems='center' gap={5} sx={{ p: 1}}>
                   <Button fullWidth variant='contained' href={`/${String(election?.election_id)}/vote`} >
                     <Typography align='center' variant="h3" component="h3" fontWeight='bold' sx={{ p: 2 }}>
                       Vote
                     </Typography>
                   </Button>
                   <Button variant='text' href={`/${String(election?.election_id)}/results`} >
-                    <Typography align='center' variant="h6" component="h6" fontWeight='bold' sx={{ p: 2 }}>
                       or view results 
-                    </Typography>
                   </Button>
                 </Box>
               }
