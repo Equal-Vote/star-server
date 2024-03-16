@@ -1,5 +1,5 @@
 import React, { useState }  from 'react'
-import { TableContainer, Typography, Paper} from "@mui/material";
+import { TableContainer, Typography, Paper, Box} from "@mui/material";
 import { roundResults, starResults, starSummaryData } from 'shared/domain_model/ITabulators';
 import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
@@ -117,62 +117,66 @@ const STARResultTableWidget = ({title, results, rounds}: {title: string, results
         </BarChart>
       </ResponsiveContainer>
       <Typography variant="h5">Runoff Votes Table</Typography>
-      <TableContainer sx={{ marginLeft: 'auto', marginRight: 'auto', maxHeight: 600, maxWidth: {xs:300, sm: 500, md: 550, lg: 550}}}>
-          <table className='resultTable'>
-          <thead className='resultTable'>
+      <Box sx={{paddingLeft: '20px', paddingRight: '20px'}}>
+        <TableContainer sx={{ marginLeft: 'auto', marginRight: 'auto', maxHeight: 600, maxWidth: {xs:300, sm: 500, md: 550, lg: 550}}}>
+            <table className='resultTable'>
+            <thead className='resultTable'>
 
-          <tr>
-          <th className='resultTable'> Candidate</th>
-            <th className='resultTable'> Runoff Votes</th>
-            <th className='resultTable'> % Runoff Votes</th>
-            <th className='resultTable'> % Between Finalists</th>
-          </tr>
-          </thead>
-
-          <tbody>
-          {runoffData.map((c, i) => (
-          <>
-            <tr className='resultTable' key={`h${i}`}>
-              <td className='resultTable' style={{paddingLeft: '8px'}}>{c.name}</td>
-              <td className='resultTable'> {c.runoffVotes} </td>
-              <td className='resultTable'>
-                {`${Math.round(c.runoffVotes * 1000 / results.summaryData.nValidVotes) / 10}%`}
-              </td>
-              <td className='resultTable'>
-                {i == 2 ? '' : `${Math.round(c.runoffVotes * 1000 / finalistVotes) / 10}%`}
-              </td>
+            <tr>
+            <th className='resultTable'> Candidate</th>
+              <th className='resultTable'> Runoff Votes</th>
+              <th className='resultTable'> % Runoff Votes</th>
+              <th className='resultTable'> % Between Finalists</th>
             </tr>
-          </>
-          ))}
-          <tr className='resultTable'>
-            <td className='resultTable' style={{paddingLeft: '8px'}}>Total</td>
-            <td className='resultTable'> {results.summaryData.nValidVotes}</td>
-            <td className='resultTable'>100%</td>
-            <td className='resultTable'>100%</td>
-          </tr>
-          
-          </tbody>
-        </table>
-      </TableContainer>
+            </thead>
+
+            <tbody>
+            {runoffData.map((c, i) => (
+            <>
+              <tr className='resultTable' key={`h${i}`}>
+                <td className='resultTable' style={{paddingLeft: '8px'}}>{c.name}</td>
+                <td className='resultTable'> {c.runoffVotes} </td>
+                <td className='resultTable'>
+                  {`${Math.round(c.runoffVotes * 1000 / results.summaryData.nValidVotes) / 10}%`}
+                </td>
+                <td className='resultTable'>
+                  {i == 2 ? '' : `${Math.round(c.runoffVotes * 1000 / finalistVotes) / 10}%`}
+                </td>
+              </tr>
+            </>
+            ))}
+            <tr className='resultTable'>
+              <td className='resultTable' style={{paddingLeft: '8px'}}>Total</td>
+              <td className='resultTable'> {results.summaryData.nValidVotes}</td>
+              <td className='resultTable'>100%</td>
+              <td className='resultTable'>100%</td>
+            </tr>
+            
+            </tbody>
+          </table>
+        </TableContainer>
+      </Box>
       <Typography variant="h5">Stars from Equal Preference Voters</Typography>
-      <ResponsiveContainer width="90%" height={50*5}>
-        <BarChart data={noPrefStarData} barCategoryGap={5} layout="vertical">
-            <XAxis hide axisLine={false} type="number" />
-            <YAxis
-                dataKey='name'
-                type="category"
-                axisLine={false}
-                tickLine={false}
-                tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
-                width={50}
-            />
-            <Bar dataKey='count' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
-                {noPrefStarData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[(index) % COLORS.length]} />
-                ))}
-            </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+      <Box sx={{paddingLeft: '20px', paddingRight: '20px'}}>
+        <ResponsiveContainer width="90%" height={50*5}>
+          <BarChart data={noPrefStarData} barCategoryGap={5} layout="vertical">
+              <XAxis hide axisLine={false} type="number" />
+              <YAxis
+                  dataKey='name'
+                  type="category"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
+                  width={50}
+              />
+              <Bar dataKey='count' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
+                  {noPrefStarData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[(index) % COLORS.length]} />
+                  ))}
+              </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </Box>
     </>);
 }
 
