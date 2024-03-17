@@ -27,5 +27,5 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm i
-    - run: npm run build -w shared -w backend
+    - run: npm run build -ws
     - run: npm test
