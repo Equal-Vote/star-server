@@ -59,6 +59,18 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
         histData[i].name = `⭐${histData[i].name}`
     }
 
+    let smallHistData = histData;
+    let maxCandidates = 10;
+    if(smallHistData.length > maxCandidates){
+        smallHistData = smallHistData.slice(0, maxCandidates-1);
+        smallHistData.push({
+            name: `+${histData.length - (maxCandidates-1)} more`,
+            index: 0,
+            votes: '',
+            votesBig: 0,
+        })
+    }
+
     var pieColors = [
         COLORS[roundIndex % COLORS.length],
         COLORS[(roundIndex+1) % COLORS.length],
@@ -91,8 +103,8 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
             <Widget title='Scoring Round'>
                 <p>Add the stars from all the ballots.</p>  
                 <p>The two highest scoring candidates are the finalists.</p>
-                <ResponsiveContainer width="90%" height={50*histData.length}>
-                    <BarChart data={histData} barCategoryGap={5} layout="vertical">
+                <ResponsiveContainer width="90%" height={50*smallHistData.length}>
+                    <BarChart data={smallHistData} barCategoryGap={5} layout="vertical">
                         <XAxis hide axisLine={false} type="number" />
                         <YAxis
                             dataKey='name'
@@ -103,7 +115,7 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
                             width={axisWidth}
                         />
                         <Bar dataKey='votes' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
-                            {histData.map((entry, index) => (
+                            {smallHistData.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={COLORS[(index+roundIndex) % COLORS.length]} />
                             ))}
                         </Bar>
