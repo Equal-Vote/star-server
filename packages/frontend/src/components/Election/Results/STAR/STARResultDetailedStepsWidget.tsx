@@ -10,7 +10,7 @@ const STARResultDetailedStepsWidget = ({ title, results, rounds}: {title: string
         {results.roundResults.map((round, r) => (
             <>
             {rounds > 1 && <Typography variant="h4">{`Winner ${r + 1}`}</Typography>}
-            <ol>
+            <ol style={{textAlign: 'left'}}>
                 {round.logs.map(log => (<li>{log}</li>))}
             </ol>
             </>

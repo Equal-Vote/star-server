@@ -291,7 +291,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
     roundResults.winners.push(finalists[0])
     roundResults.runner_up.push(finalists[1])
     roundResults.logs.push(
-      `${finalists[0].name} defeats ${finalists[1].name} with ${leftVotes} votes to ${rightVotes}, and ${noPrefVotes} no preference votes.`
+      `${finalists[0].name} defeats ${finalists[1].name} with ${leftVotes} votes to ${rightVotes}, and ${noPrefVotes} equal preference votes.`
     )
     return roundResults
   }
@@ -300,12 +300,12 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
     roundResults.winners.push(finalists[1])
     roundResults.runner_up.push(finalists[0])
     roundResults.logs.push(
-      `${finalists[1].name} defeats ${finalists[0].name} with ${rightVotes} votes to ${leftVotes}, and ${noPrefVotes} no preference votes.`
+      `${finalists[1].name} defeats ${finalists[0].name} with ${rightVotes} votes to ${leftVotes}, and ${noPrefVotes} equal preference votes.`
     )
     return roundResults
   }
   roundResults.logs.push(
-      `${finalists[0].name} ties ${finalists[1].name} in runoff with ${rightVotes} votes to ${leftVotes}, and ${noPrefVotes} no preference votes.`
+      `${finalists[0].name} ties ${finalists[1].name} in runoff with ${rightVotes} votes to ${leftVotes}, and ${noPrefVotes} equal preference votes.`
   )
 
   // Tie, run runoff tiebreaker

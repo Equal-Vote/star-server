@@ -63,38 +63,39 @@ code {
     monospace;
 }
 
-.resultTable, .runoffTable{
+.resultTable{
   width: 100%;
   border: 1px solid black;
   margin: 0;
   border-collapse: collapse;
 }
 
-.resultTable thead, .runoffTable thead {
+.resultTable thead {
   border: 2px solid black;
 }
 
-.resultTable th, .runoffTable th{
+.resultTable th{
   min-width: 100px;
   text-align: center;
 }
 
-.resultTable td:not(:first-child), .runoffTable td:not(:first-child) {
+.resultTable td:not(:first-child){
   text-align: center;
   border: 1px solid black;
 }
 
-.resultTable tr:nth-child(1) > td, .resultTable tr:nth-child(2) > td{
+.resultTable tr:nth-child(1) > td{
   background: var(--brand-gold);
 }
 
-.runoffTable tr:nth-child(1) > td{
+.starScoreTable tr:nth-child(2) > td{
   background: var(--brand-gold);
 }
-.runoffTable tr:nth-child(3) > td{
+
+.starRunoffTable tr:nth-child(3) > td{
   background: var(--brand-gray-1);
 }
-.runoffTable tr:nth-child(4) > td{
+.starRunoffTable tr:nth-child(4) > td{
   background: var(--brand-gray-2);
 }
 
@@ -306,12 +307,6 @@ code {
   position: relative;
   top: .35rem;
   left: .25rem;
-}
-
-.resultWidget .votingMethod{
-  align-self: flex-end;
-  color: #808080;
-  font-size: .8rem;
 }
 
 .resultWidget .graphs p{

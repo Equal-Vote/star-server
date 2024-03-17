@@ -85,63 +85,62 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
     const pieAngle = 90;//90 + 360 * (1 - (pieData[0].votes/results.summaryData.nValidVotes))
 
     return (
-        <div className="resultWidget">
-            <Box className="graphs">
-                <Paper elevation={5} className='graph' sx={{backgroundColor: 'brand.white', borderRadius: '10px'}}>
-                    <Typography variant="h5">Scoring Round</Typography>
-                    <p>Add the stars from all the ballots.</p>  
-                    <p>The two highest scoring candidates are the finalists.</p>
-                    <ResponsiveContainer width="90%" height={50*histData.length}>
-                       <BarChart data={histData} barCategoryGap={5} layout="vertical">
-                           <XAxis hide axisLine={false} type="number" />
-                           <YAxis
-                               dataKey='name'
-                               type="category"
-                               axisLine={false}
-                               tickLine={false}
-                               tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
-                               width={axisWidth}
-                           />
-                           <Bar dataKey='votes' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
-                               {histData.map((entry, index) => (
-                                   <Cell key={`cell-${index}`} fill={COLORS[(index+roundIndex) % COLORS.length]} />
-                               ))}
-                           </Bar>
-                       </BarChart>
-                    </ResponsiveContainer>
-                </Paper>
-                <Paper elevation={5} className='graph' sx={{backgroundColor: 'brand.white', borderRadius: '10px'}}>
-                    <Typography variant="h5">Automatic Runoff Round</Typography>
-                    <p>Each vote goes to the voter's preferred finalist.</p>
-                    <p>Finalist with most votes wins.</p>
-                    <ResponsiveContainer width="100%" height={250}>
-                        <PieChart>
-                            <Pie
-                                data={pieData}
-                                cx="50%"
-                                cy="50%"
-                                labelLine={false}
-                                label={renderCustomizedLabel}
-                                outerRadius={100}
-                                fill="#8884d8"
-                                dataKey="votes"
-                                startAngle={pieAngle}
-                                endAngle={pieAngle+360}
-                            >
-                                {pieData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={ pieColors[index]} stroke='var(--brand-white)' strokeWidth={6}/>
-                                ))}
-                            </Pie>
-                            <Legend 
-                                layout="vertical" verticalAlign="top" align="right" 
-                                formatter={(value) => <span style={{color: 'black', fontWeight: 'bold', fontSize: '.9rem'}}>{value}</span>}
-                            />
-                        </PieChart>
-                    </ResponsiveContainer>
-                </Paper>
-            </Box>
-            <p className="votingMethod">Voting Method: STAR<br/><a style={{color: '#666666'}}href="https://www.youtube.com/watch?v=3-mOeUXAkV0">How STAR Voting Works</a></p>
-        </div>
+        <Box className="resultWidget">
+        <Box className="graphs ">
+            <Paper elevation={5} className='graph' sx={{backgroundColor: 'brand.white', borderRadius: '10px'}}>
+                <Typography variant="h5">Scoring Round</Typography>
+                <p>Add the stars from all the ballots.</p>  
+                <p>The two highest scoring candidates are the finalists.</p>
+                <ResponsiveContainer width="90%" height={50*histData.length}>
+                    <BarChart data={histData} barCategoryGap={5} layout="vertical">
+                        <XAxis hide axisLine={false} type="number" />
+                        <YAxis
+                            dataKey='name'
+                            type="category"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
+                            width={axisWidth}
+                        />
+                        <Bar dataKey='votes' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
+                            {histData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[(index+roundIndex) % COLORS.length]} />
+                            ))}
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
+            </Paper>
+            <Paper elevation={5} className='graph' sx={{backgroundColor: 'brand.white', borderRadius: '10px'}}>
+                <Typography variant="h5">Automatic Runoff Round</Typography>
+                <p>Each vote goes to the voter's preferred finalist.</p>
+                <p>Finalist with most votes wins.</p>
+                <ResponsiveContainer width="100%" height={250}>
+                    <PieChart>
+                        <Pie
+                            data={pieData}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            label={renderCustomizedLabel}
+                            outerRadius={100}
+                            fill="#8884d8"
+                            dataKey="votes"
+                            startAngle={pieAngle}
+                            endAngle={pieAngle+360}
+                        >
+                            {pieData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={ pieColors[index]} stroke='var(--brand-white)' strokeWidth={6}/>
+                            ))}
+                        </Pie>
+                        <Legend 
+                            layout="vertical" verticalAlign="top" align="right" 
+                            formatter={(value) => <span style={{color: 'black', fontWeight: 'bold', fontSize: '.9rem'}}>{value}</span>}
+                        />
+                    </PieChart>
+                </ResponsiveContainer>
+            </Paper>
+        </Box>
+        </Box>
     );
 }
 export default STARResultSummaryWidget 

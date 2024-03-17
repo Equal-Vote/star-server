@@ -7,7 +7,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import { useState } from 'react'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Typography from '@mui/material/Typography';
-import { DetailExpander, DetailExpanderGroup } from '../../util';
+import { DetailExpander, DetailExpanderGroup, makeResultTable } from '../../util';
 import STARResultSummaryWidget from "./STAR/STARResultSummaryWidget";
 import STARDetailedResults from "./STAR/STARDetailedResults";
 import STARResultDetailedStepsWidget from "./STAR/STARResultDetailedStepsWidget";
@@ -17,6 +17,7 @@ import { Race } from "shared/domain_model/Race";
 import { ElectionResults, allocatedScoreResults, approvalResults, irvResults, pluralityResults, rankedRobinResults, starResults } from "shared/domain_model/ITabulators";
 import useElection from "../../ElectionContextProvider";
 import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Link } from "react-router-dom";
 
 declare namespace Intl {
   class ListFormat {
@@ -56,7 +57,7 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
   ];
 
   return (
-    <div className="resultViewer">
+    <>
       <WinnerResultTabs numWinners={rounds}>
         {roundIndexes.map((i) => <STARResultSummaryWidget results={results} roundIndex={i}/>)}
       </WinnerResultTabs>
@@ -65,7 +66,7 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
         <DetailExpander title='Additional Info'>
           <Typography variant="h5">Tabulation Steps</Typography>
           <STARResultDetailedStepsWidget title='Detailed Steps' results={results} rounds={rounds}/>
-          <Typography variant="h5">Stars from Equal Preference Voters</Typography>
+          <Typography variant="h5">Distribution of Equal Preference Votes</Typography>
             <Box sx={{paddingLeft: '20px', paddingRight: '20px'}}>
               <ResponsiveContainer width="90%" height={50*5}>
                 <BarChart data={noPrefStarData} barCategoryGap={5} layout="vertical">
@@ -88,14 +89,13 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
             </Box>
         </DetailExpander>
       </DetailExpander>
-    </div>
+    </>
   );
 }
 
 function RankedRobinViewer({ results }: {results: rankedRobinResults}) {
   const [viewMatrix, setViewMatrix] = useState(false)
-  return (
-    <div className="resultViewer">
+  return (<>
       <h2>Detailed Results</h2>
       <table className='matrix'>
         <thead className='matrix'>
@@ -130,7 +130,7 @@ function RankedRobinViewer({ results }: {results: rankedRobinResults}) {
         </Grid>
       </Grid>
       {viewMatrix && <MatrixViewer results={results} />}
-    </div>
+    </>
   );
 }
 
@@ -251,54 +251,40 @@ function IRVResultsViewer({ results }: {results: irvResults}) {
 
 function PluralityResultsViewer({ results }: {results: pluralityResults}) {
   return (
-    <div className="resultViewer">
-      <h2>Detailed Results</h2>
-      <table className='matrix'>
-        <thead className='matrix'>
-          <tr>
-            <th className='matrix'> Candidate</th>
-            <th className='matrix'> Votes </th>
-          </tr>
-
-          {results.summaryData.totalScores.map((totalScore, n) => (
-            <>
-              <tr className='matrix' key={`h${n}`} >{results.summaryData.candidates[totalScore.index].name}
-                <td> {totalScore.score} </td>
-              </tr>
-
-            </>
-          ))}
-        </thead>
-      </table>
-    </div>
+    <>
+    {makeResultTable('chooseOneTable', [
+      ['Candidate', 'Votes', '% All Votes'],
+      ...results.summaryData.totalScores.map((totalScore, i) => [
+        results.summaryData.candidates[totalScore.index].name,
+        totalScore.score,
+        `${Math.round(totalScore.score * 1000 / results.summaryData.nValidVotes) / 10}%`,
+      ])
+    ])}
+    </>
   );
 }
 function ApprovalResultsViewer({ results , rounds}: {results: approvalResults, rounds: number}) {
-  return (
-    <div className="resultViewer">
-      <ApprovalResultSummaryWidget results={results}/>
-      <DetailExpander title='Details'>
-        <DetailExpanderGroup defaultSelectedIndex={-1}>
-          <GenericDetailedStepsWidget title='Detailed Steps' results={results} rounds={rounds}/>
-          <div title='How Approval Voting works' style={{position: 'relative', paddingBottom: "56.25%"}}>
-            <iframe style={{position: 'absolute', left: 0, width: '100%', height: '100%'}} src="https://www.youtube.com/embed/db6Syys2fmE" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
-          </div>
-        </DetailExpanderGroup>
-      </DetailExpander>
-    </div>
-  );
+  return (<>
+    <ApprovalResultSummaryWidget results={results}/>
+    <DetailExpander title='Details'>
+      <DetailExpanderGroup defaultSelectedIndex={-1}>
+        <GenericDetailedStepsWidget title='Detailed Steps' results={results} rounds={rounds}/>
+        <div title='How Approval Voting works' style={{position: 'relative', paddingBottom: "56.25%"}}>
+          <iframe style={{position: 'absolute', left: 0, width: '100%', height: '100%'}} src="https://www.youtube.com/embed/db6Syys2fmE" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+        </div>
+      </DetailExpanderGroup>
+    </DetailExpander>
+  </>);
 }
 
-function SummaryViewer({ votingMethod, results }:{votingMethod: string, results:irvResults|pluralityResults|rankedRobinResults}) {
+function ResultViewer({ votingMethod, results, children, learnLink=undefined }:{votingMethod: string, results:irvResults|pluralityResults|rankedRobinResults, children:any, learnLink?: string|undefined}) {
   return (
-    <>
-      <h2>Summary</h2>
-      <p>{`Voting Method: ${votingMethod}`}</p>
-      <p>{`${results.elected.length > 1 ? 'Winners' : 'Winner'}: ${results.elected.map(c => c.name).join(', ')}`}</p>
-      {results.tied?.length > 0 &&
-        <p>{`Tied: ${results.tied.map(c => c.name).join(', ')}`}</p>}
-      <p>{`Number of voters: ${results.summaryData.nValidVotes}`}</p>
-    </>
+    <Box className="resultViewer">
+      {children}
+      <Typography component="p" sx={{textAlign: 'right', color: '#808080', fontSize: '.8rem', marginTop: '20px'}}>Voting Method: {votingMethod}
+        {learnLink && <><br/><a href={learnLink} style={{color: 'inherit'}}>How {votingMethod} Works</a></>}
+      </Typography>
+    </Box>
   );
 }
 
@@ -386,8 +372,13 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
         {result.results.summaryData.nValidVotes == 1 && <p>There's only one vote so far.<br/>Full results will be displayed once there's more votes.</p> }
         {result.results.summaryData.nValidVotes > 1 &&
           <>
-          {result.votingMethod === "STAR" && <STARResultViewer results={result.results} rounds={race.num_winners} /> }
-          {result.votingMethod === "Approval" && <ApprovalResultsViewer results={result.results} rounds={race.num_winners} />}
+          {result.votingMethod === "STAR" && <ResultViewer votingMethod='Star Voting' results={result.results} learnLink='https://www.youtube.com/watch?v=3-mOeUXAkV0'>
+              <STARResultViewer results={result.results} rounds={race.num_winners} />
+          </ResultViewer> }
+
+          {result.votingMethod === "Approval" && <ResultViewer votingMethod='Approval Voting' results={result.results}>
+            <ApprovalResultsViewer results={result.results} rounds={race.num_winners} />
+          </ResultViewer>}
 
           {result.votingMethod === "STAR_PR" &&
             <>
@@ -397,23 +388,23 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
             </>}
 
           {result.votingMethod === "RankedRobin" &&
-            <>
-              <SummaryViewer votingMethod='Ranked Robin' results={result.results} />
+            <ResultViewer votingMethod='Ranked Robin' results={result.results}>
               <RankedRobinViewer results={result.results} />
-            </>}
+            </ResultViewer>
+          }
 
           {result.votingMethod === "Plurality" &&
-            <>
-              <SummaryViewer votingMethod='Plurality' results={result.results} />
+            <ResultViewer votingMethod='Plurality' results={result.results} >
               <PluralityResultsViewer results={result.results} />
-            </>}
+            </ResultViewer>
+          }
 
 
           {result.votingMethod === "IRV" &&
-            <>
-              <SummaryViewer votingMethod='Ranked Choice Voting' results={result.results} />
+            <ResultViewer votingMethod='Ranked Choice Voting' results={result.results}>
               <IRVResultsViewer results={result.results} />
-            </>}
+            </ResultViewer>
+          }
         </>}
       </div>
     </div>
