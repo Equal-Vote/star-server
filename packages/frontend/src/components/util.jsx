@@ -1,14 +1,32 @@
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { Grid, IconButton, Paper, TableContainer, Typography } from '@mui/material'
+import { Box, Grid, IconButton, Paper, TableContainer, Typography } from '@mui/material'
 import React, { useState, useRef, useEffect }  from 'react'
 import _uniqueId from 'lodash/uniqueId';
 import { DateTime } from 'luxon'
 
+
+export const WidgetContainer = ({children}) => <Box display='flex' flexDirection='row' flexWrap='wrap' gap='30px' className="graphs" justifyContent='center' sx={{marginBottom: '30px'}}>{children}</Box>
+export const Widget = ({children, title}) => <Paper elevation={5} className='graph' sx={{
+    width: '100%', // maybe I'll try 90?
+    maxWidth: '500px',
+    backgroundColor: 'brand.white',
+    borderRadius: '10px',
+    padding: '18px',
+    paddingTop: 0, /* the margin from the h3 tags is enough */
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+}}>
+    <Typography variant="h5">{title}</Typography>
+    {children}
+</Paper>
+
+
 export const makeResultTable = (className, arr) => {
     let c = `resultTable ${className}`;
 
-    return <TableContainer sx={{ marginLeft: 'auto', marginRight: 'auto', maxHeight: 600, maxWidth: {xs:300, sm: 500, md: 550, lg: 550}}}>
+    return <TableContainer sx={{ marginLeft: 'auto', marginRight: 'auto', maxHeight: 600, width: '100%'}}>
         <table className={c}>
             <thead className={c}>
                 <tr> {arr[0].map(header => <th className={c}>{header}</th>)} </tr>
@@ -23,8 +41,6 @@ export const makeResultTable = (className, arr) => {
             </tbody>
         </table>
     </TableContainer>
-
-
 }
 
 export function scrollToElement(e){

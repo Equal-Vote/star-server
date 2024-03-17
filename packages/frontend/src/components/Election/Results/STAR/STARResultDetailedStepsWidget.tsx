@@ -3,7 +3,7 @@ import { log } from 'console';
 import React, { useState }  from 'react'
 import { starResults } from 'shared/domain_model/ITabulators';
 
-const STARResultDetailedStepsWidget = ({ title, results, rounds}: {title: string, results: starResults, rounds: number }) => {
+const STARResultDetailedStepsWidget = ({ results, rounds}: {results: starResults, rounds: number }) => {
     const showTieBreakerWarning = results.roundResults.some(round => (round.logs.some(log => (log.includes('tiebreaker')))));
 
     return <div className='detailedSteps'>

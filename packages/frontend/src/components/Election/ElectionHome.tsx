@@ -18,7 +18,7 @@ const ElectionHome = () => {
           display='flex'
           justifyContent="center"
           alignItems="center"
-          sx={{ width: '100%' }}>
+          sx={{ width: '100%', minWidth: {xs: 0, md: '500px'} }}>
           <Paper elevation={3} sx={{
             p: 3, maxWidth: 600, minHeight: 400,
             display: 'flex',
