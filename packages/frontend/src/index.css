@@ -63,34 +63,38 @@ code {
     monospace;
 }
 
-.resultTable{
+.resultTable, .runoffTable{
   width: 100%;
   border: 1px solid black;
   margin: 0;
   border-collapse: collapse;
 }
 
-.resultTable thead {
+.resultTable thead, .runoffTable thead {
   border: 2px solid black;
 }
 
-.resultTable th {
+.resultTable th, .runoffTable th{
   min-width: 100px;
   text-align: center;
 }
 
-.resultTable td:not(:first-child) {
+.resultTable td:not(:first-child), .runoffTable td:not(:first-child) {
   text-align: center;
   border: 1px solid black;
 }
 
-.resultTable tr:nth-child(1) > td{
+.resultTable tr:nth-child(1) > td, .resultTable tr:nth-child(2) > td{
   background: var(--brand-gold);
 }
-.resultTable tr:nth-child(3) > td{
+
+.runoffTable tr:nth-child(1) > td{
+  background: var(--brand-gold);
+}
+.runoffTable tr:nth-child(3) > td{
   background: var(--brand-gray-1);
 }
-.resultTable tr:nth-child(4) > td{
+.runoffTable tr:nth-child(4) > td{
   background: var(--brand-gray-2);
 }
 

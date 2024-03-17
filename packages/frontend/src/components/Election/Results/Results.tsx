@@ -1,4 +1,4 @@
-import { Grid, Paper } from "@mui/material";
+import { Box, Grid, Paper } from "@mui/material";
 import React from "react";
 import MatrixViewer from "./MatrixViewer";
 import IconButton from '@mui/material/IconButton'
@@ -9,13 +9,14 @@ import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from
 import Typography from '@mui/material/Typography';
 import { DetailExpander, DetailExpanderGroup } from '../../util';
 import STARResultSummaryWidget from "./STAR/STARResultSummaryWidget";
-import STARResultTableWidget from "./STAR/STARResultTableWidget";
+import STARDetailedResults from "./STAR/STARDetailedResults";
 import STARResultDetailedStepsWidget from "./STAR/STARResultDetailedStepsWidget";
 import WinnerResultTabs from "./WinnerResultTabs";
 import ApprovalResultSummaryWidget from "./Approval/ApprovalResultSummaryWidget";
 import { Race } from "shared/domain_model/Race";
 import { ElectionResults, allocatedScoreResults, approvalResults, irvResults, pluralityResults, rankedRobinResults, starResults } from "shared/domain_model/ITabulators";
 import useElection from "../../ElectionContextProvider";
+import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 declare namespace Intl {
   class ListFormat {
@@ -43,24 +44,49 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
   let i = 0;
   const roundIndexes = Array.from({length: rounds}, () => i++);
 
+  let noPrefStarData = results.summaryData.noPreferenceStars.map((count, i) => ({
+    name: `${i}⭐`,
+    count: count,
+  }));
+
+  const COLORS = [
+      'var(--ltbrand-blue)',
+      'var(--ltbrand-green)',
+      'var(--ltbrand-lime)',
+  ];
+
   return (
     <div className="resultViewer">
       <WinnerResultTabs numWinners={rounds}>
         {roundIndexes.map((i) => <STARResultSummaryWidget results={results} roundIndex={i}/>)}
       </WinnerResultTabs>
       <DetailExpander title='Details'>
-        <DetailExpanderGroup defaultSelectedIndex={-1}>
-          <STARResultTableWidget title="Equal Preference Details" results={results} rounds={rounds}/>
+        <STARDetailedResults results={results} rounds={rounds}/>
+        <DetailExpander title='Additional Info'>
+          <Typography variant="h5">Tabulation Steps</Typography>
           <STARResultDetailedStepsWidget title='Detailed Steps' results={results} rounds={rounds}/>
-          <div title="How STAR Voting works" style={{maxWidth: '100%'}}>
-            <img style={{display: 'block', width: '100%', maxWidth: '400px', margin: '0 auto 0 auto'}} src="/images/star_info_vertical.png"/>
-            <hr/>
-            {/*https://faq.dailymotion.com/hc/en-us/articles/360022841393-How-to-preserve-the-player-aspect-ratio-on-a-responsive-page#:~:text=In%20the%20HTML%2C%20put%20the,56.25%25%20%3D%2016%3A9.*/}
-            <div style={{position: 'relative', paddingBottom: "56.25%"}}>
-              <iframe style={{position: 'absolute', width: '100%', height: '100%'}} src="https://www.youtube.com/embed/3-mOeUXAkV0" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
-            </div>
-          </div>
-        </DetailExpanderGroup>
+          <Typography variant="h5">Stars from Equal Preference Voters</Typography>
+            <Box sx={{paddingLeft: '20px', paddingRight: '20px'}}>
+              <ResponsiveContainer width="90%" height={50*5}>
+                <BarChart data={noPrefStarData} barCategoryGap={5} layout="vertical">
+                    <XAxis hide axisLine={false} type="number" />
+                    <YAxis
+                        dataKey='name'
+                        type="category"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
+                        width={50}
+                    />
+                    <Bar dataKey='count' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
+                        {noPrefStarData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[(index) % COLORS.length]} />
+                        ))}
+                    </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </Box>
+        </DetailExpander>
       </DetailExpander>
     </div>
   );
