@@ -1,9 +1,31 @@
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { Grid, IconButton, Paper, Typography } from '@mui/material'
+import { Grid, IconButton, Paper, TableContainer, Typography } from '@mui/material'
 import React, { useState, useRef, useEffect }  from 'react'
 import _uniqueId from 'lodash/uniqueId';
 import { DateTime } from 'luxon'
+
+export const makeResultTable = (className, arr) => {
+    let c = `resultTable ${className}`;
+
+    return <TableContainer sx={{ marginLeft: 'auto', marginRight: 'auto', maxHeight: 600, maxWidth: {xs:300, sm: 500, md: 550, lg: 550}}}>
+        <table className={c}>
+            <thead className={c}>
+                <tr> {arr[0].map(header => <th className={c}>{header}</th>)} </tr>
+            </thead>
+
+            <tbody>
+                {arr.slice(1).map((row, i) =>
+                    <tr className={c} key={i}> {row.map((value, j) =>
+                        <td className={c} style={{paddingLeft: j == 0 ? '8px' : '0'}}>{value}</td>
+                    )}</tr>
+                )}
+            </tbody>
+        </table>
+    </TableContainer>
+
+
+}
 
 export function scrollToElement(e){
     setTimeout(() => {
