@@ -16,12 +16,6 @@ const RUNOFF_COLORS = [
     'var(--brand-gray-1)',
 ];
 
-const COLORS = [
-    'var(--ltbrand-blue)',
-    'var(--ltbrand-green)',
-    'var(--ltbrand-lime)',
-];
-
 /*function RoundViewer({ summaryData, candidate, round }: {summaryData: starSummaryData, candidate: candidateTableEntry, round: roundResults }) {
   const winnerIndex = round.winners[0].index
   const runnerUpIndex = round.runner_up[0].index
@@ -58,7 +52,7 @@ const COLORS = [
   )
 }*/
 
-const STARResultTableWidget = ({title, results, rounds}: {title: string, results: starResults, rounds: number }) => {
+export default ({results, rounds}: {results: starResults, rounds: number }) => {
     const winnerIndex = results.roundResults[0].winners[0].index;
     const runnerUpIndex = results.roundResults[0].runner_up[0].index;
     console.log(results);
@@ -90,13 +84,39 @@ const STARResultTableWidget = ({title, results, rounds}: {title: string, results
       index: -1,
     })
 
-    let noPrefStarData = results.summaryData.noPreferenceStars.map((count, i) => ({
-      name: `${i}⭐`,
-      count: count,
-    }));
 
     const axisWidth = Math.min(200, 15 * 20);
     return ( <>
+      <Typography variant="h5">Scores Table</Typography>
+      <Box sx={{paddingLeft: '20px', paddingRight: '20px'}}>
+        <TableContainer sx={{ marginLeft: 'auto', marginRight: 'auto', maxHeight: 600, maxWidth: {xs:300, sm: 500, md: 550, lg: 550}}}>
+            <table className='resultTable'>
+            <thead className='resultTable'>
+
+            <tr>
+              <th className='resultTable'> Candidate</th>
+              <th className='resultTable'> Score</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {tableData.map((c, i) => (
+            <>
+              <tr className='resultTable' key={`h${i}`}>
+                <td className='resultTable' style={{paddingLeft: '8px'}}>{c.name}</td>
+                <td className='resultTable'> {c.votes} </td>
+              </tr>
+            </>
+            ))}
+            <tr className='resultTable'>
+              <td className='resultTable' style={{paddingLeft: '8px'}}>Total</td>
+              <td className='resultTable'> {results.summaryData.nValidVotes}</td>
+            </tr>
+            
+            </tbody>
+          </table>
+        </TableContainer>
+      </Box>
       <Typography variant="h5">Runoff Votes</Typography>
       <ResponsiveContainer width="90%" height={50*3}>
         <BarChart data={runoffData} barCategoryGap={5} layout="vertical">
@@ -116,68 +136,45 @@ const STARResultTableWidget = ({title, results, rounds}: {title: string, results
             </Bar>
         </BarChart>
       </ResponsiveContainer>
-      <Typography variant="h5">Runoff Votes Table</Typography>
+      <Typography variant="h5">Runoff Table</Typography>
       <Box sx={{paddingLeft: '20px', paddingRight: '20px'}}>
         <TableContainer sx={{ marginLeft: 'auto', marginRight: 'auto', maxHeight: 600, maxWidth: {xs:300, sm: 500, md: 550, lg: 550}}}>
-            <table className='resultTable'>
-            <thead className='resultTable'>
+            <table className='runoffTable'>
+            <thead className='runoffTable'>
 
             <tr>
-            <th className='resultTable'> Candidate</th>
-              <th className='resultTable'> Runoff Votes</th>
-              <th className='resultTable'> % Runoff Votes</th>
-              <th className='resultTable'> % Between Finalists</th>
+            <th className='runoffTable'> Candidate</th>
+              <th className='runoffTable'> Runoff Votes</th>
+              <th className='runoffTable'> % Runoff Votes</th>
+              <th className='runoffTable'> % Between Finalists</th>
             </tr>
             </thead>
 
             <tbody>
             {runoffData.map((c, i) => (
             <>
-              <tr className='resultTable' key={`h${i}`}>
-                <td className='resultTable' style={{paddingLeft: '8px'}}>{c.name}</td>
-                <td className='resultTable'> {c.runoffVotes} </td>
-                <td className='resultTable'>
+              <tr className='runoffTable' key={`h${i}`}>
+                <td className='runoffTable' style={{paddingLeft: '8px'}}>{c.name}</td>
+                <td className='runoffTable'> {c.runoffVotes} </td>
+                <td className='runoffTable'>
                   {`${Math.round(c.runoffVotes * 1000 / results.summaryData.nValidVotes) / 10}%`}
                 </td>
-                <td className='resultTable'>
+                <td className='runoffTable'>
                   {i == 2 ? '' : `${Math.round(c.runoffVotes * 1000 / finalistVotes) / 10}%`}
                 </td>
               </tr>
             </>
             ))}
-            <tr className='resultTable'>
-              <td className='resultTable' style={{paddingLeft: '8px'}}>Total</td>
-              <td className='resultTable'> {results.summaryData.nValidVotes}</td>
-              <td className='resultTable'>100%</td>
-              <td className='resultTable'>100%</td>
+            <tr className='runoffTable'>
+              <td className='runoffTable' style={{paddingLeft: '8px'}}>Total</td>
+              <td className='runoffTable'> {results.summaryData.nValidVotes}</td>
+              <td className='runoffTable'>100%</td>
+              <td className='runoffTable'>100%</td>
             </tr>
             
             </tbody>
           </table>
         </TableContainer>
       </Box>
-      <Typography variant="h5">Stars from Equal Preference Voters</Typography>
-      <Box sx={{paddingLeft: '20px', paddingRight: '20px'}}>
-        <ResponsiveContainer width="90%" height={50*5}>
-          <BarChart data={noPrefStarData} barCategoryGap={5} layout="vertical">
-              <XAxis hide axisLine={false} type="number" />
-              <YAxis
-                  dataKey='name'
-                  type="category"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
-                  width={50}
-              />
-              <Bar dataKey='count' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
-                  {noPrefStarData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[(index) % COLORS.length]} />
-                  ))}
-              </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </Box>
     </>);
 }
-
-export default STARResultTableWidget;

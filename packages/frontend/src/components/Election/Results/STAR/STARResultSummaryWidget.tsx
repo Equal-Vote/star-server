@@ -140,7 +140,7 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
                     </ResponsiveContainer>
                 </Paper>
             </Box>
-            <p className="votingMethod">Voting Method: STAR</p>
+            <p className="votingMethod">Voting Method: STAR<br/><a style={{color: '#666666'}}href="https://www.youtube.com/watch?v=3-mOeUXAkV0">How STAR Voting Works</a></p>
         </div>
     );
 }
