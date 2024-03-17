@@ -182,7 +182,7 @@ function sortData(summaryData: starSummaryData, order: candidate[]): starSummary
   }
 }
 
-export function runStarRound(summaryData: starSummaryData, remainingCandidates: candidate[], breakTiesRandomly = true, enablefiveStarTiebreaker = true): starRoundResults {
+export function runStarRound(summaryData: starSummaryData, remainingCandidates: candidate[], breakTiesRandomly = true, enablefiveStarTiebreaker = true): roundResults {
   // Initialize output results data structure
   const roundResults: roundResults = {
     winners: [],
