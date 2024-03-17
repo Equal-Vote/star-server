@@ -67,7 +67,10 @@ export function Star(candidates: string[], votes: ballot[], nWinners = 1, random
   //       Also there's a chance we'll move advanced stats like this to an analytics api as some point
   //       So TLDR I think the current approach is good enough for now
   results.summaryData.noPreferenceStars = 
-    getNoPreferenceStars(parsedData, results.roundResults[0].winners[0].index, results.roundResults[0].runner_up[0].index);
+    getNoPreferenceStars(parsedData, results.roundResults[0].winners[0].index, results.roundResults[0].winners.length > 1?
+      results.roundResults[0].winners[1].index :
+      results.roundResults[0].runner_up[0].index
+    );
 
   // Sort data in order of candidate placements
   results.summaryData = sortData(summaryData, results.elected.concat(results.tied).concat(results.other))
