@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, ResponsiveContainer, Legend} from 'recharts';
 import { Box, Paper, Typography } from '@mui/material';
 import { starResults } from 'shared/domain_model/ITabulators';
+import { Widget, WidgetContainer } from '~/components/util';
 
 // NOTE: I tried using brand.gold here, but it didn't work
 const COLORS = [
@@ -86,9 +87,8 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
 
     return (
         <Box className="resultWidget">
-        <Box className="graphs ">
-            <Paper elevation={5} className='graph' sx={{backgroundColor: 'brand.white', borderRadius: '10px'}}>
-                <Typography variant="h5">Scoring Round</Typography>
+        <WidgetContainer>
+            <Widget title='Scoring Round'>
                 <p>Add the stars from all the ballots.</p>  
                 <p>The two highest scoring candidates are the finalists.</p>
                 <ResponsiveContainer width="90%" height={50*histData.length}>
@@ -109,9 +109,8 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
                         </Bar>
                     </BarChart>
                 </ResponsiveContainer>
-            </Paper>
-            <Paper elevation={5} className='graph' sx={{backgroundColor: 'brand.white', borderRadius: '10px'}}>
-                <Typography variant="h5">Automatic Runoff Round</Typography>
+            </Widget>
+            <Widget title='Automatic Runoff Round'>
                 <p>Each vote goes to the voter's preferred finalist.</p>
                 <p>Finalist with most votes wins.</p>
                 <ResponsiveContainer width="100%" height={250}>
@@ -138,8 +137,8 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
                         />
                     </PieChart>
                 </ResponsiveContainer>
-            </Paper>
-        </Box>
+            </Widget>
+        </WidgetContainer>
         </Box>
     );
 }

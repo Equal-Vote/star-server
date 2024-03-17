@@ -2,7 +2,7 @@ import React, { useState }  from 'react'
 import { TableContainer, Typography, Paper, Box} from "@mui/material";
 import { roundResults, starResults, starSummaryData } from 'shared/domain_model/ITabulators';
 import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from 'recharts';
-import { makeResultTable } from '~/components/util';
+import { Widget, WidgetContainer, makeResultTable } from '~/components/util';
 
 type candidateTableEntry = {
   name: string,
@@ -85,43 +85,47 @@ export default ({results, rounds}: {results: starResults, rounds: number }) => {
 
     const axisWidth = Math.min(200, 15 * 20);
     return ( <>
-      <Typography variant="h5">Scores Table</Typography>
-      <Box sx={{paddingLeft: '20px', paddingRight: '20px'}}>{
-        makeResultTable('starScoreTable', [
-          ['Candidate', 'Score'],
-          ...tableData.map(c => [c.name, c.votes]),
-        ])
-      }</Box>
-      <Typography variant="h5">Runoff Votes</Typography>
-      <ResponsiveContainer width="90%" height={50*3}>
-        <BarChart data={runoffData} barCategoryGap={5} layout="vertical">
-            <XAxis hide axisLine={false} type="number" />
-            <YAxis
-                dataKey='name'
-                type="category"
-                axisLine={false}
-                tickLine={false}
-                tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
-                width={axisWidth}
-            />
-            <Bar dataKey='runoffVotes' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
-                {runoffData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={RUNOFF_COLORS[(index) % RUNOFF_COLORS.length]} />
-                ))}
-            </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-      <Typography variant="h5">Runoff Table</Typography>
-      <Box sx={{paddingLeft: '20px', paddingRight: '20px'}}>{makeResultTable('starRunoffTable', [
-        ['Candidate', 'Runoff Votes', '% Runoff Votes', '% Between Finalists'],
-        ...runoffData.map((c, i) => [
-          c.name,
-          c.runoffVotes,
-          `${Math.round(c.runoffVotes * 1000 / results.summaryData.nValidVotes) / 10}%`,
-          i == 2 ? '' : `${Math.round(c.runoffVotes * 1000 / finalistVotes) / 10}%`,
-        ]),
-        ['Total', results.summaryData.nValidVotes, '100%', '100%'] 
-        ])}
-      </Box>
+      <WidgetContainer>
+        <Widget title="Scores Table">{
+          makeResultTable('starScoreTable', [
+            ['Candidate', 'Score'],
+            ...tableData.map(c => [c.name, c.votes]),
+          ])
+        }</Widget>
+      </WidgetContainer>
+      <WidgetContainer>
+        <Widget title='Runoff Votes'>
+          <ResponsiveContainer width="90%" height={50*3}>
+            <BarChart data={runoffData} barCategoryGap={5} layout="vertical">
+                <XAxis hide axisLine={false} type="number" />
+                <YAxis
+                    dataKey='name'
+                    type="category"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
+                    width={axisWidth}
+                />
+                <Bar dataKey='runoffVotes' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
+                    {runoffData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={RUNOFF_COLORS[(index) % RUNOFF_COLORS.length]} />
+                    ))}
+                </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </Widget>
+        <Widget title='Runoff Table'>
+          {makeResultTable('starRunoffTable', [
+            ['Candidate', 'Runoff Votes', '% Runoff Votes', '% Between Finalists'],
+            ...runoffData.map((c, i) => [
+              c.name,
+              c.runoffVotes,
+              `${Math.round(c.runoffVotes * 1000 / results.summaryData.nValidVotes) / 10}%`,
+              i == 2 ? '' : `${Math.round(c.runoffVotes * 1000 / finalistVotes) / 10}%`,
+            ]),
+            ['Total', results.summaryData.nValidVotes, '100%', '100%'] 
+            ])}
+        </Widget>
+      </WidgetContainer>
     </>);
 }

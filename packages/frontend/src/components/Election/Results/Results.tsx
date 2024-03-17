@@ -7,7 +7,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import { useState } from 'react'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Typography from '@mui/material/Typography';
-import { DetailExpander, DetailExpanderGroup, makeResultTable } from '../../util';
+import { DetailExpander, DetailExpanderGroup, Widget, WidgetContainer, makeResultTable } from '../../util';
 import STARResultSummaryWidget from "./STAR/STARResultSummaryWidget";
 import STARDetailedResults from "./STAR/STARDetailedResults";
 import STARResultDetailedStepsWidget from "./STAR/STARResultDetailedStepsWidget";
@@ -64,10 +64,11 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
       <DetailExpander title='Details'>
         <STARDetailedResults results={results} rounds={rounds}/>
         <DetailExpander title='Additional Info'>
-          <Typography variant="h5">Tabulation Steps</Typography>
-          <STARResultDetailedStepsWidget title='Detailed Steps' results={results} rounds={rounds}/>
-          <Typography variant="h5">Distribution of Equal Preference Votes</Typography>
-            <Box sx={{paddingLeft: '20px', paddingRight: '20px'}}>
+          <WidgetContainer>
+            <Widget title='Tabulation Steps'>
+              <STARResultDetailedStepsWidget results={results} rounds={rounds}/>
+            </Widget>
+            <Widget title='Distribution of Equal Preference Votes'>
               <ResponsiveContainer width="90%" height={50*5}>
                 <BarChart data={noPrefStarData} barCategoryGap={5} layout="vertical">
                     <XAxis hide axisLine={false} type="number" />
@@ -86,7 +87,8 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
                     </Bar>
                 </BarChart>
               </ResponsiveContainer>
-            </Box>
+            </Widget>
+          </WidgetContainer>
         </DetailExpander>
       </DetailExpander>
     </>
