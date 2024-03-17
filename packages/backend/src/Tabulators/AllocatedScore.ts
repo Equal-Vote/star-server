@@ -235,7 +235,8 @@ function getSummaryData(candidates: string[], parsedData: IparsedData, randomTie
         splitPoints: [],
         spentAboves: [],
         weight_on_splits: [],
-        weightedScoresByRound: []
+        weightedScoresByRound: [],
+        noPreferenceStars: [],
     }
 }
 
@@ -264,6 +265,7 @@ function sortData(summaryData: allocatedScoreSummaryData, order: candidate[]): a
         spentAboves: summaryData.spentAboves,
         weight_on_splits: summaryData.weight_on_splits,
         weightedScoresByRound: summaryData.weightedScoresByRound,
+        noPreferenceStars: [],
     }
 }
 
