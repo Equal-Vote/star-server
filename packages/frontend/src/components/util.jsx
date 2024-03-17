@@ -7,6 +7,7 @@ import { DateTime } from 'luxon'
 
 
 export const WidgetContainer = ({children}) => <Box display='flex' flexDirection='row' flexWrap='wrap' gap='30px' className="graphs" justifyContent='center' sx={{marginBottom: '30px'}}>{children}</Box>
+
 export const Widget = ({children, title}) => <Paper elevation={5} className='graph' sx={{
     width: '100%', // maybe I'll try 90?
     maxWidth: '500px',

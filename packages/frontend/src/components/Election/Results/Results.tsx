@@ -253,7 +253,8 @@ function IRVResultsViewer({ results }: {results: irvResults}) {
 
 function PluralityResultsViewer({ results }: {results: pluralityResults}) {
   return (
-    <>
+    <WidgetContainer>
+    <Widget title=''>
     {makeResultTable('chooseOneTable', [
       ['Candidate', 'Votes', '% All Votes'],
       ...results.summaryData.totalScores.map((totalScore, i) => [
@@ -262,7 +263,8 @@ function PluralityResultsViewer({ results }: {results: pluralityResults}) {
         `${Math.round(totalScore.score * 1000 / results.summaryData.nValidVotes) / 10}%`,
       ])
     ])}
-    </>
+    </Widget>
+    </WidgetContainer>
   );
 }
 function ApprovalResultsViewer({ results , rounds}: {results: approvalResults, rounds: number}) {
