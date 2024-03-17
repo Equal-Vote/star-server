@@ -59,14 +59,14 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
         histData[i].name = `⭐${histData[i].name}`
     }
 
-    let smallHistData = histData;
+    let smallHistData:any = histData;
     let maxCandidates = 10;
     if(smallHistData.length > maxCandidates){
         smallHistData = smallHistData.slice(0, maxCandidates-1);
         smallHistData.push({
             name: `+${histData.length - (maxCandidates-1)} more`,
             index: 0,
-            votes: '', // this is making typescript unhappy, but it seems to work
+            votes: '', // NOTE: this makes typescript unhappy, so I added :any to smallHistData as a hack
             votesBig: 0,
         })
     }
