@@ -66,7 +66,7 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
         smallHistData.push({
             name: `+${histData.length - (maxCandidates-1)} more`,
             index: 0,
-            votes: '',
+            votes: '', // this is making typescript unhappy, but it seems to work
             votesBig: 0,
         })
     }
