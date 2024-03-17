@@ -359,6 +359,7 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
   return (
     <div>
       <div className="flexContainer" style={{textAlign: 'center'}}>
+        <Box sx={{pageBreakAfter:'avoid', pageBreakInside:'avoid'}}>
         {result.results.summaryData.nValidVotes == 0 && <h2>Still waiting for results<br/>No votes have been cast</h2>}
         {result.results.summaryData.nValidVotes >= 1 && <>
           {showTitleAsTie?
@@ -373,6 +374,7 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
           }
           <Typography variant="h6">{result.results.summaryData.nValidVotes} voters</Typography>
         </>}
+        </Box>
         {result.results.summaryData.nValidVotes == 1 && <p>There's only one vote so far.<br/>Full results will be displayed once there's more votes.</p> }
         {result.results.summaryData.nValidVotes > 1 &&
           <>

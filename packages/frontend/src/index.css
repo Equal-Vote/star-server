@@ -372,9 +372,21 @@ code {
     0px 3px 14px 2px rgba(var(--brand-ltblue-comma), 0.24);
 }
 
-/* hide feedback button on mobile */
+/* hide feedback button on mobile and print*/
 @media(max-width: 900px){
   #launcher-frame{
     display: none;
   }
+}
+@media print{
+  #launcher-frame{
+    display: none;
+  }
+}
+
+@page {
+    margin-top: 0.75in;
+    margin-bottom: 0.75in;
+    margin-left: 0.75in;
+    margin-right: 0.75in;    
 }
