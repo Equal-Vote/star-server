@@ -17,46 +17,9 @@ const RUNOFF_COLORS = [
     'var(--brand-gray-1)',
 ];
 
-/*function RoundViewer({ summaryData, candidate, round }: {summaryData: starSummaryData, candidate: candidateTableEntry, round: roundResults }) {
-  const winnerIndex = round.winners[0].index
-  const runnerUpIndex = round.runner_up[0].index
-  const totalRunoffVotes = summaryData.nValidVotes
-
-  var isFinalist = false
-  var runoffVotes = 0
-  // const isFinalist = Candidate.index===winnerIndex||Candidate.index===runnerUpIndex
-  if (candidate.index === winnerIndex) {
-    isFinalist = true
-    runoffVotes = summaryData.preferenceMatrix[winnerIndex][runnerUpIndex]
-  }
-  else if (candidate.index === runnerUpIndex) {
-    isFinalist = true
-    runoffVotes = summaryData.preferenceMatrix[runnerUpIndex][winnerIndex]
-  }
-  else {
-    isFinalist = false
-    runoffVotes = 0
-  }
-  return (
-    < >
-      {isFinalist && <>
-          <td className={`${candidate.index === winnerIndex ? 'highlight' : ''}`}>
-            {runoffVotes}
-          </td>
-          <td className={`${candidate.index === winnerIndex ? 'highlight' : ''}`}>
-             {`${Math.round(runoffVotes * 1000 / totalRunoffVotes) / 10}%`}
-          </td>
-        </>
-      }
-      { !isFinalist && <><td/><td/></> }
-    </>
-  )
-}*/
-
 export default ({results, rounds}: {results: starResults, rounds: number }) => {
     const winnerIndex = results.roundResults[0].winners[0].index;
     const runnerUpIndex = results.roundResults[0].runner_up[0].index;
-    console.log(results);
 
     // NOTE: I'm only using the runoff data, but I'm still generating all the data in case I need them later
     const tableData: candidateTableEntry[] = results.summaryData.candidates.map((c, i) => ({
