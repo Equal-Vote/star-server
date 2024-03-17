@@ -18,6 +18,7 @@ export const Widget = ({children, title}) => <Paper elevation={5} className='gra
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    pageBreakInside: 'avoid',
 }}>
     <Typography variant="h5">{title}</Typography>
     {children}
@@ -83,18 +84,15 @@ export const DetailExpander = ({children, title}) => {
         <Box className={`detailExpander ${expanderId}`}
             sx={{
                 display: 'flex', flexDirection: 'row', gap: 10, justifyContent: 'center', cursor: 'pointer', alignItems: 'center',
-                '@media print': {
-                    display: 'none'
-                }
             }}
             onClick={() => {
                 if(!viewDetails) scrollToElement(document.querySelector(`${expanderId}:first-child`))
                 setViewDetails(!viewDetails)
             }}
         >
-            <Typography variant='h6'>{title}</Typography>
-            {!viewDetails && <ExpandMore />}
-            {viewDetails && <ExpandLess />}
+            <Typography variant='h6' sx={{'@media print': {display: 'none'}}}>{title}</Typography>
+            {!viewDetails && <ExpandMore sx={{'@media print': {display: 'none'}}}/>}
+            {viewDetails && <ExpandLess sx={{'@media print': {display: 'none'}}}/>}
         </Box>
         {viewDetails && children}
     </>
@@ -117,7 +115,7 @@ export const DetailExpanderGroup = ({children, defaultSelectedIndex, allowMultip
                 sx={{backgroundColor: 'brand.white', padding: '8px', width: '100%'}} >
                 <div
                     className='detailSection'
-                    style={{display: 'flex', flexDirection: 'row', justifyContent: 'flexStart', cursor: 'pointer'}}
+                    style={{display: 'flex', flexDirection: 'row', justifyContent: 'flexStart', cursor: 'pointer', pageBreakAfter: 'avoid'}}
                     onClick={() => {
                         if(!openedWidgets[i]){
                             scrollToElement(groupRef.current.querySelectorAll(`.detailSection`)[i].parentNode);
@@ -132,13 +130,13 @@ export const DetailExpanderGroup = ({children, defaultSelectedIndex, allowMultip
                     }}
                 >
                     <Typography variant='h6'>{child.props.title}</Typography>
-                    <IconButton>
+                    <IconButton sx={{'@media print': {display: 'none'}}}>
                         {openedWidgets[i]? <ExpandLess /> : <ExpandMore />}
                     </IconButton>
                 </div>
                 {openedWidgets[i] && 
                     <>
-                        <hr/>
+                        <hr style={{pageBreakAfter: 'avoid'}}/>
                         <div style={{textAlign: 'left'}}>
                             {child}
                         </div>
