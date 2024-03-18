@@ -1,9 +1,11 @@
 import { InternalServerError } from "@curveball/http-errors";
 import { randomUUID } from "crypto";
 import { Request, Response, NextFunction } from 'express';
-const S3 = require("aws-sdk/clients/s3");
-const ID = process.env.S3_ID;
-const SECRET = process.env.S3_SECRET;
+import  { Upload, Progress } from "@aws-sdk/lib-storage";
+import { S3 } from "@aws-sdk/client-s3";
+
+const ID = process.env.S3_ID!;
+const SECRET = process.env.S3_SECRET!;
 
 const multer = require("multer");
 
@@ -12,8 +14,11 @@ const storage = multer.memoryStorage();
 // The name of the bucket that you have created
 const BUCKET_NAME = 'starcandidatephotos';
 const s3 = new S3({
-    accessKeyId: ID,
-    secretAccessKey: SECRET
+    region: 'us-east-1',
+    credentials: {
+        accessKeyId: ID,
+        secretAccessKey: SECRET,
+    },
 });
 
 const fileFilter = (req: any, file: any, cb: any) => {
@@ -44,16 +49,26 @@ const uploadImageController = async (req: ImageRequest, res: Response, next: Nex
         Key: `${randomUUID()}.jpg`, // File name you want to save as in S3
         Body: file.buffer
     };
+    try {
+      const parallelUploads3 = new Upload({
+        client: s3,
+        params,
+        queueSize: 4, // optional concurrency configuration
+        partSize: 1024 * 1024 * 5, // optional size of each part, in bytes, at least 5MB
+        leavePartsOnError: false, // optional manually handle dropped parts
+      });
 
-    let photo_filename = ''
-    s3.upload(params, function (err: any, data: any) {
-        if (err) {
-            throw new InternalServerError(err);
-        }
-        console.log(`File uploaded successfully. ${data.Location}`);
-        photo_filename = data.Location
-        return res.json({ photo_filename: photo_filename })
-    });
+      parallelUploads3.on("httpUploadProgress", (progress: Progress) => {
+        console.log(progress);
+      });
+
+      const uploadResult = await parallelUploads3.done();
+      const photo_filename = uploadResult.Location;
+      console.log(`File uploaded successfully. ${photo_filename}`);
+      return res.json({ photo_filename });
+    } catch (e: any) {
+      throw new InternalServerError(e);
+    }
 }
 
 module.exports = {
