@@ -29,6 +29,7 @@
   "scripts": {
     "dev": "vite",
     "dev:clean": "npm run dev -- --force",
+    "clean": "npx rimraf build node_modules ../node_modules",
     "build": "tsc && vite build",
     "start": "vite preview"
   },
@@ -56,6 +57,7 @@
     "@types/react-dom": "^17.0.15",
     "@vitejs/plugin-react": "^4.2.1",
     "identity-obj-proxy": "^3.0.0",
+    "rimraf": "^5.0.5",
     "typescript": "^5.3.3",
     "vite": "^5.1.5",
     "vite-plugin-checker": "^0.6.4",

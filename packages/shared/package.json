@@ -6,12 +6,14 @@
   "types": "./dist/types/index.d.ts",
   "scripts": {
     "test": "npm install && npm test",
+    "clean": "npx rimraf dist node_modules ../node_modules",
     "build": "tsc --project ./"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "rimraf": "^5.0.5",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
@@ -34,8 +36,5 @@
       "types": "./dist/types/domain_model/*.d.ts",
       "default": "./dist/domain_model/*.js"
     }
-  },
-  "dependencies": {
-    "i": "^0.3.7"
   }
 }
