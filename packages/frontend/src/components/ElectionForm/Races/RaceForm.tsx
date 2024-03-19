@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from "react"
-import { Candidate } from "shared/domain_model/Candidate"
+import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate"
 import AddCandidate, { CandidateForm } from "../Candidates/AddCandidate"
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";

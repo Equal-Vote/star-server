@@ -1,4 +1,4 @@
-import { ballot, voter } from "shared/domain_model/ITabulators";
+import { ballot, voter } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 // Functions to parse STAR scores
 export interface IparsedData {

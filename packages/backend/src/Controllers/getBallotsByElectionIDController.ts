@@ -2,7 +2,7 @@ import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
 import { BadRequest } from "@curveball/http-errors";
 import { expectPermission } from "./controllerUtils";
-import { permissions } from 'shared/domain_model/permissions';
+import { permissions } from '@equal-vote/star-vote-shared/domain_model/permissions';
 import { IElectionRequest } from "../IRequest";
 import { Response, NextFunction } from 'express';
 

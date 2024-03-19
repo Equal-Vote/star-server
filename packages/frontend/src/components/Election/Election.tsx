@@ -12,7 +12,7 @@ import Thanks from "./Voting/Thanks";
 import ViewBallot from "./Admin/ViewBallot";
 import useElection, { ElectionContextProvider } from "../ElectionContextProvider";
 import { useElectionExists } from "../../hooks/useAPI";
-import { sharedConfig } from "shared/config";
+import { sharedConfig } from "@equal-vote/star-vote-shared/config";
 
 const Election = () => {
   const { id } = useParams();

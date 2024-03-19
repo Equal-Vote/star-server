@@ -1,10 +1,10 @@
-import { Election, NewElection } from "shared/domain_model/Election";
-import { VoterAuth } from 'shared/domain_model/VoterAuth';
-import { ElectionRoll } from "shared/domain_model/ElectionRoll";
+import { Election, NewElection } from "@equal-vote/star-vote-shared/domain_model/Election";
+import { VoterAuth } from '@equal-vote/star-vote-shared/domain_model/VoterAuth';
+import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
 import useFetch from "./useFetch";
-import { VotingMethod } from "shared/domain_model/Race";
-import { ElectionResults } from "shared/domain_model/ITabulators";
-import { Ballot, NewBallot } from "shared/domain_model/Ballot";
+import { VotingMethod } from "@equal-vote/star-vote-shared/domain_model/Race";
+import { ElectionResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { Ballot, NewBallot } from "@equal-vote/star-vote-shared/domain_model/Ballot";
 
 export const useGetElection = (electionID: string | undefined) => {
     return useFetch<undefined, { election: Election, voterAuth: VoterAuth }>(`/API/Election/${electionID}`, 'get')

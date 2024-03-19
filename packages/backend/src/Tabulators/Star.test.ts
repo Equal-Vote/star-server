@@ -1,5 +1,5 @@
 import { Star, runStarRound } from './Star'
-import { starSummaryData } from 'shared/domain_model/ITabulators'
+import { starSummaryData } from '@equal-vote/star-vote-shared/domain_model/ITabulators'
 
 describe("STAR Tests", () => {
     test("Condorcet Winner", () => {

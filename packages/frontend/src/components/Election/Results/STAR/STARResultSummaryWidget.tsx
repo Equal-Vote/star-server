@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, ResponsiveContainer, Legend} from 'recharts';
 import { Box, Paper, Typography } from '@mui/material';
-import { starResults } from 'shared/domain_model/ITabulators';
+import { starResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
 import { Widget, WidgetContainer } from '~/components/util';
 
 // NOTE: I tried using brand.gold here, but it didn't work

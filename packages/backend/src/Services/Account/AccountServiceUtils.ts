@@ -1,4 +1,4 @@
-import { Election } from "shared/domain_model/Election";
+import { Election } from "@equal-vote/star-vote-shared/domain_model/Election";
 import { IRequest } from "../../IRequest";
 import Logger from "../Logging/Logger";
 

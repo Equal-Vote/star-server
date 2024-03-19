@@ -1,6 +1,6 @@
 require('dotenv').config();
 const request = require('supertest');
-import { ElectionRollState } from 'shared/domain_model/ElectionRoll';
+import { ElectionRollState } from '@equal-vote/star-vote-shared/domain_model/ElectionRoll';
 import makeApp from '../app';
 import { TestLoggerImpl } from '../Services/Logging/TestLoggerImpl';
 import { TestHelper } from './TestHelper';

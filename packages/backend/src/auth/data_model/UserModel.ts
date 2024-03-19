@@ -1,5 +1,5 @@
-import { Email } from "shared/domain_model/Email"
-import { Uid } from "shared/domain_model/Uid"
+import { Email } from "@equal-vote/star-vote-shared/domain_model/Email"
+import { Uid } from "@equal-vote/star-vote-shared/domain_model/Uid"
 
 
 export class UserModel {

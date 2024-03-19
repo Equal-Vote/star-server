@@ -1,4 +1,4 @@
-import { ballot, candidate, irvResults, irvSummaryData, totalScore } from "shared/domain_model/ITabulators";
+import { ballot, candidate, irvResults, irvSummaryData, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
 const ParseData = require("./ParseData");

@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react'
 import { createContext, Dispatch, SetStateAction } from 'react'
-import { Election } from 'shared/domain_model/Election';
+import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { useEditElection, useGetElection } from '../hooks/useAPI';
-import { Election as IElection } from 'shared/domain_model/Election';
-import { VoterAuth } from 'shared/domain_model/VoterAuth';
+import { Election as IElection } from '@equal-vote/star-vote-shared/domain_model/Election';
+import { VoterAuth } from '@equal-vote/star-vote-shared/domain_model/VoterAuth';
 import structuredClone from '@ungap/structured-clone';
 import { Share } from '@mui/icons-material';
 

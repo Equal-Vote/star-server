@@ -1,5 +1,5 @@
 {
-  "name": "shared",
+  "name": "@equal-vote/star-vote-shared",
   "version": "1.0.0",
   "description": "Common components/config",
   "main": "./dist/index.js",

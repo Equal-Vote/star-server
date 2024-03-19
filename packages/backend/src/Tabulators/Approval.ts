@@ -1,4 +1,4 @@
-import { approvalResults, approvalSummaryData, ballot, candidate, roundResults, totalScore } from "shared/domain_model/ITabulators";
+import { approvalResults, approvalSummaryData, ballot, candidate, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
 import { commaListFormatter, sortTotalScores } from "./Util";

@@ -3,7 +3,7 @@ import Logger from '../Services/Logging/Logger';
 import { IElectionRollStore } from './IElectionRollStore';
 import { Expression, Kysely } from 'kysely'
 import { Database } from './Database';
-import { ElectionRoll } from 'shared/domain_model/ElectionRoll';
+import { ElectionRoll } from '@equal-vote/star-vote-shared/domain_model/ElectionRoll';
 const tableName = 'electionRollDB';
 
 export default class ElectionRollDB implements IElectionRollStore {

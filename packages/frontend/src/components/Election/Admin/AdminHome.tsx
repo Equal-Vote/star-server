@@ -4,7 +4,7 @@ import { Box, Divider, Paper } from "@mui/material";
 import { Typography } from "@mui/material";
 import { StyledButton } from "../../styles";
 import { Link, useNavigate } from 'react-router-dom';
-import { Election } from 'shared/domain_model/Election';
+import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import ShareButton from "../ShareButton";
 import { useArchiveEleciton, useFinalizeEleciton, usePostElection, useSetPublicResults } from "../../../hooks/useAPI";
 import { formatDate } from '../../util';

@@ -16,8 +16,8 @@ import { CardActionArea } from "@mui/material";
 import Typography from '@mui/material/Typography';
 import { StyledButton } from '../styles';
 import SummaryPage from "./SummaryPage";
-import { Election } from "shared/domain_model/Election";
-import { Candidate } from "shared/domain_model/Candidate";
+import { Election } from "@equal-vote/star-vote-shared/domain_model/Election";
+import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import useFeatureFlags from "../FeatureFlagContextProvider";
 
 

@@ -4,7 +4,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from '@mui/material/Typography';
 import { Checkbox, FormGroup, FormHelperText, FormLabel, InputLabel, Radio, RadioGroup, Tooltip } from "@mui/material"
-import { Election } from 'shared/domain_model/Election';
+import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { StyledButton } from '../styles';
 
 type SettingsProps = {

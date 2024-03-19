@@ -1,4 +1,4 @@
-import { ElectionResults } from 'shared/domain_model/ITabulators';
+import { ElectionResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
 import Logger from '../Services/Logging/Logger';
 const className = "Elections.Controllers";
 import { VotingMethods } from '../Tabulators/VotingMethodSelecter'

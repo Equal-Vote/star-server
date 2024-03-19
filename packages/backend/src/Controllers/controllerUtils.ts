@@ -1,14 +1,14 @@
 import { IRequest, reqIdSuffix } from "../IRequest"
-import { Election, electionValidation } from "shared/domain_model/Election";
+import { Election, electionValidation } from "@equal-vote/star-vote-shared/domain_model/Election";
 import Logger from "../Services/Logging/Logger"
 import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-errors";
 import { Request, Response } from 'express';
-import { roles } from "shared/domain_model/roles";
-import { hasPermission, permission, permissions } from 'shared/domain_model/permissions';
+import { roles } from "@equal-vote/star-vote-shared/domain_model/roles";
+import { hasPermission, permission, permissions } from '@equal-vote/star-vote-shared/domain_model/permissions';
 import { randomUUID, createHash } from "crypto";
 import ServiceLocator from "../ServiceLocator";
 import { makeID } from "../Util";
-import { Uid } from "shared/domain_model/Uid";
+import { Uid } from "@equal-vote/star-vote-shared/domain_model/Uid";
 const accountService = ServiceLocator.accountService();
 const ElectionsModel =  ServiceLocator.electionsDb();
 

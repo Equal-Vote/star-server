@@ -1,4 +1,4 @@
-import { ballot, candidate, fiveStarCount, allocatedScoreResults, allocatedScoreSummaryData, totalScore } from "shared/domain_model/ITabulators";
+import { ballot, candidate, fiveStarCount, allocatedScoreResults, allocatedScoreSummaryData, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
 const Fraction = require('fraction.js');

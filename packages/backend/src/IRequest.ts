@@ -1,8 +1,8 @@
 import { randomUUID } from 'crypto';
 import { Request } from 'express';
-import { Election } from 'shared/domain_model/Election';
-import { roles } from 'shared/domain_model/roles';
-import { permission, permissions } from 'shared/domain_model/permissions';
+import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
+import { roles } from '@equal-vote/star-vote-shared/domain_model/roles';
+import { permission, permissions } from '@equal-vote/star-vote-shared/domain_model/permissions';
 
 type p = keyof typeof permissions
 

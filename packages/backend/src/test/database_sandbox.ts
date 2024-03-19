@@ -1,8 +1,8 @@
 require('dotenv').config()
 
 import servicelocator from '../ServiceLocator'
-import { Election } from 'shared/domain_model/Election'
-import { ElectionRoll, ElectionRollState } from 'shared/domain_model/ElectionRoll'
+import { Election } from '@equal-vote/star-vote-shared/domain_model/Election'
+import { ElectionRoll, ElectionRollState } from '@equal-vote/star-vote-shared/domain_model/ElectionRoll'
 import { sql } from 'kysely'
 import { hashString } from '../Controllers/controllerUtils'
 const db = servicelocator.database()

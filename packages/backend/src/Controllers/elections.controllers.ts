@@ -1,12 +1,12 @@
-import { Election, removeHiddenFields } from 'shared/domain_model/Election';
+import { Election, removeHiddenFields } from '@equal-vote/star-vote-shared/domain_model/Election';
 import ServiceLocator from '../ServiceLocator';
 import Logger from '../Services/Logging/Logger';
 import { responseErr } from '../Util';
 import { IElectionRequest, IRequest } from '../IRequest';
-import { roles } from "shared/domain_model/roles"
-import { getPermissions } from 'shared/domain_model/permissions';
+import { roles } from "@equal-vote/star-vote-shared/domain_model/roles"
+import { getPermissions } from '@equal-vote/star-vote-shared/domain_model/permissions';
 import { getOrCreateElectionRoll, checkForMissingAuthenticationData, getVoterAuthorization } from "./voterRollUtils"
-import { ElectionRoll } from 'shared/domain_model/ElectionRoll';
+import { ElectionRoll } from '@equal-vote/star-vote-shared/domain_model/ElectionRoll';
 
 
 var ElectionsModel =  ServiceLocator.electionsDb();

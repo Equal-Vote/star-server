@@ -12,7 +12,7 @@ import { usePostRolls } from "../../../hooks/useAPI";
 import useElection from "../../ElectionContextProvider";
 import useSnackbar from "../../SnackbarContext";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
-import { sharedConfig } from 'shared/config';
+import { sharedConfig } from '@equal-vote/star-vote-shared/config';
 
 const AddElectionRoll = ({ onClose }) => {
     const { snack, setSnack } = useSnackbar()

@@ -3,11 +3,11 @@ import { useState } from "react"
 
 import { scrollToElement } from '../../util';
 import useElection from '../../ElectionContextProvider';
-import { Race as iRace } from 'shared/domain_model/Race';
+import { Race as iRace } from '@equal-vote/star-vote-shared/domain_model/Race';
 import structuredClone from '@ungap/structured-clone';
 import useConfirm from '../../ConfirmationDialogProvider';
 import { v4 as uuidv4 } from 'uuid';
-import { Candidate } from 'shared/domain_model/Candidate';
+import { Candidate } from '@equal-vote/star-vote-shared/domain_model/Candidate';
 
 export const useEditRace = (race, race_index) => {
     const { election, refreshElection, permissions, updateElection } = useElection()

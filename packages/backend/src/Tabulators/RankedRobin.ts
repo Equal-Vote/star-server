@@ -1,4 +1,4 @@
-import { ballot, candidate, rankedRobinResults, rankedRobinSummaryData, roundResults, totalScore } from "shared/domain_model/ITabulators";
+import { ballot, candidate, rankedRobinResults, rankedRobinSummaryData, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
 import { sortByTieBreakOrder } from "./Star";

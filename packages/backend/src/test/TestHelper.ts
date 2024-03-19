@@ -1,7 +1,7 @@
-import { Ballot, NewBallot } from "shared/domain_model/Ballot";
-import { Election } from "shared/domain_model/Election";
-import { Uid } from "shared/domain_model/Uid";
-import { VoterAuth } from "shared/domain_model/VoterAuth";
+import { Ballot, NewBallot } from "@equal-vote/star-vote-shared/domain_model/Ballot";
+import { Election } from "@equal-vote/star-vote-shared/domain_model/Election";
+import { Uid } from "@equal-vote/star-vote-shared/domain_model/Uid";
+import { VoterAuth } from "@equal-vote/star-vote-shared/domain_model/VoterAuth";
 import makeApp from "../app";
 import Logger from "../Services/Logging/Logger";
 import { TestLoggerImpl } from "../Services/Logging/TestLoggerImpl";
