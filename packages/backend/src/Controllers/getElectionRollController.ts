@@ -1,6 +1,6 @@
 import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
-import { permissions } from 'shared/domain_model/permissions';
+import { permissions } from '@equal-vote/star-vote-shared/domain_model/permissions';
 import { expectPermission } from "./controllerUtils";
 import { BadRequest, Unauthorized } from "@curveball/http-errors";
 import { IElectionRequest } from "../IRequest";

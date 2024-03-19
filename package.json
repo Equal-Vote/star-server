@@ -1,5 +1,5 @@
 {
-  "name": "star-server",
+  "name": "@equal-vote/star-vote",
   "version": "1.0.0",
   "description": "star-server is built using Express (For now) for the back end server and React for the front end user interface",
   "main": "index.js",

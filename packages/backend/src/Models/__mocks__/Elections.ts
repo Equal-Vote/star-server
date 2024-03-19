@@ -1,5 +1,5 @@
-import { Election } from 'shared/domain_model/Election';
-import { Uid } from 'shared/domain_model/Uid';
+import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
+import { Uid } from '@equal-vote/star-vote-shared/domain_model/Uid';
 import { ILoggingContext } from '../../Services/Logging/ILogger';
 import Logger from '../../Services/Logging/Logger';
 import { IElectionStore } from '../IElectionStore';

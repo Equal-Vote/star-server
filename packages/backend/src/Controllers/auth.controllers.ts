@@ -1,9 +1,9 @@
 import { isConstructorDeclaration } from "typescript"
-import { Election } from "shared/domain_model/Election"
+import { Election } from "@equal-vote/star-vote-shared/domain_model/Election"
 import Logger from "../Services/Logging/Logger"
 import { responseErr } from "../Util"
-import { permission } from "shared/domain_model/permissions"
-import { roles } from "shared/domain_model/roles"
+import { permission } from "@equal-vote/star-vote-shared/domain_model/permissions"
+import { roles } from "@equal-vote/star-vote-shared/domain_model/roles"
 import ServiceLocator from "../ServiceLocator"
 
 const className = 'Auth.Controllers';

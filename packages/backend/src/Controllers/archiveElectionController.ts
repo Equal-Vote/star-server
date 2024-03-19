@@ -1,9 +1,9 @@
 import ServiceLocator from '../ServiceLocator';
 import Logger from '../Services/Logging/Logger';
-import { permissions } from 'shared/domain_model/permissions';
+import { permissions } from '@equal-vote/star-vote-shared/domain_model/permissions';
 import { expectPermission } from "./controllerUtils";
 import { BadRequest, InternalServerError } from "@curveball/http-errors";
-import { Election } from 'shared/domain_model/Election';
+import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { IElectionRequest } from "../IRequest";
 import { Response, NextFunction } from 'express';
 

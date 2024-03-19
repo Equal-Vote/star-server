@@ -193,19 +193,19 @@ Install and build dependencies
 
 ```bash
 npm i -ws
-npm run build -w shared
+npm run build -w @equal-vote/star-vote-shared
 ```
 
 Launch backend 
 
 ```bash
-npm run dev -w backend
+npm run dev -w @equal-vote/star-vote-backend
 ```
 
 Launch frontend (in a new terminal). If you want to just run the web client without setting up the server you can add `PROXY_URL=dev.star.vote` in packages/frontend/.env.
 
 ```bash
-npm run dev -w star-vote
+npm run dev -w @equal-vote/star-vote-frontend
 ```
 
 ## Hosting database and Keycloak locally
@@ -230,7 +230,7 @@ DEV_DATABASE=FALSE
 and run the commands
 
 ```bash
-cd backend
+cd packages/backend
 npm run build
 npm run migrate:latest
 ```
@@ -456,10 +456,10 @@ After you've committed your changes, check here for [how to open a Pull Request]
 ### `npm run build -ws`
 Builds all of the packages in the project.
 
-### `npm run dev -w backend`
+### `npm run dev -w @equal-vote/star-vote-backend`
 Runs a dev server for the backend which restarts on local changes.
 
-### `npm run dev -w star-vote`
+### `npm run dev -w @equal-vote/star-vote-frontend`
 Runs a dev server for the frontend with hot module replacement and proxys API calls to the local backend dev server.
 
 ### `npm run clean`
@@ -468,7 +468,7 @@ Deletes the node_modules in the root directory.
 ### `npm run clean:ws`
 Deletes the node_modules and build artifacts for the entire project.
 
-### `npm start -w star-vote`
+### `npm start -w @equal-vote/star-vote-frontend`
 
 Runs the frontend in preview mode (which serves the locally built and bundled artifacts without hot module replacement.
 

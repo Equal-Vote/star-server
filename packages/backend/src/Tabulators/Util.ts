@@ -1,4 +1,4 @@
-import { candidate, totalScore } from "shared/domain_model/ITabulators";
+import { candidate, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 declare namespace Intl {
   class ListFormat {

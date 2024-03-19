@@ -1,6 +1,6 @@
 import React, { useState }  from 'react'
 import { TableContainer, Typography, Paper, Box} from "@mui/material";
-import { roundResults, starResults, starSummaryData } from 'shared/domain_model/ITabulators';
+import { roundResults, starResults, starSummaryData } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
 import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { Widget, WidgetContainer, makeResultTable } from '~/components/util';
 

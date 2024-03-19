@@ -1,13 +1,13 @@
-import { Election, electionValidation } from "shared/domain_model/Election";
-import { ElectionRoll, ElectionRollState } from "shared/domain_model/ElectionRoll";
-import { Ballot, Ballot as BallotType, ballotValidation } from 'shared/domain_model/Ballot';
+import { Election, electionValidation } from "@equal-vote/star-vote-shared/domain_model/Election";
+import { ElectionRoll, ElectionRollState } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
+import { Ballot, Ballot as BallotType, ballotValidation } from '@equal-vote/star-vote-shared/domain_model/Ballot';
 import { IRequest } from "../IRequest";
 import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
 import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-errors";
 import { ILoggingContext } from "../Services/Logging/ILogger";
 import { randomUUID } from "crypto";
-import { Uid } from "shared/domain_model/Uid";
+import { Uid } from "@equal-vote/star-vote-shared/domain_model/Uid";
 import { Receipt } from "../Services/Email/EmailTemplates"
 import { getOrCreateElectionRoll, checkForMissingAuthenticationData, getVoterAuthorization } from "./voterRollUtils"
 import { IElectionRequest } from "../IRequest";

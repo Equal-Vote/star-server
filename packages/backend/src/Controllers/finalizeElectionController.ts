@@ -1,9 +1,9 @@
 import ServiceLocator from '../ServiceLocator';
 import Logger from '../Services/Logging/Logger';
-import { permissions } from 'shared/domain_model/permissions';
+import { permissions } from '@equal-vote/star-vote-shared/domain_model/permissions';
 import { expectPermission } from "./controllerUtils";
 import { BadRequest } from "@curveball/http-errors";
-import { ElectionRoll } from 'shared/domain_model/ElectionRoll';
+import { ElectionRoll } from '@equal-vote/star-vote-shared/domain_model/ElectionRoll';
 const { sendBatchEmailInvites } = require('./sendInvitesController')
 import { IElectionRequest } from "../IRequest";
 import { Response, NextFunction } from 'express';

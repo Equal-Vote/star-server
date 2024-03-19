@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { Election } from "shared/domain_model/Election"
+import { Election } from "@equal-vote/star-vote-shared/domain_model/Election"
 import useAuthSession from '../AuthSessionContextProvider';
 import { useGetElections } from '../../hooks/useAPI';
 import { useNavigate } from 'react-router';

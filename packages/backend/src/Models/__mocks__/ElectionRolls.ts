@@ -1,4 +1,4 @@
-import { ElectionRoll, ElectionRollAction, ElectionRollState } from 'shared/domain_model/ElectionRoll';
+import { ElectionRoll, ElectionRollAction, ElectionRollState } from '@equal-vote/star-vote-shared/domain_model/ElectionRoll';
 import { ILoggingContext } from '../../Services/Logging/ILogger';
 import Logger from '../../Services/Logging/Logger';
 import { IElectionRollStore } from '../IElectionRollStore';

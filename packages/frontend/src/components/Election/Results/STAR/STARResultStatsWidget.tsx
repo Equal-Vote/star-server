@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import React, { useState }  from 'react'
-import { starResults } from 'shared/domain_model/ITabulators';
+import { starResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
 
 const STARResultStatsWidget = ({ results}: {results: starResults }) => {
     return <div className="statsWidget">

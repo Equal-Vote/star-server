@@ -10,7 +10,7 @@ import { useApproveRoll, useFlagRoll, useInvalidateRoll, useSendInvite, useUnfla
 import { formatDate } from "../../util";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
-import { ElectionRoll } from "shared/domain_model/ElectionRoll";
+import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
 
 
 type Props = {

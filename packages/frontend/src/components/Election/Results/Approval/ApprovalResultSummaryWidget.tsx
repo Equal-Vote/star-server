@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, ResponsiveContainer, Legend} from 'recharts';
 import { Paper, Typography } from '@mui/material';
-import { approvalResults } from 'shared/domain_model/ITabulators';
+import { approvalResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
 
 const COLORS = [
     'var(--ltbrand-blue)',

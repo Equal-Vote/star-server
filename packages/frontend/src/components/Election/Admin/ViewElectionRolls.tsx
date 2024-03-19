@@ -12,7 +12,7 @@ import EnhancedTable, { HeadKey }  from "./../../EnhancedTable";
 import { useGetRolls, useSendInvites } from "../../../hooks/useAPI";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
-import { ElectionRoll } from "shared/domain_model/ElectionRoll";
+import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
 
 
 const ViewElectionRolls = () => {

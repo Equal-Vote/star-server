@@ -1,5 +1,5 @@
-import { Election } from "shared/domain_model/Election";
-import { ElectionRoll, ElectionRollState } from "shared/domain_model/ElectionRoll";
+import { Election } from "@equal-vote/star-vote-shared/domain_model/Election";
+import { ElectionRoll, ElectionRollState } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
 import { IRequest } from "../IRequest";
 import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";

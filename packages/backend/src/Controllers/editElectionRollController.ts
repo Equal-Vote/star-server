@@ -1,8 +1,8 @@
-import { ElectionRoll, ElectionRollState } from "shared/domain_model/ElectionRoll";
+import { ElectionRoll, ElectionRollState } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
 import ServiceLocator from "../ServiceLocator";
 import Logger from "../Services/Logging/Logger";
 import { responseErr } from "../Util";
-import { hasPermission, permissions } from 'shared/domain_model/permissions';
+import { hasPermission, permissions } from '@equal-vote/star-vote-shared/domain_model/permissions';
 import { expectPermission } from "./controllerUtils";
 import { BadRequest } from "@curveball/http-errors";
 import { IElectionRequest } from "../IRequest";

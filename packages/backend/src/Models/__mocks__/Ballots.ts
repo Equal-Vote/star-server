@@ -1,5 +1,5 @@
-import { Ballot } from "shared/domain_model/Ballot";
-import { Uid } from "shared/domain_model/Uid";
+import { Ballot } from "@equal-vote/star-vote-shared/domain_model/Ballot";
+import { Uid } from "@equal-vote/star-vote-shared/domain_model/Uid";
 import { ILoggingContext } from "../../Services/Logging/ILogger";
 import { IBallotStore } from "../IBallotStore";
 

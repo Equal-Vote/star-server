@@ -1,13 +1,13 @@
 import React from 'react'
 import { useNavigate } from "react-router"
-import { Election, NewElection } from 'shared/domain_model/Election';
+import { Election, NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { usePostElection } from '../../hooks/useAPI';
 import { DateTime } from 'luxon'
 import { Card, CardActionArea, CardMedia, CardContent, Typography, Box, Grid } from '@mui/material';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import useAuthSession from '../AuthSessionContextProvider';
 import { useThemeSelector } from '../../theme';
-import { sharedConfig } from 'shared/config';
+import { sharedConfig } from '@equal-vote/star-vote-shared/config';
 
 
 const CreateElectionTemplates = () => {
