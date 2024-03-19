@@ -24,9 +24,8 @@ Start by installing the prerequisite software for your operating system.
 
 | Prerequisite                                                                                  | Version    | Notes                                                                                       |
 | --------------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------- |
-| [Node.js](http://nodejs.org)                                                                  | `16.x`     | -                                                                                           |
-| npm (comes bundled with Node)                                                                 | `8.x`      | -                                                                                           |
-| *insert DB software here*                                                                     |            | -                                                                                           |
+| [Node.js](http://nodejs.org)                                                                  | `20.x`     | -                                                                                           |
+| npm (comes bundled with Node)                                                                 | `10.x`     | -                                                                                           |
 
 > If you have a different version, please install the recommended version. We can only support installation issues for recommended versions. See [troubleshooting](#troubleshooting) for details.
 
@@ -203,7 +202,7 @@ Launch backend
 npm run dev -w backend
 ```
 
-Launch frontend. If you want to just run the web client without setting up the server you can change the proxy under frontend/package.json to "proxy": "dev.star.vote". 
+Launch frontend (in a new terminal). If you want to just run the web client without setting up the server you can add `PROXY_URL=dev.star.vote` in packages/frontend/.env.
 
 ```bash
 npm run dev -w star-vote
@@ -451,6 +450,33 @@ Follow these steps:
 ## Proposing a Pull Request (PR)
 
 After you've committed your changes, check here for [how to open a Pull Request](2_how_to_open_a_pull_request.md).
+
+## Available NPM Scripts
+
+### `npm run build -ws`
+Builds all of the packages in the project.
+
+### `npm run dev -w backend`
+Runs a dev server for the backend which restarts on local changes.
+
+### `npm run dev -w star-vote`
+Runs a dev server for the frontend with hot module replacement and proxys API calls to the local backend dev server.
+
+### `npm run clean`
+Deletes the node_modules in the root directory.
+
+### `npm run clean:ws`
+Deletes the node_modules and build artifacts for the entire project.
+
+### `npm start -w star-vote`
+
+Runs the frontend in preview mode (which serves the locally built and bundled artifacts without hot module replacement.
+
+## Learn More
+
+You can learn more in the [Vite](https://vitejs.dev/) and [Vite Awesome Repo](https://github.com/vitejs/awesome-vite).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## Troubleshooting
 

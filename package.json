@@ -3,8 +3,14 @@
   "version": "1.0.0",
   "description": "star-server is built using Express (For now) for the back end server and React for the front end user interface",
   "main": "index.js",
-  "workspaces": ["./packages/shared", "./packages/backend", "./packages/frontend"], 
+  "workspaces": [
+    "./packages/shared",
+    "./packages/backend",
+    "./packages/frontend"
+  ],
   "scripts": {
+    "clean": "npx rimraf node_modules",
+    "clean:ws": "npm run clean -ws && npm run clean",
     "test": "cd packages/backend && npm install && npm test",
     "start": "node ./packages/backend/build/src/Migrators/migrate-to-latest.js && node ./packages/backend/build/src/index.js",
     "heroku-postbuild": "cd packages/frontend && npm install && npm run build && cd ../backend && npm install && npm run-script build"
@@ -20,6 +26,7 @@
     "url": "https://github.com/Equal-Vote/star-server/issues"
   },
   "homepage": "https://github.com/Equal-Vote/star-server#readme",
-  "dependencies": {
+  "devDependencies": {
+    "rimraf": "^5.0.5"
   }
 }
