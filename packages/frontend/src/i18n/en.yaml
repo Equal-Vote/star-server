@@ -1,0 +1,11 @@
+election_creation_dialog:
+  election_vs_poll_question: Which term best describes your situation?
+tips:
+  polls_vs_elections:
+    title: Polls versus Elections
+    description: There's no functional difference between polls and elections. This only impacts which terminology is shown to you and your voters.
+election_vs_poll_terms:
+  election: 
+    name: election
+  poll:
+    name: poll

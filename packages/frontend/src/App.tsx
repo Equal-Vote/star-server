@@ -20,6 +20,7 @@ import OpenElections from './components/Elections/OpenElections'
 import { FeatureFlagContextProvider } from './components/FeatureFlagContextProvider'
 import CreateElectionDialog, { CreateElectionContextProvider } from './components/ElectionForm/CreateElectionDialog'
 import ComposeContextProviders from './components/ComposeContextProviders'
+import './i18n/i18n'
 
 const App = () => {
   return (
