@@ -42,7 +42,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     optimizeDeps: {
-      include: ['shared', 'shared/**'],
+      include: ['@equal-vote/star-vote-shared', '@equal-vote/star-vote-shared/**'],
     },
     build: {
       outDir: "build",
