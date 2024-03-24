@@ -18,16 +18,16 @@ election_creation:
   demo_description: Unlimited votes per device. Great for demonstrations where multiple people are using the same device
 
   public_title: Public __CAPITALIZED_TERM__
-  public_description: 1 person, 1 vote. __CAPITALIZED_TERM__ will be open to anyone via the public polls & elections page
+  public_description: 1 person, 1 vote. __CAPITALIZED_TERM__ will be open to anyone via the public polls & elections page, as well as anyone who has been given a direct link
 
   unlisted_title: Unlisted __CAPITALIZED_TERM__
-  unlisted_description: 1 person, 1 vote. __CAPITALIZED_TERM__ will be open to anyone via the public elections page
+  unlisted_description: 1 person, 1 vote. __CAPITALIZED_TERM__ will be inclusive and open to anyone who has been given the ballot link
 
   email_list_title: Email List
   email_list_description: Provide a list of emails for your voters. Personal links will be sent to each of these voters once the election starts
 
   id_list_title: ID List
-  id_list_description: Provide a list of ids for your voters. Voters will authenticate themselves using their ID before voting
+  id_list_description: Provide a list of IDs for your voters. Voters will authenticate themselves using their ID before voting
 
 # Info bubbles
 tips:
@@ -37,7 +37,7 @@ tips:
 
   restricted:
     title: Restricted Polls or Elections
-    description: Restricted Polls or Elections only allow those on the voter list to vote. The voter list can be a set of emails or voter ids.
+    description: Restricted Polls or Elections only allow those on the voter list to vote. The voter list can be a set of emails or voter IDs.
 
 # Election vs Poll terminology
 terms:

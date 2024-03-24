@@ -240,7 +240,7 @@ const Header = () => {
                     {!authSession.isLoggedIn() &&
                         <Button color='inherit' onClick={() => authSession.openLogin()} >
                             <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
-                                Login
+                                Sign In
                             </Typography>
                         </Button>
                     }
