@@ -2,32 +2,30 @@ import { Button, ClickAwayListener, IconButton, Tooltip, responsiveFontSizes, st
 import { TextField, useTheme } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
-const tips = {
-    polls_vs_elections: ['Polls versus Elections', "There's no functional difference between polls and elections. This only impacts which terminology is shown to you and your voters."]
-};
-
-type TipName = keyof typeof tips;
-
-interface TipProps{
-    name: TipName
-}
-
-export const Tip = (props: TipProps) => {
-    let [title, description] = tips[props.name];
+export const Tip = (props) => {
+    const {t} = useTranslation();
     const [clicked, setClicked] = useState(false);
     const [hovered, setHovered] = useState(false);
     return <ClickAwayListener onClickAway={() => setClicked(false)}>
         <Tooltip
             title={<>
-                <strong>{title}</strong>
+                <strong>{t(`tips.${props.name}.title`)}</strong>
                 <br/>
-                {description}
+                {t(`tips.${props.name}.description`)}
             </>}
             onOpen={() => setHovered(true)}
             onClose={() => setHovered(false)}
             open={clicked || hovered}
             placement='top'
+            componentsProps={{
+                tooltip: {
+                    sx: {
+                        background: '#888888FF'
+                    }
+                }
+            }}
         >
             <IconButton size='small' sx={{marginBottom: 1}} onClick={() => setClicked(true)}>
                 <InfoOutlinedIcon fontSize='inherit'/>
