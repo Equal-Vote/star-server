@@ -14,8 +14,10 @@ export interface authentication {
   ip_address?: boolean
 }
 
+export type TermType = 'poll' | 'election';
+
 export interface ElectionSettings {
-    voter_access:         'open' | 'closed' | 'registration';  //   Who is able to vote in election?
+    voter_access?:         'open' | 'closed' | 'registration';  //   Who is able to vote in election?
     voter_authentication: authentication; // How will voters be authenticated?
     invitation?:          'email' | 'address'; // How will invites be sent? Requires voter_access='closed'
     reminders?:           boolean; //   Send reminders to voters who haven't voted? Requires voter_access='closed'
@@ -23,6 +25,7 @@ export interface ElectionSettings {
     public_results?:	    boolean; //		allows public to view results
     time_zone?:           string; // Time zone for displaying election start/end times 
     random_candidate_order?: boolean; // Randomize order of candidates on the ballot
-    require_instruction_confirmation?: boolean // Require voter to confirm that they've read the instructions in order to vote
-    break_ties_randomly?: boolean // whether true ties should be broken randomly
+    require_instruction_confirmation?: boolean; // Require voter to confirm that they've read the instructions in order to vote
+    break_ties_randomly?: boolean; // whether true ties should be broken randomly
+    term_type?: TermType; // whether poll or election should be used as the term
 }

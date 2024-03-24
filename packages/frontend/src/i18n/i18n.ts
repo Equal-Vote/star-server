@@ -2,7 +2,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import en from './en.yaml'; // vscode flags this as an error, but it runs fine? https://github.com/Modyfi/vite-plugin-yaml
+import en from './en.yaml';
 
 i18n
   // detect user language

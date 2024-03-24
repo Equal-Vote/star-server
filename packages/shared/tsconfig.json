@@ -10,9 +10,7 @@
     "esModuleInterop": true,
     "strictNullChecks": true,
     "strict": true,
-    "types": [
-      "@modyfi/vite-plugin-yaml/modules"
-    ],
+    "types": [],
     // Generate d.ts files
     "declaration": true,
     // go to js file when using IDE functions like
