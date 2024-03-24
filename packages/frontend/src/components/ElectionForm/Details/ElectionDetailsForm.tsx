@@ -12,7 +12,7 @@ import { dateToLocalLuxonDate } from './useEditElectionDetails';
 
 export const ElectionTitleField = ({value, onUpdateValue, errors, setErrors, showLabel=true}) => <>
     <TextField
-        inputProps={{ pattern: "[a-z]{1,15}" }}
+        inputProps={{ pattern: "[a-z]{3,15}" }}
         error={errors.title !== ''}
         required
         id="election-name"

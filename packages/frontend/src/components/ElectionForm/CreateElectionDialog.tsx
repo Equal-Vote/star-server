@@ -76,9 +76,6 @@ const templateMappers = {
     'demo': (election:NewElection):NewElection => ({
         ...election,
         is_public: true,
-        settings: {
-            ...election.settings,
-        }
     }),
     'public': (election:NewElection):NewElection => ({
         ...election,
@@ -202,9 +199,8 @@ export default () => {
     useEffect(() => {
         let q = createElectionContext.quickPoll;
         if(!createElectionContext.quickPoll) return;
-        console.log(q);
 
-        // quick poll also specifies a number of settings but we're not keeping those, we're only keeping the information that the user specified
+        // quick poll also specifies a number of other settings but we're not keeping those, we're only keeping the information that the user specified
         setElection({
             ...defaultElection,
             title: q.title,
