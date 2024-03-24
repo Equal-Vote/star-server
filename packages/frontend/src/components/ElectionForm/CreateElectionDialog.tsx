@@ -1,16 +1,102 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, IconButton, MenuItem, Radio, RadioGroup, Select, Step, StepConnector, StepContent, StepLabel, Stepper, TextField, Tooltip, Typography } from "@mui/material";
 import { StyledButton, Tip } from "../styles";
-import { Dispatch, SetStateAction, createContext, useContext, useRef, useState } from "react";
+import { Dispatch, SetStateAction, createContext, useContext, useEffect, useRef, useState } from "react";
 import { ElectionTitleField } from "./Details/ElectionDetailsForm";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import { openFeedback } from "../util";
 import { useTranslation } from "react-i18next";
+import { useLocalStorage } from "~/hooks/useLocalStorage";
+import { NewElection } from "@equal-vote/star-vote-shared/domain_model/Election";
+import { DateTime } from "luxon";
+import useAuthSession from "../AuthSessionContextProvider";
+import { usePostElection } from "~/hooks/useAPI";
+import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
+import { useNavigate } from "react-router";
 
 export interface ICreateElectionContext{
     open: boolean
     setOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+const defaultElection: NewElection = {
+    title: '',
+    owner_id: '',
+    description: '',
+    state: 'draft',
+    frontend_url: '',
+    races: [],
+    settings: {
+        voter_authentication: {
+            voter_id: false,
+            email: false,
+            ip_address: false
+        },
+        ballot_updates: false,
+        public_results: true,
+        time_zone: DateTime.now().zone.name,
+        random_candidate_order: true,
+        require_instruction_confirmation: true,
+        invitation: undefined,
+        // term_type, and voter_access are intentially omitted
+        // this let's me start them at undefined for the stepper
+    }
+}
+
+const templateMappers = {
+    'demo': (election) => ({
+        ...election,
+        settings: {
+            ...election.settings,
+            is_public: true
+        }
+    }),
+    'public': (election) => ({
+        ...election,
+        settings: {
+            ...election.settings,
+            voter_authentication: {
+                ...election.settings.voter_authentication,
+                ip_address: true
+            },
+            is_public: true
+        }
+    }),
+    'unlisted': (election) => ({
+        ...election,
+        settings: {
+            ...election.settings,
+            voter_authentication: {
+                ...election.settings.voter_authentication,
+                ip_address: true
+            },
+            is_public: false
+        }
+    }),
+    'email_list': (election) => ({
+        ...election,
+        settings: {
+            ...election.settings,
+            voter_authentication: {
+                ...election.settings.voter_authentication,
+                email: true
+            },
+            invitation: true,
+            is_public: false
+        }
+    }),
+    'id_list': (election) => ({
+        ...election,
+        settings: {
+            ...election.settings,
+            voter_authentication: {
+                ...election.settings.voter_authentication,
+                voter_id: true
+            },
+            is_public: false
+        }
+    }),
 }
 
 export const CreateElectionContext = createContext<ICreateElectionContext>(null);
@@ -49,8 +135,14 @@ const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
     }
 </>
 
-const StartingOption = ({title, description}) => <>
-    <Button color='inherit' fullWidth className='startingOption' sx={{justifyContent: 'flex-start', textTransform: 'inherit'}}>
+const StartingOption = ({title, description, onClick}) => <>
+    <Button
+        color='inherit'
+        fullWidth
+        className='startingOption'
+        sx={{justifyContent: 'flex-start', textTransform: 'inherit'}}
+        onClick={onClick} 
+    >
         <Box sx={{width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left'}}>
                 <Typography variant="body1">{title}</Typography>
@@ -66,25 +158,59 @@ export default () => {
     const createElectionContext = useContext(CreateElectionContext);
 
     const [activeStep, setActiveStep] = useState(0);
-    const [termType, setTermType] = useState('');
-    const [restricted, setRestricted] = useState(undefined);
-    const [allOptions, setAllOptions] = useState(false);
-    const [electionTitle, setElectionTitle] = useState('');
-    const [errors, setErrors] = useState({title: ''});
-    const contentRef = useRef(null);
+
     const onClose = () => {
         setActiveStep(0);
         createElectionContext.setOpen(false);
     };
 
+    const [errors, setErrors] = useState({title: ''});
+
+    const [quickPoll, setQuickPoll] = useLocalStorage<NewElection>('QuickPoll', null)
+    const [election, setElection] = useState(defaultElection);
+
     // TODO: it would be cool to define a useTranslationExt that did the substitutions for me
     // TODO: automatic tip insertion would also be cool
     const { t:_t } = useTranslation();
-    let term = termType == ''? '' : _t(`terms.${termType}.type`);
+    let term = election.settings.term_type === undefined? '' : _t(`terms.${election.settings.term_type}.type`);
     // wrap the standard t property so that we can insert the term election vs poll
     const t = key => _t(key)
         .replace('__CAPITALIZED_TERM__', term) 
         .replace('__LOWERCASE_TERM__', term.toLowerCase()); 
+
+    const { error, isPending, makeRequest: postElection } = usePostElection()
+
+    const authSession = useAuthSession()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if(quickPoll == null) return;
+        setElection({
+            ...election,
+            title: quickPoll.title,
+            races: [
+                {
+                    ...quickPoll.races[0],
+                    title: quickPoll.title,
+                    candidates: quickPoll.races[0].candidates.filter(candidate => candidate.candidate_name.length > 0)
+                }
+            ]
+        }) 
+    }, [quickPoll])
+
+    const onAddElection = async (election) => {
+        // calls post election api, throws error if response not ok
+        election.owner_id = authSession.getIdField('sub');
+
+        const newElection = await postElection({
+            Election: election,
+        })
+        if (!newElection)  throw Error("Error submitting election");
+
+        setQuickPoll(null)
+        navigate(`/${newElection.election.election_id}/admin`)
+        onClose()
+    }
 
     return <Dialog
         open={createElectionContext.open}
@@ -96,7 +222,7 @@ export default () => {
         maxWidth='sm'
     >
         <DialogTitle> {t('election_creation.dialog_title')} </DialogTitle>
-        <DialogContent ref={contentRef}>
+        <DialogContent>
             <Stepper activeStep={activeStep} orientation="vertical">
                 <Step>
                     <StepLabel>{t('election_creation.term_title')} <strong>{term}</strong></StepLabel>
@@ -111,32 +237,40 @@ export default () => {
                                     value={t(`terms.${type}.type`)}
                                     control={<Radio/>}
                                     label={t(`terms.${type}.type`)}
-                                    onClick={() => setTermType(type)}
-                                    checked={termType === type}
+                                    onClick={() => setElection({
+                                        ...election,
+                                        settings: {
+                                            ...election.settings,
+                                            term_type: type as TermType
+                                        }
+                                    })}
+                                    checked={election.settings.term_type === type}
                                 />
                             )}
                         </RadioGroup>
-                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={termType != ''}/>
+                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={election.settings.term_type !== undefined}/>
                     </StepContent>
                 </Step>
                 <Step>
-                    <StepLabel>{t('election_creation.title_title')} <strong>{electionTitle}</strong></StepLabel>
+                    <StepLabel>{t('election_creation.title_title')} <strong>{election.title && election.title}</strong></StepLabel>
                     <StepContent>
                         <Typography>{t('election_creation.title_question')}</Typography>
                         <ElectionTitleField
-                            value={electionTitle}
+                            value={election.title}
                             onUpdateValue={
-                                (value) => setElectionTitle(value)
+                                (value) => setElection({...election, title: value})
                             }
                             errors={errors}
                             setErrors={setErrors}
                             showLabel={false}
                         />
-                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={electionTitle != '' && errors.title == ''}/>
+                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={election.title != '' && errors.title == ''}/>
                     </StepContent>
                 </Step>
                 <Step>
-                    <StepLabel>{t('election_creation.restricted_title')} <strong>{restricted !== undefined && t(`general.${restricted? 'yes' : 'no'}`)}</strong></StepLabel>
+                    <StepLabel>{t('election_creation.restricted_title')} <strong>
+                        {election.settings.voter_access !== undefined && t(`general.${election.settings.voter_access === 'closed'? 'yes' : 'no'}`)}
+                    </strong></StepLabel>
                     <StepContent>
                         <Typography>
                             {t('election_creation.restricted_question')}
@@ -144,18 +278,20 @@ export default () => {
                         </Typography>
 
                         <RadioGroup row>
-                            {[true, false].map( (value, i) => 
+                            {[true, false].map( (restricted, i) => 
                                 <FormControlLabel
                                     key={i}
-                                    value={value}
+                                    value={restricted}
                                     control={<Radio/>}
-                                    label={t(`general.${value? 'yes' : 'no'}`)}
-                                    onClick={() => setRestricted(value)}
-                                    checked={restricted === value}
+                                    label={t(`general.${restricted? 'yes' : 'no'}`)}
+                                    onClick={() => {
+                                        setElection({...election, settings: { ...election.settings, voter_access: restricted? 'closed' : 'open' }})
+                                    }}
+                                    checked={election.settings.voter_access === (restricted? 'closed' : 'open')}
                                 />
                             )}
                         </RadioGroup>
-                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={restricted !== undefined}/>
+                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={election.settings.voter_access !== undefined}/>
                     </StepContent>
                 </Step>
                 <Step>
@@ -165,15 +301,16 @@ export default () => {
                             {t('election_creation.template_prompt')}
                         </Typography>
                         <Box style={{height: '10px'}}/> {/*hacky padding*/}
-                        {(restricted? ['email_list', 'id_list'] : ['demo', 'public', 'unlisted']).map((key, i) => <>
+                        {(election.settings.voter_access === 'closed'? ['email_list', 'id_list'] : ['demo', 'public', 'unlisted']).map((name, i) => <>
                             <StartingOption
-                                title={t(`election_creation.${key}_title`)}
-                                description={t(`election_creation.${key}_description`)}
+                                title={t(`election_creation.${name}_title`)}
+                                description={t(`election_creation.${name}_description`)}
                                 key={i}
+                                onClick={() => onAddElection(templateMappers[name](election))}
                             />
                         </>)}
 
-                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={electionTitle != '' && errors.title == ''}/>
+                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={false}/>
                     </StepContent>
                 </Step>
             </Stepper>
