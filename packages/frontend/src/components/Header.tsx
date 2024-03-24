@@ -197,7 +197,7 @@ const Header = () => {
                             <MenuItem component={Link} href={authSession.accountUrl} target='_blank'>
                                 Your Account
                             </MenuItem>
-                            <MenuItem component={Link} onClick={() => createElectionContext.setOpen(true)}>
+                            <MenuItem component={Link} onClick={() => createElectionContext.openDialog()}>
                                 New Election
                             </MenuItem>
                             {/*<MenuItem component={Link} href='/ElectionInvitations'>
