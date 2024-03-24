@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router"
 import structuredClone from '@ungap/structured-clone';
 import { StyledButton, StyledTextField } from '../styles.js'
-import { Box, Button, IconButton } from '@mui/material';
+import { Box, Button, IconButton, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { usePostElection } from '../../hooks/useAPI';
 import { useCookie } from '../../hooks/useCookie';
@@ -198,6 +198,17 @@ const QuickPoll = ({ authSession }) => {
                         }}
                     />
                 ))}
+                <Box sx={{
+                    marginLeft: 'auto'
+                }}>
+                    <IconButton
+                        type="button"
+                        onClick={() => setElectionData(QuickPollTemplate)}
+                        >
+                            <Typography component="p">Clear All</Typography>
+                        <DeleteIcon />
+                    </IconButton>
+                </Box>
                 <StyledButton
                     type='submit'
                     variant="contained"
@@ -210,26 +221,26 @@ const QuickPoll = ({ authSession }) => {
                         variant="contained"
                         disabled={isPending}
                         onClick={() => authSession.openLogin()}>
-                        Log in for more settings
+                        Sign in for more settings
                     </StyledButton>
                     :
-                    <StyledButton
-                        variant="contained"
-                        disabled={isPending}
+                    <Button
+                        variant="outlined"
                         onClick={() => createElectionContext.openDialog(election)}
+                        sx={{
+                            width: '90%',
+                            p: 1,
+                            m: 'auto',
+                            boxShadow: 2,
+                            fontWeight: 'bold',
+                            fontSize: 16,
+                        }}
+                        disabled={isPending}
                     >
-                        Explore more settings
-                    </StyledButton>
+                        Continue with full editor
+                    </Button>
                 }
-                <Box sx={{
-                    marginLeft: 'auto'
-                }}>
-                    <IconButton
-                        type="button"
-                        onClick={() => setElectionData(QuickPollTemplate)} >
-                        <DeleteIcon />
-                    </IconButton>
-                </Box>
+                
             </Box>
         </form >
     )

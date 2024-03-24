@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ThemeContextProvider } from './theme'
 import Header from './components/Header'
-import Login from './components/Login'
 import Election from './components/Election/Election'
 import Sandbox from './components/Sandbox'
 import LandingPage from './components/LandingPage'
@@ -47,7 +46,6 @@ const App = () => {
               <Route path='/ElectionsYouManage' element={<ElectionsYouManage />} />
               <Route path='/ElectionsYouVotedIn' element={<ElectionsYouVotedIn />} />
               <Route path='/OpenElections' element={<OpenElections />} />
-              <Route path='/Login' element={<Login />} />
               {/*Keeping old path for legacy reasons, although we can probably remove it once the domain moves from dev.star.vote*/}
               <Route path='/Election/:id/*' element={<Election />} /> 
               <Route path='/:id/*' element={<Election />} />
