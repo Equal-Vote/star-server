@@ -231,7 +231,14 @@ export default () => {
         open={createElectionContext.open}
         onClose={onClose}
         scroll={'paper'}
-        sx={{maxHeight: '90%'}}
+        sx={{
+            maxHeight: '90%',
+            '@media(max-width: 500px)': {
+                margin: '8px', // default is 32px
+                maxHeight: 'calc(100% - 16px)',
+                width: 'calc(100% - 16px)',
+            }
+        }}
         keepMounted
         fullWidth
         maxWidth='sm'
