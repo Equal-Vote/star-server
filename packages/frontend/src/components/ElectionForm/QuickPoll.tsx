@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Container from '@mui/material/Container';
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -7,11 +7,10 @@ import structuredClone from '@ungap/structured-clone';
 import { StyledButton, StyledTextField } from '../styles.js'
 import { Box, Button, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
-import Typography from '@mui/material/Typography';
 import { usePostElection } from '../../hooks/useAPI';
 import { useCookie } from '../../hooks/useCookie';
 import { Election, NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
+import { CreateElectionContext } from './CreateElectionDialog.js';
 
 const QuickPoll = ({ authSession }) => {
     const [tempID, setTempID] = useCookie('temp_id', '0')
@@ -23,6 +22,7 @@ const QuickPoll = ({ authSession }) => {
         state: 'open',
         frontend_url: '',
         owner_id: '0',
+        is_public: true,
         races: [
             {   
                 title: '',
@@ -59,7 +59,7 @@ const QuickPoll = ({ authSession }) => {
     }
 
 
-    const [election, setElectionData] = useLocalStorage<NewElection>('QuickPoll', QuickPollTemplate)
+    const [election, setElectionData] = useState<NewElection>(QuickPollTemplate)
     const [titleError, setTitleError] = useState(false)
     const onSubmitElection = async (election) => {
         // calls post election api, throws error if response not ok
@@ -78,6 +78,8 @@ const QuickPoll = ({ authSession }) => {
         updateFunc(electionCopy)
         setElectionData(electionCopy)
     };
+
+    const createElectionContext = useContext(CreateElectionContext);
 
     const onSubmit = (e) => {
         e.preventDefault()
@@ -154,7 +156,6 @@ const QuickPoll = ({ authSession }) => {
                 <StyledTextField
                     autoFocus
                     error={titleError}
-                    helperText={titleError ? "Election name is required" : ""}
                     id="election-name"
                     name="name"
                     type="text"
@@ -162,6 +163,9 @@ const QuickPoll = ({ authSession }) => {
                     label="What is your poll question?"
                     sx={{
                         label: {fontWeight: 600, fontSize: 18}
+                    }}
+                    inputProps={{
+                        minLength: 3
                     }}
                     required
                     onChange={(e) => {
@@ -212,7 +216,8 @@ const QuickPoll = ({ authSession }) => {
                     <StyledButton
                         variant="contained"
                         disabled={isPending}
-                        href='/CreateElection'>
+                        onClick={() => createElectionContext.openDialog(election)}
+                    >
                         Explore more settings
                     </StyledButton>
                 }

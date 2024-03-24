@@ -15,10 +15,38 @@ import { usePostElection } from "~/hooks/useAPI";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 import { useNavigate } from "react-router";
 
+/////// PROVIDER SETUP /////
 export interface ICreateElectionContext{
     open: boolean
-    setOpen: Dispatch<SetStateAction<boolean>>;
+    quickPoll: NewElection
+    openDialog: (quickPoll?:NewElection) => void
+    closeDialog: () => void
 }
+
+export const CreateElectionContext = createContext<ICreateElectionContext>(null);
+
+export const CreateElectionContextProvider = ({children}) => {
+    const [open, setOpen] = useState(false);
+    const [quickPoll, setQuickPoll] = useState(undefined);
+
+    const openDialog = (quickPoll:NewElection = undefined) =>{
+        setQuickPoll(quickPoll);
+        setOpen(true);
+    }
+
+    const closeDialog = () =>{
+        setQuickPoll(undefined);
+        setOpen(false);
+    }
+
+    return <CreateElectionContext.Provider
+        value={{open, quickPoll, openDialog, closeDialog}}
+    >
+        {children}
+    </CreateElectionContext.Provider>
+}
+
+/////// DIALOG /////
 
 const defaultElection: NewElection = {
     title: '',
@@ -45,37 +73,38 @@ const defaultElection: NewElection = {
 }
 
 const templateMappers = {
-    'demo': (election) => ({
+    'demo': (election:NewElection):NewElection => ({
         ...election,
+        is_public: true,
         settings: {
             ...election.settings,
-            is_public: true
         }
     }),
-    'public': (election) => ({
+    'public': (election:NewElection):NewElection => ({
         ...election,
+        is_public: true,
         settings: {
             ...election.settings,
             voter_authentication: {
                 ...election.settings.voter_authentication,
                 ip_address: true
             },
-            is_public: true
         }
     }),
-    'unlisted': (election) => ({
+    'unlisted': (election:NewElection):NewElection => ({
         ...election,
+        is_public: false,
         settings: {
             ...election.settings,
             voter_authentication: {
                 ...election.settings.voter_authentication,
                 ip_address: true
             },
-            is_public: false
         }
     }),
     'email_list': (election) => ({
         ...election,
+        is_public: false,
         settings: {
             ...election.settings,
             voter_authentication: {
@@ -97,18 +126,6 @@ const templateMappers = {
             is_public: false
         }
     }),
-}
-
-export const CreateElectionContext = createContext<ICreateElectionContext>(null);
-
-export const CreateElectionContextProvider = ({children}) => {
-    const [open, setOpen] = useState(false);
-
-    return <CreateElectionContext.Provider
-        value={{open, setOpen}}
-    >
-        {children}
-    </CreateElectionContext.Provider>
 }
 
 const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
@@ -161,12 +178,11 @@ export default () => {
 
     const onClose = () => {
         setActiveStep(0);
-        createElectionContext.setOpen(false);
+        createElectionContext.closeDialog();
     };
 
     const [errors, setErrors] = useState({title: ''});
 
-    const [quickPoll, setQuickPoll] = useLocalStorage<NewElection>('QuickPoll', null)
     const [election, setElection] = useState(defaultElection);
 
     // TODO: it would be cool to define a useTranslationExt that did the substitutions for me
@@ -184,19 +200,23 @@ export default () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        if(quickPoll == null) return;
+        let q = createElectionContext.quickPoll;
+        if(!createElectionContext.quickPoll) return;
+        console.log(q);
+
+        // quick poll also specifies a number of settings but we're not keeping those, we're only keeping the information that the user specified
         setElection({
-            ...election,
-            title: quickPoll.title,
+            ...defaultElection,
+            title: q.title,
             races: [
                 {
-                    ...quickPoll.races[0],
-                    title: quickPoll.title,
-                    candidates: quickPoll.races[0].candidates.filter(candidate => candidate.candidate_name.length > 0)
+                    ...q.races[0],
+                    title: q.title,
+                    candidates: q.races[0].candidates.filter(candidate => candidate.candidate_name.length > 0)
                 }
             ]
         }) 
-    }, [quickPoll])
+    }, [createElectionContext.quickPoll])
 
     const onAddElection = async (election) => {
         // calls post election api, throws error if response not ok
@@ -207,7 +227,6 @@ export default () => {
         })
         if (!newElection)  throw Error("Error submitting election");
 
-        setQuickPoll(null)
         navigate(`/${newElection.election.election_id}/admin`)
         onClose()
     }
