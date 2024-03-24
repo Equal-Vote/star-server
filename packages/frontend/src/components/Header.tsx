@@ -161,7 +161,7 @@ const Header = () => {
                 {/**** ACCOUNT OPTIONS ****/}
                 <Box sx={{ flexGrow: 0, display: 'flex' }}>
                     {authSession.isLoggedIn() && <>
-                        <Button color='inherit' onClick={() => createElectionContext.setOpen(true)} sx={{display: { xs: 'none', md: 'flex' }}}>
+                        <Button color='inherit' onClick={() => createElectionContext.openDialog()} sx={{display: { xs: 'none', md: 'flex' }}}>
                             <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
                                 New Election
                             </Typography>
