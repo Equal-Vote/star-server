@@ -1,11 +1,52 @@
-election_creation_dialog:
-  election_vs_poll_question: Which term best describes your situation?
+# Landing Page -> New Election 
+election_creation:
+  dialog_title: Create an Election or Poll
+
+  term_title: Poll or Election?
+  term_question: Which term best describes your situation?
+
+  title_title: Title?
+  title_question: What's the title for your __LOWERCASE_TERM__? # TERM will be replaced with election or poll
+
+  restricted_title: Restricted?
+  restricted_question: Would you like your __LOWERCASE_TERM__ to be restricted to a pre-defined voter list?
+
+  template_title: Starting template...
+  template_prompt: Choose a starting template, you can always make further tweaks later
+
+  demo_title: Demo __CAPITALIZED_TERM__
+  demo_description: Unlimited votes per device. Great for demonstrations where multiple people are using the same device
+
+  public_title: Public __CAPITALIZED_TERM__
+  public_description: 1 person, 1 vote. __CAPITALIZED_TERM__ will be open to anyone via the public polls & elections page
+
+  unlisted_title: Unlisted __CAPITALIZED_TERM__
+  unlisted_description: 1 person, 1 vote. __CAPITALIZED_TERM__ will be open to anyone via the public elections page
+
+  email_list_title: Email List
+  email_list_description: Provide a list of emails for your voters. Personal links will be sent to each of these voters once the election starts
+
+  id_list_title: ID List
+  id_list_description: Provide a list of ids for your voters. Voters will authenticate themselves using their ID before voting
+
+# Info bubbles
 tips:
   polls_vs_elections:
     title: Polls versus Elections
     description: There's no functional difference between polls and elections. This only impacts which terminology is shown to you and your voters.
-election_vs_poll_terms:
+
+  restricted:
+    title: Restricted Polls or Elections
+    description: Restricted Polls or Elections only allow those on the voter list to vote. The voter list can be a set of emails or voter ids.
+
+# Election vs Poll terminology
+terms:
   election: 
-    name: election
+    type: Election
   poll:
-    name: poll
+    type: Poll
+
+# Election vs Poll terminology
+general:
+  yes: Yes
+  no: No

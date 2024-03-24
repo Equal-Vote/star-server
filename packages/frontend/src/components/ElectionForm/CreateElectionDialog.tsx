@@ -6,6 +6,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import { openFeedback } from "../util";
+import { useTranslation } from "react-i18next";
 
 export interface ICreateElectionContext{
     open: boolean
@@ -25,7 +26,7 @@ export const CreateElectionContextProvider = ({children}) => {
 }
 
 const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
-    {activeStep < 2 && // hard coding this for now
+    {activeStep < 3 && // hard coding this for now
         <StyledButton
             fullWidth={false}
             variant="contained"
@@ -64,8 +65,9 @@ const StartingOption = ({title, description}) => <>
 export default () => {
     const createElectionContext = useContext(CreateElectionContext);
 
-    const [activeStep, setActiveStep] = useState(2);
-    const [electionTerm, setElectionTerm] = useState('');
+    const [activeStep, setActiveStep] = useState(0);
+    const [termType, setTermType] = useState('');
+    const [restricted, setRestricted] = useState(undefined);
     const [allOptions, setAllOptions] = useState(false);
     const [electionTitle, setElectionTitle] = useState('');
     const [errors, setErrors] = useState({title: ''});
@@ -74,6 +76,15 @@ export default () => {
         setActiveStep(0);
         createElectionContext.setOpen(false);
     };
+
+    // TODO: it would be cool to define a useTranslationExt that did the substitutions for me
+    // TODO: automatic tip insertion would also be cool
+    const { t:_t } = useTranslation();
+    let term = termType == ''? '' : _t(`terms.${termType}.type`);
+    // wrap the standard t property so that we can insert the term election vs poll
+    const t = key => _t(key)
+        .replace('__CAPITALIZED_TERM__', term) 
+        .replace('__LOWERCASE_TERM__', term.toLowerCase()); 
 
     return <Dialog
         open={createElectionContext.open}
@@ -84,26 +95,34 @@ export default () => {
         fullWidth
         maxWidth='sm'
     >
-        <DialogTitle> Create an Election or Poll </DialogTitle>
+        <DialogTitle> {t('election_creation.dialog_title')} </DialogTitle>
         <DialogContent ref={contentRef}>
             <Stepper activeStep={activeStep} orientation="vertical">
                 <Step>
-                    <StepLabel>Poll or Election? <strong>{electionTerm}</strong></StepLabel>
+                    <StepLabel>{t('election_creation.term_title')} <strong>{term}</strong></StepLabel>
                     <StepContent>
-                        <Typography>Which term best describes your situation?
+                        <Typography>{t('election_creation.term_question')}
                             <Tip name='polls_vs_elections'/>
                         </Typography>
                         <RadioGroup row>
-                            <FormControlLabel value='Poll' control={<Radio/>} label='Poll' onClick={() => setElectionTerm('Poll')}/>
-                            <FormControlLabel value='Election' control={<Radio/>} label='Election' onClick={() => setElectionTerm('Election')}/>
+                            {['poll', 'election'].map( (type, i) => 
+                                <FormControlLabel
+                                    key={i}
+                                    value={t(`terms.${type}.type`)}
+                                    control={<Radio/>}
+                                    label={t(`terms.${type}.type`)}
+                                    onClick={() => setTermType(type)}
+                                    checked={termType === type}
+                                />
+                            )}
                         </RadioGroup>
-                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={electionTerm != ''}/>
+                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={termType != ''}/>
                     </StepContent>
                 </Step>
                 <Step>
-                    <StepLabel>Title? <strong>{electionTitle}</strong></StepLabel>
+                    <StepLabel>{t('election_creation.title_title')} <strong>{electionTitle}</strong></StepLabel>
                     <StepContent>
-                        <Typography>What's the title for your {electionTerm.toLowerCase()}?</Typography>
+                        <Typography>{t('election_creation.title_question')}</Typography>
                         <ElectionTitleField
                             value={electionTitle}
                             onUpdateValue={
@@ -117,43 +136,43 @@ export default () => {
                     </StepContent>
                 </Step>
                 <Step>
-                    <StepLabel>Choose starting point</StepLabel>
+                    <StepLabel>{t('election_creation.restricted_title')} <strong>{restricted !== undefined && t(`general.${restricted? 'yes' : 'no'}`)}</strong></StepLabel>
                     <StepContent>
-                        <StartingOption title={`Demo ${electionTerm}`} description='Unlimited votes per device. Great for demonstrations where multiple people are using the same device'/>
-                        <StartingOption title={`Public ${electionTerm}`} description={`1 person, 1 vote. ${electionTerm} will be open to anyone via the public polls & elections page`}/>
-                        <StartingOption title={`Unlisted ${electionTerm}`} description={`1 person, 1 vote. ${electionTerm} will be open to anyone via the public elections page`}/>
-                        <StartingOption title={`Email List`} description={`Provide a list of emails for your voters. Personal links will be sent to each of these voters once the election starts`}/>
+                        <Typography>
+                            {t('election_creation.restricted_question')}
+                            <Tip name='restricted'/>
+                        </Typography>
 
-                        <Button
-                            sx={{ width: '100%', ml: -1, display: 'flex', justifyContent: 'left', alignItems: 'center' }}
-                            onClick={() => setAllOptions(all_options => {
-                                if(!all_options){ // !all_options means we're about to enable all options
-                                    setTimeout(() => {
-                                        contentRef.current.scrollTo({
-                                            left: 0,
-                                            top: contentRef.current.scrollHeight,
-                                            behavior: 'smooth'
-                                        })
-                                    }, 100);
-                                }
-                                return !all_options;
-                            }) }
-                        >
-                            {allOptions? <ExpandLess /> : <ExpandMore /> }
-                            <Typography>More Options</Typography>
-                        </Button>
+                        <RadioGroup row>
+                            {[true, false].map( (value, i) => 
+                                <FormControlLabel
+                                    key={i}
+                                    value={value}
+                                    control={<Radio/>}
+                                    label={t(`general.${value? 'yes' : 'no'}`)}
+                                    onClick={() => setRestricted(value)}
+                                    checked={restricted === value}
+                                />
+                            )}
+                        </RadioGroup>
+                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={restricted !== undefined}/>
+                    </StepContent>
+                </Step>
+                <Step>
+                    <StepLabel>{t('election_creation.template_title')}</StepLabel>
+                    <StepContent>
+                        <Typography>
+                            {t('election_creation.template_prompt')}
+                        </Typography>
+                        <Box style={{height: '10px'}}/> {/*hacky padding*/}
+                        {(restricted? ['email_list', 'id_list'] : ['demo', 'public', 'unlisted']).map((key, i) => <>
+                            <StartingOption
+                                title={t(`election_creation.${key}_title`)}
+                                description={t(`election_creation.${key}_description`)}
+                                key={i}
+                            />
+                        </>)}
 
-                        {allOptions && <>
-                            <StartingOption title={`Voter Id List`} description={`Distribute unique ids to your voters. Voters can then access a shared link and then authenticate themselves using their id`}/>
-                            <StartingOption title={`Login Required`} description={`${electionTerm} is open to everyone, but they're required to make an account with their email. This helps reduce spam`}/>
-                            <Box display='flex' flexDirection='row' gap={2} alignItems='center'
-                                sx={{pt: '6px', pb: '6px', pl: '8px', pr: '8px'}}> {/*Matching the button padding*/}
-                                <Typography>Don't see what you're looking for? </Typography>
-                                <Button variant='outlined' onClick={openFeedback}>Send us feedback</Button>
-                            </Box>
-                            <Divider/>
-                        </>}
-                        <Box sx={{height: 20}}/> {/*Hacky spacingj*/}
                         <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={electionTitle != '' && errors.title == ''}/>
                     </StepContent>
                 </Step>

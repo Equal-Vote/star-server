@@ -2,7 +2,7 @@ import * as path from "path";
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import envCompatible from "vite-plugin-env-compatible";
-
+import ViteYaml from '@modyfi/vite-plugin-yaml';
 
 const ENV_PREFIX = "REACT_APP_";
 
@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       envCompatible({ prefix: ENV_PREFIX }),
+      ViteYaml(),
     ],
     resolve: {
       alias: {
