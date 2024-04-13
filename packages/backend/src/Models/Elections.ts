@@ -73,6 +73,7 @@ export default class ElectionsDB implements IElectionStore {
             .selectFrom(tableName)
             .where('state', '=', 'open')
             .where('head', '=', true)
+            .where("is_public", "=", true)
             .selectAll()
             .execute()
 
@@ -89,6 +90,7 @@ export default class ElectionsDB implements IElectionStore {
         let query = this._postgresClient
             .selectFrom(tableName)
             .where('head', '=', true)
+            .where("is_public", "=", true)
             .selectAll()
 
         if (id !== '' || email !== '') {
