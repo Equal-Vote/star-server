@@ -58,6 +58,10 @@ const Header = () => {
             text: 'Help',
             href: 'https://equal-vote.github.io/star-server/'
         },
+        {
+            text: 'Public Elections',
+            href: '/OpenElections'
+        }
     ];
 
     if(flags.isSet('PUBLIC_ELECTIONS')){
