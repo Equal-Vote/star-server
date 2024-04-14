@@ -64,13 +64,6 @@ const Header = () => {
         }
     ];
 
-    if(flags.isSet('PUBLIC_ELECTIONS')){
-        navItems.push({
-            text: 'Public Elections',
-            href: '/OpenElections',
-        });
-    }
-
     const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
 
     return (
