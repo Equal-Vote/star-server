@@ -79,11 +79,11 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
 
     var pieData = [
         {
-            name: `⭐${(results.summaryData.candidates[winnerIndex].name.length > 40)? results.summaryData.candidates[winnerIndex].name.slice(0, 37).concat('...') : results.summaryData.candidates[winnerIndex].name}`,
+            name: `⭐${(results.summaryData.candidates[winnerIndex].name.length > 20)? results.summaryData.candidates[winnerIndex].name.slice(0, 17).concat('...') : results.summaryData.candidates[winnerIndex].name}`,
             votes: winnerVotes
         },
         {
-            name: (results.summaryData.candidates[runnerUpIndex].name.length > 40)? results.summaryData.candidates[runnerUpIndex].name.slice(0, 37).concat('...') : results.summaryData.candidates[runnerUpIndex].name,
+            name: (results.summaryData.candidates[runnerUpIndex].name.length > 20)? results.summaryData.candidates[runnerUpIndex].name.slice(0, 17).concat('...') : results.summaryData.candidates[runnerUpIndex].name,
             votes: runnerUpVotes
         },
     ];
