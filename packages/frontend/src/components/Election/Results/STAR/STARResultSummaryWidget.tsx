@@ -33,7 +33,7 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
 
     const histData = results.summaryData.candidates
         .map((c, i) => ({
-            name: c.name,
+            name: (c.name.length > 40)? c.name.slice(0, 37).concat('...') : c.name,
             index: i,
             votes: results.summaryData.totalScores[i].score,
             // vvvv HACK to get the bars to fill the whole width, this is useful if we want to test the graph padding
