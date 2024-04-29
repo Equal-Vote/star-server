@@ -54,6 +54,25 @@ Once you have the prerequisites installed, you need to prepare your development 
 
    > Please do not ignore any linting errors. They are meant to **help** you and to ensure a clean and simple codebase.
 
+## Learning the Tech
+
+Our stack uses typescript for both frontend and backend, and we use React to render the webpages. 
+
+If haven't worked with those technologies before, I recommend following the crash courses before getting setup
+
+### The basics
+Here's some videos to quickly get up to speed on the core skills
+ * [Javascript Crash Course](https://www.youtube.com/watch?v=FtaQSdrl7YA) : You'll need to understand Javascript before learning typescript. This crash course also does a great job of getting you onboarded to general web development as well as covering the javascript.
+ * [Typescript Crash Course](https://www.youtube.com/watch?v=ahCwqrYpIuM) : Typescript adds a couple of features to Javascript. You can probably understand most of our code base with just Javascript knowledge, but it's also good to have the context on Typescript. This video is much shorter, just to give you a broad typescript overview. 
+ * [React Crash Course](https://www.youtube.com/watch?v=Rh3tobg7hEo)
+ * (Optional) I also found frontendexpert.io very helpful to give an overview of everything, but it does cost money
+
+### Additional Reading
+
+We compile our typescript using Vite, you can learn more in the [Vite](https://vitejs.dev/) and [Vite Awesome Repo](https://github.com/vitejs/awesome-vite).
+
+To learn more React, check out the [React documentation](https://reactjs.org/).
+
 ## Fork the repository on GitHub
 
 [Forking](https://help.github.com/articles/about-forks/) is a step where you get your own copy of star.vote's main repository (a.k.a _repo_) on GitHub.
@@ -472,11 +491,7 @@ Deletes the node_modules and build artifacts for the entire project.
 
 Runs the frontend in preview mode (which serves the locally built and bundled artifacts without hot module replacement.
 
-## Learn More
 
-You can learn more in the [Vite](https://vitejs.dev/) and [Vite Awesome Repo](https://github.com/vitejs/awesome-vite).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## Troubleshooting
 
