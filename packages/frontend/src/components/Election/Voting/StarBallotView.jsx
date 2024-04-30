@@ -31,7 +31,7 @@ export default function StarBallotView() {
         Score other candidates as desired.
       </Typography>
       <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
-        Equal scores indicate no preference.
+        Equal scores indicate equal preference.
       </Typography>
     </>
   )
