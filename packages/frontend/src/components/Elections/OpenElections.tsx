@@ -21,7 +21,7 @@ export default () => {
         data={openElectionsData}
         isPending={isPending}
         pendingMessage='Loading Elections...'
-        handleOnClick={(election) => navigate(`/${String(election.election_id)}`)}
+        handleOnClick={(election) => navigate(`/${String(election.raw.election_id)}`)}
         defaultSortBy='title'
         emptyContent='No Election Invitations'
     />
