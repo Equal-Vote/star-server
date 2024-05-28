@@ -12,7 +12,7 @@ import { useCookie } from '../../hooks/useCookie';
 import { Election, NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { CreateElectionContext } from './CreateElectionDialog.js';
 
-const QuickPoll = ({ authSession }) => {
+const QuickPoll = ({ authSession, methodName, grow }) => {
     const [tempID, setTempID] = useCookie('temp_id', '0')
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = usePostElection()
@@ -148,11 +148,19 @@ const QuickPoll = ({ authSession }) => {
 
     return (
         <form onSubmit={onSubmit} >
-            <Box sx={{
+            <Box 
+            sx={{
                 display: 'flex',
                 gap: 2,
                 flexDirection: 'column',
+                textAlign: 'center',
+                backgroundColor: "#EEEEEE",
+                padding: 3,
+                borderRadius: '20px',
             }}>
+                <Typography component="h2"
+                    className={grow? 'heroGrow' : 'heroShrink'}
+                >Try a quick poll with {methodName}</Typography>
                 <StyledTextField
                     autoFocus
                     error={titleError}
@@ -161,9 +169,6 @@ const QuickPoll = ({ authSession }) => {
                     type="text"
                     value={election.title}
                     label="What is your poll question?"
-                    sx={{
-                        label: {fontWeight: 600, fontSize: 18}
-                    }}
                     inputProps={{
                         minLength: 3
                     }}
@@ -185,9 +190,6 @@ const QuickPoll = ({ authSession }) => {
                         type="text"
                         value={candidate.candidate_name}
                         label={`Option ${index + 1}`}
-                        sx={{
-                            label: {fontWeight: 600, fontSize: 18}
-                        }}
                         onChange={(e) => {
                             onUpdateCandidate(index, e.target.value)
                         }}
