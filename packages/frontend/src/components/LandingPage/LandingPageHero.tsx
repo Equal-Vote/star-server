@@ -1,45 +1,90 @@
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import QuickPoll from '../ElectionForm/QuickPoll'
 import useAuthSession from '../AuthSessionContextProvider'
 import { useThemeSelector } from '../../theme'
 import useFeatureFlags from '../FeatureFlagContextProvider'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
+import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
+import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 
 export default ({}) => {
     const authSession = useAuthSession();
     const themeSelector = useThemeSelector();
     const flags = useFeatureFlags();
     const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
+
+    const [transitionStep, setTransitionStep] = useState(10000);
+    const [methodIndex, setMethodIndex] = useState(0);
+    const timeouts = useRef([])
+
+    const methodTitles = [
+        'STAR Voting',
+        'Approval',
+        'Ranked Robin'
+    ];
+
+    const methodImages = [
+        '/images/star_ballot.png',
+        '/images/approval_ballot.png',
+        '/images/ranked_ballot.png',
+    ];
+
+    const methodOneLiners = [
+        'Recommended for accuracy',
+        'Recommended for simplicity',
+        'Recommended for ranking',
+    ];
+
+    const nextMethod = (offset) => {
+        setMethodIndex((methodIndex+offset+methodTitles.length)%methodTitles.length);
+        // I need the gaps to be at least 17 so that we're guaranteed an animation frame 
+        console.log(timeouts);
+        timeouts.current.forEach((t) => clearTimeout(t))
+        setTransitionStep(0);
+        timeouts.current = [
+            setTimeout(() => setTransitionStep(1), 0+30),
+            setTimeout(() => setTransitionStep(2), 150),
+            setTimeout(() => setTransitionStep(3), 150+30),
+            setTimeout(() => setTransitionStep(4), 500),
+            setTimeout(() => setTransitionStep(5), 500+30),
+        ];
+    }
+
+    const arrowSX = {transition: 'transform .2s', transform: 'scale(1)', '&:hover': {transform: 'scale(1.3)'}}
+
     return (
         <Box sx={{
-            maxWidth: '1300px',
+            maxWidth: '1500px',
             margin: 'auto',
             p: { xs: 2, md: 2 },
         }}>
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={7}>
-                    <Typography variant="h3" style={{ fontWeight: 700 }} >
-                        {title}
+            <Box display='flex' flexDirection='row' sx={{gap: 20}}>
+                <Box display='flex' flexDirection='column' sx={{alignItems: 'center', textAlign: 'center'}}>
+                    <Typography variant="h4">
+                        Create polls and elections with
                     </Typography>
-                    <Typography variant="h5" style={{
-                        opacity: '0.7',
-                    }}>
-                        Open source election software
-                    </Typography>
-                    <Typography variant="h5" style={{
-                        opacity: '0.7',
-                    }}>
-                        From quick polls to highly secure elections
-                    </Typography>
-                    <Typography variant="h5" style={{
-                        opacity: '0.7',
-                        paddingBottom: '30px',
-                    }}>
-                        Voting methods approved by the <a target="_blank" href={'https://www.equal.vote'} style={{ color: 'inherit', textDecoration: 'underline' }}>Equal Vote Coalition</a>
-                    </Typography>
+                    <Box width='90%' display='flex' flexDirection='row' justifyContent='space-between' sx={{alignItems: 'center', paddingBottom: 3}}>
+                        <ArrowBackIosRoundedIcon sx={arrowSX} onClick={() => nextMethod(-1)}/>
+                        <Typography variant="h3" className={transitionStep==0? 'heroGrow' : 'heroShrink'}>
+                            {methodTitles[methodIndex]}
+                        </Typography>
+                        <ArrowForwardIosRoundedIcon sx={arrowSX} onClick={() => nextMethod(1)}/>
+                    </Box>
+                    <Box
+                        className={transitionStep==2? 'heroGrow' : 'heroShrink'} 
+                    >
+                        <Box
+                            height='200px'
+                            component='img'
+                            src={methodImages[transitionStep < 2 ? (methodIndex+methodTitles.length-1)%methodTitles.length : methodIndex]}
+                        />
+                        <Typography variant="h4">
+                            {methodOneLiners[transitionStep < 2 ? (methodIndex+methodTitles.length-1)%methodTitles.length : methodIndex]}
+                        </Typography>
+                    </Box>
                     {flags.isSet('ELECTION_TALLY') &&
                         <Box sx={{
                             display: 'flex',
@@ -68,13 +113,13 @@ export default ({}) => {
                             </Box>
                         </Box>
                     }
-                </Grid>
-                <Grid item xs={12} md={5}>
-                    <Box sx={{paddingTop: {xs: 10, md: 0}}}>
-                        <QuickPoll authSession={authSession} />
-                    </Box>
-                </Grid>
-            </Grid>
+                </Box>
+                <QuickPoll
+                    authSession={authSession}
+                    methodName={methodTitles[transitionStep < 4 ? (methodIndex+methodTitles.length-1)%methodTitles.length : methodIndex]}
+                    grow={transitionStep == 4}
+                />
+            </Box>
         </Box>
     )
 }

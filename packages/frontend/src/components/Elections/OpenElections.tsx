@@ -14,6 +14,8 @@ export default () => {
         () => data?.open_elections ? [...data.open_elections] : [],
         [data]
     );
+
+    console.log(openElectionsData)
             
     return <EnhancedTable
         title='Open Elections'
