@@ -38,6 +38,31 @@ tips:
   restricted:
     title: Restricted Polls or Elections
     description: Restricted Polls or Elections only allow those on the voter list to vote. The voter list can be a set of emails or voter IDs.
+  
+  star_voting:
+    title: STAR Voting
+    description: Uses a 0-5 star ballot, and the vote is tallied in 2 rounds. First the stars are added together, and then the 2 front runners face each other in an automatic runoff
+
+  approval:
+    title: Approval Voting
+    description: Voters pick as many candidates as they like, and then most votes wins
+
+  ranked_robin:
+    title: Ranked Robin
+    description: The candidate who wins the most runoffs wins
+
+# Text for hero section
+hero: 
+  methods:
+    star_voting:
+      title: STAR Voting
+      one_liner: Recommended for accuracy
+    approval:
+      title: Approval
+      one_liner: Recommended for simplicity
+    ranked_robin:
+      title: Ranked Robin
+      one_liner: Recommended for ranking
 
 # Election vs Poll terminology
 terms:

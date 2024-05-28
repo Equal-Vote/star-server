@@ -9,6 +9,8 @@ import useFeatureFlags from '../FeatureFlagContextProvider'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
+import { Tip } from '../styles'
+import { useTranslation } from 'react-i18next'
 
 export default ({}) => {
     const authSession = useAuthSession();
@@ -20,11 +22,11 @@ export default ({}) => {
     const [methodIndex, setMethodIndex] = useState(0);
     const timeouts = useRef([])
 
-    const methodTitles = [
-        'STAR Voting',
-        'Approval',
-        'Ranked Robin'
-    ];
+    const methodKeys = [
+        'star_voting',
+        'approval',
+        'ranked_robin',
+    ]
 
     const methodImages = [
         '/images/star_ballot.png',
@@ -32,14 +34,10 @@ export default ({}) => {
         '/images/ranked_ballot.png',
     ];
 
-    const methodOneLiners = [
-        'Recommended for accuracy',
-        'Recommended for simplicity',
-        'Recommended for ranking',
-    ];
+    const {t} = useTranslation();
 
     const nextMethod = (offset) => {
-        setMethodIndex((methodIndex+offset+methodTitles.length)%methodTitles.length);
+        setMethodIndex((methodIndex+offset+methodKeys.length)%methodKeys.length);
         // I need the gaps to be at least 17 so that we're guaranteed an animation frame 
         console.log(timeouts);
         timeouts.current.forEach((t) => clearTimeout(t))
@@ -68,9 +66,14 @@ export default ({}) => {
                     </Typography>
                     <Box width='90%' display='flex' flexDirection='row' justifyContent='space-between' sx={{alignItems: 'center', paddingBottom: 3}}>
                         <ArrowBackIosRoundedIcon sx={arrowSX} onClick={() => nextMethod(-1)}/>
-                        <Typography variant="h3" className={transitionStep==0? 'heroGrow' : 'heroShrink'}>
-                            {methodTitles[methodIndex]}
-                        </Typography>
+                        <Box display='flex' flexDirection='row' className={transitionStep==0? 'heroGrow' : 'heroShrink'} sx={{alignItems: 'center'}}>
+                            <Typography variant="h3">
+                                {t(`hero.methods.${methodKeys[methodIndex]}.title`)} 
+                            </Typography>
+                            <Box height='100%' sx={{alignItem: 'top'}}>
+                                <Tip name={methodKeys[methodIndex]}/>
+                            </Box>
+                        </Box>
                         <ArrowForwardIosRoundedIcon sx={arrowSX} onClick={() => nextMethod(1)}/>
                     </Box>
                     <Box
@@ -79,10 +82,10 @@ export default ({}) => {
                         <Box
                             height='200px'
                             component='img'
-                            src={methodImages[transitionStep < 2 ? (methodIndex+methodTitles.length-1)%methodTitles.length : methodIndex]}
+                            src={methodImages[transitionStep < 2 ? (methodIndex+methodKeys.length-1)%methodKeys.length : methodIndex]}
                         />
                         <Typography variant="h4">
-                            {methodOneLiners[transitionStep < 2 ? (methodIndex+methodTitles.length-1)%methodTitles.length : methodIndex]}
+                            {t(`hero.methods.${methodKeys[transitionStep < 2 ? (methodIndex+methodKeys.length-1)%methodKeys.length : methodIndex]}.one_liner`)} 
                         </Typography>
                     </Box>
                     {flags.isSet('ELECTION_TALLY') &&
@@ -116,7 +119,7 @@ export default ({}) => {
                 </Box>
                 <QuickPoll
                     authSession={authSession}
-                    methodName={methodTitles[transitionStep < 4 ? (methodIndex+methodTitles.length-1)%methodTitles.length : methodIndex]}
+                    methodName={t(`hero.methods.${methodKeys[transitionStep < 4 ? (methodIndex+methodKeys.length-1)%methodKeys.length : methodIndex]}.title`)}
                     grow={transitionStep == 4}
                 />
             </Box>

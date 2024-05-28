@@ -15,8 +15,6 @@ export default () => {
         [data]
     );
 
-    console.log(openElectionsData)
-            
     return <EnhancedTable
         title='Open Elections'
         headKeys={['title', 'start_time', 'end_time', 'description']}
