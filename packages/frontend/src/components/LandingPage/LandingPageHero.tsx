@@ -9,7 +9,7 @@ import useFeatureFlags from '../FeatureFlagContextProvider'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
-import { Tip } from '../styles'
+import { StyledButton, Tip } from '../styles'
 import { useTranslation } from 'react-i18next'
 
 export default ({}) => {
@@ -19,6 +19,7 @@ export default ({}) => {
     const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
 
     const [transitionStep, setTransitionStep] = useState(10000);
+    const [prevMethodIndex, setPrevMethodIndex] = useState(0);
     const [methodIndex, setMethodIndex] = useState(0);
     const timeouts = useRef([])
 
@@ -26,20 +27,24 @@ export default ({}) => {
         'star_voting',
         'approval',
         'ranked_robin',
+        'more_methods'
     ]
 
     const methodImages = [
         '/images/star_ballot.png',
         '/images/approval_ballot.png',
         '/images/ranked_ballot.png',
+        '/images/ranked_ballot.png',
     ];
 
     const {t} = useTranslation();
 
     const nextMethod = (offset) => {
-        setMethodIndex((methodIndex+offset+methodKeys.length)%methodKeys.length);
+        let n = methodIndex + offset;
+        if(n < 0 || n >= methodKeys.length) return;
+        setPrevMethodIndex(methodIndex);
+        setMethodIndex(n);
         // I need the gaps to be at least 17 so that we're guaranteed an animation frame 
-        console.log(timeouts);
         timeouts.current.forEach((t) => clearTimeout(t))
         setTransitionStep(0);
         timeouts.current = [
@@ -51,8 +56,10 @@ export default ({}) => {
         ];
     }
 
-    const arrowSX = {transition: 'transform .2s', transform: 'scale(1)', '&:hover': {transform: 'scale(1.3)'}}
-    let imgIndex = transitionStep < 2 ? (methodIndex+methodKeys.length-1)%methodKeys.length : methodIndex
+    const arrowSX = {transition: 'transform .2s', transform: 'scale(1)', '&:hover': {transform: 'scale(1.3)'}};
+    let imgIndex = transitionStep < 2 ? prevMethodIndex : methodIndex;
+    let quickPollIndex = transitionStep < 4 ? prevMethodIndex : methodIndex;
+    if(quickPollIndex == methodKeys.length-1) quickPollIndex = methodKeys.length-2;
 
     return (
         <Box display='flex' flexDirection='row' justifyContent='center' flexWrap='wrap' sx={{
@@ -71,33 +78,52 @@ export default ({}) => {
                     Create polls and elections with
                 </Typography>
                 <Box width='90%' display='flex' flexDirection='row' justifyContent='space-between' sx={{alignItems: 'center', paddingBottom: 3}}>
-                    <ArrowBackIosRoundedIcon sx={arrowSX} onClick={() => nextMethod(-1)}/>
+                    <ArrowBackIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == 0? 0 : 1)}} onClick={() => nextMethod(-1)}/>
                     <Box display='flex' flexDirection='row' className={transitionStep==0? 'heroGrow' : 'heroShrink'} sx={{alignItems: 'center'}}>
                         <Typography variant="h3">
                             {t(`hero.methods.${methodKeys[methodIndex]}.title`)} 
                         </Typography>
-                        <Box height='100%' sx={{alignItem: 'top'}}>
-                            <Tip name={methodKeys[methodIndex]}/>
-                        </Box>
+                        {methodIndex != methodKeys.length-1 &&
+                            <Box height='100%' sx={{alignItem: 'top'}}>
+                                <Tip name={methodKeys[methodIndex]}/>
+                            </Box>
+                        }
                     </Box>
-                    <ArrowForwardIosRoundedIcon sx={arrowSX} onClick={() => nextMethod(1)}/>
+                    <ArrowForwardIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == methodKeys.length-1? 0 : 1)}} onClick={() => nextMethod(1)}/>
                 </Box>
+
                 <Box
                     className={transitionStep==2? 'heroGrow' : 'heroShrink'} 
                 >
-                    <Box
-                        sx={{
-                            maxHeight: '200px'
-                        }}
-                        component='img'
-                        src={methodImages[imgIndex]}
-                    />
-                    <Typography variant="h5">
-                        {t(`hero.methods.${methodKeys[imgIndex]}.short_description`)} 
-                    </Typography>
-                    <Typography variant="h5">
-                        {t(`hero.methods.${methodKeys[imgIndex]}.recommendation`)} 
-                    </Typography>
+                    {imgIndex != methodKeys.length-1 ? <>
+                        <Box
+                            sx={{
+                                maxHeight: '200px'
+                            }}
+                            component='img'
+                            src={methodImages[imgIndex]}
+                        />
+                        <Typography variant="h5">
+                            {t(`hero.methods.${methodKeys[imgIndex]}.short_description`)} 
+                        </Typography>
+                        <Typography variant="h5">
+                            {t(`hero.methods.${methodKeys[imgIndex]}.recommendation`)} 
+                        </Typography>
+                    </>:<>
+                        <Typography variant="h5">
+                            {t(`hero.methods.${methodKeys[imgIndex]}.short_description`)} 
+                        </Typography>
+                        <StyledButton
+                            type='submit'
+                            variant="contained"
+                            onClick={() => authSession.openLogin()}
+                            sx={{
+                                width: '75%'
+                            }}
+                        >
+                            Sign In
+                        </StyledButton>
+                    </>}
                 </Box>
                 {flags.isSet('ELECTION_TALLY') &&
                     <Box sx={{
@@ -130,8 +156,8 @@ export default ({}) => {
             </Box>
             <QuickPoll
                 authSession={authSession}
-                methodName={t(`hero.methods.${methodKeys[transitionStep < 4 ? (methodIndex+methodKeys.length-1)%methodKeys.length : methodIndex]}.title`)}
-                grow={transitionStep == 4}
+                methodName={t(`hero.methods.${methodKeys[quickPollIndex]}.title`)}
+                grow={transitionStep == 4 && methodIndex != methodKeys.length-1}
             />
         </Box>
     )
