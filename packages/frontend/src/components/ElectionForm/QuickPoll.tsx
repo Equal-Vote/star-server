@@ -157,6 +157,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                 backgroundColor: "#EEEEEE",
                 padding: 3,
                 borderRadius: '20px',
+                minWidth: '400px'
             }}>
                 <Typography component="h2"
                     className={grow? 'heroGrow' : 'heroShrink'}
@@ -219,12 +220,21 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                     Create Quick Poll
                 </StyledButton>
                 {!authSession.isLoggedIn() ?
-                    <StyledButton
-                        variant="contained"
+                    <Button
+                        variant="outlined"
+                        onClick={() => authSession.openLogin()}
+                        sx={{
+                            width: '90%',
+                            p: 1,
+                            m: 'auto',
+                            boxShadow: 2,
+                            fontWeight: 'bold',
+                            fontSize: 16,
+                        }}
                         disabled={isPending}
-                        onClick={() => authSession.openLogin()}>
+                    >
                         Sign in for more settings
-                    </StyledButton>
+                    </Button>
                     :
                     <Button
                         variant="outlined"
