@@ -56,13 +56,16 @@ hero:
   methods:
     star_voting:
       title: STAR Voting
-      one_liner: Recommended for accuracy
+      short_description: Elects the majority preferred winner between the two candidates with highest overall support
+      recommendation: Recommended for accuracy
     approval:
       title: Approval
-      one_liner: Recommended for simplicity
+      short_description: Elects most approved candidate
+      recommendation: Recommended for simplicity
     ranked_robin:
       title: Ranked Robin
-      one_liner: Recommended for ranking
+      short_description: Elects majority preferred winner
+      recommendation: Recommended for ranking
 
 # Election vs Poll terminology
 terms:
