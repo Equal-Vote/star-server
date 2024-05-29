@@ -66,6 +66,9 @@ hero:
       title: Ranked Robin
       short_description: Elects majority preferred winner
       recommendation: Recommended for ranking
+    more_methods:
+      title: and more
+      short_description: Sign in for more methods like Choose-One, RCV, STV, or STAR-PR!
 
 # Election vs Poll terminology
 terms:
