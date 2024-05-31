@@ -148,6 +148,17 @@ const Header = () => {
                                 New Election
                             </Typography>
                         </Button>
+                        <IconButton
+                            size="large"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleOpenUserMenu}
+                            color="inherit"
+                            sx={{display: { xs: 'inline', md: 'none' }}}
+                            >
+                            <AccountCircleIcon />
+                        </IconButton>
                         <Button color='inherit' onClick={handleOpenUserMenu} sx={{display: { xs: 'none', md: 'flex' }}}>
                             <Typography sx={navTextSx} color={headerTextColor}>
                                 Hello, {authSession.getIdField('given_name')}
