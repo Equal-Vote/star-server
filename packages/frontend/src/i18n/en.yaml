@@ -53,6 +53,7 @@ tips:
 
 # Text for hero section
 hero: 
+  title: Create polls and elections with
   methods:
     star_voting:
       title: STAR Voting
@@ -69,6 +70,16 @@ hero:
     more_methods:
       title: and more
       short_description: Sign in for more methods like Choose-One, RCV, STV, or STAR-PR!
+      sign_in: Sign In
+  
+quick_poll:
+  title: Try a quick poll with __METHOD_NAME__
+  question_prompt: What is your poll question?
+  option_prompt: Option __NUMBER__
+  create: Create Quick Poll
+  continue_with_editor: Continue with Full Editor
+  sign_in: Sign in for more settings
+  clear_all: Clear All
 
 # Election vs Poll terminology
 terms:

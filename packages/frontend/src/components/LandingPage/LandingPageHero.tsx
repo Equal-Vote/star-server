@@ -75,9 +75,7 @@ export default ({}) => {
                 width: {xs: '100%', md: '600px'}, // not the same ax maxWidth 600px!, we want to make sure the carousel doesn't effect size on larger screens
                 minHeight: '600px'
             }}>
-                <Typography variant="h4">
-                    Create polls and elections with
-                </Typography>
+                <Typography variant="h4"> {t('hero.title')} </Typography>
                 <Box width='90%' display='flex' flexDirection='row' justifyContent='space-between' sx={{alignItems: 'center', paddingBottom: 3}}>
                     <ArrowBackIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == 0? 0 : 1)}} onClick={() => nextMethod(-1)}/>
                     <Box display='flex' flexDirection='row' className={transitionStep==0? 'heroGrow' : 'heroShrink'} sx={{alignItems: 'center'}}>
@@ -122,7 +120,7 @@ export default ({}) => {
                                 width: '75%'
                             }}
                         >
-                            Sign In
+                            {t('hero.methods.more_methods.sign_in')}
                         </StyledButton>
                     </>}
                 </Box>
