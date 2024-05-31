@@ -12,6 +12,7 @@ import { Paper } from '@mui/material';
 import LandingPagePricing from './LandingPage/LandingPagePricing';
 import useFeatureFlags from './FeatureFlagContextProvider';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+
 const LandingPage = () => {
     const flags = useFeatureFlags();
 

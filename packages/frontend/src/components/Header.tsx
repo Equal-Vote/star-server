@@ -18,6 +18,7 @@ import useFeatureFlags from './FeatureFlagContextProvider';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { CreateElectionContext, CreateElectionContextProvider } from './ElectionForm/CreateElectionDialog';
 import { openFeedback } from './util';
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 
 const headerTextColor = 'primary.contrastText'
 const Header = () => {
@@ -47,7 +48,7 @@ const Header = () => {
         setAnchorElUser(null);
     };
 
-    const navVariant = 'h6';
+    const navTextSx = {fontWeight: 'bold', fontSize: '1rem'};
 
     const navItems = [
         {
@@ -67,7 +68,7 @@ const Header = () => {
     const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
 
     return (
-        <AppBar className="navbar" position="sticky" sx={{ backgroundColor: "black", '@media print': {display: 'none', boxShadow: 'none'} }}>
+        <AppBar className="navbar" position="sticky" sx={{ backgroundColor: "black", '@media print': {display: 'none', boxShadow: 'none'}}}>
             <Toolbar>
                 {/**** MOBILE HAMBURGER MENU ****/}
                 <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
@@ -98,12 +99,6 @@ const Header = () => {
                             display: { xs: 'block', md: 'none' },
                         }}
                     >
-                        <MenuItem
-                            component={Link}
-                            href={'https://equal.vote'}
-                        >
-                            Return to Equal Vote
-                        </MenuItem>
                         {navItems.map((item, i) => 
                             <MenuItem
                                 key={`mobile-nav-${i}`}
@@ -119,30 +114,20 @@ const Header = () => {
                     </Menu>
                 </Box>
 
-                {/**** Equal Vote ****/}
+                {/**** Title ****/}
                 <IconButton
                     size="large"
-                    href="https://equal.vote"
-                    sx={{display: {xs: 'none', md: 'flex'}, gap: 1}}>
-                        <ArrowBackIosNewIcon sx={{display: {xs: 'none', md: 'inline'}}}/>
-                        <Avatar src='/favicon.png'/>
-                </IconButton>
-
-                {/**** Title ****/}
-                <Button
                     href="/"
                     sx={{display: 'flex', gap: 1, flexGrow: {xs: '1', md: '0'}}}>
-                        <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
-                            {title}
-                        </Typography>
-                </Button>
+                        <Avatar src='/favicon.png'/>
+                </IconButton>
 
                 {/**** DESKTOP OPTIONS ****/}
                 <Box
                     sx={{ flexGrow: 100, flexWrap: 'wrap', display: { xs: 'none', md: 'flex' }, gap: 2, rowGap: 0 }}>
                     {navItems.map((item, i) => 
                         <Button key={`desktop-nav-${i}`} href={item.href}>
-                            <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                            <Typography sx={navTextSx} color={headerTextColor}>
                                 {item.text}
                             </Typography>
                         </Button>
@@ -159,19 +144,16 @@ const Header = () => {
                 <Box sx={{ flexGrow: 0, display: 'flex' }}>
                     {authSession.isLoggedIn() && <>
                         <Button color='inherit' onClick={() => createElectionContext.openDialog()} sx={{display: { xs: 'none', md: 'flex' }}}>
-                            <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                            <Typography sx={navTextSx} color={headerTextColor}>
                                 New Election
                             </Typography>
                         </Button>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenUserMenu}
-                            color="inherit">
-                            <AccountCircleIcon />
-                        </IconButton>
+                        <Button color='inherit' onClick={handleOpenUserMenu} sx={{display: { xs: 'none', md: 'flex' }}}>
+                            <Typography sx={navTextSx} color={headerTextColor}>
+                                Hello, {authSession.getIdField('given_name')}
+                            </Typography>
+                            <KeyboardArrowDownRoundedIcon />
+                        </Button>
                         <Menu
                             id="menu-appbar"
                             anchorEl={anchorElUser}
@@ -188,9 +170,6 @@ const Header = () => {
                             onClose={handleCloseUserMenu}
                             sx={{ display: 'block'}}
                         >
-                            <MenuItem disabled>
-                                Hello {authSession.getIdField('given_name')}!
-                            </MenuItem>
                             <MenuItem component={Link} href={authSession.accountUrl} target='_blank'>
                                 Your Account
                             </MenuItem>
@@ -236,7 +215,7 @@ const Header = () => {
                     </>}
                     {!authSession.isLoggedIn() &&
                         <Button color='inherit' onClick={() => authSession.openLogin()} >
-                            <Typography variant={navVariant} sx={{ fontWeight: 'bold' }} color={headerTextColor}>
+                            <Typography sx={navTextSx} color={headerTextColor}>
                                 Sign In
                             </Typography>
                         </Button>
