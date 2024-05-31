@@ -103,6 +103,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
             // If only one race, use main eleciton title and description
             newElection.races[0].title = newElection.title
             newElection.races[0].description = newElection.description
+            newElection.races[0].voting_method = methodName
         }
 
         const newCandidates = []

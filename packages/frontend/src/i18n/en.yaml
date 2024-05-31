@@ -55,15 +55,15 @@ tips:
 hero: 
   title: Create polls and elections with
   methods:
-    star_voting:
+    STAR:
       title: STAR Voting
       short_description: Elects the majority preferred winner between the two candidates with highest overall support
       recommendation: Recommended for accuracy
-    approval:
+    Approval:
       title: Approval
       short_description: Elects most approved candidate
       recommendation: Recommended for simplicity
-    ranked_robin:
+    RankedRobin:
       title: Ranked Robin
       short_description: Elects majority preferred winner
       recommendation: Recommended for ranking
