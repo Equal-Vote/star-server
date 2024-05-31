@@ -23,10 +23,11 @@ export default ({}) => {
     const [methodIndex, setMethodIndex] = useState(0);
     const timeouts = useRef([])
 
+    // selected to be consistent with the Race.ts domain_model
     const methodKeys = [
-        'star_voting',
-        'approval',
-        'ranked_robin',
+        'STAR',
+        'Approval',
+        'RankedRobin',
         'more_methods'
     ]
 
