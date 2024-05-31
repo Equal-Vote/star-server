@@ -97,7 +97,7 @@ export default ({}) => {
                     {imgIndex != methodKeys.length-1 ? <>
                         <Box
                             sx={{
-                                maxHeight: '200px'
+                                width: '65%'
                             }}
                             component='img'
                             src={methodImages[imgIndex]}

@@ -160,7 +160,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                 backgroundColor: "#EEEEEE",
                 padding: 3,
                 borderRadius: '20px',
-                minWidth: '400px'
+                minWidth: {xs: '0px', md: '400px'}
             }}>
                 <Typography component="h2"
                     className={grow? 'heroGrow' : 'heroShrink'}
