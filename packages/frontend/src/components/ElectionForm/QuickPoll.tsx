@@ -11,11 +11,14 @@ import { usePostElection } from '../../hooks/useAPI';
 import { useCookie } from '../../hooks/useCookie';
 import { Election, NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { CreateElectionContext } from './CreateElectionDialog.js';
+import { useTranslation } from 'react-i18next';
 
 const QuickPoll = ({ authSession, methodName, grow }) => {
     const [tempID, setTempID] = useCookie('temp_id', '0')
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = usePostElection()
+
+    const {t} = useTranslation();
 
     const QuickPollTemplate: NewElection = {
         title: '',
@@ -161,7 +164,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
             }}>
                 <Typography component="h2"
                     className={grow? 'heroGrow' : 'heroShrink'}
-                >Try a quick poll with {methodName}</Typography>
+                >{t('quick_poll.title').replace('__METHOD_NAME__', methodName)}</Typography>
                 <StyledTextField
                     autoFocus
                     error={titleError}
@@ -169,7 +172,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                     name="name"
                     type="text"
                     value={election.title}
-                    label="What is your poll question?"
+                    label={t('quick_poll.question_prompt')}
                     inputProps={{
                         minLength: 3
                     }}
@@ -190,7 +193,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                         name="candidate-name"
                         type="text"
                         value={candidate.candidate_name}
-                        label={`Option ${index + 1}`}
+                        label={t('quick_poll.option_prompt').replace('__NUMBER__', `${index+1}`)}
                         onChange={(e) => {
                             onUpdateCandidate(index, e.target.value)
                         }}
@@ -208,7 +211,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                         type="button"
                         onClick={() => setElectionData(QuickPollTemplate)}
                         >
-                            <Typography component="p">Clear All</Typography>
+                            <Typography component="p">{t('quick_poll.clear_all')}</Typography>
                         <DeleteIcon />
                     </IconButton>
                 </Box>
@@ -216,8 +219,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                     type='submit'
                     variant="contained"
                     disabled={isPending} >
-
-                    Create Quick Poll
+                    {t('quick_poll.create')}
                 </StyledButton>
                 {!authSession.isLoggedIn() ?
                     <Button
@@ -233,7 +235,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                         }}
                         disabled={isPending}
                     >
-                        Sign in for more settings
+                        {t('quick_poll.sign_in')}
                     </Button>
                     :
                     <Button
@@ -249,7 +251,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                         }}
                         disabled={isPending}
                     >
-                        Continue with full editor
+                        {t('quick_poll.continue_with_editor')}
                     </Button>
                 }
                 

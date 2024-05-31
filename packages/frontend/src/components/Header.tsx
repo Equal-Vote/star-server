@@ -152,7 +152,7 @@ const Header = () => {
                             <Typography sx={navTextSx} color={headerTextColor}>
                                 Hello, {authSession.getIdField('given_name')}
                             </Typography>
-                            <KeyboardArrowDownRoundedIcon />
+                            <KeyboardArrowDownRoundedIcon sx={{transition: 'transform .2s', '&:hover': {transform: 'translateY(3px)'}}}/>
                         </Button>
                         <Menu
                             id="menu-appbar"
