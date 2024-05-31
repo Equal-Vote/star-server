@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Grid from "@mui/material/Grid";
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -11,10 +11,26 @@ import LandingPageTestimonials from './LandingPage/LandingPageTestimonials';
 import { Paper } from '@mui/material';
 import LandingPagePricing from './LandingPage/LandingPagePricing';
 import useFeatureFlags from './FeatureFlagContextProvider';
-
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 const LandingPage = () => {
     const flags = useFeatureFlags();
+
+    const boxRef = useRef(null);
+
+    const [atTop, setAtTop] = useState(true);
+
+    useEffect(() => {
+        const handleScroll = (e) => {
+            setAtTop(window.scrollY == 0);
+        };
+        
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    //apparently box doesn't have onScroll
     return (
+        <div ref={boxRef}>
         <Box sx={{
             width: '100%',
             display: 'flex',
@@ -25,6 +41,16 @@ const LandingPage = () => {
             paddingTop: '8rem',
             paddingBottom: '8rem',
         }}>
+            <Box sx={{position:'absolute', top: '95vh', width: '100%', textAlign: 'center'}}>
+                <KeyboardArrowDownRoundedIcon sx={{
+                    display: {xs:'none', md: 'inline'},
+                    opacity: atTop? .75 : 0,
+                    transition: 'opacity .5s',
+                    transform: 'scale(1.8)',
+                    animation: 'scrollArrowAnimation 2.5s ease-out 0s infinite',
+                    animationDirection: 'alternate'
+                }}/>
+            </Box>
             <LandingPageHero />
             <LandingPageFeatureElections electionIds={
                 (process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')
@@ -61,6 +87,7 @@ const LandingPage = () => {
                 },
             ]} />
         </Box>
+        </div>
     )
 }
 

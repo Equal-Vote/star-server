@@ -323,6 +323,12 @@ code {
   width: 100%;
 }
 
+@keyframes scrollArrowAnimation {
+  0%      {transform: scale(1.8) translateY(0)}
+  90%      {transform: scale(1.8) translateY(0)}
+  100%     {transform: scale(1.8) translateY(-8px)}
+}
+
 .statsWidget strong{
   font-size: 1.3rem;
   color: var(--brand-blue);

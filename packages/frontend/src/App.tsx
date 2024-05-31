@@ -21,6 +21,7 @@ import ComposeContextProviders from './components/ComposeContextProviders'
 import './i18n/i18n'
 
 const App = () => {
+  console.log(document.body.scrollTop)
   return (
     <Router>
       <ComposeContextProviders providers={[
