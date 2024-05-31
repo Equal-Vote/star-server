@@ -62,6 +62,7 @@ export default ({}) => {
     if(quickPollIndex == methodKeys.length-1) quickPollIndex = methodKeys.length-2;
 
     return (
+        <>
         <Box display='flex' flexDirection='row' justifyContent='center' flexWrap='wrap' sx={{
             margin: 'auto',
             gap: {s: 6, md: 20}, 
@@ -160,5 +161,6 @@ export default ({}) => {
                 grow={transitionStep == 4 && methodIndex != methodKeys.length-1}
             />
         </Box>
+        </>
     )
 }

@@ -34,7 +34,8 @@ var _globalData: GlobalData;
 function postgres(): any {
     if (_postgresClient == null) {
         var connectionConfig = pgConnectionObject();
-        Logger.debug(_appInitContext, `Postgres Config:  ${JSON.stringify(connectionConfig)}}`);
+        // We can't log this since it has sensitive information
+        // Logger.debug(_appInitContext, `Postgres Config:  ${JSON.stringify(connectionConfig)}}`);
         _postgresClient = new Pool(connectionConfig);
 
         const dialect = new PostgresDialect({
