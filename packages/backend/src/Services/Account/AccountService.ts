@@ -16,7 +16,7 @@ export default class AccountService {
 
     constructor() {
         const keycloakAuthConfig = {
-            clientId: 'star_vote_web',
+            clientId: 'web',
             responseType: 'code',
             endpoints: {
                 login: `${process.env.KEYCLOAK_URL}/auth`,

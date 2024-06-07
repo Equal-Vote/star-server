@@ -11,7 +11,7 @@ import jwt_decode from 'jwt-decode'
 let keycloakBaseUrl = process.env.REACT_APP_KEYCLOAK_URL;
 
 const keycloakAuthConfig = {
-    clientId: 'star_vote_web',
+    clientId: 'web',
     responseType: 'code',
     redirectUri: window.location.href.split('?')[0],
     logoutUri: window.location.origin,
