@@ -53,15 +53,30 @@ jobs:
       # 
       # * https://github.com/marketplace/actions/workflow-dispatch
       # * https://github.com/marketplace/actions/trigger-workflow-and-wait
+      #
+      # Deploy to dev.star.vote (star-server-infra Azure Container App)
       - name: Checkout
         uses: actions/checkout@v4
         with:
           repository: 'Equal-Vote/star-server-infra'
           token: ${{ secrets.GH_PAT }}
-
-      - name: Update star-server-infra repo variables.tf with new container tag
+      - name: Update star-server-infra
         run: |
           sed -i "s#\"ghcr.io/${{ env.REPO }}:.*#\"ghcr.io/${{ env.REPO }}:sha-${GITHUB_SHA::7}\"#" variables.tf
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git commit -am "Automatically updating star-server image."
+          git push
+
+      # Deploy to star.sandbox.star.vote (argocd Kubernetes)
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: 'Equal-Vote/argocd'
+          token: ${{ secrets.GH_PAT }}
+      - name: Update argocd repo
+        run: |
+          yq -i '.image.tag = "sha-${GITHUB_SHA::7}"' applications/star-server/values.yaml
           git config user.name github-actions
           git config user.email github-actions@github.com
           git commit -am "Automatically updating star-server image."
