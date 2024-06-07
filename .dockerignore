@@ -1,1 +1,4 @@
-node_modules
+*
+!package*.json
+!packages/**
+!replace.sh
