@@ -1,0 +1,6 @@
+#!/bin/bash
+for i in $(env | grep ^REACT_APP_); do
+  key=$(echo $i | cut -d '=' -f 1)
+  value=$(echo $i | cut -d '=' -f 2-)
+  find /usr/src/app/packages/frontend -type f \( -name '*.js' -o -name '*.css' \) -exec sed -i "s|__${key}__|${value}|g" '{}' \+
+done
