@@ -20,7 +20,6 @@ export default class AccountService {
 
     extractUserFromRequest  = (req:IRequest, customKey?:string) => {
         const token = customKey ? req.cookies.custom_id_token : req.cookies.id_token;
-        console.log(req)
         if (!this.verify){
             return jwt.decode(token);
         }
