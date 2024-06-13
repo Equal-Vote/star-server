@@ -221,14 +221,22 @@ copy sample.env .env
 
 <!-- tabs:end -->
 
-#### Step 2: Setup PROXY_URL (optional)
+#### Step 2: Update PROXY_URL 
 
-Only do this step if you want to use the live developer backend instaed of running your own
+Now your .env should have 2 proxy urls, but one of them is commented
 
-Add the following line to 
+If your running your own backend, then leave the default sample.env
 
 ```
-PROXY_URL=https://star.sandbox.star.vote
+# PROXY_URL=https://star.sandbox.star.vote # Use this one if you want to reference the live backend
+PROXY_URL=http://localhost:5000 # use this one if you're running your own backend
+```
+
+If you're referencing the live developer backend instead of running your own, then update the comments as follows
+
+```
+PROXY_URL=https://star.sandbox.star.vote # Use this one if you want to reference the live backend
+# PROXY_URL=http://localhost:5000 # use this one if you're running your own backend
 ```
 
 #### Step 3: Install dependencies and start the star.vote client application and API server
