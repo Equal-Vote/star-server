@@ -54,19 +54,23 @@ tips:
 # Text for hero section
 hero: 
   title: Create polls and elections with
+  candidates: 'Least Favorite,Lesser-Evil,Favorite' # HACK: the internationalization library doesn't support working with objects, I'm using this comma hack
   methods:
     STAR:
       title: STAR Voting
       short_description: Elects the majority preferred winner between the two candidates with highest overall support
       recommendation: Recommended for accuracy
+      default_scores: '0,2,5'
     Approval:
       title: Approval
       short_description: Elects most approved candidate
       recommendation: Recommended for simplicity
+      default_scores: '0,1,1'
     RankedRobin:
       title: Ranked Robin
       short_description: Elects majority preferred winner
       recommendation: Recommended for ranking
+      default_ranks: '3,2,1'
     more_methods:
       title: and more
       short_description: Sign in for more methods like Choose-One, RCV, STV, or STAR-PR!

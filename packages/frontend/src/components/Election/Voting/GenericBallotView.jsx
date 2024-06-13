@@ -213,6 +213,37 @@ const ScoreColumnHeadings = ({starHeadings, columns}) =>
     </Grid>
   ));
 
+const GenericBallotGrid = ({
+  ballotContext,
+  starHeadings,
+  columns,
+  leftTitle,
+  rightTitle,
+  headingPrefix,
+  onClick,
+  columnValues,
+}) => {
+  return <Box sx={{width: '100%', filter: ballotContext.instructionsRead? '' : 'blur(.4rem)'}} onClick={() => {
+    if(ballotContext.instructionsRead) return;
+    setSnack({
+      message: 'Must read instructions first',
+      severity: 'info',
+      open: true,
+      autoHideDuration: 6000,
+    })
+  }}>
+    <ColumnHeadings
+      starHeadings={starHeadings}
+      columns={columns}
+      leftTitle={leftTitle}
+      rightTitle={rightTitle}
+      headingPrefix={headingPrefix}
+    />
+    <Divider className="rowDivider"/>
+    <Rows candidates={ballotContext.candidates} enabled={ballotContext.instructionsRead} onClick={onClick} columns={columnValues}/>
+  </Box>
+}
+
 export default function GenericBallotView({
   onClick,
   columns,
@@ -226,6 +257,7 @@ export default function GenericBallotView({
   footer='',
   starHeadings=false,
   warning=null,
+  onlyGrid=false,
 }) {
   if(columnValues == null){
     columnValues = columns
@@ -237,6 +269,20 @@ export default function GenericBallotView({
   const { election } = useElection();
 
   const ballotContext = useContext(BallotContext);
+
+  if(onlyGrid)
+    return <Box border={2} sx={{ mt: 0, ml: 0, mr: 0, width: '100%' }} className="ballot">
+      <GenericBallotGrid
+        ballotContext={ballotContext}
+        starHeadings={starHeadings}
+        columns={columns}
+        leftTitle={leftTitle}
+        rightTitle={rightTitle}
+        headingPrefix={headingPrefix}
+        onClick={onClick}
+        columnValues={columnValues}
+      />
+    </Box>
 
   return (
       <Box border={2} sx={{ mt: 0, ml: 0, mr: 0, width: '100%' }} className="ballot">
@@ -277,25 +323,16 @@ export default function GenericBallotView({
             }
           </Grid>
 
-          <Box sx={{width: '100%', filter: ballotContext.instructionsRead? '' : 'blur(.4rem)'}} onClick={() => {
-            if(ballotContext.instructionsRead) return;
-            setSnack({
-              message: 'Must read instructions first',
-              severity: 'info',
-              open: true,
-              autoHideDuration: 6000,
-            })
-          }}>
-            <ColumnHeadings
-              starHeadings={starHeadings}
-              columns={columns}
-              leftTitle={leftTitle}
-              rightTitle={rightTitle}
-              headingPrefix={headingPrefix}
-            />
-            <Divider className="rowDivider"/>
-            <Rows candidates={ballotContext.candidates} enabled={ballotContext.instructionsRead} onClick={onClick} columns={columnValues}/>
-          </Box>
+          <GenericBallotGrid
+            ballotContext={ballotContext}
+            starHeadings={starHeadings}
+            columns={columns}
+            leftTitle={leftTitle}
+            rightTitle={rightTitle}
+            headingPrefix={headingPrefix}
+            onClick={onClick}
+            columnValues={columnValues}
+          />
 
           <Grid item xs={10} sx={{ p:5, px:0 }} className="footer">
             {footer}

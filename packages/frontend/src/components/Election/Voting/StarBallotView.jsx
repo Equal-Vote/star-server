@@ -16,7 +16,7 @@ function scoresAreUnderVote({scores}){
 }
 
 // Renders a complete RCV ballot for a single race
-export default function StarBallotView() {
+export default function StarBallotView({onlyGrid=false}) {
   const ballotContext = useContext(BallotContext);
 
   const instructions = (
@@ -77,6 +77,7 @@ export default function StarBallotView() {
       footer={footer}
       starHeadings={true}
       warning={warning}
+      onlyGrid={onlyGrid}
     />
   );
 }

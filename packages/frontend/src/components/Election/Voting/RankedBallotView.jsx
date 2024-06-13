@@ -14,7 +14,7 @@ function scoresAreOverVote({scores}){
 }
 
 // Renders a complete RCV ballot for a single race
-export default function RankedBallotView() {
+export default function RankedBallotView({onlyGrid=false}) {
   const ballotContext = useContext(BallotContext);
   const instructions = (
     <>
@@ -95,6 +95,7 @@ export default function RankedBallotView() {
       headingPrefix="Rank Candidates:"
       footer={footer}
       warning={warning}
+      onlyGrid={onlyGrid}
     />
   );
 }

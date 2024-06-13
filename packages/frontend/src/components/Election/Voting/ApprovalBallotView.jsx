@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import { BallotContext } from "./VotePage";
 
 // Renders a complete RCV ballot for a single race
-export default function ApprovalBallotView() {
+export default function ApprovalBallotView({onlyGrid=false}) {
   const ballotContext = useContext(BallotContext);
 
   const instructions = (
@@ -31,6 +31,7 @@ export default function ApprovalBallotView() {
         ballotContext.onUpdate(newScores);
       }}
       footer="The candidate with the most votes wins"
+      onlyGrid={onlyGrid}
     />
   );
 }
