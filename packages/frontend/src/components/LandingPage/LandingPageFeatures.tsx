@@ -3,6 +3,11 @@ import React from 'react'
 import FeaturedElection from './FeaturedElection'
 import { useTranslation } from 'react-i18next';
 
+interface FeaturePanel{
+    title: string;
+    text: string;
+}
+
 export default () => {
     let rowSxProps = {
         paddingLeft: 5,
@@ -20,7 +25,7 @@ export default () => {
 
     let {t} = useTranslation();
 
-    const panels = t('features.items', {returnObjects: true})
+    const panels = t('features.items', {returnObjects: true}) as FeaturePanel[];
 
     return <Box sx={{
         width: '100%',

@@ -31,8 +31,6 @@ export default ({}) => {
 
     const {t} = useTranslation();
 
-    const parseDefaultBubbles = (str) => str.split(',').map((v) => v == '-1'? undefined : Number(v))
-
     const [starScores, setStarScores] = useState(t('hero.methods.STAR.default_scores', {returnObjects: true}));
     const [approvalScores, setApprovalScores] = useState(t('hero.methods.Approval.default_scores', {returnObjects: true}));
     const [rrRanks, setRrRanks] = useState(t('hero.methods.RankedRobin.default_ranks', {returnObjects: true}));
