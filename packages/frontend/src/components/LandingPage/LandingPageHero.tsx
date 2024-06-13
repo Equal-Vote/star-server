@@ -33,9 +33,9 @@ export default ({}) => {
 
     const parseDefaultBubbles = (str) => str.split(',').map((v) => v == '-1'? undefined : Number(v))
 
-    const [starScores, setStarScores] = useState(parseDefaultBubbles(t('hero.methods.STAR.default_scores')));
-    const [approvalScores, setApprovalScores] = useState(parseDefaultBubbles(t('hero.methods.Approval.default_scores')));
-    const [rrRanks, setRrRanks] = useState(parseDefaultBubbles(t('hero.methods.RankedRobin.default_ranks')));
+    const [starScores, setStarScores] = useState(t('hero.methods.STAR.default_scores', {returnObjects: true}));
+    const [approvalScores, setApprovalScores] = useState(t('hero.methods.Approval.default_scores', {returnObjects: true}));
+    const [rrRanks, setRrRanks] = useState(t('hero.methods.RankedRobin.default_ranks', {returnObjects: true}));
 
     // selected to be consistent with the Race.ts domain_model
 
@@ -69,7 +69,7 @@ export default ({}) => {
     if(quickPollIndex == methodKeys.length-1) quickPollIndex = methodKeys.length-2;
 
     const makeBallotContext = (scores, onUpdate)  => {
-        const candidateNames = t('hero.candidates').split(',')
+        const candidateNames = t('hero.candidates', {returnObjects: true})
         return {
             instructionsRead: true,
             setInstructionsRead: () => {},

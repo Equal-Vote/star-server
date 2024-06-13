@@ -54,23 +54,35 @@ tips:
 # Text for hero section
 hero: 
   title: Create polls and elections with
-  candidates: 'Least Favorite,Lesser-Evil,Favorite' # HACK: the internationalization library doesn't support working with objects, I'm using this comma hack
+  candidates: 
+    - Least Favorite
+    - Lesser-Evil
+    - Favorite
   methods:
     STAR:
       title: STAR Voting
       short_description: Elects the majority preferred winner between the two candidates with highest overall support
       recommendation: Recommended for accuracy
-      default_scores: '0,2,5'
+      default_scores:
+        - 0 
+        - 2
+        - 5
     Approval:
       title: Approval
       short_description: Elects most approved candidate
       recommendation: Recommended for simplicity
-      default_scores: '0,1,1'
+      default_scores: 
+        - 0 
+        - 1
+        - 1
     RankedRobin:
       title: Ranked Robin
       short_description: Elects majority preferred winner
       recommendation: Recommended for ranking
-      default_ranks: '3,2,1'
+      default_ranks: 
+        - 3 
+        - 2
+        - 1
     more_methods:
       title: and more
       short_description: Sign in for more methods like Choose-One, RCV, STV, or STAR-PR!
@@ -84,6 +96,23 @@ quick_poll:
   continue_with_editor: Continue with Full Editor
   sign_in: Sign in for more settings
   clear_all: Clear All
+
+features:
+  title: Features
+  items:
+  - title: Voting Methods
+    text: Supports a variety of voting methods including STAR, Approval, and Ranked Robin.
+  - title: Multi Winner Methods
+    text: Supports methods that yield multiple winners, including both proportional and block based methods.
+  - title: Multi Race Elections
+    text: Setup multi race elections for when there are mutiples issues or positions to vote on.
+  - title: Security
+    text: There's a spectrum of security options, from creating a direct link to share publicly, to limiting the election to a set of emails or voter ids.
+  - title: Open Source
+    text: This project is shared open source under a AGPL-3.0 license. Run your elections via final.xyz or self host on your own server.
+  - title: Equal Vote
+    text: Rest easy knowing that your voters will all have an equal vote, and won't need to worry about vote splitting. 
+
 
 # Election vs Poll terminology
 terms:

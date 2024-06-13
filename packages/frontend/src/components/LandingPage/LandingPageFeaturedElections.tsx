@@ -18,7 +18,7 @@ export default ({electionIds}) => {
             maxWidth: '1300px',
             margin: 'auto',
         }}>
-            <Typography variant='h4' sx={{textAlign: 'left'}}>Vote in a Featured Public Election</Typography>
+            <Typography variant='h4' sx={{textAlign: 'center'}}>Vote in a Featured Public Election</Typography>
         </Box>
         <Box sx={{
             display: 'flex',
