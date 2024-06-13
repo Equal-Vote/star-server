@@ -176,16 +176,33 @@ And as always, feel free to ask questions on the [#_software-dev slack channel](
 >
 > [Skip to making changes](#making-changes-locally).
 
-### Configuring dependencies
+### Run the backend (Optional)
+
+This your own backend is optional, if you only plan to work in the frontend then you can use PROXY_URL to reference the live backend instead of running your own .
 
 #### Step 1: Set up the backend environment variable file
 
-Copy dev access credentials for the server.  After obtaining access, copy the "Sample.env (Azure)" section of the [dev credentials doc](https://docs.google.com/document/d/1D4CJ9l6lnR39YYPUvw_HbeUVXNR-tAbNF6eT89oxEuk) to `./backend/.env` (you will have to create this file).
+Request access for the [dev credentials doc](https://docs.google.com/document/d/1D4CJ9l6lnR39YYPUvw_HbeUVXNR-tAbNF6eT89oxEuk). After obtaining access, copy the "Sample.env (Azure)" section of the to `./backend/.env` (you will have to create this file).
 
+#### Step 2: Install dependencies and launch backend
 
+You can now start the backend
 
-#### Step 2: Set up the frontend environment variable file
-Copy default environment variables for the frontend by running one of the following commands in the root of the frontend source directory `./frontend`.
+```bash
+# Installs dependencies for all workspaces
+npm i -ws 
+# Builds shared workspace
+npm run build -w @equal-vote/star-vote-shared
+# Launch the backend workspace 
+npm run dev -w @equal-vote/star-vote-backend # Launches backend
+```
+
+Then open a separate terminal for the remaining steps
+
+### Run the frontend
+
+#### Step 1: Set up the frontend environment variable file
+Copy default environment variables for the frontend by running one of the following commands in the root of the frontend source directory `packages/frontend`.
 <!-- Note: This tabs feature looks cool, we should look into it -->
 
 <!-- tabs:start -->
@@ -204,26 +221,33 @@ copy sample.env .env
 
 <!-- tabs:end -->
 
+#### Step 2: Setup PROXY_URL (optional)
+
+Only do this step if you want to use the live developer backend instaed of running your own
+
+Add the following line to 
+
+```
+PROXY_URL=https://star.sandbox.star.vote
+```
+
 #### Step 3: Install dependencies and start the star.vote client application and API server
 
-You can now start up the API server and the client applications.
+Now we can run the frontend
 
-Install and build dependencies
+Build workspace & install dependencies (you can skip these if you already ran them in the backend steps)
 
 ```bash
-npm i -ws
+# Installs dependencies for all workspaces
+npm i -ws 
+# Builds shared workspace
 npm run build -w @equal-vote/star-vote-shared
 ```
 
-Launch backend 
+Launch frontend (in a new terminal). 
 
 ```bash
-npm run dev -w @equal-vote/star-vote-backend
-```
-
-Launch frontend (in a new terminal). If you want to just run the web client without setting up the server you can add `PROXY_URL=dev.star.vote` in packages/frontend/.env.
-
-```bash
+# Run Frontend
 npm run dev -w @equal-vote/star-vote-frontend
 ```
 
