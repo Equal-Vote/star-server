@@ -11,6 +11,12 @@ import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import { StyledButton, Tip } from '../styles'
 import { useTranslation } from 'react-i18next'
+import { BallotContext } from '../Election/Voting/VotePage'
+import StarBallotView from '../Election/Voting/StarBallotView'
+import { ElectionContextProvider } from '../ElectionContextProvider'
+import { VotingMethod } from '@equal-vote/star-vote-shared/domain_model/Race'
+import ApprovalBallotView from '../Election/Voting/ApprovalBallotView'
+import RankedBallotView from '../Election/Voting/RankedBallotView'
 
 export default ({}) => {
     const authSession = useAuthSession();
@@ -23,22 +29,22 @@ export default ({}) => {
     const [methodIndex, setMethodIndex] = useState(0);
     const timeouts = useRef([])
 
+    const {t} = useTranslation();
+
+    const parseDefaultBubbles = (str) => str.split(',').map((v) => v == '-1'? undefined : Number(v))
+
+    const [starScores, setStarScores] = useState(parseDefaultBubbles(t('hero.methods.STAR.default_scores')));
+    const [approvalScores, setApprovalScores] = useState(parseDefaultBubbles(t('hero.methods.Approval.default_scores')));
+    const [rrRanks, setRrRanks] = useState(parseDefaultBubbles(t('hero.methods.RankedRobin.default_ranks')));
+
     // selected to be consistent with the Race.ts domain_model
+
     const methodKeys = [
         'STAR',
         'Approval',
         'RankedRobin',
         'more_methods'
     ]
-
-    const methodImages = [
-        '/images/star_ballot.png',
-        '/images/approval_ballot.png',
-        '/images/ranked_ballot.png',
-        '/images/ranked_ballot.png',
-    ];
-
-    const {t} = useTranslation();
 
     const nextMethod = (offset) => {
         let n = methodIndex + offset;
@@ -61,6 +67,36 @@ export default ({}) => {
     let imgIndex = transitionStep < 2 ? prevMethodIndex : methodIndex;
     let quickPollIndex = transitionStep < 4 ? prevMethodIndex : methodIndex;
     if(quickPollIndex == methodKeys.length-1) quickPollIndex = methodKeys.length-2;
+
+    const makeBallotContext = (scores, onUpdate)  => {
+        const candidateNames = t('hero.candidates').split(',')
+        return {
+            instructionsRead: true,
+            setInstructionsRead: () => {},
+            candidates: 
+                scores.map((score, i) => 
+                    ({
+                        'candidate_id': '',
+                        'candidate_name': String(candidateNames[i]),
+                        'score': Number(score),
+                    })
+                ),
+            // this isn't used, it's just included to make typescript happy
+            race: {
+                "title": "",
+                "race_id": "",
+                "num_winners": 1,
+                "voting_method": "STAR" as VotingMethod, // picking an arbitrary method to make typescript happy
+                "candidates": []
+            },
+            receiptEmail: {
+                sendReceipt: false,
+                email: ''
+            },
+            setReceiptEmail: () => {},
+            onUpdate: onUpdate
+        }
+    }
 
     return (
         <>
@@ -94,15 +130,20 @@ export default ({}) => {
 
                 <Box
                     className={transitionStep==2? 'heroGrow' : 'heroShrink'} 
+                    sx={{width: '100%'}}
                 >
                     {imgIndex != methodKeys.length-1 ? <>
-                        <Box
-                            sx={{
-                                width: '65%'
-                            }}
-                            component='img'
-                            src={methodImages[imgIndex]}
-                        />
+                        <Box sx={{width: '80%', margin: 'auto'}}>
+                            {imgIndex == 0 && <BallotContext.Provider value={makeBallotContext(starScores, setStarScores)}>
+                                <StarBallotView onlyGrid={true}/>
+                            </BallotContext.Provider>}
+                            {imgIndex == 1 && <BallotContext.Provider value={makeBallotContext(approvalScores, setApprovalScores)}>
+                                <ApprovalBallotView onlyGrid={true}/>
+                            </BallotContext.Provider>}
+                            {imgIndex == 2 && <BallotContext.Provider value={makeBallotContext(rrRanks, setRrRanks)}>
+                                <RankedBallotView onlyGrid={true}/>
+                            </BallotContext.Provider>}
+                        </Box>
                         <Typography variant="h5">
                             {t(`hero.methods.${methodKeys[imgIndex]}.short_description`)} 
                         </Typography>
