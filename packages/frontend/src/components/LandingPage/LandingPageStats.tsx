@@ -15,8 +15,7 @@ export default () => {
     const { data, isPending, error, makeRequest: fetchData } = useGetGlobalElectionStats();
 
     useEffect(() => {
-        fetchData()
-        console.log("FETCH")
+        setInterval(fetchData, 5000)
     }, []);
 
     return <Box sx={{
