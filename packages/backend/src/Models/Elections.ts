@@ -10,7 +10,7 @@ import { IElectionStore } from './IElectionStore';
 const tableName = 'electionDB';
 
 interface IVoteCount{
-    v: string | number;
+    v: number;
 }
 
 export default class ElectionsDB implements IElectionStore {
@@ -130,7 +130,7 @@ export default class ElectionsDB implements IElectionStore {
             .orderBy('election_id')
             .execute();
 
-        return result;
+        return result as Promise<IVoteCount[] | null>;
     }
 
 
