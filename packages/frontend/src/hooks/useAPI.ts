@@ -27,6 +27,10 @@ export const usePostElection = () => {
     return useFetch<{ Election: NewElection }, { election: Election }>('/API/Elections', 'post')
 }
 
+export const useGetGlobalElectionStats = () => {
+    return useFetch<undefined, { elections: number, votes: number }>('/API/GlobalElectionStats', 'get')
+}
+
 export const useEditElection = (election_id: string | undefined) => {
     return useFetch<{ Election: Election }, { election: Election }>(`/API/Election/${election_id}/edit`, 'post')
 }

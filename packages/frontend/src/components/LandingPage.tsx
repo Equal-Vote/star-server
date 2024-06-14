@@ -13,6 +13,8 @@ import LandingPagePricing from './LandingPage/LandingPagePricing';
 import useFeatureFlags from './FeatureFlagContextProvider';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import { useTranslation } from 'react-i18next';
+import { useGetGlobalElectionStats } from '~/hooks/useAPI';
+import LandingPageStats from './LandingPage/LandingPageStats';
 
 const LandingPage = () => {
     const flags = useFeatureFlags();
@@ -59,34 +61,7 @@ const LandingPage = () => {
             <LandingPageFeatureElections electionIds={
                 (process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')
             }/>
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                margin: 'auto',
-                width: '100%',
-                maxWidth: '1300px',
-                gap: '10rem',
-                justifyContent: 'center',
-            }}>
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '2rem'
-                }}>
-                    <Typography variant='h4' sx={{margin: 0}}>10001</Typography>
-                    <Typography variant='h5' sx={{margin: 0}}>{t('election_stats.elections_created')}</Typography>
-                </Box>
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '2rem'
-                }}>
-                    <Typography variant='h4' sx={{margin: 0}}>10001</Typography>
-                    <Typography variant='h5' sx={{margin: 0}}>{t('election_stats.votes_cast')}</Typography>
-                </Box>
-            </Box>
+            <LandingPageStats/> 
             <LandingPageFeatures/>
             <LandingPageSignUpBar />
             {flags.isSet('ELECTION_TESTIMONIALS') && <LandingPageTestimonials testimonials={[

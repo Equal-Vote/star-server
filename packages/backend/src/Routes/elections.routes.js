@@ -19,7 +19,7 @@ const { getBallotsByElectionID } = require('../Controllers/getBallotsByElectionI
 const { getBallotByBallotID } = require('../Controllers/getBallotByBallotID')
 const { editElection } = require('../Controllers/editElectionController')
 const { getSandboxResults } = require('../Controllers/sandboxController')
-const { getElections } = require('../Controllers/getElectionsController')
+const { getElections, getGlobalElectionStats  } = require('../Controllers/getElectionsController')
 const { editElectionRoles } = require('../Controllers/editElectionRolesController')
 const { permissions } = require('@equal-vote/star-vote-shared/domain_model/permissions');
 const { ElectionRollState } = require('@equal-vote/star-vote-shared/domain_model/ElectionRoll');
@@ -46,6 +46,7 @@ router.post('/Election/:id/rolls/invalidate', asyncHandler(changeElectionRollSta
 router.post('/Election/:id/rolls/unflag', asyncHandler(changeElectionRollStateController.uninvalidateElectionRoll))
 router.get('/Elections', asyncHandler(getElections))
 router.post('/Elections/', asyncHandler(createElectionController.createElectionController))
+router.get('/GlobalElectionStats', asyncHandler(getGlobalElectionStats))
 
 router.post('/Election/:id/edit', asyncHandler(editElection))
 router.put('/Election/:id/roles', asyncHandler(editElectionRoles))
