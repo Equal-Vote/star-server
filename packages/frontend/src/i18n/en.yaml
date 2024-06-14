@@ -116,8 +116,8 @@ features:
 
 # Election Stats
 election_stats:
-  elections_created: Elections & Polls created
-  votes_cast: Votes cast
+  elections_created: Elections & Polls Created
+  votes_cast: Votes Cast
 
 
 # Election vs Poll terminology

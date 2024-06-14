@@ -9,20 +9,6 @@ interface FeaturePanel{
 }
 
 export default () => {
-    let rowSxProps = {
-        paddingLeft: 5,
-        display: 'flex',
-        flexDirection: {xs: 'column', lg: 'row'},
-        width: '100%',
-        maxWidth: '110rem',
-        gap: {xs: '0rem', lg: '8rem'},
-    };
-
-    let itemSxProps= {
-        flexShrink: '0',
-        width: {xs: '100%', lg: '35%'},
-    };
-
     let {t} = useTranslation();
 
     const panels = t('features.items', {returnObjects: true}) as FeaturePanel[];

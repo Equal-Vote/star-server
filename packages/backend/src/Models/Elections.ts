@@ -9,6 +9,10 @@ import { IElectionStore } from './IElectionStore';
 
 const tableName = 'electionDB';
 
+interface IVoteCount{
+    v: string | number;
+}
+
 export default class ElectionsDB implements IElectionStore {
     _postgresClient;
     _tableName: string = tableName;
@@ -104,6 +108,31 @@ export default class ElectionsDB implements IElectionStore {
 
         return elections
     }
+
+    // TODO: I'm a bit lazy for now just having Object as the type
+    getBallotCountsForAllElections(ctx: ILoggingContext): Promise<IVoteCount[] | null> {
+        Logger.debug(ctx, `${tableName}.getAllElectionsWithBallotCounts`);
+
+        const elections = this._postgresClient
+            .selectFrom(tableName)
+            .select('election_id')
+            .where('head', '=', true)
+            .execute();
+
+        const result = this._postgresClient
+            .selectFrom('ballotDB')
+            //.select('election_id') // I don't really need this
+            .select(
+                (eb) => eb.fn.count('ballot_id').as('v')
+            )
+            .where('head', '=', true)
+            .groupBy('election_id')
+            .orderBy('election_id')
+            .execute();
+
+        return result;
+    }
+
 
     getElectionByID(election_id: Uid, ctx: ILoggingContext): Promise<Election | null> {
         Logger.debug(ctx, `${tableName}.getElectionByID ${election_id}`);

@@ -65,6 +65,28 @@ const getElections = async (req: IElectionRequest, res: Response, next: NextFunc
     });
 }
 
+const getGlobalElectionStats = async (req: IElectionRequest, res: Response, next: NextFunction) => {
+    Logger.info(req, `getGlobalElectionStats `);
+
+    let electionVotes = await ElectionsModel.getBallotCountsForAllElections(req);
+
+    let stats = {
+        elections: Number(process.env.CLASSIC_ELECTION_COUNT) ?? 0,
+        votes: Number(process.env.CLASSIC_VOTE_COUNT) ?? 0,
+    };
+
+    electionVotes?.map(m => m['v'])?.forEach((count) => {
+        stats['votes'] = stats['votes'] + Number(count);
+        if(count >= 2){
+            stats['elections'] = stats['elections'] + 1;
+        }
+        return stats;
+    });
+
+    res.json(stats);
+}
+
 module.exports = {
     getElections,
+    getGlobalElectionStats,
 }
