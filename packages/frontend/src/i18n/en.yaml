@@ -97,6 +97,7 @@ quick_poll:
   sign_in: Sign in for more settings
   clear_all: Clear All
 
+# List of features on landing page
 features:
   title: Features
   items:
@@ -113,6 +114,11 @@ features:
   - title: Equal Vote
     text: Rest easy knowing that your voters will all have an equal vote, and won't need to worry about vote splitting. 
 
+# Election Stats
+election_stats:
+  elections_created: Elections & Polls created
+  votes_cast: Votes cast
+
 
 # Election vs Poll terminology
 terms:
@@ -121,7 +127,7 @@ terms:
   poll:
     type: Poll
 
-# Election vs Poll terminology
+# General Terms
 general:
   yes: Yes
   no: No

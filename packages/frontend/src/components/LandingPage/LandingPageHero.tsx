@@ -164,34 +164,6 @@ export default ({}) => {
                         </StyledButton>
                     </>}
                 </Box>
-                {flags.isSet('ELECTION_TALLY') &&
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        width: '70%',
-                        marginLeft: '20px',
-                        backgroundColor: themeSelector.mode === 'darkMode' ? 'brand.gray4' : 'brand.gray2',
-                        p: { xs: 3, md: 3 },
-                        gap: '40px',
-                    }}>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                        }}>
-                            <Typography variant='h5' sx={{margin: 0}}>Elections Created</Typography>
-                            <Typography variant='h5' sx={{margin: 0}}>10001</Typography>
-                        </Box>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                        }}>
-                            <Typography variant='h5' sx={{margin: 0}}>Votes Cast</Typography>
-                            <Typography variant='h5' sx={{margin: 0}}>10001</Typography>
-                        </Box>
-                    </Box>
-                }
             </Box>
             <QuickPoll
                 authSession={authSession}
