@@ -8,3 +8,4 @@ If you'd like to contribute, head over to https://equal-vote.github.io/star-serv
 
 After that feel free to browse through the issues. Pull Requests are welcome :)
 
+test to readme
