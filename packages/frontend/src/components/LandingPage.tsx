@@ -12,6 +12,7 @@ import { Paper } from '@mui/material';
 import LandingPagePricing from './LandingPage/LandingPagePricing';
 import useFeatureFlags from './FeatureFlagContextProvider';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import { useTranslation } from 'react-i18next';
 
 const LandingPage = () => {
     const flags = useFeatureFlags();
@@ -29,6 +30,8 @@ const LandingPage = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    const {t} = useTranslation();
+
     //apparently box doesn't have onScroll
     return (
         <div ref={boxRef}>
@@ -36,7 +39,7 @@ const LandingPage = () => {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            gap: '15rem',
+            gap: '10rem',
             minHeight: '600px',
             margin: 'auto',
             paddingTop: '8rem',
@@ -56,6 +59,34 @@ const LandingPage = () => {
             <LandingPageFeatureElections electionIds={
                 (process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')
             }/>
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                margin: 'auto',
+                width: '100%',
+                maxWidth: '1300px',
+                gap: '10rem',
+                justifyContent: 'center',
+            }}>
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '2rem'
+                }}>
+                    <Typography variant='h4' sx={{margin: 0}}>10001</Typography>
+                    <Typography variant='h5' sx={{margin: 0}}>{t('election_stats.elections_created')}</Typography>
+                </Box>
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '2rem'
+                }}>
+                    <Typography variant='h4' sx={{margin: 0}}>10001</Typography>
+                    <Typography variant='h5' sx={{margin: 0}}>{t('election_stats.votes_cast')}</Typography>
+                </Box>
+            </Box>
             <LandingPageFeatures/>
             <LandingPageSignUpBar />
             {flags.isSet('ELECTION_TESTIMONIALS') && <LandingPageTestimonials testimonials={[
