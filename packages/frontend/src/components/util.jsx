@@ -152,11 +152,11 @@ export const ResultsTable = ({className, data}) => {
     return <TableContainer sx={{ marginLeft: 'auto', marginRight: 'auto', maxHeight: 600, width: '100%'}}>
         <table className={c}>
             <thead className={c}>
-                <tr> {arr[0].map(header => <th className={c}>{header}</th>)} </tr>
+                <tr> {data[0].map(header => <th className={c}>{header}</th>)} </tr>
             </thead>
 
             <tbody>
-                {arr.slice(1).map((row, i) =>
+                {data.slice(1).map((row, i) =>
                     <tr className={c} key={i}> {row.map((value, j) =>
                         <td className={c} style={{paddingLeft: j == 0 ? '8px' : '0'}}>{value}</td>
                     )}</tr>
