@@ -2,9 +2,10 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Box, Grid, IconButton, Paper, TableContainer, Typography } from '@mui/material'
 import React, { useState, useRef, useEffect }  from 'react'
-import { Bar, BarChart, Cell, LabelList, Legend, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Cell, Label, LabelList, Legend, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import _uniqueId from 'lodash/uniqueId';
 import { DateTime } from 'luxon'
+import { useTranslation } from 'react-i18next';
 
 export const CHART_COLORS = [
     'var(--ltbrand-blue)',
@@ -19,15 +20,28 @@ const truncName = (name, maxSize) => {
     return name.slice(0, maxSize-3).concat('...');
 }
 
-export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='votes', displayPercent=false, percentDenominator=1}) => {
+export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='votes', displayPercent=false, percentDenominator=undefined, colors=CHART_COLORS}) => {
     let rawData=data;
 
-    // Truncate names
-    data = rawData.map(d => ({
-        ...d,
-        name: truncName(d['name'], 40),
-        percent: d.votes > 0? `${Math.round(100 * d.votes / percentDenominator)}%` : ''
-    }));
+    // Truncate names & add percent
+    percentDenominator ??= data.reduce((sum, d) => sum + d[xKey], 0);
+    percentDenominator = Math.max(1, percentDenominator);
+    data = rawData.map(d => {
+        let s = {
+            ...d,
+            name: truncName(d['name'], 40),
+            percent: `${Math.round(100 * d[xKey] / percentDenominator)}%`,
+            // hack to get smaller values to allign different than larger ones
+            right: (d[xKey] == 0)? (displayPercent? '0%': '0') : '',
+        };
+
+        if(s[xKey] == 0){
+            s[xKey] = '';
+            s['percent'] = '';
+        }
+
+        return s;
+    });
 
     // Truncate entries
     const maxCandidates = 10;
@@ -42,9 +56,11 @@ export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='
     }
 
     // Sort entries
-    data.sort(sortFunc ?? ((a, b) => {
-        return b.votes - a.votes;
-    }));
+    if(sortFunc != false){ // we're handling undefined and false difference, so that's why this is explicit
+        data.sort(sortFunc ?? ((a, b) => {
+            return b[xKey] - a[xKey];
+        }));
+    }
 
     // Size margin to longest candidate
     const longestCandidateName = data.reduce( function(a, b){
@@ -52,7 +68,7 @@ export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='
     }).name;
 
     // 200 is about the max width I'd want for a small mobile device, still looking for a better solution though
-    const axisWidth = Math.min(200, 15 * ((longestCandidateName.length > 20)? 20 : longestCandidateName.length));
+    const axisWidth = Math.max(50, Math.min(200, 15 * ((longestCandidateName.length > 20)? 20 : longestCandidateName.length)));
 
     return <ResponsiveContainer width="90%" height={50*data.length}>
         <BarChart data={data} barCategoryGap={5} layout="vertical">
@@ -66,9 +82,10 @@ export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='
                 width={axisWidth}
             />
             <Bar stackOffset='expand' dataKey={xKey} fill='#026A86' unit='votes' >
-                <LabelList dataKey={displayPercent? 'percent' : 'votes'} position='insideRight' fill='black'/>
+                <LabelList dataKey={displayPercent? 'percent' : xKey} position='insideRight' fill='black'/>
+                <LabelList dataKey='right' position='right' fill='black'/>
                 {data.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={CHART_COLORS[(index+colorOffset) % CHART_COLORS.length]} />
+                    <Cell key={`cell-${index}`} fill={colors[(index+colorOffset) % colors.length]} />
                 ))}
             </Bar>
         </BarChart>
@@ -154,13 +171,13 @@ export const ResultsTable = ({className, data}) => {
     return <TableContainer sx={{ marginLeft: 'auto', marginRight: 'auto', maxHeight: 600, width: '100%'}}>
         <table className={c}>
             <thead className={c}>
-                <tr> {data[0].map(header => <th className={c}>{header}</th>)} </tr>
+                <tr>{data[0].map((header, i) => <th key={i} className={c}>{header}</th>)}</tr>
             </thead>
 
             <tbody>
                 {data.slice(1).map((row, i) =>
-                    <tr className={c} key={i}> {row.map((value, j) =>
-                        <td className={c} style={{paddingLeft: j == 0 ? '8px' : '0'}}>{value}</td>
+                    <tr className={c} key={i}>{row.map((value, j) =>
+                        <td key={j} className={c} style={{paddingLeft: j == 0 ? '8px' : '0'}}>{value}</td>
                     )}</tr>
                 )}
             </tbody>
@@ -207,9 +224,15 @@ export function scrollToElement(e){
     }, 250);
 }
 
-export const DetailExpander = ({children, title}) => {
+export const DetailExpander = ({children, level=0}) => {
     const [viewDetails, setViewDetails] = useState(false);
-    const expanderId = _uniqueId('detailExpander-')
+    const expanderId = useRef(_uniqueId('detailExpander')).current;
+
+    let {t} = useTranslation();
+    let title = [
+        t('results.general.details'),
+        t('results.general.additional_info'),
+    ][level];
 
     return <>
         <Box className={`detailExpander ${expanderId}`}
@@ -217,7 +240,7 @@ export const DetailExpander = ({children, title}) => {
                 display: 'flex', flexDirection: 'row', gap: 10, justifyContent: 'center', cursor: 'pointer', alignItems: 'center',
             }}
             onClick={() => {
-                if(!viewDetails) scrollToElement(document.querySelector(`${expanderId}:first-child`))
+                if(!viewDetails) scrollToElement(document.querySelector(`.${expanderId}`))
                 setViewDetails(!viewDetails)
             }}
         >

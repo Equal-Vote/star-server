@@ -15,7 +15,7 @@ import WinnerResultTabs from "./WinnerResultTabs";
 import { Race } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { ElectionResults, allocatedScoreResults, approvalResults, irvResults, pluralityResults, rankedRobinResults, starResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 import useElection from "../../ElectionContextProvider";
-import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { useTranslation } from "react-i18next";
 
 declare namespace Intl {
   class ListFormat {
@@ -48,37 +48,22 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
     count: count,
   }));
 
+  const {t} = useTranslation();
+
   return (
     <>
       <WinnerResultTabs numWinners={rounds}>
         {roundIndexes.map((i) => <STARResultSummaryWidget key={i} results={results} roundIndex={i}/>)}
       </WinnerResultTabs>
-      <DetailExpander title='Details'>
+      <DetailExpander>
         <STARDetailedResults results={results} rounds={rounds}/>
-        <DetailExpander title='Additional Info'>
+        <DetailExpander level={1}>
           <WidgetContainer>
-            <Widget title='Tabulation Steps'>
+            <Widget title={t('results.star.detailed_steps_title')}>
               <STARResultDetailedStepsWidget results={results} rounds={rounds}/>
             </Widget>
-            <Widget title='Distribution of Equal Preference Votes'>
-              <ResponsiveContainer width="90%" height={50*5}>
-                <BarChart data={noPrefStarData} barCategoryGap={5} layout="vertical">
-                    <XAxis hide axisLine={false} type="number" />
-                    <YAxis
-                        dataKey='name'
-                        type="category"
-                        axisLine={false}
-                        tickLine={false}
-                        tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
-                        width={50}
-                    />
-                    <Bar dataKey='count' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
-                        {noPrefStarData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={CHART_COLORS[(index) % CHART_COLORS.length]} />
-                        ))}
-                    </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+            <Widget title={t('results.star.equal_preferences_title')}>
+              <ResultsBarChart data={noPrefStarData} xKey='count' displayPercent={true} sortFunc={false}/>
             </Widget>
           </WidgetContainer>
         </DetailExpander>
@@ -244,9 +229,10 @@ function IRVResultsViewer({ results }: {results: irvResults}) {
 }
 
 function PluralityResultsViewer({ results }: {results: pluralityResults}) {
+  let {t} = useTranslation();
   return (<>
     <WidgetContainer>
-      <Widget title='Approval for each candidates'>
+      <Widget title={t('results.choose_one.bar_title')}>
         <ResultsBarChart
           data={
             results.summaryData.totalScores.map((totalScore, i) => ({
@@ -255,16 +241,15 @@ function PluralityResultsViewer({ results }: {results: pluralityResults}) {
             }))
           }
           displayPercent={true}
-          percentDenominator={results.summaryData.nValidVotes} 
         />
       </Widget>
     </WidgetContainer>
 
-    <DetailExpander title='Details'>
+    <DetailExpander>
       <WidgetContainer>
-        <Widget title='Table'>
+        <Widget title={t('results.choose_one.table_title')}>
           <ResultsTable className='chooseOneTable' data={[
-            ['Candidate', 'Votes', '% All Votes'],
+            t('results.choose_one.table_columns', {returnObjects: true}),
             ...results.summaryData.totalScores.map((totalScore, i) => [
               results.summaryData.candidates[totalScore.index].name,
               totalScore.score,
@@ -279,9 +264,11 @@ function PluralityResultsViewer({ results }: {results: pluralityResults}) {
 
 
 function ApprovalResultsViewer({ results , rounds}: {results: approvalResults, rounds: number}) {
+  let {t} = useTranslation();
+
   return (<>
     <WidgetContainer>
-      <Widget title='Candidate Approval'>
+      <Widget title={t('results.approval.bar_title')}>
         <ResultsBarChart
           data={
             results.summaryData.totalScores.map((totalScore, i) => ({
@@ -295,11 +282,11 @@ function ApprovalResultsViewer({ results , rounds}: {results: approvalResults, r
       </Widget>
     </WidgetContainer>
 
-    <DetailExpander title='Details'>
+    <DetailExpander>
       <WidgetContainer>
-        <Widget title='Table'>
+        <Widget title={t('results.approval.table_title')}>
           <ResultsTable className='chooseOneTable' data={[
-            ['Candidate', 'Votes', '% All Votes'],
+            t('results.approval.table_columns', {returnObjects: true}),
             ...results.summaryData.totalScores.map((totalScore, i) => [
               results.summaryData.candidates[totalScore.index].name,
               totalScore.score,

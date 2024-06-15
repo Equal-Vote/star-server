@@ -185,7 +185,7 @@ export default () => {
     // TODO: it would be cool to define a useTranslationExt that did the substitutions for me
     // TODO: automatic tip insertion would also be cool
     const { t:_t } = useTranslation();
-    let term = election.settings.term_type === undefined? '' : _t(`terms.${election.settings.term_type}.type`);
+    let term = election.settings.term_type === undefined? '' : _t(`general.${election.settings.term_type}.type`);
     // wrap the standard t property so that we can insert the term election vs poll
     const t = key => _t(key)
         .replace('__CAPITALIZED_TERM__', term) 
@@ -256,9 +256,9 @@ export default () => {
                             {['poll', 'election'].map( (type, i) => 
                                 <FormControlLabel
                                     key={i}
-                                    value={t(`terms.${type}.type`)}
+                                    value={t(`general.${type}.type`)}
                                     control={<Radio/>}
-                                    label={t(`terms.${type}.type`)}
+                                    label={t(`general.${type}.type`)}
                                     onClick={() => setElection({
                                         ...election,
                                         settings: {
@@ -323,14 +323,14 @@ export default () => {
                             {t('election_creation.template_prompt')}
                         </Typography>
                         <Box style={{height: '10px'}}/> {/*hacky padding*/}
-                        {(election.settings.voter_access === 'closed'? ['email_list', 'id_list'] : ['demo', 'public', 'unlisted']).map((name, i) => <>
+                        {(election.settings.voter_access === 'closed'? ['email_list', 'id_list'] : ['demo', 'public', 'unlisted']).map((name, i) =>
                             <StartingOption
                                 title={t(`election_creation.${name}_title`)}
                                 description={t(`election_creation.${name}_description`)}
                                 key={i}
                                 onClick={() => onAddElection(templateMappers[name](election))}
                             />
-                        </>)}
+                        )}
 
                         <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={false}/>
                     </StepContent>
