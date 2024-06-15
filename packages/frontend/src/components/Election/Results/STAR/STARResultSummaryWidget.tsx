@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, ResponsiveContainer, Legend} from 'recharts';
 import { Box, Paper, Typography } from '@mui/material';
 import { starResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
-import { CHART_COLORS, ResultsPieChart, Widget, WidgetContainer } from '~/components/util';
+import { ResultsPieChart, Widget, WidgetContainer } from '~/components/util';
 import { ResultsBarChart } from '~/components/util';
+import { useTranslation } from 'react-i18next';
 
 const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults, roundIndex: number }) => {
     const prevWinners = results.roundResults
@@ -42,12 +42,13 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
         },
     ];
 
+    const {t} = useTranslation();
+
     return (
         <Box className="resultWidget">
         <WidgetContainer>
-            <Widget title='Scoring Round'>
-                <p>Add the stars from all the ballots.</p>  
-                <p>The two highest scoring candidates are the finalists.</p>
+            <Widget title={t('results.star.score_title')}>
+                {(t('results.star.score_description', {returnObjects: true}) as Array<String>).map( (s, i) => <p key={i}>{s}</p>)}
                 <ResultsBarChart
                     data={histData}
                     sortFunc={(a, b) => {
@@ -62,8 +63,7 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
                 />
             </Widget>
             <Widget title='Automatic Runoff Round'>
-                <p>Each vote goes to the voter's preferred finalist.</p>
-                <p>Finalist with most votes wins.</p>
+                {(t('results.star.runoff_description', {returnObjects: true}) as Array<String>).map( (s, i) => <p key={i}>{s}</p>)}
                 <ResultsPieChart data={pieData}/>
             </Widget>
         </WidgetContainer>

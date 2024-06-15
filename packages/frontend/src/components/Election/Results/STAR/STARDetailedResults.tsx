@@ -1,8 +1,8 @@
 import React, { useState }  from 'react'
 import { TableContainer, Typography, Paper, Box} from "@mui/material";
 import { roundResults, starResults, starSummaryData } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
-import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from 'recharts';
-import { Widget, WidgetContainer, ResultsTable } from '~/components/util';
+import { Widget, WidgetContainer, ResultsTable, ResultsBarChart } from '~/components/util';
+import { useTranslation } from 'react-i18next';
 
 type candidateTableEntry = {
   name: string,
@@ -34,59 +34,43 @@ export default ({results, rounds}: {results: starResults, rounds: number }) => {
         index: i
     }));
 
+    const {t} = useTranslation();
+
     tableData.sort((a, b) => b.votes - a.votes);
 
     let runoffData = tableData.slice(0, 2);
     let finalistVotes = (runoffData[0].runoffVotes + runoffData[1].runoffVotes)
     runoffData.sort((a, b) => b.runoffVotes - a.runoffVotes);
     runoffData.push({
-      name: 'Equal Preferences',
+      name: t('general.equal_preferences'),
       votes: 0,
       runoffVotes: results.summaryData.nValidVotes - finalistVotes,
       index: -1,
     })
 
-    const axisWidth = Math.min(200, 15 * 20);
     return ( <>
       <WidgetContainer>
-        <Widget title="Scores Table">
+        <Widget title={t('results.star.score_table_title')}>
           <ResultsTable className='starScoreTable' data={[
-            ['Candidate', 'Score'],
+            t('results.star.score_table_columns', {returnObjects: true}),
             ...tableData.map(c => [c.name, c.votes]),
           ]}/>
         </Widget>
       </WidgetContainer>
       <WidgetContainer>
-        <Widget title='Runoff Votes'>
-          <ResponsiveContainer width="90%" height={50*3}>
-            <BarChart data={runoffData} barCategoryGap={5} layout="vertical">
-                <XAxis hide axisLine={false} type="number" />
-                <YAxis
-                    dataKey='name'
-                    type="category"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
-                    width={axisWidth}
-                />
-                <Bar dataKey='runoffVotes' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
-                    {runoffData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={RUNOFF_COLORS[(index) % RUNOFF_COLORS.length]} />
-                    ))}
-                </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+        <Widget title='Runoff Chart'> {/* I haven't put this in en.yaml because it's going to be moved to the pie section soon*/}
+          <ResultsBarChart data={runoffData} colors={RUNOFF_COLORS} xKey={'runoffVotes'} sortFunc={false}/>
         </Widget>
-        <Widget title='Runoff Table'>
-          <ResultsTable className='starScoreTable' data={[
-            ['Candidate', 'Runoff Votes', '% Runoff Votes', '% Between Finalists'],
+        <Widget title={t('results.star.runoff_table_title')}>
+          <ResultsTable className='starRunoffTable' data={[
+            t('results.star.runoff_table_columns', {returnObjects: true}),
             ...runoffData.map((c, i) => [
               c.name,
               c.runoffVotes,
               `${Math.round(c.runoffVotes * 1000 / results.summaryData.nValidVotes) / 10}%`,
               i == 2 ? '' : `${Math.round(c.runoffVotes * 1000 / finalistVotes) / 10}%`,
             ]),
-            ['Total', results.summaryData.nValidVotes, '100%', '100%'] 
+            [t('general.total'), results.summaryData.nValidVotes, '100%', '100%'] 
             ]}/>
         </Widget>
       </WidgetContainer>

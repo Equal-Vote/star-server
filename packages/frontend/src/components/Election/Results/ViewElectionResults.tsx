@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from "react-router";
 import Results from './Results';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
 import { Paper, Typography } from "@mui/material";
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { DetailExpanderGroup, scrollToElement } from '../../util';
+import { DetailExpanderGroup } from '../../util';
 import { useGetResults } from '../../../hooks/useAPI';
 import useElection from '../../ElectionContextProvider';
 
