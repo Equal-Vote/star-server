@@ -48,13 +48,18 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
             <Widget title='Scoring Round'>
                 <p>Add the stars from all the ballots.</p>  
                 <p>The two highest scoring candidates are the finalists.</p>
-                <ResultsBarChart data={histData} sortFunc={(a, b) => {
-                    if(a.index == winnerIndex) return -1;
-                    if(b.index == winnerIndex) return 1;
-                    if(a.index == runnerUpIndex) return -1;
-                    if(b.index == runnerUpIndex) return 1;
-                    return b.votes - a.votes;
-                }}/>
+                <ResultsBarChart
+                    data={histData}
+                    sortFunc={(a, b) => {
+                        if(a.index == winnerIndex) return -1;
+                        if(b.index == winnerIndex) return 1;
+                        if(a.index == runnerUpIndex) return -1;
+                        if(b.index == runnerUpIndex) return 1;
+                        return b.votes - a.votes;
+                    }}
+                    displayPercent={false} 
+                    percentDenominator={results.summaryData.nValidVotes*5} 
+                />
             </Widget>
             <Widget title='Automatic Runoff Round'>
                 <p>Each vote goes to the voter's preferred finalist.</p>
