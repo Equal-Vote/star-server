@@ -7,7 +7,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import { useState } from 'react'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Typography from '@mui/material/Typography';
-import { DetailExpander, DetailExpanderGroup, Widget, WidgetContainer, makeResultTable } from '../../util';
+import { CHART_COLORS, DetailExpander, DetailExpanderGroup, Widget, WidgetContainer, makeResultTable } from '../../util';
 import STARResultSummaryWidget from "./STAR/STARResultSummaryWidget";
 import STARDetailedResults from "./STAR/STARDetailedResults";
 import STARResultDetailedStepsWidget from "./STAR/STARResultDetailedStepsWidget";
@@ -50,11 +50,6 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
     count: count,
   }));
 
-  const COLORS = [
-      'var(--ltbrand-blue)',
-      'var(--ltbrand-green)',
-      'var(--ltbrand-lime)',
-  ];
 
   return (
     <>
@@ -82,7 +77,7 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
                     />
                     <Bar dataKey='count' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
                         {noPrefStarData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[(index) % COLORS.length]} />
+                            <Cell key={`cell-${index}`} fill={CHART_COLORS[(index) % CHART_COLORS.length]} />
                         ))}
                     </Bar>
                 </BarChart>
