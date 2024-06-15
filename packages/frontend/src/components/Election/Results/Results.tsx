@@ -7,7 +7,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import { useState } from 'react'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Typography from '@mui/material/Typography';
-import { CHART_COLORS, DetailExpander, DetailExpanderGroup, ResultsTable, Widget, WidgetContainer } from '../../util';
+import { CHART_COLORS, DetailExpander, DetailExpanderGroup, ResultsBarChart, ResultsTable, Widget, WidgetContainer } from '../../util';
 import STARResultSummaryWidget from "./STAR/STARResultSummaryWidget";
 import STARDetailedResults from "./STAR/STARDetailedResults";
 import STARResultDetailedStepsWidget from "./STAR/STARResultDetailedStepsWidget";
@@ -49,7 +49,6 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
     name: `${i}⭐`,
     count: count,
   }));
-
 
   return (
     <>
@@ -247,21 +246,36 @@ function IRVResultsViewer({ results }: {results: irvResults}) {
 }
 
 function PluralityResultsViewer({ results }: {results: pluralityResults}) {
-  return (
+  return (<>
     <WidgetContainer>
       <Widget title=''>
-        <ResultsTable className='chooseOneTable' data={[
-          ['Candidate', 'Votes', '% All Votes'],
-          ...results.summaryData.totalScores.map((totalScore, i) => [
-            results.summaryData.candidates[totalScore.index].name,
-            totalScore.score,
-            `${Math.round(totalScore.score * 1000 / results.summaryData.nValidVotes) / 10}%`,
-          ])
-        ]}/>
+        <ResultsBarChart data={
+          results.summaryData.totalScores.map((totalScore, i) => ({
+            name: results.summaryData.candidates[totalScore.index].name,
+            votes: totalScore.score,
+          }))
+        }/>
       </Widget>
     </WidgetContainer>
-  );
+
+    <DetailExpander title='Details'>
+      <WidgetContainer>
+        <Widget title='Table'>
+          <ResultsTable className='chooseOneTable' data={[
+            ['Candidate', 'Votes', '% All Votes'],
+            ...results.summaryData.totalScores.map((totalScore, i) => [
+              results.summaryData.candidates[totalScore.index].name,
+              totalScore.score,
+              `${Math.round(totalScore.score * 1000 / results.summaryData.nValidVotes) / 10}%`,
+            ])
+          ]}/>
+        </Widget>
+      </WidgetContainer>
+    </DetailExpander>
+  </>);
 }
+
+
 function ApprovalResultsViewer({ results , rounds}: {results: approvalResults, rounds: number}) {
   return (<>
     <ApprovalResultSummaryWidget results={results}/>
