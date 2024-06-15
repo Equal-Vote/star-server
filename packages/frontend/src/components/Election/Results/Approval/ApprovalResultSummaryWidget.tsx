@@ -2,12 +2,7 @@ import React, { useEffect } from 'react'
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, ResponsiveContainer, Legend} from 'recharts';
 import { Paper, Typography } from '@mui/material';
 import { approvalResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
-
-const COLORS = [
-    'var(--ltbrand-blue)',
-    'var(--ltbrand-green)',
-    'var(--ltbrand-lime)',
-];
+import { CHART_COLORS } from '~/components/util';
 
 export default ({ results }: {results: approvalResults}) => {
     const histData = results.summaryData.totalScores
@@ -46,7 +41,7 @@ export default ({ results }: {results: approvalResults}) => {
                         />
                         <Bar dataKey='votes' fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
                             {histData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[(index) % COLORS.length]} />
+                                <Cell key={`cell-${index}`} fill={CHART_COLORS[(index) % CHART_COLORS.length]} />
                             ))}
                         </Bar>
                     </BarChart>

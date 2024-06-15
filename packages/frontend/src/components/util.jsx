@@ -2,10 +2,134 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Box, Grid, IconButton, Paper, TableContainer, Typography } from '@mui/material'
 import React, { useState, useRef, useEffect }  from 'react'
+import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import _uniqueId from 'lodash/uniqueId';
 import { DateTime } from 'luxon'
 
+export const CHART_COLORS = [
+    'var(--ltbrand-blue)',
+    'var(--ltbrand-green)',
+    'var(--ltbrand-lime)',
+];
+
 export const WidgetContainer = ({children}) => <Box display='flex' flexDirection='row' flexWrap='wrap' gap='30px' className="graphs" justifyContent='center' sx={{marginBottom: '30px'}}>{children}</Box>
+
+const truncName = (name, maxSize) => {
+    if(name.length <= maxSize) return name;
+    return name.slice(0, maxSize-3).concat('...');
+}
+
+export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='votes'}) => {
+    let rawData=data;
+
+    // Truncate names
+    let data = rawData.map(d => ({
+        ...d,
+        name: truncName(d['name'], 40)
+    }));
+
+    // Truncate entries
+    const maxCandidates = 10;
+    if(rawData.length > maxCandidates){
+        data = data.slice(0, maxCandidates-1);
+        let item = {
+            name: `+${rawData.length - (maxCandidates-1)} more`,
+            index: 0,
+        }
+        item[xKey] = '';
+        data.push(item);
+    }
+
+    // Sort entries
+    histData.sort(sortFunc ?? ((a, b) => {
+        return b.votes - a.votes;
+    }));
+
+    // size margin to longest candidate
+    const longestCandidateName = data.reduce( function(a, b){
+        console.log(a.name, b.name)
+        return (a.name.length > b.name.length)? a : b;
+    }).name;
+
+    // 200 is about the max width I'd want for a small mobile device, still looking for a better solution though
+    const axisWidth = Math.min(200, 15 * ((longestCandidateName.length > 20)? 20 : longestCandidateName.length));
+
+    return <ResponsiveContainer width="90%" height={50*data.length}>
+        <BarChart data={data} barCategoryGap={5} layout="vertical">
+            <XAxis hide axisLine={false} type="number" />
+            <YAxis
+                dataKey='name'
+                type="category"
+                axisLine={false}
+                tickLine={false}
+                tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
+                width={axisWidth}
+            />
+            <Bar dataKey={xKey} fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
+                {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={CHART_COLORS[(index+colorOffset) % CHART_COLORS.length]} />
+                ))}
+            </Bar>
+        </BarChart>
+    </ResponsiveContainer>
+}
+
+
+export const ResultsPieChart = ({data, colorOffset=0}) => {
+    const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+        const RADIAN = Math.PI / 180;
+        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+        const x = cx + radius * Math.cos(-midAngle * RADIAN);
+        const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+        return (
+            <text x={x} y={y} fill="black" style={{fontWeight: 'bold', textAlign: 'center'}} textAnchor='middle' dominantBaseline="central">
+                {`${(percent * 100).toFixed(0)}%`}
+            </text>
+        );
+    };
+
+    let pieColors = [
+        CHART_COLORS[colorOffset % CHART_COLORS.length],
+        CHART_COLORS[(colorOffset+1) % CHART_COLORS.length],
+        'var(--brand-gray-2)',
+    ];
+
+    const pieAngle = 90;
+
+    let rawData = data;
+
+    // Truncate names
+    let data = rawData.map(d => ({
+        ...d,
+        name: truncName(d['name'], 20)
+    }));
+
+    return <ResponsiveContainer width="100%" height={250}>
+        <PieChart>
+            <Pie
+                data={data}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={renderCustomizedLabel}
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="votes"
+                startAngle={pieAngle}
+                endAngle={pieAngle+360}
+            >
+                {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={ pieColors[index]} stroke='var(--brand-white)' strokeWidth={6}/>
+                ))}
+            </Pie>
+            <Legend 
+                layout="vertical" verticalAlign="top" align="right" 
+                formatter={(value) => <span style={{color: 'black', fontWeight: 'bold', fontSize: '.9rem'}}>{value}</span>}
+            />
+        </PieChart>
+    </ResponsiveContainer>
+}
 
 export const Widget = ({children, title}) => <Paper elevation={5} className='graph' sx={{
     width: '100%', // maybe I'll try 90?
