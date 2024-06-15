@@ -2,7 +2,7 @@ import React, { useState }  from 'react'
 import { TableContainer, Typography, Paper, Box} from "@mui/material";
 import { roundResults, starResults, starSummaryData } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
 import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from 'recharts';
-import { Widget, WidgetContainer, makeResultTable } from '~/components/util';
+import { Widget, WidgetContainer, ResultsTable } from '~/components/util';
 
 type candidateTableEntry = {
   name: string,
@@ -49,12 +49,12 @@ export default ({results, rounds}: {results: starResults, rounds: number }) => {
     const axisWidth = Math.min(200, 15 * 20);
     return ( <>
       <WidgetContainer>
-        <Widget title="Scores Table">{
-          makeResultTable('starScoreTable', [
+        <Widget title="Scores Table">
+          <ResultsTable className='starScoreTable' data={[
             ['Candidate', 'Score'],
             ...tableData.map(c => [c.name, c.votes]),
-          ])
-        }</Widget>
+          ]}/>
+        </Widget>
       </WidgetContainer>
       <WidgetContainer>
         <Widget title='Runoff Votes'>
@@ -78,7 +78,7 @@ export default ({results, rounds}: {results: starResults, rounds: number }) => {
           </ResponsiveContainer>
         </Widget>
         <Widget title='Runoff Table'>
-          {makeResultTable('starRunoffTable', [
+          <ResultsTable className='starScoreTable' data={[
             ['Candidate', 'Runoff Votes', '% Runoff Votes', '% Between Finalists'],
             ...runoffData.map((c, i) => [
               c.name,
@@ -87,7 +87,7 @@ export default ({results, rounds}: {results: starResults, rounds: number }) => {
               i == 2 ? '' : `${Math.round(c.runoffVotes * 1000 / finalistVotes) / 10}%`,
             ]),
             ['Total', results.summaryData.nValidVotes, '100%', '100%'] 
-            ])}
+            ]}/>
         </Widget>
       </WidgetContainer>
     </>);

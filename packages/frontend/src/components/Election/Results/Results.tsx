@@ -7,7 +7,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import { useState } from 'react'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Typography from '@mui/material/Typography';
-import { CHART_COLORS, DetailExpander, DetailExpanderGroup, Widget, WidgetContainer, makeResultTable } from '../../util';
+import { CHART_COLORS, DetailExpander, DetailExpanderGroup, ResultsTable, Widget, WidgetContainer } from '../../util';
 import STARResultSummaryWidget from "./STAR/STARResultSummaryWidget";
 import STARDetailedResults from "./STAR/STARDetailedResults";
 import STARResultDetailedStepsWidget from "./STAR/STARResultDetailedStepsWidget";
@@ -249,16 +249,16 @@ function IRVResultsViewer({ results }: {results: irvResults}) {
 function PluralityResultsViewer({ results }: {results: pluralityResults}) {
   return (
     <WidgetContainer>
-    <Widget title=''>
-    {makeResultTable('chooseOneTable', [
-      ['Candidate', 'Votes', '% All Votes'],
-      ...results.summaryData.totalScores.map((totalScore, i) => [
-        results.summaryData.candidates[totalScore.index].name,
-        totalScore.score,
-        `${Math.round(totalScore.score * 1000 / results.summaryData.nValidVotes) / 10}%`,
-      ])
-    ])}
-    </Widget>
+      <Widget title=''>
+        <ResultsTable className='chooseOneTable' data={[
+          ['Candidate', 'Votes', '% All Votes'],
+          ...results.summaryData.totalScores.map((totalScore, i) => [
+            results.summaryData.candidates[totalScore.index].name,
+            totalScore.score,
+            `${Math.round(totalScore.score * 1000 / results.summaryData.nValidVotes) / 10}%`,
+          ])
+        ]}/>
+      </Widget>
     </WidgetContainer>
   );
 }

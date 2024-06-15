@@ -2,7 +2,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Box, Grid, IconButton, Paper, TableContainer, Typography } from '@mui/material'
 import React, { useState, useRef, useEffect }  from 'react'
-import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Cell, Legend, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import _uniqueId from 'lodash/uniqueId';
 import { DateTime } from 'luxon'
 
@@ -23,7 +23,7 @@ export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='
     let rawData=data;
 
     // Truncate names
-    let data = rawData.map(d => ({
+    data = rawData.map(d => ({
         ...d,
         name: truncName(d['name'], 40)
     }));
@@ -41,13 +41,12 @@ export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='
     }
 
     // Sort entries
-    histData.sort(sortFunc ?? ((a, b) => {
+    data.sort(sortFunc ?? ((a, b) => {
         return b.votes - a.votes;
     }));
 
     // size margin to longest candidate
     const longestCandidateName = data.reduce( function(a, b){
-        console.log(a.name, b.name)
         return (a.name.length > b.name.length)? a : b;
     }).name;
 
@@ -100,7 +99,7 @@ export const ResultsPieChart = ({data, colorOffset=0}) => {
     let rawData = data;
 
     // Truncate names
-    let data = rawData.map(d => ({
+    data = rawData.map(d => ({
         ...d,
         name: truncName(d['name'], 20)
     }));
@@ -147,7 +146,7 @@ export const Widget = ({children, title}) => <Paper elevation={5} className='gra
     {children}
 </Paper>
 
-export const makeResultTable = (className, arr) => {
+export const ResultsTable = ({className, data}) => {
     let c = `resultTable ${className}`;
 
     return <TableContainer sx={{ marginLeft: 'auto', marginRight: 'auto', maxHeight: 600, width: '100%'}}>
