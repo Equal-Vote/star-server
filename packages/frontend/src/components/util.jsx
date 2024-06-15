@@ -2,7 +2,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Box, Grid, IconButton, Paper, TableContainer, Typography } from '@mui/material'
 import React, { useState, useRef, useEffect }  from 'react'
-import { Bar, BarChart, Cell, Legend, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Cell, LabelList, Legend, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import _uniqueId from 'lodash/uniqueId';
 import { DateTime } from 'luxon'
 
@@ -19,13 +19,14 @@ const truncName = (name, maxSize) => {
     return name.slice(0, maxSize-3).concat('...');
 }
 
-export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='votes'}) => {
+export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='votes', displayPercent=false, percentDenominator=1}) => {
     let rawData=data;
 
     // Truncate names
     data = rawData.map(d => ({
         ...d,
-        name: truncName(d['name'], 40)
+        name: truncName(d['name'], 40),
+        percent: d.votes > 0? `${Math.round(100 * d.votes / percentDenominator)}%` : ''
     }));
 
     // Truncate entries
@@ -45,7 +46,7 @@ export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='
         return b.votes - a.votes;
     }));
 
-    // size margin to longest candidate
+    // Size margin to longest candidate
     const longestCandidateName = data.reduce( function(a, b){
         return (a.name.length > b.name.length)? a : b;
     }).name;
@@ -55,7 +56,7 @@ export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='
 
     return <ResponsiveContainer width="90%" height={50*data.length}>
         <BarChart data={data} barCategoryGap={5} layout="vertical">
-            <XAxis hide axisLine={false} type="number" />
+            <XAxis hide axisLine={false} type="number"/>
             <YAxis
                 dataKey='name'
                 type="category"
@@ -64,7 +65,8 @@ export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='
                 tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
                 width={axisWidth}
             />
-            <Bar dataKey={xKey} fill='#026A86' unit='votes' label={{position: 'insideLeft', fill: 'black', stroke: 'black', strokeWidth: 1}}>
+            <Bar stackOffset='expand' dataKey={xKey} fill='#026A86' unit='votes' >
+                <LabelList dataKey={displayPercent? 'percent' : 'votes'} position='insideRight' fill='black'/>
                 {data.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={CHART_COLORS[(index+colorOffset) % CHART_COLORS.length]} />
                 ))}
