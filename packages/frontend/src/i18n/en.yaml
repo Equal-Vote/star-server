@@ -145,6 +145,10 @@ results:
       - Candidate
       - '# Wins'
       - Win Rate
+  rcv:
+    first_choice_title: First Choice Preferences
+    final_round_title: Final Runoff
+    table_title: All tabulation rounds
   star:
     score_title: Scoring Round
     score_description:
@@ -183,5 +187,8 @@ general:
     candidate: Option
   yes: Yes
   no: No
-  equal_preferences: Equal Preferences # Mostly used as a label in tables & charts
-  total: Total # Mostly used as a label in tables & charts
+
+  # Mostly used as a label in tables & charts
+  equal_preferences: Equal Preferences
+  exhausted: Exhausted
+  total: Total 

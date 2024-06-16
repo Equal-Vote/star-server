@@ -11,11 +11,6 @@ type candidateTableEntry = {
   runoffVotes: number
 }
 
-const RUNOFF_COLORS = [
-    'var(--ltbrand-blue)',
-    'var(--ltbrand-green)',
-    'var(--brand-gray-1)',
-];
 
 export default ({results, rounds}: {results: starResults, rounds: number }) => {
     const winnerIndex = results.roundResults[0].winners[0].index;
@@ -59,7 +54,7 @@ export default ({results, rounds}: {results: starResults, rounds: number }) => {
       </WidgetContainer>
       <WidgetContainer>
         <Widget title='Runoff Chart'> {/* I haven't put this in en.yaml because it's going to be moved to the pie section soon*/}
-          <ResultsBarChart data={runoffData} colors={RUNOFF_COLORS} xKey={'runoffVotes'} sortFunc={false}/>
+          <ResultsBarChart data={runoffData} runoff xKey={'runoffVotes'} sortFunc={false}/>
         </Widget>
         <Widget title={t('results.star.runoff_table_title')}>
           <ResultsTable className='starRunoffTable' data={[

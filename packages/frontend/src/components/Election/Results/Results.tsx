@@ -16,6 +16,7 @@ import { Race } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { ElectionResults, allocatedScoreResults, approvalResults, irvResults, pluralityResults, rankedRobinResults, starResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 import useElection from "../../ElectionContextProvider";
 import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 declare namespace Intl {
   class ListFormat {
@@ -63,7 +64,7 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
               <STARResultDetailedStepsWidget results={results} rounds={rounds}/>
             </Widget>
             <Widget title={t('results.star.equal_preferences_title')}>
-              <ResultsBarChart data={noPrefStarData} xKey='count' displayPercent={true} sortFunc={false}/>
+              <ResultsBarChart data={noPrefStarData} xKey='count' percentage={true} sortFunc={false}/>
             </Widget>
           </WidgetContainer>
         </DetailExpander>
@@ -75,7 +76,6 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
 function RankedRobinViewer({ results }: {results: rankedRobinResults}) {
   const [viewMatrix, setViewMatrix] = useState(false)
   const {t} = useTranslation();
-  console.log(results.summaryData);
   return (<>
       <WidgetContainer>
       <Widget title={t('results.ranked_robin.bar_title')}>
@@ -86,8 +86,9 @@ function RankedRobinViewer({ results }: {results: rankedRobinResults}) {
               votes: totalScore.score,
             }))
           }
-          displayPercent={true}
+          percentage
           percentDenominator={results.summaryData.candidates.length-1}
+          star
         />
       </Widget>
     </WidgetContainer>
@@ -100,7 +101,7 @@ function RankedRobinViewer({ results }: {results: rankedRobinResults}) {
             ...results.summaryData.totalScores.map((totalScore, i) => [
               results.summaryData.candidates[totalScore.index].name,
               totalScore.score,
-              `${Math.round(totalScore.score * 1000 / results.summaryData.nValidVotes) / 10}%`,
+              `${Math.round(totalScore.score * 1000 / (results.summaryData.candidates.length-1)) / 10}%`,
             ])
           ]}/>
         </Widget>
@@ -111,117 +112,61 @@ function RankedRobinViewer({ results }: {results: rankedRobinResults}) {
 }
 
 function IRVResultsViewer({ results }: {results: irvResults}) {
-  const [viewMatrix, setViewMatrix] = useState(false)
+  const {t} = useTranslation();
+
+  console.log(results)
+
+  const firstRoundData = results.voteCounts[0].map((c,i) => ({name: results.summaryData.candidates[i].name, votes: c}));
+
+  const runoffData = results.voteCounts.slice(-1)[0]
+    .map((c,i) => ({name: results.summaryData.candidates[i].name, votes: c}))
+    .sort((a, b) => b.votes - a.votes)
+    .slice(0, 2)
+    .concat([{
+      name: t('general.exhausted'),
+      votes: results.exhaustedVoteCounts.slice(-1)[0]
+    }])
+
+  const tabulationRows = results.summaryData.candidates.map(({index, name}) => {
+    return [name].concat(
+      (results.voteCounts as Array<Number[]>).map(counts => counts[index] == 0? '' : '' + counts[index])
+    )
+  }).sort((r1, r2) => {
+    let z1 = r1.filter(s => s == '').length;
+    let z2 = r2.filter(s => s == '').length;
+    if(z1 != z2)
+      return z1-z2;
+
+    for(let i = r1.length-1; i >= 1; i--){
+      if(r1[i] == '') continue;
+      if(r2[i] == '') continue;
+      return parseInt(r2[i]) - parseInt(r1[i])
+    }
+    
+    return 0;
+  });
+
+  tabulationRows.unshift([t('general.election.candidate')].concat([...Array(results.voteCounts.length).keys()].map(i => `Round ${i+1}`)))
+  tabulationRows.push([t('general.exhausted'), ...results.exhaustedVoteCounts.map(i => ''+i)])
+
   return (
-    <div className="resultViewer">
-      <h2>Detailed Results</h2>
-
-      <Paper elevation={0} sx={{ width: '100%' }}>
-        <TableContainer sx={{ maxHeight: 600, maxWidth: { xs: 300, sm: 500, md: 600, lg: 1000 } }}>
-          <Table size='small' stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  style={{
-                    position: 'sticky',
-                    left: 0,
-                    background: 'white',
-                    zIndex: 900,
-                    minWidth: 100
-                  }}
-                  align='left'
-                  key={``}> Candidate </TableCell>
-                {results.voteCounts.map((roundVoteCounts, i) =>
-                  <TableCell
-                    align='right'
-                    style={{
-                      minWidth: 100,
-                      zIndex: 800,
-                    }}
-                  >
-                    {`Round ${i + 1}`}
-                  </TableCell>)}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {results.summaryData.candidates.map((c, n) => (
-
-                <TableRow >
-                  <TableCell
-                    align="left"
-                    style={{
-                      position: 'sticky',
-                      left: 0,
-                      background: 'white',
-                      zIndex: 700,
-                    }}>
-                    {c.name}
-                  </TableCell>
-                  {results.voteCounts.map((roundVoteCounts, i) =>
-                    <TableCell
-                      align="right">
-                      {roundVoteCounts[n]}
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))}
-              <TableRow >
-                <TableCell
-                  align="left"
-                  style={{
-                    position: 'sticky',
-                    left: 0,
-                    background: 'white',
-                    zIndex: 700,
-                  }}> Exhausted Ballots</TableCell>
-                {results.exhaustedVoteCounts.map((exhaustedVoteCount, i) => <TableCell align="right"> {exhaustedVoteCount} </TableCell>)}
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-
-      <Paper elevation={0} sx={{ my: 1, width: '100%' }}>
-        <TableContainer sx={{ maxHeight: 600, maxWidth: { xs: 300 } }}>
-
-          <Table size='small'>
-            <TableHead>
-              <TableRow>
-                <TableCell className='matrix'> Candidate</TableCell>
-                <TableCell className='matrix'> # of wins head to head wins</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {results.summaryData.candidates.map((c, n) => (
-                <TableRow >
-                  <TableCell>
-                    {c.name}
-                  </TableCell>
-                  <TableCell> {results.summaryData.totalScores[n].score} </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-
-        </TableContainer>
-      </Paper>
-      <Grid container alignItems="center" >
-        <Grid item xs={1}>
-          {!viewMatrix &&
-            <IconButton aria-label="Home" onClick={() => { setViewMatrix(true) }}>
-              <ExpandMore />
-            </IconButton>}
-          {viewMatrix &&
-            <IconButton aria-label="Home" onClick={() => { setViewMatrix(false) }}>
-              <ExpandLess />
-            </IconButton>}
-        </Grid>
-        <Grid item xs={2}>
-          <h3> View Matrix</h3>
-        </Grid>
-      </Grid>
-      {viewMatrix && <MatrixViewer results={results} />}
-    </div>
+    <>
+      <WidgetContainer>
+        <Widget title={t('results.rcv.first_choice_title')}>
+          <ResultsBarChart data={firstRoundData} percentage/>
+        </Widget>
+        <Widget title={t('results.rcv.final_round_title')}>
+          <ResultsBarChart data={runoffData} runoff star percentage sortFunc={false}/>
+        </Widget>
+      </WidgetContainer>
+      <DetailExpander>
+        <WidgetContainer>
+        <Widget title={t('results.rcv.table_title')}>
+          <ResultsTable className='rcvTable' data={tabulationRows}/>
+        </Widget>
+        </WidgetContainer>
+      </DetailExpander>
+    </>
   );
 }
 
@@ -237,7 +182,8 @@ function PluralityResultsViewer({ results }: {results: pluralityResults}) {
               votes: totalScore.score,
             }))
           }
-          displayPercent={true}
+          star
+          percentage
         />
       </Widget>
     </WidgetContainer>
@@ -273,7 +219,8 @@ function ApprovalResultsViewer({ results , rounds}: {results: approvalResults, r
               votes: totalScore.score,
             }))
           }
-          displayPercent={true}
+          star
+          percentage
           percentDenominator={results.summaryData.nValidVotes} 
         />
       </Widget>
@@ -410,7 +357,7 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
             </>}
 
           {result.votingMethod === "RankedRobin" &&
-            <ResultViewer votingMethod='Ranked Robin' results={result.results}>
+            <ResultViewer votingMethod='Ranked Robin' results={result.results} learnLink='https://www.equal.vote/ranked_robin'>
               <RankedRobinViewer results={result.results} />
             </ResultViewer>
           }
@@ -423,7 +370,7 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
 
 
           {result.votingMethod === "IRV" &&
-            <ResultViewer votingMethod='Ranked Choice Voting' results={result.results}>
+            <ResultViewer votingMethod='Ranked Choice Voting' results={result.results} learnLink='https://www.youtube.com/watch?v=oHRPMJmzBBw'>
               <IRVResultsViewer results={result.results} />
             </ResultViewer>
           }

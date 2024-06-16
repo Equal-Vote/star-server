@@ -27,13 +27,10 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
     const winnerVotes = results.summaryData.preferenceMatrix[winnerIndex][runnerUpIndex];
     const runnerUpVotes = results.summaryData.preferenceMatrix[runnerUpIndex][winnerIndex];
 
-    for(let i = 0; i < 2; i++){
-        histData[i].name = `⭐${histData[i].name}`
-    }
 
     var pieData = [
         {
-            name: `⭐${results.summaryData.candidates[winnerIndex].name}`,
+            name: results.summaryData.candidates[winnerIndex].name,
             votes: winnerVotes
         },
         {
@@ -58,13 +55,13 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
                         if(b.index == runnerUpIndex) return 1;
                         return b.votes - a.votes;
                     }}
-                    displayPercent={false} 
+                    percentage={false} 
                     percentDenominator={results.summaryData.nValidVotes*5} 
                 />
             </Widget>
             <Widget title='Automatic Runoff Round'>
                 {(t('results.star.runoff_description', {returnObjects: true}) as Array<String>).map( (s, i) => <p key={i}>{s}</p>)}
-                <ResultsPieChart data={pieData}/>
+                <ResultsPieChart data={pieData} star/>
             </Widget>
         </WidgetContainer>
         </Box>

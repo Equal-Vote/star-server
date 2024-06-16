@@ -46,25 +46,26 @@ export function IRV(candidates: string[], votes: ballot[], nWinners = 1, randomT
             remainingCandidates.forEach(candidate => {
                 // loop over remaining candidates
                 // find top (non-zero) rank, if duplicate top ranks mark as overvote
-                if (ballot[candidate.index] !== 0) {
-                    // candidate has rank
+                if (ballot[candidate.index] == 0) return;
+                if (ballot[candidate.index] == null) return;
 
-                    if (topRemainingRank == 0) {
-                        // set initial top rank
-                        topRemainingRankIndex = candidate.index
-                        topRemainingRank = ballot[candidate.index]
-                        isOverVote = false
-                    }
-                    else if (ballot[candidate.index] < ballot[topRemainingRankIndex]) {
-                        // set new top rank
-                        topRemainingRankIndex = candidate.index
-                        topRemainingRank = ballot[candidate.index]
-                        isOverVote = false
-                    }
-                    else if (ballot[candidate.index] === ballot[topRemainingRankIndex]) {
-                        // multiple top ranks, mark as over vote
-                        isOverVote = true
-                    }
+                // candidate has rank
+
+                if (topRemainingRank == 0) {
+                    // set initial top rank
+                    topRemainingRankIndex = candidate.index
+                    topRemainingRank = ballot[candidate.index]
+                    isOverVote = false
+                }
+                else if (ballot[candidate.index] < ballot[topRemainingRankIndex]) {
+                    // set new top rank
+                    topRemainingRankIndex = candidate.index
+                    topRemainingRank = ballot[candidate.index]
+                    isOverVote = false
+                }
+                else if (ballot[candidate.index] === ballot[topRemainingRankIndex]) {
+                    // multiple top ranks, mark as over vote
+                    isOverVote = true
                 }
             })
             if (isOverVote) {

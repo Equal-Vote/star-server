@@ -71,7 +71,7 @@ export function ConfirmDialogProvider({ children }) {
                         variant="contained"
                         fullWidth={false}
                         onClick={() => fn.current(true)}>
-                        Yes
+                        Submit
                     </StyledButton>
                 </DialogActions>
             </Dialog>
