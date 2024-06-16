@@ -20,24 +20,38 @@ const truncName = (name, maxSize) => {
     return name.slice(0, maxSize-3).concat('...');
 }
 
-export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='votes', displayPercent=false, percentDenominator=undefined, colors=CHART_COLORS}) => {
+export const ResultsBarChart = ({data, runoff=false, colorOffset=0, sortFunc=undefined, xKey='votes', percentage=false, percentDenominator=undefined, star=false}) => {
     let rawData=data;
+
+    // compute colors
+    let colors = CHART_COLORS;
+    for(let i = 0; i < colorOffset; i++){
+        colors.push(colors.shift());
+    }
+    if(runoff) colors = colors.slice(0, 2).concat(['var(--brand-gray-1)'])
+
+    // Sort entries
+    if(sortFunc != false){ // we're handling undefined and false difference, so that's why this is explicit
+        data.sort(sortFunc ?? ((a, b) => {
+            return b[xKey] - a[xKey];
+        }));
+    }
 
     // Truncate names & add percent
     percentDenominator ??= data.reduce((sum, d) => sum + d[xKey], 0);
     percentDenominator = Math.max(1, percentDenominator);
-    data = rawData.map(d => {
+    data = rawData.map((d, i) => {
         let s = {
             ...d,
-            name: truncName(d['name'], 40),
-            percent: `${Math.round(100 * d[xKey] / percentDenominator)}%`,
+            name: ((star && i==0)? '⭐' : '') + truncName(d['name'], 40),
             // hack to get smaller values to allign different than larger ones
-            right: (d[xKey] == 0)? (displayPercent? '0%': '0') : '',
+            left: percentage? `${Math.round(100 * d[xKey] / percentDenominator)}%`: d[xKey],
+            right: '',
         };
 
-        if(s[xKey] == 0){
-            s[xKey] = '';
-            s['percent'] = '';
+        if(d[xKey] / percentDenominator < .1){
+            s['right'] = s['left'];
+            s['left'] = '';
         }
 
         return s;
@@ -53,13 +67,6 @@ export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='
         }
         item[xKey] = '';
         data.push(item);
-    }
-
-    // Sort entries
-    if(sortFunc != false){ // we're handling undefined and false difference, so that's why this is explicit
-        data.sort(sortFunc ?? ((a, b) => {
-            return b[xKey] - a[xKey];
-        }));
     }
 
     // Size margin to longest candidate
@@ -82,7 +89,7 @@ export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='
                 width={axisWidth}
             />
             <Bar stackOffset='expand' dataKey={xKey} fill='#026A86' unit='votes' >
-                <LabelList dataKey={displayPercent? 'percent' : xKey} position='insideRight' fill='black'/>
+                <LabelList dataKey='left' position='insideRight' fill='black'/>
                 <LabelList dataKey='right' position='right' fill='black'/>
                 {data.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={colors[(index+colorOffset) % colors.length]} />
@@ -93,7 +100,7 @@ export const ResultsBarChart = ({data, colorOffset=0, sortFunc=undefined, xKey='
 }
 
 
-export const ResultsPieChart = ({data, colorOffset=0}) => {
+export const ResultsPieChart = ({data, colorOffset=0, star=false}) => {
     const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
         const RADIAN = Math.PI / 180;
         const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
@@ -118,9 +125,9 @@ export const ResultsPieChart = ({data, colorOffset=0}) => {
     let rawData = data;
 
     // Truncate names
-    data = rawData.map(d => ({
+    data = rawData.map((d, i) => ({
         ...d,
-        name: truncName(d['name'], 20)
+        name: ((star && i==0)? '⭐' : '') + truncName(d['name'], 20)
     }));
 
     return <ResponsiveContainer width="100%" height={250}>
