@@ -17,6 +17,7 @@ import { ElectionResults, allocatedScoreResults, approvalResults, irvResults, pl
 import useElection from "../../ElectionContextProvider";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
+import { Bar, BarChart, CartesianAxis, CartesianGrid, Cell, ComposedChart, Legend, Line, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 declare namespace Intl {
   class ListFormat {
@@ -50,6 +51,29 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
   }));
 
   const {t} = useTranslation();
+
+  let data = [
+    {
+      name: '',
+      votes: 0,
+      majority: 5
+    },
+    {
+      name: 'a',
+      votes: 6,
+      majority: 5
+    },
+    {
+      name: 'a',
+      votes: 4,
+      majority: 5
+    },
+    {
+      name: 'c',
+      votes: 3,
+    },
+  ];
+  let xKey = 'votes';
 
   return (
     <>
@@ -142,7 +166,7 @@ function IRVResultsViewer({ results }: {results: irvResults}) {
       if(r2[i] == '') continue;
       return parseInt(r2[i]) - parseInt(r1[i])
     }
-    
+
     return 0;
   });
 
@@ -156,7 +180,7 @@ function IRVResultsViewer({ results }: {results: irvResults}) {
           <ResultsBarChart data={firstRoundData} percentage/>
         </Widget>
         <Widget title={t('results.rcv.final_round_title')}>
-          <ResultsBarChart data={runoffData} runoff star percentage sortFunc={false}/>
+          <ResultsBarChart data={runoffData} runoff star percentage sortFunc={false} majorityLegend={t('results.rcv.runoff_majority')}/>
         </Widget>
       </WidgetContainer>
       <DetailExpander>

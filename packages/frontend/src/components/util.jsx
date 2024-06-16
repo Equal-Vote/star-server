@@ -2,7 +2,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Box, Grid, IconButton, Paper, TableContainer, Typography } from '@mui/material'
 import React, { useState, useRef, useEffect }  from 'react'
-import { Bar, BarChart, Cell, Label, LabelList, Legend, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Cell, ComposedChart, Label, LabelList, Legend, Line, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import _uniqueId from 'lodash/uniqueId';
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next';
@@ -20,22 +20,20 @@ const truncName = (name, maxSize) => {
     return name.slice(0, maxSize-3).concat('...');
 }
 
-export const ResultsBarChart = ({data, runoff=false, colorOffset=0, sortFunc=undefined, xKey='votes', percentage=false, percentDenominator=undefined, star=false}) => {
+export const ResultsBarChart = ({
+    data,
+    runoff=false,
+    colorOffset=0,
+    sortFunc=undefined,
+    xKey='votes',
+    percentage=false,
+    percentDenominator=undefined,
+    star=false,
+    majorityLegend=undefined,
+    majorityOffset=false,
+    height=undefined,
+}) => {
     let rawData=data;
-
-    // compute colors
-    let colors = CHART_COLORS;
-    for(let i = 0; i < colorOffset; i++){
-        colors.push(colors.shift());
-    }
-    if(runoff) colors = colors.slice(0, 2).concat(['var(--brand-gray-1)'])
-
-    // Sort entries
-    if(sortFunc != false){ // we're handling undefined and false difference, so that's why this is explicit
-        data.sort(sortFunc ?? ((a, b) => {
-            return b[xKey] - a[xKey];
-        }));
-    }
 
     // Truncate names & add percent
     percentDenominator ??= data.reduce((sum, d) => sum + d[xKey], 0);
@@ -49,13 +47,43 @@ export const ResultsBarChart = ({data, runoff=false, colorOffset=0, sortFunc=und
             right: '',
         };
 
-        if(d[xKey] / percentDenominator < .1){
+        if(d[xKey] / percentDenominator < .1 || (majorityLegend && i == 0)){
             s['right'] = s['left'];
             s['left'] = '';
         }
 
         return s;
     });
+
+    // Sort entries
+    if(sortFunc != false){ // we're handling undefined and false difference, so that's why this is explicit
+        data.sort(sortFunc ?? ((a, b) => {
+            return b[xKey] - a[xKey];
+        }));
+    }
+
+    // compute colors
+    let colors = [...CHART_COLORS];
+    for(let i = 0; i < colorOffset; i++){
+        colors.push(colors.shift());
+    }
+    if(runoff){
+        colors = colors.slice(0, 2).concat(['var(--brand-gray-1)'])
+    }
+
+    // Add majority
+    if(majorityLegend || majorityOffset){
+        let m = (data[0][xKey] + data[1][xKey])/2;
+        data = data.map((d, i) => {
+            let s = {...d};
+            s[majorityLegend] = (i < 2)? m : null
+            return s;
+        })
+        let s = {name: ''};
+        s[majorityLegend] = m;
+        data.unshift(s)
+        colors.unshift('var(--brand-gray-1)')
+    }
 
     // Truncate entries
     const maxCandidates = 10;
@@ -78,7 +106,7 @@ export const ResultsBarChart = ({data, runoff=false, colorOffset=0, sortFunc=und
     const axisWidth = Math.max(50, Math.min(200, 15 * ((longestCandidateName.length > 20)? 20 : longestCandidateName.length)));
 
     return <ResponsiveContainer width="90%" height={50*data.length}>
-        <BarChart data={data} barCategoryGap={5} layout="vertical">
+        <ComposedChart data={data} barCategoryGap={5} layout="vertical">
             <XAxis hide axisLine={false} type="number"/>
             <YAxis
                 dataKey='name'
@@ -88,14 +116,16 @@ export const ResultsBarChart = ({data, runoff=false, colorOffset=0, sortFunc=und
                 tick={{fontSize: '.9rem', fill: 'black', fontWeight: 'bold'}}
                 width={axisWidth}
             />
-            <Bar stackOffset='expand' dataKey={xKey} fill='#026A86' unit='votes' >
+            <Bar stackOffset='expand' dataKey={xKey} fill='#026A86' unit='votes' legendType='none'>
                 <LabelList dataKey='left' position='insideRight' fill='black'/>
                 <LabelList dataKey='right' position='right' fill='black'/>
                 {data.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={colors[(index+colorOffset) % colors.length]} />
+                    <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
                 ))}
             </Bar>
-        </BarChart>
+            <Line dataKey={majorityLegend} dot={false} stroke='black' strokeWidth={3} strokeDasharray="6 6" legendType='plainline'/>
+            {majorityLegend && <Legend/>}
+        </ComposedChart>
     </ResponsiveContainer>
 }
 
@@ -172,7 +202,7 @@ export const Widget = ({children, title}) => <Paper elevation={5} className='gra
     {children}
 </Paper>
 
-export const ResultsTable = ({className, data}) => {
+export const ResultsTable = ({className, data, minCellWidth='120px'}) => {
     let c = `resultTable ${className}`;
 
     return <TableContainer sx={{ marginLeft: 'auto', marginRight: 'auto', maxHeight: 600, width: '100%'}}>
@@ -180,7 +210,6 @@ export const ResultsTable = ({className, data}) => {
             <thead className={c}>
                 <tr>{data[0].map((header, i) => <th key={i} className={c}>{header}</th>)}</tr>
             </thead>
-
             <tbody>
                 {data.slice(1).map((row, i) =>
                     <tr className={c} key={i}>{row.map((value, j) =>

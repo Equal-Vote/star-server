@@ -49,12 +49,7 @@ export default ({results, rounds}: {results: starResults, rounds: number }) => {
           <ResultsTable className='starScoreTable' data={[
             t('results.star.score_table_columns', {returnObjects: true}),
             ...tableData.map(c => [c.name, c.votes]),
-          ]}/>
-        </Widget>
-      </WidgetContainer>
-      <WidgetContainer>
-        <Widget title='Runoff Chart'> {/* I haven't put this in en.yaml because it's going to be moved to the pie section soon*/}
-          <ResultsBarChart data={runoffData} runoff xKey={'runoffVotes'} sortFunc={false}/>
+          ]} />
         </Widget>
         <Widget title={t('results.star.runoff_table_title')}>
           <ResultsTable className='starRunoffTable' data={[

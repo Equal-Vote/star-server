@@ -68,6 +68,7 @@ code {
   border: 1px solid black;
   margin: 0;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .resultTable thead {
@@ -75,7 +76,6 @@ code {
 }
 
 .resultTable th{
-  min-width: 120px;
   text-align: center;
 }
 

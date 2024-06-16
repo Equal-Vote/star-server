@@ -149,6 +149,7 @@ results:
     first_choice_title: First Choice Preferences
     final_round_title: Final Runoff
     table_title: All tabulation rounds
+    runoff_majority: majority of remaining active votes
   star:
     score_title: Scoring Round
     score_description:
@@ -158,6 +159,7 @@ results:
     runoff_description:
       - Each vote goes to the voter's preferred finalist.
       - Finalist with most votes wins.
+    runoff_majority: majority of voters with preference
     score_table_title: Scores Table
     score_table_columns:
       - Candidate
