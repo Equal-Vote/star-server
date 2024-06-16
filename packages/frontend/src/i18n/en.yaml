@@ -191,6 +191,6 @@ general:
   no: No
 
   # Mostly used as a label in tables & charts
-  equal_preferences: Equal Preferences
+  equal_preferences: Equal Preference
   exhausted: Exhausted
   total: Total 
