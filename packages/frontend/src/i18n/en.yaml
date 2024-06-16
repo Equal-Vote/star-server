@@ -138,6 +138,13 @@ results:
       - Candidate
       - Votes
       - '% All Votes'
+  ranked_robin:
+    bar_title: Head-to-head wins
+    table_title: Table
+    table_columns:
+      - Candidate
+      - '# Wins'
+      - Win Rate
   star:
     score_title: Scoring Round
     score_description:

@@ -74,42 +74,39 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
 
 function RankedRobinViewer({ results }: {results: rankedRobinResults}) {
   const [viewMatrix, setViewMatrix] = useState(false)
+  const {t} = useTranslation();
+  console.log(results.summaryData);
   return (<>
-      <h2>Detailed Results</h2>
-      <table className='matrix'>
-        <thead className='matrix'>
-          <tr>
-            <th className='matrix'> Candidate</th>
-            <th className='matrix'> # of wins</th>
-          </tr>
+      <WidgetContainer>
+      <Widget title={t('results.ranked_robin.bar_title')}>
+        <ResultsBarChart
+          data={
+            results.summaryData.totalScores.map((totalScore, i) => ({
+              name: results.summaryData.candidates[totalScore.index].name,
+              votes: totalScore.score,
+            }))
+          }
+          displayPercent={true}
+          percentDenominator={results.summaryData.candidates.length-1}
+        />
+      </Widget>
+    </WidgetContainer>
 
-          {results.summaryData.candidates.map((c, n) => (
-            <>
-              <tr className='matrix' key={`h${n}`} >{c.name}
-                <td> {results.summaryData.totalScores[n].score} </td>
-              </tr>
-
-            </>
-          ))}
-        </thead>
-      </table>
-      <Grid container alignItems="center" >
-        <Grid item xs={1}>
-          {!viewMatrix &&
-            <IconButton aria-label="Home" onClick={() => { setViewMatrix(true) }}>
-              <ExpandMore />
-            </IconButton>}
-          {viewMatrix &&
-            <IconButton aria-label="Home" onClick={() => { setViewMatrix(false) }}>
-              <ExpandLess />
-            </IconButton>}
-        </Grid>
-        <Grid item xs={2}>
-          <h3> View Preference Matrix</h3>
-        </Grid>
-      </Grid>
-      {viewMatrix && <MatrixViewer results={results} />}
-    </>
+    <DetailExpander>
+      <WidgetContainer>
+        <Widget title={t('results.ranked_robin.table_title')}>
+          <ResultsTable className='rankedRobinTable' data={[
+            t('results.ranked_robin.table_columns', {returnObjects: true}),
+            ...results.summaryData.totalScores.map((totalScore, i) => [
+              results.summaryData.candidates[totalScore.index].name,
+              totalScore.score,
+              `${Math.round(totalScore.score * 1000 / results.summaryData.nValidVotes) / 10}%`,
+            ])
+          ]}/>
+        </Widget>
+      </WidgetContainer>
+    </DetailExpander>
+  </>
   );
 }
 
@@ -285,7 +282,7 @@ function ApprovalResultsViewer({ results , rounds}: {results: approvalResults, r
     <DetailExpander>
       <WidgetContainer>
         <Widget title={t('results.approval.table_title')}>
-          <ResultsTable className='chooseOneTable' data={[
+          <ResultsTable className='approvalTable' data={[
             t('results.approval.table_columns', {returnObjects: true}),
             ...results.summaryData.totalScores.map((totalScore, i) => [
               results.summaryData.candidates[totalScore.index].name,
