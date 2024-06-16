@@ -177,7 +177,7 @@ function IRVResultsViewer({ results }: {results: irvResults}) {
     <>
       <WidgetContainer>
         <Widget title={t('results.rcv.first_choice_title')}>
-          <ResultsBarChart data={firstRoundData} percentage/>
+          <ResultsBarChart data={firstRoundData} percentage majorityOffset/>
         </Widget>
         <Widget title={t('results.rcv.final_round_title')}>
           <ResultsBarChart data={runoffData} runoff star percentage sortFunc={false} majorityLegend={t('results.rcv.runoff_majority')}/>
