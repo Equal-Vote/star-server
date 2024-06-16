@@ -177,7 +177,7 @@ const VotePage = () => {
 
       <Box sx={{ display: 'flex', justifyContent: "space-between" }}>
         <Button
-          variant='outlined'
+          variant='contained'
           onClick={() => setIsOpen(true)}
           disabled={isPending || currentPage !== pages.length - 1 || pages[currentPage].candidates.every(candidate => candidate.score === null)}//disable unless on last page and at least one candidate scored
           style={{ marginLeft: "auto", minWidth: "150px", marginTop: "20px" }}>
