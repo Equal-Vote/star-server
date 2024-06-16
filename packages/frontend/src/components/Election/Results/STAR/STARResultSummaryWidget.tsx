@@ -1,11 +1,17 @@
-import React, { useEffect } from 'react'
-import { Box, Paper, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react'
+import { Box, Paper, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { starResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
 import { ResultsPieChart, Widget, WidgetContainer } from '~/components/util';
 import { ResultsBarChart } from '~/components/util';
 import { useTranslation } from 'react-i18next';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import PieChartIcon from '@mui/icons-material/PieChart';
 
 const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults, roundIndex: number }) => {
+    const {t} = useTranslation();
+
+    const [pie, setPie] = useState(false);
+
     const prevWinners = results.roundResults
         .filter((_, i) => i < roundIndex)
         .map(round => round.winners)
@@ -27,7 +33,6 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
     const winnerVotes = results.summaryData.preferenceMatrix[winnerIndex][runnerUpIndex];
     const runnerUpVotes = results.summaryData.preferenceMatrix[runnerUpIndex][winnerIndex];
 
-
     var pieData = [
         {
             name: results.summaryData.candidates[winnerIndex].name,
@@ -39,7 +44,11 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
         },
     ];
 
-    const {t} = useTranslation();
+    let runoffData = [...pieData]
+    runoffData.push({
+      name: t('general.equal_preferences'),
+      votes: results.summaryData.nValidVotes - winnerVotes - runnerUpVotes,
+    })
 
     return (
         <Box className="resultWidget">
@@ -57,11 +66,34 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
                     }}
                     percentage={false} 
                     percentDenominator={results.summaryData.nValidVotes*5} 
+                    majorityOffset
                 />
             </Widget>
             <Widget title='Automatic Runoff Round'>
                 {(t('results.star.runoff_description', {returnObjects: true}) as Array<String>).map( (s, i) => <p key={i}>{s}</p>)}
-                <ResultsPieChart data={pieData} star/>
+                {pie ? 
+                    <ResultsPieChart data={pieData} star />
+                :
+                <>
+                    <ResultsBarChart data={runoffData} star runoff percentage sortFunc={false} majorityLegend={t('results.star.runoff_majority')} />
+                    <Box height={50}/> {/*HACK to get the bar chart to be the same height as the pie chart*/}
+                </>
+                }
+                <ToggleButtonGroup
+                    value={pie}
+                    exclusive
+                    onChange={(event, value) => setPie(value)}
+                    sx={{
+                        marginLeft: 'auto'
+                    }}
+                >
+                    <ToggleButton value={false} sx={{height: 30}}>
+                        <BarChartIcon sx={{transform: 'scale(.7)'}}/>
+                    </ToggleButton>
+                    <ToggleButton value={true} sx={{height: 30}}>
+                        <PieChartIcon sx={{transform: 'scale(.7)'}}/>
+                    </ToggleButton>
+                </ToggleButtonGroup>
             </Widget>
         </WidgetContainer>
         </Box>
