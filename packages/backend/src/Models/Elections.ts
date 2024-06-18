@@ -124,6 +124,8 @@ export default class ElectionsDB implements IElectionStore {
             .orderBy('election_id')
             .execute();
 
+        Logger.debug(ctx, result);
+
         return result as Promise<IVoteCount[] | null>;
     }
 
