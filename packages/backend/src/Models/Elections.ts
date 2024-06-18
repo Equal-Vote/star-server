@@ -113,12 +113,6 @@ export default class ElectionsDB implements IElectionStore {
     getBallotCountsForAllElections(ctx: ILoggingContext): Promise<IVoteCount[] | null> {
         Logger.debug(ctx, `${tableName}.getAllElectionsWithBallotCounts`);
 
-        const elections = this._postgresClient
-            .selectFrom(tableName)
-            .select('election_id')
-            .where('head', '=', true)
-            .execute();
-
         const result = this._postgresClient
             .selectFrom('ballotDB')
             //.select('election_id') // I don't really need this

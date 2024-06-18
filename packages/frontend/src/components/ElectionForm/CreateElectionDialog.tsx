@@ -75,7 +75,6 @@ const defaultElection: NewElection = {
 const templateMappers = {
     'demo': (election:NewElection):NewElection => ({
         ...election,
-        is_public: true,
     }),
     'public': (election:NewElection):NewElection => ({
         ...election,
