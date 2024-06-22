@@ -82,7 +82,7 @@ export const ResultsBarChart = ({
         let s = {name: ''};
         s[majorityLegend] = m;
         data.unshift(s)
-        colors.unshift('var(--brand-gray-1)')
+        colors.unshift(colors.pop())
     }
 
     // Truncate entries
