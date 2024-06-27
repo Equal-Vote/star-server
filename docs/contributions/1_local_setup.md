@@ -189,6 +189,7 @@ Request access for the [dev credentials doc](https://docs.google.com/document/d/
 You can now start the backend
 
 ```bash
+# Run these commands from the root of the project (not in the packages folder)!
 # Installs dependencies for all workspaces
 npm i -ws 
 # Builds shared workspace
@@ -228,14 +229,14 @@ Now your .env should have 2 proxy urls, but one of them is commented
 If your running your own backend, then leave the default sample.env
 
 ```
-# PROXY_URL=https://star.sandbox.star.vote # Use this one if you want to reference the live backend
+# PROXY_URL=https://dev.star.vote # Use this one if you want to reference the live backend
 PROXY_URL=http://localhost:5000 # use this one if you're running your own backend
 ```
 
 If you're referencing the live developer backend instead of running your own, then update the comments as follows
 
 ```
-PROXY_URL=https://star.sandbox.star.vote # Use this one if you want to reference the live backend
+PROXY_URL=https://dev.star.vote # Use this one if you want to reference the live backend
 # PROXY_URL=http://localhost:5000 # use this one if you're running your own backend
 ```
 
@@ -246,6 +247,7 @@ Now we can run the frontend
 Build workspace & install dependencies (you can skip these if you already ran them in the backend steps)
 
 ```bash
+# Run these commands from the root of the project (not in the packages folder)!
 # Installs dependencies for all workspaces
 npm i -ws 
 # Builds shared workspace
