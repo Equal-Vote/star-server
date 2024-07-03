@@ -348,7 +348,8 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
       <div className="flexContainer" style={{textAlign: 'center'}}>
         <Box sx={{pageBreakAfter:'avoid', pageBreakInside:'avoid'}}>
         {result.results.summaryData.nValidVotes == 0 && <h2>Still waiting for results<br/>No votes have been cast</h2>}
-        {result.results.summaryData.nValidVotes >= 1 && <>
+        {result.results.summaryData.nValidVotes == 1 && <p>There's only one vote so far.<br/>Full results will be displayed once there's more votes.</p> }
+        {result.results.summaryData.nValidVotes > 1 && <>
           {showTitleAsTie?
             <>
             <Typography variant="h5" sx={{fontWeight: 'bold'}}>Tied!</Typography>
@@ -362,7 +363,6 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
           <Typography variant="h6">{result.results.summaryData.nValidVotes} voters</Typography>
         </>}
         </Box>
-        {result.results.summaryData.nValidVotes == 1 && <p>There's only one vote so far.<br/>Full results will be displayed once there's more votes.</p> }
         {result.results.summaryData.nValidVotes > 1 &&
           <>
           {result.votingMethod === "STAR" && <ResultViewer votingMethod='STAR Voting' results={result.results} learnLink='https://www.youtube.com/watch?v=3-mOeUXAkV0'>

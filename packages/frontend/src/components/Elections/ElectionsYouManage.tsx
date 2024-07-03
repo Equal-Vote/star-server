@@ -46,7 +46,7 @@ export default () => {
     }, [data]);
             
     return <EnhancedTable
-        title='Elections You Manage'
+        title='My Elections & Polls'
         headKeys={['title', 'roles', 'election_state', 'start_time', 'end_time', 'description']}
         isPending={isPending}
         pendingMessage='Loading Elections...'

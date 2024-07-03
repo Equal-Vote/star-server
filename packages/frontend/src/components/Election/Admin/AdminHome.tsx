@@ -287,7 +287,7 @@ const ArchiveElectionSection = ({ election, permissions, archiveElection }: { el
                     Archive
                 </Typography>
                 <Typography variant="body1" sx={{ pl: 2 }}>
-                    Achives election, preventing future changes and hiding it from on the elections page
+                    Achives election, preventing future changes and hiding it from the elections page
                 </Typography>
                 {!hasPermission(permissions, 'canEditElectionState') &&
                     <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>

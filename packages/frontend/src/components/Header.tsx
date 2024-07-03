@@ -191,7 +191,7 @@ const Header = () => {
                                 Election Invitations
                         </MenuItem>*/}
                             <MenuItem component={Link} href='/ElectionsYouManage'>
-                                Elections you Manage
+                                My Elections & Polls
                             </MenuItem>
                             <MenuItem component={Link} href='/ElectionsYouVotedIn'>
                                 Past Elections
