@@ -19,6 +19,8 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import { CreateElectionContext, CreateElectionContextProvider } from './ElectionForm/CreateElectionDialog';
 import { openFeedback } from './util';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import { useTranslation } from 'react-i18next';
+import { ReturnToClassicContext } from './ReturnToClassicDialog';
 
 const headerTextColor = 'primary.contrastText'
 const Header = () => {
@@ -29,6 +31,7 @@ const Header = () => {
     const [tempID, setTempID] = useCookie('temp_id', v4())
     const [anchorElNav, setAnchorElNav] = useState(null)
     const [anchorElUser, setAnchorElUser] = useState(null)
+    const {t} = useTranslation();
 
     const createElectionContext = useContext(CreateElectionContext);
 
@@ -66,6 +69,8 @@ const Header = () => {
     ];
 
     const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
+
+    const returnToClassicContext = useContext(ReturnToClassicContext);
 
     return (
         <AppBar className="navbar" position="sticky" sx={{ backgroundColor: "black", '@media print': {display: 'none', boxShadow: 'none'}}}>
@@ -110,6 +115,9 @@ const Header = () => {
                         )}
                         <MenuItem onClick={openFeedback}>
                             Feedback?
+                        </MenuItem>
+                        <MenuItem onClick={returnToClassicContext.openDialog}>
+                            {t('return_to_classic.button')}
                         </MenuItem>
                     </Menu>
                 </Box>

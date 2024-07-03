@@ -15,6 +15,7 @@ import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownR
 import { useTranslation } from 'react-i18next';
 import { useGetGlobalElectionStats } from '~/hooks/useAPI';
 import LandingPageStats from './LandingPage/LandingPageStats';
+import ReturnToClassicDialog from './ReturnToClassicDialog';
 
 const LandingPage = () => {
     const flags = useFeatureFlags();

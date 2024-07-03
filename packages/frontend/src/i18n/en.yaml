@@ -88,6 +88,7 @@ hero:
       short_description: Sign in for more methods like Choose-One, RCV, STV, or STAR-PR!
       sign_in: Sign In
   
+# Quick Poll
 quick_poll:
   title: Try a quick poll with __METHOD_NAME__
   question_prompt: What is your poll question?
@@ -96,6 +97,13 @@ quick_poll:
   continue_with_editor: Continue with Full Editor
   sign_in: Sign in for more settings
   clear_all: Clear All
+
+# 'Return to Classic' Dialog
+return_to_classic:
+  button: Return to the original star.vote
+  description: We'd love to know how the new version can be improved.
+  feedback: Leave Feedback?
+  continue: Continue to star.vote
 
 # List of features on landing page
 features:

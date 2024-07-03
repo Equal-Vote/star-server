@@ -5,7 +5,7 @@ import Header from './components/Header'
 import Election from './components/Election/Election'
 import Sandbox from './components/Sandbox'
 import LandingPage from './components/LandingPage'
-import { Box, CssBaseline, Dialog } from '@mui/material'
+import { Box, Button, CssBaseline, Dialog } from '@mui/material'
 import { SnackbarContextProvider } from './components/SnackbarContext'
 import Footer from './components/Footer'
 import { ConfirmDialogProvider } from './components/ConfirmationDialogProvider'
@@ -19,6 +19,7 @@ import { FeatureFlagContextProvider } from './components/FeatureFlagContextProvi
 import CreateElectionDialog, { CreateElectionContextProvider } from './components/ElectionForm/CreateElectionDialog'
 import ComposeContextProviders from './components/ComposeContextProviders'
 import './i18n/i18n'
+import ReturnToClassicDialog, { ReturnToClassicContextProvider } from './components/ReturnToClassicDialog'
 
 const App = () => {
   console.log(document.body.scrollTop)
@@ -31,11 +32,13 @@ const App = () => {
         ConfirmDialogProvider,
         SnackbarContextProvider,
         CreateElectionContextProvider,
+        ReturnToClassicContextProvider,
       ]}>
         <CssBaseline />
         <Box display='flex' flexDirection='column' minHeight={'100vh'} >
           <Header />
           <CreateElectionDialog/>
+          <ReturnToClassicDialog/>
           <Box
             sx={{
               width: '100%',
