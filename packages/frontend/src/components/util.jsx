@@ -37,26 +37,10 @@ export const useSubstitutedTranslation = (electionTermType, v={}) => { // electi
     }
   })
 
-  const makeTrans = (key, v) => <Trans
-    i18nKey={key}
-    values={{...values, ...v}}
-    // TODO: include customcomponent for links: https://react.i18next.com/latest/trans-component#overriding-react-component-props-v11.5.0
-    // TODO: there could also be a custom component for inserting tips
-  />
-
-  const lookup = key => {
-    let keys = key.split('.');
-    let o = en;
-    keys.forEach(k => o = o[k]);
-    return o
-  }
+  const { t } = useTranslation()
 
   return {
-    t: (key, v={}, trans=true) => {
-      console.log(key, v);
-      var o = lookup(key);
-      return Array.isArray(o)? o.map((k, i)  => makeTrans(`${key}.${i}`, v)) : makeTrans(key, v);
-    }
+    t: (key, v={}) => t(key, {...values, ...v})
   }
 }
 
@@ -333,7 +317,6 @@ export const Widget = ({ children, title }) => (
 export const ResultsTable = ({ className, data, minCellWidth = "120px" }) => {
   let c = `resultTable ${className}`;
 
-  console.log(data[0])
   return (
     <TableContainer
       sx={{

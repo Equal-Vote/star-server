@@ -43,10 +43,9 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
         },
     ];
 
-    let {t:t2} = useTranslation() // using t2 since BarResults doesn't work with trans component
     let runoffData = [...pieData]
     runoffData.push({
-      name: t2('keyword.equal_preferences'),
+      name: t('keyword.equal_preferences'),
       votes: results.summaryData.nValidVotes - winnerVotes - runnerUpVotes,
     })
 

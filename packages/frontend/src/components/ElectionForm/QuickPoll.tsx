@@ -19,6 +19,8 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = usePostElection()
 
+    console.log('methodName')
+    console.log(methodName)
     const {t} = useSubstitutedTranslation('poll', {
         method_name: methodName
     });
@@ -168,7 +170,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
             }}>
                 <Typography component="h2"
                     className={grow? 'heroGrow' : 'heroShrink'}
-                >{t('quick_poll.title').replace('__METHOD_NAME__', methodName)}</Typography>
+                >{t('quick_poll.title')}</Typography>
                 <StyledTextField
                     autoFocus
                     error={titleError}

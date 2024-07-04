@@ -22,7 +22,6 @@ import './i18n/i18n'
 import ReturnToClassicDialog, { ReturnToClassicContextProvider } from './components/ReturnToClassicDialog'
 
 const App = () => {
-  console.log(document.body.scrollTop)
   return (
     <Router>
       <ComposeContextProviders providers={[

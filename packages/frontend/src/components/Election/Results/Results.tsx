@@ -111,14 +111,12 @@ function RankedRobinResultsViewer({ results, t }: {results: rankedRobinResults, 
 function IRVResultsViewer({ results, t }: {results: irvResults, t: Function}) {
   const firstRoundData = results.voteCounts[0].map((c,i) => ({name: results.summaryData.candidates[i].name, votes: c}));
 
-  const {t: t2} = useTranslation(); // trans component doesn't work with recharts
-
   const runoffData = results.voteCounts.slice(-1)[0]
     .map((c,i) => ({name: results.summaryData.candidates[i].name, votes: c}))
     .sort((a, b) => b.votes - a.votes)
     .slice(0, 2)
     .concat([{
-      name: t2('keyword.exhausted'),
+      name: t('keyword.exhausted'),
       votes: results.exhaustedVoteCounts.slice(-1)[0]
     }])
 

@@ -61,7 +61,7 @@ hero:
   methods:
     STAR:
       title: STAR Voting
-      short_description: Elects the majority preferred winner between the two {{candidates}} with highest overall support
+      short_description: Elects the majority preferred winner between the two {{lowercase_candidates}} with highest overall support
       recommendation: Recommended for accuracy
       default_scores:
         - 0 
@@ -162,7 +162,7 @@ results:
     score_title: Scoring Round
     score_description:
       - Add the stars from all the ballots.
-      - The two highest scoring {{candidates}} are the finalists.
+      - The two highest scoring {{lowercase_candidates}} are the finalists.
     runoff_title: Automatic Runoff Round
     runoff_description:
       - Each vote goes to the voter's preferred finalist.

@@ -17,6 +17,7 @@ import { VotingMethod } from '@equal-vote/star-vote-shared/domain_model/Race'
 import ApprovalBallotView from '../Election/Voting/ApprovalBallotView'
 import RankedBallotView from '../Election/Voting/RankedBallotView'
 import { useSubstitutedTranslation } from '../util'
+import { useTranslation } from 'react-i18next'
 
 export default ({}) => {
     const authSession = useAuthSession();
@@ -30,6 +31,7 @@ export default ({}) => {
     const timeouts = useRef([])
 
     const {t} = useSubstitutedTranslation('election');
+
 
     const [starScores, setStarScores] = useState(t('hero.methods.STAR.default_scores'));
     const [approvalScores, setApprovalScores] = useState(t('hero.methods.Approval.default_scores'));

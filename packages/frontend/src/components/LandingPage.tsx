@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Grid from "@mui/material/Grid";
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -8,14 +8,14 @@ import LandingPageFeatureElections from './LandingPage/LandingPageFeaturedElecti
 import LandingPageFeatures from './LandingPage/LandingPageFeatures';
 import LandingPageSignUpBar from './LandingPage/LandingPageSignUpBar';
 import LandingPageTestimonials from './LandingPage/LandingPageTestimonials';
-import { Paper } from '@mui/material';
+import { Button, Paper } from '@mui/material';
 import LandingPagePricing from './LandingPage/LandingPagePricing';
 import useFeatureFlags from './FeatureFlagContextProvider';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 
 import { useGetGlobalElectionStats } from '~/hooks/useAPI';
 import LandingPageStats from './LandingPage/LandingPageStats';
-import ReturnToClassicDialog from './ReturnToClassicDialog';
+import ReturnToClassicDialog, { ReturnToClassicContext, ReturnToClassicContextProvider } from './ReturnToClassicDialog';
 import { useSubstitutedTranslation } from './util';
 
 const LandingPage = () => {
@@ -36,9 +36,16 @@ const LandingPage = () => {
 
     const {t} = useSubstitutedTranslation('election');
 
+    const returnToClassicContext = useContext(ReturnToClassicContext);
+
     //apparently box doesn't have onScroll
     return (
         <div ref={boxRef}>
+        <Box sx={{ position: 'fixed', display: {md: 'flex', xs: 'none'}, flexDirection: 'column-reverse', alignItems: 'flex-end', width: '100%', height: '100%',paddingBottom: '85px', paddingRight: '30px'}}>
+            <Button variant='contained' sx={{width: '170px', fontWeight: 'bold', fontSize: 10, backgroundColor: '#006063'}} onClick={returnToClassicContext.openDialog}>
+                {t('return_to_classic.button')}
+            </Button>
+        </Box>
         <Box sx={{
             width: '100%',
             display: 'flex',
