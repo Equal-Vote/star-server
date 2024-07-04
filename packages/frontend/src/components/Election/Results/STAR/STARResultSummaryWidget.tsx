@@ -6,6 +6,7 @@ import { ResultsBarChart } from '~/components/util';
 
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PieChartIcon from '@mui/icons-material/PieChart';
+import { useTranslation } from 'react-i18next';
 
 const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResults, roundIndex: number, t: Function }) => {
     const [pie, setPie] = useState(false);
@@ -42,9 +43,10 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
         },
     ];
 
+    let {t:t2} = useTranslation() // using t2 since BarResults doesn't work with trans component
     let runoffData = [...pieData]
     runoffData.push({
-      name: t('keyword.equal_preferences'),
+      name: t2('keyword.equal_preferences'),
       votes: results.summaryData.nValidVotes - winnerVotes - runnerUpVotes,
     })
 

@@ -52,7 +52,8 @@ export const useSubstitutedTranslation = (electionTermType, v={}) => { // electi
   }
 
   return {
-    t: (key, v={}) => {
+    t: (key, v={}, trans=true) => {
+      console.log(key, v);
       var o = lookup(key);
       return Array.isArray(o)? o.map((k, i)  => makeTrans(`${key}.${i}`, v)) : makeTrans(key, v);
     }

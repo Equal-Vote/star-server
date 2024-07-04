@@ -58,7 +58,7 @@ export default ({results, rounds, t}: {results: starResults, rounds: number, t: 
               `${Math.round(c.runoffVotes * 1000 / results.summaryData.nValidVotes) / 10}%`,
               i == 2 ? '' : `${Math.round(c.runoffVotes * 1000 / finalistVotes) / 10}%`,
             ]),
-            [t('general.total'), results.summaryData.nValidVotes, '100%', '100%'] 
+            [t('keyword.total'), results.summaryData.nValidVotes, '100%', '100%'] 
             ]}/>
         </Widget>
       </WidgetContainer>
