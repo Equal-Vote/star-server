@@ -1,8 +1,8 @@
 import React, { useState }  from 'react'
 import { TableContainer, Typography, Paper, Box} from "@mui/material";
 import { roundResults, starResults, starSummaryData } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
-import { Widget, WidgetContainer, ResultsTable, ResultsBarChart, useSubstitutedTranslation } from '~/components/util';
-
+import { Widget, WidgetContainer, ResultsTable, ResultsBarChart } from '~/components/util';
+import { useTranslation } from 'react-i18next';
 
 type candidateTableEntry = {
   name: string,
@@ -12,7 +12,7 @@ type candidateTableEntry = {
 }
 
 
-export default ({results, rounds, t}: {results: starResults, rounds: number, t: Function }) => {
+export default ({results, rounds}: {results: starResults, rounds: number }) => {
     const winnerIndex = results.roundResults[0].winners[0].index;
     const runnerUpIndex = results.roundResults[0].runner_up[0].index;
 
@@ -29,13 +29,15 @@ export default ({results, rounds, t}: {results: starResults, rounds: number, t: 
         index: i
     }));
 
+    const {t} = useTranslation();
+
     tableData.sort((a, b) => b.votes - a.votes);
 
     let runoffData = tableData.slice(0, 2);
     let finalistVotes = (runoffData[0].runoffVotes + runoffData[1].runoffVotes)
     runoffData.sort((a, b) => b.runoffVotes - a.runoffVotes);
     runoffData.push({
-      name: t('keyword.equal_preferences'),
+      name: t('general.equal_preferences'),
       votes: 0,
       runoffVotes: results.summaryData.nValidVotes - finalistVotes,
       index: -1,
@@ -45,13 +47,13 @@ export default ({results, rounds, t}: {results: starResults, rounds: number, t: 
       <WidgetContainer>
         <Widget title={t('results.star.score_table_title')}>
           <ResultsTable className='starScoreTable' data={[
-            t('results.star.score_table_columns'),
+            t('results.star.score_table_columns', {returnObjects: true}),
             ...tableData.map(c => [c.name, c.votes]),
           ]} />
         </Widget>
         <Widget title={t('results.star.runoff_table_title')}>
           <ResultsTable className='starRunoffTable' data={[
-            t('results.star.runoff_table_columns'),
+            t('results.star.runoff_table_columns', {returnObjects: true}),
             ...runoffData.map((c, i) => [
               c.name,
               c.runoffVotes,

@@ -2,8 +2,8 @@ import { Button, ClickAwayListener, IconButton, Tooltip, responsiveFontSizes, st
 import { TextField, useTheme } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import en from './en.yaml';
-import { useSubstitutedTranslation } from "./util";
 
 // this doesn't work yet, I filed a github issue
 // https://github.com/Modyfi/vite-plugin-yaml/issues/27
@@ -11,7 +11,7 @@ type TipName = keyof typeof en.tips;
 
 
 export const Tip = (props: {name: TipName}) => {
-    const {t} = useSubstitutedTranslation('election');
+    const {t} = useTranslation();
     const [clicked, setClicked] = useState(false);
     const [hovered, setHovered] = useState(false);
     return <ClickAwayListener onClickAway={() => setClicked(false)}>

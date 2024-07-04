@@ -1,9 +1,9 @@
 import { Box, Grid, Typography } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
-
+import FeaturedElection from './FeaturedElection'
+import { useTranslation } from 'react-i18next';
 import { useGetGlobalElectionStats } from '~/hooks/useAPI';
 import SlotCounter from 'react-slot-counter';
-import { useSubstitutedTranslation } from '../util';
 
 interface FeaturePanel{
     title: string;
@@ -11,7 +11,7 @@ interface FeaturePanel{
 }
 
 export default () => {
-    let {t} = useSubstitutedTranslation('election');
+    let {t} = useTranslation();
 
     const { data, isPending, error, makeRequest: fetchData } = useGetGlobalElectionStats();
 

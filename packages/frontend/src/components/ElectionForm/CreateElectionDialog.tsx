@@ -5,7 +5,8 @@ import { ElectionTitleField } from "./Details/ElectionDetailsForm";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-import { openFeedback, useSubstitutedTranslation } from "../util";
+import { openFeedback } from "../util";
+import { useTranslation } from "react-i18next";
 import { useLocalStorage } from "~/hooks/useLocalStorage";
 import { NewElection } from "@equal-vote/star-vote-shared/domain_model/Election";
 import { DateTime } from "luxon";
@@ -66,7 +67,7 @@ const defaultElection: NewElection = {
         random_candidate_order: true,
         require_instruction_confirmation: true,
         invitation: undefined,
-        // election_term, and voter_access are intentially omitted
+        // term_type, and voter_access are intentially omitted
         // this let's me start them at undefined for the stepper
     }
 }
@@ -180,7 +181,14 @@ export default () => {
 
     const [election, setElection] = useState(defaultElection);
 
-    const { t } = useSubstitutedTranslation(election.settings.term_type);
+    // TODO: it would be cool to define a useTranslationExt that did the substitutions for me
+    // TODO: automatic tip insertion would also be cool
+    const { t:_t } = useTranslation();
+    let term = election.settings.term_type === undefined? '' : _t(`general.${election.settings.term_type}.type`);
+    // wrap the standard t property so that we can insert the term election vs poll
+    const t = key => _t(key)
+        .replace('__CAPITALIZED_TERM__', term) 
+        .replace('__LOWERCASE_TERM__', term.toLowerCase()); 
 
     const { error, isPending, makeRequest: postElection } = usePostElection()
 
@@ -238,9 +246,7 @@ export default () => {
         <DialogContent>
             <Stepper activeStep={activeStep} orientation="vertical">
                 <Step>
-                    <StepLabel>{t('election_creation.term_title')} <strong>{
-                        election.settings.term_type === undefined? '' : t(`keyword.${election.settings.term_type}.election_term`)
-                    }</strong></StepLabel>
+                    <StepLabel>{t('election_creation.term_title')} <strong>{term}</strong></StepLabel>
                     <StepContent>
                         <Typography>{t('election_creation.term_question')}
                             <Tip name='polls_vs_elections'/>
@@ -249,9 +255,9 @@ export default () => {
                             {['poll', 'election'].map( (type, i) => 
                                 <FormControlLabel
                                     key={i}
-                                    value={t(`keyword.${type}.election_term`)}
+                                    value={t(`general.${type}.type`)}
                                     control={<Radio/>}
-                                    label={t(`keyword.${type}.election_term`)}
+                                    label={t(`general.${type}.type`)}
                                     onClick={() => setElection({
                                         ...election,
                                         settings: {
@@ -284,7 +290,7 @@ export default () => {
                 </Step>
                 <Step>
                     <StepLabel>{t('election_creation.restricted_title')} <strong>
-                        {election.settings.voter_access !== undefined && t(`keyword.${election.settings.voter_access === 'closed'? 'yes' : 'no'}`)}
+                        {election.settings.voter_access !== undefined && t(`general.${election.settings.voter_access === 'closed'? 'yes' : 'no'}`)}
                     </strong></StepLabel>
                     <StepContent>
                         <Typography>
@@ -298,7 +304,7 @@ export default () => {
                                     key={i}
                                     value={restricted}
                                     control={<Radio/>}
-                                    label={t(`keyword.${restricted? 'yes' : 'no'}`)}
+                                    label={t(`general.${restricted? 'yes' : 'no'}`)}
                                     onClick={() => {
                                         setElection({...election, settings: { ...election.settings, voter_access: restricted? 'closed' : 'open' }})
                                     }}

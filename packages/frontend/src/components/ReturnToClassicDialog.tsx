@@ -1,6 +1,7 @@
 import { Box, Button, Dialog, DialogContent, Stack, Step, StepConnector, StepContent, StepLabel, Stepper, TextField, Tooltip, Typography } from "@mui/material";
 import { useState, createContext, useContext } from "react";
-import { openFeedback, useSubstitutedTranslation } from "./util";
+import { useTranslation } from "react-i18next";
+import { openFeedback } from "./util";
 
 export interface IReturnToClassicContext{
     open: boolean,
@@ -26,7 +27,7 @@ export const ReturnToClassicContextProvider = ({children}) => {
 
 export default () => {
     const returnToClassicContext = useContext(ReturnToClassicContext);
-    const {t} = useSubstitutedTranslation('election');
+    const {t} = useTranslation();
     return <>
         <Box sx={{position: 'fixed', display: {md: 'flex', xs: 'none'}, flexDirection: 'column-reverse', alignItems: 'flex-end', width: '100%', height: '100%',paddingBottom: '85px', paddingRight: '30px'}}>
             <Button variant='contained' sx={{width: '170px', fontWeight: 'bold', fontSize: 10, backgroundColor: '#006063'}} onClick={returnToClassicContext.openDialog}>

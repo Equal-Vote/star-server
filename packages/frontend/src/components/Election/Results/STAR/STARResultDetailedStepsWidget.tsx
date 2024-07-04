@@ -2,10 +2,12 @@ import { Box, Paper, Typography } from '@mui/material';
 import { log } from 'console';
 import React, { useState }  from 'react'
 import { starResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
+import { useTranslation } from 'react-i18next';
 
-
-const STARResultDetailedStepsWidget = ({ results, rounds, t}: {results: starResults, rounds: number, t: Function }) => {
+const STARResultDetailedStepsWidget = ({ results, rounds}: {results: starResults, rounds: number }) => {
     const showTieBreakerWarning = results.roundResults.some(round => (round.logs.some(log => (log.includes('tiebreaker')))));
+
+    const {t} = useTranslation();
 
     return <div className='detailedSteps'>
         {results.roundResults.map((round, r) => (
@@ -21,7 +23,7 @@ const STARResultDetailedStepsWidget = ({ results, rounds, t}: {results: starResu
                 <p>⚠️</p>
                 <div>
                     <b>{t('results.star.tiebreaker_note_title')}</b>️
-                    {(t('results.star.tiebreaker_note_text') as Array<String>).map((s,i) => <p key={i}>{s}</p>)}
+                    {(t('results.star.tiebreaker_note_text', {returnObjects: true}) as Array<String>).map((s,i) => <p key={i}>{s}</p>)}
                 </div>
             </div>
         </Paper> }

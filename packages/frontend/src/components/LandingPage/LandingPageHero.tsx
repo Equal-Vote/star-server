@@ -10,13 +10,13 @@ import { useLocalStorage } from '../../hooks/useLocalStorage'
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import { StyledButton, Tip } from '../styles'
+import { useTranslation } from 'react-i18next'
 import { BallotContext } from '../Election/Voting/VotePage'
 import StarBallotView from '../Election/Voting/StarBallotView'
 import { ElectionContextProvider } from '../ElectionContextProvider'
 import { VotingMethod } from '@equal-vote/star-vote-shared/domain_model/Race'
 import ApprovalBallotView from '../Election/Voting/ApprovalBallotView'
 import RankedBallotView from '../Election/Voting/RankedBallotView'
-import { useSubstitutedTranslation } from '../util'
 
 export default ({}) => {
     const authSession = useAuthSession();
@@ -29,11 +29,11 @@ export default ({}) => {
     const [methodIndex, setMethodIndex] = useState(0);
     const timeouts = useRef([])
 
-    const {t} = useSubstitutedTranslation('election');
+    const {t} = useTranslation();
 
-    const [starScores, setStarScores] = useState(t('hero.methods.STAR.default_scores'));
-    const [approvalScores, setApprovalScores] = useState(t('hero.methods.Approval.default_scores'));
-    const [rrRanks, setRrRanks] = useState(t('hero.methods.RankedRobin.default_ranks'));
+    const [starScores, setStarScores] = useState(t('hero.methods.STAR.default_scores', {returnObjects: true}));
+    const [approvalScores, setApprovalScores] = useState(t('hero.methods.Approval.default_scores', {returnObjects: true}));
+    const [rrRanks, setRrRanks] = useState(t('hero.methods.RankedRobin.default_ranks', {returnObjects: true}));
 
     // selected to be consistent with the Race.ts domain_model
 
@@ -67,7 +67,7 @@ export default ({}) => {
     if(quickPollIndex == methodKeys.length-1) quickPollIndex = methodKeys.length-2;
 
     const makeBallotContext = (scores, onUpdate)  => {
-        const candidateNames = t('hero.candidates')
+        const candidateNames = t('hero.candidates', {returnObjects: true})
         return {
             instructionsRead: true,
             setInstructionsRead: () => {},

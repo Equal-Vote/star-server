@@ -12,11 +12,10 @@ import { Paper } from '@mui/material';
 import LandingPagePricing from './LandingPage/LandingPagePricing';
 import useFeatureFlags from './FeatureFlagContextProvider';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-
+import { useTranslation } from 'react-i18next';
 import { useGetGlobalElectionStats } from '~/hooks/useAPI';
 import LandingPageStats from './LandingPage/LandingPageStats';
 import ReturnToClassicDialog from './ReturnToClassicDialog';
-import { useSubstitutedTranslation } from './util';
 
 const LandingPage = () => {
     const flags = useFeatureFlags();
@@ -34,7 +33,7 @@ const LandingPage = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const {t} = useSubstitutedTranslation('election');
+    const {t} = useTranslation();
 
     //apparently box doesn't have onScroll
     return (

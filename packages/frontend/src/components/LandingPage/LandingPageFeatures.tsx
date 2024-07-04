@@ -1,8 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material'
 import React from 'react'
 import FeaturedElection from './FeaturedElection'
-import { useSubstitutedTranslation } from '../util';
-
+import { useTranslation } from 'react-i18next';
 
 interface FeaturePanel{
     title: string;
@@ -10,9 +9,9 @@ interface FeaturePanel{
 }
 
 export default () => {
-    let {t} = useSubstitutedTranslation('election');
+    let {t} = useTranslation();
 
-    const panels = t('features.items') as FeaturePanel[];
+    const panels = t('features.items', {returnObjects: true}) as FeaturePanel[];
 
     return  <Box sx={{
         display: 'flex',
