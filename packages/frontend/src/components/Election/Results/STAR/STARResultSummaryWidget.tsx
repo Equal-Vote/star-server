@@ -3,13 +3,11 @@ import { Box, Paper, ToggleButton, ToggleButtonGroup, Typography } from '@mui/ma
 import { starResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
 import { ResultsPieChart, Widget, WidgetContainer } from '~/components/util';
 import { ResultsBarChart } from '~/components/util';
-import { useTranslation } from 'react-i18next';
+
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PieChartIcon from '@mui/icons-material/PieChart';
 
-const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults, roundIndex: number }) => {
-    const {t} = useTranslation();
-
+const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResults, roundIndex: number, t: Function }) => {
     const [pie, setPie] = useState(false);
 
     const prevWinners = results.roundResults
@@ -46,7 +44,7 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
 
     let runoffData = [...pieData]
     runoffData.push({
-      name: t('general.equal_preferences'),
+      name: t('keyword.equal_preferences'),
       votes: results.summaryData.nValidVotes - winnerVotes - runnerUpVotes,
     })
 
@@ -54,7 +52,7 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
         <Box className="resultWidget">
         <WidgetContainer>
             <Widget title={t('results.star.score_title')}>
-                {(t('results.star.score_description', {returnObjects: true}) as Array<String>).map( (s, i) => <p key={i}>{s}</p>)}
+                {(t('results.star.score_description') as Array<String>).map( (s, i) => <p key={i}>{s}</p>)}
                 <ResultsBarChart
                     data={histData}
                     sortFunc={(a, b) => {
@@ -70,7 +68,7 @@ const STARResultSummaryWidget = ({ results, roundIndex }: {results: starResults,
                 />
             </Widget>
             <Widget title='Automatic Runoff Round'>
-                {(t('results.star.runoff_description', {returnObjects: true}) as Array<String>).map( (s, i) => <p key={i}>{s}</p>)}
+                {(t('results.star.runoff_description') as Array<String>).map( (s, i) => <p key={i}>{s}</p>)}
                 {pie ? 
                     <ResultsPieChart data={pieData} star />
                 :

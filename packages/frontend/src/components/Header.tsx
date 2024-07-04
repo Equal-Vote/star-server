@@ -17,9 +17,9 @@ import { useThemeSelector } from '../theme';
 import useFeatureFlags from './FeatureFlagContextProvider';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { CreateElectionContext, CreateElectionContextProvider } from './ElectionForm/CreateElectionDialog';
-import { openFeedback } from './util';
+import { openFeedback, useSubstitutedTranslation } from './util';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-import { useTranslation } from 'react-i18next';
+
 import { ReturnToClassicContext } from './ReturnToClassicDialog';
 
 const headerTextColor = 'primary.contrastText'
@@ -31,7 +31,7 @@ const Header = () => {
     const [tempID, setTempID] = useCookie('temp_id', v4())
     const [anchorElNav, setAnchorElNav] = useState(null)
     const [anchorElUser, setAnchorElUser] = useState(null)
-    const {t} = useTranslation();
+    const {t} = useSubstitutedTranslation('election');
 
     const createElectionContext = useContext(CreateElectionContext);
 
