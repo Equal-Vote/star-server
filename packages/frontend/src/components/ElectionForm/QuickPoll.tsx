@@ -11,14 +11,17 @@ import { usePostElection } from '../../hooks/useAPI';
 import { useCookie } from '../../hooks/useCookie';
 import { Election, NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { CreateElectionContext } from './CreateElectionDialog.js';
-import { useTranslation } from 'react-i18next';
+
+import { useSubstitutedTranslation } from '../util.jsx';
 
 const QuickPoll = ({ authSession, methodName, grow }) => {
     const [tempID, setTempID] = useCookie('temp_id', '0')
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = usePostElection()
 
-    const {t} = useTranslation();
+    const {t} = useSubstitutedTranslation('poll', {
+        method_name: methodName
+    });
 
     const QuickPollTemplate: NewElection = {
         title: '',
@@ -194,7 +197,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                         name="candidate-name"
                         type="text"
                         value={candidate.candidate_name}
-                        label={t('quick_poll.option_prompt').replace('__NUMBER__', `${index+1}`)}
+                        label={t('quick_poll.option_prompt', {number: index+1})}
                         onChange={(e) => {
                             onUpdateCandidate(index, e.target.value)
                         }}

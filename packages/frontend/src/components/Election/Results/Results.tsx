@@ -7,7 +7,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import { useState } from 'react'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Typography from '@mui/material/Typography';
-import { CHART_COLORS, DetailExpander, DetailExpanderGroup, ResultsBarChart, ResultsTable, Widget, WidgetContainer } from '../../util';
+import { CHART_COLORS, DetailExpander, DetailExpanderGroup, ResultsBarChart, ResultsTable, Widget, WidgetContainer, useSubstitutedTranslation } from '../../util';
 import STARResultSummaryWidget from "./STAR/STARResultSummaryWidget";
 import STARDetailedResults from "./STAR/STARDetailedResults";
 import STARResultDetailedStepsWidget from "./STAR/STARResultDetailedStepsWidget";
@@ -15,7 +15,6 @@ import WinnerResultTabs from "./WinnerResultTabs";
 import { Race } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { ElectionResults, allocatedScoreResults, approvalResults, irvResults, pluralityResults, rankedRobinResults, starResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 import useElection from "../../ElectionContextProvider";
-import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 import { Bar, BarChart, CartesianAxis, CartesianGrid, Cell, ComposedChart, Legend, Line, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
@@ -41,7 +40,7 @@ const GenericDetailedStepsWidget = ({ title, results, rounds}: {title: string, r
   </div>
 }
 
-function STARResultViewer({ results, rounds }: {results: starResults, rounds: number }) {
+function STARResultsViewer({ results, rounds, t }: {results: starResults, rounds: number, t: Function }) {
   let i = 0;
   const roundIndexes = Array.from({length: rounds}, () => i++);
 
@@ -50,42 +49,17 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
     count: count,
   }));
 
-  const {t} = useTranslation();
-
-  let data = [
-    {
-      name: '',
-      votes: 0,
-      majority: 5
-    },
-    {
-      name: 'a',
-      votes: 6,
-      majority: 5
-    },
-    {
-      name: 'a',
-      votes: 4,
-      majority: 5
-    },
-    {
-      name: 'c',
-      votes: 3,
-    },
-  ];
-  let xKey = 'votes';
-
   return (
     <>
       <WinnerResultTabs numWinners={rounds}>
-        {roundIndexes.map((i) => <STARResultSummaryWidget key={i} results={results} roundIndex={i}/>)}
+        {roundIndexes.map((i) => <STARResultSummaryWidget key={i} results={results} roundIndex={i} t={t}/>)}
       </WinnerResultTabs>
       <DetailExpander>
-        <STARDetailedResults results={results} rounds={rounds}/>
+        <STARDetailedResults results={results} rounds={rounds} t={t}/>
         <DetailExpander level={1}>
           <WidgetContainer>
             <Widget title={t('results.star.detailed_steps_title')}>
-              <STARResultDetailedStepsWidget results={results} rounds={rounds}/>
+              <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t}/>
             </Widget>
             <Widget title={t('results.star.equal_preferences_title')}>
               <ResultsBarChart data={noPrefStarData} xKey='count' percentage={true} sortFunc={false}/>
@@ -97,9 +71,7 @@ function STARResultViewer({ results, rounds }: {results: starResults, rounds: nu
   );
 }
 
-function RankedRobinViewer({ results }: {results: rankedRobinResults}) {
-  const [viewMatrix, setViewMatrix] = useState(false)
-  const {t} = useTranslation();
+function RankedRobinResultsViewer({ results, t }: {results: rankedRobinResults, t: Function}) {
   return (<>
       <WidgetContainer>
       <Widget title={t('results.ranked_robin.bar_title')}>
@@ -121,7 +93,7 @@ function RankedRobinViewer({ results }: {results: rankedRobinResults}) {
       <WidgetContainer>
         <Widget title={t('results.ranked_robin.table_title')}>
           <ResultsTable className='rankedRobinTable' data={[
-            t('results.ranked_robin.table_columns', {returnObjects: true}),
+            t('results.ranked_robin.table_columns'),
             ...results.summaryData.totalScores.map((totalScore, i) => [
               results.summaryData.candidates[totalScore.index].name,
               totalScore.score,
@@ -135,11 +107,7 @@ function RankedRobinViewer({ results }: {results: rankedRobinResults}) {
   );
 }
 
-function IRVResultsViewer({ results }: {results: irvResults}) {
-  const {t} = useTranslation();
-
-  console.log(results)
-
+function IRVResultsViewer({ results, t }: {results: irvResults, t: Function}) {
   const firstRoundData = results.voteCounts[0].map((c,i) => ({name: results.summaryData.candidates[i].name, votes: c}));
 
   const runoffData = results.voteCounts.slice(-1)[0]
@@ -147,7 +115,7 @@ function IRVResultsViewer({ results }: {results: irvResults}) {
     .sort((a, b) => b.votes - a.votes)
     .slice(0, 2)
     .concat([{
-      name: t('general.exhausted'),
+      name: t('keyword.exhausted'),
       votes: results.exhaustedVoteCounts.slice(-1)[0]
     }])
 
@@ -170,8 +138,8 @@ function IRVResultsViewer({ results }: {results: irvResults}) {
     return 0;
   });
 
-  tabulationRows.unshift([t('general.election.candidate')].concat([...Array(results.voteCounts.length).keys()].map(i => `Round ${i+1}`)))
-  tabulationRows.push([t('general.exhausted'), ...results.exhaustedVoteCounts.map(i => ''+i)])
+  tabulationRows.unshift([t('keyword.election.candidate')].concat([...Array(results.voteCounts.length).keys()].map(i => `Round ${i+1}`)))
+  tabulationRows.push([t('keyword.exhausted'), ...results.exhaustedVoteCounts.map(i => ''+i)])
 
   return (
     <>
@@ -194,8 +162,7 @@ function IRVResultsViewer({ results }: {results: irvResults}) {
   );
 }
 
-function PluralityResultsViewer({ results }: {results: pluralityResults}) {
-  let {t} = useTranslation();
+function PluralityResultsViewer({ results, t }: {results: pluralityResults, t: Function}) {
   return (<>
     <WidgetContainer>
       <Widget title={t('results.choose_one.bar_title')}>
@@ -216,7 +183,7 @@ function PluralityResultsViewer({ results }: {results: pluralityResults}) {
       <WidgetContainer>
         <Widget title={t('results.choose_one.table_title')}>
           <ResultsTable className='chooseOneTable' data={[
-            t('results.choose_one.table_columns', {returnObjects: true}),
+            t('results.choose_one.table_columns'),
             ...results.summaryData.totalScores.map((totalScore, i) => [
               results.summaryData.candidates[totalScore.index].name,
               totalScore.score,
@@ -230,9 +197,7 @@ function PluralityResultsViewer({ results }: {results: pluralityResults}) {
 }
 
 
-function ApprovalResultsViewer({ results , rounds}: {results: approvalResults, rounds: number}) {
-  let {t} = useTranslation();
-
+function ApprovalResultsViewer({ results , rounds, t}: {results: approvalResults, rounds: number, t: Function}) {
   return (<>
     <WidgetContainer>
       <Widget title={t('results.approval.bar_title')}>
@@ -254,7 +219,7 @@ function ApprovalResultsViewer({ results , rounds}: {results: approvalResults, r
       <WidgetContainer>
         <Widget title={t('results.approval.table_title')}>
           <ResultsTable className='approvalTable' data={[
-            t('results.approval.table_columns', {returnObjects: true}),
+            t('results.approval.table_columns'),
             ...results.summaryData.totalScores.map((totalScore, i) => [
               results.summaryData.candidates[totalScore.index].name,
               totalScore.score,
@@ -278,7 +243,7 @@ function ResultViewer({ votingMethod, results, children, learnLink=undefined }:{
   );
 }
 
-function PRResultsViewer({ result }: {result: allocatedScoreResults}) {
+function PRResultsViewer({ result, t }: {result: allocatedScoreResults, t: Function}) {
 
   return (
     <div>
@@ -343,6 +308,8 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
     const showTieBreakerWarning = (result.results as starResults).roundResults.some(round => (round.logs.some(log => (log.includes('tiebreaker')))));
     if(showTieBreakerWarning) showTitleAsTie = true;
   }
+
+  const {t} = useSubstitutedTranslation(election.settings.term_type);
   return (
     <div>
       <div className="flexContainer" style={{textAlign: 'center'}}>
@@ -366,36 +333,36 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
         {result.results.summaryData.nValidVotes > 1 &&
           <>
           {result.votingMethod === "STAR" && <ResultViewer votingMethod='STAR Voting' results={result.results} learnLink='https://www.youtube.com/watch?v=3-mOeUXAkV0'>
-              <STARResultViewer results={result.results} rounds={race.num_winners} />
+              <STARResultsViewer results={result.results} rounds={race.num_winners} t={t}/>
           </ResultViewer> }
 
           {result.votingMethod === "Approval" && <ResultViewer votingMethod='Approval Voting' results={result.results} learnLink='https://www.youtube.com/watch?v=db6Syys2fmE'>
-            <ApprovalResultsViewer results={result.results} rounds={race.num_winners} />
+            <ApprovalResultsViewer results={result.results} rounds={race.num_winners} t={t}/>
           </ResultViewer>}
 
           {result.votingMethod === "STAR_PR" &&
             <>
               {/* PR tabulator needs to be refactored to match interface of other methods */}
               {/* <SummaryViewer votingMethod='Proportional STAR' results={result} /> */}
-              <PRResultsViewer result={result.results} />
+              <PRResultsViewer result={result.results} t={t}/>
             </>}
 
           {result.votingMethod === "RankedRobin" &&
             <ResultViewer votingMethod='Ranked Robin' results={result.results} learnLink='https://www.equal.vote/ranked_robin'>
-              <RankedRobinViewer results={result.results} />
+              <RankedRobinResultsViewer results={result.results} t={t}/>
             </ResultViewer>
           }
 
           {result.votingMethod === "Plurality" &&
             <ResultViewer votingMethod='Plurality' results={result.results} >
-              <PluralityResultsViewer results={result.results} />
+              <PluralityResultsViewer results={result.results} t={t}/>
             </ResultViewer>
           }
 
 
           {result.votingMethod === "IRV" &&
             <ResultViewer votingMethod='Ranked Choice Voting' results={result.results} learnLink='https://www.youtube.com/watch?v=oHRPMJmzBBw'>
-              <IRVResultsViewer results={result.results} />
+              <IRVResultsViewer results={result.results} t={t}/>
             </ResultViewer>
           }
         </>}
