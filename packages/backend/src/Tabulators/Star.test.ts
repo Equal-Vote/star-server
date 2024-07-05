@@ -168,7 +168,6 @@ describe("STAR Score Round Tests", () => {
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
         const roundResults = runStarRound(summaryData, [...summaryData.candidates], false, false)
-        //console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -186,7 +185,6 @@ describe("STAR Score Round Tests", () => {
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
         const roundResults = runStarRound(summaryData, [...summaryData.candidates], false, false)
-        //console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Bill');
         expect(roundResults.runner_up[0].name).toBe('Allison');
@@ -204,7 +202,6 @@ describe("STAR Score Round Tests", () => {
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
         const roundResults = runStarRound(summaryData, [...summaryData.candidates], false, false)
-        //console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -225,7 +222,6 @@ describe("STAR Score Round Tests", () => {
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
         const roundResults = runStarRound(summaryData, [...summaryData.candidates], false, false)
-        //console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -245,7 +241,6 @@ describe("STAR Score Round Tests", () => {
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
         const roundResults = runStarRound(summaryData, [...summaryData.candidates], false, true)
-        //console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -263,7 +258,6 @@ describe("STAR Score Round Tests", () => {
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
         const roundResults = runStarRound(summaryData, [...summaryData.candidates], false, false)
-        //console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -283,7 +277,6 @@ describe("STAR Score Round Tests", () => {
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
         const roundResults = runStarRound(summaryData, [...summaryData.candidates], false, false)
-        //console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -303,7 +296,6 @@ describe("STAR Score Round Tests", () => {
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
         const roundResults = runStarRound(summaryData, [...summaryData.candidates], false, false)
-        //console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -323,7 +315,6 @@ describe("STAR Score Round Tests", () => {
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
         const roundResults = runStarRound(summaryData, [...summaryData.candidates], false, false)
-        //console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -343,7 +334,6 @@ describe("STAR Score Round Tests", () => {
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
         const roundResults = runStarRound(summaryData, [...summaryData.candidates], false, false)
-        //console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -363,7 +353,6 @@ describe("STAR Score Round Tests", () => {
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
         const roundResults = runStarRound(summaryData, [...summaryData.candidates], false, false)
-        //console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -381,7 +370,6 @@ describe("STAR Score Round Tests", () => {
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
         const roundResults = runStarRound(summaryData, [...summaryData.candidates], false, false)
-        //console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(4);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up.length).toBe(0);
@@ -399,7 +387,6 @@ describe("STAR Score Round Tests", () => {
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
         const roundResults = runStarRound(summaryData, [...summaryData.candidates], true, false)
-        //console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         //runner up doesn't matter here, but need test that random selection occurred

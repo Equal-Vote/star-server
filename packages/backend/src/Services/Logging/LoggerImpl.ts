@@ -44,6 +44,6 @@ export class LoggerImpl {
         }
 
         var msg = `${prefix}${ctxStr} ${lvlStr}${message}`;
-        console.log(msg, ...optionalParams);
+        console.info(msg, ...optionalParams);
     }
 }

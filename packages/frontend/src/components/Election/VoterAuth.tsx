@@ -14,7 +14,6 @@ const VoterAuth = () => {
   const authSession = useAuthSession()
   const { election, voterAuth, refreshElection, permissions, updateElection } = useElection()
   const { voter_id } = useParams();
-  console.log('useParam')
   // TODO: maybe we should reconsider useCookie here? this has the potential of inserting the voter id on a different election
   const [voterID, setVoterID] = useCookie('voter_id', voter_id ? voter_id : null, 1)
 

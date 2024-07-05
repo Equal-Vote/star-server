@@ -50,7 +50,6 @@ describe("ID Roll", () => {
     })
     test("Authorized voter submits ballot", async () => {
         const response = await th.submitBallotWithId(ID, testInputs.Ballot2, testInputs.user1token, testInputs.IDRoll[0].voter_id);
-        // console.log(response)
         expect(response.statusCode).toBe(200)
 
         const eventQueue:MockEventQueue = await th.eventQueue;
@@ -81,7 +80,6 @@ describe("ID Roll", () => {
     test("Unauthorized voter submits ballot", async () => {
         const response = await th.submitBallotWithId(ID, testInputs.Ballot2, testInputs.user3token,  'FakeVoterID');
 
-        // console.log(response)
         expect(response.statusCode).toBe(401)
         th.testComplete();
     })
