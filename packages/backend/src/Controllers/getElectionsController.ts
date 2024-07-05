@@ -70,11 +70,9 @@ const getGlobalElectionStats = async (req: IElectionRequest, res: Response, next
 
     let electionVotes = await ElectionsModel.getBallotCountsForAllElections(req);
 
-    console.log('electionVotes', electionVotes)
-
     let stats = {
-        elections: Number(process.env.CLASSIC_ELECTION_COUNT) ?? 0,
-        votes: Number(process.env.CLASSIC_VOTE_COUNT) ?? 0,
+        elections: Number(process.env.CLASSIC_ELECTION_COUNT ?? 0),
+        votes: Number(process.env.CLASSIC_VOTE_COUNT ?? 0),
     };
 
     electionVotes?.map(m => m['v'])?.forEach((count) => {
