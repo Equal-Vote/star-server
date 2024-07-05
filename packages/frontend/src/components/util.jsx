@@ -48,7 +48,7 @@ export const useSubstitutedTranslation = (electionTermType, v={}) => { // electi
       {parts.map((str, i) => {
         if(i%4 == 0) return str;
         if(i%4 == 2 || i%4 == 3) return '';
-        return <a href={parts[i+2]}>{parts[i+1]}</a>
+        return <a key={i} href={parts[i+2]}>{parts[i+1]}</a>
       })}
     </Box>
   }
