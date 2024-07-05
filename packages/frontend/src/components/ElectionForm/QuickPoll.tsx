@@ -19,8 +19,6 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = usePostElection()
 
-    console.log('methodName')
-    console.log(methodName)
     const {t} = useSubstitutedTranslation('poll', {
         method_name: methodName
     });
@@ -195,6 +193,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                 />
                 {election.races[0].candidates?.map((candidate, index) => (
                     <StyledTextField
+                        key={index}
                         id={`candidate-name-${String(index)}`}
                         name="candidate-name"
                         type="text"

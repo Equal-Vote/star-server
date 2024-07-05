@@ -28,6 +28,10 @@ import _uniqueId from "lodash/uniqueId";
 import { DateTime } from "luxon";
 import { Trans, useTranslation } from "react-i18next";
 import en from '../i18n/en.yaml';
+import { Tip } from "./styles";
+
+const rLink = /\[(.*)\]\((.*)\)/;
+const rTip = / \!tip\((.*)\)/
 
 export const useSubstitutedTranslation = (electionTermType, v={}) => { // election or poll
   let values = {...en.keyword, ...en.keyword[electionTermType], ...v}
@@ -39,24 +43,35 @@ export const useSubstitutedTranslation = (electionTermType, v={}) => { // electi
 
   const { t } = useTranslation()
 
-  const applyLinks = (txt) => {
-    let r = /(\[(.*)\]\((.*)\))/;
-    if(!r.test(txt)) return txt;
+  const applySymbols = (txt) => {
+    const applyTips = (txt) => {
+      let parts = txt.split(rTip)
+      return <Box>
+        {parts.map((str, i) => {
+          if(i%2 == 0) return str;
+          return <Tip key={i} name={str}/>
+        })}
+      </Box>
+    }
 
-    let parts = txt.split(r)
+    if(!rLink.test(txt) && !rTip.test(txt)) return txt;
+
+    let parts = txt.split(rLink)
     return <Box>
       {parts.map((str, i) => {
-        if(i%4 == 0) return str;
-        if(i%4 == 2 || i%4 == 3) return '';
-        return <a key={i} href={parts[i+2]}>{parts[i+1]}</a>
+        if(i%3 == 0) return applyTips(str);
+        if(i%3 == 2) return '';
+        return <a key={i} href={parts[i+1]}>{parts[i]}</a>
       })}
     </Box>
   }
 
+  
+
   return {
     t: (key, v={}) => {
       let text = t(key, {...values, ...v})
-      return Array.isArray(text)? text.map(txt => applyLinks(txt)) : applyLinks(text);
+      return Array.isArray(text)? text.map(txt => applySymbols(txt)) : applySymbols(text);
     }
   }
 }

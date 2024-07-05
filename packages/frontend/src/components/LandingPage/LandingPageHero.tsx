@@ -32,7 +32,6 @@ export default ({}) => {
 
     const {t} = useSubstitutedTranslation('election');
 
-
     const [starScores, setStarScores] = useState(t('hero.methods.STAR.default_scores'));
     const [approvalScores, setApprovalScores] = useState(t('hero.methods.Approval.default_scores'));
     const [rrRanks, setRrRanks] = useState(t('hero.methods.RankedRobin.default_ranks'));
@@ -99,7 +98,6 @@ export default ({}) => {
     }
 
     return (
-        <>
         <Box display='flex' flexDirection='row' justifyContent='center' flexWrap='wrap' sx={{
             margin: 'auto',
             gap: {s: 6, md: 20}, 
@@ -119,11 +117,6 @@ export default ({}) => {
                         <Typography variant="h3">
                             {t(`hero.methods.${methodKeys[methodIndex]}.title`)} 
                         </Typography>
-                        {methodIndex != methodKeys.length-1 &&
-                            <Box height='100%' sx={{alignItem: 'top'}}>
-                                <Tip name={methodKeys[methodIndex]}/>
-                            </Box>
-                        }
                     </Box>
                     <ArrowForwardIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == methodKeys.length-1? 0 : 1)}} onClick={() => nextMethod(1)}/>
                 </Box>
@@ -173,6 +166,5 @@ export default ({}) => {
                 grow={transitionStep == 4 && methodIndex != methodKeys.length-1}
             />
         </Box>
-        </>
     )
 }

@@ -51,6 +51,7 @@ tips:
     title: Ranked Robin
     description: The candidate who wins the most runoffs wins
 
+
 # Text for hero section
 hero: 
   title: Create polls and elections with
@@ -60,7 +61,7 @@ hero:
     - Favorite
   methods:
     STAR:
-      title: STAR Voting
+      title: STAR Voting !tip(STAR)
       short_description: Elects the majority preferred winner between the two {{lowercase_candidates}} with highest overall support
       recommendation: Recommended for accuracy
       default_scores:
@@ -68,7 +69,7 @@ hero:
         - 2
         - 5
     Approval:
-      title: Approval
+      title: Approval !tip(Approval)
       short_description: Elects most approved candidate
       recommendation: Recommended for simplicity
       default_scores: 
@@ -76,7 +77,7 @@ hero:
         - 1
         - 1
     RankedRobin:
-      title: Ranked Robin
+      title: Ranked Robin !tip(RankedRobin)
       short_description: Elects majority preferred winner
       recommendation: Recommended for ranking
       default_ranks: 
@@ -85,7 +86,7 @@ hero:
         - 1
     more_methods:
       title: and more
-      short_description: Sign in for more methods like Choose-One, RCV, STV, or STAR-PR!
+      short_description: Sign in for more methods like Choose-One, or RCV!
       sign_in: Sign In
   
 # Quick Poll
@@ -182,7 +183,7 @@ results:
     tiebreaker_note_title: A note on Tiebreakers
     tiebreaker_note_text: 
       - Ties are very rare under STAR Voting, and especially as you get more voters.
-      - It's more than 10 times less likely for ties to occur under STAR than under choose-one voting.
+      - It's more than 10 times less likely for ties to occur under STAR than under choose-one voting. 
       - However in the unlikely event a tie does occur, the tie is broken using the [Offical Tiebreaker Protocol](https://starvoting.org/ties).
     equal_preferences_title: Distribution of Equal Preferences
     

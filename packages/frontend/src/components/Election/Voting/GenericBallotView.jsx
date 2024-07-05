@@ -36,7 +36,7 @@ const Choice = ({ enabled, divKey, score, filled, onClick }) =>
 // Represents the set of possible scores for a single candidate
 const Choices = ({ enabled, rowIndex, onClick, score, columns }) =>
   columns.map((columnValue, n) => (
-    <Grid item xs={1} align='center'>
+    <Grid item key={n} xs={1} align='center'>
       <Choice
         key={`starChoice${rowIndex}-${n}`}
         divKey={`starDiv${rowIndex}-${n}`}
@@ -74,7 +74,7 @@ const Row = ({ enabled, rowIndex, candidate, onClick, columns }) => {
             </IconButton>}
         </Grid>
         <Grid item xs={4}>
-          <Typography wrap className="rowHeading" sx={{wordwrap: "break-word"}} align={columns.length==1? 'right' : 'left'} variant="h6" component="h6">
+          <Typography wrap='true' className="rowHeading" sx={{wordwrap: "break-word"}} align={columns.length==1? 'right' : 'left'} variant="h6" component="h6">
             {candidate.candidate_name}
           </Typography>
         </Grid>
@@ -138,7 +138,7 @@ const Row = ({ enabled, rowIndex, candidate, onClick, columns }) => {
 // Represents the list of rows corresponding to the list of candidates
 const Rows = ({ enabled, candidates, onClick, columns }) =>
   candidates.map((row, n) => (
-    <>
+    <Box key={n}>
       <Row
         rowIndex={n}
         key={`starRow${n}`}
@@ -149,7 +149,7 @@ const Rows = ({ enabled, candidates, onClick, columns }) =>
         columns={columns}
       />
       <Divider className="rowDivider"/>
-    </>
+    </Box>
   ));
 
 // Represents the list of column headings for all possible scores
@@ -197,7 +197,7 @@ const ScoreIcon = ({opacity, value}) => (
 
 const ScoreColumnHeadings = ({starHeadings, columns}) =>
   columns.map((columnTitle, n) => (
-    <Grid item xs={1}>
+    <Grid key={n} item xs={1}>
       { starHeadings &&
         <ScoreIcon
           // NOTE: I tried doing this in CSS with :first-child but it didn't work
