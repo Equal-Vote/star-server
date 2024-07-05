@@ -77,7 +77,7 @@ const AddElectionRoll = ({ onClose }) => {
             })
             submitRolls(rolls)
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
     }
     const handleLoadCsv = (e) => {

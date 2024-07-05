@@ -56,7 +56,6 @@ describe("Email Roll", () => {
             testInputs.user1token
         );
 
-        // console.log(response)
         expect(response.statusCode).toBe(200);
         const eventQueue:MockEventQueue = await th.eventQueue;
         await eventQueue.waitUntilJobsFinished();
@@ -79,7 +78,6 @@ describe("Email Roll", () => {
             testInputs.Ballot1,
             testInputs.user1token
         );
-        // console.log(response)
         expect(response.statusCode).toBe(400);
         th.testComplete();
     });
@@ -101,7 +99,6 @@ describe("Email Roll", () => {
             testInputs.Ballot1,
             testInputs.user3token
         );
-        // console.log(response)
         expect(response.statusCode).toBe(401);
         th.testComplete();
     });

@@ -50,7 +50,7 @@ const EditRoles = () => {
                 refreshElection()
             }
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
     }
 

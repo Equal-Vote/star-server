@@ -12,7 +12,7 @@ const pool = new Pool({
 
 
 export async function testDBCounter(): Promise<string> {
-    console.log("testDBCounter");
+    console.info("testDBCounter");
     var myKey = "testDBCounter";
 
     var demodb = new DemoPGStore(pool, "demopgstore");

@@ -36,20 +36,16 @@ const Sandbox = () => {
             if (data.length == 2) {
                 const nBallots = parseInt(data[0]);
                 const vote = data[1].split(/[\s,]+/).filter(d => d !== ' ').map((score) => parseInt(score)).filter(d => !isNaN(d))
-                console.log(vote)
                 if (vote.length !== nCandidates) {
                     setErrorText('Each ballot must have the same length as the number of candidates')
                     valid = false
-                    console.log('Ping1')
                 }
                 cvrSplit.push(...Array(nBallots).fill(vote))
             } else {
                 const vote = data[0].split(/[\s,]+/).filter(d => d !== ' ').map((score) => parseInt(score)).filter(d => !isNaN(d))
-                console.log(vote)
                 if (vote.length !== nCandidates) {
                     setErrorText('Each ballot must have the same length as the number of candidates')
                     valid = false
-                    console.log('Ping2')
                 }
                 cvrSplit.push(vote)
             }

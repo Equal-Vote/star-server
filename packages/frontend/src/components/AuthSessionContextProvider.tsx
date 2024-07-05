@@ -95,7 +95,7 @@ export function AuthSessionContextProvider({ children }) {
         // Also all tokens are formatted as JWTs (more details here: https://en.wikipedia.org/wiki/JSON_Web_Token)
 
         if (isLoggedIn()) {
-            console.log("Already logged in, no need to refresh");
+            console.info("Already logged in, no need to refresh");
             return;
         }
 
@@ -110,7 +110,7 @@ export function AuthSessionContextProvider({ children }) {
         const url_params = new URLSearchParams(window.location.search);
         const auth_code = url_params.get('code');
         if (auth_code == null && refreshToken !== null) {
-            console.log("No code or refresh token available, can't refresh");
+            console.info("No code or refresh token available, can't refresh");
             return;
         }
         const grant_type = (auth_code == null) ? 'refresh_token' : 'authorization_code';
@@ -136,13 +136,12 @@ export function AuthSessionContextProvider({ children }) {
                 // 'include' allows the backend to access the same cookies https://developers.google.com/web/updates/2015/03/introduction-to-fetch
                 credentials: 'include',
             }).then(response => {
-                console.log("status: " + response.status);
                 if (response.ok) {
                     return response.json();
                 }
                 throw new Error('Error Code: ' + response.status);
             }).then(data => {
-                console.log("Successfully fetched tokens!!")
+                console.info("Successfully fetched tokens!!")
                 // NOTE: Here I'm setting the cookies to expire after REFRESH_HOURS
                 //       I should probably be configuring the expiration time through the oAuth provider instead
                 //       but for now it's convenient to set the expiration time for the cookie and then force a refresh
@@ -151,7 +150,7 @@ export function AuthSessionContextProvider({ children }) {
                 if (grant_type == 'authorization_code') { // we only receive refresh token on auth code flow
                     setRefreshToken(data['refresh_token']);
                 }
-            }).catch(error => console.log('fetch error: ' + error));
+            }).catch(error => console.error('fetch error: ' + error));
         }
 
     }

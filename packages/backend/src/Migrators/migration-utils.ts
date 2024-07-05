@@ -1,5 +1,6 @@
 import * as path from 'path'
 import { promises as fs } from 'fs'
+import Logger from '../Services/Logging/Logger';
 import {
   Migrator,
   FileMigrationProvider,
@@ -26,9 +27,10 @@ export function createMigrator() {
 }
 
 export async function handleMigration(migrationResult: MigrationResultSet) {
+  // TODO: I need to figure out how to convert these to a Logger calls without having req
   migrationResult.results?.forEach((it) => {
       if (it.status === 'Success') {
-        console.log(`migration "${it.migrationName}" was executed successfully`)
+        console.info(`migration "${it.migrationName}" was executed successfully`)
       } else if (it.status === 'Error') {
         console.error(`failed to execute migration "${it.migrationName}"`)
       }

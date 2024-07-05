@@ -1,4 +1,5 @@
 import { InternalServerError } from "@curveball/http-errors";
+import Logger from '../Services/Logging/Logger';
 import { randomUUID } from "crypto";
 import { Request, Response, NextFunction } from 'express';
 import  { Upload, Progress } from "@aws-sdk/lib-storage";
@@ -22,7 +23,6 @@ const s3 = new S3({
 });
 
 const fileFilter = (req: any, file: any, cb: any) => {
-    console.log(file)
     if (file.mimetype.split("/")[0] === "image") {
         cb(null, true);
     } else {
@@ -59,12 +59,12 @@ const uploadImageController = async (req: ImageRequest, res: Response, next: Nex
       });
 
       parallelUploads3.on("httpUploadProgress", (progress: Progress) => {
-        console.log(progress);
+        Logger.info(req, progress);
       });
 
       const uploadResult = await parallelUploads3.done();
       const photo_filename = uploadResult.Location;
-      console.log(`File uploaded successfully. ${photo_filename}`);
+      Logger.info(req, `File uploaded successfully. ${photo_filename}`);
       return res.json({ photo_filename });
     } catch (e: any) {
       throw new InternalServerError(e);

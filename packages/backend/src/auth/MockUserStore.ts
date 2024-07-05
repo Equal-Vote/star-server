@@ -16,9 +16,7 @@ export class MockUserStore {
     }
 
     getByEmail(email: Email): Promise<UserModel|null> {
-        console.log('get by email ' + email);
         var val = this.indexByEmail.get(email);
-        console.log("got val " + JSON.stringify(val));
         var res = null;
         if (val !== undefined){
             res = val.copy();

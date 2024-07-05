@@ -85,9 +85,7 @@ export const useEditElectionDetails = () => {
     }
 
     const onSave = async () => {
-        console.log('saving')
         if (!validatePage()) {
-            console.log('Invalid')
             return
         }
 

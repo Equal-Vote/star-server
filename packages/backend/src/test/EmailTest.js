@@ -10,7 +10,6 @@
 // use req.get(host) to get url
 
 // const msg = Invitation(election,voter,'https://localhost:3000')
-// console.log(msg)
 // EmailService.sendEmails(msg)
 // EmailService.sendInvitations(election,voter,'https://localhost:3000')
 
@@ -58,11 +57,10 @@ const message = [{
         }
     }
 }]
-// console.log(Array(10).fill(message[0]))
 async function Test() {
 
     const responses = await sgMail.send(message)
-    console.log(responses)
+    console.info(responses)
 
 }
 

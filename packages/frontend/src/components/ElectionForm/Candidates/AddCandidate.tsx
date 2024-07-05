@@ -27,7 +27,6 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
 
     const onApplyEditCandidate = (updateFunc) => {
         const newCandidate = { ...candidate }
-        console.log(newCandidate)
         updateFunc(newCandidate)
         onEditCandidate(newCandidate)
     }

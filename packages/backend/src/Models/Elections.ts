@@ -168,7 +168,7 @@ export default class ElectionsDB implements IElectionStore {
             content = await fetch(`${sharedConfig.CLASSIC_DOMAIN}/${election_id}`, {signal: controller.signal})
                 .then((res) => res.text())
                 .catch((err) => {
-                    console.log('error pinging star.vote', err)
+                    Logger.error(ctx, 'error pinging star.vote', err)
                     return errorMessage;
             })
         } catch (err) {

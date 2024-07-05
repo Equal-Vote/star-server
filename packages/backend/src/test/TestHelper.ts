@@ -249,7 +249,6 @@ export class TestHelper {
             }
             cookies += "temp_id=" + tempId;
         }
-        console.log("cookies:  " + cookies);
         if (cookies.length > 0) {
             req = req.set("Cookie", [cookies]);
         }

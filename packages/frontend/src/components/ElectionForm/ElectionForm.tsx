@@ -275,7 +275,7 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
         try {
             onSubmitElection(newElection)
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
     }
 

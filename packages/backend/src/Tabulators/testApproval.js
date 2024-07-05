@@ -12,4 +12,3 @@ const votes = [
 
 
 const results = ApprovalResults(candidates,votes)
-console.log(results)

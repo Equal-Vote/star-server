@@ -41,7 +41,7 @@ function buildVoter(voter_id: string, election_id: string): ElectionRoll {
 
 //reset db
 async function ResetDatabases() {
-    console.log('Reseting DB')
+    console.info('Reseting DB')
     await db.deleteFrom('electionDB').execute()
     await db.deleteFrom('ballotDB').execute()
     await db.deleteFrom('electionRollDB').execute()
@@ -49,7 +49,7 @@ async function ResetDatabases() {
 
 async function PrintQueryExpaination(query: any) {
     const explaination = await query.explain('json', sql`analyze`)
-    console.log(JSON.stringify(explaination[0]['QUERY PLAN'], null, 4))
+    console.info(JSON.stringify(explaination[0]['QUERY PLAN'], null, 4))
 }
 
 async function AddElections(elections: Election | Election[]) {
@@ -90,7 +90,7 @@ async function GetLatestAll2() {
 }
 
 async function addBatchElections() {
-    console.log('Adding Elections')
+    console.info('Adding Elections')
     for (let i = 0; i < 10000; i++) {
         const elections: Election[] = []
         const id = hashString(i.toString())
@@ -100,7 +100,7 @@ async function addBatchElections() {
         }
         const date = hashString('100')
         elections.push(buildElection(id, date, true))
-        console.log('Batch: ' + i)
+        console.info('Batch: ' + i)
         await AddElections(elections)
     }
 }
@@ -129,8 +129,7 @@ async function RunTest() {
     // for (let j = 1; j < 99; j++) {
     //     await UpdateElection(buildElection(id, j.toString(), true))
     // }
-    // console.log(await db.selectFrom('electionDB').select(['head', 'update_date']).execute())
-    console.log(await db.selectFrom('electionDB').select(['head', 'update_date']).execute())
+    console.info(await db.selectFrom('electionDB').select(['head', 'update_date']).execute())
 }
 
 

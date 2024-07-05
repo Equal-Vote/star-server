@@ -33,7 +33,6 @@ const getElections = async (req: IElectionRequest, res: Response, next: NextFunc
     var elections_as_unsubmitted_voter = null;
     if (email !== '') {
         let myRolls = await ElectionRollModel.getByEmailAndUnsubmitted(email, req)
-        console.log('unsubmitted output', myRolls);
         let election_ids = myRolls?.map(election => election.election_id)
         if (election_ids && election_ids.length > 0) {
             elections_as_unsubmitted_voter = await ElectionsModel.getElectionByIDs(election_ids,req)
@@ -82,8 +81,6 @@ const getGlobalElectionStats = async (req: IElectionRequest, res: Response, next
         }
         return stats;
     });
-
-    console.log('stats', stats)
 
     res.json(stats);
 }

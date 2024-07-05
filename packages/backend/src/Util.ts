@@ -14,7 +14,6 @@ export function orDefault<T>(data: T | null, def:T):T {
     if (data == null){
       return def;
     }
-    console.log("orDefault but was NOT null...");
     return data;
   }
 

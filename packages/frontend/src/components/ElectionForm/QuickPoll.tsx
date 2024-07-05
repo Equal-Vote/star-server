@@ -123,7 +123,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
         try {
             onSubmitElection(newElection)
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
     }
 

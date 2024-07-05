@@ -29,7 +29,7 @@ export class TestLoggerImpl {
 
     print():void{
         this.logs.forEach(l => {
-            console.log(l);
+            console.info(l);
         })
     }
 

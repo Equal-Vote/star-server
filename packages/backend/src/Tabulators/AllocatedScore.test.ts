@@ -67,7 +67,6 @@ describe("Allocated Score Tests", () => {
             [0, 0, 4, 5],
             [0, 0, 4, 5]]
         const results = AllocatedScore(candidates, votes, 2, [], false, false)
-        console.log(results.summaryData.weightedScoresByRound)
         expect(results.elected.length).toBe(2);
         expect(results.elected[0].name).toBe('Allison');
         expect(results.elected[1].name).toBe('Doug');

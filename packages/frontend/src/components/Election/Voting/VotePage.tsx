@@ -115,7 +115,6 @@ const VotePage = () => {
       date_submitted: Date.now(),
       status: 'submitted',
     }
-    console.log(ballot);
     // post ballot, if response ok navigate back to election home
     if (!(await postBallot({ 
       ballot: ballot, 

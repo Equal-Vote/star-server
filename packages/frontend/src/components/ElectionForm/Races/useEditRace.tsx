@@ -30,7 +30,6 @@ export const useEditRace = (race, race_index) => {
     })
 
     useEffect(() => {
-        console.log(race)
         setEditedRace(race !== null ? race : defaultRace)
         setErrors({
             raceTitle: '',

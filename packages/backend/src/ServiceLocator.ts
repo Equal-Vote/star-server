@@ -61,7 +61,6 @@ function postgres(): any {
 }
 
 function database(): Kysely<Database> {
-    console.log('starting database')
     if (_DB == null) {
         postgres()
     }

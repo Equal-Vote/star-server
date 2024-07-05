@@ -24,7 +24,7 @@ export class MockEventQueue implements IEventQueue {
 
     public subscribe(queue:QueueName, handler:EventHandler):void {
         if (this._handlers.has(queue)){
-            console.log("ERROR: already have handler for queue "+queue);
+            console.error("ERROR: already have handler for queue "+queue);
         }
         this._handlers.set(queue, handler);
     }
@@ -66,15 +66,15 @@ export class MockEventQueue implements IEventQueue {
     private async processNextJob(){
         var j = this._pendingJobs.shift();
         if (!j){
-            console.log("Event queue empty");
+            console.info("Event queue empty");
             this._working = false;
             return;
         }
         try {
-            console.log("MEQ: Processing job: " + JSON.stringify(j));
+            console.info("MEQ: Processing job: " + JSON.stringify(j));
             await this.doJob(j);
         } catch (e:any) {
-            console.log("MEQ: Exception handling job: " + JSON.stringify(j));
+            console.info("MEQ: Exception handling job: " + JSON.stringify(j));
         }
         this._working = false;
         this.triggerJobs();
@@ -83,7 +83,7 @@ export class MockEventQueue implements IEventQueue {
     private async doJob(job:Job){
         const h = this._handlers.get(job.queue);
         if (!h){
-            console.log("ERROR: no handler for queue "+job.queue);
+            console.info("ERROR: no handler for queue "+job.queue);
             return;
         }
         await h(job);

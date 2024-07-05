@@ -16,7 +16,7 @@ router.get('/test', (req, res) => {
         }
     ).catch(
         err => {
-            console.log(err);
+            console.err(err);
             res.json(err);
         }
     )

@@ -462,7 +462,6 @@ const AdminHome = () => {
     const confirm = useConfirm()
 
     const finalizeElection = async () => {
-        console.log("finalizing election")
         const confirmed = await confirm(
             {
                 title: 'Confirm Finalize Election',
@@ -473,35 +472,31 @@ const AdminHome = () => {
             await finalize()
             await fetchElection()
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
     }
 
     const archiveElection = async () => {
-        console.log("archiving election")
         const confirmed = await confirm(
             {
                 title: 'Confirm Archive Election',
                 message: "Are you sure you wish to archive this election? This action cannot be undone."
             })
         if (!confirmed) return
-        console.log('confirmed')
         try {
             await archive()
             await fetchElection()
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
     }
     const duplicateElection = async () => {
-        console.log("duplicating election")
         const confirmed = await confirm(
             {
                 title: 'Confirm Duplicate Election',
                 message: "Are you sure you wish to duplicate this election?"
             })
         if (!confirmed) return
-        console.log('confirmed')
         const copiedElection = structuredClone(election)
         copiedElection.title = 'Copy of ' + copiedElection.title
         copiedElection.frontend_url = ''

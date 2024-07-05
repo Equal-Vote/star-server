@@ -38,7 +38,6 @@ describe("Edit Election", () => {
     describe("Election data provided", () => {
         test("responds with 200 status", async () => {
             const electionId = await setupInitialElection();
-            console.log("electionId = "+electionId);
             const election1Copy = { ...testInputs.Election1, election_id:electionId};
             //election1Copy.election_id = electionId;
 

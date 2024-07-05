@@ -12,4 +12,3 @@ const votes = [
 
 
 const results = PluralityResults(candidates,votes)
-console.log(results)

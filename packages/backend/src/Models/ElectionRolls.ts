@@ -143,7 +143,6 @@ export default class ElectionRollDB implements IElectionRollStore {
                 return rolls
             })
             .catch(((reason: any) => {
-                console.log('aaaaahhhhhh')
                 Logger.debug(ctx, reason);
                 return null
             }))
