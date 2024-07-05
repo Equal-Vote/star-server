@@ -39,8 +39,25 @@ export const useSubstitutedTranslation = (electionTermType, v={}) => { // electi
 
   const { t } = useTranslation()
 
+  const applyLinks = (txt) => {
+    let r = /(\[(.*)\]\((.*)\))/;
+    if(!r.test(txt)) return txt;
+
+    let parts = txt.split(r)
+    return <Box>
+      {parts.map((str, i) => {
+        if(i%4 == 0) return str;
+        if(i%4 == 2 || i%4 == 3) return '';
+        return <a href={parts[i+2]}>{parts[i+1]}</a>
+      })}
+    </Box>
+  }
+
   return {
-    t: (key, v={}) => t(key, {...values, ...v})
+    t: (key, v={}) => {
+      let text = t(key, {...values, ...v})
+      return Array.isArray(text)? text.map(txt => applyLinks(txt)) : applyLinks(text);
+    }
   }
 }
 

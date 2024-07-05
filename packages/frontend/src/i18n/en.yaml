@@ -183,7 +183,7 @@ results:
     tiebreaker_note_text: 
       - Ties are very rare under STAR Voting, and especially as you get more voters.
       - It's more than 10 times less likely for ties to occur under STAR than under choose-one voting.
-      - However in the unlikely event a tie does occur, the tie is broken using the Offical Tiebreaker Protocol.
+      - However in the unlikely event a tie does occur, the tie is broken using the [Offical Tiebreaker Protocol](https://starvoting.org/ties).
     equal_preferences_title: Distribution of Equal Preferences
     
 # General Terms
