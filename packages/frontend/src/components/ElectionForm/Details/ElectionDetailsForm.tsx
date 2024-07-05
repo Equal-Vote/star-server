@@ -29,7 +29,6 @@ export const ElectionTitleField = ({value, onUpdateValue, errors, setErrors, sho
         }}
         fullWidth
         onChange={(e) => {
-            console.log('CHANGE')
             setErrors({ ...errors, title: '' });
             onUpdateValue(e.target.value);
         }}
