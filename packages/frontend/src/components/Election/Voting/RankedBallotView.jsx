@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import Typography from '@mui/material/Typography';
 import { BallotContext } from "./VotePage";
 import GenericBallotView from "./GenericBallotView";
+import { useSubstitutedTranslation } from "~/components/util";
 
 function scoresAreOverVote({scores}){
   let uniqueScores = new Set();
@@ -73,6 +74,12 @@ export default function RankedBallotView({onlyGrid=false}) {
   //  )
   //}
 
+
+  const { t } = useSubstitutedTranslation();
+
+  let columnValues = ballotContext.candidates.slice(0, Number(process.env.REACT_APP_MAX_BALLOT_RANKS??999999)).map((c, i) => i+1)
+  let columns = columnValues.map(v => t('number.rank', {count: v, ordinal: true}))
+
   return (
     <GenericBallotView
       key="rankedBallot"
@@ -84,8 +91,8 @@ export default function RankedBallotView({onlyGrid=false}) {
         (ballotContext.race.voting_method == 'IRV' ? 'https://www.starvoting.org/rcv_v_star' : '') + 
         (ballotContext.race.voting_method == 'RankedRobin' ? 'https://www.equal.vote/ranked_robin' : '')
       }
-      columns={['1st', '2nd', '3rd', '4th', '5th']}
-      columnValues={[1, 2, 3, 4, 5]}
+      columnValues={columnValues}
+      columns={columns}
       instructions={instructions}
       onClick={(i, j) => {
         const newScores = ballotContext.candidates.map(c => c.score);

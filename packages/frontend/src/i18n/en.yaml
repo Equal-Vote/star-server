@@ -61,7 +61,8 @@ hero:
     - Favorite
   methods:
     STAR:
-      title: STAR Voting !tip(STAR)
+      name: STAR Voting
+      title: $t(hero.methods.STAR.name) !tip(STAR)
       short_description: Elects the majority preferred winner between the two {{lowercase_candidates}} with highest overall support
       recommendation: Recommended for accuracy
       default_scores:
@@ -69,7 +70,8 @@ hero:
         - 2
         - 5
     Approval:
-      title: Approval !tip(Approval)
+      name: Approval
+      title: $t(hero.methods.Approval.name) !tip(Approval)
       short_description: Elects most approved candidate
       recommendation: Recommended for simplicity
       default_scores: 
@@ -77,7 +79,8 @@ hero:
         - 1
         - 1
     RankedRobin:
-      title: Ranked Robin !tip(RankedRobin)
+      name: Ranked Robin
+      title: $t(hero.methods.RankedRobin.name) !tip(RankedRobin)
       short_description: Elects majority preferred winner
       recommendation: Recommended for ranking
       default_ranks: 
@@ -206,3 +209,9 @@ keyword:
   equal_preferences: Equal Preference
   exhausted: Exhausted
   total: Total 
+
+number:
+  rank_ordinal_one: "{{count}}st"
+  rank_ordinal_two: "{{count}}nd"
+  rank_ordinal_few: "{{count}}rd"
+  rank_ordinal_other: "{{count}}th"

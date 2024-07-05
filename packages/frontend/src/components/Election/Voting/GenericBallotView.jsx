@@ -263,8 +263,6 @@ export default function GenericBallotView({
     columnValues = columns
   }
 
-  const {snack, setSnack} = useSnackbar();
-
   const flags = useFeatureFlags();
   const { election } = useElection();
 

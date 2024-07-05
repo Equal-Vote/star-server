@@ -162,7 +162,7 @@ export default ({}) => {
             </Box>
             <QuickPoll
                 authSession={authSession}
-                methodName={t(`hero.methods.${methodKeys[quickPollIndex]}.title`)}
+                methodName={t(`hero.methods.${methodKeys[quickPollIndex]}.name`)}
                 grow={transitionStep == 4 && methodIndex != methodKeys.length-1}
             />
         </Box>

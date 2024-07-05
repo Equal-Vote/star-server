@@ -145,12 +145,12 @@ const VotePage = () => {
             variant='outlined'
             onClick={() => setCurrentPage(count => count - 1)}
             disabled={currentPage === 0}
-            style={{ minWidth: "100px", marginRight: "40px", visibility: (currentPage === 0) ? 'hidden' : 'visible' }}>
+            sx={{ maxHeight: '40px', minWidth: '100px', marginRight: {xs: '10px', md: '40px'}, visibility: (currentPage === 0) ? 'hidden' : 'visible' }}>
             Previous
           </Button>
-          <Stepper>
+          <Stepper sx={{display: 'flex', flexWrap: 'wrap'}}>
             {pages.map((page, n) => (
-              <>
+              <Box key={n}>
                 <Step
                   onClick={() => setCurrentPage(n)}
                   style={{ fontSize: "16px", width: "auto", minWidth: "0px", marginTop: "10px", paddingLeft: "0px", paddingRight: "0px" }}
@@ -162,14 +162,14 @@ const VotePage = () => {
                     </SvgIcon>
                   </StepLabel>
                 </Step>
-              </>
+              </Box>
             ))}
           </Stepper>
           <Button
             variant='outlined'
             onClick={() => setCurrentPage(count => count + 1)}
             disabled={currentPage === pages.length - 1}
-            style={{ minWidth: "100px", marginLeft: "40px", visibility: (currentPage === pages.length - 1) ? 'hidden' : 'visible' }}>
+            sx={{ maxHeight: '40px', minWidth: '100px', marginLeft: {xs: '10px', md: '40px'}, visibility: (currentPage === pages.length - 1) ? 'hidden' : 'visible' }}>
             Next
           </Button>
         </Box>

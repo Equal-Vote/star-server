@@ -66,8 +66,6 @@ export const useSubstitutedTranslation = (electionTermType, v={}) => { // electi
     </Box>
   }
 
-  
-
   return {
     t: (key, v={}) => {
       let text = t(key, {...values, ...v})

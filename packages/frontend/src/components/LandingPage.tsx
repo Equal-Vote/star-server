@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import Grid from "@mui/material/Grid";
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import QuickPoll from './ElectionForm/QuickPoll';
 import LandingPageHero from './LandingPage/LandingPageHero';
 import LandingPageFeatureElections from './LandingPage/LandingPageFeaturedElections';
 import LandingPageFeatures from './LandingPage/LandingPageFeatures';
