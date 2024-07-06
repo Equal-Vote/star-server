@@ -174,9 +174,11 @@ const ColumnHeadings = ({starHeadings, columns, leftTitle, rightTitle, headingPr
     <Grid container alignItems="stretch">
       <Grid item xs={5}>
         { headingPrefix != '' &&
+        <Box display='flex' flexDirection='column-reverse' sx={{height: '100%'}}>
           <Typography className="headingPrefix">
             {headingPrefix}
           </Typography>
+        </Box>
         }
       </Grid>
       {columns.length > 1 &&
@@ -298,7 +300,7 @@ export default function GenericBallotView({
             </Typography>
           </Grid>}
 
-          <Grid item xs={8} sx={{ pb:1, px:0 }} className="instructions">
+          <Grid item xs={8} sx={{ pb:1, px:4 }} className="instructions">
             <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }}>
               This election uses {methodName}
             </Typography>

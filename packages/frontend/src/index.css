@@ -183,7 +183,8 @@ code {
   font-family: Verdana, Geneva, sans-serif;
   font-size: 13px;
   text-align: right;
-  transform: translate(0%, 25%);
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .ballot .rowDivider {
