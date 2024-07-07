@@ -245,7 +245,7 @@ export default function GenericBallotView({
             columnValues={columnValues}
           />
 
-          <Grid item xs={10} sx={{ p:5, px:0 }} className="footer">
+          <Grid item xs={10} sx={{ p:5, px:4 }} className="footer">
             {footer}
             <br/>
             <Link href={learnMoreLink} target='_blank'>Learn more about {methodName}</Link>
