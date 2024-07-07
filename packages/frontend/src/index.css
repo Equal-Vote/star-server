@@ -217,7 +217,6 @@ code {
   position: absolute;
   transform: translate(-50%, -45%);
   font-family: 'Archivo Black';
-  font-size: 17px;
   top: 50%;
   left: 50%;
   z-index: 1;
@@ -278,7 +277,6 @@ code {
   text-align: center;
   justify-content: center;
   font-family: 'Archivo Black';
-  font-size: 12px;
   font-weight: bold;
 }
 
