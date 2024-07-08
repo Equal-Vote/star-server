@@ -28,7 +28,7 @@ export default ({electionIds}) => {
             justifyContent: 'center',
             flexWrap: 'wrap',
         }}>
-            {electionIds.map(electionId => <FeaturedElection electionId={electionId}/>)}
+            {electionIds.map((electionId,i) => <FeaturedElection key={i} electionId={electionId}/>)}
         </Box>
     </Box>
 }

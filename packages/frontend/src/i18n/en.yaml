@@ -1,4 +1,79 @@
-# Landing Page -> New Election 
+
+# Landing Page
+landing_page: 
+  # Hero Section
+  hero:
+    title: Create polls and elections with
+    candidates: 
+      - Least Favorite
+      - Lesser-Evil
+      - Favorite
+    methods:
+      STAR:
+        name: STAR Voting
+        title: $t(landing_page.hero.methods.STAR.name) !tip(STAR)
+        short_description: Elects the majority preferred winner between the two {{lowercase_candidates}} with highest overall support
+        recommendation: Recommended for accuracy
+        default_scores:
+          - 0 
+          - 2
+          - 5
+      Approval:
+        name: Approval
+        title: $t(landing_page.hero.methods.Approval.name) !tip(Approval)
+        short_description: Elects most approved candidate
+        recommendation: Recommended for simplicity
+        default_scores: 
+          - 0 
+          - 1
+          - 1
+      RankedRobin:
+        name: Ranked Robin
+        title: $t(landing_page.hero.methods.RankedRobin.name) !tip(RankedRobin)
+        short_description: Elects majority preferred winner
+        recommendation: Recommended for ranking
+        default_ranks: 
+          - 3 
+          - 2
+          - 1
+      more_methods:
+        title: and more
+        short_description: Sign in for more methods like Choose-One, or RCV!
+        sign_in: Sign In
+
+  # Quick Poll Section
+  quick_poll:
+    title: Try a quick poll with {{method_name}}
+    question_prompt: What is your poll question?
+    option_prompt: Option {{number}}
+    create: Create Quick Poll
+    continue_with_editor: Continue with Full Editor
+    sign_in: Sign in for more settings
+    clear_all: Clear All
+
+  # Election Stats Section
+  election_stats:
+    elections_created: Elections & Polls Created
+    votes_cast: Votes Cast
+
+  # Features Section
+  features:
+    title: Features
+    items:
+    - title: Voting Methods
+      text: Supports a variety of voting methods including STAR, Approval, and Ranked Robin.
+    - title: Multi Winner Methods
+      text: Supports methods that yield multiple winners, including both proportional and block based methods.
+    - title: Multi Race Elections
+      text: Setup multi race elections for when there are mutiples issues or positions to vote on.
+    - title: Security
+      text: There's a spectrum of security options, from creating a direct link to share publicly, to limiting the election to a set of emails or voter ids.
+    - title: Open Source
+      text: This project is shared open source under a AGPL-3.0 license. Run your elections via final.xyz or self host on your own server.
+    - title: Equal Vote
+      text: Rest easy knowing that your voters will all have an equal vote, and won't need to worry about vote splitting. 
+  
+# Landing Page -> New Election Dialog
 election_creation:
   dialog_title: Create an Election or Poll
 
@@ -29,107 +104,13 @@ election_creation:
   id_list_title: ID List
   id_list_description: Provide a list of IDs for your voters. Voters will authenticate themselves using their ID before voting
 
-# Info bubbles
-tips:
-  polls_vs_elections:
-    title: Polls versus Elections
-    description: There's no functional difference between polls and elections. This only impacts which terminology is shown to you and your voters.
 
-  restricted:
-    title: Restricted Polls or Elections
-    description: Restricted Polls or Elections only allow those on the voter list to vote. The voter list can be a set of emails or voter IDs.
-  
-  STAR:
-    title: STAR Voting
-    description: Uses a 0-5 star ballot, and the vote is tallied in 2 rounds. First the stars are added together, and then the 2 front runners face each other in an automatic runoff
-
-  Approval:
-    title: Approval Voting
-    description: Voters pick as many {{candidates}} as they like, and then most votes wins
-
-  RankedRobin:
-    title: Ranked Robin
-    description: The candidate who wins the most runoffs wins
-
-
-# Text for hero section
-hero: 
-  title: Create polls and elections with
-  candidates: 
-    - Least Favorite
-    - Lesser-Evil
-    - Favorite
-  methods:
-    STAR:
-      name: STAR Voting
-      title: $t(hero.methods.STAR.name) !tip(STAR)
-      short_description: Elects the majority preferred winner between the two {{lowercase_candidates}} with highest overall support
-      recommendation: Recommended for accuracy
-      default_scores:
-        - 0 
-        - 2
-        - 5
-    Approval:
-      name: Approval
-      title: $t(hero.methods.Approval.name) !tip(Approval)
-      short_description: Elects most approved candidate
-      recommendation: Recommended for simplicity
-      default_scores: 
-        - 0 
-        - 1
-        - 1
-    RankedRobin:
-      name: Ranked Robin
-      title: $t(hero.methods.RankedRobin.name) !tip(RankedRobin)
-      short_description: Elects majority preferred winner
-      recommendation: Recommended for ranking
-      default_ranks: 
-        - 3 
-        - 2
-        - 1
-    more_methods:
-      title: and more
-      short_description: Sign in for more methods like Choose-One, or RCV!
-      sign_in: Sign In
-  
-# Quick Poll
-quick_poll:
-  title: Try a quick poll with {{method_name}}
-  question_prompt: What is your poll question?
-  option_prompt: Option {{number}}
-  create: Create Quick Poll
-  continue_with_editor: Continue with Full Editor
-  sign_in: Sign in for more settings
-  clear_all: Clear All
-
-# 'Return to Classic' Dialog
+# Landing Page -> Return to Classic Dialog
 return_to_classic:
   button: Return to the original star.vote
   description: We'd love to know how the new version can be improved.
   feedback: Leave Feedback?
   continue: Continue to star.vote
-
-# List of features on landing page
-features:
-  title: Features
-  items:
-  - title: Voting Methods
-    text: Supports a variety of voting methods including STAR, Approval, and Ranked Robin.
-  - title: Multi Winner Methods
-    text: Supports methods that yield multiple winners, including both proportional and block based methods.
-  - title: Multi Race Elections
-    text: Setup multi race elections for when there are mutiples issues or positions to vote on.
-  - title: Security
-    text: There's a spectrum of security options, from creating a direct link to share publicly, to limiting the election to a set of emails or voter ids.
-  - title: Open Source
-    text: This project is shared open source under a AGPL-3.0 license. Run your elections via final.xyz or self host on your own server.
-  - title: Equal Vote
-    text: Rest easy knowing that your voters will all have an equal vote, and won't need to worry about vote splitting. 
-
-# Election Stats
-election_stats:
-  elections_created: Elections & Polls Created
-  votes_cast: Votes Cast
 
 # Results page
 results:
@@ -189,7 +170,29 @@ results:
       - It's more than 10 times less likely for ties to occur under STAR than under choose-one voting. 
       - However in the unlikely event a tie does occur, the tie is broken using the [Offical Tiebreaker Protocol](https://starvoting.org/ties).
     equal_preferences_title: Distribution of Equal Preferences
-    
+
+# Info bubbles
+tips:
+  polls_vs_elections:
+    title: Polls versus Elections
+    description: There's no functional difference between polls and elections. This only impacts which terminology is shown to you and your voters.
+
+  restricted:
+    title: Restricted Polls or Elections
+    description: Restricted Polls or Elections only allow those on the voter list to vote. The voter list can be a set of emails or voter IDs.
+  
+  STAR:
+    title: STAR Voting
+    description: Uses a 0-5 star ballot, and the vote is tallied in 2 rounds. First the stars are added together, and then the 2 front runners face each other in an automatic runoff
+
+  Approval:
+    title: Approval Voting
+    description: Voters pick as many {{candidates}} as they like, and then most votes wins
+
+  RankedRobin:
+    title: Ranked Robin
+    description: The candidate who wins the most runoffs wins
+
 # General Terms
 keyword:
   election: 
@@ -210,6 +213,7 @@ keyword:
   exhausted: Exhausted
   total: Total 
 
+# Localisation for numbers
 number:
   rank_ordinal_one: "{{count}}st"
   rank_ordinal_two: "{{count}}nd"

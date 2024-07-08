@@ -168,7 +168,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
             }}>
                 <Typography component="h2"
                     className={grow? 'heroGrow' : 'heroShrink'}
-                >{t('quick_poll.title')}</Typography>
+                >{t('landing_page.quick_poll.title')}</Typography>
                 <StyledTextField
                     autoFocus
                     error={titleError}
@@ -176,7 +176,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                     name="name"
                     type="text"
                     value={election.title}
-                    label={t('quick_poll.question_prompt')}
+                    label={t('landing_page.quick_poll.question_prompt')}
                     inputProps={{
                         minLength: 3
                     }}
@@ -198,7 +198,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                         name="candidate-name"
                         type="text"
                         value={candidate.candidate_name}
-                        label={t('quick_poll.option_prompt', {number: index+1})}
+                        label={t('landing_page.quick_poll.option_prompt', {number: index+1})}
                         onChange={(e) => {
                             onUpdateCandidate(index, e.target.value)
                         }}
@@ -216,7 +216,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                         type="button"
                         onClick={() => setElectionData(QuickPollTemplate)}
                         >
-                            <Typography component="p">{t('quick_poll.clear_all')}</Typography>
+                            <Typography component="p">{t('landing_page.quick_poll.clear_all')}</Typography>
                         <DeleteIcon />
                     </IconButton>
                 </Box>
@@ -224,7 +224,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                     type='submit'
                     variant="contained"
                     disabled={isPending} >
-                    {t('quick_poll.create')}
+                    {t('landing_page.quick_poll.create')}
                 </StyledButton>
                 {!authSession.isLoggedIn() ?
                     <Button
@@ -240,7 +240,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                         }}
                         disabled={isPending}
                     >
-                        {t('quick_poll.sign_in')}
+                        {t('landing_page.quick_poll.sign_in')}
                     </Button>
                     :
                     <Button
@@ -256,7 +256,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
                         }}
                         disabled={isPending}
                     >
-                        {t('quick_poll.continue_with_editor')}
+                        {t('landing_page.quick_poll.continue_with_editor')}
                     </Button>
                 }
                 

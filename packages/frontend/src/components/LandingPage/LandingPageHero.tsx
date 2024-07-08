@@ -32,9 +32,9 @@ export default ({}) => {
 
     const {t} = useSubstitutedTranslation('election');
 
-    const [starScores, setStarScores] = useState(t('hero.methods.STAR.default_scores'));
-    const [approvalScores, setApprovalScores] = useState(t('hero.methods.Approval.default_scores'));
-    const [rrRanks, setRrRanks] = useState(t('hero.methods.RankedRobin.default_ranks'));
+    const [starScores, setStarScores] = useState(t('landing_page.hero.methods.STAR.default_scores'));
+    const [approvalScores, setApprovalScores] = useState(t('landing_page.hero.methods.Approval.default_scores'));
+    const [rrRanks, setRrRanks] = useState(t('landing_page.hero.methods.RankedRobin.default_ranks'));
 
     // selected to be consistent with the Race.ts domain_model
 
@@ -68,7 +68,7 @@ export default ({}) => {
     if(quickPollIndex == methodKeys.length-1) quickPollIndex = methodKeys.length-2;
 
     const makeBallotContext = (scores, onUpdate)  => {
-        const candidateNames = t('hero.candidates')
+        const candidateNames = t('landing_page.hero.candidates')
         return {
             instructionsRead: true,
             setInstructionsRead: () => {},
@@ -77,7 +77,7 @@ export default ({}) => {
                     ({
                         'candidate_id': '',
                         'candidate_name': String(candidateNames[i]),
-                        'score': Number(score),
+                        'score': 0,// Number(score) ?? 0,
                     })
                 ),
             // this isn't used, it's just included to make typescript happy
@@ -110,12 +110,12 @@ export default ({}) => {
                 width: {xs: '100%', md: '600px'}, // not the same ax maxWidth 600px!, we want to make sure the carousel doesn't effect size on larger screens
                 minHeight: '600px'
             }}>
-                <Typography variant="h4"> {t('hero.title')} </Typography>
+                <Typography variant="h4"> {t('landing_page.hero.title')} </Typography>
                 <Box width='90%' display='flex' flexDirection='row' justifyContent='space-between' sx={{alignItems: 'center', paddingBottom: 3}}>
                     <ArrowBackIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == 0? 0 : 1)}} onClick={() => nextMethod(-1)}/>
                     <Box display='flex' flexDirection='row' className={transitionStep==0? 'heroGrow' : 'heroShrink'} sx={{alignItems: 'center'}}>
                         <Typography variant="h3">
-                            {t(`hero.methods.${methodKeys[methodIndex]}.title`)} 
+                            {t(`landing_page.hero.methods.${methodKeys[methodIndex]}.title`)} 
                         </Typography>
                     </Box>
                     <ArrowForwardIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == methodKeys.length-1? 0 : 1)}} onClick={() => nextMethod(1)}/>
@@ -138,14 +138,14 @@ export default ({}) => {
                             </BallotContext.Provider>}
                         </Box>
                         <Typography variant="h5">
-                            {t(`hero.methods.${methodKeys[imgIndex]}.short_description`)} 
+                            {t(`landing_page.hero.methods.${methodKeys[imgIndex]}.short_description`)} 
                         </Typography>
                         <Typography variant="h5">
-                            {t(`hero.methods.${methodKeys[imgIndex]}.recommendation`)} 
+                            {t(`landing_page.hero.methods.${methodKeys[imgIndex]}.recommendation`)} 
                         </Typography>
                     </>:<>
                         <Typography variant="h5">
-                            {t(`hero.methods.${methodKeys[imgIndex]}.short_description`)} 
+                            {t(`landing_page.hero.methods.${methodKeys[imgIndex]}.short_description`)} 
                         </Typography>
                         <StyledButton
                             type='submit'
@@ -155,14 +155,14 @@ export default ({}) => {
                                 width: '75%'
                             }}
                         >
-                            {t('hero.methods.more_methods.sign_in')}
+                            {t('landing_page.hero.methods.more_methods.sign_in')}
                         </StyledButton>
                     </>}
                 </Box>
             </Box>
             <QuickPoll
                 authSession={authSession}
-                methodName={t(`hero.methods.${methodKeys[quickPollIndex]}.name`)}
+                methodName={t(`landing_page.hero.methods.${methodKeys[quickPollIndex]}.name`)}
                 grow={transitionStep == 4 && methodIndex != methodKeys.length-1}
             />
         </Box>

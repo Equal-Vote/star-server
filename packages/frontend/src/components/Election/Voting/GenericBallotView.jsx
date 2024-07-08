@@ -87,7 +87,7 @@ const GenericBallotGrid = ({
       {/* Row Backgrounds */}
       {/*not sure why the [...] is necessary but it is*/
       [...Array(numHeaderRows + 2*ballotContext.candidates.length + 1)].map((_,i) => 
-        <Box sx={{gridArea: makeArea(i+1, 1, 2+columns.length), mx: '-500px', background: rowColor(i), height: '100%'}}/>
+        <Box key={i} sx={{gridArea: makeArea(i+1, 1, 2+columns.length), mx: '-500px', background: rowColor(i), height: '100%'}}/>
       )}
 
       {/* HEADING TITLES (i.e. worst best for STAR )*/}
@@ -125,9 +125,9 @@ const GenericBallotGrid = ({
         </Box>)}
       </>}
 
-      {/* Bubble Grid (i.e. candidate / bubble pairs) */}
-      {ballotContext.candidates.map((candidate,i) => <>
-        <Box sx={{
+      {/* Candidates */}
+      {ballotContext.candidates.map((candidate,i) =>
+        <Box key={i} sx={{
           gridArea: makeArea(numHeaderRows+1+2*i+1, 1)
         }}>
           <Typography wrap='true' className="rowHeading" align='left' variant="h6" component="h6" sx={{
@@ -137,21 +137,22 @@ const GenericBallotGrid = ({
             {candidate.candidate_name}
           </Typography>
         </Box>
-        {columnValues.map((columnValue, j) =>
-          <Box 
-            key={j}
-            className={`circle ${columnValue === ballotContext.candidates[i].score ? "filled" : ""} ${ballotContext.instructionsRead? 'unblurred' : ''}`}
-            onClick={() => onClick(i, columnValue)
-            }
-            sx={{
-              margin: 'auto',
-              gridArea: makeArea(numHeaderRows+1+2*i+1, 2+j),
-            }}
-          >
-            <Typography varaint='p' sx={{...fontSX}}> {columns.length == 1 ? ' ' : columnValue} </Typography>
-          </Box>
-        )}
-      </>
+      )}
+
+      {/* Bubble Grid */}
+      {/* I need to do this weird loop in order to avoid the key error while also not breaking css grid*/}
+      {ballotContext.candidates.map((_,i) => columnValues.map((columnValue, j) => [i, j, columnValue])).flat().map(([i, j, columnValue]) =>
+        <Box 
+          key={`${i}-${j}`}
+          className={`circle ${columnValue === ballotContext.candidates[i].score ? "filled" : ""} ${ballotContext.instructionsRead? 'unblurred' : ''}`}
+          onClick={() => onClick(i, columnValue)}
+          sx={{
+            margin: 'auto',
+            gridArea: makeArea(numHeaderRows+1+2*i+1, 2+j),
+          }}
+        >
+          <Typography varaint='p' sx={{...fontSX}}> {columns.length == 1 ? ' ' : columnValue} </Typography>
+        </Box>
       )}
     </Box>
   </Box>

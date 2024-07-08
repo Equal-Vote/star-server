@@ -54,6 +54,9 @@ export const useSubstitutedTranslation = (electionTermType, v={}) => { // electi
       </Box>
     }
 
+    // hack for testing if we've missed any text
+    // return '----'; 
+
     if(!rLink.test(txt) && !rTip.test(txt)) return txt;
 
     let parts = txt.split(rLink)

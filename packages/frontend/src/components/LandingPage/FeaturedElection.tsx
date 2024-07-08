@@ -30,7 +30,9 @@ export default ({electionId}) => {
         <CardActionArea sx={{p: { xs: 2, md: 2 }}}>
             <CardContent>
                 <Typography variant='h5'>{data == null ? 'null' : data.election.title}</Typography>
-                <Typography sx={{textAlign: 'right', color: '#808080'}}>{data == null ? 'null' : formatter.format(data.election.races.map((race) => race.voting_method))}</Typography>
+                <Typography sx={{textAlign: 'right', color: '#808080'}}>
+                    {data == null ? 'null' : formatter.format(data.election.races.map((race) => race.voting_method))}
+                </Typography>
             </CardContent>
         </CardActionArea>
     </Card>

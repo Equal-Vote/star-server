@@ -28,8 +28,8 @@ export default ({options}) => {
             justifyContent: 'center',
             flexWrap: 'wrap',
         }}>
-            {options.map(option => 
-                <Paper className='pricingOption' elevation={8} sx={{
+            {options.map((option, i) => 
+                <Paper key={i} className='pricingOption' elevation={8} sx={{
                     width: '100%',
                     maxWidth: '25rem',
                     display: 'flex',

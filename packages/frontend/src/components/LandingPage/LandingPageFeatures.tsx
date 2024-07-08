@@ -12,7 +12,7 @@ interface FeaturePanel{
 export default () => {
     let {t} = useSubstitutedTranslation('election');
 
-    const panels = t('features.items') as FeaturePanel[];
+    const panels = t('landing_page.features.items') as FeaturePanel[];
 
     return  <Box sx={{
         display: 'flex',
@@ -28,7 +28,7 @@ export default () => {
             margin: 'auto',
             p: { xs: 2, md: 4 },
         }}>
-            <Typography variant='h4' sx={{textAlign: 'center'}}>{t('features.title')}</Typography>
+            <Typography variant='h4' sx={{textAlign: 'center'}}>{t('landing_page.features.title')}</Typography>
             <Box sx={{
                 display: 'flex',
                 flexDirection: 'row',
@@ -38,7 +38,7 @@ export default () => {
                 gap: '3rem',
                 backgroundColor: 'brand.gray1',
             }}>
-                {panels.map(panel => <Box sx={{width: '380px'}}>
+                {panels.map((panel, i) => <Box key={i} sx={{width: '380px'}}>
                     <Typography variant='h4'>{panel.title}</Typography>
                     <Typography component='p'>{panel.text}</Typography>
                 </Box>)}

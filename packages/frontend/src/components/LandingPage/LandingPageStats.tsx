@@ -36,7 +36,7 @@ export default () => {
             gap: '2rem'
         }}>
             <Typography variant='h4' sx={{margin: 0}}><SlotCounter value={data?.elections ?? 0}/></Typography>
-            <Typography variant='h5' sx={{margin: 0}}>{t('election_stats.elections_created')}</Typography>
+            <Typography variant='h5' sx={{margin: 0}}>{t('landing_page.election_stats.elections_created')}</Typography>
         </Box>
         <Box sx={{
             display: 'flex',
@@ -45,7 +45,7 @@ export default () => {
             gap: '2rem'
         }}>
             <Typography variant='h4' sx={{margin: 0}}><SlotCounter value={data?.votes ?? 0}/></Typography>
-            <Typography variant='h5' sx={{margin: 0}}>{t('election_stats.votes_cast')}</Typography>
+            <Typography variant='h5' sx={{margin: 0}}>{t('landing_page.election_stats.votes_cast')}</Typography>
         </Box>
     </Box>
 }
