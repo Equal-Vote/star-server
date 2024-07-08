@@ -116,7 +116,7 @@ function IRVResultsViewer({ results, t }: {results: irvResults, t: Function}) {
     .sort((a, b) => b.votes - a.votes)
     .slice(0, 2)
     .concat([{
-      name: t('keyword.exhausted'),
+      name: t('results.rcv.exhausted'),
       votes: results.exhaustedVoteCounts.slice(-1)[0]
     }])
 
@@ -139,8 +139,8 @@ function IRVResultsViewer({ results, t }: {results: irvResults, t: Function}) {
     return 0;
   });
 
-  tabulationRows.unshift([t('keyword.election.candidate')].concat([...Array(results.voteCounts.length).keys()].map(i => `Round ${i+1}`)))
-  tabulationRows.push([t('keyword.exhausted'), ...results.exhaustedVoteCounts.map(i => ''+i)])
+  tabulationRows.unshift([t('results.rcv.tabulation_candidate_column')].concat([...Array(results.voteCounts.length).keys()].map(i => `Round ${i+1}`)))
+  tabulationRows.push([t('results.rcv.exhausted'), ...results.exhaustedVoteCounts.map(i => ''+i)])
 
   return (
     <>
@@ -311,6 +311,7 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
   }
 
   const {t} = useSubstitutedTranslation(election.settings.term_type);
+  console.log('term', election.settings.term_type);
   return (
     <div>
       <div className="flexContainer" style={{textAlign: 'center'}}>

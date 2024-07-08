@@ -35,7 +35,7 @@ export default ({results, rounds, t}: {results: starResults, rounds: number, t: 
     let finalistVotes = (runoffData[0].runoffVotes + runoffData[1].runoffVotes)
     runoffData.sort((a, b) => b.runoffVotes - a.runoffVotes);
     runoffData.push({
-      name: t('keyword.equal_preferences'),
+      name: t('results.star.equal_preferences'),
       votes: 0,
       runoffVotes: results.summaryData.nValidVotes - finalistVotes,
       index: -1,

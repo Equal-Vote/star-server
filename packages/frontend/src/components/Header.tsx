@@ -31,7 +31,7 @@ const Header = () => {
     const [tempID, setTempID] = useCookie('temp_id', v4())
     const [anchorElNav, setAnchorElNav] = useState(null)
     const [anchorElUser, setAnchorElUser] = useState(null)
-    const {t} = useSubstitutedTranslation('election');
+    const {t} = useSubstitutedTranslation();
 
     const createElectionContext = useContext(CreateElectionContext);
 
@@ -55,15 +55,15 @@ const Header = () => {
 
     const navItems = [
         {
-            text: 'About',
+            text: t('nav.about'),
             href: '/About',
         },
         {
-            text: 'Help',
+            text: t('nav.help'),
             href: 'https://equal-vote.github.io/star-server/'
         },
         {
-            text: 'Public Elections',
+            text: t('nav.public_elections'),
             href: '/OpenElections'
         }
     ];
@@ -114,7 +114,7 @@ const Header = () => {
                             </MenuItem>
                         )}
                         <MenuItem onClick={openFeedback}>
-                            Feedback?
+                            {t('nav.feedback')}
                         </MenuItem>
                         <MenuItem onClick={returnToClassicContext.openDialog}>
                             {t('return_to_classic.button')}
@@ -153,7 +153,7 @@ const Header = () => {
                     {authSession.isLoggedIn() && <>
                         <Button color='inherit' onClick={() => createElectionContext.openDialog()} sx={{display: { xs: 'none', md: 'flex' }}}>
                             <Typography sx={navTextSx} color={headerTextColor}>
-                                New Election
+                                {t('nav.new_election')}
                             </Typography>
                         </Button>
                         <IconButton
@@ -169,7 +169,7 @@ const Header = () => {
                         </IconButton>
                         <Button color='inherit' onClick={handleOpenUserMenu} sx={{display: { xs: 'none', md: 'flex' }}}>
                             <Typography sx={navTextSx} color={headerTextColor}>
-                                Hello, {authSession.getIdField('given_name')}
+                                {t('nav.greeting', {name: authSession.getIdField('given_name')})}
                             </Typography>
                             <KeyboardArrowDownRoundedIcon sx={{transition: 'transform .2s', '&:hover': {transform: 'translateY(3px)'}}}/>
                         </Button>
@@ -190,25 +190,25 @@ const Header = () => {
                             sx={{ display: 'block'}}
                         >
                             <MenuItem component={Link} href={authSession.accountUrl} target='_blank'>
-                                Your Account
+                                {t('nav.your_account')}
                             </MenuItem>
                             <MenuItem component={Link} onClick={() => createElectionContext.openDialog()}>
-                                New Election
+                                {t('nav.new_election')}
                             </MenuItem>
                             {/*<MenuItem component={Link} href='/ElectionInvitations'>
                                 Election Invitations
                         </MenuItem>*/}
                             <MenuItem component={Link} href='/ElectionsYouManage'>
-                                My Elections & Polls
+                                {t('nav.my_elections')}
                             </MenuItem>
                             <MenuItem component={Link} href='/ElectionsYouVotedIn'>
-                                Past Elections
+                                {t('nav.past_elections')}
                             </MenuItem>
                             <MenuItem
                                 color='inherit'
                                 onClick={() => authSession.openLogout()}
                             >
-                                Logout
+                                {t('nav.logout')}
                             </MenuItem>
                             {flags.isSet('THEMES') && <>
                                 <br/>
@@ -235,7 +235,7 @@ const Header = () => {
                     {!authSession.isLoggedIn() &&
                         <Button color='inherit' onClick={() => authSession.openLogin()} >
                             <Typography sx={navTextSx} color={headerTextColor}>
-                                Sign In
+                                {t('nav.sign_in')}
                             </Typography>
                         </Button>
                     }

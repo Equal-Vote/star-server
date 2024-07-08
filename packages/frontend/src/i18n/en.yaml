@@ -1,3 +1,16 @@
+# Nav Bar
+nav:
+  about: About 
+  help: Help 
+  public_elections: Public Elections
+  new_election: New Election
+  greeting: Hello, {{name}}
+  feedback: Feedback?
+  your_account: Your Account
+  my_elections: My Elections & Polls
+  past_elections: Past Elections
+  logout: Logout
+  sign_in: Sign In
 
 # Landing Page
 landing_page: 
@@ -188,6 +201,8 @@ results:
     final_round_title: Final Runoff
     table_title: All tabulation rounds
     runoff_majority: majority of remaining active votes
+    exhausted: Exhausted
+    tabulation_candidate_column: '{{candidate}}'
   star:
     score_title: Scoring Round
     score_description:
@@ -215,6 +230,7 @@ results:
       - It's more than 10 times less likely for ties to occur under STAR than under choose-one voting. 
       - However in the unlikely event a tie does occur, the tie is broken using the [Offical Tiebreaker Protocol](https://starvoting.org/ties).
     equal_preferences_title: Distribution of Equal Preferences
+    equal_preferences: Equal Preferences
 
 # Info bubbles
 tips:
@@ -253,9 +269,7 @@ keyword:
   yes: Yes
   no: No
 
-  # Mostly used as a label in tables & charts
-  equal_preferences: Equal Preference
-  exhausted: Exhausted
+  # This is used in tables and charts
   total: Total 
 
 # Localisation for numbers

@@ -31,12 +31,11 @@ export default ({}) => {
     const timeouts = useRef([])
 
     const {t} = useSubstitutedTranslation('election');
+    console.log(t('landing_page.hero.methods.STAR.title'))
 
     const [starScores, setStarScores] = useState(t('landing_page.hero.methods.STAR.default_scores'));
     const [approvalScores, setApprovalScores] = useState(t('landing_page.hero.methods.Approval.default_scores'));
     const [rrRanks, setRrRanks] = useState(t('landing_page.hero.methods.RankedRobin.default_ranks'));
-
-    console.log('STAR', starScores)
 
     // selected to be consistent with the Race.ts domain_model
 

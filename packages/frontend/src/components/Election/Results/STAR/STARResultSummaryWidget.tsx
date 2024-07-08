@@ -45,7 +45,7 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
 
     let runoffData = [...pieData]
     runoffData.push({
-      name: t('keyword.equal_preferences'),
+      name: t('results.star.equal_preferences'),
       votes: results.summaryData.nValidVotes - winnerVotes - runnerUpVotes,
     })
 

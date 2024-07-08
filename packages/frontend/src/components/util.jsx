@@ -63,8 +63,8 @@ export const useSubstitutedTranslation = (electionTermType, v={}) => { // electi
 
     const applyLineBreaks = (txt, keyPrefix) => {
       if(typeof txt !== 'string') return txt;
-      // Note: this does at an extra <br/> at the end, but that's probably fine?
-      return txt.split('\n').map((part,i) => [part, <br key={`br_${keyPrefix}_${i}`}/>]).flat();
+      let parts = txt.split('\n');
+      return parts.map((part,i) => i == (parts.length-1)? part : [part, <br key={`br_${keyPrefix}_${i}`}/>]).flat();
     }
 
     // hack for testing if we've missed any text
