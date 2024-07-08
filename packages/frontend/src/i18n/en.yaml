@@ -11,6 +11,7 @@ nav:
   past_elections: Past Elections
   logout: Logout
   sign_in: Sign In
+  better_voting: Better Voting
 
 # Landing Page
 landing_page: 
@@ -125,10 +126,40 @@ landing_page:
         Private elections over 100 voters
         
         All proceeds go to non-profit use
-        
+
         Discounts are available on request
         
         Email elections@equal.vote
+
+footer:
+  project_title: dev.star.vote
+  project_description: >
+    dev.star.vote is here to help make your dream election acessible
+    to vote in and easy to officiate. Our mission is to support and
+    empower the adoption and use of better voting methods like STAR Voting,
+    for polling, surveys, and real elections at any scale and for any scenario.
+
+
+    [starvoting.org](https://www.starvoting.org) | [http://www.equal.vote](equal.vote) | [elections@equal.vote](mailto:elections@equal.vote)
+  # TODO: I'll add this section to project description once we have those features in place
+  # All of our voting methods can be used for single winner, multi-winner, or 
+  # proportional representation elections with either paper or digital ballots.
+  about_us_title: About Us
+  about_us_description: >
+    dev.star.vote is a project of the Equal Vote Coalition, a nonpartisan 501c3 nonprofit. 
+    Our mission is to fight for true equality in the vote itself.
+
+
+    [Donations](equal.vote/donate) are the best way to support our work. All proceeds from
+    dev.star.vote go directly to helping fund and support the adoption and use of STAR Voting.
+
+
+    Equal Vote Coalition
+
+    PO Box 51245, Eugene, OR, USA 97405
+
+    https://www.equal.vote
+  social_action: 'Like and follow on social media:'
 
   
 # Landing Page -> New Election Dialog

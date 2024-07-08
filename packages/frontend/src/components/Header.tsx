@@ -57,14 +57,17 @@ const Header = () => {
         {
             text: t('nav.about'),
             href: '/About',
+            target: '_self',
         },
         {
-            text: t('nav.help'),
-            href: 'https://equal-vote.github.io/star-server/'
+            text: t('nav.better_voting'),
+            href: 'https://equal.vote',
+            target: '_blank',
         },
         {
             text: t('nav.public_elections'),
-            href: '/OpenElections'
+            href: '/OpenElections',
+            target: '_self',
         }
     ];
 
@@ -109,6 +112,7 @@ const Header = () => {
                                 key={`mobile-nav-${i}`}
                                 component={Link}
                                 href={item.href}
+                                target={item.target}
                             >
                                 {item.text}
                             </MenuItem>
@@ -134,7 +138,7 @@ const Header = () => {
                 <Box
                     sx={{ flexGrow: 100, flexWrap: 'wrap', display: { xs: 'none', md: 'flex' }, gap: 2, rowGap: 0 }}>
                     {navItems.map((item, i) => 
-                        <Button key={`desktop-nav-${i}`} href={item.href}>
+                        <Button key={`desktop-nav-${i}`} href={item.href} target={item.target}>
                             <Typography sx={navTextSx} color={headerTextColor}>
                                 {item.text}
                             </Typography>
@@ -203,6 +207,13 @@ const Header = () => {
                             </MenuItem>
                             <MenuItem component={Link} href='/ElectionsYouVotedIn'>
                                 {t('nav.past_elections')}
+                            </MenuItem>
+                            <MenuItem
+                                component={Link} 
+                                href='https://equal-vote.github.io/star-server/'
+                                target='_blank'
+                            >
+                                {t('nav.help')}
                             </MenuItem>
                             <MenuItem
                                 color='inherit'

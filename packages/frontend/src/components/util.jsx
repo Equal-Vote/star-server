@@ -30,7 +30,7 @@ import { Trans, useTranslation } from "react-i18next";
 import en from '../i18n/en.yaml';
 import { Tip } from "./styles";
 
-const rLink = /\[(.*)\]\((.*)\)/;
+const rLink = /\[([^\s]*)\]\(([^\s]*)\)/;
 const rTip = / \!tip\((.*)\)/
 
 export const useSubstitutedTranslation = (electionTermType, v={}) => { // election or poll
@@ -46,9 +46,11 @@ export const useSubstitutedTranslation = (electionTermType, v={}) => { // electi
   const applySymbols = (txt) => {
     const applyLinks = (txt) => {
       if(typeof txt !== 'string') return txt;
-      return txt.split(rLink).map((str, i) => {
-        if(i%3 == 0) return applyTips(str);
+      let parts = txt.split(rLink)
+      return parts.map((str, i) => {
+        if(i%3 == 0) return str;
         if(i%3 == 2) return '';
+        console.log(parts[i], parts[i+1])
         return <a key={`link_${i}`} href={parts[i+1]}>{parts[i]}</a>
       })
     }
@@ -72,12 +74,12 @@ export const useSubstitutedTranslation = (electionTermType, v={}) => { // electi
 
     if(!rLink.test(txt) && !rTip.test(txt) && !txt.includes('\n')) return txt;
 
-    return <Box>
+    return <>
       {applyLinks(txt)
         .map((comp, i) => applyTips(comp, i)).flat()
         .map((comp, i) => applyLineBreaks(comp, i)).flat()
       }
-    </Box>
+    </>
   }
 
   const handleObject = (obj) => {

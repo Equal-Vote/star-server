@@ -311,7 +311,6 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
   }
 
   const {t} = useSubstitutedTranslation(election.settings.term_type);
-  console.log('term', election.settings.term_type);
   return (
     <div>
       <div className="flexContainer" style={{textAlign: 'center'}}>

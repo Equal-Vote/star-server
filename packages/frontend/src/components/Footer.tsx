@@ -3,11 +3,13 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
-import { Facebook, Instagram, Twitter, GitHub } from "@mui/icons-material";
+import { Facebook, Instagram, X, GitHub } from "@mui/icons-material";
 import { Box, useTheme } from "@mui/material";
 import { useThemeSelector } from "../theme";
+import { useSubstitutedTranslation } from "./util";
 export default function Footer() {
   const themeSelector = useThemeSelector()
+  const {t} = useSubstitutedTranslation();
   return (
     <Box
       sx={{
@@ -24,51 +26,42 @@ export default function Footer() {
         <Grid container spacing={5}>
           <Grid item xs={12} md={4} >
             <Typography variant="h6" color="text.primary" gutterBottom sx={{textAlign: {xs: 'center',md: 'left'}}}>
-              STAR Elections
+              {t('footer.project_title')}
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{textAlign: {xs: 'center',md: 'left'}}}>
-              A project of the Equal Vote Coalition
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{textAlign: {xs: 'center',md: 'left'}}}>
-              PO Box 51245, Eugene, OR, USA 97405
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{textAlign: {xs: 'center',md: 'left'}}}>
-              <a target="blank" href='https://www.starvoting.org/'>starvoting.org</a> | <a target="blank" href='https://www.equal.vote/'>equal.vote</a>
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{textAlign: {xs: 'center',md: 'left'}}}>
-              <a href="mailto:elections@star.vote">elections@star.vote</a>
+            <Typography variant="body2" color="text.secondary" sx={{textAlign: 'left'}}>
+              {t('footer.project_description')}
             </Typography>
           </Grid>
           <Grid item xs={12} md={4}>
             <Typography variant="h6" color="text.primary" gutterBottom sx={{
               pl: 1, pr: 1,
-              textAlign: 'center'
+              textAlign: {xs: 'center', md: 'left'}
             }}>
-              About Us
+              {t('footer.about_us_title')}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{
               pl: 1, pr: 1
             }}>
-              Our mission is to support and empower the adoption and use of STAR Voting and better voting methods for polling, surveys, and real elections at any scale and for any scenario.
-              <br /><br />STAR Elections is a project of the Equal Vote Coalition 501c3.  <a target="blank" href='https://www.equal.vote/donate'>Donations</a> are the best way to support our work. All proceeds from the STAR Elections project go directly to helping fund and support the adoption and use of STAR Voting.
+              {t('footer.about_us_description')}
             </Typography>
           </Grid>
           <Grid item xs={12} md={4} >
-            <Typography variant="h6" color="text.primary" gutterBottom sx={{
+            <Box component="img" src="https://assets.nationbuilder.com/unifiedprimary/sites/1/meta_images/original/Equal_Vote_website_header_logo.png?1703733898" sx={{width: '100%', padding: 2, background: 'black'}}/>
+            <Typography variant="body2" color="text.primary" gutterBottom sx={{
               pl: 1, pr: 1,
               textAlign: {
                 xs: 'center',
-                md: 'right'
-              }
+                md: 'left'
+              },
+              marginTop: 2
             }} >
-              Follow Us
+              {t('footer.social_action')}
             </Typography>
             <Box
               sx={{
                 display: 'flex',
-                justifyContent: { xs: 'center', md: 'flex-end' }
+                justifyContent: { xs: 'center', md: 'flex-start' }
               }}>
-
 
               <Link href="https://www.facebook.com/STARVoting" color="inherit"
                 sx={{ pl: 1, pr: 1 }}>
@@ -83,7 +76,7 @@ export default function Footer() {
               </Link>
               <Link href="https://twitter.com/5starvoting" color="inherit"
                 sx={{ pl: 1, pr: 1 }}>
-                <Twitter />
+                <X />
               </Link>
               <Link href="https://github.com/Equal-Vote" color="inherit"
                 sx={{ pl: 1, pr: 1 }}>

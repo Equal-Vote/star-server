@@ -40,8 +40,8 @@ const LandingPage = () => {
     //apparently box doesn't have onScroll
     return (
         <div ref={boxRef}>
-        <Box sx={{ position: 'fixed', display: {md: 'flex', xs: 'none'}, flexDirection: 'column-reverse', alignItems: 'flex-end', width: '100%', height: '100%',paddingBottom: '150px', paddingRight: '30px'}}>
-            <Button variant='contained' sx={{width: '170px', fontWeight: 'bold', fontSize: 10, backgroundColor: '#006063'}} onClick={returnToClassicContext.openDialog}>
+        <Box sx={{ position: 'fixed', pointerEvents: 'none', display: {md: 'flex', xs: 'none'}, flexDirection: 'column-reverse', alignItems: 'flex-end', width: '100%', height: '100%', paddingBottom: '150px', paddingRight: '30px'}}>
+            <Button variant='contained' sx={{pointerEvents: 'auto', width: '170px', fontWeight: 'bold', fontSize: 10, backgroundColor: '#006063'}} onClick={returnToClassicContext.openDialog}>
                 {t('return_to_classic.button')}
             </Button>
         </Box>
