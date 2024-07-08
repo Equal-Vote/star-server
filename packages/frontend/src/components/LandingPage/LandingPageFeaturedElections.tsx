@@ -2,9 +2,11 @@ import { Box, Typography } from '@mui/material'
 import React from 'react'
 import FeaturedElection from './FeaturedElection'
 import { useThemeSelector } from '../../theme'
+import { useSubstitutedTranslation } from '../util'
 
 export default ({electionIds}) => {
     const themeSelector = useThemeSelector()
+    const {t} = useSubstitutedTranslation();
     return <Box sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -18,7 +20,7 @@ export default ({electionIds}) => {
             maxWidth: '1300px',
             margin: 'auto',
         }}>
-            <Typography variant='h4' sx={{textAlign: 'center'}}>Vote in a Featured Public Election</Typography>
+            <Typography variant='h4' sx={{textAlign: 'center'}}>{t('landing_page.featured_elections.title')}</Typography>
         </Box>
         <Box sx={{
             display: 'flex',

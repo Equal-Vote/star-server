@@ -72,35 +72,8 @@ const LandingPage = () => {
             <LandingPageStats/> 
             <LandingPageFeatures/>
             <LandingPageSignUpBar />
-            {flags.isSet('ELECTION_TESTIMONIALS') && <LandingPageTestimonials testimonials={[
-                {
-                    quote: 'STAR Voting is Awesome!',
-                    name: 'John Doe',
-                    url: 'https://yt3.googleusercontent.com/el7OsIUIJVHjHIwsNXgrBVft0Ht3RSfJ3wO94MQivXaa_IK0JMGlHrPIbvt8fYtXvjJfErcdG-Y=s176-c-k-c0x00ffffff-no-rj'
-                },
-                {
-                    quote: 'STAR Voting is Awesome!',
-                    name: 'Jane Doe',
-                    url: 'https://yt3.googleusercontent.com/el7OsIUIJVHjHIwsNXgrBVft0Ht3RSfJ3wO94MQivXaa_IK0JMGlHrPIbvt8fYtXvjJfErcdG-Y=s176-c-k-c0x00ffffff-no-rj'
-                },
-                {
-                    quote: 'STAR Voting is Awesome!',
-                    name: 'Equal Vote',
-                    url: 'https://yt3.googleusercontent.com/el7OsIUIJVHjHIwsNXgrBVft0Ht3RSfJ3wO94MQivXaa_IK0JMGlHrPIbvt8fYtXvjJfErcdG-Y=s176-c-k-c0x00ffffff-no-rj'
-                },
-            ]} />}
-            <LandingPagePricing options={[
-                {
-                    title: 'Free Tier',
-                    price: <b>$0.00</b>,
-                    description: <>Unlimited voters for Public elections<br /><br />Private elections up to 100 voters</>
-                },
-                {
-                    title: 'Professional',
-                    price: <><b>Contact for quote</b></>,
-                    description: <>Private elections over 100 voters<br /><br />All proceeds go to non-profit use<br /><br />Discounts are available on request<br /><br />Email elections@equal.vote</>
-                },
-            ]} />
+            {flags.isSet('ELECTION_TESTIMONIALS') && <LandingPageTestimonials/>}
+            <LandingPagePricing />
         </Box>
         </div>
     )

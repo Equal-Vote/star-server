@@ -72,6 +72,51 @@ landing_page:
       text: This project is shared open source under a AGPL-3.0 license. Run your elections via final.xyz or self host on your own server.
     - title: Equal Vote
       text: Rest easy knowing that your voters will all have an equal vote, and won't need to worry about vote splitting. 
+
+  # Featured Elections Section
+  featured_elections:
+    title: Vote in a Featured Public Election
+
+  # Sign Up Section
+  sign_up:
+    text: Sign up to create your first election (It's Free!)
+    button: Sign up
+
+  # Testimonials Section
+  testimonials:
+    title: Testimonials
+    items:
+      - quote: STAR Voting is Awesome!
+        name: John Doe
+        image_url: 'https://yt3.googleusercontent.com/el7OsIUIJVHjHIwsNXgrBVft0Ht3RSfJ3wO94MQivXaa_IK0JMGlHrPIbvt8fYtXvjJfErcdG-Y=s176-c-k-c0x00ffffff-no-rj'
+      - quote: STAR Voting is Awesome!
+        name: Jane Doe
+        image_url: 'https://yt3.googleusercontent.com/el7OsIUIJVHjHIwsNXgrBVft0Ht3RSfJ3wO94MQivXaa_IK0JMGlHrPIbvt8fYtXvjJfErcdG-Y=s176-c-k-c0x00ffffff-no-rj'
+      - quote: 'STAR Voting is Awesome!'
+        name: 'Equal Vote'
+        image_url: 'https://yt3.googleusercontent.com/el7OsIUIJVHjHIwsNXgrBVft0Ht3RSfJ3wO94MQivXaa_IK0JMGlHrPIbvt8fYtXvjJfErcdG-Y=s176-c-k-c0x00ffffff-no-rj'
+  
+  # Pricing Section
+  pricing:
+    title: Pricing
+    items:
+    -  title: Free Tier
+       price: $0.00
+       description: |
+        Unlimited voters for Public elections
+        
+        Private elections up to 100 voters
+    -  title: Professional
+       price: Contact for quote
+       description: |
+        Private elections over 100 voters
+        
+        All proceeds go to non-profit use
+        
+        Discounts are available on request
+        
+        Email elections@equal.vote
+
   
 # Landing Page -> New Election Dialog
 election_creation:

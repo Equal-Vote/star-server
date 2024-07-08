@@ -44,36 +44,58 @@ export const useSubstitutedTranslation = (electionTermType, v={}) => { // electi
   const { t } = useTranslation()
 
   const applySymbols = (txt) => {
-    const applyTips = (txt) => {
-      let parts = txt.split(rTip)
-      return <Box>
-        {parts.map((str, i) => {
+    const applyLinks = (txt) => {
+      if(typeof txt !== 'string') return txt;
+      return txt.split(rLink).map((str, i) => {
+        if(i%3 == 0) return applyTips(str);
+        if(i%3 == 2) return '';
+        return <a key={`link_${i}`} href={parts[i+1]}>{parts[i]}</a>
+      })
+    }
+
+    const applyTips = (txt, keyPrefix) => {
+      if(typeof txt !== 'string') return txt;
+      return txt.split(rTip).map((str, i) => {
           if(i%2 == 0) return str;
-          return <Tip key={i} name={str}/>
-        })}
-      </Box>
+          return <Tip key={`tip_${keyPrefix}_${i}`} name={str}/>
+      })
+    }
+
+    const applyLineBreaks = (txt, keyPrefix) => {
+      if(typeof txt !== 'string') return txt;
+      // Note: this does at an extra <br/> at the end, but that's probably fine?
+      console.log(txt)
+      let out = txt.split('\n').map((part,i) => [part, <br key={`br_${keyPrefix}_${i}`}/>]).flat();
+      console.log('out', out)
+      return out;
     }
 
     // hack for testing if we've missed any text
     // return '----'; 
 
-    if(!rLink.test(txt) && !rTip.test(txt)) return txt;
+    if(!rLink.test(txt) && !rTip.test(txt) && !txt.includes('\n')) return txt;
 
-    let parts = txt.split(rLink)
     return <Box>
-      {parts.map((str, i) => {
-        if(i%3 == 0) return applyTips(str);
-        if(i%3 == 2) return '';
-        return <a key={i} href={parts[i+1]}>{parts[i]}</a>
-      })}
+      {applyLinks(txt)
+        .map((comp, i) => applyTips(comp, i)).flat()
+        .map((comp, i) => applyLineBreaks(comp, i)).flat()
+      }
     </Box>
   }
 
+  const handleObject = (obj) => {
+    if(typeof obj === 'string') return applySymbols(obj);
+    if(Array.isArray(obj)) return obj.map(o => handleObject(o));
+
+    let newObj = {};
+    Object.entries(obj).forEach(([key, value]) => {
+      newObj[key] = handleObject(value);
+    })
+    return newObj;
+  }
+
   return {
-    t: (key, v={}) => {
-      let text = t(key, {...values, ...v})
-      return Array.isArray(text)? text.map(txt => applySymbols(txt)) : applySymbols(text);
-    }
+    t: (key, v={}) => handleObject(t(key, {...values, ...v}))
   }
 }
 

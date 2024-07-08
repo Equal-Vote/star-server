@@ -1,7 +1,10 @@
 import { Box, Typography } from '@mui/material'
 import React from 'react'
+import { useSubstitutedTranslation } from '../util'
 
-export default ({testimonials}) => {
+export default () => {
+    const {t} = useSubstitutedTranslation();
+    const testimonials = t('landing_page.testimonials.items')
     return <Box sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -14,7 +17,7 @@ export default ({testimonials}) => {
             maxWidth: '1300px',
             margin: 'auto',
         }}>
-            <Typography variant='h4' sx={{textAlign: 'left'}}>Testimonials</Typography>
+            <Typography variant='h4' sx={{textAlign: 'left'}}>{t('landing_page.testimonials.title')}</Typography>
         </Box>
         <Box sx={{
             display: 'flex',
@@ -29,7 +32,7 @@ export default ({testimonials}) => {
                 flexDirection: 'column',
             }}>
                 <Box sx={{
-                    backgroundImage: `url(${testimonial.url})`,
+                    backgroundImage: `url(${testimonial.image_url})`,
                     backgroundSize: 'cover',
                     borderRadius: '100%',
                     width: '10rem',

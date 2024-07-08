@@ -3,10 +3,12 @@ import React from 'react';
 import { StyledButton } from '../styles';
 import useAuthSession from '../AuthSessionContextProvider';
 import { useThemeSelector } from '../../theme';
+import { useSubstitutedTranslation } from '../util';
 
 export default () => {
     const authSession = useAuthSession()
     const themeSelector = useThemeSelector()
+    const {t} = useSubstitutedTranslation();
     return (
     <Box sx={{
         background: themeSelector.mode === 'darkMode' ? 'brand.gray5' : 'brand.gray1',
@@ -23,7 +25,7 @@ export default () => {
             flexDirection: 'row',
             justifyContent: 'space-between',
         }}>
-            <Typography variant='h6' sx={{textAlign: 'left'}}>Sign up to create your first election (It's Free!)</Typography>
+            <Typography variant='h6' sx={{textAlign: 'left'}}>{t('landing_page.sign_up.text')}</Typography>
             {/*I just copied styled button but removed the full width*/ }
             <Button
                 variant="contained"
@@ -37,7 +39,7 @@ export default () => {
                 }}
                 onClick={() => authSession.openLogin()}
             >
-                Sign Up
+                {t('landing_page.sign_up.button')}
             </Button>
         </Box>
     </Box>
