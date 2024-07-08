@@ -36,6 +36,8 @@ export default ({}) => {
     const [approvalScores, setApprovalScores] = useState(t('landing_page.hero.methods.Approval.default_scores'));
     const [rrRanks, setRrRanks] = useState(t('landing_page.hero.methods.RankedRobin.default_ranks'));
 
+    console.log('STAR', starScores)
+
     // selected to be consistent with the Race.ts domain_model
 
     const methodKeys = [
@@ -77,7 +79,7 @@ export default ({}) => {
                     ({
                         'candidate_id': '',
                         'candidate_name': String(candidateNames[i]),
-                        'score': 0,// Number(score) ?? 0,
+                        'score': Number(score) ?? 0,
                     })
                 ),
             // this isn't used, it's just included to make typescript happy

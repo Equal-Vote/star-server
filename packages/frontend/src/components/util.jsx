@@ -64,10 +64,7 @@ export const useSubstitutedTranslation = (electionTermType, v={}) => { // electi
     const applyLineBreaks = (txt, keyPrefix) => {
       if(typeof txt !== 'string') return txt;
       // Note: this does at an extra <br/> at the end, but that's probably fine?
-      console.log(txt)
-      let out = txt.split('\n').map((part,i) => [part, <br key={`br_${keyPrefix}_${i}`}/>]).flat();
-      console.log('out', out)
-      return out;
+      return txt.split('\n').map((part,i) => [part, <br key={`br_${keyPrefix}_${i}`}/>]).flat();
     }
 
     // hack for testing if we've missed any text
@@ -84,6 +81,7 @@ export const useSubstitutedTranslation = (electionTermType, v={}) => { // electi
   }
 
   const handleObject = (obj) => {
+    if(typeof obj == 'number') return obj;
     if(typeof obj === 'string') return applySymbols(obj);
     if(Array.isArray(obj)) return obj.map(o => handleObject(o));
 

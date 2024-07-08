@@ -9,7 +9,6 @@ export default () => {
 
     const {t} = useSubstitutedTranslation();
     const options = t('landing_page.pricing.items')
-    console.log('professional pricing', options[1]);
 
     return <Box sx={{
         display: 'flex',
