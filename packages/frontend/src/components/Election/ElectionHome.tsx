@@ -93,11 +93,6 @@ const ElectionHome = () => {
                 <Typography align='center' variant="h6" component="h6">
                   Ballot Submitted
                 </Typography>
-                {election.settings.public_results === true &&
-                <Button variant='text' href={`/${String(election?.election_id)}/results`} >
-                    View results 
-                </Button>
-                }
               </Box>
             }
             {/* Show results button only if public_results enabled and voter has voted or election is closed */}
