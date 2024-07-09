@@ -35,9 +35,10 @@ const rTip = / \!tip\((.*)\)/
 
 export const useOnScrollAnimator = () => {
     //https://www.youtube.com/watch?v=T33NN_pPeNI
-    const observer = new IntersectionObserver((entries) => 
+    const observer = new IntersectionObserver((entries) => {
+        console.log('animator observer')
         entries.filter(entry => entry.isIntersecting).forEach(entry => entry.target.classList.add('show'))
-    )
+    })
 
     useEffect(() => {
         document.querySelectorAll('.scrollAnimate').forEach(ref => observer.observe(ref))

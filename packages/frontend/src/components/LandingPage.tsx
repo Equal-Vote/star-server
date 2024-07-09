@@ -49,7 +49,7 @@ const LandingPage = () => {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            gap: '10rem',
+            gap: '20rem',
             minHeight: '600px',
             margin: 'auto',
             paddingTop: '8rem',

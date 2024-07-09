@@ -8,7 +8,7 @@ export default ({electionIds}) => {
     const themeSelector = useThemeSelector()
     const {t} = useSubstitutedTranslation();
     const {FadeIn, FadeUp} = useOnScrollAnimator();
-    return <FadeIn delay='250ms'>
+    return <FadeIn delay='0'>
         <Box sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -33,7 +33,7 @@ export default ({electionIds}) => {
                 justifyContent: 'center',
                 flexWrap: 'wrap',
             }}>
-                {electionIds.map((electionId,i) => <FadeUp delay={`${300+i*100}ms`}><FeaturedElection key={i} electionId={electionId}/></FadeUp>)}
+                {electionIds.map((electionId,i) => <FadeUp delay={`${i*100}ms`}><FeaturedElection key={i} electionId={electionId}/></FadeUp>)}
             </Box>
         </Box>
     </FadeIn>
