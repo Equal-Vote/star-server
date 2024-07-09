@@ -33,6 +33,33 @@ import { Tip } from "./styles";
 const rLink = /\[([^\s]*)\]\(([^\s]*)\)/;
 const rTip = / \!tip\((.*)\)/
 
+export const useOnScrollAnimator = () => {
+    //https://www.youtube.com/watch?v=T33NN_pPeNI
+    const observer = new IntersectionObserver((entries) => 
+        entries.filter(entry => entry.isIntersecting).forEach(entry => entry.target.classList.add('show'))
+    )
+
+    useEffect(() => {
+        document.querySelectorAll('.scrollAnimate').forEach(ref => observer.observe(ref))
+    })
+
+    const makeSx=(delay, duration, before={}, after={}) => ({
+          opacity: 0, ...before,
+            '&.show': {opacity: 1, transition: `all ${duration}`, transitionDelay: delay, ...after}
+      })
+
+    return {
+        FadeIn: ({children, delay='0', duration='1s'}) => <Box className='scrollAnimate' sx={makeSx(delay, duration)}>
+            {children}
+        </Box>,
+        FadeUp: ({children, delay='0', duration='1s'}) => <Box className='scrollAnimate' sx={
+          makeSx(delay, duration, {transform: 'translate(0, 40px)'}, {transform: 'translate(0, 0)'})
+        }>
+            {children}
+        </Box>,
+    }
+}
+
 export const useSubstitutedTranslation = (electionTermType, v={}) => { // election or poll
   let values = {...en.keyword, ...en.keyword[electionTermType], ...v}
   Object.entries(values).forEach(([key, value]) => {
@@ -50,7 +77,6 @@ export const useSubstitutedTranslation = (electionTermType, v={}) => { // electi
       return parts.map((str, i) => {
         if(i%3 == 0) return str;
         if(i%3 == 2) return '';
-        console.log(parts[i], parts[i+1])
         return <a key={`link_${i}`} href={parts[i+1]}>{parts[i]}</a>
       })
     }

@@ -28,7 +28,7 @@ const LandingPage = () => {
         const handleScroll = (e) => {
             setAtTop(window.scrollY == 0);
         };
-        
+
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
@@ -66,9 +66,7 @@ const LandingPage = () => {
                 }}/>
             </Box>
             <LandingPageHero />
-            <LandingPageFeatureElections electionIds={
-                (process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')
-            }/>
+            <LandingPageFeatureElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>
             <LandingPageStats/> 
             <LandingPageFeatures/>
             <LandingPageSignUpBar />
