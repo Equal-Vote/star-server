@@ -68,7 +68,7 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
                     majorityOffset
                 />
             </Widget>
-            <Widget title='Automatic Runoff Round'>
+            <Widget title={t('results.star.runoff_title')}>
                 {(t('results.star.runoff_description') as Array<String>).map( (s, i) => <p key={i}>{s}</p>)}
                 {pie ? 
                     <ResultsPieChart data={pieData} star />

@@ -203,11 +203,30 @@ return_to_classic:
 
 # Results page
 results:
-  general: 
-    details: Details
-    additional_info: Additional Info
+  preliminary_title: PRELIMINARY RESULTS
+  official_title: OFFICIAL_RESULTS
+  election_title: |
+    {{election_term}} Name:
+    {{title}}
+  race_title: '{{race}} {{n}}: {{title}}'
+  loading_election: Loading {{election_term}}...
+  details: Details
+  additional_info: Additional Info
+  waiting_for_results: |
+    Still waiting for results
+    No votes have been cast
+  single_vote: |
+    There's only one vote so far.
+    Full results will be displayed once there's more votes.
+  tie_title: 'Tied!'
+  tiebreak_subtitle: '{{names}} won after tie breaker'
+  win_title: ⭐ {{names}} Wins! ⭐
+  vote_count: '{{n}} voters'
+  method_context: 'Voting Method: {{voting_method}}'
+  learn_link_text: How {{voting_method}} works
+
   choose_one:
-    bar_title: Votes for each candidate
+    bar_title: Votes for each {{candidate}}
     table_title: Table
     table_columns:
       - '{{candidate}}'
@@ -220,6 +239,7 @@ results:
       - '{{candidate}}'
       - Votes
       - '% All Votes'
+    learn_link: https://www.youtube.com/watch?v=db6Syys2fmE
   ranked_robin:
     bar_title: Head-to-head wins
     table_title: Table
@@ -227,6 +247,7 @@ results:
       - '{{candidate}}'
       - '# Wins'
       - Win Rate
+    learn_link: https://www.equal.vote/ranked_robin
   rcv:
     first_choice_title: First Choice Preferences
     final_round_title: Final Runoff
@@ -234,6 +255,8 @@ results:
     runoff_majority: majority of remaining active votes
     exhausted: Exhausted
     tabulation_candidate_column: '{{candidate}}'
+    learn_link: https://www.youtube.com/watch?v=oHRPMJmzBBw
+    round_column: Round {{n}}
   star:
     score_title: Scoring Round
     score_description:
@@ -262,6 +285,7 @@ results:
       - However in the unlikely event a tie does occur, the tie is broken using the [Offical Tiebreaker Protocol](https://starvoting.org/ties).
     equal_preferences_title: Distribution of Equal Preferences
     equal_preferences: Equal Preferences
+    learn_link: https://www.youtube.com/watch?v=3-mOeUXAkV0
 
 # Info bubbles
 tips:
@@ -274,15 +298,15 @@ tips:
     description: Restricted Polls or Elections only allow those on the voter list to vote. The voter list can be a set of emails or voter IDs.
   
   STAR:
-    title: STAR Voting
+    title: $t(keyword.methods.star.full_name)
     description: Uses a 0-5 star ballot, and the vote is tallied in 2 rounds. First the stars are added together, and then the 2 front runners face each other in an automatic runoff
 
   Approval:
-    title: Approval Voting
+    title: $t(keyword.methods.approval.full_name)
     description: Voters pick as many {{candidates}} as they like, and then most votes wins
 
   RankedRobin:
-    title: Ranked Robin
+    title: $t(keyword.methods.ranked_robin.full_name)
     description: The candidate who wins the most runoffs wins
 
 # General Terms
@@ -292,16 +316,35 @@ keyword:
     election_term: Election
     candidate: Candidate
     candidates: Candidates
+    race: Race
   poll:
     election_term: Poll
     candidate: Option
     candidates: Options
+    race: Question
 
   yes: Yes
   no: No
 
   # This is used in tables and charts
   total: Total 
+
+  methods: 
+    star:
+      full_name: STAR Voting
+      short_name: STAR
+    approval:
+      full_name: Approval Voting
+      short_name: Approval
+    rcv:
+      full_name: Ranked Choice Voting
+      short_name: RCV
+    ranked_robin:
+      full_name: Ranked Robin
+      short_name: Ranked Robin
+    choose_one:
+      full_name: Choose One
+      short_name: Choose One
 
 # Localisation for numbers
 number:

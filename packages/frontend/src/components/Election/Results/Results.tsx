@@ -139,7 +139,9 @@ function IRVResultsViewer({ results, t }: {results: irvResults, t: Function}) {
     return 0;
   });
 
-  tabulationRows.unshift([t('results.rcv.tabulation_candidate_column')].concat([...Array(results.voteCounts.length).keys()].map(i => `Round ${i+1}`)))
+  tabulationRows.unshift([t('results.rcv.tabulation_candidate_column')].concat([...Array(results.voteCounts.length).keys()].map(i =>
+    t('results.rcv.round_column', {n: i+1})
+  )))
   tabulationRows.push([t('results.rcv.exhausted'), ...results.exhaustedVoteCounts.map(i => ''+i)])
 
   return (
@@ -233,12 +235,17 @@ function ApprovalResultsViewer({ results , rounds, t}: {results: approvalResults
   </>);
 }
 
-function ResultViewer({ votingMethod, results, children, learnLink=undefined }:{votingMethod: string, results:irvResults|pluralityResults|rankedRobinResults, children:any, learnLink?: string|undefined}) {
+function ResultViewer({ methodKey, results, children }:{methodKey: string, results:irvResults|pluralityResults|rankedRobinResults, children:any}) {
+  const {t} = useSubstitutedTranslation();
+  const learnLinkKey = `results.${methodKey}.learn_link`
+  const votingMethod = t(`keyword.methods.${methodKey}.full_name`)
+  console.log('learnLink', learnLinkKey, t(learnLinkKey))
   return (
     <Box className="resultViewer">
       {children}
-      <Typography component="p" sx={{textAlign: 'right', color: '#808080', fontSize: '.8rem', marginTop: '20px'}}>Voting Method: {votingMethod}
-        {learnLink && <><br/><a href={learnLink} style={{color: 'inherit'}}>How {votingMethod} Works</a></>}
+      <Typography component="p" sx={{textAlign: 'right', color: '#808080', fontSize: '.8rem', marginTop: '20px'}}>
+        {t('results.method_context', {voting_method: votingMethod})}
+        {t(learnLinkKey) != learnLinkKey && <><br/><a href={t(learnLinkKey)} style={{color: 'inherit'}}>{t('results.learn_link_text', {voting_method: votingMethod})}</a></>}
       </Typography>
     </Box>
   );
@@ -315,29 +322,29 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
     <div>
       <div className="flexContainer" style={{textAlign: 'center'}}>
         <Box sx={{pageBreakAfter:'avoid', pageBreakInside:'avoid'}}>
-        {result.results.summaryData.nValidVotes == 0 && <h2>Still waiting for results<br/>No votes have been cast</h2>}
-        {result.results.summaryData.nValidVotes == 1 && <p>There's only one vote so far.<br/>Full results will be displayed once there's more votes.</p> }
+        {result.results.summaryData.nValidVotes == 0 && <h2>{t('results.waiting_for_results')}</h2>}
+        {result.results.summaryData.nValidVotes == 1 && <p>{t('results.single_vote')}</p> }
         {result.results.summaryData.nValidVotes > 1 && <>
           {showTitleAsTie?
             <>
-            <Typography variant="h5" sx={{fontWeight: 'bold'}}>Tied!</Typography>
-            {!removeTieBreakFromTitle &&
-              <Typography component="p" sx={{fontWeight: 'bold'}}>({ formatter.format(result.results.elected.map(c => c.name))} won after tie breaker)</Typography>
-            }
+            <Typography variant="h5" sx={{fontWeight: 'bold'}}>{t('results.true_tie_title')}</Typography>
+            {!removeTieBreakFromTitle && <Typography component="p" sx={{fontWeight: 'bold'}}>
+                {t('results.tiebreak_title', {names: formatter.format(result.results.elected.map(c => c.name))})}
+            </Typography>}
             </>
           :
-            <Typography variant="h5" sx={{fontWeight: 'bold'}}>⭐ { formatter.format(result.results.elected.map(c => c.name))} Wins! ⭐</Typography>
+            <Typography variant="h5" sx={{fontWeight: 'bold'}}>{t('results.win_title', {names: formatter.format(result.results.elected.map(c => c.name))})}</Typography>
           }
-          <Typography variant="h6">{result.results.summaryData.nValidVotes} voters</Typography>
+          <Typography variant="h6">{t('results.vote_count', {n: result.results.summaryData.nValidVotes})}</Typography>
         </>}
         </Box>
         {result.results.summaryData.nValidVotes > 1 &&
           <>
-          {result.votingMethod === "STAR" && <ResultViewer votingMethod='STAR Voting' results={result.results} learnLink='https://www.youtube.com/watch?v=3-mOeUXAkV0'>
+          {result.votingMethod === "STAR" && <ResultViewer methodKey='star' results={result.results}>
               <STARResultsViewer results={result.results} rounds={race.num_winners} t={t}/>
           </ResultViewer> }
 
-          {result.votingMethod === "Approval" && <ResultViewer votingMethod='Approval Voting' results={result.results} learnLink='https://www.youtube.com/watch?v=db6Syys2fmE'>
+          {result.votingMethod === "Approval" && <ResultViewer methodKey='approval' results={result.results}>
             <ApprovalResultsViewer results={result.results} rounds={race.num_winners} t={t}/>
           </ResultViewer>}
 
@@ -349,20 +356,20 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
             </>}
 
           {result.votingMethod === "RankedRobin" &&
-            <ResultViewer votingMethod='Ranked Robin' results={result.results} learnLink='https://www.equal.vote/ranked_robin'>
+            <ResultViewer methodKey='ranked_robin' votingMethod='Ranked Robin' results={result.results}>
               <RankedRobinResultsViewer results={result.results} t={t}/>
             </ResultViewer>
           }
 
           {result.votingMethod === "Plurality" &&
-            <ResultViewer votingMethod='Plurality' results={result.results} >
+            <ResultViewer methodKey='chooose_one' results={result.results}>
               <PluralityResultsViewer results={result.results} t={t}/>
             </ResultViewer>
           }
 
 
           {result.votingMethod === "IRV" &&
-            <ResultViewer votingMethod='Ranked Choice Voting' results={result.results} learnLink='https://www.youtube.com/watch?v=oHRPMJmzBBw'>
+            <ResultViewer methodKey='rcv' results={result.results}>
               <IRVResultsViewer results={result.results} t={t}/>
             </ResultViewer>
           }

@@ -487,10 +487,10 @@ export const DetailExpander = ({ children, level = 0 }) => {
   const [viewDetails, setViewDetails] = useState(false);
   const expanderId = useRef(_uniqueId("detailExpander")).current;
 
-  let { t } = useTranslation();
+  let { t } = useSubstitutedTranslation();
   let title = [
-    t("results.general.details"),
-    t("results.general.additional_info"),
+    t("results.details"),
+    t("results.additional_info"),
   ][level];
 
   return (
