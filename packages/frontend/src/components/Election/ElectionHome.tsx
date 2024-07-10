@@ -77,7 +77,7 @@ const ElectionHome = () => {
                 <Box display='flex' flexDirection='column' alignItems='center' gap={5} sx={{ p: 1}}>
                   <Button fullWidth variant='contained' href={`/${String(election?.election_id)}/vote`} >
                     <Typography align='center' variant="h3" component="h3" fontWeight='bold' sx={{ p: 2 }}>
-                      {t('election_home.end_time')}
+                      {t('election_home.vote')}
                     </Typography>
                   </Button>
                   {election.settings.public_results === true &&
