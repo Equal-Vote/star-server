@@ -237,9 +237,8 @@ function ApprovalResultsViewer({ results , rounds, t}: {results: approvalResults
 
 function ResultViewer({ methodKey, results, children }:{methodKey: string, results:irvResults|pluralityResults|rankedRobinResults, children:any}) {
   const {t} = useSubstitutedTranslation();
-  const learnLinkKey = `results.${methodKey}.learn_link`
-  const votingMethod = t(`keyword.methods.${methodKey}.full_name`)
-  console.log('learnLink', learnLinkKey, t(learnLinkKey))
+  const learnLinkKey = `methods.${methodKey}.learn_link`
+  const votingMethod = t(`methods.${methodKey}.full_name`)
   return (
     <Box className="resultViewer">
       {children}
@@ -356,13 +355,13 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
             </>}
 
           {result.votingMethod === "RankedRobin" &&
-            <ResultViewer methodKey='ranked_robin' votingMethod='Ranked Robin' results={result.results}>
+            <ResultViewer methodKey='ranked_robin' results={result.results}>
               <RankedRobinResultsViewer results={result.results} t={t}/>
             </ResultViewer>
           }
 
           {result.votingMethod === "Plurality" &&
-            <ResultViewer methodKey='chooose_one' results={result.results}>
+            <ResultViewer methodKey='choose_one' results={result.results}>
               <PluralityResultsViewer results={result.results} t={t}/>
             </ResultViewer>
           }

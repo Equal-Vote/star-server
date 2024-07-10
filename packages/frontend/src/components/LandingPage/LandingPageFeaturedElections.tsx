@@ -33,7 +33,7 @@ export default ({electionIds}) => {
                 justifyContent: 'center',
                 flexWrap: 'wrap',
             }}>
-                {electionIds.map((electionId,i) => <FadeUp delay={`${i*100}ms`}><FeaturedElection key={i} electionId={electionId}/></FadeUp>)}
+                {electionIds.map((electionId,i) => <Box key={i}><FadeUp delay={`${i*100}ms`}><FeaturedElection key={i} electionId={electionId}/></FadeUp></Box>)}
             </Box>
         </Box>
     </FadeIn>

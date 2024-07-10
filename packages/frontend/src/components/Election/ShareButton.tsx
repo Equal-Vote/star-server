@@ -10,17 +10,19 @@ import Popper from "@mui/material/Popper"
 import Fade from "@mui/material/Fade"
 import Paper from "@mui/material/Paper"
 import FacebookIcon from "@mui/icons-material/Facebook"
-import TwitterIcon from "@mui/icons-material/Twitter"
+import { X } from "@mui/icons-material";
 import RedditIcon from "@mui/icons-material/Reddit"
 import LinkIcon from "@mui/icons-material/Link"
 import { IconButton, Menu, Tooltip, Typography } from "@mui/material";
 import { StyledButton } from "../styles";
 import useSnackbar from "../SnackbarContext";
+import { useSubstitutedTranslation } from "../util";
 
 export default function ShareButton({ url }) {
     const { snack, setSnack } = useSnackbar()
     const [anchorElNav, setAnchorElNav] = useState(null)
 
+    const {t} = useSubstitutedTranslation();
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -35,7 +37,7 @@ export default function ShareButton({ url }) {
 
         const ahref = url
         const encodedAhref = encodeURIComponent(ahref)
-        var link
+        let link
 
         switch (e.currentTarget.id) {
             case "facebook":
@@ -43,8 +45,8 @@ export default function ShareButton({ url }) {
                 open(link)
                 break
 
-            case "twitter":
-                link = `https://twitter.com/intent/tweet?url=${encodedAhref}`
+            case "X":
+                link = `https://x.com/intent/tweet?url=${encodedAhref}`
                 open(link)
                 break
 
@@ -56,7 +58,7 @@ export default function ShareButton({ url }) {
             case "copy":
                 navigator.clipboard.writeText(ahref)
                 setSnack({
-                    message: 'Link Copied!',
+                    message: t('share.link_copied'),
                     severity: 'success',
                     open: true,
                     autoHideDuration: 6000,
@@ -79,7 +81,7 @@ export default function ShareButton({ url }) {
                 variant='contained'
                 fullwidth
                 onClick={handleOpenNavMenu}>
-                Share
+                {t('share.button')}
             </StyledButton>
             <Fade timeout={350}>
                 <Paper >
@@ -105,17 +107,17 @@ export default function ShareButton({ url }) {
                             <ListItemIcon>
                                 <FacebookIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Facebook" />
+                            <ListItemText primary={t('share.facebook')}/>
                         </ListItem>
                         <ListItem
                             button
-                            id="twitter"
+                            id="X"
                             onClick={handleShare}
                         >
                             <ListItemIcon>
-                                <TwitterIcon />
+                                <X />
                             </ListItemIcon>
-                            <ListItemText primary="Twitter" />
+                            <ListItemText primary={t('share.X')}/>
                         </ListItem>
                         <ListItem
                             button
@@ -125,7 +127,7 @@ export default function ShareButton({ url }) {
                             <ListItemIcon>
                                 <RedditIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Reddit" />
+                            <ListItemText primary={t('share.reddit')}/>
                         </ListItem>
                         <ListItem
                             button
@@ -135,7 +137,7 @@ export default function ShareButton({ url }) {
                             <ListItemIcon>
                                 <LinkIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Copy Link" />
+                            <ListItemText primary={t('share.copy_link')}/>
                         </ListItem>
                     </Menu>
                 </Paper>
