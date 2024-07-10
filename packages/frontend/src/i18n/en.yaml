@@ -167,8 +167,8 @@ election_home:
   or_view_results: or view results
   ballot_submitted: '{{ballot}} Submitted'
   view_results: View Results
-  drafted:
-  archived:
+  drafted: This election is still being drafted
+  archived: This election has been archived
 
 # Ballot
 ballot:
