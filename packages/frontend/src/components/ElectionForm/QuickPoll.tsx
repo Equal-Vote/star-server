@@ -14,7 +14,7 @@ import { CreateElectionContext } from './CreateElectionDialog.js';
 
 import { useSubstitutedTranslation } from '../util.jsx';
 
-const QuickPoll = ({ authSession, methodName, grow }) => {
+const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
     const [tempID, setTempID] = useCookie('temp_id', '0')
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = usePostElection()
@@ -23,12 +23,19 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
         method_name: methodName
     });
 
+    // TODO: we may edit the db entries in the future so that these align
+    const dbKeys = {
+        'star': 'STAR',
+        'approval': 'Approval',
+        'ranked_robin': 'RankedRobin',
+    }
+
     const QuickPollTemplate: NewElection = {
         title: '',
         state: 'open',
         frontend_url: '',
         owner_id: '0',
-        is_public: true,
+        is_public: false,
         races: [
             {   
                 title: '',
@@ -106,7 +113,7 @@ const QuickPoll = ({ authSession, methodName, grow }) => {
             // If only one race, use main eleciton title and description
             newElection.races[0].title = newElection.title
             newElection.races[0].description = newElection.description
-            newElection.races[0].voting_method = methodName
+            newElection.races[0].voting_method = dbKeys[methodKey];
         }
 
         const newCandidates = []
