@@ -234,7 +234,7 @@ export default function GenericBallotView({
                     onChange={() => ballotContext.setInstructionsRead()}
                   />
                 }
-                label={t('instructions_checkbox')}
+                label={t('ballot.instructions_checkbox')}
               />
             </FormGroup>
             }
