@@ -182,7 +182,6 @@ export default () => {
     const [election, setElection] = useState(defaultElection);
 
     const { t } = useSubstitutedTranslation();
-    const { t_no_sub } = useTranslation();
 
     const { error, isPending, makeRequest: postElection } = usePostElection()
 
