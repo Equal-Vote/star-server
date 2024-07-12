@@ -17,7 +17,14 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
     // Get data that is used for voter authentication
     const require_ip_hash = election.settings.voter_authentication.ip_address ? ip_hash : null
     const email = election.settings.voter_authentication.email ? req.user?.email : null
-    let voter_id = election.settings.voter_authentication.voter_id ? req.cookies?.voter_id : null
+    
+    // Get voter ID if required and available, otherwise set to null
+    let voter_id = null
+    if (election.settings.voter_authentication.voter_id && election.settings.voter_access == 'closed') {
+        voter_id = req.cookies?.voter_id 
+    } else if (election.settings.voter_authentication.voter_id && election.settings.voter_access == 'open') {
+        voter_id = req.user?.sub
+    }
 
     // Get all election roll entries that match any of the voter authentication fields
     // This is an odd way of going about this, rather than getting a roll that matches all three we get all that match any of the fields and
@@ -99,8 +106,11 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
 export function checkForMissingAuthenticationData(req: IRequest, election: Election, ctx: ILoggingContext): string | null {
     // Checks that user has provided all data needed for authentication
     Logger.info(req, `checkForMissingAuthenticationData`)
-    if (election.settings.voter_authentication.voter_id && !(req.cookies?.voter_id)) {
+    if ((election.settings.voter_authentication.voter_id && election.settings.voter_access == 'closed') && !(req.cookies?.voter_id)) {
         return 'Voter ID Required'
+    }
+    if ((election.settings.voter_authentication.voter_id && election.settings.voter_access == 'open') && !(req.user)) {
+        return 'User ID Required'
     }
     if (election.settings.voter_authentication.email && !(req.user?.email)) {
         return 'Email Validation Required'
