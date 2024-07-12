@@ -17,6 +17,7 @@ import { StyledButton } from "../../styles";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import { Race } from "@equal-vote/star-vote-shared/domain_model/Race";
+import { useSubstitutedTranslation } from "~/components/util";
 
 
 // I'm using the icon codes instead of an import because there was padding I couldn't get rid of
@@ -125,6 +126,8 @@ const VotePage = () => {
     navigate(`/${id}/thanks`)
   }
 
+  const {t} = useSubstitutedTranslation(election.settings.term_type)
+
   return (
     <Container disableGutters={true} maxWidth="sm">
       <BallotContext.Provider value={{
@@ -146,7 +149,7 @@ const VotePage = () => {
             onClick={() => setCurrentPage(count => count - 1)}
             disabled={currentPage === 0}
             sx={{ maxHeight: '40px', minWidth: '100px', marginRight: {xs: '10px', md: '40px'}, visibility: (currentPage === 0) ? 'hidden' : 'visible' }}>
-            Previous
+              {t('ballot.previous')}
           </Button>
           <Stepper sx={{display: 'flex', flexWrap: 'wrap'}}>
             {pages.map((page, n) => (
@@ -170,7 +173,7 @@ const VotePage = () => {
             onClick={() => setCurrentPage(count => count + 1)}
             disabled={currentPage === pages.length - 1}
             sx={{ maxHeight: '40px', minWidth: '100px', marginLeft: {xs: '10px', md: '40px'}, visibility: (currentPage === pages.length - 1) ? 'hidden' : 'visible' }}>
-            Next
+              {t('ballot.next')}
           </Button>
         </Box>
       }
@@ -181,31 +184,31 @@ const VotePage = () => {
           onClick={() => setIsOpen(true)}
           disabled={isPending || currentPage !== pages.length - 1 || pages[currentPage].candidates.every(candidate => candidate.score === null)}//disable unless on last page and at least one candidate scored
           style={{ marginLeft: "auto", minWidth: "150px", marginTop: "20px" }}>
-          Submit Ballot
+              {t('ballot.submit_ballot')}
         </Button>
       </Box>
-      {isPending && <div> Submitting... </div>}
+      {isPending && <div> {t('ballot.submitting')} </div>}
       <Dialog
         open={isOpen}
         fullWidth
       >
-        <DialogTitle>Submit Ballot?</DialogTitle>
+        <DialogTitle>{t('ballot.dialog_submit_title')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
 
             <FormControlLabel control={
               <Checkbox
-                id="candidate-order"
-                name="Randomize Candidate Order"
+                id="send-ballot-receipt"
+                name="Send Ballot Receipt Email"
                 checked={receiptEmail.sendReceipt}
                 onChange={(e) => setReceiptEmail({...receiptEmail, sendReceipt: e.target.checked})}
               />}
-              label="Send Ballot Receipt Email?"
+              label={t('ballot.dialog_send_receipt')}
             />
           <TextField
                     id="receipt-email"
                     name="receiptEmail"
-                    label="Receipt Email"
+                    label={t('ballot.dialog_email_placeholder')}
                     fullWidth
                     type="text"
                     value={receiptEmail.email}
@@ -238,14 +241,14 @@ const VotePage = () => {
             width="100%"
             fullWidth={false}
             onClick={() => setIsOpen(false)}>
-            Cancel
+            {t('ballot.dialog_cancel')}
           </StyledButton>
           <StyledButton
             type='button'
             variant="contained"
             fullWidth={false}
             onClick={() => submit()}>
-            Submit
+            {t('ballot.dialog_submit')}
           </StyledButton>
         </DialogActions>
       </Dialog>

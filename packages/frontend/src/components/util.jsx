@@ -36,7 +36,6 @@ const rTip = / \!tip\((.*)\)/
 export const useOnScrollAnimator = () => {
     //https://www.youtube.com/watch?v=T33NN_pPeNI
     const observer = new IntersectionObserver((entries) => {
-        console.log('animator observer')
         entries.filter(entry => entry.isIntersecting).forEach(entry => entry.target.classList.add('show'))
     })
 
@@ -61,7 +60,8 @@ export const useOnScrollAnimator = () => {
     }
 }
 
-export const useSubstitutedTranslation = (electionTermType, v={}) => { // election or poll
+// NOTE: I'm setting a electionTermType default for backwards compatibility with elections that don't have a term set
+export const useSubstitutedTranslation = (electionTermType='election', v={}) => { // election or poll
   let values = {...en.keyword, ...en.keyword[electionTermType], ...v}
   Object.entries(values).forEach(([key, value]) => {
     if(typeof value === 'string'){
@@ -487,10 +487,10 @@ export const DetailExpander = ({ children, level = 0 }) => {
   const [viewDetails, setViewDetails] = useState(false);
   const expanderId = useRef(_uniqueId("detailExpander")).current;
 
-  let { t } = useTranslation();
+  let { t } = useSubstitutedTranslation();
   let title = [
-    t("results.general.details"),
-    t("results.general.additional_info"),
+    t("results.details"),
+    t("results.additional_info"),
   ][level];
 
   return (

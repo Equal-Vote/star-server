@@ -5,11 +5,13 @@ import Box from '@mui/material/Box';
 import { Paper } from "@mui/material";
 import ShareButton from "./ShareButton";
 import VoterAuth from "./VoterAuth";
-import { formatDate } from '../util';
+import { formatDate, useSubstitutedTranslation } from '../util';
 import useElection from '../ElectionContextProvider';
 
 const ElectionHome = () => {
   const { election, voterAuth, refreshElection, permissions, updateElection } = useElection();
+
+  const {t} = useSubstitutedTranslation(election.settings.term_type);
 
   return (
     <>
@@ -50,7 +52,10 @@ const ElectionHome = () => {
             {election.state === 'finalized' && election.start_time &&
               <Box sx={{ flexGrow: 1 }}>
                 <Typography align='center' variant="h6" component="h6">
-                  {`Election begins on ${formatDate(election.start_time, election.settings.time_zone)}`}
+                  {t('election_home.begin_time',{
+                      date: new Date(election.start_time).toLocaleDateString(),
+                      time: new Date(election.start_time).toLocaleTimeString()
+                  })}
                 </Typography>
               </Box>
             }
@@ -60,7 +65,10 @@ const ElectionHome = () => {
               {election.end_time &&
                 <Box sx={{ flexGrow: 1 }}>
                   < Typography align='center' variant="h6" component="h6">
-                    {`Election ends on ${formatDate(election.end_time, election.settings.time_zone)}`}
+                    {t('election_home.end_time',{
+                        date: new Date(election.end_time).toLocaleDateString(),
+                        time: new Date(election.end_time).toLocaleTimeString()
+                    })}
                   </Typography>
                 </Box>}
               {
@@ -69,12 +77,12 @@ const ElectionHome = () => {
                 <Box display='flex' flexDirection='column' alignItems='center' gap={5} sx={{ p: 1}}>
                   <Button fullWidth variant='contained' href={`/${String(election?.election_id)}/vote`} >
                     <Typography align='center' variant="h3" component="h3" fontWeight='bold' sx={{ p: 2 }}>
-                      Vote
+                      {t('election_home.vote')}
                     </Typography>
                   </Button>
                   {election.settings.public_results === true &&
                   <Button variant='text' href={`/${String(election?.election_id)}/results`} >
-                      or view results 
+                      {t('election_home.or_view_results')}
                   </Button>
                   }
                 </Box>
@@ -84,14 +92,17 @@ const ElectionHome = () => {
             {election.state === 'closed' && election.end_time &&
               <Box sx={{ flexGrow: 1 }}>
                 <Typography align='center' variant="h6" component="h6">
-                  {`Election ended on ${formatDate(election.end_time, election.settings.time_zone)}`}
+                    {t('election_home.ended_time',{
+                        date: new Date(election.end_time).toLocaleDateString(),
+                        time: new Date(election.end_time).toLocaleTimeString()
+                    })}
                 </Typography>
               </Box>
             }
             {voterAuth.has_voted == true &&
               <Box display='flex' flexDirection='column' alignItems='center' gap={5} sx={{ p: 1}}>
                 <Typography align='center' variant="h6" component="h6">
-                  Ballot Submitted
+                  {t('election_home.ballot_submitted')}
                 </Typography>
               </Box>
             }
@@ -100,21 +111,21 @@ const ElectionHome = () => {
               (election.state === 'open' && voterAuth.has_voted) || election.state === 'closed') &&
               <Box sx={{ p: 1, flexGrow: 0 }}>
                 <Button fullWidth variant='outlined' href={`/${election.election_id}/results`} >
-                  View Results
+                  {t('election_home.view_results')}
                 </Button>
               </Box>
             }
             {election.state === 'draft' &&
               <Box sx={{ flexGrow: 1 }}>
                 <Typography align='center' variant="h6" component="h6">
-                  This election is still being drafted
+                  {t('election_home.drafted')}
                 </Typography>
               </Box>
             }
             {election.state === 'archived' &&
               <Box sx={{ flexGrow: 1 }}>
                 <Typography align='center' variant="h6" component="h6">
-                  This election has been archived
+                  {t('election_home.archived')}
                 </Typography>
               </Box>
             }

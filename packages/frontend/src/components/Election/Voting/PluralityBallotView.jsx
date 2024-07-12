@@ -1,25 +1,15 @@
 import React, { useContext } from "react";
 import GenericBallotView from "./GenericBallotView";
-import Typography from '@mui/material/Typography';
 import { BallotContext } from "./VotePage";
 
 // Renders a complete RCV ballot for a single race
 export default function PluralityBallotView() {
   const ballotContext = useContext(BallotContext);
-  const instructions = (
-    <>
-      <Typography align='left' component="li">
-        Fill in the bubble next to your favorite
-      </Typography>
-    </>
-  )
+
   return (
     <GenericBallotView
-      key="pluralityBallot"
       columns={[1]}
-      methodName='Choose One Voting'
-      instructions={instructions}
-      learnMoreLink='https://electionscience.org/voting-methods/spoiler-effect-top-5-ways-plurality-voting-fails/'
+      methodKey='choose_one'
       onClick={(row, score) => {
         const newScores = ballotContext.candidates.map(c => c.score);
         // bubble becomes null
@@ -34,7 +24,6 @@ export default function PluralityBallotView() {
         }
         ballotContext.onUpdate(newScores);
       }}
-      footer="The candidate with the most votes wins"
     />
   );
 }

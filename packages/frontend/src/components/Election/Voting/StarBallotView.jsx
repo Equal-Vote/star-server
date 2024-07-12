@@ -19,36 +19,6 @@ function scoresAreUnderVote({scores}){
 export default function StarBallotView({onlyGrid=false}) {
   const ballotContext = useContext(BallotContext);
 
-  const instructions = (
-    <>
-      <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
-        Give your favorite(s) five stars.
-      </Typography>
-      <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
-        Give your last choice(s) zero stars or leave blank.
-      </Typography>
-      <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
-        Score other candidates as desired.
-      </Typography>
-      <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
-        Equal scores indicate equal preference.
-      </Typography>
-    </>
-  )
-  const footer = (
-    <>
-    {ballotContext.race.num_winners == 1 &&
-      <Typography align='center' component="p">
-        The two highest scoring candidates are finalists.<br/>Your full vote goes to the finalist you prefer.
-      </Typography>
-    }
-    {ballotContext.race.num_winners > 1 && 
-      <Typography align='center' component="p">
-        {`This election uses STAR Voting and will elect ${ballotContext.race.num_winners} winners. In STAR Voting the two highest scoring candidates are finalists and the finalist preferred by more voters wins.`}
-      </Typography>
-    }
-    </>
-  )
   let warning = null;
 
   // disabling warnings until we have a better solution, see slack convo
@@ -62,19 +32,13 @@ export default function StarBallotView({onlyGrid=false}) {
   //}
   return (
     <GenericBallotView
-      key="starBallot"
+      methodKey="star"
       columns={[0, 1, 2, 3, 4, 5]}
-      methodName="STAR Voting"
-      instructions={instructions}
-      learnMoreLink="https://www.starvoting.org/star"
-      leftTitle='Worst'
-      rightTitle='Best'
       onClick={(i, j) => {
         const newScores = ballotContext.candidates.map(c => c.score);
         newScores[i] = newScores[i] === j ? null : j;
         ballotContext.onUpdate(newScores);
       }}
-      footer={footer}
       starHeadings={true}
       warning={warning}
       onlyGrid={onlyGrid}

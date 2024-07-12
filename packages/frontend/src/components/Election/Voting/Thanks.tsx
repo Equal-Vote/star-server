@@ -5,10 +5,12 @@ import ShareButton from "../ShareButton";
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import { StyledButton } from "../../styles";
 import useElection from '../../ElectionContextProvider';
+import { useSubstitutedTranslation } from '~/components/util';
 
 const Thanks = () => {
     
     const { election } = useElection()
+    const {t} = useSubstitutedTranslation(election.settings.term_type)
     return (
         <>
             {election &&
@@ -21,18 +23,21 @@ const Thanks = () => {
                     mx='auto'
                     mb='100px'>
                     <Typography align='center' variant="h3" component="h3">
-                        Ballot Submitted
+                        {t('ballot_submitted.title')}
                     </Typography>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <HowToVoteIcon sx={{ fontSize: 40 }} />
                     </div>
                     <Typography align='center' variant="h5" component="h5" sx={{ p: 2 }}>
-                        Thank you for voting!
+                        {t('ballot_submitted.description')}
                     </Typography>
 
                     {election.state === 'open' && election.end_time &&
                         < Typography align='center' variant="h6" component="h6" sx={{ pb: 3 }}>
-                            {`Election ends ${new Date(election.end_time).toLocaleDateString()} at ${new Date(election.end_time).toLocaleTimeString()} `}
+                            {t('ballot_submitted.end_time',{
+                                date: new Date(election.end_time).toLocaleDateString(),
+                                time: new Date(election.end_time).toLocaleTimeString()
+                            })}
                         </Typography>
                     }
 
@@ -44,7 +49,7 @@ const Thanks = () => {
                                     variant='contained'
                                     fullwidth
                                     href={`/${election.election_id}/results`} >
-                                    Results
+                                    {t('ballot_submitted.results')}
                                 </StyledButton>
                             </Box>
                         }
@@ -59,7 +64,7 @@ const Thanks = () => {
                                 variant='contained'
                                 fullwidth
                                 href={'https://www.equal.vote/donate'} >
-                                Donate
+                                {t('ballot_submitted.donate')}
                             </StyledButton>
                         </Box>
                     </Box>

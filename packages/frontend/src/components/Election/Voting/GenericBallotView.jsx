@@ -12,16 +12,7 @@ import useSnackbar from "../../SnackbarContext";
 import { BallotContext } from "./VotePage";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
-
-function HasExpandedData(candidate) {
-  if (candidate.full_name) return true
-  if (candidate.candidate_url) return true
-  if (candidate.party) return true
-  if (candidate.partyUrl) return true
-  if (candidate.photo_filename) return true
-  if (candidate.bio) return true
-  return false
-}
+import { useSubstitutedTranslation } from "~/components/util";
 
 const ScoreIcon = ({opacity, value, fontSX}) => (
   <Box align='center' sx={{ position: 'relative', aspectRatio: '1 / 1'}}>
@@ -36,11 +27,11 @@ const GenericBallotGrid = ({
   ballotContext,
   starHeadings,
   columns,
-  leftTitle,
-  rightTitle,
   headingPrefix,
   onClick,
   columnValues,
+  leftTitle,
+  rightTitle,
 }) => {
   const numHeaderRows = (leftTitle != '') + (columns.length > 1);
   const dividerHeight = '2px';  //  Note that we can't use gap here
@@ -60,6 +51,7 @@ const GenericBallotGrid = ({
 
   const fontSX = {fontSize: {xs: '.7rem', md: '.8rem'}}
 
+  /* TODO: this code was refactored to use CSS grid. This made it cleaner on an structural level, but the code looks messy and could be cleaned up*/
   return <Box sx={{
     width: '100%',
     display: 'flex',
@@ -161,14 +153,8 @@ const GenericBallotGrid = ({
 export default function GenericBallotView({
   onClick,
   columns,
-  methodName,
-  instructions,
-  learnMoreLink,
+  methodKey,
   columnValues=null,
-  leftTitle='',
-  rightTitle='',
-  headingPrefix='',
-  footer='',
   starHeadings=false,
   warning=null,
   onlyGrid=false,
@@ -181,6 +167,21 @@ export default function GenericBallotView({
   const { election } = useElection();
 
   const ballotContext = useContext(BallotContext);
+
+  const {t} = useSubstitutedTranslation(election?.settings.term_type ?? 'election');
+
+  const methodName = t(`methods.${methodKey}.full_name`);
+
+  const leftKey = `ballot.methods.${methodKey}.left_title`;
+  const leftTitle = (t(leftKey) == leftKey)? '' : t(leftKey);
+  const rightTitle = (t(leftKey) == leftKey)? '' : t(`ballot.methods.${methodKey}.right_title`);
+
+  const headingPrefixKey = `ballot.methods.${methodKey}.heading_prefix`;
+  const headingPrefix = (t(headingPrefixKey) == headingPrefixKey)? '' : t(headingPrefixKey);
+
+  const learnLinkKey = `methods.${methodKey}.learn_link`
+  const learnLink = (t(learnLinkKey) == learnLinkKey)? '' : t(learnLinkKey);
+
 
   if(onlyGrid)
     return <Box border={2} sx={{ mt: 0, ml: 0, mr: 0, width: '100%' }} className="ballot">
@@ -214,10 +215,14 @@ export default function GenericBallotView({
 
           <Grid item xs={8} sx={{ pb:1, px:4 }} className="instructions">
             <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }}>
-              This election uses {methodName}
+              {t('ballot.this_election_uses', {voting_method: methodName})}
             </Typography>
 
-            {instructions}
+            {t(`ballot.methods.${methodKey}.instruction_bullets`).map(bullet => 
+              <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
+                {bullet}
+              </Typography>
+            )}
             { !flags.isSet('FORCE_DISABLE_INSTRUCTION_CONFIRMATION') && election.settings.require_instruction_confirmation &&
             <FormGroup>
               <FormControlLabel
@@ -229,7 +234,7 @@ export default function GenericBallotView({
                     onChange={() => ballotContext.setInstructionsRead()}
                   />
                 }
-                label="I have read the instructions"
+                label={t('ballot.instructions_checkbox')}
               />
             </FormGroup>
             }
@@ -247,9 +252,11 @@ export default function GenericBallotView({
           />
 
           <Grid item xs={10} sx={{ p:5, px:4 }} className="footer">
-            {footer}
+            {t(`ballot.methods.${methodKey}.footer_${ballotContext.race.num_winners == 1 ? 'single_winner' : 'multi_winner'}`,
+              {n: ballotContext.race.num_winners})
+            }
             <br/>
-            <Link href={learnMoreLink} target='_blank'>Learn more about {methodName}</Link>
+            {learnLink != '' && <Link href={learnLink} target='_blank'>{t('ballot.learn_more', {voting_method: methodName})}</Link>}
           </Grid>
 
           { warning !== null &&

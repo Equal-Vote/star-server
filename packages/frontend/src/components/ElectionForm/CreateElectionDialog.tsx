@@ -13,6 +13,7 @@ import useAuthSession from "../AuthSessionContextProvider";
 import { usePostElection } from "~/hooks/useAPI";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 
 /////// PROVIDER SETUP /////
 export interface ICreateElectionContext{
@@ -180,7 +181,7 @@ export default () => {
 
     const [election, setElection] = useState(defaultElection);
 
-    const { t } = useSubstitutedTranslation(election.settings.term_type);
+    const { t } = useSubstitutedTranslation();
 
     const { error, isPending, makeRequest: postElection } = usePostElection()
 
@@ -239,7 +240,7 @@ export default () => {
             <Stepper activeStep={activeStep} orientation="vertical">
                 <Step>
                     <StepLabel>{t('election_creation.term_title')} <strong>{
-                        election.settings.term_type === undefined? '' : t(`keyword.${election.settings.term_type}.election_term`)
+                        election.settings.term_type === undefined? '' : t(`keyword.${election.settings.term_type}.election`)
                     }</strong></StepLabel>
                     <StepContent>
                         <Typography>{t('election_creation.term_question')}
@@ -249,9 +250,9 @@ export default () => {
                             {['poll', 'election'].map( (type, i) => 
                                 <FormControlLabel
                                     key={i}
-                                    value={t(`keyword.${type}.election_term`)}
+                                    value={t(`keyword.${type}.election`)}
                                     control={<Radio/>}
-                                    label={t(`keyword.${type}.election_term`)}
+                                    label={t(`keyword.${type}.election`)}
                                     onClick={() => setElection({
                                         ...election,
                                         settings: {

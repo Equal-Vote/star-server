@@ -23,27 +23,24 @@ landing_page:
       - Lesser-Evil
       - Favorite
     methods:
-      STAR:
-        name: STAR Voting
-        title: $t(landing_page.hero.methods.STAR.name) !tip(STAR)
+      star:
+        title: $t(methods.star.full_name) !tip(star)
         short_description: Elects the majority preferred winner between the two {{lowercase_candidates}} with highest overall support
         recommendation: Recommended for accuracy
         default_scores:
           - 0 
           - 2
           - 5
-      Approval:
-        name: Approval
-        title: $t(landing_page.hero.methods.Approval.name) !tip(Approval)
+      approval:
+        title: $t(methods.approval.short_name) !tip(approval)
         short_description: Elects most approved candidate
         recommendation: Recommended for simplicity
         default_scores: 
           - 0 
           - 1
           - 1
-      RankedRobin:
-        name: Ranked Robin
-        title: $t(landing_page.hero.methods.RankedRobin.name) !tip(RankedRobin)
+      ranked_robin:
+        title: $t(methods.ranked_robin.short_name) !tip(ranked_robin)
         short_description: Elects majority preferred winner
         recommendation: Recommended for ranking
         default_ranks: 
@@ -52,7 +49,7 @@ landing_page:
           - 1
       more_methods:
         title: and more
-        short_description: Sign in for more methods like Choose-One, or RCV!
+        short_description: Sign in for more methods like $t(methods.choose_one.short_name), or $t(methods.rcv.short_name)!
         sign_in: Sign In
 
   # Quick Poll Section
@@ -75,7 +72,7 @@ landing_page:
     title: Features
     items:
     - title: Voting Methods
-      text: Supports a variety of voting methods including STAR, Approval, and Ranked Robin.
+      text: Supports a variety of voting methods including $t(methods.star.short_name), $t(methods.approval.short_name), and $t(methods.ranked_robin.short_name).
     - title: Multi Winner Methods
       text: Supports methods that yield multiple winners, including both proportional and block based methods.
     - title: Multi Race Elections
@@ -131,6 +128,7 @@ landing_page:
         
         Email elections@equal.vote
 
+# Footer (bottom of all pages)
 footer:
   project_title: dev.star.vote
   project_description: >
@@ -161,7 +159,89 @@ footer:
     https://www.equal.vote
   social_action: 'Like and follow on social media:'
 
-  
+election_home:
+  start_time: '{{election}} begins {{date}} at {{time}}'
+  end_time: '{{election}} ends {{date}} at {{time}}'
+  ended_time: '{{election}} ended {{date}} at {{time}}'
+  vote: Vote
+  or_view_results: or view results
+  ballot_submitted: '{{ballot}} Submitted'
+  view_results: View Results
+  drafted: This election is still being drafted
+  archived: This election has been archived
+
+# Ballot
+ballot:
+  this_election_uses: This election uses {{voting_method}}
+  instructions_checkbox: I have read the instructions
+  learn_more: Learn more about {{voting_method}}
+  previous: Previous
+  next: Next
+  submit_ballot: Submit {{ballot}}
+  submitting: Submitting...
+
+  dialog_submit_title: Submit {{ballot}}?
+  dialog_send_receipt: Send Ballot Receipt Email?
+  dialog_email_placeholder: Receipt Email
+  dialog_cancel: Cancel
+  dialog_submit: Submit
+
+  methods:
+    approval:
+      instruction_bullets:
+        - Fill in the bubble next to your favorite
+        - You can select as many {{lowercase_candidates}} as you like
+      footer_single_winner: The {{lowercase_candidate}} with the most votes wins
+      footer_multi_winner: The {{n}} {{lowercase_candidates}} with the most votes wins
+    star:
+      instruction_bullets:
+       - Give your favorite(s) five stars.
+       - Give your last choice(s) zero stars or leave blank.
+       - Score other {{lowercase_candidates}} as desired.
+       - Equal scores indicate equal preference.
+      footer_single_winner: |
+        The two highest scoring {{lowercase_candidates}} are finalists.
+        Your full vote goes to the finalist you prefer.
+      footer_multi_winner: >
+        his election uses STAR Voting and will elect {{n}} winners.
+        In STAR Voting the two highest scoring {{lowercase_candidates}} are finalists and the finalist preferred by more voters wins.
+      # These show above the star columns 
+      left_title: 'Worst'
+      right_title: 'Best'
+    rcv: 
+      instruction_bullets:
+        - Rank the {{lowercase_candidates}} in order of preference.
+        - Equal ranks are not recommended, since they risk your vote being exhausted early
+        - '{{candidates}} left blank are ranked last'
+      footer_single_winner: > 
+        The winner is selected after a series of elimination rounds.
+
+        Each round the candidate with the least first-choice votes is eliminated and 
+        their voters will be distributed to their next preference.
+      heading_prefix: 'Rank {{candidates}}:'
+    ranked_robin:
+      instruction_bullets:
+        - Rank the {{lowercase_candidates}} in order of preference.
+        - Equal ranks are allowed
+        - '{{candidates}} left blank are ranked last'
+      footer_single_winner: |
+        {{candidates}} are compared in 1-on-1 match-ups.
+        A {{lowercase_candidate}} wins a match-up if they are ranked higher than the opponent by more voters
+      heading_prefix: 'Rank {{candidates}}:'
+    choose_one:
+      instruction_bullets:
+        - Fill in the bubble next to your favorite
+      footer_single_winner: The {{lowercase_candidate}} with the most votes wins
+      footer_multi_winner: The {{n}} {{lowercase_candidates}} with the most votes win
+    
+# Confirmation (after you've submitted a ballot)
+ballot_submitted:
+  title: '{{ballot}} Submitted'
+  description: Thank you for voting!
+  results: Results
+  donate: Donate
+  end_time: '{{election}} ends {{date}} at {{time}}'
+
 # Landing Page -> New Election Dialog
 election_creation:
   dialog_title: Create an Election or Poll
@@ -170,29 +250,28 @@ election_creation:
   term_question: Which term best describes your situation?
 
   title_title: Title?
-  title_question: What's the title for your {{lowercase_election_term}}? # TERM will be replaced with election or poll
+  title_question: What's the title for your {{lowercase_election}}? # TERM will be replaced with election or poll
 
   restricted_title: Restricted?
-  restricted_question: Would you like your {{lowercase_election_term}} to be restricted to a pre-defined voter list?
+  restricted_question: Would you like your {{lowercase_election}} to be restricted to a pre-defined voter list?
 
   template_title: Starting template...
   template_prompt: Choose a starting template, you can always make further tweaks later
 
-  demo_title: Demo {{election_term}}
+  demo_title: Demo {{election}}
   demo_description: Unlimited votes per device. Great for demonstrations where multiple people are using the same device
 
-  public_title: Public {{election_term}}
-  public_description: 1 person, 1 vote. {{election_term}} will be open to anyone via the public polls & elections page, as well as anyone who has been given a direct link
+  public_title: Public {{election}}
+  public_description: 1 person, 1 vote. {{election}} will be open to anyone via the public polls & elections page, as well as anyone who has been given a direct link
 
-  unlisted_title: Unlisted {{election_term}}
-  unlisted_description: 1 person, 1 vote. {{election_term}} will be inclusive and open to anyone who has been given the ballot link
+  unlisted_title: Unlisted {{election}}
+  unlisted_description: 1 person, 1 vote. {{election}} will be inclusive and open to anyone who has been given the ballot link
 
   email_list_title: Email List
   email_list_description: Provide a list of emails for your voters. Personal links will be sent to each of these voters once the election starts
 
   id_list_title: ID List
   id_list_description: Provide a list of IDs for your voters. Voters will authenticate themselves using their ID before voting
-
 
 # Landing Page -> Return to Classic Dialog
 return_to_classic:
@@ -201,13 +280,41 @@ return_to_classic:
   feedback: Leave Feedback?
   continue: Continue to star.vote
 
+# Share Button dropdown
+share:
+  button: Share
+  facebook: Facebook
+  X: X
+  reddit: Reddit
+  copy_link: Copy Link
+  link_copied: Link Copied!
+
 # Results page
 results:
-  general: 
-    details: Details
-    additional_info: Additional Info
+  preliminary_title: PRELIMINARY RESULTS
+  official_title: OFFICIAL_RESULTS
+  election_title: |
+    {{election}} Name:
+    {{title}}
+  race_title: '{{race}} {{n}}: {{title}}'
+  loading_election: Loading {{election}}...
+  details: Details
+  additional_info: Additional Info
+  waiting_for_results: |
+    Still waiting for results
+    No votes have been cast
+  single_vote: |
+    There's only one vote so far.
+    Full results will be displayed once there's more votes.
+  tie_title: 'Tied!'
+  tiebreak_subtitle: '{{names}} won after tie breaker'
+  win_title: ⭐ {{names}} Wins! ⭐
+  vote_count: '{{n}} voters'
+  method_context: 'Voting Method: {{voting_method}}'
+  learn_link_text: How {{voting_method}} works
+
   choose_one:
-    bar_title: Votes for each candidate
+    bar_title: Votes for each {{candidate}}
     table_title: Table
     table_columns:
       - '{{candidate}}'
@@ -234,6 +341,7 @@ results:
     runoff_majority: majority of remaining active votes
     exhausted: Exhausted
     tabulation_candidate_column: '{{candidate}}'
+    round_column: Round {{n}}
   star:
     score_title: Scoring Round
     score_description:
@@ -273,35 +381,60 @@ tips:
     title: Restricted Polls or Elections
     description: Restricted Polls or Elections only allow those on the voter list to vote. The voter list can be a set of emails or voter IDs.
   
-  STAR:
-    title: STAR Voting
+  star:
+    title: $t(methods.star.full_name)
     description: Uses a 0-5 star ballot, and the vote is tallied in 2 rounds. First the stars are added together, and then the 2 front runners face each other in an automatic runoff
 
-  Approval:
-    title: Approval Voting
+  approval:
+    title: $t(methods.approval.full_name)
     description: Voters pick as many {{candidates}} as they like, and then most votes wins
 
-  RankedRobin:
-    title: Ranked Robin
+  ranked_robin:
+    title: $t(methods.ranked_robin.full_name)
     description: The candidate who wins the most runoffs wins
 
 # General Terms
 keyword:
   election: 
-    # TODO: I still need to add logic to auto substitute these terms
-    election_term: Election
+    election: Election
     candidate: Candidate
     candidates: Candidates
+    race: Race
+    ballot: Ballot
   poll:
-    election_term: Poll
+    election: Poll
     candidate: Option
     candidates: Options
+    race: Question
+    ballot: Response
 
   yes: Yes
   no: No
 
   # This is used in tables and charts
   total: Total 
+
+# Shared context on methods
+methods: 
+  star:
+    full_name: STAR Voting
+    short_name: STAR
+    learn_link: https://www.youtube.com/watch?v=3-mOeUXAkV0
+  approval:
+    full_name: Approval Voting
+    short_name: Approval
+    learn_link: https://www.youtube.com/watch?v=db6Syys2fmE
+  rcv:
+    full_name: Ranked Choice Voting
+    short_name: RCV
+    learn_link: https://www.youtube.com/watch?v=oHRPMJmzBBw
+  ranked_robin:
+    full_name: Ranked Robin
+    short_name: Ranked Robin
+    learn_link: https://www.equal.vote/ranked_robin
+  choose_one:
+    full_name: Choose One
+    short_name: Choose One
 
 # Localisation for numbers
 number:

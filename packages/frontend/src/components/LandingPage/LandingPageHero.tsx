@@ -32,16 +32,16 @@ export default ({}) => {
 
     const {t} = useSubstitutedTranslation('election');
 
-    const [starScores, setStarScores] = useState(t('landing_page.hero.methods.STAR.default_scores'));
-    const [approvalScores, setApprovalScores] = useState(t('landing_page.hero.methods.Approval.default_scores'));
-    const [rrRanks, setRrRanks] = useState(t('landing_page.hero.methods.RankedRobin.default_ranks'));
+    const [starScores, setStarScores] = useState(t('landing_page.hero.methods.star.default_scores'));
+    const [approvalScores, setApprovalScores] = useState(t('landing_page.hero.methods.approval.default_scores'));
+    const [rrRanks, setRrRanks] = useState(t('landing_page.hero.methods.ranked_robin.default_ranks'));
 
     // selected to be consistent with the Race.ts domain_model
 
     const methodKeys = [
-        'STAR',
-        'Approval',
-        'RankedRobin',
+        'star',
+        'approval',
+        'ranked_robin',
         'more_methods'
     ]
 
@@ -162,7 +162,8 @@ export default ({}) => {
             </Box>
             <QuickPoll
                 authSession={authSession}
-                methodName={t(`landing_page.hero.methods.${methodKeys[quickPollIndex]}.name`)}
+                methodName={t(`methods.${methodKeys[quickPollIndex]}.full_name`)}
+                methodKey={methodKeys[quickPollIndex]}
                 grow={transitionStep == 4 && methodIndex != methodKeys.length-1}
             />
         </Box>

@@ -7,30 +7,15 @@ import { BallotContext } from "./VotePage";
 export default function ApprovalBallotView({onlyGrid=false}) {
   const ballotContext = useContext(BallotContext);
 
-  const instructions = (
-    <>
-      <Typography align='left' component="li">
-        Fill in the bubble next to your favorite
-      </Typography>
-      <Typography align='left' component="li">
-        You can select as many candidates as you like
-      </Typography>
-    </>
-  )
-
   return (
     <GenericBallotView
-      key="approvalBallot"
       columns={[1]}
-      methodName='Approval Voting'
-      instructions={instructions}
-      learnMoreLink='https://electionscience.org/approval-voting-101/'
+      methodKey='approval'
       onClick={(row, score) => {
         const newScores = ballotContext.candidates.map(c => c.score);
         newScores[row] = newScores[row] === score ? null : score;
         ballotContext.onUpdate(newScores);
       }}
-      footer="The candidate with the most votes wins"
       onlyGrid={onlyGrid}
     />
   );
