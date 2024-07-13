@@ -326,9 +326,9 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
         {result.results.summaryData.nValidVotes > 1 && <>
           {showTitleAsTie?
             <>
-            <Typography variant="h5" sx={{fontWeight: 'bold'}}>{t('results.true_tie_title')}</Typography>
+            <Typography variant="h5" sx={{fontWeight: 'bold'}}>{t('results.tie_title')}</Typography>
             {!removeTieBreakFromTitle && <Typography component="p" sx={{fontWeight: 'bold'}}>
-                {t('results.tiebreak_title', {names: formatter.format(result.results.elected.map(c => c.name))})}
+                {t('results.tiebreak_subtitle', {names: formatter.format(result.results.elected.map(c => c.name))})}
             </Typography>}
             </>
           :
