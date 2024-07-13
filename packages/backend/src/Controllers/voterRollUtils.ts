@@ -25,7 +25,7 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
     } else if (election.settings.voter_authentication.voter_id && election.settings.voter_access == 'open') {
         voter_id = req.user?.sub
     }
-
+    
     // Get all election roll entries that match any of the voter authentication fields
     // This is an odd way of going about this, rather than getting a roll that matches all three we get all that match any of the fields and
     // check the output for a number of edge cases.
@@ -44,7 +44,7 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
             return null
         }
         Logger.info(req, "Creating new roll");
-        const new_voter_id = randomUUID()
+        const new_voter_id = election.settings.voter_authentication.voter_id ? voter_id : randomUUID()
         const history = [{
             action_type: ElectionRollState.approved,
             actor: new_voter_id,
