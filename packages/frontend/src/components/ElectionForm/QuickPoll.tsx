@@ -62,7 +62,7 @@ const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
         settings: {
             voter_access: 'open',
             voter_authentication: {
-                ip_address: true,
+                voter_id: true,
             },
             ballot_updates: false,
             public_results: true,

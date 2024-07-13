@@ -35,7 +35,7 @@ const VoterAuth = () => {
 
   const isOpen = election.state === "open"
 
-  const voterIdRequired = election.settings?.voter_authentication?.voter_id
+  const voterIdRequired = election.settings?.voter_authentication?.voter_id && election.settings.voter_access === 'closed'
   const emailRequired = election.settings?.voter_authentication?.email
 
   const isAuthorized = voterAuth?.authorized_voter
