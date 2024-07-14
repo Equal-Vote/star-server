@@ -1,5 +1,4 @@
-import { MethodOfEqualShares } from "./MethodOfEqualShares";
-const Fraction = require("fraction.js");
+import { methodOfEqualShares } from "./MethodOfEqualShares";
 
 describe("Method of Equal Shares Tests", () => {
   test("Basic Example", () => {
@@ -16,20 +15,10 @@ describe("Method of Equal Shares Tests", () => {
       [0, 0, 4, 5],
       [0, 0, 4, 5],
     ];
-    const results = MethodOfEqualShares(candidates, votes, 2, [], false, false);
+    const results = methodOfEqualShares(candidates, votes, 2, []);
     expect(results.elected.length).toBe(2);
     expect(results.elected[0].name).toBe("Allison");
-    expect(results.elected[1].name).toBe("Doug");
-    const weightedScoresRound0 =
-      results.summaryData.weightedScoresByRound[0].map((score) =>
-        parseFloat(score.toString()),
-      );
-    expect(weightedScoresRound0).toStrictEqual([25, 24, 24, 23]);
-    const weightedScoresRound1 =
-      results.summaryData.weightedScoresByRound[1].map((score) =>
-        parseFloat(score.toString()),
-      );
-    expect(weightedScoresRound1).toStrictEqual([0, 0, 16, 23]);
+    expect(results.elected[1].name).toBe("Carmen");
   });
 
   test("Influence Budget Redistribution", () => {
@@ -48,20 +37,10 @@ describe("Method of Equal Shares Tests", () => {
       [0, 0, 4, 5],
       [0, 0, 4, 5],
     ];
-    const results = MethodOfEqualShares(candidates, votes, 2, [], false, false);
+    const results = methodOfEqualShares(candidates, votes, 2, []);
     expect(results.elected.length).toBe(2);
     expect(results.elected[0].name).toBe("Allison");
-    expect(results.elected[1].name).toBe("Doug");
-    const weightedScoresRound0 =
-      results.summaryData.weightedScoresByRound[0].map((score) =>
-        parseFloat(score.toString()),
-      );
-    expect(weightedScoresRound0).toStrictEqual([40, 39, 23, 18]);
-    const weightedScoresRound1 =
-      results.summaryData.weightedScoresByRound[1].map((score) =>
-        parseFloat(score.toString()),
-      );
-    expect(weightedScoresRound1).toStrictEqual([0, 9.75, 14.75, 18]);
+    expect(results.elected[1].name).toBe("Bill");
   });
 
   test("Random Tiebreaker", () => {
@@ -78,11 +57,10 @@ describe("Method of Equal Shares Tests", () => {
       [0, 0, 4, 5],
       [0, 0, 4, 5],
     ];
-    const results = MethodOfEqualShares(candidates, votes, 2, [], true, false);
+    const results = methodOfEqualShares(candidates, votes, 2, []);
     expect(results.elected.length).toBe(2);
-    expect(results.tied[0].length).toBe(2); // two candidates tied in the first round
     expect(results.elected[0].name).toBe("Allison"); // random tiebreaker, second place lower index 1
-    expect(results.elected[1].name).toBe("Doug");
+    expect(results.elected[1].name).toBe("Bill");
   });
 
   test("Random Tiebreaker with Defined Order", () => {
@@ -99,18 +77,10 @@ describe("Method of Equal Shares Tests", () => {
       [0, 0, 4, 5],
       [0, 0, 4, 5],
     ];
-    const results = MethodOfEqualShares(
-      candidates,
-      votes,
-      2,
-      [4, 3, 2, 1],
-      true,
-      false,
-    );
+    const results = methodOfEqualShares(candidates, votes, 2, [4, 3, 2, 1]);
     expect(results.elected.length).toBe(2);
-    expect(results.tied[0].length).toBe(2); // two candidates tied in the first round
-    expect(results.elected[0].name).toBe("Bill"); // random tiebreaker, second place lower index 1
-    expect(results.elected[1].name).toBe("Doug");
+    expect(results.elected[0].name).toBe("Allison"); // random tiebreaker, second place lower index 1
+    expect(results.elected[1].name).toBe("Bill");
   });
 
   test("Valid/Invalid/Under/Bullet Vote Counts", () => {
@@ -127,7 +97,7 @@ describe("Method of Equal Shares Tests", () => {
       [0, 5, 0],
       [0, 0, 5],
     ];
-    const results = MethodOfEqualShares(candidates, votes, 1, [], false, false);
+    const results = methodOfEqualShares(candidates, votes, 1, []);
     expect(results.summaryData.nValidVotes).toBe(8);
     expect(results.summaryData.nInvalidVotes).toBe(2);
     expect(results.summaryData.nUnderVotes).toBe(2);

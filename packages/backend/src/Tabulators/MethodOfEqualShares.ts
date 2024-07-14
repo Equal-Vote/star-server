@@ -1,313 +1,436 @@
 import {
   ballot,
   candidate,
-  allocatedScoreResults,
-  allocatedScoreSummaryData,
+  methodOfEqualSharesResults,
+  methodOfEqualSharesSummaryData,
   totalScore,
+  roundResults,
 } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 import { IparsedData } from "./ParseData";
-const Fraction = require("fraction.js");
-import { sortByTieBreakOrder } from "./Star";
 
 const ParseData = require("./ParseData");
 
-const minScore = 0;
-const maxScore = 5;
-
-interface InfluenceBudget {
-  index: number;
-  budget: typeof Fraction;
+interface Cost {
+  [candidateId: string]: number;
 }
 
-export function MethodOfEqualShares(
+interface Utility {
+  [candidateId: string]: { [voterId: string]: number };
+}
+
+export function methodOfEqualShares(
   candidates: string[],
   votes: ballot[],
   nWinners = 3,
   randomTiebreakOrder: number[] = [],
-  breakTiesRandomly = true,
-  enablefiveStarTiebreaker = true,
-) {
+): methodOfEqualSharesResults {
   const parsedData: IparsedData = ParseData(votes);
-  const summaryData = getSummaryData(
+  const totalBudget = parsedData.validVotes.length;
+  const cost = createCostDictionary(candidates);
+  const utility = createUtilityDictionary(candidates, parsedData.scores);
+  const voters = createVoters(parsedData.validVotes);
+  const candidateObjects = createCandidateObjects(
     candidates,
-    parsedData,
     randomTiebreakOrder,
   );
 
-  const results: allocatedScoreResults = {
-    elected: [],
-    tied: [],
-    other: [],
-    roundResults: [],
-    summaryData: summaryData,
+  const { elected, tied, roundResults } = runMethodOfEqualShares(
+    voters,
+    candidateObjects,
+    cost,
+    utility,
+    totalBudget,
+    nWinners,
+  );
+  const summaryData = generateSummaryData(
+    candidateObjects,
+    utility,
+    parsedData,
+  );
+
+  return createMethodOfEqualSharesResults(
+    candidateObjects,
+    elected,
+    tied,
+    roundResults,
+    summaryData,
+  );
+}
+
+function createCostDictionary(candidates: string[]): Cost {
+  return candidates.reduce((acc, _, index) => {
+    acc[index.toString()] = 1;
+    return acc;
+  }, {} as Cost);
+}
+
+function createUtilityDictionary(
+  candidates: string[],
+  scores: number[][],
+): Utility {
+  const utility: Utility = {};
+  candidates.forEach((_, cIndex) => {
+    utility[cIndex.toString()] = {};
+    scores.forEach((score, vIndex) => {
+      utility[cIndex.toString()][vIndex.toString()] = score[cIndex];
+    });
+  });
+  return utility;
+}
+
+function createVoters(validVotes: any[]): { id: string }[] {
+  return validVotes.map((_, index) => ({ id: index.toString() }));
+}
+
+function createCandidateObjects(
+  candidates: string[],
+  randomTiebreakOrder: number[],
+): candidate[] {
+  return candidates.map((name, index) => ({
+    index,
+    name,
+    tieBreakOrder: randomTiebreakOrder[index] || index,
+  }));
+}
+
+function runMethodOfEqualShares(
+  voters: { id: string }[],
+  candidates: candidate[],
+  cost: Cost,
+  utility: Utility,
+  totalBudget: number,
+  nWinners: number,
+): { elected: Set<string>; tied: string[]; roundResults: roundResults[] } {
+  let elected = new Set<string>();
+  const budget = initializeBudget(voters, totalBudget);
+  const totalUtility = calculateTotalUtility(candidates, utility);
+  const supporters = identifySupporters(candidates, voters, utility);
+  const roundResults: roundResults[] = [];
+  let lastTiedCandidates: string[] = [];
+
+  while (elected.size < nWinners) {
+    let { nextCandidate, lowestRho, tiedCandidates } = selectNextCandidate(
+      candidates,
+      elected,
+      cost,
+      supporters,
+      budget,
+      utility,
+      totalUtility,
+    );
+
+    if (!nextCandidate) break;
+
+    if (tiedCandidates.length > 1) {
+      lastTiedCandidates = tiedCandidates;
+      const resolvedTie = breakTies(cost, supporters, tiedCandidates);
+      nextCandidate = resolvedTie[0];
+    } else {
+      lastTiedCandidates = [];
+    }
+
+    elected.add(nextCandidate);
+    updateBudgets(voters, budget, lowestRho, utility[nextCandidate]);
+    roundResults.push(createRoundResult(candidates, elected, nextCandidate));
+  }
+
+  if (elected.size < nWinners) {
+    elected = completeUtilitarian(
+      candidates,
+      cost,
+      utility,
+      totalBudget,
+      elected,
+      nWinners,
+    );
+  }
+
+  return { elected, tied: lastTiedCandidates, roundResults };
+}
+
+function initializeBudget(
+  voters: { id: string }[],
+  totalBudget: number,
+): { [voterId: string]: number } {
+  return voters.reduce(
+    (acc, voter) => {
+      acc[voter.id] = totalBudget / voters.length;
+      return acc;
+    },
+    {} as { [voterId: string]: number },
+  );
+}
+
+function calculateTotalUtility(
+  candidates: candidate[],
+  utility: Utility,
+): { [candidateId: string]: number } {
+  return candidates.reduce(
+    (acc, candidate) => {
+      acc[candidate.index.toString()] = Object.values(
+        utility[candidate.index.toString()],
+      ).reduce((a, b) => a + b, 0);
+      return acc;
+    },
+    {} as { [candidateId: string]: number },
+  );
+}
+
+function identifySupporters(
+  candidates: candidate[],
+  voters: { id: string }[],
+  utility: Utility,
+): { [candidateId: string]: Set<string> } {
+  return candidates.reduce(
+    (acc, candidate) => {
+      acc[candidate.index.toString()] = new Set(
+        voters
+          .filter((voter) => utility[candidate.index.toString()][voter.id] > 0)
+          .map((voter) => voter.id),
+      );
+      return acc;
+    },
+    {} as { [candidateId: string]: Set<string> },
+  );
+}
+
+function selectNextCandidate(
+  candidates: candidate[],
+  elected: Set<string>,
+  cost: Cost,
+  supporters: { [candidateId: string]: Set<string> },
+  budget: { [voterId: string]: number },
+  utility: Utility,
+  totalUtility: { [candidateId: string]: number },
+): {
+  nextCandidate: string | null;
+  lowestRho: number;
+  tiedCandidates: string[];
+} {
+  let nextCandidate: string | null = null;
+  let lowestRho = Infinity;
+  let tiedCandidates: string[] = [];
+
+  candidates.forEach((candidate) => {
+    const candidateId = candidate.index.toString();
+    if (
+      !elected.has(candidateId) &&
+      isCandidateAffordable(candidateId, cost, supporters, budget)
+    ) {
+      const rho = calculateRho(
+        candidateId,
+        cost,
+        supporters,
+        budget,
+        utility,
+        totalUtility,
+      );
+
+      if (rho < lowestRho) {
+        nextCandidate = candidateId;
+        lowestRho = rho;
+        tiedCandidates = [candidateId];
+      } else if (isClose(rho, lowestRho)) {
+        tiedCandidates.push(candidateId);
+      }
+    }
+  });
+
+  return { nextCandidate, lowestRho, tiedCandidates };
+}
+
+function isCandidateAffordable(
+  candidateId: string,
+  cost: Cost,
+  supporters: { [candidateId: string]: Set<string> },
+  budget: { [voterId: string]: number },
+): boolean {
+  const availableBudget = Array.from(supporters[candidateId]).reduce(
+    (sum, voterId) => sum + budget[voterId],
+    0,
+  );
+  return _leq(cost[candidateId], availableBudget);
+}
+
+function calculateRho(
+  candidateId: string,
+  cost: Cost,
+  supporters: { [candidateId: string]: Set<string> },
+  budget: { [voterId: string]: number },
+  utility: Utility,
+  totalUtility: { [candidateId: string]: number },
+): number {
+  const supportersSorted = Array.from(supporters[candidateId]).sort(
+    (a, b) =>
+      budget[a] / utility[candidateId][a] - budget[b] / utility[candidateId][b],
+  );
+  let price = cost[candidateId];
+  let util = totalUtility[candidateId];
+
+  for (const voterId of supportersSorted) {
+    if (_leq(price * utility[candidateId][voterId], budget[voterId] * util)) {
+      break;
+    }
+    price -= budget[voterId];
+    util -= utility[candidateId][voterId];
+  }
+
+  return !isClose(util, 0) && !isClose(price, 0)
+    ? price / util
+    : budget[supportersSorted[supportersSorted.length - 1]] /
+        utility[candidateId][supportersSorted[supportersSorted.length - 1]];
+}
+
+function updateBudgets(
+  voters: { id: string }[],
+  budget: { [voterId: string]: number },
+  lowestRho: number,
+  candidateUtility: { [voterId: string]: number },
+): void {
+  voters.forEach((voter) => {
+    budget[voter.id] -= Math.min(
+      budget[voter.id],
+      lowestRho * candidateUtility[voter.id],
+    );
+  });
+}
+
+function createRoundResult(
+  candidates: candidate[],
+  elected: Set<string>,
+  nextCandidate: string,
+): roundResults {
+  return {
+    winners: candidates.filter((c) => elected.has(c.index.toString())),
+    runner_up: candidates.filter((c) => c.index.toString() === nextCandidate),
+    logs: [`Elected candidate: ${nextCandidate}`],
+  };
+}
+
+function createMethodOfEqualSharesResults(
+  candidateObjects: candidate[],
+  elected: Set<string>,
+  tied: string[],
+  roundResults: roundResults[],
+  summaryData: methodOfEqualSharesSummaryData,
+): methodOfEqualSharesResults {
+  return {
+    elected: candidateObjects.filter((c) => elected.has(c.index.toString())),
+    tied: candidateObjects.filter((c) => tied.includes(c.index.toString())),
+    other: candidateObjects.filter(
+      (c) =>
+        !elected.has(c.index.toString()) && !tied.includes(c.index.toString()),
+    ),
+    roundResults,
+    summaryData,
     tieBreakType: "none",
   };
-  let remainingCandidates = [...summaryData.candidates];
-  const scoresNorm = normalizeArray(parsedData.scores, maxScore);
-  const V = scoresNorm.length;
-  const quota = new Fraction(V).div(nWinners);
-  let num_candidates = candidates.length;
-
-  let influenceBudgets: (typeof Fraction)[] = Array(V).fill(new Fraction(1));
-
-  while (results.elected.length < nWinners) {
-    let weighted_scores: ballotFrac[] = Array(scoresNorm.length);
-    let influenceCosts: (typeof Fraction)[] = Array(num_candidates).fill(
-      new Fraction(0),
-    );
-
-    scoresNorm.forEach((ballot, b) => {
-      weighted_scores[b] = [];
-      ballot.forEach((score, s) => {
-        weighted_scores[b][s] = score.mul(influenceBudgets[b]);
-        influenceCosts[s] = influenceCosts[s].add(weighted_scores[b][s]);
-      });
-    });
-
-    summaryData.weightedScoresByRound.push(
-      influenceCosts.map((w) => w.valueOf()),
-    );
-
-    const maxAndTies = indexOfMax(
-      influenceCosts,
-      summaryData.candidates,
-      breakTiesRandomly,
-    );
-    const w = maxAndTies.maxIndex;
-    results.tied.push(maxAndTies.ties);
-    results.elected.push(summaryData.candidates[w]);
-
-    scoresNorm.forEach((ballot, b) => {
-      ballot[w] = new Fraction(0);
-    });
-
-    remainingCandidates = remainingCandidates.filter(
-      (c) => c != summaryData.candidates[w],
-    );
-
-    influenceBudgets = updateInfluenceBudgets(
-      weighted_scores,
-      influenceBudgets,
-      quota,
-      w,
-    );
-  }
-
-  results.other = remainingCandidates;
-  return results;
 }
 
-function updateInfluenceBudgets(
-  weighted_scores: ballotFrac[],
-  influenceBudgets: (typeof Fraction)[],
-  quota: typeof Fraction,
-  winnerIndex: number,
-): (typeof Fraction)[] {
-  // Calculate total influence spent on the winning candidate
-  let totalSpent = new Fraction(0);
-  weighted_scores.forEach((ballot, i) => {
-    totalSpent = totalSpent.add(ballot[winnerIndex]);
+function completeUtilitarian(
+  candidates: candidate[],
+  cost: Cost,
+  utility: Utility,
+  totalBudget: number,
+  W: Set<string>,
+  nWinners: number,
+): Set<string> {
+  const util: { [candidateId: string]: number } = {};
+  candidates.forEach((candidate) => {
+    util[candidate.index.toString()] = Object.values(
+      utility[candidate.index.toString()],
+    ).reduce((a, b) => a + b, 0);
   });
 
-  // If the total spent influence is greater than the quota, redistribute
-  if (totalSpent.compare(quota) > 0) {
-    const excessInfluence = totalSpent.sub(quota);
-    const spentFraction = quota.div(totalSpent);
+  let committeeCost = Array.from(W).reduce(
+    (sum, candidateId) => sum + cost[candidateId],
+    0,
+  );
 
-    // Reduce the influence budget proportionally
-    influenceBudgets = influenceBudgets.map((budget, i) => {
-      if (weighted_scores[i][winnerIndex].compare(0) > 0) {
-        const spent = weighted_scores[i][winnerIndex];
-        const reducedSpent = spent.mul(spentFraction);
-        const returnedInfluence = spent.sub(reducedSpent);
-        return budget.add(returnedInfluence);
-      } else {
-        return budget;
-      }
-    });
-  } else {
-    // If not, fully deduct the influence spent on the winner
-    influenceBudgets = influenceBudgets.map((budget, i) => {
-      const spent = weighted_scores[i][winnerIndex];
-      return budget.sub(spent);
-    });
-  }
+  while (W.size < nWinners) {
+    let nextCandidate: string | null = null;
+    let highestUtil = -Infinity;
 
-  return influenceBudgets;
-}
-
-type ballotFrac = (typeof Fraction)[];
-
-function getSummaryData(
-  candidates: string[],
-  parsedData: IparsedData,
-  randomTiebreakOrder: number[],
-): allocatedScoreSummaryData {
-  const nCandidates = candidates.length;
-  if (randomTiebreakOrder.length < nCandidates) {
-    randomTiebreakOrder = candidates.map((c, index) => index);
-  }
-  // Initialize summary data structures
-  // Total scores for each candidate, includes candidate indexes for easier sorting
-  const totalScores: totalScore[] = Array(nCandidates);
-  for (let i = 0; i < nCandidates; i++) {
-    totalScores[i] = { index: i, score: 0 };
-  }
-
-  // Score histograms for data analysis and five-star tiebreakers
-  const scoreHist: number[][] = Array(nCandidates);
-  for (let i = 0; i < nCandidates; i++) {
-    scoreHist[i] = Array(6).fill(0);
-  }
-
-  // Matrix for voter preferences
-  const preferenceMatrix: number[][] = Array(nCandidates);
-  const pairwiseMatrix: number[][] = Array(nCandidates);
-  for (let i = 0; i < nCandidates; i++) {
-    preferenceMatrix[i] = Array(nCandidates).fill(0);
-    pairwiseMatrix[i] = Array(nCandidates).fill(0);
-  }
-  let nBulletVotes = 0;
-
-  // Iterate through ballots and populate data structures
-  parsedData.scores.forEach((vote) => {
-    let nSupported = 0;
-    for (let i = 0; i < nCandidates; i++) {
-      totalScores[i].score += vote[i];
-      scoreHist[i][vote[i]] += 1;
-      for (let j = 0; j < nCandidates; j++) {
-        if (i !== j) {
-          if (vote[i] > vote[j]) {
-            preferenceMatrix[i][j] += 1;
-          }
+    candidates.forEach((candidate) => {
+      const candidateId = candidate.index.toString();
+      if (
+        !W.has(candidateId) &&
+        _leq(committeeCost + cost[candidateId], totalBudget)
+      ) {
+        const utilityPerCost = util[candidateId] / cost[candidateId];
+        if (utilityPerCost > highestUtil) {
+          nextCandidate = candidateId;
+          highestUtil = utilityPerCost;
         }
       }
-      if (vote[i] > 0) {
-        nSupported += 1;
-      }
-    }
-    if (nSupported === 1) {
-      nBulletVotes += 1;
-    }
-  });
+    });
 
-  for (let i = 0; i < nCandidates; i++) {
-    for (let j = 0; j < nCandidates; j++) {
-      if (preferenceMatrix[i][j] > preferenceMatrix[j][i]) {
-        pairwiseMatrix[i][j] = 1;
-      } else if (preferenceMatrix[i][j] < preferenceMatrix[j][i]) {
-        pairwiseMatrix[j][i] = 1;
-      }
+    if (nextCandidate === null) {
+      break;
     }
+
+    W.add(nextCandidate);
+    committeeCost += cost[nextCandidate];
   }
-  const candidatesWithIndexes: candidate[] = candidates.map(
-    (candidate, index) => ({
-      index: index,
-      name: candidate,
-      tieBreakOrder: randomTiebreakOrder[index],
-    }),
-  );
-  return {
-    candidates: candidatesWithIndexes,
-    totalScores,
-    scoreHist,
-    preferenceMatrix,
-    pairwiseMatrix,
-    nValidVotes: parsedData.validVotes.length,
-    nInvalidVotes: parsedData.invalidVotes.length,
-    nUnderVotes: parsedData.underVotes,
-    nBulletVotes: nBulletVotes,
-    splitPoints: [],
-    spentAboves: [],
-    weight_on_splits: [],
-    weightedScoresByRound: [],
-    noPreferenceStars: [],
-  };
+
+  return W;
 }
 
-function sortData(
-  summaryData: allocatedScoreSummaryData,
-  order: candidate[],
-): allocatedScoreSummaryData {
-  // sorts summary data to be in specified order
-  const indexOrder = order.map((c) => c.index);
-  const candidates = indexOrder.map((ind) => summaryData.candidates[ind]);
-  candidates.forEach((c, i) => {
-    c.index = i;
-  });
-  const totalScores = indexOrder.map((ind, i) => ({
-    index: i,
-    score: summaryData.totalScores[ind].score,
+function _leq(a: number, b: number): boolean {
+  return a < b || isClose(a, b);
+}
+
+function isClose(a: number, b: number, epsilon: number = 1e-9): boolean {
+  return Math.abs(a - b) < epsilon;
+}
+
+function generateSummaryData(
+  candidates: candidate[],
+  utility: Utility,
+  parsedData: IparsedData,
+): methodOfEqualSharesSummaryData {
+  const totalScores: totalScore[] = candidates.map((candidate) => ({
+    index: candidate.index,
+    score: Object.values(utility[candidate.index.toString()]).reduce(
+      (a, b) => a + b,
+      0,
+    ),
   }));
-  const scoreHist = indexOrder.map((ind) => summaryData.scoreHist[ind]);
-  const preferenceMatrix = sortMatrix(summaryData.preferenceMatrix, indexOrder);
-  const pairwiseMatrix = sortMatrix(summaryData.pairwiseMatrix, indexOrder);
+
+  const nBulletVotes = parsedData.scores.reduce((count, vote: ballot) => {
+    const nonZeroScores = vote.filter((score) => score > 0).length;
+    return count + (nonZeroScores === 1 ? 1 : 0);
+  }, 0);
+
   return {
     candidates,
     totalScores,
-    scoreHist,
-    preferenceMatrix,
-    pairwiseMatrix,
-    nValidVotes: summaryData.nValidVotes,
-    nInvalidVotes: summaryData.nInvalidVotes,
-    nUnderVotes: summaryData.nUnderVotes,
-    nBulletVotes: summaryData.nBulletVotes,
-    splitPoints: summaryData.splitPoints,
-    spentAboves: summaryData.spentAboves,
-    weight_on_splits: summaryData.weight_on_splits,
-    weightedScoresByRound: summaryData.weightedScoresByRound,
-    noPreferenceStars: [],
+    nValidVotes: parsedData.validVotes.length,
+    nInvalidVotes: parsedData.invalidVotes.length,
+    nUnderVotes: parsedData.underVotes,
+    nBulletVotes,
   };
 }
 
-function indexOfMax(
-  arr: (typeof Fraction)[],
-  candidates: candidate[],
-  breakTiesRandomly: boolean,
-) {
-  if (arr.length === 0) {
-    return { maxIndex: -1, ties: [] };
-  }
+function breakTies(
+  cost: Cost,
+  supporters: { [candidateId: string]: Set<string> },
+  choices: string[],
+): string[] {
+  let remaining = choices.slice();
+  const bestCost = Math.min(
+    ...remaining.map((candidateId) => cost[candidateId]),
+  );
+  remaining = remaining.filter((candidateId) =>
+    isClose(cost[candidateId], bestCost),
+  );
 
-  var max = arr[0];
-  var maxIndex = 0;
-  var ties: candidate[] = [candidates[0]];
-  for (var i = 1; i < arr.length; i++) {
-    if (max.equals(arr[i])) {
-      ties.push(candidates[i]);
-    } else if (arr[i].compare(max) > 0) {
-      maxIndex = i;
-      max = arr[i];
-      ties = [candidates[i]];
-    }
-  }
-  if (breakTiesRandomly && ties.length > 1) {
-    maxIndex = candidates.indexOf(sortByTieBreakOrder(ties)[0]);
-  }
-  return { maxIndex, ties };
-}
+  const bestCount = Math.max(
+    ...remaining.map((candidateId) => supporters[candidateId].size),
+  );
+  remaining = remaining.filter(
+    (candidateId) => supporters[candidateId].size === bestCount,
+  );
 
-function normalizeArray(scores: ballot[], maxScore: number) {
-  // Normalize scores array
-  var scoresNorm: ballotFrac[] = Array(scores.length);
-  scores.forEach((row, r) => {
-    scoresNorm[r] = [];
-    row.forEach((score, s) => {
-      scoresNorm[r][s] = new Fraction(score).div(maxScore);
-    });
-  });
-  return scoresNorm;
-}
-
-function sortMatrix(matrix: number[][], order: number[]) {
-  var newMatrix: number[][] = Array(order.length);
-  for (let i = 0; i < order.length; i++) {
-    newMatrix[i] = Array(order.length).fill(0);
-  }
-  order.forEach((i, iInd) => {
-    order.forEach((j, jInd) => {
-      newMatrix[iInd][jInd] = matrix[i][j];
-    });
-  });
-  return newMatrix;
+  return remaining;
 }
