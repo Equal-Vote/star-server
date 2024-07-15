@@ -83,7 +83,7 @@ const templateMappers = {
             ...election.settings,
             voter_authentication: {
                 ...election.settings.voter_authentication,
-                ip_address: true
+                voter_id: true
             },
         }
     }),
@@ -94,7 +94,7 @@ const templateMappers = {
             ...election.settings,
             voter_authentication: {
                 ...election.settings.voter_authentication,
-                ip_address: true
+                voter_id: true
             },
         }
     }),
