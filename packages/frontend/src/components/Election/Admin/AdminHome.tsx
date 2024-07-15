@@ -541,7 +541,7 @@ const AdminHome = () => {
                     <ElectionSettings />
                 </Grid>
                 <PreviewBallotSection election={election} permissions={permissions} />
-                {(election.settings.voter_access === 'closed' || election.state !== 'draft') && <>
+                {(election.settings.voter_access === 'closed') && <>
                     <Divider style={{ width: '100%' }} />
                     <VotersSection election={election} permissions={permissions} />
                 </>}
