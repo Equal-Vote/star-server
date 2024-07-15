@@ -13,6 +13,7 @@ export default function ElectionSettings() {
     const { election, refreshElection, permissions, updateElection } = useElection()
 
     const [editedElectionSettings, setEditedElectionSettings] = useState(election.settings)
+    const [editedIsPublic, setEditedIsPublic] = useState(election.is_public)
 
     const applySettingsUpdate = (updateFunc: (settings) => any) => {
         const settingsCopy = structuredClone(editedElectionSettings)
@@ -33,6 +34,7 @@ export default function ElectionSettings() {
         if (!validatePage()) return
         const success = await updateElection(election => {
             election.settings = editedElectionSettings
+            election.is_public = editedIsPublic
         })
         if (!success) return false
         await refreshElection()
@@ -152,6 +154,19 @@ export default function ElectionSettings() {
                                 />
                                 <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                     Requires voters to confirm that they have read ballot instructions in order to vote.
+                                </FormHelperText>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            id="publicly-searchable"
+                                            name="Publicly Searchable"
+                                            checked={editedIsPublic == true}
+                                            onChange={(e) => setEditedIsPublic(e.target.checked )}
+                                        />}
+                                    label="Publicly Searchable"
+                                />
+                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                    Allow election to be searchable in the public elections tab.
                                 </FormHelperText>
                             </FormGroup>
                         </FormControl>
