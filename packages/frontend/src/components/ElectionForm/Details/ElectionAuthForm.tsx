@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { FormControl, FormControlLabel, FormLabel, Grid, Paper, Radio, Typography } from "@mui/material"
 import useElection from '../../ElectionContextProvider';
+import { useSubstitutedTranslation } from '~/components/util';
 
 export default function ElectionAuthForm() {
 
@@ -15,6 +16,9 @@ export default function ElectionAuthForm() {
         await refreshElection()
     }
 
+    
+    const {t} = useSubstitutedTranslation('election');
+
     return (
         <Paper elevation={3}>
             <Grid container
@@ -25,11 +29,11 @@ export default function ElectionAuthForm() {
             >
                 <Grid xs={12}>
                     <Typography gutterBottom variant="h4" component="h4">
-                        Voter Authentication
+                        {t('admin_home.voter_authentication.form_label')}
                     </Typography>
                 </Grid>
                 <FormControl>
-                    <FormLabel id="demo-radio-buttons-group-label">Limit to one vote per...</FormLabel>
+                    <FormLabel id="demo-radio-buttons-group-label">{t('admin_home.voter_authentication.help_text')}</FormLabel>
                     <FormControlLabel value="female" control={
                         <Radio
                             disabled = {election.state !== 'draft'}
@@ -37,7 +41,7 @@ export default function ElectionAuthForm() {
                             onChange={() => handleUpdate({})}
                             value="none"
                         />}
-                        label="No Limit" />
+                        label={t('admin_home.voter_authentication.no_limit_label')} />
                     <FormControlLabel value="female" control={
                         <Radio
                             disabled = {election.state !== 'draft'}
@@ -45,7 +49,7 @@ export default function ElectionAuthForm() {
                             onChange={() => handleUpdate({ ip_address: true })}
                             value="ip"
                         />}
-                        label="IP Address" />
+                        label={t('admin_home.voter_authentication.ip_label')} />
                     <FormControlLabel value="female" control={
                         <Radio
                             disabled = {election.state !== 'draft'}
@@ -53,7 +57,7 @@ export default function ElectionAuthForm() {
                             onChange={() => handleUpdate({ voter_id: true })}
                             value="device_id"
                         />}
-                        label="Device" />
+                        label={t('admin_home.voter_authentication.device_label')} />
 
                     <FormControlLabel value="female" control={
                         <Radio
@@ -62,7 +66,7 @@ export default function ElectionAuthForm() {
                             onChange={() => handleUpdate({ email: true })}
                             value="email"
                         />}
-                        label="Login Email Address" />
+                        label={t('admin_home.voter_authentication.email_label')} />
                 </FormControl>
             </Grid>
         </Paper>
