@@ -16,6 +16,7 @@ import ElectionSettings from '../../ElectionForm/ElectionSettings';
 import structuredClone from '@ungap/structured-clone';
 import useAuthSession from '../../AuthSessionContextProvider';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
+import ElectionAuthForm from '~/components/ElectionForm/Details/ElectionAuthForm';
 const hasPermission = (permissions: string[], requiredPermission: string) => {
     return (permissions && permissions.includes(requiredPermission))
 }
@@ -528,6 +529,11 @@ const AdminHome = () => {
                 <Grid xs={12} sx={{ p: 1 }}>
                     <ElectionDetailsInlineForm />
                 </Grid>
+                {(election.settings.voter_access === 'open') && 
+                    <Grid xs={12} sx={{ p: 1 }}>
+                        <ElectionAuthForm />
+                    </Grid>
+                }
                 <Grid xs={12} sx={{ p: 1 }}>
                     <Races />
                 </Grid>
@@ -535,7 +541,7 @@ const AdminHome = () => {
                     <ElectionSettings />
                 </Grid>
                 <PreviewBallotSection election={election} permissions={permissions} />
-                {(election.settings.voter_access === 'closed' || election.state !== 'draft') && <>
+                {(election.settings.voter_access === 'closed') && <>
                     <Divider style={{ width: '100%' }} />
                     <VotersSection election={election} permissions={permissions} />
                 </>}

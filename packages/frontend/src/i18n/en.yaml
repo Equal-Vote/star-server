@@ -170,6 +170,14 @@ election_home:
   drafted: This election is still being drafted
   archived: This election has been archived
 
+admin_home:
+  voter_authentication:
+    form_label: Voter Authentication
+    help_text: Limit to one {{vote}} per...
+    no_limit_label: No Limit
+    ip_label: IP Address
+    device_label: Device
+    email_label: Login Email Address
 # Ballot
 ballot:
   this_election_uses: This election uses {{voting_method}}
@@ -401,12 +409,14 @@ keyword:
     candidates: Candidates
     race: Race
     ballot: Ballot
+    vote: vote
   poll:
     election: Poll
     candidate: Option
     candidates: Options
     race: Question
     ballot: Response
+    vote: response
 
   yes: Yes
   no: No
