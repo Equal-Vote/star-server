@@ -16,8 +16,7 @@ export default function ElectionAuthForm() {
         await refreshElection()
     }
 
-    
-    const {t} = useSubstitutedTranslation('election');
+    const {t} = useSubstitutedTranslation(election.settings.term_type);
 
     return (
         <Paper elevation={3}>
@@ -34,7 +33,7 @@ export default function ElectionAuthForm() {
                 </Grid>
                 <FormControl>
                     <FormLabel id="demo-radio-buttons-group-label">{t('admin_home.voter_authentication.help_text')}</FormLabel>
-                    <FormControlLabel value="female" control={
+                    <FormControlLabel control={
                         <Radio
                             disabled = {election.state !== 'draft'}
                             checked={none}
@@ -42,7 +41,7 @@ export default function ElectionAuthForm() {
                             value="none"
                         />}
                         label={t('admin_home.voter_authentication.no_limit_label')} />
-                    <FormControlLabel value="female" control={
+                    <FormControlLabel control={
                         <Radio
                             disabled = {election.state !== 'draft'}
                             checked={ip}
@@ -50,7 +49,7 @@ export default function ElectionAuthForm() {
                             value="ip"
                         />}
                         label={t('admin_home.voter_authentication.ip_label')} />
-                    <FormControlLabel value="female" control={
+                    <FormControlLabel control={
                         <Radio
                             disabled = {election.state !== 'draft'}
                             checked={device_id}
@@ -59,7 +58,7 @@ export default function ElectionAuthForm() {
                         />}
                         label={t('admin_home.voter_authentication.device_label')} />
 
-                    <FormControlLabel value="female" control={
+                    <FormControlLabel control={
                         <Radio
                             disabled = {election.state !== 'draft'}
                             checked={email}

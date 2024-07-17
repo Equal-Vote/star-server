@@ -173,7 +173,7 @@ election_home:
 admin_home:
   voter_authentication:
     form_label: Voter Authentication
-    help_text: Limit to one vote per...
+    help_text: Limit to one {{vote}} per...
     no_limit_label: No Limit
     ip_label: IP Address
     device_label: Device
@@ -409,12 +409,14 @@ keyword:
     candidates: Candidates
     race: Race
     ballot: Ballot
+    vote: vote
   poll:
     election: Poll
     candidate: Option
     candidates: Options
     race: Question
     ballot: Response
+    vote: response
 
   yes: Yes
   no: No
