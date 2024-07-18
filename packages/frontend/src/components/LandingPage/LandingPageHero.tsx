@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import React, { useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import QuickPoll from '../ElectionForm/QuickPoll'
 import useAuthSession from '../AuthSessionContextProvider'
 import { useThemeSelector } from '../../theme'
@@ -18,13 +18,17 @@ import ApprovalBallotView from '../Election/Voting/ApprovalBallotView'
 import RankedBallotView from '../Election/Voting/RankedBallotView'
 import { useSubstitutedTranslation } from '../util'
 import { useTranslation } from 'react-i18next'
+import { CreateElectionContext } from '../ElectionForm/CreateElectionDialog'
+import { Button } from '@mui/material'
 
 export default ({}) => {
     const authSession = useAuthSession();
     const themeSelector = useThemeSelector();
     const flags = useFeatureFlags();
     const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
-
+    
+    const createElectionContext = useContext(CreateElectionContext);
+    
     const [transitionStep, setTransitionStep] = useState(10000);
     const [prevMethodIndex, setPrevMethodIndex] = useState(0);
     const [methodIndex, setMethodIndex] = useState(0);
@@ -144,6 +148,22 @@ export default ({}) => {
                             {t(`landing_page.hero.methods.${methodKeys[imgIndex]}.recommendation`)} 
                         </Typography>
                     </>:<>
+                        {authSession.isLoggedIn() ?
+                            <Button
+                                variant="outlined"
+                                onClick={() => createElectionContext.openDialog()}
+                                sx={{
+                                    width: '90%',
+                                    p: 1,
+                                    m: 'auto',
+                                    boxShadow: 2,
+                                    fontWeight: 'bold',
+                                    fontSize: 16,
+                                }}
+                            >
+                            {t('landing_page.quick_poll.continue_with_editor')}
+                        </Button>
+                        : <>
                         <Typography variant="h5">
                             {t(`landing_page.hero.methods.${methodKeys[imgIndex]}.short_description`)} 
                         </Typography>
@@ -157,6 +177,7 @@ export default ({}) => {
                         >
                             {t('landing_page.hero.methods.more_methods.sign_in')}
                         </StyledButton>
+                        </>}
                     </>}
                 </Box>
             </Box>
