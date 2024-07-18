@@ -31,7 +31,7 @@ export default () => {
     return <Box
         sx={{
             display: 'flex',
-            flexDirection: 'row',
+            flexDirection: {xs: 'column', md:'row'},
             margin: 'auto',
             width: '100%',
             maxWidth: '1300px',
