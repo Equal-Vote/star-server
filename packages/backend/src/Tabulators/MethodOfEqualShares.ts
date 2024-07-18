@@ -22,7 +22,7 @@ export function methodOfEqualShares(
   candidates: string[],
   votes: ballot[],
   nWinners = 3,
-  randomTiebreakOrder: number[] = [],
+  randomTiebreakOrder: string[] = [],
 ): methodOfEqualSharesResults {
   const parsedData: IparsedData = ParseData(votes);
   const totalBudget = parsedData.validVotes.length;
@@ -33,6 +33,30 @@ export function methodOfEqualShares(
     candidates,
     randomTiebreakOrder,
   );
+  const totalUtility = calculateTotalUtility(candidateObjects, utility);
+
+  // Check for unbreakable ties before running method
+  const unbreakableTies = getUnbreakableTies(candidateObjects, cost, totalUtility);
+  if (unbreakableTies.length > 0) {
+    // Have election officials set tie-break order for each group
+    const tieBreakOrder = setTieBreakOrder(unbreakableTies);
+    // Re-run method with tie-break order
+    const { elected, tied, roundResults } = runMethodOfEqualShares(voters, candidateObjects, cost, utility, totalBudget, nWinners, tieBreakOrder);
+
+    const summaryData = generateSummaryData(
+      candidateObjects,
+      utility,
+      parsedData,
+    );
+
+    return createMethodOfEqualSharesResults(
+      candidateObjects,
+      elected,
+      tied,
+      roundResults,
+      summaryData,
+    );
+  }
 
   const { elected, tied, roundResults } = runMethodOfEqualShares(
     voters,
@@ -41,7 +65,17 @@ export function methodOfEqualShares(
     utility,
     totalBudget,
     nWinners,
+    randomTiebreakOrder,
   );
+
+  // If there are unbroken ties, throw error
+  if (tied.length > 0) {
+    throw new Error(
+      `Unresolved tie between candidates: ${tied.join(", ")}. ` +
+        `Have election officials set tie-break order and re-run.`,
+    );
+  }
+
   const summaryData = generateSummaryData(
     candidateObjects,
     utility,
@@ -56,7 +90,6 @@ export function methodOfEqualShares(
     summaryData,
   );
 }
-
 function createCostDictionary(candidates: string[]): Cost {
   return candidates.reduce((acc, _, index) => {
     acc[index.toString()] = 1;
@@ -84,12 +117,14 @@ function createVoters(validVotes: any[]): { id: string }[] {
 
 function createCandidateObjects(
   candidates: string[],
-  randomTiebreakOrder: number[],
+  randomTiebreakOrder: string[],
 ): candidate[] {
   return candidates.map((name, index) => ({
     index,
     name,
-    tieBreakOrder: randomTiebreakOrder[index] || index,
+    tieBreakOrder: randomTiebreakOrder.indexOf(name.toString()) !== -1
+      ? randomTiebreakOrder.indexOf(name.toString())
+      : index,
   }));
 }
 
@@ -100,6 +135,7 @@ function runMethodOfEqualShares(
   utility: Utility,
   totalBudget: number,
   nWinners: number,
+  tieBreakOrder: string[],
 ): { elected: Set<string>; tied: string[]; roundResults: roundResults[] } {
   let elected = new Set<string>();
   const budget = initializeBudget(voters, totalBudget);
@@ -123,7 +159,12 @@ function runMethodOfEqualShares(
 
     if (tiedCandidates.length > 1) {
       lastTiedCandidates = tiedCandidates;
-      const resolvedTie = breakTies(cost, supporters, tiedCandidates);
+      const resolvedTie = breakTies(
+        cost,
+        totalUtility,
+        tiedCandidates,
+        tieBreakOrder,
+      );
       nextCandidate = resolvedTie[0];
     } else {
       lastTiedCandidates = [];
@@ -142,12 +183,12 @@ function runMethodOfEqualShares(
       totalBudget,
       elected,
       nWinners,
+      tieBreakOrder,
     );
   }
 
   return { elected, tied: lastTiedCandidates, roundResults };
 }
-
 function initializeBudget(
   voters: { id: string }[],
   totalBudget: number,
@@ -334,6 +375,7 @@ function completeUtilitarian(
   totalBudget: number,
   W: Set<string>,
   nWinners: number,
+  tieBreakOrder: string[],
 ): Set<string> {
   const util: { [candidateId: string]: number } = {};
   candidates.forEach((candidate) => {
@@ -350,6 +392,7 @@ function completeUtilitarian(
   while (W.size < nWinners) {
     let nextCandidate: string | null = null;
     let highestUtil = -Infinity;
+    let tiedCandidates: string[] = [];
 
     candidates.forEach((candidate) => {
       const candidateId = candidate.index.toString();
@@ -361,12 +404,20 @@ function completeUtilitarian(
         if (utilityPerCost > highestUtil) {
           nextCandidate = candidateId;
           highestUtil = utilityPerCost;
+          tiedCandidates = [candidateId];
+        } else if (isClose(utilityPerCost, highestUtil)) {
+          tiedCandidates.push(candidateId);
         }
       }
     });
 
     if (nextCandidate === null) {
       break;
+    }
+
+    if (tiedCandidates.length > 1) {
+      const resolvedTie = breakTies(cost, util, tiedCandidates, tieBreakOrder);
+      nextCandidate = resolvedTie[0];
     }
 
     W.add(nextCandidate);
@@ -414,10 +465,13 @@ function generateSummaryData(
 
 function breakTies(
   cost: Cost,
-  supporters: { [candidateId: string]: Set<string> },
+  totalUtility: { [candidateId: string]: number },
   choices: string[],
+  tieBreakOrder: string[],
 ): string[] {
   let remaining = choices.slice();
+
+  // Select candidate(s) with lowest cost
   const bestCost = Math.min(
     ...remaining.map((candidateId) => cost[candidateId]),
   );
@@ -425,12 +479,83 @@ function breakTies(
     isClose(cost[candidateId], bestCost),
   );
 
+  if (remaining.length === 1) {
+    return remaining;
+  }
+
+  // If tied on cost, select candidate(s) with highest initial vote count
   const bestCount = Math.max(
-    ...remaining.map((candidateId) => supporters[candidateId].size),
+    ...remaining.map((candidateId) => totalUtility[candidateId]),
   );
   remaining = remaining.filter(
-    (candidateId) => supporters[candidateId].size === bestCount,
+    (candidateId) => totalUtility[candidateId] === bestCount,
   );
 
-  return remaining;
+  if (remaining.length === 1) {
+    return remaining;
+  }
+
+  // If still tied, use pre-set tie-break order
+  const orderedRemaining = remaining.sort(
+    (a, b) => tieBreakOrder.indexOf(a) - tieBreakOrder.indexOf(b),
+  );
+
+  return orderedRemaining;
+}
+
+function getUnbreakableTies(
+  candidates: candidate[],
+  cost: Cost,
+  totalUtility: { [candidateId: string]: number },
+): string[][] {
+  const tiedGroups: string[][] = [];
+
+  // Group candidates by cost and initial vote count
+  const groupedByCost = groupBy(candidates, (c) => cost[c.index.toString()]);
+
+  for (const candidateGroup of Object.values(groupedByCost)) {
+    const groupedByVotes = groupBy(
+      candidateGroup,
+      (c) => totalUtility[c.index.toString()],
+    );
+
+    for (const tiedGroup of Object.values(groupedByVotes)) {
+      if (tiedGroup.length > 1) {
+        tiedGroups.push(tiedGroup.map((c) => c.index.toString()));
+      }
+    }
+  }
+
+  return tiedGroups;
+}
+
+function setTieBreakOrder(tiedGroups: string[][]): string[] {
+  const tieBreakOrder: string[] = [];
+
+  for (const tiedGroup of tiedGroups) {
+    // Randomly permute tied group to determine order
+    const groupOrder = shuffle(tiedGroup);
+    tieBreakOrder.push(...groupOrder);
+  }
+
+  return tieBreakOrder;
+}
+
+function shuffle<T>(array: T[]): T[] {
+  const shuffled = array.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+
+function groupBy<T, K extends string | number | symbol>(array: T[], keyFn: (item: T) => K): Record<K, T[]> {
+  return array.reduce((groups, item) => {
+    const key = keyFn(item);
+    groups[key] = groups[key] || [];
+    groups[key].push(item);
+    return groups;
+  }, {} as Record<K, T[]>);
 }
