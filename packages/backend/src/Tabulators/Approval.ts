@@ -8,7 +8,10 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
   breakTiesRandomly = true // hard coding this for now
 
   const parsedData = ParseData(votes, getApprovalBallotValidity)
+  console.log('candidates', candidates)
+  console.log('parsedData', parsedData)
   const summaryData = getSummaryData(candidates, parsedData, randomTiebreakOrder)
+  console.log('summaryData', summaryData)
   const results: approvalResults = {
     elected: [],
     tied: [],
@@ -21,7 +24,7 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
   let scoresLeft = [...summaryData.totalScores];
 
   for(let w = 0; w < nWinners; w++){
-    let {roundResults, tieBreakType, tiedCandidates} = SingleWinnerApproval(scoresLeft, summaryData.candidates);
+    let {roundResults, tieBreakType, tiedCandidates} = singleWinnerApproval(scoresLeft, summaryData.candidates);
 
     results.elected.push(...roundResults.winners);
     results.roundResults.push(roundResults);
@@ -41,7 +44,7 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
   return results;
 }
 
-const SingleWinnerApproval = (scoresLeft: totalScore[], candidates: candidate[]) => {
+const singleWinnerApproval = (scoresLeft: totalScore[], candidates: candidate[]) => {
   let topScore = scoresLeft[0];
   let tiedCandidates = scoresLeft
     .filter(s => s.score == topScore.score)
@@ -67,29 +70,28 @@ const SingleWinnerApproval = (scoresLeft: totalScore[], candidates: candidate[])
 }
 
 function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder:number[]): approvalSummaryData {
-  // Initialize summary data structures
-  const nCandidates = candidates.length
-  if (randomTiebreakOrder.length < nCandidates) {
+  // Initialize randomTiebreakOrder structure
+  if (randomTiebreakOrder.length < candidates.length) {
     randomTiebreakOrder = candidates.map((c,index) => index)
   }
-  const totalScores = Array(nCandidates)
-  for (let i = 0; i < nCandidates; i++) {
-    totalScores[i] = { index: i, score: 0 };
-  }
-  let nBulletVotes = 0
-  // Iterate through ballots, 
-  parsedData.scores.forEach((vote) => {
-    let nSupported = 0
-    for (let i = 0; i < nCandidates; i++) {
-      totalScores[i].score += vote[i]
-      if (vote[i] > 0) {
-        nSupported += 1
-      }
-    }
-    if (nSupported === 1) {
-      nBulletVotes += 1
-    }
-  })
+
+  // Sum scores across all ballots
+  const totalScores: totalScore[] = candidates.map((_,candidateIndex) => ({
+    index: candidateIndex,
+    score: parsedData.scores.reduce(
+      (score, vote) => score + vote[candidateIndex],
+      0
+    )
+  }))
+
+  // Count bullet votes
+  let nBulletVotes = parsedData.scores.reduce((nBulletVotes, vote) => {
+      let nSupported = vote.reduce((n, candidateScore) => n + (candidateScore > 0 ? 1 : 0), 0);
+      return nBulletVotes + ((nSupported === 1)? 1 : 0);
+    },
+    0
+  );
+
   const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
   sortTotalScores(totalScores, candidatesWithIndexes);
   return {

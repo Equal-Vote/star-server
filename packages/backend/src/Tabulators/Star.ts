@@ -82,69 +82,57 @@ function getNoPreferenceStars(parsedData: IparsedData, cIndexI: number, cIndexJ:
     if((vote[cIndexI] ?? 0) != (vote[cIndexJ] ?? 0)) return stars;
     stars[vote[cIndexI] ?? 0]++;
     return stars;
-  }, new Array(6).fill(0));
+  }, Array(6).fill(0));
 }
 
 function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: number[]): starSummaryData {
-  const nCandidates = candidates.length
-  if (randomTiebreakOrder.length < nCandidates) {
+  // Initialize randomTiebreakOrder structure
+  if (randomTiebreakOrder.length < candidates.length) {
     randomTiebreakOrder = candidates.map((c,index) => index)
   }
-  // Initialize summary data structures
-  // Total scores for each candidate, includes candidate indexes for easier sorting
-  const totalScores: totalScore[] = Array(nCandidates)
-  for (let i = 0; i < nCandidates; i++) {
-    totalScores[i] = { index: i, score: 0 };
-  }
+
+  // Sum scores across all ballots
+  const totalScores: totalScore[] = candidates.map((_,candidateIndex) => ({
+    index: candidateIndex,
+    score: parsedData.scores.reduce(
+      (score, vote) => score + vote[candidateIndex],
+      0
+    )
+  }));
+
+  // Count bullet votes
+  let nBulletVotes = parsedData.scores.reduce((nBulletVotes, vote) => {
+      let nSupported = vote.reduce((n, candidateScore) => n + (candidateScore > 0 ? 1 : 0), 0);
+      return nBulletVotes + ((nSupported === 1)? 1 : 0);
+    },
+    0
+  );
 
   // Score histograms for data analysis and five-star tiebreakers
-  const scoreHist: number[][] = Array(nCandidates);
-  for (let i = 0; i < nCandidates; i++) {
-    scoreHist[i] = Array(6).fill(0);
-  }
+  const scoreHist: number[][] = candidates.map((_,candidateIndex) => parsedData.scores.reduce(
+    (hist, score) => {
+      hist[score[candidateIndex]]++
+      return hist;
+    },
+    Array(6).fill(0)
+  ));
 
   // Matrix for voter preferences
-  const preferenceMatrix: number[][] = Array(nCandidates);
-  const pairwiseMatrix: number[][] = Array(nCandidates);
-  for (let i = 0; i < nCandidates; i++) {
-    preferenceMatrix[i] = Array(nCandidates).fill(0);
-    pairwiseMatrix[i] = Array(nCandidates).fill(0);
-  }
-  let nBulletVotes = 0
+  const preferenceMatrix: number[][] = candidates.map((_,i) => 
+    candidates.map((_,j) =>
+      // count the number of votes with i > j
+      parsedData.scores.reduce((n, vote) => n + ((vote[i] > vote[j])? 1 : 0), 0)
+    )
+  )
 
-  // Iterate through ballots and populate data structures
-  parsedData.scores.forEach((vote) => {
-    let nSupported = 0
-    for (let i = 0; i < nCandidates; i++) {
-      totalScores[i].score += vote[i]
-      scoreHist[i][vote[i]] += 1
-      for (let j = 0; j < nCandidates; j++) {
-        if (i !== j) {
-          if (vote[i] > vote[j]) {
-            preferenceMatrix[i][j] += 1
-          }
-        }
-      }
-      if (vote[i] > 0) {
-        nSupported += 1
-      }
-    }
-    if (nSupported === 1) {
-      nBulletVotes += 1
-    }
-  })
+  // Matrix for voter preferences
+  const pairwiseMatrix: number[][] = candidates.map((_,i) => 
+    candidates.map((_,j) =>
+      // count if more voters prefer i to j
+      (preferenceMatrix[i][j] > preferenceMatrix[j][i])? 1 : 0
+    )
+  )
 
-  for (let i = 0; i < nCandidates; i++) {
-    for (let j = 0; j < nCandidates; j++) {
-      if (preferenceMatrix[i][j] > preferenceMatrix[j][i]) {
-        pairwiseMatrix[i][j] = 1
-      }
-      else if (preferenceMatrix[i][j] < preferenceMatrix[j][i]) {
-        pairwiseMatrix[j][i] = 1
-      }
-
-    }
-  }
   const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder:  randomTiebreakOrder[index]}))
   return {
     candidates: candidatesWithIndexes,
