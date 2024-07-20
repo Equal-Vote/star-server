@@ -69,7 +69,7 @@ export interface allocatedScoreSummaryData extends starSummaryData {
 }
 export interface approvalSummaryData extends genericSummaryData { }
 
-export interface pluralitySummaryData extends genericSummaryData { }
+export interface pluralitySummaryData extends Omit<genericResults, 'preference_matrix' | 'pairwise_matrix'>{ }
 
 export interface rankedRobinSummaryData extends genericSummaryData {
     rankHist: rankHist,
