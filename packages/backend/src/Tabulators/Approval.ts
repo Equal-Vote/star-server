@@ -1,17 +1,30 @@
 import { approvalResults, approvalSummaryData, ballot, candidate, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
-import { commaListFormatter, sortTotalScores } from "./Util";
+import { getSummaryData, totalScoreComparator } from "./Util";
 const ParseData = require("./ParseData");
+
+declare namespace Intl {
+    class ListFormat {
+        constructor(locales?: string | string[], options?: {});
+        public format: (items: string[]) => string;
+    }
+}
+const commaListFormatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
 export function Approval(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true) {
   breakTiesRandomly = true // hard coding this for now
 
   const parsedData = ParseData(votes, getApprovalBallotValidity)
-  console.log('candidates', candidates)
-  console.log('parsedData', parsedData)
-  const summaryData = getSummaryData(candidates, parsedData, randomTiebreakOrder)
-  console.log('summaryData', summaryData)
+
+  const summaryData:approvalSummaryData = getSummaryData(
+    candidates,
+    parsedData,
+    randomTiebreakOrder,
+    'cardinal',
+    (a, b) => totalScoreComparator('score', a, b)
+  )
+
   const results: approvalResults = {
     elected: [],
     tied: [],
@@ -24,13 +37,13 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
   let scoresLeft = [...summaryData.totalScores];
 
   for(let w = 0; w < nWinners; w++){
-    let {roundResults, tieBreakType, tiedCandidates} = singleWinnerApproval(scoresLeft, summaryData.candidates);
+    let {roundResults, tieBreakType, tiedCandidates} = singleWinnerApproval(scoresLeft, summaryData);
 
     results.elected.push(...roundResults.winners);
     results.roundResults.push(roundResults);
 
     // remove winner for next round
-    scoresLeft.shift();
+    scoresLeft = scoresLeft.filter(totalScore => totalScore.index != roundResults.winners[0].index)
 
     // only save the tie breaker info if we're in the final round
     if(w == nWinners-1){
@@ -44,7 +57,9 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
   return results;
 }
 
-const singleWinnerApproval = (scoresLeft: totalScore[], candidates: candidate[]) => {
+const singleWinnerApproval = (scoresLeft: totalScore[], summaryData: approvalSummaryData) => {
+  const candidates = summaryData.candidates;
+
   let topScore = scoresLeft[0];
   let tiedCandidates = scoresLeft
     .filter(s => s.score == topScore.score)
@@ -67,41 +82,6 @@ const singleWinnerApproval = (scoresLeft: totalScore[], candidates: candidate[])
     tieBreakType: (tiedCandidates.length == 1)? 'none' : 'random',
     tiedCandidates,
   };
-}
-
-function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder:number[]): approvalSummaryData {
-  // Initialize randomTiebreakOrder structure
-  if (randomTiebreakOrder.length < candidates.length) {
-    randomTiebreakOrder = candidates.map((c,index) => index)
-  }
-
-  // Sum scores across all ballots
-  const totalScores: totalScore[] = candidates.map((_,candidateIndex) => ({
-    index: candidateIndex,
-    score: parsedData.scores.reduce(
-      (score, vote) => score + vote[candidateIndex],
-      0
-    )
-  }))
-
-  // Count bullet votes
-  let nBulletVotes = parsedData.scores.reduce((nBulletVotes, vote) => {
-      let nSupported = vote.reduce((n, candidateScore) => n + (candidateScore > 0 ? 1 : 0), 0);
-      return nBulletVotes + ((nSupported === 1)? 1 : 0);
-    },
-    0
-  );
-
-  const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
-  sortTotalScores(totalScores, candidatesWithIndexes);
-  return {
-    candidates: candidatesWithIndexes,
-    totalScores,
-    nValidVotes: parsedData.validVotes.length,
-    nInvalidVotes: parsedData.invalidVotes.length,
-    nUnderVotes: parsedData.underVotes,
-    nBulletVotes: nBulletVotes
-  }
 }
 
 function getApprovalBallotValidity(ballot: ballot) {

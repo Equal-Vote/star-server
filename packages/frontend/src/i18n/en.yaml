@@ -393,6 +393,56 @@ tips:
     title: $t(methods.ranked_robin.full_name)
     description: The candidate who wins the most runoffs wins
 
+# Tabulator Logs
+tabulator_logs:
+  # Note: tabulator_logs keys are the only ones that are stored in the database, so be careful when changing them
+  star:
+    # Score tiebreak
+    # Note: this isn't considered a tiebreaker during the scoring round, but I'm keeping the naming consistent
+    score_tiebreak_start: Advance to score tiebreaker.
+    score_tiebreak_remove_candidate: > # only used during automatic runoff tiebreak
+      {{name}} has {{score}} stars, and is removed from the tiebreak.
+    score_tiebreak_advance_to_runoff: > # not actually a tiebreak, only used during scoring round
+      {{name}} advances to automatic runoff round with {{score}} stars.
+    score_tiebreak_win_runoff: >
+      {{winner}} defeats {{loser}} in score tiebreaker with {{winner_score}} to {{loser_score}} stars.
+    score_tiebreak_end: '{{names}} are tied with {{score}} stars.'
+
+    # Pairwise tiebreak
+    pairwise_tiebreak_start: Advance to pairwise tiebreaker.
+    pairwise_tiebreak_remove_candidate: >
+      {{name}} has {{pairwise_loses}} head to head losses, and is removed from the tiebreak.
+    pairwise_tiebreak_advance_to_runoff: > # not actually a tiebreak
+      {{name}} wins tiebreaker with {{pairwise_loses}} head to head loses and advances to the automatic runoff.
+    pairwise_tiebreak_win_runoff: '' # not used
+    pairwise_tiebreak_end: '{{names}} are tied with {{pairwise_loses}} head-to-head losses each.'
+
+    # 5-star tiebreak
+    five_star_tiebreak_start: Advance to 5⭐ tiebreaker.
+    five_star_tiebreak_remove_candidate: >
+      {{name}} has {{five_star_count}} 5⭐ votes, and is removed from the tiebreak.
+    five_star_tiebreak_advance_to_runoff: >
+      {{name}} wins tiebreaker with {{five_star_count}} 5⭐ votes and advances to the automatic runoff.
+    five_star_tiebreak_win_runoff: >
+      {{winner}} defeats {{loser}} in 5⭐ tiebreaker with {{winner_five_star_count}} to {{winner_five_star_count}} 5⭐ votes.
+    five_star_tiebreak_end: '{{names}} are tied with {{five_star_count}} 5⭐ votes each.'
+
+    # Random Tie Break
+    random_tiebreak_start: Advance to random tiebreaker
+    random_tiebreak_remove_candidate: '' # not used
+    random_tiebreak_advance_to_runoff: >
+      {{name}} wins random tiebreaker and advances to the automatic runoff.
+    random_tiebreak_win_runoff: >
+      {{winner}} defeats {{loser}} in a random tiebreaker.
+    random_tiebreak_end: '' # not used
+
+    # Automatic runoff
+    automatic_runoff_start: Two score winners selected, advance to automatic runoff.
+    automatic_runoff_win: >
+      {{winner}} is preferred over {{loser}} by {winner_votes} votes to {loser_votes}, and {equal_votes} voters have an equal preference.
+    automatic_runoff_tie: >
+      {{names}} are tied with {tied_votes} voters prefering each, and {equal_votes} voters having an equal preference.
+
 # General Terms
 keyword:
   election: 

@@ -33,6 +33,17 @@ import { Tip } from "./styles";
 const rLink = /\[([^\s]*)\]\(([^\s]*)\)/;
 const rTip = / \!tip\((.*)\)/
 
+declare namespace Intl {
+    class ListFormat {
+        constructor(locales?: string | string[], options?: {});
+        public format: (items: string[]) => string;
+    }
+}
+const commaListFormatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
+
+
+TODO: update useSubstitutedTranslation to convert arrays with commaListFormatter
+
 export const useOnScrollAnimator = () => {
     //https://www.youtube.com/watch?v=T33NN_pPeNI
     const observer = new IntersectionObserver((entries) => {

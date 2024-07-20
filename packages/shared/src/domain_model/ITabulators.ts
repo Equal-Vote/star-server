@@ -10,13 +10,27 @@ export interface candidate {
     tieBreakOrder: number,
 }
 
+export type tabulatorLog = string | tabulatorLogObject;
+
+interface tabulatorLogObject {
+    key: string,
+    [key: string]: string | number | string[]
+}
+
 export interface voter {
     csvRow: number
 }
+
 export interface totalScore {
     index: number,
     score: number,
+    // these are optional for now, but I'll make them required once all tabulators share the same summaryData
+    pairwiseLosesWithTiedScore?: number,
+    pairwiseWins?: number,
+    maxSupportCount?: number,
 }
+
+export type totalScoreKey = keyof totalScore;
 
 export interface fiveStarCount {
     candidate: candidate,
@@ -31,19 +45,18 @@ type preferenceMatrix = number[][]
 
 type pairwiseMatrix = number[][]
 
-interface genericSummaryData {
+export interface genericSummaryData {
     candidates: candidate[],
     totalScores: totalScore[],
+    preferenceMatrix: preferenceMatrix,
+    pairwiseMatrix: pairwiseMatrix,
     nValidVotes: number,
     nInvalidVotes: number,
     nUnderVotes: number,
-    nBulletVotes?: number
+    nBulletVotes?: number,
 }
 
 export interface starSummaryData extends genericSummaryData {
-    scoreHist: scoreHist,
-    preferenceMatrix: preferenceMatrix,
-    pairwiseMatrix: pairwiseMatrix,
     noPreferenceStars: number[],
 }
 
@@ -59,8 +72,6 @@ export interface pluralitySummaryData extends genericSummaryData { }
 
 export interface rankedRobinSummaryData extends genericSummaryData {
     rankHist: rankHist,
-    preferenceMatrix: preferenceMatrix,
-    pairwiseMatrix: pairwiseMatrix,
 }
 
 export interface irvSummaryData extends rankedRobinSummaryData { }
@@ -68,7 +79,7 @@ export interface irvSummaryData extends rankedRobinSummaryData { }
 export interface roundResults {
     winners: candidate[],
     runner_up: candidate[],
-    logs: string[],
+    logs: tabulatorLog[],
 }
 
 interface genericResults {
@@ -101,6 +112,8 @@ export interface rankedRobinResults extends genericResults {
     summaryData: rankedRobinSummaryData,
 }
 
+// TODO: moving logs to the root makes it inflexible to a block-IRV scenario.
+//       IRV should follow a similar rounds / logs pattern to the other methods
 export interface irvResults extends Omit<genericResults, 'roundResults'> {
     summaryData: rankedRobinSummaryData,
     logs: string[],
