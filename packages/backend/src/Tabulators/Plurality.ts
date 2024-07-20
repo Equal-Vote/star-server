@@ -70,6 +70,8 @@ function getSummaryData(candidates: string[], parsedData: IparsedData, randomTie
     nValidVotes: parsedData.validVotes.length,
     nInvalidVotes: parsedData.invalidVotes.length,
     nUnderVotes: parsedData.underVotes,
+    preferenceMatrix: [],
+    pairwiseMatrix: [],
   }
 }
 
