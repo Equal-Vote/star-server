@@ -71,7 +71,7 @@ const ViewBallots = () => {
                                 <TableRow >
                                     <TableCell colSpan={3}></TableCell>
                                     {election.races.map(race => (
-                                        <TableCell align='center' sx={{borderWidth: 1, borderColor: 'lightgray', borderStyle: 'solid'}}  colSpan={race.candidates.length}>
+                                        <TableCell align='center' sx={{borderWidth: 1, borderTopWidth: 0, borderColor: 'lightgray', borderStyle: 'solid'}}  colSpan={race.candidates.length}>
                                             {race.title}
                                         </TableCell>
                                     ))}
