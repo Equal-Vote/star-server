@@ -4,7 +4,7 @@ import React, { useState }  from 'react'
 import { starResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
 
 
-const STARResultDetailedStepsWidget = ({ results, rounds, t}: {results: starResults, rounds: number, t: Function }) => {
+const STARResultDetailedStepsWidget = ({ results, rounds, t, filterRandomFromLogs}: {results: starResults, rounds: number, t: Function, filterRandomFromLogs: boolean }) => {
 
     // Note: there are other keys I don't want to show, but at least one of
     //       these will be used if the tiebreaker process is used
@@ -16,6 +16,9 @@ const STARResultDetailedStepsWidget = ({ results, rounds, t}: {results: starResu
         typeof log !== 'string' && warningKeys.includes(log.key)
     )))
 
+    let logs = (t('results.star.tiebreaker_note_text') as Array<String>)
+    // this approach is a bit error prone, but it works for now
+    if(filterRandomFromLogs) logs = logs.slice(0, logs.length-2);
     return <div className='detailedSteps'>
         {results.roundResults.map((round, r) => (
             <Box key={r}>
@@ -27,14 +30,10 @@ const STARResultDetailedStepsWidget = ({ results, rounds, t}: {results: starResu
                 </ol>
             </Box>
         ))}
-        { showTieBreakerWarning && <Paper sx={{backgroundColor: 'theme.gray4', width: '80%', marginLeft: '10%', marginRight: '10%'}}>
-            <div style={{padding: '16px', display: 'flex', flexDirection: 'row', gap: '10px'}}>
-                <p>⚠️</p>
-                <div>
-                    <b>{t('results.star.tiebreaker_note_title')}</b>️
-                    {(t('results.star.tiebreaker_note_text') as Array<String>).map((s,i) => <p key={i}>{s}</p>)}
-                </div>
-            </div>
+        { showTieBreakerWarning && <Paper elevation={2} sx={{backgroundColor: 'theme.gray4', width: '90%', margin: 'auto', textAlign: 'left', padding: 3}}>
+            <b>{t('results.star.tiebreaker_note_title')}</b>️
+            <hr/>
+            {logs.slice(0, ).map((s,i) => <p key={i}>{s}</p>)}
         </Paper> }
     </div>
 }

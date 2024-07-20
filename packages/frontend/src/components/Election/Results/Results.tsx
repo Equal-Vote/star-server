@@ -41,7 +41,7 @@ const GenericDetailedStepsWidget = ({ title, results, rounds}: {title: string, r
   </div>
 }
 
-function STARResultsViewer({ results, rounds, t }: {results: starResults, rounds: number, t: Function }) {
+function STARResultsViewer({ results, rounds, t, filterRandomFromLogs }: {results: starResults, rounds: number, t: Function, filterRandomFromLogs: boolean }) {
   let i = 0;
   const roundIndexes = Array.from({length: rounds}, () => i++);
 
@@ -60,7 +60,7 @@ function STARResultsViewer({ results, rounds, t }: {results: starResults, rounds
         <DetailExpander level={1}>
           <WidgetContainer>
             <Widget title={t('results.star.detailed_steps_title')}>
-              <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t}/>
+              <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
             </Widget>
             <Widget title={t('results.star.equal_preferences_title')}>
               <ResultsBarChart data={noPrefStarData} xKey='count' percentage={true} sortFunc={false}/>
@@ -334,7 +334,7 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
         {result.results.summaryData.nValidVotes > 1 &&
           <>
           {result.votingMethod === "STAR" && <ResultViewer methodKey='star' results={result.results}>
-              <STARResultsViewer results={result.results} rounds={race.num_winners} t={t}/>
+              <STARResultsViewer results={result.results} rounds={race.num_winners} t={t} filterRandomFromLogs={removeTieBreakFromTitle}/>
           </ResultViewer> }
 
           {result.votingMethod === "Approval" && <ResultViewer methodKey='approval' results={result.results}>
