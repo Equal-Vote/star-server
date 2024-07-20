@@ -29,9 +29,11 @@ import { DateTime } from "luxon";
 import { Trans, useTranslation } from "react-i18next";
 import en from '../i18n/en.yaml';
 import { Tip } from "./styles";
+import i18n from "~/i18n/i18n";
 
-const rLink = /\[([^\s]*)\]\(([^\s]*)\)/;
+const rLink = /\[(.*?)\]\((.*?)\)/;
 const rTip = / \!tip\((.*)\)/
+
 
 declare namespace Intl {
     class ListFormat {
@@ -39,7 +41,8 @@ declare namespace Intl {
         public format: (items: string[]) => string;
     }
 }
-const commaListFormatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
+
+const commaListFormatter = new Intl.ListFormat(i18n.languages[0], { style: 'long', type: 'conjunction' });
 
 // TODO: update useSubstitutedTranslation to convert arrays with commaListFormatter
 
@@ -72,12 +75,19 @@ export const useOnScrollAnimator = () => {
 
 // NOTE: I'm setting a electionTermType default for backwards compatibility with elections that don't have a term set
 export const useSubstitutedTranslation = (electionTermType='election', v={}) => { // election or poll
-  let values = {...en.keyword, ...en.keyword[electionTermType], ...v}
-  Object.entries(values).forEach(([key, value]) => {
-    if(typeof value === 'string'){
-      values[`lowercase_${key}`] = value.toLowerCase()
-    }
-  })
+  const processValues = (values) => {
+    Object.entries(values).forEach(([key, value]) => {
+      if(typeof value === 'string'){
+        values[`lowercase_${key}`] = value.toLowerCase()
+      }
+      if(Array.isArray(value)){
+        values[key] = commaListFormatter.format(value);
+      }
+    })
+    return values
+  }
+
+  let values = processValues({...en.keyword, ...en.keyword[electionTermType], v})
 
   const { t } = useTranslation()
 
@@ -132,7 +142,7 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
   }
 
   return {
-    t: (key, v={}) => handleObject(t(key, {...values, ...v}))
+    t: (key, v={}) => handleObject(t(key, {...values, ...processValues(v)}))
   }
 }
 

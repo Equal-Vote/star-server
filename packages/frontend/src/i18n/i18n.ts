@@ -12,9 +12,13 @@ i18n
   .use(initReactI18next)
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
+
   .init({
     debug: true,
     returnObjects: true,
+    // I need to keep the whitelist up to date for the commalistSeparator
+    // https://github.com/i18next/react-i18next/issues/475
+    whitelist: ['en'],
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default

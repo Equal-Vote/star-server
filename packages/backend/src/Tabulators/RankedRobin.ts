@@ -177,12 +177,14 @@ function sortData(summaryData: rankedRobinSummaryData, order: candidate[]): rank
   }
 }
 
-function runRankedRobinRound(summaryData: rankedRobinSummaryData, remainingCandidates: candidate[], breakTiesRandomly = true) {
+function runRankedRobinRound(summaryData: rankedRobinSummaryData, remainingCandidates: candidate[], breakTiesRandomly = true): roundResults {
   // Initialize output results data structure
   const roundResults: roundResults = {
     winners: [],
     runner_up: [],
     logs: [],
+    tieBreakType: 'none',
+    tiedCandidates: [],
   }
 
   // If only one candidate remains, mark as winner

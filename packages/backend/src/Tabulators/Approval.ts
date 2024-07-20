@@ -37,7 +37,7 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
   let scoresLeft = [...summaryData.totalScores];
 
   for(let w = 0; w < nWinners; w++){
-    let {roundResults, tieBreakType, tiedCandidates} = singleWinnerApproval(scoresLeft, summaryData);
+    let roundResults = singleWinnerApproval(scoresLeft, summaryData);
 
     results.elected.push(...roundResults.winners);
     results.roundResults.push(roundResults);
@@ -47,8 +47,8 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
 
     // only save the tie breaker info if we're in the final round
     if(w == nWinners-1){
-      results.tied = tiedCandidates; 
-      results.tieBreakType = tieBreakType; // only save the tie breaker info if we're in the final round
+      results.tied = roundResults.tiedCandidates; 
+      results.tieBreakType = roundResults.tieBreakType; // only save the tie breaker info if we're in the final round
     }
   }
 
@@ -57,7 +57,7 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
   return results;
 }
 
-const singleWinnerApproval = (scoresLeft: totalScore[], summaryData: approvalSummaryData) => {
+const singleWinnerApproval = (scoresLeft: totalScore[], summaryData: approvalSummaryData): roundResults => {
   const candidates = summaryData.candidates;
 
   let topScore = scoresLeft[0];
@@ -74,14 +74,12 @@ const singleWinnerApproval = (scoresLeft: totalScore[], summaryData: approvalSum
     ] : [
       `${commaListFormatter.format(tiedCandidates.map(c => c.name))} all tied with the most approvals`,
       `${winner.name} wins the round after a random tiebreaker`
-    ]
-  }
-  
-  return {
-    roundResults,
+    ],
     tieBreakType: (tiedCandidates.length == 1)? 'none' : 'random',
     tiedCandidates,
   };
+  
+  return roundResults;
 }
 
 function getApprovalBallotValidity(ballot: ballot) {

@@ -306,15 +306,9 @@ type ResultsProps = {
 
 export default function Results({ title, raceIndex, race, result }: ResultsProps) {
   const { election, voterAuth, refreshElection, permissions, updateElection } = useElection();
-  let showTitleAsTie = ['random', '5-star'].includes(result.results.tieBreakType);
+  let showTitleAsTie = ['random', 'five_star'].includes(result.results.tieBreakType);
   // added a null check for sandbox support
   let removeTieBreakFromTitle = (election?.settings.break_ties_randomly ?? false) && result.results.tieBreakType == 'random';
-  // quick hack for basic tie title support
-  if(!showTitleAsTie && result.votingMethod === "STAR"){
-    // copied from STARResultDetailedStepsWidget.tsx
-    const showTieBreakerWarning = (result.results as starResults).roundResults.some(round => (round.logs.some(log => (log.includes('tiebreaker')))));
-    if(showTieBreakerWarning) showTitleAsTie = true;
-  }
 
   const {t} = useSubstitutedTranslation(election.settings.term_type);
   return (

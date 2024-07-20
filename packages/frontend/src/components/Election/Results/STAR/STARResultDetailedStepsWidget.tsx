@@ -5,14 +5,25 @@ import { starResults } from '@equal-vote/star-vote-shared/domain_model/ITabulato
 
 
 const STARResultDetailedStepsWidget = ({ results, rounds, t}: {results: starResults, rounds: number, t: Function }) => {
-    const showTieBreakerWarning = results.roundResults.some(round => (round.logs.some(log => (log.includes('tiebreaker')))));
+
+    // Note: there are other keys I don't want to show, but at least one of
+    //       these will be used if the tiebreaker process is used
+    const warningKeys = [
+        'tabulator_logs.star.pairwise_tiebreak_start',
+        'tabulator_logs.star.score_tiebreak_start',
+    ];
+    const showTieBreakerWarning = results.roundResults.some(round => (round.logs.some(log =>
+        typeof log !== 'string' && warningKeys.includes(log.key)
+    )))
 
     return <div className='detailedSteps'>
         {results.roundResults.map((round, r) => (
             <Box key={r}>
                 {rounds > 1 && <Typography variant="h4">{`Winner ${r + 1}`}</Typography>}
                 <ol style={{textAlign: 'left'}}>
-                    {round.logs.map((log, i) => (<li key={i}>{log}</li>))}
+                    {round.logs.map((log, i) => (<li key={i}>
+                        {typeof log === 'string' ? log : t(log['key'], log)}
+                    </li>))}
                 </ol>
             </Box>
         ))}

@@ -77,10 +77,13 @@ export interface rankedRobinSummaryData extends genericSummaryData {
 
 export interface irvSummaryData extends rankedRobinSummaryData { }
 
+type tieBreakType = 'none' | 'score' | 'five_star' | 'random';
 export interface roundResults {
     winners: candidate[],
     runner_up: candidate[],
     logs: tabulatorLog[],
+    tieBreakType: tieBreakType,
+    tiedCandidates: candidate[],
 }
 
 interface genericResults {
@@ -89,7 +92,7 @@ interface genericResults {
     other: candidate[],
     roundResults: roundResults[],
     summaryData: genericSummaryData,
-    tieBreakType: string,
+    tieBreakType: tieBreakType,
 }
 
 export interface starResults extends genericResults {

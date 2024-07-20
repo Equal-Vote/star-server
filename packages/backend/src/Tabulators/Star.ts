@@ -53,21 +53,22 @@ export function Star(
   let scoresLeft = [...summaryData.totalScores];
 
   for(let w = 0; w < nWinners; w++){
-    let {roundResults, tieBreakType, tiedCandidates} = singleWinnerSTAR(
-      scoresLeft,
-      summaryData,
-    );
+    let roundResults = singleWinnerSTAR(scoresLeft, summaryData);
 
     results.elected.push(...roundResults.winners);
     results.roundResults.push(roundResults);
 
+    // remove winner for next round
     scoresLeft = scoresLeft.filter(totalScore => totalScore.index != roundResults.winners[0].index)
 
+    // only save the tie breaker info if we're in the final round
     if(w == nWinners-1){
-      results.tied = tiedCandidates; 
-      results.tieBreakType = tieBreakType; // only save the tie breaker info if we're in the final round
+      results.tied = roundResults.tiedCandidates; 
+      results.tieBreakType = roundResults.tieBreakType; // only save the tie breaker info if we're in the final round
     }
   }
+
+  results.other = scoresLeft.map(s => summaryData.candidates[s.index]); // remaining candidates in sortedScores
 
   // NOTE: the proper way to handle no preferenceStars is to have a matrix of number[] in the summaryData. 
   //       BUT that's super overkill for the moment since we just need 6 values and we're not running multi-winner elections yet
@@ -92,7 +93,7 @@ function getNoPreferenceStars(parsedData: IparsedData, cIndexI: number, cIndexJ:
   }, Array(6).fill(0));
 }
 
-export const singleWinnerSTAR = (scoresLeft: totalScore[], summaryData: starSummaryData) => {
+export const singleWinnerSTAR = (scoresLeft: totalScore[], summaryData: starSummaryData): roundResults => {
   let logs: tabulatorLog[] = [];
 
   const preferenceMatrix = summaryData.preferenceMatrix;
@@ -143,7 +144,7 @@ export const singleWinnerSTAR = (scoresLeft: totalScore[], summaryData: starSumm
       logs.push({
         key: 'tabulator_logs.star.pairwise_tiebreak_remove_candidate',
         name: candidates[removed.index].name,
-        pairwise_loses: removed?.pairwiseLosesWithTiedScore ?? 0
+        count: removed?.pairwiseLosesWithTiedScore ?? 0
       });
     }
 
@@ -158,7 +159,7 @@ export const singleWinnerSTAR = (scoresLeft: totalScore[], summaryData: starSumm
       logs.push({
         key: 'tabulator_logs.star.pairwise_tiebreak_advance_to_runoff',
         name: candidates[selected.index].name,
-        pairwise_loses: selected?.pairwiseLosesWithTiedScore ?? 0
+        count: selected?.pairwiseLosesWithTiedScore ?? 0
       })
     }
     if(winnersSelected == 2) return;
@@ -167,7 +168,7 @@ export const singleWinnerSTAR = (scoresLeft: totalScore[], summaryData: starSumm
     logs.push({
       key: 'tabulator_logs.star.pairwise_tiebreak_end',
       names: scorePool.map(totalScore => candidates[totalScore.index].name),
-      pairwise_loses: weakestWinner?.pairwiseLosesWithTiedScore ?? 0
+      count: weakestWinner?.pairwiseLosesWithTiedScore ?? 0
     });
 
     // 5-STAR TIEBREAK: Remove Losers
@@ -197,7 +198,7 @@ export const singleWinnerSTAR = (scoresLeft: totalScore[], summaryData: starSumm
       logs.push({
         key: 'tabulator_logs.star.five_star_tiebreak_advance_to_runoff',
         name: candidates[selected.index].name,
-        pairwise_loses: selected?.pairwiseLosesWithTiedScore ?? 0
+        count: selected?.pairwiseLosesWithTiedScore ?? 0
       })
     }
     if(winnersSelected == 2) return;
@@ -248,18 +249,18 @@ export const singleWinnerSTAR = (scoresLeft: totalScore[], summaryData: starSumm
       return;
     }
 
-    // Score tiebreaker
-    logs.push({ key: 'tabulator_logs.star.score_tiebreaker_start' });
+    // Score tiebreak
+    logs.push({ key: 'tabulator_logs.star.score_tiebreak_start' });
 
     if(winnerScore.score == loserScore.score){
       logs.push({
-        key: 'tabulator_logs.star.score_tiebreaker_end',
+        key: 'tabulator_logs.star.score_tiebreak_end',
         names: names,
         score: winnerScore.score,
       });
     }else{
       logs.push({
-        key: 'tabulator_logs.star.score_tiebreaker_win_runoff',
+        key: 'tabulator_logs.star.score_tiebreak_win_runoff',
         winner: names[0],
         loser: names[1],
         winner_score: winnerScore.score,
@@ -269,17 +270,17 @@ export const singleWinnerSTAR = (scoresLeft: totalScore[], summaryData: starSumm
     }
 
     // 5-star tiebreaker
-    logs.push({ key: 'tabulator_logs.star.five_star_tiebreaker_start' });
+    logs.push({ key: 'tabulator_logs.star.five_star_tiebreak_start' });
 
     if(winnerScore.maxSupportCount == loserScore.maxSupportCount){
       logs.push({
-        key: 'tabulator_logs.star.five_star_tiebreaker_end',
+        key: 'tabulator_logs.star.five_star_tiebreak_end',
         names: names,
         five_star_count: winnerScore?.maxSupportCount ?? 0,
       });
     }else{
       logs.push({
-        key: 'tabulator_logs.star.five_star_tiebreaker_win_runoff',
+        key: 'tabulator_logs.star.five_star_tiebreak_win_runoff',
         winner: names[0],
         loser: names[1],
         winner_five_star_count: winnerScore?.maxSupportCount ?? 0,
@@ -289,9 +290,9 @@ export const singleWinnerSTAR = (scoresLeft: totalScore[], summaryData: starSumm
     }
 
     // random tiebreaker
-    logs.push({ key: 'tabulator_logs.star.random_tiebreaker_start' });
+    logs.push({ key: 'tabulator_logs.star.random_tiebreak_start' });
     logs.push({
-      key: 'tabulator_logs.star.random_tiebreaker_win_runoff',
+      key: 'tabulator_logs.star.random_tiebreak_win_runoff',
       winner: names[0],
       loser: names[1],
     });
@@ -313,12 +314,10 @@ export const singleWinnerSTAR = (scoresLeft: totalScore[], summaryData: starSumm
   appendRunoffLogs(winnerScore, loserScore);
 
   return {
-    roundResults: {
-      winners: [candidates[winnerScore.index]],
-      runner_up: [candidates[loserScore.index]],
-      logs: logs
-    },
-    tieBreakType: // Note: I'm not including the score tiebreaker in this
+    winners: [candidates[winnerScore.index]],
+    runner_up: [candidates[loserScore.index]],
+    logs: logs,
+    tieBreakType: // Note: tieBreakType only refers to ties that occurred in the automatic runoff, not the scoring round
       (
         preferenceMatrix[winnerScore.index][loserScore.index] > preferenceMatrix[loserScore.index][winnerScore.index]
       ) ? 'none' :
@@ -328,7 +327,6 @@ export const singleWinnerSTAR = (scoresLeft: totalScore[], summaryData: starSumm
     tiedCandidates: [] // not used?
   }
 }
-
 
 function sortData(summaryData: starSummaryData, order: candidate[]): starSummaryData {
   // sorts summary data to be in specified order
