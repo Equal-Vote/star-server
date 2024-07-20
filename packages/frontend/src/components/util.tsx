@@ -41,8 +41,7 @@ declare namespace Intl {
 }
 const commaListFormatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
-
-TODO: update useSubstitutedTranslation to convert arrays with commaListFormatter
+// TODO: update useSubstitutedTranslation to convert arrays with commaListFormatter
 
 export const useOnScrollAnimator = () => {
     //https://www.youtube.com/watch?v=T33NN_pPeNI
@@ -273,7 +272,6 @@ export const ResultsBarChart = ({
           width={axisWidth}
         />
         <Bar
-          stackOffset="expand"
           dataKey={xKey}
           fill="#026A86"
           unit="votes"
@@ -453,10 +451,10 @@ export const openFeedback = () => {
   // simulate clicking the feedback button
   const launcherFrame = document.getElementById("launcher-frame");
   const button =
-    launcherFrame.contentWindow.document.getElementsByClassName(
+    (launcherFrame as HTMLIFrameElement).contentWindow.document.getElementsByClassName(
       "launcher-button"
     )[0];
-  button.click();
+  (button as HTMLButtonElement).click();
 };
 
 export function scrollToElement(e) {
@@ -467,7 +465,7 @@ export function scrollToElement(e) {
     if (NodeList.prototype.isPrototypeOf(openedSection)) {
       // NOTE: NodeList could contain a bunch of hidden elements with height 0, so we're filtering those out
       openedSection = Array.from(openedSection).filter((e) => {
-        const box = e.getBoundingClientRect();
+        const box = (e as HTMLElement).getBoundingClientRect();
         return box.bottom - box.top > 0;
       });
       if (openedSection.length == 0) return;
