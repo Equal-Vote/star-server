@@ -68,6 +68,17 @@ const ViewBallots = () => {
                     <TableContainer component={Paper}>
                         <Table style={{ width: '100%' }} aria-label="simple table">
                             <TableHead>
+                                <TableRow >
+                                    <TableCell colSpan={3}></TableCell>
+                                    {election.races.map(race => (
+                                        <TableCell align='center' sx={{borderWidth: 1, borderColor: 'lightgray', borderStyle: 'solid'}}  colSpan={race.candidates.length}>
+                                            {race.title}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+
+                            </TableHead>
+                            <TableHead>
                                 <TableCell> Ballot ID </TableCell>
                                 {flags.isSet('VOTER_FLAGGING') &&
                                     <TableCell> Precinct </TableCell>
