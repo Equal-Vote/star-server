@@ -64,7 +64,8 @@ export interface allocatedScoreSummaryData extends starSummaryData {
     splitPoints: number[],
     spentAboves: number[],
     weight_on_splits: number[],
-    weightedScoresByRound: number[][]
+    weightedScoresByRound: number[][],
+    scoreHist: scoreHist,
 }
 export interface approvalSummaryData extends genericSummaryData { }
 

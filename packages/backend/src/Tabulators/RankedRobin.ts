@@ -1,7 +1,6 @@
 import { ballot, candidate, rankedRobinResults, rankedRobinSummaryData, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
-import { sortByTieBreakOrder } from "./Star";
 const ParseData = require("./ParseData");
 
 export function RankedRobin(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true) {
@@ -256,4 +255,11 @@ function sortMatrix(matrix: number[][], order: number[]) {
     });
   });
   return newMatrix
+}
+
+function sortByTieBreakOrder(candidates: candidate[]) {
+  return candidates.sort((a,b) => {
+    if (a.tieBreakOrder < b.tieBreakOrder) return -1
+    else return 1
+  })
 }

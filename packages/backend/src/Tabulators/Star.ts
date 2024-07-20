@@ -312,8 +312,6 @@ export const singleWinnerSTAR = (scoresLeft: totalScore[], summaryData: starSumm
 
   appendRunoffLogs(winnerScore, loserScore);
 
-  console.log(logs)
-
   return {
     roundResults: {
       winners: [candidates[winnerScore.index]],
