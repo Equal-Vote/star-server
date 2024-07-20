@@ -1,7 +1,7 @@
 import { approvalResults, approvalSummaryData, ballot, candidate, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
-import { getSummaryData, totalScoreComparator } from "./Util";
+import { getSummaryData, runBlockTabulator, totalScoreComparator } from "./Util";
 const ParseData = require("./ParseData");
 
 declare namespace Intl {
@@ -34,27 +34,7 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
     tieBreakType: 'none',
   };
 
-  let scoresLeft = [...summaryData.totalScores];
-
-  for(let w = 0; w < nWinners; w++){
-    let roundResults = singleWinnerApproval(scoresLeft, summaryData);
-
-    results.elected.push(...roundResults.winners);
-    results.roundResults.push(roundResults);
-
-    // remove winner for next round
-    scoresLeft = scoresLeft.filter(totalScore => totalScore.index != roundResults.winners[0].index)
-
-    // only save the tie breaker info if we're in the final round
-    if(w == nWinners-1){
-      results.tied = roundResults.tiedCandidates; 
-      results.tieBreakType = roundResults.tieBreakType; // only save the tie breaker info if we're in the final round
-    }
-  }
-
-  results.other = scoresLeft.map(s => summaryData.candidates[s.index]); // remaining candidates in sortedScores
-  
-  return results;
+  return runBlockTabulator(results, summaryData, nWinners, singleWinnerApproval)
 }
 
 const singleWinnerApproval = (scoresLeft: totalScore[], summaryData: approvalSummaryData): roundResults => {

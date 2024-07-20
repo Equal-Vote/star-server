@@ -1,5 +1,31 @@
-import { genericSummaryData, totalScore, totalScoreKey  } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { genericResults, genericSummaryData, roundResults, totalScore, totalScoreKey  } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 import { IparsedData } from "./ParseData";
+
+type singleWinnerCallback = (scoresLeft: totalScore[], summaryData: genericSummaryData) => roundResults;
+export const runBlockTabulator = (results: genericResults, summaryData: genericSummaryData, nWinners: number, singleWinnerCallback: singleWinnerCallback) => {
+  let scoresLeft = [...summaryData.totalScores];
+
+  for(let w = 0; w < nWinners; w++){
+    let roundResults = singleWinnerCallback(scoresLeft, summaryData);
+
+    results.elected.push(...roundResults.winners);
+    results.roundResults.push(roundResults);
+
+    // remove winner for next round
+    scoresLeft = scoresLeft.filter(totalScore => totalScore.index != roundResults.winners[0].index)
+
+    // only save the tie breaker info if we're in the final round
+    if(w == nWinners-1){
+      results.tied = roundResults.tiedCandidates; 
+      results.tieBreakType = roundResults.tieBreakType; // only save the tie breaker info if we're in the final round
+    }
+  }
+
+  results.other = scoresLeft.map(s => summaryData.candidates[s.index]); // remaining candidates in sortedScores
+
+  return results
+}
+  
 
 export const totalScoreComparator = (criteria: totalScoreKey, a: totalScore, b: totalScore): number | undefined => {
   if(a[criteria] === undefined) return undefined;

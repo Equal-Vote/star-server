@@ -86,7 +86,7 @@ export interface roundResults {
     tiedCandidates: candidate[],
 }
 
-interface genericResults {
+export interface genericResults {
     elected: candidate[],
     tied: candidate[],
     other: candidate[],

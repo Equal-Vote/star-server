@@ -1,7 +1,7 @@
 import { ballot, tabulatorLog, candidate, starResults, roundResults, starSummaryData, totalScore, genericSummaryData } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { IparsedData } from './ParseData'
-import { getSummaryData, totalScoreComparator } from "./Util";
+import { getSummaryData, runBlockTabulator, totalScoreComparator } from "./Util";
 const ParseData = require("./ParseData");
 
 export function Star(
@@ -50,25 +50,7 @@ export function Star(
     tieBreakType: 'none',
   }
 
-  let scoresLeft = [...summaryData.totalScores];
-
-  for(let w = 0; w < nWinners; w++){
-    let roundResults = singleWinnerSTAR(scoresLeft, summaryData);
-
-    results.elected.push(...roundResults.winners);
-    results.roundResults.push(roundResults);
-
-    // remove winner for next round
-    scoresLeft = scoresLeft.filter(totalScore => totalScore.index != roundResults.winners[0].index)
-
-    // only save the tie breaker info if we're in the final round
-    if(w == nWinners-1){
-      results.tied = roundResults.tiedCandidates; 
-      results.tieBreakType = roundResults.tieBreakType; // only save the tie breaker info if we're in the final round
-    }
-  }
-
-  results.other = scoresLeft.map(s => summaryData.candidates[s.index]); // remaining candidates in sortedScores
+  runBlockTabulator(results, summaryData, nWinners, singleWinnerSTAR)
 
   // NOTE: the proper way to handle no preferenceStars is to have a matrix of number[] in the summaryData. 
   //       BUT that's super overkill for the moment since we just need 6 values and we're not running multi-winner elections yet
@@ -93,7 +75,8 @@ function getNoPreferenceStars(parsedData: IparsedData, cIndexI: number, cIndexJ:
   }, Array(6).fill(0));
 }
 
-export const singleWinnerSTAR = (scoresLeft: totalScore[], summaryData: starSummaryData): roundResults => {
+// making summaryData generic in order to make typescript happy, also singleWinnerSTAR doesn't use any of the fields specific to starSummaryData
+export const singleWinnerSTAR = (scoresLeft: totalScore[], summaryData: genericSummaryData): roundResults => {
   let logs: tabulatorLog[] = [];
 
   const preferenceMatrix = summaryData.preferenceMatrix;
