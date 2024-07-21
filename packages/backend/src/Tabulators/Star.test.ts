@@ -391,5 +391,23 @@ describe("STAR Score Round Tests", () => {
         expect(roundResults.winners[0].name).toBe('Allison');
         //runner up doesn't matter here, but need test that random selection occurred
         //
-    })
+    }),
+    test("Four way tie for second, require iterative pairwise checks", () => {
+        const candidates = ['Super', 'Allison', 'Bill', 'Carmen', 'Doug']
+        const scores = [15, 10, 10, 10, 10]
+        const pairwiseMatrix = [
+            [0, 1, 1, 1, 1], 
+            [0, 0, 0, 1, 1], 
+            [0, 0, 0, 0, 1], 
+            [0, 0, 0, 0, 0], 
+            [0, 0, 1, 1, 0]
+        ]
+        const fiveStarCounts = [10, 1, 5, 1, 1]
+        const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
+
+        const roundResults = runStarRound(summaryData, [...summaryData.candidates], true, false)
+        expect(roundResults.winners.length).toBe(1);
+        expect(roundResults.winners[0].name).toBe('Super');
+        expect(roundResults.runner_up[0].name).toBe('Bill');
+    }),
 })

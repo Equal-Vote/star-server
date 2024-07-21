@@ -349,6 +349,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
   }
   // Tie could not be resolved, select both tied candidates as winners of round
   roundResults.winners = finalists
+
   return roundResults
 }
 
