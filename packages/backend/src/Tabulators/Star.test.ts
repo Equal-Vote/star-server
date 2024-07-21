@@ -404,23 +404,24 @@ describe("STAR Score Round Tests", () => {
         //runner up doesn't matter here, but need test that random selection occurred
         //
     }),
-    test("Four way tie for first, require iterative pairwise checks", () => {
-        const candidates = ['Allison', 'Bill', 'Carmen', 'Doug']
-        const scores = [10, 10, 10, 10]
+    test("Four way tie for second, require iterative pairwise checks", () => {
+        const candidates = ['Super', 'Allison', 'Bill', 'Carmen', 'Doug']
+        const scores = [15, 10, 10, 10, 10]
         const pairwiseMatrix = [
-            [0, 0, 1, 1], 
-            [0, 0, 0, 1], 
-            [0, 0, 0, 0], 
-            [0, 1, 1, 0]]
-        const fiveStarCounts = [5, 1, 2, 3]
-        const pairwiseLosesWithTiedScore = [0, 1, 2, 2];
+            [0, 1, 1, 1, 1], 
+            [0, 0, 0, 1, 1], 
+            [0, 0, 0, 0, 1], 
+            [0, 0, 0, 0, 0], 
+            [0, 0, 1, 1, 0]
+        ]
+        const fiveStarCounts = [10, 1, 5, 1, 1]
+        const pairwiseLosesWithTiedScore = [0, 0, 1, 2, 2];
         const summaryData = buildTestSummaryData(
             candidates, scores, pairwiseMatrix, fiveStarCounts, pairwiseLosesWithTiedScore
         );
-
         const roundResults = singleWinnerSTAR([...summaryData.totalScores], summaryData);
         expect(roundResults.winners.length).toBe(1);
-        expect(roundResults.winners[0].name).toBe('Allison');
-        expect(roundResults.runner_up[0].name).toBe('Doug');
-    })
+        expect(roundResults.winners[0].name).toBe('Super');
+        expect(roundResults.runner_up[0].name).toBe('Bill');
+    }),
 })
