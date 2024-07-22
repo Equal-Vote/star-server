@@ -208,37 +208,46 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
     const nCandidatesNeeded = 2 - finalists.length
     const eligibleCandidates = remainingCandidates.filter(c => !finalists.includes(c))
     const scoreWinners = getScoreWinners(summaryData, eligibleCandidates)
+    if(finalists.length > 0){ // hack to make sure we only output this on subsequent iterations
+      roundResults.logs.push({
+        key: 'tabulation_logs.star.scoring_round_tiebreaker_start',
+        names: eligibleCandidates.map(e => e.name)
+      });
+    }
     if (scoreWinners.length <= nCandidatesNeeded) {
       // when scoreWinners is less than candidate needed, but all can advance to runoff
       finalists.push(...scoreWinners.map(sc => summaryData.candidates[sc.index]))
       scoreWinners.forEach(scoreWinner =>
         roundResults.logs.push({
-          key: 'tabulator_logs.star.score_tiebreak_advance_to_runoff',
-          names: scoreWinner.name,
+          key: 'tabulation_logs.star.score_tiebreak_advance_to_runoff',
+          name: scoreWinner.name,
           score: summaryData.totalScores[scoreWinner.index].score
         })
       )
       continue scoreLoop
     }
     roundResults.logs.push({
-      key: 'tabulator_logs.star.score_tiebreak_end',
+      key: 'tabulation_logs.star.score_tiebreak_end',
       names: scoreWinners.map(scoreWinner => scoreWinner.name),
       score: summaryData.totalScores[scoreWinners[0].index].score,
     });
     // Multiple candidates have top score, proceed to score tiebreaker
     let tiedCandidates = scoreWinners
     tieLoop: while (tiedCandidates.length > 1) {
-      roundResults.logs.push({
-        key: 'tabulator_logs.star.pairwise_tiebreak_start',
-        names: tiedCandidates.map(c => c.name),
-      });
+
+      if(finalists.length == 0){ // hack to make sure we only output this on the first tiebreaker
+        roundResults.logs.push({
+          key: 'tabulation_logs.star.scoring_round_tiebreaker_start',
+          names: tiedCandidates.map(c => c.name),
+        });
+      }
       // Get candidates with the most head to head losses
       let {headToHeadLosers, losses} = getHeadToHeadLosers(summaryData, tiedCandidates)
       if (headToHeadLosers.length < tiedCandidates.length) {
         // Some candidates have more head to head losses than others, remove them from the tied candidate pool
         headToHeadLosers.forEach(c => 
           roundResults.logs.push({
-            key: 'tabulator_logs.star.pairwise_tiebreak_remove_candidate',
+            key: 'tabulation_logs.star.pairwise_tiebreak_remove_candidate',
             name: c.name,
             count: losses,
             n_tied_candidates: tiedCandidates.length
@@ -253,7 +262,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
         finalists.push(...tiedCandidates)
         tiedCandidates.forEach(c =>
           roundResults.logs.push({
-            key: 'tabulator_logs.star.pairwise_tiebreak_advance_to_runoff',
+            key: 'tabulation_logs.star.pairwise_tiebreak_advance_to_runoff',
             names: c.name,
             count: losses,
             n_tied_candidates: tiedCandidates.length
@@ -263,19 +272,17 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
       }
       // Proceed to five star tiebreaker
       roundResults.logs.push({
-        key: 'tabulator_logs.star.pairwise_tiebreak_end',
+        key: 'tabulation_logs.star.pairwise_tiebreak_end',
         names: tiedCandidates.map(c => c.name),
         count: losses,
       })
-
-      roundResults.logs.push({ key: 'tabulator_logs.star.five_star_tiebreak_start' })
 
       let fiveStarCounts = getFiveStarCounts(summaryData, tiedCandidates)
       if (nCandidatesNeeded === 2 && fiveStarCounts[1].counts > fiveStarCounts[2].counts) {
         // Two candidates needed and first two have more five star counts than the rest, advance them both to runoff
         fiveStarCounts.slice(0, 2).map((fiveStarCount) => 
           roundResults.logs.push({
-            key: 'tabulator_logs.star.five_star_tiebreak_advance_to_runoff',
+            key: 'tabulation_logs.star.five_star_tiebreak_advance_to_runoff',
             name: fiveStarCount.candidate.name,
             five_star_count: fiveStarCount.counts,
           })
@@ -287,7 +294,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
       if (fiveStarCounts[0].counts > fiveStarCounts[1].counts) {
         // First has more five star counts than the rest, advance them to runoff
         roundResults.logs.push({
-          key: 'tabulator_logs.star.five_star_tiebreak_advance_to_runoff',
+          key: 'tabulation_logs.star.five_star_tiebreak_advance_to_runoff',
           name: fiveStarCounts[0].candidate.name,
           five_star_count: fiveStarCounts[0].counts,
         });
@@ -301,7 +308,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
         // Some candidates have fewer five star votes than others, remove them from the tie breaker pool
         fiveStarLoserCounts.forEach(fiveStarCount => 
           roundResults.logs.push({
-            key: 'tabulator_logs.star.five_star_tiebreak_remove_candidate',
+            key: 'tabulation_logs.star.five_star_tiebreak_remove_candidate',
             name: fiveStarCount.candidate.name,
             five_star_count: fiveStarCount.counts,
           })
@@ -311,17 +318,15 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
       }
 
       roundResults.logs.push({
-        key: 'tabulator_logs.star.five_star_tiebreak_end',
+        key: 'tabulation_logs.star.five_star_tiebreak_end',
         names: fiveStarCounts.map(fiveStarCount => fiveStarCount.candidate.name),
         five_star_count: fiveStarCounts[0].counts,
       });
 
-      roundResults.logs.push({ key: 'tabulator_logs.star.random_tiebreak_start' })
-      
       // True tie. Break tie randomly
       const randomWinner = sortByTieBreakOrder(tiedCandidates)[0]
       roundResults.logs.push({
-        key: 'tabulator_logs.star.random_tiebreak_advance_to_runoff',
+        key: 'tabulation_logs.star.random_tiebreak_advance_to_runoff',
         name: randomWinner.name
       })
       finalists.push(randomWinner)
@@ -340,19 +345,22 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
   const rightVotes = summaryData.preferenceMatrix[finalists[1].index][finalists[0].index]
   const noPrefVotes = summaryData.nValidVotes - leftVotes - rightVotes;
 
+  roundResults.logs.push({
+      key: 'tabulation_logs.star.automatic_runoff_start',
+  })
+
   if (leftVotes > rightVotes){
     // First candidate wins runoff
     roundResults.winners.push(finalists[0])
     roundResults.runner_up.push(finalists[1])
     roundResults.logs.push({
-      key: 'tabulator_logs.star.automatic_runoff_win',
+      key: 'tabulation_logs.star.automatic_runoff_win',
       winner: finalists[0].name,
       loser: finalists[1].name,
       winner_votes: leftVotes,
       loser_votes: rightVotes,
-      equalVotes: noPrefVotes,
+      equal_votes: noPrefVotes,
     })
-    console.log(roundResults.logs)
     return roundResults
   }
   if (leftVotes < rightVotes) {
@@ -360,26 +368,26 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
     roundResults.winners.push(finalists[1])
     roundResults.runner_up.push(finalists[0])
     roundResults.logs.push({
-      key: 'tabulator_logs.star.automatic_runoff_win',
+      key: 'tabulation_logs.star.automatic_runoff_win',
       winner: finalists[1].name,
       loser: finalists[0].name,
       winner_votes: rightVotes,
       loser_votes: leftVotes,
       equal_votes: noPrefVotes,
     })
-    console.log(roundResults.logs)
     return roundResults
   }
   roundResults.logs.push({
-    key: 'tabulator_logs.star.automatic_runoff_tie',
+    key: 'tabulation_logs.star.automatic_runoff_tie',
     names: finalists.map(f => f.name),
     tied_votes: rightVotes, // right or left doesn't matter
     equal_votes: noPrefVotes,
   })
 
   roundResults.logs.push({
-    key: 'tabulator_logs.star.score_tiebreak_start',
-  })
+    key: 'tabulation_logs.star.runoff_round_tiebreaker_start',
+    names: finalists.map(f => f.name),
+  });
 
   // Tie, run runoff tiebreaker
   const runoffTieWinner = runRunoffTiebreaker(summaryData, finalists)
@@ -389,23 +397,21 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
     roundResults.winners = [finalists[winIndex]]
     roundResults.runner_up = [finalists[loseIndex]]
     roundResults.logs.push({
-      key: 'tabulator_logs.star.score_tiebreak_win_runoff',
+      key: 'tabulation_logs.star.score_tiebreak_win_runoff',
       winner: finalists[winIndex].name,
       loser: finalists[loseIndex].name,
       winner_score: summaryData.totalScores[finalists[winIndex].index].score,
       loser_score: summaryData.totalScores[finalists[loseIndex].index].score,
     })
     roundResults.tieBreakType = 'score';
-    console.log(roundResults.logs)
     return roundResults
   }
   // Tie between scores, other tiebreaker needed to resolve
   roundResults.logs.push({
-    key: 'tabulator_logs.star.score_tiebreak_end',
+    key: 'tabulation_logs.star.score_tiebreak_end',
     names: finalists.map(f => f.name),
+    score: summaryData.totalScores[finalists[0].index].score,
   })
-
-  roundResults.logs.push({key: 'tabulator_logs.star.five_star_tiebreak_start'});
 
   // Five-star tiebreaker is enabled, look for candidate with most 5 star votes
   const fiveStarCounts = getFiveStarCounts(summaryData, finalists)
@@ -415,36 +421,33 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
     roundResults.winners = [fiveStarCounts[winnerIndex].candidate]
     roundResults.runner_up = [fiveStarCounts[loserIndex].candidate]
     roundResults.logs.push({
-      key: 'tabulator_logs.star.five_star_tiebreak_win_runoff',
+      key: 'tabulation_logs.star.five_star_tiebreak_win_runoff',
       winner: fiveStarCounts[winnerIndex].candidate.name,
       loser: fiveStarCounts[loserIndex].candidate.name,
       winner_five_star_count: fiveStarCounts[winnerIndex].counts,
       loser_five_star_count: fiveStarCounts[loserIndex].counts,
     })
     roundResults.tieBreakType = 'five_star';
-    console.log(roundResults.logs)
     return roundResults
   }
 
   // Could not resolve tie with five-star tiebreaker
   roundResults.logs.push({
-    key: 'tabulator_logs.star.five_star_tiebreak_end',
+    key: 'tabulation_logs.star.five_star_tiebreak_end',
     names: finalists.map(f => f.name),
     five_star_count: fiveStarCounts[0].counts // 0 or 1 doesn't matter
   });
 
   // Break tie randomly
-  roundResults.logs.push({key: 'tabulator_logs.star.random_tiebreak_start'});
   const sortedCandidates = sortByTieBreakOrder(finalists)
   roundResults.winners = [sortedCandidates[0]]
   roundResults.runner_up = [sortedCandidates[1]]
   roundResults.logs.push({
-    key: 'tabulator_logs.star.random_tiebreak_win_runoff',
+    key: 'tabulation_logs.star.random_tiebreak_win_runoff',
     winner: sortedCandidates[0].name,
     loser: sortedCandidates[1].name,
   });
   roundResults.tieBreakType = 'random';
-  console.log(roundResults.logs)
   return roundResults
 }
 
