@@ -34,7 +34,7 @@ const App = () => {
         ReturnToClassicContextProvider,
       ]}>
         <CssBaseline />
-        <Box display='flex' flexDirection='column' minHeight={'100vh'} >
+        <Box display='flex' flexDirection='column' minHeight={'100vh'} sx={{backgroundColor:'lightShade.main'}} >
           <Header />
           <CreateElectionDialog/>
           <ReturnToClassicDialog/>

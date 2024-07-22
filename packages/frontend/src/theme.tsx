@@ -14,6 +14,34 @@ declare module '@mui/material/styles' {
   interface PaletteOptions {
     brand?: PaletteOptions['primary'];
   }
+  interface Palette {
+    lightAccent: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    lightAccent?: PaletteOptions['primary'];
+  }
+  interface Palette {
+    darkAccent: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    darkAccent?: PaletteOptions['primary'];
+  }
+  interface Palette {
+    lightShade: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    lightShade?: PaletteOptions['primary'];
+  }
+  interface Palette {
+    darkShade: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    darkShade?: PaletteOptions['primary'];
+  }
 }
 
 declare module '@mui/material/styles' {
@@ -127,6 +155,48 @@ const themes = {
         main: '#ff9900',
         dark: '#c66a00',
         contrastText: '#000',
+      },
+      lightAccent: {
+        main: '#ff9900',
+      },
+      darkAccent: {
+        main: '#ff9900',
+      },
+      lightShade: {
+        main: '#ff9900',
+      },
+      darkShade: {
+        main: '#ff9900',
+      },
+      brand: brandPalette.brand
+    },
+    typography: brandTypeography
+  })),
+  testing: responsiveFontSizes(createTheme({
+    palette: {
+      lightShade: {
+        main: '#F0F1F3',
+        contrastText: '#000',
+      },
+      lightAccent: {
+        main: '#83A2A2',
+        contrastText: '#000',
+      },
+      primary: {
+        main: '#2AA2B3',
+      },
+      secondary: {
+        main: '#6C757D',
+        light: '#a9cef4',
+        dark: '#343A40'
+      },
+      darkAccent: {
+        main: '#6F707A',
+        contrastText: '#fff',
+      },
+      darkShade: {
+        main: '#28384f',
+        contrastText: '#fff',
       },
       brand: brandPalette.brand
     },
