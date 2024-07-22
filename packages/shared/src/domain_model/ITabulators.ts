@@ -76,7 +76,7 @@ type tieBreakType = 'none' | 'score' | 'five_star' | 'random';
 export interface roundResults {
     winners: candidate[],
     runner_up: candidate[],
-    ties: candidate[],
+    tied: candidate[],
     tieBreakType: tieBreakType,
     logs: tabulatorLog[],
 }

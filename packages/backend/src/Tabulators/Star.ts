@@ -188,7 +188,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
   const roundResults: roundResults = {
     winners: [],
     runner_up: [],
-    ties: [],
+    tied: [],
     tieBreakType: 'none',
     logs: [],
   }
@@ -352,6 +352,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
       loser_votes: rightVotes,
       equalVotes: noPrefVotes,
     })
+    console.log(roundResults.logs)
     return roundResults
   }
   if (leftVotes < rightVotes) {
@@ -366,6 +367,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
       loser_votes: leftVotes,
       equal_votes: noPrefVotes,
     })
+    console.log(roundResults.logs)
     return roundResults
   }
   roundResults.logs.push({
@@ -394,6 +396,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
       loser_score: summaryData.totalScores[finalists[loseIndex].index].score,
     })
     roundResults.tieBreakType = 'score';
+    console.log(roundResults.logs)
     return roundResults
   }
   // Tie between scores, other tiebreaker needed to resolve
@@ -419,6 +422,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
       loser_five_star_count: fiveStarCounts[loserIndex].counts,
     })
     roundResults.tieBreakType = 'five_star';
+    console.log(roundResults.logs)
     return roundResults
   }
 
@@ -440,6 +444,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
     loser: sortedCandidates[1].name,
   });
   roundResults.tieBreakType = 'random';
+  console.log(roundResults.logs)
   return roundResults
 }
 
