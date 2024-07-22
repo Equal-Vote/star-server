@@ -207,15 +207,11 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
   scoreLoop: while (finalists.length < 2) {
     const nCandidatesNeeded = 2 - finalists.length
     const eligibleCandidates = remainingCandidates.filter(c => !finalists.includes(c))
-    const scoreWinners = getScoreWinners(summaryData, eligibleCandidates)
-    if(finalists.length > 0){ // hack to make sure we only output this on subsequent iterations
-      roundResults.logs.push({
-        key: 'tabulation_logs.star.scoring_round_tiebreaker_start',
-        names: eligibleCandidates.map(e => e.name)
-      });
-    }
+    const scoreWinners = getScoreWinners(summaryData, eligibleCandidates) // returns all winners tied for first place
+
     if (scoreWinners.length <= nCandidatesNeeded) {
       // when scoreWinners is less than candidate needed, but all can advance to runoff
+      console.log('adding', scoreWinners.length)
       finalists.push(...scoreWinners.map(sc => summaryData.candidates[sc.index]))
       scoreWinners.forEach(scoreWinner =>
         roundResults.logs.push({
@@ -226,6 +222,12 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
       )
       continue scoreLoop
     }
+
+    roundResults.logs.push({
+      key: 'tabulation_logs.star.scoring_round_tiebreaker_start',
+      names: eligibleCandidates.map(e => e.name)
+    });
+
     roundResults.logs.push({
       key: 'tabulation_logs.star.score_tiebreak_end',
       names: scoreWinners.map(scoreWinner => scoreWinner.name),
@@ -234,8 +236,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
     // Multiple candidates have top score, proceed to score tiebreaker
     let tiedCandidates = scoreWinners
     tieLoop: while (tiedCandidates.length > 1) {
-
-      if(finalists.length == 0){ // hack to make sure we only output this on the first tiebreaker
+      if(tiedCandidates.length < scoreWinners.length){ // hack to avoid being redundant with the log above
         roundResults.logs.push({
           key: 'tabulation_logs.star.scoring_round_tiebreaker_start',
           names: tiedCandidates.map(c => c.name),
