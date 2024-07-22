@@ -270,7 +270,7 @@ export const ResultsBarChart = ({
   );
 
   return (
-    <ResponsiveContainer width="90%" height={50 * data.length}>
+    <ResponsiveContainer width="90%" height={50 * data.length} >
       <ComposedChart data={data} barCategoryGap={5} layout="vertical">
         <XAxis hide axisLine={false} type="number" />
         <YAxis
@@ -286,6 +286,7 @@ export const ResultsBarChart = ({
           fill="#026A86"
           unit="votes"
           legendType="none"
+          style={{overflow: 'visible'}}
         >
           <LabelList dataKey="left" position="insideRight" fill="black" />
           <LabelList dataKey="right" position="right" fill="black" />
