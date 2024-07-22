@@ -6,4 +6,4 @@ for i in $(env | grep ^REACT_APP_); do
 done
 
 # update favicon
-find /usr/src/app/packages/frontend -type f \( -name '*.js' -o -name '*.css' \) -exec sed -i "s|favicon-local|favicon|g" '{}' \+
+find /usr/src/app/packages/frontend -type f \( -name '*.js' -o -name '*.css' -name '*.html' \) -exec sed -i "s|favicon-local|favicon|g" '{}' \+
