@@ -9,8 +9,8 @@ const STARResultDetailedStepsWidget = ({ results, rounds, t, filterRandomFromLog
     // Note: there are other keys I don't want to show, but at least one of
     //       these will be used if the tiebreaker process is used
     const warningKeys = [
-        'tabulator_logs.star.pairwise_tiebreak_start',
-        'tabulator_logs.star.score_tiebreak_start',
+        'tabulation_logs.star.pairwise_tiebreak_start',
+        'tabulation_logs.star.score_tiebreak_start',
     ];
     const showTieBreakerWarning = results.roundResults.some(round => (round.logs.some(log =>
         typeof log !== 'string' && warningKeys.includes(log.key)

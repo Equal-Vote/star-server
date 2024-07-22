@@ -51,6 +51,8 @@ const SingleWinnerApproval = (scoresLeft: totalScore[], candidates: candidate[])
   let roundResults: roundResults  = {
     winners: [winner],
     runner_up: [],
+    ties: tiedCandidates,
+    tieBreakType: (tiedCandidates.length == 1)? 'none' : 'random',
     logs: (tiedCandidates.length == 1)? [
       `${winner.name} has the most approvals and wins the round`
     ] : [
@@ -59,11 +61,7 @@ const SingleWinnerApproval = (scoresLeft: totalScore[], candidates: candidate[])
     ]
   }
   
-  return {
-    roundResults,
-    tieBreakType: (tiedCandidates.length == 1)? 'none' : 'random',
-    tiedCandidates,
-  };
+  return roundResults;
 }
 
 function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder:number[]): approvalSummaryData {
