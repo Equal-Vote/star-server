@@ -21,7 +21,7 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
   let scoresLeft = [...summaryData.totalScores];
 
   for(let w = 0; w < nWinners; w++){
-    let {roundResults, tieBreakType, tiedCandidates} = SingleWinnerApproval(scoresLeft, summaryData.candidates);
+    let roundResults = SingleWinnerApproval(scoresLeft, summaryData.candidates);
 
     results.elected.push(...roundResults.winners);
     results.roundResults.push(roundResults);
@@ -31,8 +31,8 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
 
     // only save the tie breaker info if we're in the final round
     if(w == nWinners-1){
-      results.tied = tiedCandidates; 
-      results.tieBreakType = tieBreakType; // only save the tie breaker info if we're in the final round
+      results.tied = roundResults.tied; 
+      results.tieBreakType = roundResults.tieBreakType; // only save the tie breaker info if we're in the final round
     }
   }
 
@@ -51,7 +51,7 @@ const SingleWinnerApproval = (scoresLeft: totalScore[], candidates: candidate[])
   let roundResults: roundResults  = {
     winners: [winner],
     runner_up: [],
-    ties: tiedCandidates,
+    tied: tiedCandidates,
     tieBreakType: (tiedCandidates.length == 1)? 'none' : 'random',
     logs: (tiedCandidates.length == 1)? [
       `${winner.name} has the most approvals and wins the round`
