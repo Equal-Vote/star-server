@@ -10,13 +10,27 @@ export interface candidate {
     tieBreakOrder: number,
 }
 
+export type tabulatorLog = string | tabulatorLogObject;
+
+interface tabulatorLogObject {
+    key: string,
+    [key: string]: string | number | string[]
+}
+
 export interface voter {
     csvRow: number
 }
+
 export interface totalScore {
     index: number,
     score: number,
+    // these are optional for now, but I'll make them required once all tabulators share the same summaryData
+    pairwiseLosesWithTiedScore?: number,
+    pairwiseWins?: number,
+    maxSupportCount?: number,
 }
+
+export type totalScoreKey = keyof totalScore;
 
 export interface fiveStarCount {
     candidate: candidate,
@@ -31,19 +45,18 @@ type preferenceMatrix = number[][]
 
 type pairwiseMatrix = number[][]
 
-interface genericSummaryData {
+export interface genericSummaryData {
     candidates: candidate[],
     totalScores: totalScore[],
+    preferenceMatrix: preferenceMatrix,
+    pairwiseMatrix: pairwiseMatrix,
     nValidVotes: number,
     nInvalidVotes: number,
     nUnderVotes: number,
-    nBulletVotes?: number
+    nBulletVotes?: number,
 }
 
 export interface starSummaryData extends genericSummaryData {
-    scoreHist: scoreHist,
-    preferenceMatrix: preferenceMatrix,
-    pairwiseMatrix: pairwiseMatrix,
     noPreferenceStars: number[],
 }
 
@@ -51,33 +64,35 @@ export interface allocatedScoreSummaryData extends starSummaryData {
     splitPoints: number[],
     spentAboves: number[],
     weight_on_splits: number[],
-    weightedScoresByRound: number[][]
+    weightedScoresByRound: number[][],
+    scoreHist: scoreHist,
 }
 export interface approvalSummaryData extends genericSummaryData { }
 
-export interface pluralitySummaryData extends genericSummaryData { }
+export interface pluralitySummaryData extends genericSummaryData {}
 
 export interface rankedRobinSummaryData extends genericSummaryData {
     rankHist: rankHist,
-    preferenceMatrix: preferenceMatrix,
-    pairwiseMatrix: pairwiseMatrix,
 }
 
 export interface irvSummaryData extends rankedRobinSummaryData { }
 
+type tieBreakType = 'none' | 'score' | 'five_star' | 'random';
 export interface roundResults {
     winners: candidate[],
     runner_up: candidate[],
-    logs: string[],
+    logs: tabulatorLog[],
+    tieBreakType: tieBreakType,
+    tiedCandidates: candidate[],
 }
 
-interface genericResults {
+export interface genericResults {
     elected: candidate[],
     tied: candidate[],
     other: candidate[],
     roundResults: roundResults[],
     summaryData: genericSummaryData,
-    tieBreakType: string,
+    tieBreakType: tieBreakType,
 }
 
 export interface starResults extends genericResults {
@@ -101,6 +116,8 @@ export interface rankedRobinResults extends genericResults {
     summaryData: rankedRobinSummaryData,
 }
 
+// TODO: moving logs to the root makes it inflexible to a block-IRV scenario.
+//       IRV should follow a similar rounds / logs pattern to the other methods
 export interface irvResults extends Omit<genericResults, 'roundResults'> {
     summaryData: rankedRobinSummaryData,
     logs: string[],

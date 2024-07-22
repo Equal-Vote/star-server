@@ -11,7 +11,6 @@ type candidateTableEntry = {
   runoffVotes: number
 }
 
-
 export default ({results, rounds, t}: {results: starResults, rounds: number, t: Function }) => {
     const winnerIndex = results.roundResults[0].winners[0].index;
     const runnerUpIndex = results.roundResults[0].runner_up[0].index;

@@ -2,7 +2,6 @@ import { ballot, candidate, fiveStarCount, allocatedScoreResults, allocatedScore
 
 import { IparsedData } from './ParseData'
 const Fraction = require('fraction.js');
-import { sortByTieBreakOrder } from "./Star";
 
 const ParseData = require("./ParseData");
 declare namespace Intl {
@@ -378,4 +377,11 @@ function findMinFrac(fracs: typeof Fraction[]) {
         }
     })
     return minFrac
+}
+
+function sortByTieBreakOrder(candidates: candidate[]) {
+  return candidates.sort((a,b) => {
+    if (a.tieBreakOrder < b.tieBreakOrder) return -1
+    else return 1
+  })
 }

@@ -1,21 +1,127 @@
-import { candidate, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { genericResults, genericSummaryData, roundResults, totalScore, totalScoreKey  } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { IparsedData } from "./ParseData";
 
-declare namespace Intl {
-  class ListFormat {
-    constructor(locales?: string | string[], options?: {});
-    public format: (items: string[]) => string;
+type singleWinnerCallback = (scoresLeft: totalScore[], summaryData: genericSummaryData) => roundResults;
+export const runBlockTabulator = (results: genericResults, summaryData: genericSummaryData, nWinners: number, singleWinnerCallback: singleWinnerCallback) => {
+  let scoresLeft = [...summaryData.totalScores];
+
+  for(let w = 0; w < nWinners; w++){
+    let roundResults = singleWinnerCallback(scoresLeft, summaryData);
+
+    results.elected.push(...roundResults.winners);
+    results.roundResults.push(roundResults);
+
+    // remove winner for next round
+    scoresLeft = scoresLeft.filter(totalScore => totalScore.index != roundResults.winners[0].index)
+
+    // only save the tie breaker info if we're in the final round
+    if(w == nWinners-1){
+      results.tied = roundResults.tiedCandidates; 
+      results.tieBreakType = roundResults.tieBreakType; // only save the tie breaker info if we're in the final round
+    }
   }
-}
-// converts list of strings to string with correct grammar ([a,b,c] => 'a, b, and c')
-export const commaListFormatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
-export function sortTotalScores(totalScores : totalScore[], candidates : candidate[]){
-  return totalScores.sort((a: totalScore, b: totalScore) => {
-    if (a.score > b.score) return -1
-    if (a.score < b.score) return 1
-    if (candidates[a.index].tieBreakOrder < candidates[b.index].tieBreakOrder) return -1
-    return 1
-  });
+  results.other = scoresLeft.map(s => summaryData.candidates[s.index]); // remaining candidates in sortedScores
+
+  return results
+}
+  
+
+export const totalScoreComparator = (criteria: totalScoreKey, a: totalScore, b: totalScore): number | undefined => {
+  if(a[criteria] === undefined) return undefined;
+  if(b[criteria] === undefined) return undefined;
+  // Note: I can remove the 'as number' once I make the totalScore fields non-optional
+  if((a[criteria] as number) > (b[criteria] as number)) return -1;
+  if((a[criteria] as number) < (b[criteria] as number)) return 1;
+  return undefined;
+}
+
+export const getSummaryData = (
+  candidates: string[],
+  parsedData: IparsedData,
+  randomTiebreakOrder: number[],
+  methodType: 'cardinal' | 'orindal',
+  sortFunc: (a: totalScore, b:totalScore) => number | undefined,
+  maxSupport=1,
+): genericSummaryData => {
+  // Initialize randomTiebreakOrder structure
+  if (randomTiebreakOrder.length < candidates.length) {
+    randomTiebreakOrder = candidates.map((c,index) => index)
+  }
+
+  // Count bullet votes
+  let nBulletVotes = parsedData.scores.reduce((nBulletVotes, vote) => {
+      let nSupported = vote.reduce((n, candidateScore) => n + (candidateScore > 0 ? 1 : 0), 0);
+      return nBulletVotes + ((nSupported === 1)? 1 : 0);
+    },
+    0
+  );
+
+  // Matrix for voter preferences
+  const preferenceMatrix: number[][] = candidates.map((_,i) => 
+    candidates.map((_,j) =>
+      // count the number of votes with i > j
+      parsedData.scores.reduce((n, vote) => n + (methodType == 'cardinal'?
+        // Cardinal systems: vote goes to the candinate with the higher number
+        (vote[i] > vote[j])? 1 : 0
+      :
+        // Orindal systems: vote goes to the candinate with the smaller rank
+        (vote[i] < vote[j])? 1 : 0
+      ), 0)
+    )
+  )
+
+  // Matrix for voter preferences
+  const pairwiseMatrix: number[][] = candidates.map((_,i) => 
+    // count if more voters prefer i to j
+    candidates.map((_,j) => (preferenceMatrix[i][j] > preferenceMatrix[j][i])? 1 : 0)
+  )
+
+  // Totaled score measures for each candidate
+  const totalScores: totalScore[] = candidates.map((_,candidateIndex) => ({
+    index: candidateIndex,
+    score: parsedData.scores.reduce(
+      (score, vote) => score + vote[candidateIndex],
+      0
+    ),
+    pairwiseWins: candidates.reduce((n,_,otherCandidateIndex) =>
+      n + ((pairwiseMatrix[candidateIndex][otherCandidateIndex] == 1) ? 1 : 0),
+      0
+    ),
+    maxSupportCount: parsedData.scores.reduce(
+      (score, vote) => (score + ((vote[candidateIndex] == maxSupport) ? 1 : 0)),
+      0
+    ),
+  }));
+
+  // Pairwise loses with tied score
+  // NOTE: we can't include this in the above loop since we rely on score
+  candidates.forEach((_, candidateIndex) => {
+    totalScores[candidateIndex].pairwiseLosesWithTiedScore = candidates.reduce((n,_,otherCandidateIndex) => {
+        if(candidateIndex == otherCandidateIndex) return n;
+        if(totalScores[candidateIndex].score != totalScores[otherCandidateIndex].score) return n;
+        return (pairwiseMatrix[candidateIndex][otherCandidateIndex] == 1) ? 0 : 1
+    }, 0);
+  })
+
+  // Sort totalScores
+  totalScores.sort((a, b) =>
+      sortFunc(a, b) ?? 
+      (randomTiebreakOrder[a.index] - randomTiebreakOrder[b.index])
+  );
+
+  return {
+    candidates: candidates.map((candidate, index) => 
+      ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] })
+    ),
+    totalScores,
+    preferenceMatrix,
+    pairwiseMatrix,
+    nValidVotes: parsedData.validVotes.length,
+    nInvalidVotes: parsedData.invalidVotes.length,
+    nUnderVotes: parsedData.underVotes,
+    nBulletVotes: nBulletVotes,
+  }
 }
 
 // Format a Timestamp value into a compact string for display;
@@ -38,8 +144,6 @@ function formatTimestamp(value : string) {
   const timeStamp = `${fullDate} ${hour}:${minute}`;
   return timeStamp;
 }
-
-
 
 const isScore = (value : any) =>
   !isNaN(value) && (value === null || (value > -10 && value < 10));
