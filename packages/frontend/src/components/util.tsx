@@ -87,7 +87,7 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
     return values
   }
 
-  let values = processValues({...en.keyword, ...en.keyword[electionTermType], v})
+  let values = processValues({...en.keyword, ...en.keyword[electionTermType], ...v})
 
   const { t } = useTranslation()
 
