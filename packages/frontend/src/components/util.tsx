@@ -29,9 +29,22 @@ import { DateTime } from "luxon";
 import { Trans, useTranslation } from "react-i18next";
 import en from '../i18n/en.yaml';
 import { Tip } from "./styles";
+import i18n from "~/i18n/i18n";
 
-const rLink = /\[([^\s]*)\]\(([^\s]*)\)/;
+const rLink = /\[(.*?)\]\((.*?)\)/;
 const rTip = / \!tip\((.*)\)/
+
+
+declare namespace Intl {
+    class ListFormat {
+        constructor(locales?: string | string[], options?: {});
+        public format: (items: string[]) => string;
+    }
+}
+
+const commaListFormatter = new Intl.ListFormat(i18n.languages[0], { style: 'long', type: 'conjunction' });
+
+// TODO: update useSubstitutedTranslation to convert arrays with commaListFormatter
 
 export const useOnScrollAnimator = () => {
     //https://www.youtube.com/watch?v=T33NN_pPeNI
@@ -62,12 +75,19 @@ export const useOnScrollAnimator = () => {
 
 // NOTE: I'm setting a electionTermType default for backwards compatibility with elections that don't have a term set
 export const useSubstitutedTranslation = (electionTermType='election', v={}) => { // election or poll
-  let values = {...en.keyword, ...en.keyword[electionTermType], ...v}
-  Object.entries(values).forEach(([key, value]) => {
-    if(typeof value === 'string'){
-      values[`lowercase_${key}`] = value.toLowerCase()
-    }
-  })
+  const processValues = (values) => {
+    Object.entries(values).forEach(([key, value]) => {
+      if(typeof value === 'string'){
+        values[`lowercase_${key}`] = value.toLowerCase()
+      }
+      if(Array.isArray(value)){
+        values[key] = commaListFormatter.format(value);
+      }
+    })
+    return values
+  }
+
+  let values = processValues({...en.keyword, ...en.keyword[electionTermType], ...v})
 
   const { t } = useTranslation()
 
@@ -122,7 +142,7 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
   }
 
   return {
-    t: (key, v={}) => handleObject(t(key, {...values, ...v}))
+    t: (key, v={}) => handleObject(t(key, {...values, ...processValues(v)}))
   }
 }
 
@@ -262,7 +282,6 @@ export const ResultsBarChart = ({
           width={axisWidth}
         />
         <Bar
-          stackOffset="expand"
           dataKey={xKey}
           fill="#026A86"
           unit="votes"
@@ -442,10 +461,10 @@ export const openFeedback = () => {
   // simulate clicking the feedback button
   const launcherFrame = document.getElementById("launcher-frame");
   const button =
-    launcherFrame.contentWindow.document.getElementsByClassName(
+    (launcherFrame as HTMLIFrameElement).contentWindow.document.getElementsByClassName(
       "launcher-button"
     )[0];
-  button.click();
+  (button as HTMLButtonElement).click();
 };
 
 export function scrollToElement(e) {
@@ -456,7 +475,7 @@ export function scrollToElement(e) {
     if (NodeList.prototype.isPrototypeOf(openedSection)) {
       // NOTE: NodeList could contain a bunch of hidden elements with height 0, so we're filtering those out
       openedSection = Array.from(openedSection).filter((e) => {
-        const box = e.getBoundingClientRect();
+        const box = (e as HTMLElement).getBoundingClientRect();
         return box.bottom - box.top > 0;
       });
       if (openedSection.length == 0) return;

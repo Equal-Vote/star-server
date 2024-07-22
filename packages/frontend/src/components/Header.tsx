@@ -71,8 +71,6 @@ const Header = () => {
         }
     ];
 
-    const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
-
     const returnToClassicContext = useContext(ReturnToClassicContext);
 
     return (
@@ -131,7 +129,7 @@ const Header = () => {
                     size="large"
                     href="/"
                     sx={{display: 'flex', gap: 1, flexGrow: {xs: '1', md: '0'}}}>
-                        <Avatar src='/favicon.png'/>
+                        <Avatar src='/favicon-local.png'/>
                 </IconButton>
 
                 {/**** DESKTOP OPTIONS ****/}

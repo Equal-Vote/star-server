@@ -29,11 +29,6 @@ const About = () => {
     ["DubemObi", "109088909"],
   ];
 
-  const [title, _] = useLocalStorage(
-    "title_override",
-    process.env.REACT_APP_TITLE
-  );
-
   return (
     <Container>
       <Paper
@@ -46,10 +41,10 @@ const About = () => {
           padding: "1rem 2rem 2rem 2rem",
         }}
       >
-        <h1>About {title}</h1>
+        <h1>About dev.star.vote</h1>
 
         <Typography>
-          {title} is the successor to star.vote that's{" "}
+          dev.star.vote is the successor to star.vote that's{" "}
           <b>currently under construction</b>.
         </Typography>
         <br />
@@ -68,7 +63,7 @@ const About = () => {
           It's also flexible to fit your voting scenario, whether it's a massive
           public poll, a high stakes board election, or just a casual poll
           picking a restaurant
-          {title} can fit your needs and provide a secure, auditable election
+          dev.star.vote can fit your needs and provide a secure, auditable election
         </Typography>
 
         <h1>The Team</h1>

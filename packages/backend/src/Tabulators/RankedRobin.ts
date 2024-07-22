@@ -183,6 +183,8 @@ function runRankedRobinRound(summaryData: rankedRobinSummaryData, remainingCandi
   const roundResults: roundResults = {
     winners: [],
     runner_up: [],
+    tied: [],
+    tieBreakType: 'none',
     logs: [],
   }
 
