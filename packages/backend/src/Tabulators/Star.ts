@@ -418,6 +418,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
       winner_five_star_count: fiveStarCounts[winnerIndex].counts,
       loser_five_star_count: fiveStarCounts[loserIndex].counts,
     })
+    roundResults.tieBreakType = 'five_star';
     return roundResults
   }
 
@@ -438,6 +439,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
     winner: sortedCandidates[0].name,
     loser: sortedCandidates[1].name,
   });
+  roundResults.tieBreakType = 'random';
   return roundResults
 }
 
