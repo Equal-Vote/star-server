@@ -29,11 +29,6 @@ const About = () => {
     ["DubemObi", "109088909"],
   ];
 
-  const [title, _] = useLocalStorage(
-    "title_override",
-    process.env.REACT_APP_TITLE
-  );
-
   return (
     <Container>
       <Paper
@@ -46,7 +41,7 @@ const About = () => {
           padding: "1rem 2rem 2rem 2rem",
         }}
       >
-        <h1>About {title}</h1>
+        <h1>About dev.star.vote</h1>
 
         <Typography>
           {title} is the successor to star.vote that's{" "}

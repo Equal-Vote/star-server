@@ -25,7 +25,6 @@ export default ({}) => {
     const authSession = useAuthSession();
     const themeSelector = useThemeSelector();
     const flags = useFeatureFlags();
-    const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
     
     const createElectionContext = useContext(CreateElectionContext);
     

@@ -211,7 +211,6 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
 
     if (scoreWinners.length <= nCandidatesNeeded) {
       // when scoreWinners is less than candidate needed, but all can advance to runoff
-      console.log('adding', scoreWinners.length)
       finalists.push(...scoreWinners.map(sc => summaryData.candidates[sc.index]))
       scoreWinners.forEach(scoreWinner =>
         roundResults.logs.push({

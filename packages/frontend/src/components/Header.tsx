@@ -71,8 +71,6 @@ const Header = () => {
         }
     ];
 
-    const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
-
     const returnToClassicContext = useContext(ReturnToClassicContext);
 
     return (
