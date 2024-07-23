@@ -27,10 +27,10 @@ export default ({electionId}) => {
         flexDirection: 'column',
         flexShrink: '0',
     }}>
-        <CardActionArea sx={{p: { xs: 2, md: 2 }, backgroundColor: 'lightShade.main'}}>
+        <CardActionArea sx={{p: { xs: 2, md: 2 }, backgroundColor: 'lightAccent.main'}}>
             <CardContent>
-                <Typography variant='h5'>{data == null ? 'null' : data.election.title}</Typography>
-                <Typography sx={{textAlign: 'right', color: '#808080'}}>
+                <Typography variant='h5' color={'lightAccent.contrastText'}>{data == null ? 'null' : data.election.title}</Typography>
+                <Typography sx={{textAlign: 'right', color: 'lightAccent.contrastText'}}>
                     {data == null ? 'null' : formatter.format(data.election.races.map((race) => race.voting_method))}
                 </Typography>
             </CardContent>

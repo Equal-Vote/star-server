@@ -202,6 +202,36 @@ const themes = {
     },
     typography: brandTypeography
   })),
+  testing2: responsiveFontSizes(createTheme({
+    palette: {
+      lightShade: {
+        main: '#F7F9F8',
+        contrastText: '#000',
+      },
+      lightAccent: {
+        main: '#82BFCF',
+        contrastText: '#000',
+      },
+      primary: {
+        main: '#2AA2B3',
+      },
+      secondary: {
+        main: '#6C757D',
+        light: '#a9cef4',
+        dark: '#343A40'
+      },
+      darkAccent: {
+        main: '#898A85',
+        contrastText: '#fff',
+      },
+      darkShade: {
+        main: '#2B344A',
+        contrastText: '#fff',
+      },
+      brand: brandPalette.brand
+    },
+    typography: brandTypeography
+  })),
   darkMode: responsiveFontSizes(createTheme({
     palette: {
       mode: 'dark',
@@ -230,12 +260,12 @@ export const ThemeContextProvider = ({ children }) => {
   let theme;
   if(flags.isSet('THEMES')){
     if(mode === 'browserDefault'){
-      theme = themes[prefersDarkMode? 'darkMode' : 'turquoise'];
+      theme = themes[prefersDarkMode? 'darkMode' : 'testing2'];
     }else{
       theme = themes[mode];
     }
   }else{
-    theme = themes['turquoise']
+    theme = themes['testing2']
   }
 
   const value: ThemeContextType = {
