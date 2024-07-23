@@ -258,11 +258,12 @@ export const ResultsBarChart = ({
     return a.name.length > b.name.length ? a : b;
   }).name;
 
-  // 200 is about the max width I'd want for a small mobile device, still looking for a better solution though
+  // TODO: try calculating text width: https://www.geeksforgeeks.org/calculate-the-width-of-the-text-in-javascript/
+  // 150 is about the max width I'd want for a small mobile device, still looking for a better solution though
   const axisWidth = Math.max(
     50,
     Math.min(
-      200,
+      150, // 150 since that's the width of Equal Preferences
       15 * (longestCandidateName.length > 20 ? 20 : longestCandidateName.length)
     )
   );
@@ -401,7 +402,7 @@ export const Widget = ({ children, title }) => (
       maxWidth: "500px",
       backgroundColor: "brand.white",
       borderRadius: "10px",
-      padding: "18px",
+      padding: {xs: "6px", md: "18px"},
       paddingTop: 0 /* the margin from the h3 tags is enough */,
       display: "flex",
       flexDirection: "column",
