@@ -2,7 +2,7 @@
 nav:
   about: About 
   help: Help 
-  public_elections: Browse Elections
+  public_elections: Public Elections
   new_election: New Election
   greeting: Hello, {{name}}
   feedback: Feedback?
