@@ -75,9 +75,9 @@ const Header = () => {
 
     return (
         <AppBar className="navbar" position="sticky" sx={{ backgroundColor: "black", '@media print': {display: 'none', boxShadow: 'none'}}}>
-            <Toolbar>
+            <Toolbar sx={{justifyContent: 'space-between'}}>
                 {/**** MOBILE HAMBURGER MENU ****/}
-                <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
+                <Box sx={{ flexGrow: 0, display: { xs: 'flex', lg: 'none' } }}>
                     <IconButton
                         size="large"
                         aria-label="nav-menu"
@@ -102,7 +102,7 @@ const Header = () => {
                         open={Boolean(anchorElNav)}
                         onClose={handleCloseNavMenu}
                         sx={{
-                            display: { xs: 'block', md: 'none' },
+                            display: { xs: 'block', lg: 'none' },
                         }}
                     >
                         {navItems.map((item, i) => 
@@ -124,17 +124,9 @@ const Header = () => {
                     </Menu>
                 </Box>
 
-                {/**** Title ****/}
-                <IconButton
-                    size="large"
-                    href="/"
-                    sx={{display: 'flex', gap: 1, flexGrow: {xs: '1', md: '0'}}}>
-                        <Avatar src='/favicon-local.png'/>
-                </IconButton>
-
                 {/**** DESKTOP OPTIONS ****/}
                 <Box
-                    sx={{ flexGrow: 100, flexWrap: 'wrap', display: { xs: 'none', md: 'flex' }, gap: 2, rowGap: 0 }}>
+                    sx={{ flexGrow: 100, flexWrap: 'wrap', display: { xs: 'none', lg: 'flex' }, gap: 2, rowGap: 0 }}>
                     {navItems.map((item, i) => 
                         <Button key={`desktop-nav-${i}`} href={item.href} target={item.target}>
                             <Typography sx={navTextSx} color={headerTextColor}>
@@ -153,7 +145,7 @@ const Header = () => {
                 {/**** ACCOUNT OPTIONS ****/}
                 <Box sx={{ flexGrow: 0, display: 'flex' }}>
                     {authSession.isLoggedIn() && <>
-                        <Button color='inherit' onClick={() => createElectionContext.openDialog()} sx={{display: { xs: 'none', md: 'flex' }}}>
+                        <Button color='inherit' onClick={() => createElectionContext.openDialog()} sx={{display: { xs: 'none', lg: 'flex' }}}>
                             <Typography sx={navTextSx} color={headerTextColor}>
                                 {t('nav.new_election')}
                             </Typography>
@@ -165,11 +157,11 @@ const Header = () => {
                             aria-haspopup="true"
                             onClick={handleOpenUserMenu}
                             color="inherit"
-                            sx={{display: { xs: 'inline', md: 'none' }}}
+                            sx={{display: { xs: 'inline', lg: 'none' }}}
                             >
                             <AccountCircleIcon />
                         </IconButton>
-                        <Button color='inherit' onClick={handleOpenUserMenu} sx={{display: { xs: 'none', md: 'flex' }}}>
+                        <Button color='inherit' onClick={handleOpenUserMenu} sx={{display: { xs: 'none', lg: 'flex' }}}>
                             <Typography sx={navTextSx} color={headerTextColor}>
                                 {t('nav.greeting', {name: authSession.getIdField('given_name')})}
                             </Typography>
@@ -249,8 +241,15 @@ const Header = () => {
                         </Button>
                     }
                 </Box>
-
             </Toolbar>
+            {/**** Title ****/}
+            {/* Pull title outside of the flexbox toolbar so that it can be centered relative to the screen */}
+            <IconButton
+                size="large"
+                href="/"
+                sx={{position: 'fixed', width: '100%', margin: 'auto', pointerEvents: 'none' }}>
+                    <Avatar src='/favicon-local.png' sx={{pointerEvents: 'auto' }}/>
+            </IconButton>
         </AppBar >
     )
 }
