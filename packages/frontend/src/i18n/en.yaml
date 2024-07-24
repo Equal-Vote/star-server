@@ -300,6 +300,75 @@ share:
 # About
 about:
   title: About dev.star.vote
+  description: >
+    dev.star.vote is the successor to star.vote that's currently under construction.
+
+
+    It gives you an easy way to create secure elections with voting methods
+    that don't spoil the vote.
+
+
+    The tool is open source and will eventually support a variety of
+    single winner methods such as STAR, Approval, and Ranked Robin, as
+    well as multi-winner proportional methods such as STAR-PR.
+
+
+    It's also flexible to fit your voting scenario, whether it's a massive
+    public poll, a high stakes board election, or just a casual poll
+    picking a restaurant
+    dev.star.vote can fit your needs and provide a secure, auditable election
+  team_title: The Team
+  leads_title: Our Leads
+  leads:
+    - 'Mike Franze [@mikefranze](https://github.com/mikefranze): Software Development Project Lead'
+    - 'Arend Peter Castelein [@ArendPeter](https://github.com/ArendPeter): Equal Vote Production Lead'
+    - 'Evans Tucker [@evanstucker](https://github.com/evanstucker-hates-2fa): Infrastructure Lead'
+    - 'Sara Wolk [@SaraWolk](https://github.com/SaraWolk): Equal Vote Director'
+  contributors_title: All Contributors
+  # The image Id can be found by copying the image address of their github profile
+  contributors:
+    - github_user_name: mikefranze
+      github_image_id: 41272412
+    - github_user_name: ArendPeter
+      github_image_id: 9289903
+    - github_user_name: ScottPlusPlus
+      github_image_id: 40651157
+    - github_user_name: SaraWolk
+      github_image_id: 75465271
+    - github_user_name: evanstucker-hates-2fa
+      github_image_id: 20584445
+    - github_user_name: masiarek
+      github_image_id: 857777
+    - github_user_name: arterro
+      github_image_id: 91045842
+    - github_user_name: Elitemoni
+      github_image_id: 13269513
+    - github_user_name: JonBlauvelt
+      github_image_id: 8998273
+    - github_user_name: AntonSax
+      github_image_id: 9059836
+    - github_user_name: mjpauly
+      github_image_id: 16432322
+    - github_user_name: Jeetch8
+      github_image_id: 68128367
+    - github_user_name: RahalBhupathi
+      github_image_id: 113255492
+    - github_user_name: flynnwastaken
+      github_image_id: 32378726
+    - github_user_name: DubemObi
+      github_image_id: 109088909
+  contribute_title: Contribute
+  contribute_description: >
+    Our source code is available on [Github](https://github.com/Equal-Vote/star-server),
+    Pull Requests and bug reports are greatly appreciated
+
+
+    [Join our community](https://www.starvoting.org/join) for 
+    onboarding and to be involved in discussions
+  donate_title: Donate
+  donate_description: Help us to continue supporting the website
+  donate_button: Donate
+  donate_link: https://www.equal.vote/donate
 
 # Results page
 results:
@@ -432,9 +501,9 @@ tabulation_logs:
     # Automatic runoff
     automatic_runoff_start: Advance to automatic runoff round.
     automatic_runoff_win: >
-      {{winner}} is preferred over {{loser}} by {{winner_votes}} votes to {{loser_votes}}, and {{equal_votes}} voters have an equal preference.
+      {{winner}} is preferred over {{loser}} by {{winner_votes}} votes to {{loser_votes}}, and {{equal_votes}} voters have an [equal preference](https://www.starvoting.org/equal_preference).
     automatic_runoff_tie: >
-      {{names}} are tied with {{tied_votes}} voters prefering each, and {{equal_votes}} voters having an equal preference.
+      {{names}} are tied with {{tied_votes}} voters prefering each, and {{equal_votes}} voters having an [equal preference](https://www.starvoting.org/equal_preference).
 
 # Info bubbles
 tips:
