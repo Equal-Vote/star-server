@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from "react"
 import Typography from '@mui/material/Typography';
-import { Box, Paper } from "@mui/material"
+import { Box, Paper, Tooltip } from "@mui/material"
 import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -42,29 +42,34 @@ export default function Race({ race, race_index }) {
                     <Typography variant="h4" component="h4">{race.title}</Typography>
                 </Box>
                 <Box sx={{ flexShrink: 1, p: 1 }}>
-                    <IconButton
-                        aria-label="copy"
-                        onClick={onCopy}
-                        disabled={election.state !== 'draft'}>
-                        <ContentCopy />
-                    </IconButton>
+                    <Tooltip title='Duplicate'>
+                        <IconButton
+                            aria-label="copy"
+                            onClick={onCopy}
+                            disabled={election.state !== 'draft'}>
+                            <ContentCopy />
+                        </IconButton>
+                    </Tooltip>
                 </Box>
                 <Box sx={{ flexShrink: 1, p: 1 }}>
-                    <IconButton
-                        aria-label="edit"
-                        onClick={handleOpen}>
-                        {election.state==='draft' ? <EditIcon /> : <VisibilityIcon /> }
-                    </IconButton>
+                    <Tooltip title='Edit'>
+                        <IconButton
+                            aria-label="edit"
+                            onClick={handleOpen}>
+                            {election.state === 'draft' ? <EditIcon /> : <VisibilityIcon />}
+                        </IconButton>
+                    </Tooltip>
                 </Box>
                 <Box sx={{ flexShrink: 1, p: 1 }}>
-
-                    <IconButton
-                        aria-label="delete"
-                        color="error"
-                        onClick={onDeleteRace}
-                        disabled={election.state!=='draft'}>
-                        <DeleteIcon />
-                    </IconButton>
+                    <Tooltip title='Delete'>
+                        <IconButton
+                            aria-label="delete"
+                            color="error"
+                            onClick={onDeleteRace}
+                            disabled={election.state !== 'draft'}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
                 </Box>
 
             </Box>
