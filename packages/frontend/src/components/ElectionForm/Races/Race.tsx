@@ -10,6 +10,7 @@ import RaceDialog from './RaceDialog';
 import { useEditRace } from './useEditRace';
 import RaceForm from './RaceForm';
 import useElection from '../../ElectionContextProvider';
+import DuplicateRace from './DuplicateRace';
 
 export default function Race({ race, race_index }) {
 
@@ -36,6 +37,9 @@ export default function Race({ race, race_index }) {
                     <Typography variant="h4" component="h4">{race.title}</Typography>
                 </Box>
                 <Box sx={{ flexShrink: 1, p: 1 }}>
+                    <DuplicateRace race = {race}/>
+                </Box>
+                <Box sx={{ flexShrink: 1, p: 1 }}>
                     <IconButton
                         aria-label="edit"
                         onClick={handleOpen}>
@@ -52,6 +56,7 @@ export default function Race({ race, race_index }) {
                         <DeleteIcon />
                     </IconButton>
                 </Box>
+
             </Box>
             <RaceDialog onSaveRace={onSave} open={open} handleClose={handleClose} >
                 <RaceForm
