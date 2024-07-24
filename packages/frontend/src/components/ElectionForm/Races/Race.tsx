@@ -10,12 +10,12 @@ import RaceDialog from './RaceDialog';
 import { useEditRace } from './useEditRace';
 import RaceForm from './RaceForm';
 import useElection from '../../ElectionContextProvider';
-import DuplicateRace from './DuplicateRace';
+import { ContentCopy } from '@mui/icons-material';
 
 export default function Race({ race, race_index }) {
 
     const { election } = useElection()
-    const { editedRace, errors, setErrors, applyRaceUpdate, onSaveRace, onDeleteRace } = useEditRace(race, race_index)
+    const { editedRace, errors, setErrors, applyRaceUpdate, onSaveRace, onDeleteRace, onAddRace } = useEditRace(race, race_index)
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -25,6 +25,11 @@ export default function Race({ race, race_index }) {
         const success = await onSaveRace()
         if (!success) return
         handleClose()
+    }
+
+    const onCopy = async () => {
+        const success = await onAddRace()
+        if (!success) return
     }
 
     return (
@@ -37,7 +42,12 @@ export default function Race({ race, race_index }) {
                     <Typography variant="h4" component="h4">{race.title}</Typography>
                 </Box>
                 <Box sx={{ flexShrink: 1, p: 1 }}>
-                    <DuplicateRace race = {race}/>
+                    <IconButton
+                        aria-label="copy"
+                        onClick={onCopy}
+                        disabled={election.state !== 'draft'}>
+                        <ContentCopy />
+                    </IconButton>
                 </Box>
                 <Box sx={{ flexShrink: 1, p: 1 }}>
                     <IconButton
