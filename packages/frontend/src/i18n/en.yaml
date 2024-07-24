@@ -160,7 +160,7 @@ footer:
   social_action: 'Like and follow on social media:'
 
 election_home:
-  start_time: '{{election}} begins {{date}} at {{time}}'
+  begin_time: '{{election}} begins {{date}} at {{time}}'
   end_time: '{{election}} ends {{date}} at {{time}}'
   ended_time: '{{election}} ended {{date}} at {{time}}'
   vote: Vote
