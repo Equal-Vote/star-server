@@ -287,8 +287,15 @@ export const ResultsBarChart = ({
           legendType="none"
           style={{overflow: 'visible'}}
         >
-          <LabelList dataKey="left" position="insideRight" fill="black" />
-          <LabelList dataKey="right" position="right" fill="black" />
+          {/* corresponds to mui md size */}
+          {/* also this won't dynamically adjust with resizing the screen  */}
+          {window.innerWidth > 900 ? <> 
+            <LabelList dataKey="left" position="insideRight" fill="black" />
+            <LabelList dataKey="right" position="right" fill="black" />
+          </>:<>
+            <LabelList dataKey="left" position="insideLeft" fill="black" />
+            <LabelList dataKey="right" position="insideLeft" fill="black" />
+          </>}
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
           ))}
@@ -427,11 +434,11 @@ export const ResultsTable = ({ className, data, minCellWidth = "120px" }) => {
         width: "100%",
       }}
     >
-      <table className={c}>
+      <table className={c} style={{minWidth: '100%'}}>
         <thead className={c}>
           <tr>
             {data[0].map((header, i) => (
-              <th key={i} className={c}>
+              <th key={i} className={c} style={{minWidth: i == 0 ? '125px' : '75px'}} >
                 {header}
               </th>
             ))}
@@ -444,7 +451,9 @@ export const ResultsTable = ({ className, data, minCellWidth = "120px" }) => {
                 <td
                   key={j}
                   className={c}
-                  style={{ paddingLeft: j == 0 ? "8px" : "0" }}
+                  style={{
+                    paddingLeft: j == 0 ? "8px" : "0",
+                  }}
                 >
                   {value}
                 </td>
