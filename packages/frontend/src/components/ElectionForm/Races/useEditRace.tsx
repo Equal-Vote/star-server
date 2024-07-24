@@ -37,7 +37,7 @@ export const useEditRace = (race, race_index) => {
             raceNumWinners: '',
             candidates: ''
         })
-    }, [race_index])
+    }, [race, race_index])
 
     const applyRaceUpdate = (updateFunc: (race: iRace) => any) => {
         const raceCopy: iRace = structuredClone(editedRace)
