@@ -48,11 +48,6 @@ async function castVoteController(req: IElectionRequest, res: Response, next: Ne
     
     const user = req.user;
     
-    const missingAuthData = checkForMissingAuthenticationData(req,targetElection, req)
-    if (missingAuthData !== null) {
-        throw new Unauthorized(missingAuthData);
-    }
-
     const inputBallot: Ballot = req.body.ballot;
     const receiptEmail: string = req.body.receiptEmail
     inputBallot.election_id = targetElection.election_id;
@@ -60,6 +55,11 @@ async function castVoteController(req: IElectionRequest, res: Response, next: Ne
 
     // skip voter roll & validation steps while in draft mode
     if(targetElection.state !== 'draft'){ 
+        const missingAuthData = checkForMissingAuthenticationData(req,targetElection, req)
+        if (missingAuthData !== null) {
+            throw new Unauthorized(missingAuthData);
+        }
+
         roll = await getOrCreateElectionRoll(req, targetElection, req);
         const voterAuthorization = getVoterAuthorization(roll,missingAuthData)
         assertVoterMayVote(voterAuthorization, req);

@@ -80,14 +80,9 @@ export default class BallotsDB implements IBallotStore {
             .deleteFrom(tableName)
             .where('election_id', '=', election_id)
             .returningAll()
-            .executeTakeFirst()
-            .then((ballot) => {
-                if (ballot) {
-                    return true
-                } else {
-                    return false
-                }
-            });
+            .execute()
+            .then(() => true)
+            .catch(() => false);
     }
 
     delete(ballot_id: Uid, ctx: ILoggingContext, reason: string): Promise<boolean> {
