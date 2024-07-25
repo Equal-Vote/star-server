@@ -159,6 +159,13 @@ footer:
     https://www.equal.vote
   social_action: 'Like and follow on social media:'
 
+draft_warning:
+  title: Test Mode
+  description: >
+    DO NOT SHARE PUBLICLY! This {{lowercase_election}} is still being drafted.
+    All ballots will be counted as test votes and
+    shall be reset prior to the final {{lowercase_election}}.
+
 election_home:
   begin_time: '{{election}} begins {{date}} at {{time}}'
   end_time: '{{election}} ends {{date}} at {{time}}'
@@ -178,6 +185,7 @@ admin_home:
     ip_label: IP Address
     device_label: Device
     email_label: Login Email Address
+
 # Ballot
 ballot:
   this_election_uses: This election uses {{voting_method}}

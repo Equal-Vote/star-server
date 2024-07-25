@@ -13,6 +13,7 @@ import { BallotContext } from "./VotePage";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { useSubstitutedTranslation } from "~/components/util";
+import DraftWarning from "../DraftWarning";
 
 const ScoreIcon = ({opacity, value, fontSX}) => (
   <Box align='center' sx={{ position: 'relative', aspectRatio: '1 / 1'}}>
@@ -197,7 +198,8 @@ export default function GenericBallotView({
       />
     </Box>
 
-  return (
+  return (<>
+      <DraftWarning/>
       <Box border={2} sx={{ mt: 0, ml: 0, mr: 0, width: '100%' }} className="ballot">
         <Grid container alignItems="center" justify="center" direction="column">
 
@@ -267,5 +269,6 @@ export default function GenericBallotView({
           }
         </Grid>
       </Box>
+    </>
   );
 }

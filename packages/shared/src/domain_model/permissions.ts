@@ -17,6 +17,7 @@ export const permissions = {
   canDeleteElectionRoll:    [roles.system_admin, roles.owner],
   canViewElectionRollIDs:   [roles.system_admin, roles.auditor],
   canViewBallots:           [roles.system_admin, roles.owner, roles.admin, roles.auditor],
+  canDeleteAllBallots:      [roles.system_admin, roles.owner, roles.admin],
   canViewBallot:            [roles.system_admin],
   canEditBallot:            [roles.system_admin, roles.owner],
   canFlagBallot:            [roles.system_admin, roles.owner, roles.admin, roles.auditor],

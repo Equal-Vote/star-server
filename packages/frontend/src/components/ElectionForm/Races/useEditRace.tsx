@@ -8,9 +8,11 @@ import structuredClone from '@ungap/structured-clone';
 import useConfirm from '../../ConfirmationDialogProvider';
 import { v4 as uuidv4 } from 'uuid';
 import { Candidate } from '@equal-vote/star-vote-shared/domain_model/Candidate';
+import { useDeleteAllBallots } from '~/hooks/useAPI';
 
 export const useEditRace = (race, race_index) => {
     const { election, refreshElection, permissions, updateElection } = useElection()
+    const { makeRequest: deleteAllBallots } = useDeleteAllBallots(election.election_id);
     const confirm = useConfirm();
     const defaultRace = {
         title: '',
@@ -90,12 +92,13 @@ export const useEditRace = (race, race_index) => {
 
     const onAddRace = async () => {
         if (!validatePage()) return false
-        const success = await updateElection(election => {
+        let success = await updateElection(election => {
             election.races.push({
                 ...editedRace,
                 race_id: uuidv4()
             })
         })
+        success = success && await deleteAllBallots()
         if (!success) return false
         await refreshElection()
         setEditedRace(defaultRace)
@@ -104,9 +107,10 @@ export const useEditRace = (race, race_index) => {
 
     const onSaveRace = async () => {
         if (!validatePage()) return false
-        const success = await updateElection(election => {
+        let success = await updateElection(election => {
             election.races[race_index] = editedRace
         })
+        success = success && await deleteAllBallots()
         if (!success) return false
         await refreshElection()
         return true
@@ -115,9 +119,10 @@ export const useEditRace = (race, race_index) => {
     const onDeleteRace = async () => {
         const confirmed = await confirm({ title: 'Confirm', message: 'Are you sure?' })
         if (!confirmed) return false
-        const success = await updateElection(election => {
+        let success = await updateElection(election => {
             election.races.splice(race_index, 1)
         })
+        success = success && await deleteAllBallots()
         if (!success) return true
         await refreshElection()
         return true
