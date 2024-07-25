@@ -123,7 +123,7 @@ export const useEditRace = (race, race_index) => {
             election.races.splice(race_index, 1)
         })
         success = success && await deleteAllBallots()
-        if (!success) return true
+        if (!success) return false
         await refreshElection()
         return true
     }
