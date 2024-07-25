@@ -18,7 +18,6 @@ import useElection from "../../ElectionContextProvider";
 import { t } from "i18next";
 import { Bar, BarChart, CartesianAxis, CartesianGrid, Cell, ComposedChart, Legend, Line, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { useTranslation } from "react-i18next";
-import DraftWarning from "../DraftWarning";
 
 declare namespace Intl {
   class ListFormat {
