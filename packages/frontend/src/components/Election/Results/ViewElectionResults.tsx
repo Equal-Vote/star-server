@@ -6,6 +6,7 @@ import { Paper, Typography } from "@mui/material";
 import { DetailExpanderGroup, useSubstitutedTranslation } from '../../util';
 import { useGetResults } from '../../../hooks/useAPI';
 import useElection from '../../ElectionContextProvider';
+import DraftWarning from '../DraftWarning';
 
 const ViewElectionResults = () => {
     
@@ -16,7 +17,8 @@ const ViewElectionResults = () => {
 
     const {t} = useSubstitutedTranslation(election.settings.term_type);
 
-    return (
+    return (<>
+        <DraftWarning/>
         <Box
             display='flex'
             justifyContent="center"
@@ -46,7 +48,7 @@ const ViewElectionResults = () => {
                 
             </Paper>
         </Box>
-    )
+    </>)
 }
 export default ViewElectionResults
 

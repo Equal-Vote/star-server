@@ -70,7 +70,11 @@ export const useSetPublicResults = (election_id: string) => {
     return useFetch<{ public_results: Boolean }, { election: Election }>(`/API/Election/${election_id}/setPublicResults`, 'post')
 }
 
-export const useFinalizeEleciton = (election_id: string) => {
+export const useDeleteAllBallots = (election_id: string) => {
+    return useFetch<{ public_results: Boolean }, { election: Election }>(`/API/Election/${election_id}/ballots`, 'delete')
+}
+
+export const useFinalizeElection = (election_id: string) => {
     return useFetch<undefined, { election: Election }>(`/API/Election/${election_id}/finalize`, 'post')
 }
 

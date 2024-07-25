@@ -13,7 +13,7 @@ import useSnackbar from "../components/SnackbarContext";
 //  error: any | null, null by default until request error 
 //  makeRequest: (MyRequest) => Promise<ApiResponse|false>, if request errors response with false
 // }
-const useFetch = <Message, Response>(url: string, method: 'get' | 'post' | 'put', successMessage: string | null = null) => {
+const useFetch = <Message, Response>(url: string, method: 'get' | 'post' | 'put' | 'delete', successMessage: string | null = null) => {
     const [isPending, setIsPending] = useState(false)
     const [error, setError] = useState<any>(null)
     const [data, setData] = useState<Response | null>(null)

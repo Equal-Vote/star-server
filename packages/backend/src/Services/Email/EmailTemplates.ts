@@ -70,15 +70,16 @@ export function Receipt(election: Election, email: string, ballot: Ballot, url: 
         to: email, // Change to your recipient
         from: 'elections@star.vote', // Change to your verified sender
         subject: `Ballot Receipt For ${election.title}`,
-        text: `Thank you for voting in ${election.title}, you can view your ballot and ballot status at ${url}/Election/${election.election_id}/ballot/${ballot.ballot_id}`,
+        text: `${election.state === 'draft' && '[⚠️Test Ballot]'} Thank you for voting in ${election.title}, you can view your ballot and ballot status at ${url}/Election/${election.election_id}/ballot/${ballot.ballot_id}`,
         html: `<div> 
+                    ${election.state === 'draft' && "<h3>⚠️This was cast as a test ballot. All test ballots will be removed once the election is finalized, and at that time you will need to vote again.⚠️</h3>"}
                     <h3> 
                         Thank you for voting in ${election.title}, you can verify your ballot and ballot status <a clicktracking="off" href="${url}/Election/${election.election_id}/ballot/${ballot.ballot_id}" >here</a>  
                     </h3> 
                 </div>    
                 <div> 
                     <%asm_group_unsubscribe_url%>  
-                </div>   `,
+                </div>`,
     }
 }
 

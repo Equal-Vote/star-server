@@ -6,7 +6,7 @@ import { StyledButton } from "../../styles";
 import { Link, useNavigate } from 'react-router-dom';
 import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import ShareButton from "../ShareButton";
-import { useArchiveEleciton, useFinalizeEleciton, usePostElection, useSetPublicResults } from "../../../hooks/useAPI";
+import { useArchiveEleciton, useDeleteAllBallots, useFinalizeElection, usePostElection, useSetPublicResults } from "../../../hooks/useAPI";
 import { formatDate } from '../../util';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useElection from '../../ElectionContextProvider';
@@ -172,7 +172,7 @@ const PreviewBallotSection = ({ election, permissions }: { election: Election, p
         Description={
             (<>
                 <Typography variant="h5">
-                    Preview the ballot
+                    Cast test ballot
                 </Typography>
                 {!hasPermission(permissions, 'canViewElectionRoll') &&
                     <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
@@ -185,10 +185,10 @@ const PreviewBallotSection = ({ election, permissions }: { election: Election, p
                 type='button'
                 variant='contained'
                 fullwidth
-                component={Link} to={`/${election.election_id}/vote`}
+                component={Link} to={`/${election.election_id}`}
             >
                 <Typography align='center' variant="body2">
-                    Preview ballot
+                    Cast Ballot
                 </Typography>
             </StyledButton>
 
@@ -448,13 +448,14 @@ const AdminHome = () => {
     
   const authSession = useAuthSession()
     const { election, refreshElection: fetchElection, permissions } = useElection()
+    const { makeRequest: deleteAllBallots } = useDeleteAllBallots(election.election_id);
     const { makeRequest } = useSetPublicResults(election.election_id)
     const togglePublicResults = async () => {
         const public_results = !election.settings.public_results
         await makeRequest({ public_results: public_results })
         await fetchElection()
     }
-    const { makeRequest: finalize } = useFinalizeEleciton(election.election_id)
+    const { makeRequest: finalize } = useFinalizeElection(election.election_id)
     const { makeRequest: archive } = useArchiveEleciton(election.election_id)
 
     const navigate = useNavigate()
@@ -470,6 +471,7 @@ const AdminHome = () => {
             })
         if (!confirmed) return
         try {
+            await deleteAllBallots()
             await finalize()
             await fetchElection()
         } catch (err) {
@@ -540,13 +542,16 @@ const AdminHome = () => {
                 <Grid xs={12} sx={{ p: 1 }}>
                     <ElectionSettings />
                 </Grid>
-                <PreviewBallotSection election={election} permissions={permissions} />
-                {(election.settings.voter_access === 'closed') && <>
+                {(election.state === 'draft') && <>
+                    <PreviewBallotSection election={election} permissions={permissions} />
                     <Divider style={{ width: '100%' }} />
+                </>
+                }
+                {(election.settings.voter_access === 'closed') && <>
                     <VotersSection election={election} permissions={permissions} />
+                    <Divider style={{ width: '100%' }} />
                 </>}
                 {(election.state !== 'draft' && election.state !== 'finalized') && <>
-                    <Divider style={{ width: '100%' }} />
                     <ShareSection election={election} permissions={permissions} />
                     <Divider style={{ width: '100%' }} />
                     <ResultsSection election={election} permissions={permissions} preliminary={false} />
@@ -554,8 +559,8 @@ const AdminHome = () => {
                     <TogglePublicResultsSection election={election} permissions={permissions} togglePublicResults={togglePublicResults} />
                     <Divider style={{ width: '100%' }} />
                     <ViewBallotSection election={election} permissions={permissions} />
+                    <Divider style={{ width: '100%' }} />
                 </>}
-                <Divider style={{ width: '100%' }} />
                 <EditRolesSection election={election} permissions={permissions} />
                 <Divider style={{ width: '100%' }} />
                 <DuplicateElectionSection election={election} permissions={permissions} duplicateElection={duplicateElection}/>

@@ -73,10 +73,25 @@ export default class BallotsDB implements IBallotStore {
             .execute()
     }
 
+    deleteAllBallotsForElectionID(election_id: string, ctx: ILoggingContext): Promise<boolean> {
+        Logger.debug(ctx, `${tableName}.deleteAllBallotsForElectionID ${election_id}`);
+
+        return this._postgresClient
+            .deleteFrom(tableName)
+            .where('election_id', '=', election_id)
+            .returningAll()
+            .executeTakeFirst()
+            .then((ballot) => {
+                if (ballot) {
+                    return true
+                } else {
+                    return false
+                }
+            });
+    }
+
     delete(ballot_id: Uid, ctx: ILoggingContext, reason: string): Promise<boolean> {
         Logger.debug(ctx, `${tableName}.delete ${ballot_id}`);
-        var sqlString = `DELETE FROM ${this._tableName} WHERE ballot_id = $1`;
-        Logger.debug(ctx, sqlString);
 
         return this._postgresClient
             .deleteFrom(tableName)

@@ -38,7 +38,7 @@ async function castVoteController(req: IElectionRequest, res: Response, next: Ne
             throw new BadRequest(errMsg);
         }
  
-    if (targetElection.state!=='open'){
+    if (targetElection.state!=='open' && targetElection.state!=='draft'){
         Logger.info(req, "Ballot Rejected. Election not open.", targetElection);
         throw new BadRequest("Election is not open");
     }
@@ -50,23 +50,28 @@ async function castVoteController(req: IElectionRequest, res: Response, next: Ne
         throw new Unauthorized(missingAuthData);
     }
 
-    const roll = await getOrCreateElectionRoll(req, targetElection, req);
-    const voterAuthorization = getVoterAuthorization(roll,missingAuthData)
-    assertVoterMayVote(voterAuthorization, req);
-
-   const inputBallot: Ballot = req.body.ballot;
-   const receiptEmail: string = req.body.receiptEmail
-   //TODO: currently we have both a value on the input Ballot, and the route param.
-    //do we want to keep both?  enforce that they match?
+    const inputBallot: Ballot = req.body.ballot;
+    const receiptEmail: string = req.body.receiptEmail
     inputBallot.election_id = targetElection.election_id;
-    if (roll) {
-        inputBallot.precinct = roll.precinct
-    }
-    const validationErr = ballotValidation(targetElection, inputBallot);
-    if (validationErr){
-        const errMsg = "Invalid Ballot: "+ validationErr
-        Logger.info(req, errMsg);
-        throw new BadRequest(errMsg);
+    let roll = null;
+
+    // skip voter roll & validation steps while in draft mode
+    if(targetElection.state !== 'draft'){ 
+        roll = await getOrCreateElectionRoll(req, targetElection, req);
+        const voterAuthorization = getVoterAuthorization(roll,missingAuthData)
+        assertVoterMayVote(voterAuthorization, req);
+
+        //TODO: currently we have both a value on the input Ballot, and the route param.
+        //do we want to keep both?  enforce that they match?
+        if (roll) {
+            inputBallot.precinct = roll.precinct
+        }
+        const validationErr = ballotValidation(targetElection, inputBallot);
+        if (validationErr){
+            const errMsg = "Invalid Ballot: "+ validationErr
+            Logger.info(req, errMsg);
+            throw new BadRequest(errMsg);
+        }
     }
 
     //some ballot info should be server-authorative
