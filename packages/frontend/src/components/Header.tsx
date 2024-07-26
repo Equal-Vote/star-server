@@ -124,6 +124,14 @@ const Header = () => {
                     </Menu>
                 </Box>
 
+                {/**** Desktop Title Icon ****/}
+                <IconButton
+                    size="large"
+                    href="/"
+                    sx={{display: {xs: 'none', lg: 'block'},  flexGrow: {xs: '1', md: '0'}}}>
+                        <Avatar src='/favicon-local.png'/>
+                </IconButton>
+
                 {/**** DESKTOP OPTIONS ****/}
                 <Box
                     sx={{ flexGrow: 100, flexWrap: 'wrap', display: { xs: 'none', lg: 'flex' }, gap: 2, rowGap: 0 }}>
@@ -247,8 +255,9 @@ const Header = () => {
             <IconButton
                 size="large"
                 href="/"
-                sx={{position: 'fixed', width: '100%', margin: 'auto', pointerEvents: 'none' }}>
-                    <Avatar src='/favicon-local.png' sx={{pointerEvents: 'auto' }}/>
+                sx={{display: {xs: 'inline-flex', lg: 'none'}, position: 'fixed', width: '100%', pointerEvents: 'none' }}
+            >
+                <Avatar src='/favicon-local.png' sx={{pointerEvents: 'auto' }}/>
             </IconButton>
         </AppBar >
     )
