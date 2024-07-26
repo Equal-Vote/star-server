@@ -65,6 +65,7 @@ const LandingPage = () => {
                 }}/>
             </Box>
             <LandingPageHero />
+            <LandingPageFeatureElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>
             <LandingPageStats/> 
             <LandingPageFeatures/>
             <LandingPageSignUpBar />
