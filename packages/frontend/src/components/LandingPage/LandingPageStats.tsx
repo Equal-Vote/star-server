@@ -20,7 +20,6 @@ const socket = io(process.env.REACT_APP_SOCKET_URL, {
 export default () => {
     let {t} = useSubstitutedTranslation('election');
 
-    //const { data, isPending, error, makeRequest: fetchData } = useGetGlobalElectionStats();
     const [electionStats, setElectionStats] = useState({elections: 0, votes: 0})
 
     const containerRef = useRef(null);
@@ -29,7 +28,6 @@ export default () => {
 
     useEffect(() => {
         socket.emit('join_landing_page');
-        //fetchData();
     }, []);
 
     // I don't understand this off/on pattern but with just the on there were many duplicate triggers
