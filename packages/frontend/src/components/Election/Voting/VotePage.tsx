@@ -18,6 +18,7 @@ import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import { Race } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { useSubstitutedTranslation } from "~/components/util";
+import { io } from "socket.io-client";
 
 
 // I'm using the icon codes instead of an import because there was padding I couldn't get rid of
@@ -42,6 +43,10 @@ export interface IBallotContext {
 }
 
 export const BallotContext = createContext<IBallotContext>(null);
+
+const socket = io(process.env.REACT_APP_SOCKET_URL_OVERRIDE, {
+    transports: ['websocket']
+});
 
 function shuffle<T>(array: T[]): T[] {
   // From: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
@@ -97,6 +102,7 @@ const VotePage = () => {
     setPages(newPages)
   }
   const submit = async () => {
+    socket.emit('new_vote');
     var candidateScores = pages.map((p) => p.candidates)
     // create arrays of candidate IDs for each race. Ballots will be sorted into this order
     const candidateIDs = election.races.map(race => race.candidates.map(candidate => candidate.candidate_id))
