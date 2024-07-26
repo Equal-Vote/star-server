@@ -11,11 +11,10 @@ import { Button, Paper } from '@mui/material';
 import LandingPagePricing from './LandingPage/LandingPagePricing';
 import useFeatureFlags from './FeatureFlagContextProvider';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-
-import { useGetGlobalElectionStats } from '~/hooks/useAPI';
 import LandingPageStats from './LandingPage/LandingPageStats';
 import ReturnToClassicDialog, { ReturnToClassicContext, ReturnToClassicContextProvider } from './ReturnToClassicDialog';
 import { useSubstitutedTranslation } from './util';
+
 
 const LandingPage = () => {
     const flags = useFeatureFlags();
@@ -66,7 +65,6 @@ const LandingPage = () => {
                 }}/>
             </Box>
             <LandingPageHero />
-            <LandingPageFeatureElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>
             <LandingPageStats/> 
             <LandingPageFeatures/>
             <LandingPageSignUpBar />

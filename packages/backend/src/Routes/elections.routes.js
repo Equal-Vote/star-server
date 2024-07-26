@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-
 const electionController = require('../Controllers/elections.controllers')
 const { registerVoter } = require('../Controllers/registerVoterController')
 const authController = require('../Controllers/auth.controllers')
