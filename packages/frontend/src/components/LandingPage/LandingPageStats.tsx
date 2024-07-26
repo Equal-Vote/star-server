@@ -11,8 +11,9 @@ interface FeaturePanel{
     text: string;
 }
 
-const socket = io('http://localhost:5001', {
-    // https://stackoverflow.com/questions/69450485/receiving-error-xhr-poll-error-socket-io-client-react
+// https://stackoverflow.com/questions/25778414/what-port-does-the-socketio-client-listen-to-by-default
+// https://stackoverflow.com/questions/69450485/receiving-error-xhr-poll-error-socket-io-client-react
+const socket = io(process.env.REACT_APP_SOCKET_URL_OVERRIDE, {
     transports: ['websocket']
 });
 
@@ -27,7 +28,6 @@ export default () => {
     const [visible, setVisible] = useState(false)
 
     useEffect(() => {
-        console.log('emit join landing page')
         socket.emit('join_landing_page');
         //fetchData();
     }, []);

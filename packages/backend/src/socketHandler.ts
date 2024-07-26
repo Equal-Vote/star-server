@@ -13,20 +13,13 @@ export default (app: express.Application) => {
         }
     })
 
-
     console.log(process.env.ALLOWED_URLS?.split(',') || 'localhost')
 
     io.on('connection', (socket: any) => {
-        console.log('new connection')
         socket.on('join_landing_page', async () => {
-            socket.join('landing-page')
-            let stats = await innerGetGlobalElectionStats();
-            console.log('stats', stats);
-            socket.emit('updated_stats', stats);
+            socket.emit('updated_stats', await innerGetGlobalElectionStats());
         })
     })
 
-    server.listen(5001, () => {
-        console.log('running')
-    })
+    return server;
 }
