@@ -45,7 +45,8 @@
     "pg-boss": "^8.0.0",
     "pg-format": "^1.0.4",
     "qs": "^6.10.3",
-    "seedrandom": "^3.0.5"
+    "seedrandom": "^3.0.5",
+    "socket.io": "^4.7.5"
   },
   "devDependencies": {
     "@types/supertest": "^2.0.12",
