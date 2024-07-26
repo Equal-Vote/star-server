@@ -21,8 +21,6 @@
     "@aws-sdk/client-s3": "^3.536.0",
     "@aws-sdk/lib-storage": "^3.536.0",
     "@curveball/http-errors": "^0.4.1",
-    "@equal-vote/star-vote-backend": "^1.0.0",
-    "@equal-vote/star-vote-frontend": "^0.1.0",
     "@sendgrid/mail": "^8.1.1",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.12",
@@ -47,9 +45,7 @@
     "pg-boss": "^8.0.0",
     "pg-format": "^1.0.4",
     "qs": "^6.10.3",
-    "seedrandom": "^3.0.5",
-    "socket.io": "^4.7.5",
-    "socket.io-client": "^4.7.5"
+    "seedrandom": "^3.0.5"
   },
   "devDependencies": {
     "@types/supertest": "^2.0.12",
