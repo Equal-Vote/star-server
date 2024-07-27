@@ -71,7 +71,6 @@ const LandingPage = () => {
             <LandingPageFeatures/>
             <LandingPageSignUpBar />
             {flags.isSet('ELECTION_TESTIMONIALS') && <LandingPageTestimonials/>}
-            <LandingPageTestimonials/>
             <LandingPagePricing />
         </Box>
         </div>
