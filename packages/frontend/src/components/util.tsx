@@ -44,8 +44,6 @@ declare namespace Intl {
 
 const commaListFormatter = new Intl.ListFormat(i18n.languages[0], { style: 'long', type: 'conjunction' });
 
-// TODO: update useSubstitutedTranslation to convert arrays with commaListFormatter
-
 export const useOnScrollAnimator = () => {
     //https://www.youtube.com/watch?v=T33NN_pPeNI
     const observer = new IntersectionObserver((entries) => {
@@ -260,17 +258,18 @@ export const ResultsBarChart = ({
     return a.name.length > b.name.length ? a : b;
   }).name;
 
-  // 200 is about the max width I'd want for a small mobile device, still looking for a better solution though
+  // TODO: try calculating text width: https://www.geeksforgeeks.org/calculate-the-width-of-the-text-in-javascript/
+  // 150 is about the max width I'd want for a small mobile device, still looking for a better solution though
   const axisWidth = Math.max(
     50,
     Math.min(
-      200,
+      150, // 150 since that's the width of Equal Preferences
       15 * (longestCandidateName.length > 20 ? 20 : longestCandidateName.length)
     )
   );
 
   return (
-    <ResponsiveContainer width="90%" height={50 * data.length}>
+    <ResponsiveContainer width="90%" height={50 * data.length} >
       <ComposedChart data={data} barCategoryGap={5} layout="vertical">
         <XAxis hide axisLine={false} type="number" />
         <YAxis
@@ -286,9 +285,17 @@ export const ResultsBarChart = ({
           fill="#026A86"
           unit="votes"
           legendType="none"
+          style={{overflow: 'visible'}}
         >
-          <LabelList dataKey="left" position="insideRight" fill="black" />
-          <LabelList dataKey="right" position="right" fill="black" />
+          {/* corresponds to mui md size */}
+          {/* also this won't dynamically adjust with resizing the screen  */}
+          {window.innerWidth > 900 ? <> 
+            <LabelList dataKey="left" position="insideRight" fill="black" />
+            <LabelList dataKey="right" position="right" fill="black" />
+          </>:<>
+            <LabelList dataKey="left" position="insideLeft" fill="black" />
+            <LabelList dataKey="right" position="insideLeft" fill="black" />
+          </>}
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
           ))}
@@ -402,7 +409,7 @@ export const Widget = ({ children, title }) => (
       maxWidth: "500px",
       backgroundColor: "brand.white",
       borderRadius: "10px",
-      padding: "18px",
+      padding: {xs: "6px", md: "18px"},
       paddingTop: 0 /* the margin from the h3 tags is enough */,
       display: "flex",
       flexDirection: "column",
@@ -427,11 +434,11 @@ export const ResultsTable = ({ className, data, minCellWidth = "120px" }) => {
         width: "100%",
       }}
     >
-      <table className={c}>
+      <table className={c} style={{minWidth: '100%'}}>
         <thead className={c}>
           <tr>
             {data[0].map((header, i) => (
-              <th key={i} className={c}>
+              <th key={i} className={c} style={{minWidth: i == 0 ? '125px' : '75px'}} >
                 {header}
               </th>
             ))}
@@ -444,7 +451,9 @@ export const ResultsTable = ({ className, data, minCellWidth = "120px" }) => {
                 <td
                   key={j}
                   className={c}
-                  style={{ paddingLeft: j == 0 ? "8px" : "0" }}
+                  style={{
+                    paddingLeft: j == 0 ? "8px" : "0",
+                  }}
                 >
                   {value}
                 </td>

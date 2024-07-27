@@ -28,17 +28,6 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
         setErrors({ ...errors, candidates: '', raceNumWinners: '' })
         applyRaceUpdate(race => {
             race.candidates[index] = candidate
-            const candidates = race.candidates
-            if (index === candidates.length - 1) {
-                // If last form entry is updated, add another entry to form
-                candidates.push({
-                    candidate_id: String(race.candidates.length),
-                    candidate_name: '',
-                })
-            }
-            while (candidates.length >= 2 && candidates[candidates.length - 1].candidate_name == '' && candidates[candidates.length - 2].candidate_name == '') {
-                candidates.pop();
-            }
         })
     }
 

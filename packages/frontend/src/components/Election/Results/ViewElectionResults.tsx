@@ -23,7 +23,7 @@ const ViewElectionResults = () => {
             alignItems="center"
             sx={{ width: '100%', textAlign: 'center'}}
         >
-            <Paper elevation={3} sx={{width: '100%', maxWidth: '1200px', m: 2, p:2, backgroundColor:'brand.white', marginBottom: 2, '@media print': { boxShadow: 'none'}}}>
+            <Paper elevation={3} sx={{width: '100%', maxWidth: '1200px', m: {xs: 0, m: 2}, p: {xs: 1, m: 2}, backgroundColor:'brand.white', marginBottom: 2, '@media print': { boxShadow: 'none'}}}>
                 <Typography variant="h3" component="h3" sx={{marginBottom: 4}}>
                     {election.state === 'closed' ? t('results.official_title') : t('results.preliminary_title')}
                 </Typography>
