@@ -255,7 +255,7 @@ const Header = () => {
             <IconButton
                 size="large"
                 href="/"
-                sx={{display: {xs: 'inline-flex', lg: 'none'}, position: 'fixed', width: '100%', pointerEvents: 'none' }}
+                sx={{display: {xs: 'none', lg: 'none'}, position: 'fixed', width: '100%', pointerEvents: 'none' }}
             >
                 <Avatar src='/favicon-local.png' sx={{pointerEvents: 'auto' }}/>
             </IconButton>
