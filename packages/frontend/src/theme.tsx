@@ -144,66 +144,6 @@ const themes = {
   )),
   turquoise: responsiveFontSizes(createTheme({
     palette: {
-      primary: {
-        light: '#5ac7d6',
-        main: '#2aa2b3',
-        dark: '#02627c',
-        contrastText: '#ffffff',
-      },
-      secondary: {
-        light: '#ffca47',
-        main: '#ff9900',
-        dark: '#c66a00',
-        contrastText: '#000',
-      },
-      lightAccent: {
-        main: '#ff9900',
-      },
-      darkAccent: {
-        main: '#ff9900',
-      },
-      lightShade: {
-        main: '#ff9900',
-      },
-      darkShade: {
-        main: '#ff9900',
-      },
-      brand: brandPalette.brand
-    },
-    typography: brandTypeography
-  })),
-  testing: responsiveFontSizes(createTheme({
-    palette: {
-      lightShade: {
-        main: '#F0F1F3',
-        contrastText: '#000',
-      },
-      lightAccent: {
-        main: '#83A2A2',
-        contrastText: '#000',
-      },
-      primary: {
-        main: '#2AA2B3',
-      },
-      secondary: {
-        main: '#6C757D',
-        light: '#a9cef4',
-        dark: '#343A40'
-      },
-      darkAccent: {
-        main: '#6F707A',
-        contrastText: '#fff',
-      },
-      darkShade: {
-        main: '#28384f',
-        contrastText: '#fff',
-      },
-      brand: brandPalette.brand
-    },
-    typography: brandTypeography
-  })),
-  testing2: responsiveFontSizes(createTheme({
-    palette: {
       lightShade: {
         main: '#F7F9F8',
         contrastText: '#000',
@@ -260,12 +200,12 @@ export const ThemeContextProvider = ({ children }) => {
   let theme;
   if(flags.isSet('THEMES')){
     if(mode === 'browserDefault'){
-      theme = themes[prefersDarkMode? 'darkMode' : 'testing2'];
+      theme = themes[prefersDarkMode? 'darkMode' : 'turquoise'];
     }else{
       theme = themes[mode];
     }
   }else{
-    theme = themes['testing2']
+    theme = themes['turquoise']
   }
 
   const value: ThemeContextType = {
