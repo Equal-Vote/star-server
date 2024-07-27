@@ -39,7 +39,7 @@ export default () => {
                     paddingTop: '5rem',
                     gap: '3rem',
                 }}>
-                    {panels.map((panel, i) => <Box key={i}><FadeUp delay={`${i*100}ms`}><Box sx={{width: '380px'}}>
+                    {panels.map((panel, i) => <Box key={i}><FadeUp delay={`${i*100}ms`}><Box sx={{width: {xs: '100%', md: '380px'}}}>
                         <Typography variant='h4' sx={{color: 'darkShade.contrastText'}}>{panel.title}</Typography>
                         <Typography component='p' sx={{color: 'darkShade.contrastText'}}>{panel.text}</Typography>
                     </Box></FadeUp></Box>)}
