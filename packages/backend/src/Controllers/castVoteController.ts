@@ -10,8 +10,11 @@ import { randomUUID } from "crypto";
 import { Uid } from "@equal-vote/star-vote-shared/domain_model/Uid";
 import { Receipt } from "../Services/Email/EmailTemplates"
 import { getOrCreateElectionRoll, checkForMissingAuthenticationData, getVoterAuthorization } from "./voterRollUtils"
+const { innerGetGlobalElectionStats} = require('./getElectionsController')
 import { IElectionRequest } from "../IRequest";
 import { Response, NextFunction } from 'express';
+import { io } from "../socketHandler";
+import { Server } from "socket.io";
 
 const ElectionsModel = ServiceLocator.electionsDb();
 const ElectionRollModel = ServiceLocator.electionRollDb();
@@ -30,7 +33,7 @@ const castVoteEventQueue = "castVoteEvent";
 
 async function castVoteController(req: IElectionRequest, res: Response, next: NextFunction) {
     Logger.info(req, "Cast Vote Controller");
-    
+
     const targetElection = req.election;
     if (targetElection == null){
             const errMsg = "Invalid Ballot: invalid election Id";
@@ -107,8 +110,11 @@ async function castVoteController(req: IElectionRequest, res: Response, next: Ne
     }
 
     await (await EventQueue).publish(castVoteEventQueue, event);
+
+    (io as Server).to('landing_page').emit('updated_stats', await innerGetGlobalElectionStats());
+
     res.status(200).json({ ballot: inputBallot} );
-    Logger.debug(req, "CastVoteController done, saved event to store", event);
+    Logger.debug(req, "CastVoteController done, saved event to store");
 };
 
 

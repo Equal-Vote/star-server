@@ -10,17 +10,17 @@ import {IRequest, iRequestMiddleware, reqIdSuffix} from './IRequest';
 import { loggerMiddleware } from './Services/Logging/LoggerMiddleware';
 import { errorCatch } from './errorCatchMiddleware'
 import registerEvents from './Routes/registerEvents';
-import socketHandler from './socketHandler';
+import { setupSockets } from './socketHandler';
 
 const { getUserToken } = require('./Controllers/getUserTokenController')
 const authController = require('./Controllers/auth.controllers')
 const asyncHandler = require('express-async-handler')
+require('./socketHandler')
 
 export default function makeApp() {
-
     const app = express();
     const appInitContext = Logger.createContext("appInit");
-    const server = socketHandler(app);
+    const server = setupSockets(app);
 
     // CORS (Cross-origin resource sharing), allows for the backend to receive calls from the front end, even though they have different urls/origins
     //      (at least that's my understanding)
