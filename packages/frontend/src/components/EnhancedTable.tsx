@@ -16,7 +16,7 @@ import Paper from '@mui/material/Paper';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { visuallyHidden } from '@mui/utils';
-import { formatDate } from './util';
+import { formatDate, getLocalTimeZoneShort } from './util';
 import { Checkbox, FormControl, ListItemText, MenuItem, Select, TextField } from '@mui/material';
 
 export type HeadKey = keyof typeof headCellPool;
@@ -37,6 +37,7 @@ interface HeadCell {
   id: keyof TableData;
   label: string;
   numeric: boolean;
+  isDate?: boolean;
   filterType?: 'search' | 'groups';
   filterGroups?: {
     [key: string]: boolean
@@ -161,21 +162,41 @@ const headCellPool = {
           return election.state || ''
         }
     },
+    create_date: {
+        id: 'create_date',
+        numeric: false,
+        disablePadding: false,
+        label: `Create Date ${getLocalTimeZoneShort()}`,
+        filterType: 'search',
+        isDate: true,
+        formatter: (time, election) => formatDate(time, null)
+    },
+    update_date: {
+      id: 'update_date',
+      numeric: false,
+      disablePadding: false,
+      label: `Last Updated (${getLocalTimeZoneShort()})`,
+      filterType: 'search',
+      isDate: true,
+      formatter: (time, election) => formatDate(parseInt(time), null)
+  },
     start_time: {
         id: 'start_time',
         numeric: false,
         disablePadding: false,
-        label: 'Start Time',
+        label: `Start Time (${getLocalTimeZoneShort()})`,
         filterType: 'search',
-        formatter: formatDate
+        isDate: true,
+        formatter: (time, election) => formatDate(time, null)
     },
     end_time: {
         id: 'end_time',
         numeric: false,
         disablePadding: false,
-        label: 'End Time',
+        label: `End Time (${getLocalTimeZoneShort()})`,
         filterType: 'search',
-        formatter: formatDate
+        isDate: true,
+        formatter: (time, election) => formatDate(time, election.settings.time_zone)
     },
     description: {
         id: 'description',
@@ -216,7 +237,18 @@ const formatTableData = (headKeys, data) => {
     return fData;
 }
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+function descendingComparator<T>(a: T, b: T, orderBy: keyof T, isDate: boolean) {
+  if (isDate) {
+    // Table data is already formatted at this point, so date strings have to be converted back to date objects in order to sort. 
+    // Should be a temp fix until I can fix the formatting to occur after sorting and filtering. 
+    // If you see this comment, I have failed.
+    if (new Date(b[orderBy] as string).getTime() < new Date(a[orderBy] as string).getTime()) {
+      return -1;
+    }
+    if (new Date(b[orderBy] as string).getTime() > new Date(a[orderBy] as string).getTime()) {
+      return 1;
+    }
+  }
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -229,13 +261,14 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
+  isDate: boolean,
 ): (
   a: { [key in Key]: number | string },
   b: { [key in Key]: number | string },
 ) => number {
   return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
+    ? (a, b) => descendingComparator(a, b, orderBy, isDate)
+    : (a, b) => -descendingComparator(a, b, orderBy, isDate);
 }
 
 // Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
@@ -390,7 +423,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
 
 export default function EnhancedTable(props: EnhancedTableProps) {
-  const [order, setOrder] = React.useState<Order>('asc');
+  const [order, setOrder] = React.useState<Order>('desc');
   const [orderBy, setOrderBy] = React.useState<Extract<keyof TableData, string>>(props.defaultSortBy);
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
@@ -446,14 +479,14 @@ export default function EnhancedTable(props: EnhancedTableProps) {
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(filteredRows, getComparator(order, orderBy)).slice(
+      stableSort(filteredRows, getComparator(order, orderBy, headCellPool[orderBy].isDate === true )).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
       ),
     [order, orderBy, page, rowsPerPage, filteredRows],
   );
 
-
+  
   return (
     <Container>
     <Box 

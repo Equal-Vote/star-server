@@ -628,7 +628,7 @@ export const formatDate = (time, displayTimezone = null) => {
 
   return DateTime.fromJSDate(new Date(time))
     .setZone(displayTimezone)
-    .toLocaleString(DateTime.DATETIME_FULL);
+    .toLocaleString(DateTime.DATETIME_MED);
 };
 
 export const isValidDate = (d) => {
@@ -636,3 +636,7 @@ export const isValidDate = (d) => {
   if (typeof d === "string") return !isNaN(new Date(d).valueOf());
   return false;
 };
+
+export const getLocalTimeZoneShort = () => {
+  return DateTime.local().offsetNameShort
+}

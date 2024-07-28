@@ -17,12 +17,12 @@ export default () => {
             
     return <EnhancedTable
         title='Elections You Voted In'
-        headKeys={['title', 'election_state', 'start_time', 'end_time', 'description']}
+        headKeys={['title', 'update_date', 'election_state', 'start_time', 'end_time', 'description']}
         handleOnClick={(election) => navigate(`/${String(election.election_id)}`)}
         isPending={isPending}
         pendingMessage='Loading Elections...'
         data={electionInvitations}
-        defaultSortBy='title'
+        defaultSortBy='update_date'
         emptyContent="You haven't voted in any elections"
     />
 }
