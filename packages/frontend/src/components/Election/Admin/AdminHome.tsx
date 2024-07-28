@@ -6,7 +6,7 @@ import { StyledButton } from "../../styles";
 import { Link, useNavigate } from 'react-router-dom';
 import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import ShareButton from "../ShareButton";
-import { useArchiveEleciton, useDeleteAllBallots, useFinalizeElection, usePostElection, useSetPublicResults } from "../../../hooks/useAPI";
+import { useArchiveEleciton, useFinalizeElection, usePostElection, useSetPublicResults } from "../../../hooks/useAPI";
 import { formatDate } from '../../util';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useElection from '../../ElectionContextProvider';
@@ -448,7 +448,6 @@ const AdminHome = () => {
     
   const authSession = useAuthSession()
     const { election, refreshElection: fetchElection, permissions } = useElection()
-    const { makeRequest: deleteAllBallots } = useDeleteAllBallots(election.election_id);
     const { makeRequest } = useSetPublicResults(election.election_id)
     const togglePublicResults = async () => {
         const public_results = !election.settings.public_results
@@ -471,7 +470,6 @@ const AdminHome = () => {
             })
         if (!confirmed) return
         try {
-            await deleteAllBallots()
             await finalize()
             await fetchElection()
         } catch (err) {
