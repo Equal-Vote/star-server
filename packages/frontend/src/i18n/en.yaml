@@ -138,7 +138,7 @@ footer:
     for polling, surveys, and real elections at any scale and for any scenario.
 
 
-    [starvoting.org](https://www.starvoting.org) | [http://www.equal.vote](equal.vote) | [elections@equal.vote](mailto:elections@equal.vote)
+    [starvoting.org](https://www.starvoting.org) | [equal.vote](http://www.equal.vote) | [elections@equal.vote](mailto:elections@equal.vote)
   # TODO: I'll add this section to project description once we have those features in place
   # All of our voting methods can be used for single winner, multi-winner, or 
   # proportional representation elections with either paper or digital ballots.
@@ -148,7 +148,7 @@ footer:
     Our mission is to fight for true equality in the vote itself.
 
 
-    [Donations](equal.vote/donate) are the best way to support our work. All proceeds from
+    [Donations](https://www.equal.vote/donate) are the best way to support our work. All proceeds from
     dev.star.vote go directly to helping fund and support the adoption and use of STAR Voting.
 
 
