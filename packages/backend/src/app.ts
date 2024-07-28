@@ -20,7 +20,6 @@ require('./socketHandler')
 export default function makeApp() {
     const app = express();
     const appInitContext = Logger.createContext("appInit");
-    const server = setupSockets(app);
 
     // CORS (Cross-origin resource sharing), allows for the backend to receive calls from the front end, even though they have different urls/origins
     //      (at least that's my understanding)
@@ -59,5 +58,5 @@ export default function makeApp() {
 
     Logger.debug(appInitContext, "app Init complete");
 
-    return server;
+    return app;
 }

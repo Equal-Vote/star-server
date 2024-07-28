@@ -111,7 +111,10 @@ async function castVoteController(req: IElectionRequest, res: Response, next: Ne
 
     await (await EventQueue).publish(castVoteEventQueue, event);
 
-    (io as Server).to('landing_page').emit('updated_stats', await innerGetGlobalElectionStats());
+    console.log('this is io', io)
+    if(io != null){ // necessary for tests
+        (io as Server).to('landing_page').emit('updated_stats', await innerGetGlobalElectionStats());
+    }
 
     res.status(200).json({ ballot: inputBallot} );
     Logger.debug(req, "CastVoteController done, saved event to store");
