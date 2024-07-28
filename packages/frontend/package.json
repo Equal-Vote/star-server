@@ -28,6 +28,7 @@
     "react-slot-counter": "^2.3.3",
     "recharts": "^2.6.2",
     "rewire": "^7.0.0",
+    "socket.io-client": "^4.7.5",
     "uuid": "^9.0.1",
     "web-vitals": "^1.1.2"
   },

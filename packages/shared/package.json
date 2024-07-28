@@ -36,5 +36,11 @@
       "types": "./dist/types/domain_model/*.d.ts",
       "default": "./dist/domain_model/*.js"
     }
+  },
+  "dependencies": {
+    "@equal-vote/star-vote-backend": "^1.0.0",
+    "@equal-vote/star-vote-frontend": "^0.1.0",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5"
   }
 }

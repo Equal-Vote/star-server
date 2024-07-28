@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-
 const electionController = require('../Controllers/elections.controllers')
 const { registerVoter } = require('../Controllers/registerVoterController')
 const authController = require('../Controllers/auth.controllers')
@@ -16,6 +15,7 @@ const { finalizeElection } = require('../Controllers/finalizeElectionController'
 const { setPublicResults } = require('../Controllers/setPublicResultsController')
 const { getElectionResults } = require('../Controllers/getElectionResultsController')
 const { getBallotsByElectionID } = require('../Controllers/getBallotsByElectionIDController')
+const { deleteAllBallotsForElectionID } = require('../Controllers/deleteAllBallotsForElectionIDController')
 const { getBallotByBallotID } = require('../Controllers/getBallotByBallotID')
 const { editElection } = require('../Controllers/editElectionController')
 const { getSandboxResults } = require('../Controllers/sandboxController')
@@ -35,6 +35,7 @@ router.delete('/Election/:id', asyncHandler(deleteElection))
 router.post('/Election/:id/ballot', asyncHandler(electionController.returnElection))
 router.post('/Election/:id/register',asyncHandler(registerVoter))
 router.get('/Election/:id/ballots', asyncHandler(getBallotsByElectionID))
+router.delete('/Election/:id/ballots', asyncHandler(deleteAllBallotsForElectionID))
 router.get('/Election/:id/ballot/:ballot_id', asyncHandler(getBallotByBallotID))
 router.get('/Election/:id/rolls', asyncHandler(getRollsByElectionID))
 router.get('/Election/:id/rolls/:voter_id', asyncHandler(getByVoterID))

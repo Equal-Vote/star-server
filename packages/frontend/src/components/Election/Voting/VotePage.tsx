@@ -18,7 +18,7 @@ import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import { Race } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { useSubstitutedTranslation } from "~/components/util";
-
+import DraftWarning from "../DraftWarning";
 
 // I'm using the icon codes instead of an import because there was padding I couldn't get rid of
 // https://stackoverflow.com/questions/65721218/remove-material-ui-icon-margin
@@ -128,8 +128,14 @@ const VotePage = () => {
 
   const {t} = useSubstitutedTranslation(election.settings.term_type)
 
+
+  if(pages.length == 0){
+    return <Container disableGutters={true} maxWidth="sm"><h3>No races created for election</h3></Container>
+  }
+
   return (
     <Container disableGutters={true} maxWidth="sm">
+      <DraftWarning/>
       <BallotContext.Provider value={{
         instructionsRead: pages[currentPage].instructionsRead,
         setInstructionsRead: setInstructionsRead,

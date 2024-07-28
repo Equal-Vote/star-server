@@ -10,8 +10,11 @@ import { randomUUID } from "crypto";
 import { Uid } from "@equal-vote/star-vote-shared/domain_model/Uid";
 import { Receipt } from "../Services/Email/EmailTemplates"
 import { getOrCreateElectionRoll, checkForMissingAuthenticationData, getVoterAuthorization } from "./voterRollUtils"
+const { innerGetGlobalElectionStats} = require('./getElectionsController')
 import { IElectionRequest } from "../IRequest";
 import { Response, NextFunction } from 'express';
+import { io } from "../socketHandler";
+import { Server } from "socket.io";
 
 const ElectionsModel = ServiceLocator.electionsDb();
 const ElectionRollModel = ServiceLocator.electionRollDb();
@@ -30,7 +33,7 @@ const castVoteEventQueue = "castVoteEvent";
 
 async function castVoteController(req: IElectionRequest, res: Response, next: NextFunction) {
     Logger.info(req, "Cast Vote Controller");
-    
+
     const targetElection = req.election;
     if (targetElection == null){
             const errMsg = "Invalid Ballot: invalid election Id";
@@ -38,35 +41,40 @@ async function castVoteController(req: IElectionRequest, res: Response, next: Ne
             throw new BadRequest(errMsg);
         }
  
-    if (targetElection.state!=='open'){
+    if (targetElection.state!=='open' && targetElection.state!=='draft'){
         Logger.info(req, "Ballot Rejected. Election not open.", targetElection);
         throw new BadRequest("Election is not open");
     }
     
     const user = req.user;
     
-    const missingAuthData = checkForMissingAuthenticationData(req,targetElection, req)
-    if (missingAuthData !== null) {
-        throw new Unauthorized(missingAuthData);
-    }
-
-    const roll = await getOrCreateElectionRoll(req, targetElection, req);
-    const voterAuthorization = getVoterAuthorization(roll,missingAuthData)
-    assertVoterMayVote(voterAuthorization, req);
-
-   const inputBallot: Ballot = req.body.ballot;
-   const receiptEmail: string = req.body.receiptEmail
-   //TODO: currently we have both a value on the input Ballot, and the route param.
-    //do we want to keep both?  enforce that they match?
+    const inputBallot: Ballot = req.body.ballot;
+    const receiptEmail: string = req.body.receiptEmail
     inputBallot.election_id = targetElection.election_id;
-    if (roll) {
-        inputBallot.precinct = roll.precinct
-    }
-    const validationErr = ballotValidation(targetElection, inputBallot);
-    if (validationErr){
-        const errMsg = "Invalid Ballot: "+ validationErr
-        Logger.info(req, errMsg);
-        throw new BadRequest(errMsg);
+    let roll = null;
+
+    // skip voter roll & validation steps while in draft mode
+    if(targetElection.state !== 'draft'){ 
+        const missingAuthData = checkForMissingAuthenticationData(req,targetElection, req)
+        if (missingAuthData !== null) {
+            throw new Unauthorized(missingAuthData);
+        }
+
+        roll = await getOrCreateElectionRoll(req, targetElection, req);
+        const voterAuthorization = getVoterAuthorization(roll,missingAuthData)
+        assertVoterMayVote(voterAuthorization, req);
+
+        //TODO: currently we have both a value on the input Ballot, and the route param.
+        //do we want to keep both?  enforce that they match?
+        if (roll) {
+            inputBallot.precinct = roll.precinct
+        }
+        const validationErr = ballotValidation(targetElection, inputBallot);
+        if (validationErr){
+            const errMsg = "Invalid Ballot: "+ validationErr
+            Logger.info(req, errMsg);
+            throw new BadRequest(errMsg);
+        }
     }
 
     //some ballot info should be server-authorative
@@ -107,8 +115,13 @@ async function castVoteController(req: IElectionRequest, res: Response, next: Ne
     }
 
     await (await EventQueue).publish(castVoteEventQueue, event);
+
+    if(io != null){ // necessary for tests
+        (io as Server).to('landing_page').emit('updated_stats', await innerGetGlobalElectionStats());
+    }
+
     res.status(200).json({ ballot: inputBallot} );
-    Logger.debug(req, "CastVoteController done, saved event to store", event);
+    Logger.debug(req, "CastVoteController done, saved event to store");
 };
 
 

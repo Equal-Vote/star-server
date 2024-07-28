@@ -2,7 +2,7 @@ import ServiceLocator from '../ServiceLocator';
 import Logger from '../Services/Logging/Logger';
 import { BadRequest } from "@curveball/http-errors";
 import { Election, removeHiddenFields } from '@equal-vote/star-vote-shared/domain_model/Election';
-import { IElectionRequest } from "../IRequest";
+import { IElectionRequest, IRequest } from "../IRequest";
 import { Response, NextFunction } from 'express';
 
 
@@ -64,7 +64,7 @@ const getElections = async (req: IElectionRequest, res: Response, next: NextFunc
     });
 }
 
-const getGlobalElectionStats = async (req: IElectionRequest, res: Response, next: NextFunction) => {
+const innerGetGlobalElectionStats = async (req: IRequest) => {
     Logger.info(req, `getGlobalElectionStats `);
 
     let electionVotes = await ElectionsModel.getBallotCountsForAllElections(req);
@@ -82,10 +82,15 @@ const getGlobalElectionStats = async (req: IElectionRequest, res: Response, next
         return stats;
     });
 
-    res.json(stats);
+    return stats;
+}
+
+const getGlobalElectionStats = async (req: IRequest, res: Response, next: NextFunction) => {
+    res.json(innerGetGlobalElectionStats(req));
 }
 
 module.exports = {
     getElections,
+    innerGetGlobalElectionStats,
     getGlobalElectionStats,
 }
