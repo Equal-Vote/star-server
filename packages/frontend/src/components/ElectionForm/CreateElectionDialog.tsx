@@ -107,19 +107,18 @@ const templateMappers = {
                 ...election.settings.voter_authentication,
                 email: true
             },
-            invitation: true,
-            is_public: false
+            invitation: 'email',
         }
     }),
     'id_list': (election) => ({
         ...election,
+        is_public: false,
         settings: {
             ...election.settings,
             voter_authentication: {
                 ...election.settings.voter_authentication,
                 voter_id: true
             },
-            is_public: false
         }
     }),
 }
