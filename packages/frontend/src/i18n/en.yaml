@@ -54,7 +54,7 @@ landing_page:
 
   # Quick Poll Section
   quick_poll:
-    title: Try a quick poll with {{method_name}}
+    title: Try a Quick Poll with {{method_name}}
     question_prompt: What is your poll question?
     option_prompt: Option {{number}}
     create: Create Quick Poll
