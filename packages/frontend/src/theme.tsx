@@ -14,6 +14,34 @@ declare module '@mui/material/styles' {
   interface PaletteOptions {
     brand?: PaletteOptions['primary'];
   }
+  interface Palette {
+    lightAccent: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    lightAccent?: PaletteOptions['primary'];
+  }
+  interface Palette {
+    darkAccent: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    darkAccent?: PaletteOptions['primary'];
+  }
+  interface Palette {
+    lightShade: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    lightShade?: PaletteOptions['primary'];
+  }
+  interface Palette {
+    darkShade: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    darkShade?: PaletteOptions['primary'];
+  }
 }
 
 declare module '@mui/material/styles' {
@@ -116,17 +144,29 @@ const themes = {
   )),
   turquoise: responsiveFontSizes(createTheme({
     palette: {
+      lightShade: {
+        main: '#F7F9F8',
+        contrastText: '#000',
+      },
+      lightAccent: {
+        main: '#82BFCF',
+        contrastText: '#000',
+      },
       primary: {
-        light: '#5ac7d6',
-        main: '#2aa2b3',
-        dark: '#02627c',
-        contrastText: '#ffffff',
+        main: '#2AA2B3',
       },
       secondary: {
-        light: '#ffca47',
-        main: '#ff9900',
-        dark: '#c66a00',
-        contrastText: '#000',
+        main: '#6C757D',
+        light: '#a9cef4',
+        dark: '#343A40'
+      },
+      darkAccent: {
+        main: '#898A85',
+        contrastText: '#fff',
+      },
+      darkShade: {
+        main: '#2B344A',
+        contrastText: '#fff',
       },
       brand: brandPalette.brand
     },

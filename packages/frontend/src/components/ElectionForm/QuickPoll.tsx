@@ -168,12 +168,12 @@ const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
                 gap: 2,
                 flexDirection: 'column',
                 textAlign: 'center',
-                backgroundColor: "#EEEEEE",
+                backgroundColor: 'lightShade.main',
                 padding: 3,
                 borderRadius: '20px',
                 minWidth: {xs: '0px', md: '400px'}
             }}>
-                <Typography component="h2"
+                <Typography component="h2" color={'lightShade.contrastText'}
                     className={grow? 'heroGrow' : 'heroShrink'}
                 >{t('landing_page.quick_poll.title')}</Typography>
                 <StyledTextField

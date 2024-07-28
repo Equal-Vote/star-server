@@ -11,13 +11,14 @@ export default () => {
         clip: 'unset',
         width: '100%',
         p: { xs: 2},
+        backgroundColor: 'darkShade.main',
     }}>
         <Box sx={{
             width: '100%',
             maxWidth: '1300px',
             margin: 'auto',
         }}>
-            <Typography variant='h4' sx={{textAlign: 'left'}}>{t('landing_page.testimonials.title')}</Typography>
+            <Typography variant='h4' color={'darkShade.contrastText'} sx={{textAlign: 'left'}}>{t('landing_page.testimonials.title')}</Typography>
         </Box>
         <Box sx={{
             display: 'flex',
@@ -39,7 +40,7 @@ export default () => {
                     height: '10rem',
                     margin: 'auto',
                 }}/>
-                <Typography variant='h5' sx={{textAlign: 'center'}}>
+                <Typography variant='h5' color={'darkShade.contrastText'} sx={{textAlign: 'center'}}>
                     <i>"{testimonial.quote}"<br/>-{testimonial.name}</i>
                 </Typography>
             </Box>

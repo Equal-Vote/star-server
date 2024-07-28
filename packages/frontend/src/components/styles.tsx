@@ -50,6 +50,7 @@ export const StyledButton = (props) => (
             backgroundColor: 'primary.main',
             fontWeight: 'bold',
             fontSize: 18,
+            color: 'primary.contrastText'
         }}
         {...props}
     >
@@ -64,6 +65,8 @@ export const StyledTextField = (props) => (
             m: 0,
             p: 0,
             boxShadow: 2,
+            color: 'lightShade.contrastText',
+            backgroundColor: 'lightShade.main'
         }}
         {...props}
     >

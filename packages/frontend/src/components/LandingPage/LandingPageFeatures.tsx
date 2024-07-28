@@ -19,7 +19,7 @@ export default () => {
         <Box sx={{
             display: 'flex',
             flexDirection: 'column',
-            backgroundColor: 'brand.gray1',
+            backgroundColor: 'darkShade.main',
             clip: 'unset',
             width: '100%',
             p: { xs: 2},
@@ -30,7 +30,7 @@ export default () => {
                 margin: 'auto',
                 p: { xs: 2, md: 4 },
             }}>
-                <Typography variant='h4' sx={{textAlign: 'center'}}>{t('landing_page.features.title')}</Typography>
+                <Typography variant='h4' sx={{textAlign: 'center', color: 'darkShade.contrastText'}}>{t('landing_page.features.title')}</Typography>
                 <Box sx={{
                     display: 'flex',
                     flexDirection: 'row',
@@ -38,11 +38,10 @@ export default () => {
                     justifyContent: 'center',
                     paddingTop: '5rem',
                     gap: '3rem',
-                    backgroundColor: 'brand.gray1',
                 }}>
                     {panels.map((panel, i) => <Box key={i}><FadeUp delay={`${i*100}ms`}><Box sx={{width: '380px'}}>
-                        <Typography variant='h4'>{panel.title}</Typography>
-                        <Typography component='p'>{panel.text}</Typography>
+                        <Typography variant='h4' sx={{color: 'darkShade.contrastText'}}>{panel.title}</Typography>
+                        <Typography component='p' sx={{color: 'darkShade.contrastText'}}>{panel.text}</Typography>
                     </Box></FadeUp></Box>)}
                 </Box>
             </Box>

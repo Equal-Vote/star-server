@@ -113,11 +113,11 @@ export default ({}) => {
                 width: {xs: '100%', md: '600px'}, // not the same ax maxWidth 600px!, we want to make sure the carousel doesn't effect size on larger screens
                 minHeight: '600px'
             }}>
-                <Typography variant="h4"> {t('landing_page.hero.title')} </Typography>
+                <Typography variant="h4" color={'lightShade.contrastText'}> {t('landing_page.hero.title')} </Typography>
                 <Box width='90%' display='flex' flexDirection='row' justifyContent='space-between' sx={{alignItems: 'center', paddingBottom: 3}}>
                     <ArrowBackIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == 0? 0 : 1)}} onClick={() => nextMethod(-1)}/>
                     <Box display='flex' flexDirection='row' className={transitionStep==0? 'heroGrow' : 'heroShrink'} sx={{alignItems: 'center'}}>
-                        <Typography variant="h3">
+                        <Typography variant="h3" color={'lightShade.contrastText'}>
                             {t(`landing_page.hero.methods.${methodKeys[methodIndex]}.title`)} 
                         </Typography>
                     </Box>
@@ -140,10 +140,10 @@ export default ({}) => {
                                 <RankedBallotView onlyGrid={true}/>
                             </BallotContext.Provider>}
                         </Box>
-                        <Typography variant="h5">
+                        <Typography variant="h5" color={'lightShade.contrastText'}>
                             {t(`landing_page.hero.methods.${methodKeys[imgIndex]}.short_description`)} 
                         </Typography>
-                        <Typography variant="h5">
+                        <Typography variant="h5" color={'lightShade.contrastText'}>
                             {t(`landing_page.hero.methods.${methodKeys[imgIndex]}.recommendation`)} 
                         </Typography>
                     </>:<>
@@ -163,7 +163,7 @@ export default ({}) => {
                             {t('landing_page.quick_poll.continue_with_editor')}
                         </Button>
                         : <>
-                        <Typography variant="h5">
+                        <Typography variant="h5" color={'lightShade.contrastText'}>
                             {t(`landing_page.hero.methods.${methodKeys[imgIndex]}.short_description`)} 
                         </Typography>
                         <StyledButton
