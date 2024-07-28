@@ -8,7 +8,7 @@ import { Response, NextFunction } from 'express';
 
 const BallotModel = ServiceLocator.ballotsDb();
 
-const deleteAllBallotsForElectionID = async (req: IElectionRequest, res: Response, next: NextFunction) => {
+const innerDeleteAllBallotsForElectionID = async (req: IElectionRequest) => {
     var electionId = req.election.election_id;
 
     Logger.debug(req, "deleteAllBallotsForElectionID : " + electionId);
@@ -26,9 +26,15 @@ const deleteAllBallotsForElectionID = async (req: IElectionRequest, res: Respons
         Logger.info(req, msg);
         throw new BadRequest(msg)
     }
-    res.json({ success })
+
+    return success
+}
+
+const deleteAllBallotsForElectionID = async (req: IElectionRequest, res: Response, next: NextFunction) => {
+    res.json({ success: innerDeleteAllBallotsForElectionID(req) })
 }
 
 module.exports = {
-    deleteAllBallotsForElectionID 
+    deleteAllBallotsForElectionID,
+    innerDeleteAllBallotsForElectionID
 }

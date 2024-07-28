@@ -7,6 +7,7 @@ import { ElectionRoll } from '@equal-vote/star-vote-shared/domain_model/Election
 const { sendBatchEmailInvites } = require('./sendInvitesController')
 import { IElectionRequest } from "../IRequest";
 import { Response, NextFunction } from 'express';
+const {innerDeleteAllBallotsForElectionID} = require('./deleteAllBallotsForElectionIDController')
 
 var ElectionsModel = ServiceLocator.electionsDb();
 var ElectionRollModel = ServiceLocator.electionRollDb();
@@ -16,11 +17,14 @@ const className = "election.Controllers";
 const finalizeElection = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.finalize ${req.election.election_id}`);
     expectPermission(req.user_auth.roles, permissions.canEditElectionState)
+
     if (req.election.state !== 'draft') {
         var msg = "Election already finalized";
         Logger.info(req, msg);
         throw new BadRequest(msg)
     }
+
+    innerDeleteAllBallotsForElectionID(req);
 
     const electionId = req.election.election_id;
     let electionRoll: ElectionRoll[] | null = null
