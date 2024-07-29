@@ -53,6 +53,10 @@ export interface allocatedScoreSummaryData extends starSummaryData {
     weight_on_splits: number[],
     weightedScoresByRound: number[][]
 }
+
+export interface methodOfEqualSharesSummaryData extends genericSummaryData {
+}
+
 export interface approvalSummaryData extends genericSummaryData { }
 
 export interface pluralitySummaryData extends genericSummaryData { }
@@ -97,6 +101,10 @@ export interface starResults extends genericResults {
 export interface allocatedScoreResults extends Omit<genericResults, 'tied'> {
     tied: candidate[][],
     summaryData: allocatedScoreSummaryData,
+}
+
+export interface methodOfEqualSharesResults extends genericResults {
+  summaryData: methodOfEqualSharesSummaryData
 }
 
 export interface approvalResults extends genericResults {
