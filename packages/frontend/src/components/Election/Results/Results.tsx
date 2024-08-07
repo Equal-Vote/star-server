@@ -309,7 +309,7 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
   let showTitleAsTie = ['random', 'five_star'].includes(result.results.tieBreakType);
   // added a null check for sandbox support
   let removeTieBreakFromTitle = (election?.settings.break_ties_randomly ?? false) && result.results.tieBreakType == 'random';
-  const {t} = useSubstitutedTranslation(election.settings.term_type);
+  const {t} = useSubstitutedTranslation(election?.settings?.term_type ?? 'poll');
   return (
     <div>
       <div className="flexContainer" style={{textAlign: 'center'}}>
