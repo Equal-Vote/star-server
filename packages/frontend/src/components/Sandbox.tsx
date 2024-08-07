@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Results from './Election/Results/Results';
-import { FormHelperText, Grid, Typography } from "@mui/material";
+import { FormHelperText, Grid, Paper, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -60,6 +60,7 @@ const Sandbox = () => {
         })
 
     }
+    console.log(data)
 
     useEffect(() => {
         getResults()
@@ -69,87 +70,91 @@ const Sandbox = () => {
         //Using grid to force results into the center and fill screen on smaller screens.
         //Using theme settings and css can probably replace the grids
         <Grid container spacing={0} sx={{ p: 3 }}>
-            <Grid item xs={12}>
-                <FormControl fullWidth>
-                    <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                        Voting Method
-                    </InputLabel>
-                    <Select
-                        name="Voting Method"
-                        label="Voting Method"
-                        value={votingMethod}
-                        onChange={(e) => setVotingMethod(e.target.value as VotingMethod)}
-                    >
-                        <MenuItem key="STAR" value="STAR">
-                            STAR
-                        </MenuItem>
-                        <MenuItem key="STAR_PR" value="STAR_PR">
-                            STAR-PR
-                        </MenuItem>
-                        <MenuItem key="RankedRobin" value="RankedRobin">
-                            Ranked Robin
-                        </MenuItem>
-                        <MenuItem key="Approval" value="Approval">
-                            Approval
-                        </MenuItem>
-                        <MenuItem key="Plurality" value="Plurality">
-                            Plurality
-                        </MenuItem>
-                        <MenuItem key="IRV" value="IRV">
-                            Ranked Choice Voting (IRV)
-                        </MenuItem>
-                    </Select>
-                </FormControl>
-            </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} md={6}>
+                <Grid container spacing={0} sx={{ p: 3 }}>
+                    <Grid item xs={12}>
+                        <FormControl fullWidth>
+                            <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                                Voting Method
+                            </InputLabel>
+                            <Select
+                                name="Voting Method"
+                                label="Voting Method"
+                                value={votingMethod}
+                                onChange={(e) => setVotingMethod(e.target.value as VotingMethod)}
+                            >
+                                <MenuItem key="STAR" value="STAR">
+                                    STAR
+                                </MenuItem>
+                                <MenuItem key="STAR_PR" value="STAR_PR">
+                                    STAR-PR
+                                </MenuItem>
+                                <MenuItem key="RankedRobin" value="RankedRobin">
+                                    Ranked Robin
+                                </MenuItem>
+                                <MenuItem key="Approval" value="Approval">
+                                    Approval
+                                </MenuItem>
+                                <MenuItem key="Plurality" value="Plurality">
+                                    Plurality
+                                </MenuItem>
+                                <MenuItem key="IRV" value="IRV">
+                                    Ranked Choice Voting (IRV)
+                                </MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
 
-                <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                    Number of Winners
-                </InputLabel>
-                <TextField
-                    id="num-winners"
-                    name="Number Of Winners"
-                    type="number"
-                    value={nWinners}
-                    onChange={(e) => setNWinners(parseInt(e.target.value))}
-                />
+                        <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                            Number of Winners
+                        </InputLabel>
+                        <TextField
+                            id="num-winners"
+                            name="Number Of Winners"
+                            type="number"
+                            value={nWinners}
+                            onChange={(e) => setNWinners(parseInt(e.target.value))}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                            Candidates
+                        </InputLabel>
+                        <TextField
+                            id="candidates"
+                            name="candidates"
+                            multiline
+                            type="text"
+                            value={candidates}
+                            helperText="Comma seperated list of candidates"
+                            onChange={(e) => setCandidates(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                            Votes
+                        </InputLabel>
+                        <TextField
+                            id="cvr"
+                            name="cvr"
+                            multiline
+                            rows="5"
+                            type="text"
+                            value={cvr}
+                            helperText="Comma seperated scores, one ballot per line, optional 'x:' in front of ballot to indicate x number of that ballot"
+                            onChange={(e) => setCvr(e.target.value)}
+                        />
+                        <FormHelperText error>
+                            {errorText}
+                        </FormHelperText>
+                    </Grid>
+                    <Button variant='outlined' onClick={() => getResults()} > Get Results </Button>
+                    </Grid>
             </Grid>
-            <Grid item xs={12}>
-                <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                    Candidates
-                </InputLabel>
-                <TextField
-                    id="candidates"
-                    name="candidates"
-                    multiline
-                    type="text"
-                    value={candidates}
-                    helperText="Comma seperated list of candidates"
-                    onChange={(e) => setCandidates(e.target.value)}
-                />
-            </Grid>
-            <Grid item xs={12}>
-                <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                    Votes
-                </InputLabel>
-                <TextField
-                    id="cvr"
-                    name="cvr"
-                    multiline
-                    rows="5"
-                    type="text"
-                    value={cvr}
-                    helperText="Comma seperated scores, one ballot per line, optional 'x:' in front of ballot to indicate x number of that ballot"
-                    onChange={(e) => setCvr(e.target.value)}
-                />
-                <FormHelperText error>
-                    {errorText}
-                </FormHelperText>
-            </Grid>
-            <Button variant='outlined' onClick={() => getResults()} > Get Results </Button>
-            <Grid item xs={12}>
-                <Box border={2} sx={{ mt: 5, width: '100%', p: 2 }}>
-                    {/* {isPending && <div> Loading Results... </div>} */}
+            <Grid item xs={12} md={6}>
+                <Paper elevation={3} sx={{width: '100%', maxWidth: '1200px', m: {xs: 0, m: 2}, p: {xs: 1, m: 2}, backgroundColor:'brand.white', marginBottom: 2, '@media print': { boxShadow: 'none'}}}>
+                        
                     {data && !error && (
                         <Results
                             title=''
@@ -163,7 +168,7 @@ const Sandbox = () => {
                                 num_winners: data.nWinners,
                             }}
                         />)}
-                </Box>
+                </Paper>
             </Grid>
             <Grid item xs={12} sm={2}>
             </Grid>
