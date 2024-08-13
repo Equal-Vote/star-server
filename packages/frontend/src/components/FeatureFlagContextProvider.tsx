@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { useEffect } from "react";
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { sharedConfig } from '@equal-vote/star-vote-shared/config';
 
 type FeatureFlag = keyof typeof flagDefinitions;
 
@@ -53,7 +54,7 @@ export function FeatureFlagContextProvider({ children }) {
         if(flagName in flagOverrides) return flagOverrides[flagName];
         
         // then check environment
-        return process.env[`REACT_APP_FF_${flagName}`] === 'true';
+        return sharedConfig[`FF_${flagName}`] === 'true';
     }
 
     const setter = (key: FeatureFlag, value: boolean) => {
