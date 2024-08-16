@@ -50,7 +50,6 @@ export const useEditRace = (race, race_index) => {
     const validatePage = () => {
         let isValid = true
         let newErrors: any = {}
-        if (election.races.length > 1) {
             if (!editedRace.title) {
                 newErrors.raceTitle = 'Race title required';
                 isValid = false;
@@ -63,7 +62,18 @@ export const useEditRace = (race, race_index) => {
                 newErrors.raceDescription = 'Race title must be less than 1000 characters';
                 isValid = false;
             }
-        }
+            if (election.races.some(race => {
+                // Check if the race ID is the same
+                if (race.race_id != editedRace.race_id) {
+                    // Check if the title is the same
+                    if (race.title === editedRace.title) return true;
+                    return false;
+                }
+            })) {
+                newErrors.raceTitle = 'Races must have unique titles';
+                isValid = false;
+            }
+        
         if (editedRace.num_winners < 1) {
             newErrors.raceNumWinners = 'Must have at least one winner';
             isValid = false;
