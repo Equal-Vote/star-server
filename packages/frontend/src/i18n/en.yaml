@@ -365,6 +365,9 @@ about:
       github_image_id: 32378726
     - github_user_name: DubemObi
       github_image_id: 109088909
+    - github_user_name: csamuele
+      github_image_id: 25678380
+
   contribute_title: Contribute
   contribute_description: >
     Our source code is available on [Github](https://github.com/Equal-Vote/star-server),
