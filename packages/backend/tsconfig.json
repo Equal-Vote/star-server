@@ -11,6 +11,9 @@
     "strict": true,
     "types": [
       "jest"
+    ],
+    "lib": [
+      "ES2021.String"
     ]
   },
   "include": ["./src/**/*"]
