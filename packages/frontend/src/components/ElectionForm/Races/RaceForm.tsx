@@ -22,25 +22,36 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
     const flags = useFeatureFlags();
     const [showsAllMethods, setShowsAllMethods] = useState(false)
     const { election } = useElection()
-    const myRef = useRef(null);
     const confirm = useConfirm();
+    // BottomRef creates a reference to the bottom of the window to scroll to when a new candidate is added
+    const bottomRef = useRef(null);
+    const [canditateChange, setCanditateChange] = useState(false);
     useEffect(() => {
-        myRef.current.scrollIntoView(false)
+        // Scroll to the bottom of the page when a new candidate is added, but not when the page is first loaded
+        
+        if (canditateChange) {
+            bottomRef.current.scrollIntoView(false)
+         }
+        
+
+
     }, [editedRace.candidates.length])
+    
+
     const onEditCandidate = (candidate: Candidate, index) => {
         const candidates = editedRace.candidates
         candidates[index].candidate_name = candidate.candidate_name
         if (index === candidates.length - 1) {
             // If last form entry is updated, add another entry to form
             candidates.push({
-                candidate_id: String(editedRace.candidates.length),
+                candidate_id: uuidv4(),
                 candidate_name: '',
             })
-            
+            setCanditateChange(true);
         }
         else if (candidates.length > 2 && index === candidates.length - 2 && candidate.candidate_name === '' && candidates[candidates.length - 1].candidate_name === '') {
             // If last two entries are empty, remove last entry
-            // Keep at least 3
+            // Keep at least 2
             candidates.splice(candidates.length - 1, 1)
         }
         setErrors({ ...errors, candidates: '', raceNumWinners: '' })
@@ -52,14 +63,6 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
    
     }
 
-    const onAddNewCandidate = (newCandidateName: string) => {
-        applyRaceUpdate(race => {
-            race.candidates.push({
-                candidate_id: uuidv4(),
-                candidate_name: newCandidateName,
-            })
-        })
-    }
 
     const moveCandidate = (fromIndex: number, toIndex: number) => {
         applyRaceUpdate(race => {
@@ -93,7 +96,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
 
     return (
         <>
-            <Grid container sx={{ m: 0, p: 1 }}>
+            <Grid container sx={{ m: 0, p: 1 }} >
 
                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                     <TextField
@@ -111,7 +114,9 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                         onChange={(e) => {
                             setErrors({ ...errors, raceTitle: '' })
                             applyRaceUpdate(race => { race.title = e.target.value })
-                        }}
+                        }
+                        
+                    }
                     />
                     <FormHelperText error sx={{ pl: 1, pt: 0 }}>
                         {errors.raceTitle}
@@ -290,7 +295,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                     </FormHelperText>
                 </Grid>
             </Grid>
-            <Stack spacing={2} ref={myRef}>
+            <Stack spacing={2}>
                 {
                     editedRace.candidates?.map((candidate, index) => (
                         <CandidateForm
@@ -303,9 +308,9 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                         
                     ))
                 }
-                {/* <AddCandidate
-                    onAddNewCandidate={onAddNewCandidate} /> */}
             </Stack>
+            {/* Scroll anchor for when a new candidate is added */}
+            <div style={{height: '5px'}} ref={bottomRef}/>
         </>
     )
 }

@@ -35,7 +35,7 @@ export default function AddRace() {
                 disabled={election.state!=='draft'}>
                 Add
             </StyledButton>
-            <RaceDialog onSaveRace={onAdd} open={open} handleClose={handleClose} >
+            <RaceDialog onSaveRace={onAdd} open={open} handleClose={handleClose} editedRace={editedRace}>
                 <RaceForm
                     race_index={election.races.length}
                     editedRace={editedRace}
