@@ -37,7 +37,8 @@ export default function makeApp() {
 
     app.use(cookieParser())
 
-    const frontendPath = '../../../../packages/frontend/build/';
+    //const frontendPath = '../../../../packages/frontend/build/';
+    const frontendPath = '../../../packages/frontend/build/';
 
     const path = require('path');
     app.use(express.json());
@@ -48,30 +49,32 @@ export default function makeApp() {
     app.post('/API/Token', asyncHandler(getUserToken));
 
     app.get('*', (req, res) => {
-        if(req.url.startsWith('/assets') || req.url.startsWith('/images')){
-            res.sendFile(path.join(__dirname, frontendPath, req.url))
-            return
-        }
-        // https://blog.logrocket.com/adding-dynamic-meta-tags-react-app-without-ssr/
         const fs = require('fs');
-        fs.readFile(path.join(__dirname, frontendPath, 'index.html'), 'utf8', (err:any, htmlData:string) => {
+        fs.readFile(path.join(__dirname, frontendPath, req.url), 'utf8', (err:any, htmlData:string) => {
             if(err){
-                console.error('Error during file reading', err);
-                return res.status(404).end();
+                // https://blog.logrocket.com/adding-dynamic-meta-tags-react-app-without-ssr/
+                fs.readFile(path.join(__dirname, frontendPath, 'index.html'), 'utf8', (err:any, htmlData:string) => {
+                    if(err){
+                        console.error('Error during file reading', err);
+                        return res.status(404).end();
+                    }
+
+                    // inject tags
+                    let tags = {
+                        __META_TITLE__: 'dev.star.vote',
+                        __META_DESCRIPTION__: "Create secure elections with voting methods that don't spoil the vote.",
+                        __META_IMAGE__: 'https://assets.nationbuilder.com/unifiedprimary/pages/1470/attachments/original/1702692040/Screenshot_2023-12-15_at_6.00.24_PM.png?1702692040'
+                    };
+
+                    Object.entries(tags).forEach(([key, value]) => {
+                        htmlData = htmlData.replaceAll(key, value);
+                    });
+
+                    return res.send(htmlData)
+                })
+            }else{
+                res.sendFile(path.join(__dirname, frontendPath, req.url))
             }
-
-            // inject tags
-            let tags = {
-                __META_TITLE__: 'dev.star.vote',
-                __META_DESCRIPTION__: "Create secure elections with voting methods that don't spoil the vote.",
-                __META_IMAGE__: 'https://assets.nationbuilder.com/unifiedprimary/pages/1470/attachments/original/1702692040/Screenshot_2023-12-15_at_6.00.24_PM.png?1702692040'
-            };
-
-            Object.entries(tags).forEach(([key, value]) => {
-                htmlData = htmlData.replaceAll(key, value);
-            });
-
-            return res.send(htmlData)
         })
     })
 
