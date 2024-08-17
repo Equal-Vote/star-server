@@ -19,7 +19,16 @@ export const useEditRace = (race, race_index) => {
         race_id: '',
         num_winners: 1,
         voting_method: 'STAR',
-        candidates: [] as Candidate[],
+        candidates: [
+            { 
+                candidate_id: uuidv4(),
+                candidate_name: ''
+            },
+            { 
+                candidate_id: uuidv4(),
+                candidate_name: ''
+            }
+        ] as Candidate[],
         precincts: undefined,
     }
     const [editedRace, setEditedRace] = useState(race !== null ? race : defaultRace)
