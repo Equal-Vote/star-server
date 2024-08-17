@@ -13,9 +13,7 @@
       "jest"
     ],
     "lib": [
-      "ES6",
-      "DOM",
-      "ES2021.String", // Added for replaceAll
+      "ES2021.String"
     ]
   },
   "include": ["./src/**/*"]

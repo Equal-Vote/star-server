@@ -36,7 +36,7 @@ RUN npm run build -ws
 ####################
 
 FROM node:20.11.1-bullseye-slim
-ENV NODE_ENV=production
+ENV NODE_ENV production
 COPY --from=build /usr/bin/dumb-init /usr/bin/dumb-init
 USER node
 WORKDIR /usr/src/app
