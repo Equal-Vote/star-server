@@ -11,6 +11,7 @@ import { loggerMiddleware } from './Services/Logging/LoggerMiddleware';
 import { errorCatch } from './errorCatchMiddleware'
 import registerEvents from './Routes/registerEvents';
 import { setupSockets } from './socketHandler';
+import { getMetaTags } from './Util';
 
 const { getUserToken } = require('./Controllers/getUserTokenController')
 const authController = require('./Controllers/auth.controllers')
@@ -37,7 +38,8 @@ export default function makeApp() {
 
     app.use(cookieParser())
 
-    const frontendPath = '../../../../packages/frontend/build/';
+    //const frontendPath = '../../../../packages/frontend/build/';
+    const frontendPath = '../../../packages/frontend/build/';
 
     const path = require('path');
     app.use(express.json());
@@ -52,18 +54,14 @@ export default function makeApp() {
         fs.readFile(path.join(__dirname, frontendPath, req.url), 'utf8', (err:any, htmlData:string) => {
             if(err){
                 // https://blog.logrocket.com/adding-dynamic-meta-tags-react-app-without-ssr/
-                fs.readFile(path.join(__dirname, frontendPath, 'index.html'), 'utf8', (err:any, htmlData:string) => {
+                fs.readFile(path.join(__dirname, frontendPath, 'index.html'), 'utf8', async (err:any, htmlData:string) => {
                     if(err){
                         console.error('Error during file reading', err);
                         return res.status(404).end();
                     }
 
                     // inject tags
-                    let tags = {
-                        __META_TITLE__: 'dev.star.vote',
-                        __META_DESCRIPTION__: "Create secure elections with voting methods that don't spoil the vote.",
-                        __META_IMAGE__: 'https://assets.nationbuilder.com/unifiedprimary/pages/1470/attachments/original/1702692040/Screenshot_2023-12-15_at_6.00.24_PM.png?1702692040'
-                    };
+                    const tags = await getMetaTags(req);
 
                     Object.entries(tags).forEach(([key, value]) => {
                         htmlData = htmlData.replaceAll(key, value);

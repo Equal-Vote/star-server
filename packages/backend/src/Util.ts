@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { reqIdSuffix } from './IRequest';
 import { ILoggingContext } from './Services/Logging/ILogger';
 import { InternalServerError } from '@curveball/http-errors';
+import { electionExistsByID } from './Controllers/elections.controllers';
+import ServiceLocator from './ServiceLocator';
 
 export function assertNotNull<Type>(data:Type | null, message:string = 'unexpected null'):Type {
     if (data == null){
@@ -44,4 +46,21 @@ export async function makeID<Uid>(hasCollision: Function, length=6){ // default 
   // TODO: this causes the request to fail, but it also crashes
   if(i == maxIter) throw new InternalServerError("Failed to generate new ID");
   return id;
+}
+
+interface TagObject{
+  [key: string]: string
+}
+let ElectionsModel =  ServiceLocator.electionsDb();
+export async function getMetaTags(req: any) : Promise<TagObject>  {
+  let parts = req.url.split('/');
+  // NOTE: this could match to 'ElectionsYouManage' for example, but that just return null for the election
+  let electionID = parts[1] == 'Election' ? parts[2] : parts[1];
+
+  const election = await ElectionsModel.getElectionByID(electionID, req);
+  return {
+      __META_TITLE__: election?.title ?? 'dev.star.vote',
+      __META_DESCRIPTION__: election?.description ?? "Create secure elections with voting methods that don't spoil the vote.",
+      __META_IMAGE__: 'https://assets.nationbuilder.com/unifiedprimary/pages/1470/attachments/original/1702692040/Screenshot_2023-12-15_at_6.00.24_PM.png?1702692040'
+  };
 }

@@ -32,7 +32,7 @@ const ElectionHome = () => {
             {election.settings.voter_access !== 'closed' &&
               <Box sx={{ m: 1, display: 'flex', justifyContent: 'flex-end' }}>
                 <Box sx={{ maxWidth: 200 }}>
-                  <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} />
+                  <ShareButton url={`${window.location.origin}/${election.election_id}`} />
                 </Box>
               </Box>
             }

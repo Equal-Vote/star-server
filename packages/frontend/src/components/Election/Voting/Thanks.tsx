@@ -56,7 +56,7 @@ const Thanks = () => {
                     }
                     {election.settings.voter_access !== 'closed' &&
                         <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1}  }}>
-                            <ShareButton url={`${window.location.origin}/Election/${election.election_id}`}/>
+                            <ShareButton url={`${window.location.origin}/${election.election_id}`}/>
                         </Box>
                     }
                     <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1} }}>
