@@ -310,12 +310,12 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
     )
 }
 
-export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandidate, moveCandidateUp, moveCandidateDown }) => {
+export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandidate, moveCandidateUp, moveCandidateDown,  }) => {
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
+    const flags = useFeatureFlags();
     const onSave = () => { handleClose() }
 
     return (
@@ -325,7 +325,17 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
                 alignItems={'center'}
             >
                 <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', pl: 2 }}>
-                    <Typography variant="h4" component="h4" noWrap>{candidate.candidate_name}</Typography>
+                    <TextField
+                        id={'candidate-name'}
+                        name="new-candidate-name"
+                        // label={"Candidate Name"}
+                        type="text"
+                        value={candidate.candidate_name}
+                        fullWidth
+                        variant='standard'
+                        margin='normal'
+                        onChange={(e) => onEditCandidate({ ...candidate, candidate_name: e.target.value })}
+                    />
                 </Box>
                 <IconButton
                     aria-label="edit"
@@ -337,11 +347,13 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
                     onClick={moveCandidateDown}>
                     <ArrowDownwardIcon />
                 </IconButton>
-                <IconButton
-                    aria-label="edit"
-                    onClick={handleOpen}>
-                    <EditIcon />
-                </IconButton>
+                {flags.isSet('CANDIDATE_DETAILS') &&
+                    <IconButton
+                        aria-label="edit"
+                        onClick={handleOpen}>
+                        <EditIcon />
+                    </IconButton>
+    }
                 <IconButton
                     aria-label="delete"
                     color="error"

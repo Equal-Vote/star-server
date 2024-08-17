@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useState } from "react"
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate"
 import AddCandidate, { CandidateForm } from "../Candidates/AddCandidate"
@@ -11,24 +11,45 @@ import { Box, FormHelperText, Radio, RadioGroup, Stack } from "@mui/material"
 import IconButton from '@mui/material/IconButton'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-// import { scrollToElement } from '../../util';
+import { scrollToElement } from '../../util';
 import useElection from '../../ElectionContextProvider';
 import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
+import { use } from 'i18next';
 
 export default function RaceForm({ race_index, editedRace, errors, setErrors, applyRaceUpdate }) {
     const flags = useFeatureFlags();
     const [showsAllMethods, setShowsAllMethods] = useState(false)
     const { election } = useElection()
-
+    const myRef = useRef(null);
     const confirm = useConfirm();
-
+    useEffect(() => {
+        myRef.current.scrollIntoView(false)
+    }, [editedRace.candidates.length])
     const onEditCandidate = (candidate: Candidate, index) => {
+        const candidates = editedRace.candidates
+        candidates[index].candidate_name = candidate.candidate_name
+        if (index === candidates.length - 1) {
+            // If last form entry is updated, add another entry to form
+            candidates.push({
+                candidate_id: String(editedRace.candidates.length),
+                candidate_name: '',
+            })
+            
+        }
+        else if (candidates.length > 2 && index === candidates.length - 2 && candidate.candidate_name === '' && candidates[candidates.length - 1].candidate_name === '') {
+            // If last two entries are empty, remove last entry
+            // Keep at least 3
+            candidates.splice(candidates.length - 1, 1)
+        }
         setErrors({ ...errors, candidates: '', raceNumWinners: '' })
         applyRaceUpdate(race => {
             race.candidates[index] = candidate
         })
+        
+        
+   
     }
 
     const onAddNewCandidate = (newCandidateName: string) => {
@@ -59,6 +80,10 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
     }
 
     const onDeleteCandidate = async (index: number) => {
+        if (editedRace.candidates.length < 3) {
+            setErrors({ ...errors, candidates: 'At least 2 candidates are required' })
+            return
+        }
         const confirmed = await confirm({ title: 'Confirm Delete Candidate', message: 'Are you sure?' })
         if (!confirmed) return
         applyRaceUpdate(race => {
@@ -265,7 +290,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                     </FormHelperText>
                 </Grid>
             </Grid>
-            <Stack spacing={2}>
+            <Stack spacing={2} ref={myRef}>
                 {
                     editedRace.candidates?.map((candidate, index) => (
                         <CandidateForm
@@ -275,10 +300,11 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                             onDeleteCandidate={() => onDeleteCandidate(index)}
                             moveCandidateUp={() => moveCandidateUp(index)}
                             moveCandidateDown={() => moveCandidateDown(index)} />
+                        
                     ))
                 }
-                <AddCandidate
-                    onAddNewCandidate={onAddNewCandidate} />
+                {/* <AddCandidate
+                    onAddNewCandidate={onAddNewCandidate} /> */}
             </Stack>
         </>
     )
