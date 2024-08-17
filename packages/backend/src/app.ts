@@ -48,7 +48,7 @@ export default function makeApp() {
     app.post('/API/Token', asyncHandler(getUserToken));
 
     app.get('*', (req, res) => {
-        if(req.url != '/'){
+        if(req.url.startsWith('/assets') || req.url.startsWith('/images')){
             res.sendFile(path.join(__dirname, frontendPath, req.url))
             return
         }
