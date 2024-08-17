@@ -60,7 +60,6 @@ const Sandbox = () => {
         })
 
     }
-    console.log(data)
 
     useEffect(() => {
         getResults()
