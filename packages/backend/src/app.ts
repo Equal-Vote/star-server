@@ -11,7 +11,6 @@ import { loggerMiddleware } from './Services/Logging/LoggerMiddleware';
 import { errorCatch } from './errorCatchMiddleware'
 import registerEvents from './Routes/registerEvents';
 import { setupSockets } from './socketHandler';
-let fs = require('fs');
 
 const { getUserToken } = require('./Controllers/getUserTokenController')
 const authController = require('./Controllers/auth.controllers')
@@ -49,8 +48,13 @@ export default function makeApp() {
     app.post('/API/Token', asyncHandler(getUserToken));
 
     app.get('*', (req, res) => {
+        if(req.url != '/'){
+            res.sendFile(path.join(__dirname, frontendPath, req.url))
+            return
+        }
         // https://blog.logrocket.com/adding-dynamic-meta-tags-react-app-without-ssr/
-        fs.readFile(path.join(__dirname, frontendPath + "index.html"), 'utf8', (err:any, htmlData:string) => {
+        const fs = require('fs');
+        fs.readFile(path.join(__dirname, frontendPath, 'index.html'), 'utf8', (err:any, htmlData:string) => {
             if(err){
                 console.error('Error during file reading', err);
                 return res.status(404).end();
