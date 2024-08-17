@@ -73,7 +73,7 @@ export default function Race({ race, race_index }) {
                 </Box>
 
             </Box>
-            <RaceDialog onSaveRace={onSave} open={open} handleClose={handleClose} >
+            <RaceDialog onSaveRace={onSave} open={open} handleClose={handleClose} editedRace={editedRace}>
                 <RaceForm
                     race_index={race_index}
                     editedRace={editedRace}

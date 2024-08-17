@@ -5,10 +5,13 @@ import { StyledButton } from '../../styles';
 import useElection from '../../ElectionContextProvider';
 
 
-export default function RaceDialog({ onSaveRace, open, handleClose, children }) {
+export default function RaceDialog({ onSaveRace, open, handleClose, children, editedRace }) {
+
 
     const { election } = useElection()
     const handleSave = () => {
+        //delete any blank candidates
+        editedRace.candidates = editedRace.candidates.filter(candidate => candidate.candidate_name !== '')
         onSaveRace()
     }
 
