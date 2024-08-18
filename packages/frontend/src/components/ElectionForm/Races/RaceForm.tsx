@@ -23,13 +23,13 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
     const [showsAllMethods, setShowsAllMethods] = useState(false)
     const { election } = useElection()
     const confirm = useConfirm();
+    const inputRefs = useRef([]);
     const ephemeralCandidates = useMemo(() => 
         [...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }], 
         [editedRace.candidates]
     );    // BottomRef creates a reference to the bottom of the window to scroll to when a new candidate is added
     const bottomRef = useRef(null);
     useEffect(() => {
-        // Scroll to the bottom of the page when a new candidate is added, but not when the page is first loaded
             bottomRef.current.scrollIntoView(false)
     }, [ephemeralCandidates])
 
@@ -75,6 +75,23 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
             });
         }
     }, [confirm, editedRace.candidates.length, applyRaceUpdate, setErrors]);
+    // Handle tab and shift+tab to move focus between candidates
+    const handleTabEnter = useCallback((event, index) => {
+        if (event.key === 'Tab' && event.shiftKey) {
+            // Move focus to the previous candidate
+            event.preventDefault();
+            const prevIndex = index - 1;
+            if (prevIndex >= 0 && inputRefs.current[prevIndex]) {
+                inputRefs.current[prevIndex].focus();
+            }
+        } else if (event.key === 'Enter' || event.key === 'Tab') {
+            event.preventDefault();
+            const nextIndex = index + 1;
+            if (nextIndex < ephemeralCandidates.length && inputRefs.current[nextIndex]) {
+                inputRefs.current[nextIndex].focus();
+            }
+        }  
+    }, [ephemeralCandidates.length]);
 
     return (
         <>
@@ -287,7 +304,10 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                             index={index}
                             onDeleteCandidate={() => onDeleteCandidate(index)}
                             moveCandidateUp={() => moveCandidateUp(index)}
-                            moveCandidateDown={() => moveCandidateDown(index)} />
+                            moveCandidateDown={() => moveCandidateDown(index)} 
+                            inputRef={el => inputRefs.current[index] = el}
+                            onKeyDown={event => handleTabEnter(event, index)}
+                            />
                         
                     ))
                 }

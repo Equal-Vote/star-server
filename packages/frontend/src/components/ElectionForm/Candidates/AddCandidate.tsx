@@ -310,7 +310,7 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
     )
 }
 
-export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandidate, moveCandidateUp, moveCandidateDown,  }) => {
+export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandidate, moveCandidateUp, moveCandidateDown, inputRef, onKeyDown}) => {
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -344,6 +344,8 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
                         variant='standard'
                         margin='normal'
                         onChange={(e) => onEditCandidate({ ...candidate, candidate_name: e.target.value })}
+                        inputRef={inputRef}
+                        onKeyDown={onKeyDown}
                     />
                 </Box>
                 <IconButton
