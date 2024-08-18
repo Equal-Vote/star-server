@@ -310,23 +310,13 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
     )
 }
 
-export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandidate, moveCandidateUp, moveCandidateDown, inputRef, onKeyDown}) => {
+export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandidate, moveCandidateUp, moveCandidateDown, disabled, inputRef, onKeyDown}) => {
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const flags = useFeatureFlags();
     const onSave = () => { handleClose() }
-    const [disabled, setDisabled] = useState(false)
-    useEffect(() => {
-        if (candidate.candidate_name === '') {
-            setDisabled(true)
-        }
-        else {
-            setDisabled(false)
-        }
-    }, [candidate.candidate_name])
-
     return (
         <Paper elevation={4} sx={{ width: '100%' }}>
             <Box
