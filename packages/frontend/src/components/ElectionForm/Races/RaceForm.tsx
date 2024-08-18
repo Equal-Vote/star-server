@@ -17,6 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
 import { use } from 'i18next';
+import { on } from 'events';
 
 export default function RaceForm({ race_index, editedRace, errors, setErrors, applyRaceUpdate }) {
     const flags = useFeatureFlags();
@@ -37,6 +38,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
         applyRaceUpdate(race => {
             if (candidate.candidate_name === '' && index === race.candidates.length - 1 && race.candidates.length > 1) {
                 race.candidates.splice(index, 1);
+                inputRefs.current[index - 1].focus();
             } else if (race.candidates[index]) {
                 race.candidates[index] = candidate;
             } else {
@@ -76,7 +78,8 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
         }
     }, [confirm, editedRace.candidates.length, applyRaceUpdate, setErrors]);
     // Handle tab and shift+tab to move focus between candidates
-    const handleTabEnter = useCallback((event, index) => {
+    const handleKeyDown = useCallback((event, index) => {
+        
         if (event.key === 'Tab' && event.shiftKey) {
             // Move focus to the previous candidate
             event.preventDefault();
@@ -90,7 +93,11 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
             if (nextIndex < ephemeralCandidates.length && inputRefs.current[nextIndex]) {
                 inputRefs.current[nextIndex].focus();
             }
-        }  
+        } else if (event.key === 'Backspace' && event.target.value === '' && index > 0) {
+            // Move focus to the previous candidate when backspacing on an empty candidate
+            event.preventDefault();
+            inputRefs.current[index - 1].focus();
+        }
     }, [ephemeralCandidates.length]);
 
     return (
@@ -304,10 +311,10 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                             index={index}
                             onDeleteCandidate={() => onDeleteCandidate(index)}
                             moveCandidateUp={() => moveCandidateUp(index)}
-                            moveCandidateDown={() => moveCandidateDown(index)} 
+                            moveCandidateDown={() => moveCandidateDown(index)}
+                            disabled={ephemeralCandidates.length -1 === index}
                             inputRef={el => inputRefs.current[index] = el}
-                            onKeyDown={event => handleTabEnter(event, index)}
-                            />
+                            onKeyDown={event => handleKeyDown(event, index)}/>
                         
                     ))
                 }
