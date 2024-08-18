@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useState } from "react"
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate"
 import AddCandidate, { CandidateForm } from "../Candidates/AddCandidate"
@@ -23,76 +23,58 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
     const [showsAllMethods, setShowsAllMethods] = useState(false)
     const { election } = useElection()
     const confirm = useConfirm();
-    // BottomRef creates a reference to the bottom of the window to scroll to when a new candidate is added
+    const ephemeralCandidates = useMemo(() => 
+        [...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }], 
+        [editedRace.candidates]
+    );    // BottomRef creates a reference to the bottom of the window to scroll to when a new candidate is added
     const bottomRef = useRef(null);
-    const [canditateChange, setCanditateChange] = useState(false);
     useEffect(() => {
         // Scroll to the bottom of the page when a new candidate is added, but not when the page is first loaded
-        
-        if (canditateChange) {
             bottomRef.current.scrollIntoView(false)
-         }
-        
+    }, [ephemeralCandidates])
 
-
-    }, [editedRace.candidates.length])
-    
-
-    const onEditCandidate = (candidate: Candidate, index) => {
-        const candidates = editedRace.candidates
-        candidates[index].candidate_name = candidate.candidate_name
-        if (index === candidates.length - 1) {
-            // If last form entry is updated, add another entry to form
-            candidates.push({
-                candidate_id: uuidv4(),
-                candidate_name: '',
-            })
-            setCanditateChange(true);
-        }
-        else if (candidates.length > 2 && index === candidates.length - 2 && candidate.candidate_name === '' && candidates[candidates.length - 1].candidate_name === '') {
-            // If last two entries are empty, remove last entry
-            // Keep at least 2
-            candidates.splice(candidates.length - 1, 1)
-        }
-        setErrors({ ...errors, candidates: '', raceNumWinners: '' })
+    const onEditCandidate = useCallback((candidate, index) => {
         applyRaceUpdate(race => {
-            race.candidates[index] = candidate
-        })
-        
-        
-   
-    }
+            if (candidate.candidate_name === '' && index === race.candidates.length - 1 && race.candidates.length > 1) {
+                race.candidates.splice(index, 1);
+            } else if (race.candidates[index]) {
+                race.candidates[index] = candidate;
+            } else {
+                race.candidates.push(candidate);
+            }
+        });
 
+        setErrors(prev => ({ ...prev, candidates: '', raceNumWinners: '' }));
+    }, [applyRaceUpdate, setErrors]);
 
-    const moveCandidate = (fromIndex: number, toIndex: number) => {
+    const moveCandidate = useCallback((fromIndex, toIndex) => {
         applyRaceUpdate(race => {
-            let candidate = race.candidates.splice(fromIndex, 1)[0];
-            race.candidates.splice(toIndex, 0, candidate);
-        })
-    }
+            const [movedCandidate] = race.candidates.splice(fromIndex, 1);
+            race.candidates.splice(toIndex, 0, movedCandidate);
+        });
+    }, [applyRaceUpdate]);
 
-    const moveCandidateUp = (index: number) => {
-        if (index > 0) {
-            moveCandidate(index, index - 1)
-        }
-    }
-    const moveCandidateDown = (index: number) => {
-        if (index < editedRace.candidates.length - 1) {
-            moveCandidate(index, index + 1)
-        }
-    }
+    const moveCandidateUp = useCallback((index) => {
+        if (index > 0) moveCandidate(index, index - 1);
+    }, [moveCandidate]);
 
-    const onDeleteCandidate = async (index: number) => {
+    const moveCandidateDown = useCallback((index) => {
+        if (index < editedRace.candidates.length - 1) moveCandidate(index, index + 1);
+    }, [moveCandidate, editedRace.candidates.length]);
+
+    const onDeleteCandidate = useCallback(async (index) => {
         if (editedRace.candidates.length < 3) {
-            setErrors({ ...errors, candidates: 'At least 2 candidates are required' })
-            return
+            setErrors(prev => ({ ...prev, candidates: 'At least 2 candidates are required' }));
+            return;
         }
-        const confirmed = await confirm({ title: 'Confirm Delete Candidate', message: 'Are you sure?' })
-        if (!confirmed) return
-        applyRaceUpdate(race => {
-            race.candidates.splice(index, 1)
-        })
-    }
+
+        const confirmed = await confirm({ title: 'Confirm Delete Candidate', message: 'Are you sure?' });
+        if (confirmed) {
+            applyRaceUpdate(race => {
+                race.candidates.splice(index, 1);
+            });
+        }
+    }, [confirm, editedRace.candidates.length, applyRaceUpdate, setErrors]);
 
     return (
         <>
@@ -297,8 +279,9 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
             </Grid>
             <Stack spacing={2}>
                 {
-                    editedRace.candidates?.map((candidate, index) => (
+                    ephemeralCandidates.map((candidate, index) => (
                         <CandidateForm
+                            key={candidate.candidate_id}
                             onEditCandidate={(newCandidate) => onEditCandidate(newCandidate, index)}
                             candidate={candidate}
                             index={index}
