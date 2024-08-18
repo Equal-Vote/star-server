@@ -120,9 +120,9 @@ export async function getMetaTags(req: any) : Promise<TagObject>  {
             h: 22+n_hidden*110+((n_hidden%2 == 0) ? -10 : 10),
           },
           // Draw the candidates from the first race
-          ...election.races[0].candidates.splice(0,5).map((c, i) => ({
+          ...election.races[0].candidates.slice(0,5).map((c, i) => ({
             type: 'l-text',
-            i: (i == 4 && (election?.races[0]?.candidates.length ?? 0) > 5)? `+${(election?.races[0]?.candidates.length ?? 0) - 4} more` : truncName(c.candidate_name, 40),
+            i: (i == 4 && ((election?.races[0]?.candidates.length ?? 0) > 5))? `+${(election?.races[0]?.candidates.length ?? 0) - 4} more` : truncName(c.candidate_name, 40),
             w: 400,
             lx: 30,
             ly: 450+i*110

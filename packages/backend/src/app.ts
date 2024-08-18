@@ -38,7 +38,8 @@ export default function makeApp() {
 
     app.use(cookieParser())
 
-    const frontendPath = '../../../../packages/frontend/build/';
+    //const frontendPath = '../../../../packages/frontend/build/';
+    const frontendPath = '../../../packages/frontend/build/';
 
     const path = require('path');
     app.use(express.json());
