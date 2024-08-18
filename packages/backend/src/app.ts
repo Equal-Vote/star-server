@@ -38,8 +38,7 @@ export default function makeApp() {
 
     app.use(cookieParser())
 
-    //const frontendPath = '../../../../packages/frontend/build/';
-    const frontendPath = '../../../packages/frontend/build/';
+    const frontendPath = '../../../../packages/frontend/build/';
 
     const path = require('path');
     app.use(express.json());
@@ -49,10 +48,14 @@ export default function makeApp() {
 
     app.post('/API/Token', asyncHandler(getUserToken));
 
+    // NOTE: I've removed express.static because it doesn't allow me to inject meta tags
+    // https://stackoverflow.com/questions/51120214/how-to-modify-static-file-content-with-express-static
     app.get('*', (req, res) => {
         const fs = require('fs');
-        fs.readFile(path.join(__dirname, frontendPath, req.url), 'utf8', (err:any, htmlData:string) => {
+        fs.readFile(path.join(__dirname, frontendPath, req.url.split('?')[0]), 'utf8', (err:any, htmlData:string) => {
             if(err){
+                // if the request wants a webpage, then return index.html and inject meta tags
+
                 // https://blog.logrocket.com/adding-dynamic-meta-tags-react-app-without-ssr/
                 fs.readFile(path.join(__dirname, frontendPath, 'index.html'), 'utf8', async (err:any, htmlData:string) => {
                     if(err){
@@ -70,6 +73,8 @@ export default function makeApp() {
                     return res.send(htmlData)
                 })
             }else{
+                // if a specific asset is being requested (an image, complied javascript, etc), then return the raw file
+
                 res.sendFile(path.join(__dirname, frontendPath, req.url))
             }
         })
