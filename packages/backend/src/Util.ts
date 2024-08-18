@@ -65,6 +65,13 @@ const formatImageKitURL = (layers: ImageKitLayer[]) : string => {
   ].join('')
 }
 
+// copied from front end util.tsx
+const truncName = (name: string, maxSize: number) => {
+  if (!(typeof name === 'string')) return name;
+  if (name.length <= maxSize) return name;
+  return name.slice(0, maxSize - 3).concat("...");
+};
+
 interface TagObject{
   [key: string]: string
 }
@@ -115,10 +122,12 @@ export async function getMetaTags(req: any) : Promise<TagObject>  {
           // Draw the candidates from the first race
           ...election.races[0].candidates.splice(0,5).map((c, i) => ({
             type: 'l-text',
-            i: (i == 4 && (election?.races[0]?.candidates.length ?? 0) > 5)? `+${(election?.races[0]?.candidates.length ?? 0) - 4} more` : c.candidate_name,
+            i: (i == 4 && (election?.races[0]?.candidates.length ?? 0) > 5)? `+${(election?.races[0]?.candidates.length ?? 0) - 4} more` : truncName(c.candidate_name, 40),
             w: 400,
             lx: 30,
-            ly: 470+i*110,
+            ly: 450+i*110
+            // HACK: this will help center candidates when they only need 1 line to spell the name
+              +(((election?.races[0]?.candidates.length ?? 0) < 27)? 20 : 0),
             fs: 30,
             ia: 'left',
             ff: 'Montserrat-Black.ttf',
