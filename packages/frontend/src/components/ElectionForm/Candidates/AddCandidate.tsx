@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback, useEffect } from 'react'
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate"
 import React from 'react'
 import Grid from "@mui/material/Grid";
@@ -317,6 +317,15 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
     const handleClose = () => setOpen(false);
     const flags = useFeatureFlags();
     const onSave = () => { handleClose() }
+    const [disabled, setDisabled] = useState(false)
+    useEffect(() => {
+        if (candidate.candidate_name === '') {
+            setDisabled(true)
+        }
+        else {
+            setDisabled(false)
+        }
+    }, [candidate.candidate_name])
 
     return (
         <Paper elevation={4} sx={{ width: '100%' }}>
@@ -339,25 +348,29 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
                 </Box>
                 <IconButton
                     aria-label="edit"
-                    onClick={moveCandidateUp}>
+                    onClick={moveCandidateUp}
+                    disabled={disabled}>
                     <ArrowUpwardIcon />
                 </IconButton>
                 <IconButton
                     aria-label="edit"
-                    onClick={moveCandidateDown}>
+                    onClick={moveCandidateDown}
+                    disabled={disabled}>
                     <ArrowDownwardIcon />
                 </IconButton>
                 {flags.isSet('CANDIDATE_DETAILS') &&
                     <IconButton
                         aria-label="edit"
-                        onClick={handleOpen}>
+                        onClick={handleOpen}
+                        disabled={disabled}>
                         <EditIcon />
                     </IconButton>
     }
                 <IconButton
                     aria-label="delete"
                     color="error"
-                    onClick={onDeleteCandidate}>
+                    onClick={onDeleteCandidate}
+                    disabled={disabled}>
                     <DeleteIcon />
                 </IconButton>
             </Box>

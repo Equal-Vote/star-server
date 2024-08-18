@@ -24,10 +24,6 @@ export const useEditRace = (race, race_index) => {
                 candidate_id: uuidv4(),
                 candidate_name: ''
             },
-            { 
-                candidate_id: uuidv4(),
-                candidate_name: ''
-            }
         ] as Candidate[],
         precincts: undefined,
     }
@@ -99,6 +95,11 @@ export const useEditRace = (race, race_index) => {
         const uniqueCandidates = new Set(editedRace.candidates.filter(candidate => candidate.candidate_name !== '').map(candidate => candidate.candidate_name))
         if (numCandidates !== uniqueCandidates.size) {
             newErrors.candidates = 'Candidates must have unique names';
+            isValid = false;
+        }
+        // Check if any candidates are empty
+        if (editedRace.candidates.some(candidate => candidate.candidate_name === '')) {
+            newErrors.candidates = 'Candidates must have names';
             isValid = false;
         }
         setErrors(errors => ({ ...errors, ...newErrors }))

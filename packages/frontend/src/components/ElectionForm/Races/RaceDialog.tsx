@@ -10,8 +10,7 @@ export default function RaceDialog({ onSaveRace, open, handleClose, children, ed
 
     const { election } = useElection()
     const handleSave = () => {
-        //delete any blank candidates
-        editedRace.candidates = editedRace.candidates.filter(candidate => candidate.candidate_name !== '')
+
         onSaveRace()
     }
 
