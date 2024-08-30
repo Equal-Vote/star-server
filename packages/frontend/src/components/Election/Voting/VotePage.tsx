@@ -89,7 +89,8 @@ const VotePage = () => {
     setPages([...pages])
   }
   const maxRankings = useMemo(() => {
-    return election.settings.max_rankings ? election.settings.max_rankings : Number(process.env.REACT_APP_DEFAULT_MAX_RANKINGS??999)
+    debugger;
+    return election.settings.max_rankings ? election.settings.max_rankings : Number(process.env.REACT_APP_MAX_BALLOT_RANKS??999)
   }, [election.settings.max_rankings])
 
   const [isOpen, setIsOpen] = useState(false)
