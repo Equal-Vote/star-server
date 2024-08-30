@@ -32,7 +32,7 @@ export default function ElectionDetails3() {
             >
                 <Grid xs={12}>
                     <Typography gutterBottom variant="h4" component="h4">
-                        Election Title: {election.title}
+                        {election.title}
                     </Typography>
                 </Grid>
                 <Grid xs={12}>

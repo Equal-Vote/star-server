@@ -32,6 +32,7 @@ export const ElectionTitleField = ({value, onUpdateValue, errors, setErrors, sho
             setErrors({ ...errors, title: '' });
             onUpdateValue(e.target.value);
         }}
+        
     />
     <FormHelperText error sx={{ pl: 1, pt: 0 }}>
         {errors.title}
@@ -48,7 +49,7 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
     const [defaultEndTime, setDefaultEndTime] = useState(isValidDate(editedElection.end_time) ? editedElection.end_time : DateTime.now().plus({ days: 1 }).setZone(timeZone, { keepLocalTime: true }).toJSDate())
     
     return (
-        <Grid container>
+        <Grid container sx={{p: 4}}>
             <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <ElectionTitleField
                     value={editedElection.title}
@@ -92,14 +93,19 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                             <Checkbox
                                 checked={enableStartEndTime}
                                 onChange={(e) => {
+                                    debugger;
                                     setEnableStartEndTime(e.target.checked)
                                     if (e.target.checked) {
-                                        applyUpdate(election => { election.start_time = defaultStartTime })
-                                        applyUpdate(election => { election.end_time = defaultEndTime })
+                                        applyUpdate(election => { 
+                                            election.start_time = defaultStartTime;
+                                            election.end_time = defaultEndTime;
+                                        })
                                     }
                                     else {
-                                        applyUpdate(election => { election.start_time = undefined })
-                                        applyUpdate(election => { election.end_time = undefined })
+                                        applyUpdate(election => { 
+                                            election.start_time = undefined;
+                                            election.end_time = undefined;
+                                        })
                                     }
                                 }
                                 }
