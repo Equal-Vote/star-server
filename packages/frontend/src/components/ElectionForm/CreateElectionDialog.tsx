@@ -67,6 +67,7 @@ const defaultElection: NewElection = {
         random_candidate_order: false,
         require_instruction_confirmation: true,
         invitation: undefined,
+        max_rankings: 0
         // election_term, and voter_access are intentially omitted
         // this let's me start them at undefined for the stepper
     }

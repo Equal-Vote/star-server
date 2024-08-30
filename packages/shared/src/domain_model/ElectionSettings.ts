@@ -28,4 +28,5 @@ export interface ElectionSettings {
     require_instruction_confirmation?: boolean; // Require voter to confirm that they've read the instructions in order to vote
     break_ties_randomly?: boolean; // whether true ties should be broken randomly
     term_type?: TermType; // whether poll or election should be used as the term
+    max_rankings?: number; // maximum rank limit for ranked choice voting
 }
