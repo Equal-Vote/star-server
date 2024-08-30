@@ -20,6 +20,7 @@ import { useSubstitutedTranslation } from '../util'
 import { useTranslation } from 'react-i18next'
 import { CreateElectionContext } from '../ElectionForm/CreateElectionDialog'
 import { Button } from '@mui/material'
+import { max } from 'date-fns'
 
 export default ({}) => {
     const authSession = useAuthSession();
@@ -96,7 +97,8 @@ export default ({}) => {
                 email: ''
             },
             setReceiptEmail: () => {},
-            onUpdate: onUpdate
+            onUpdate: onUpdate,
+            maxRankings: Number(process.env.REACT_APP_MAX_BALLOT_RANKS)
         }
     }
 
