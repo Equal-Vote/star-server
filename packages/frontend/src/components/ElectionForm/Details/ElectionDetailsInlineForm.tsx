@@ -23,34 +23,33 @@ export default function ElectionDetailsInlineForm() {
 
     return (
         <Paper elevation={3}>
+        <>
             {!open &&
                 <Grid container
                     sx={{
                         m: 0,
-                        p: 1,
+                        p: 4,
                     }}
                 >
-                    <Grid xs={12}>
-                        <Typography gutterBottom variant="h4" component="h4">
-                            Election Title: {election.title}
+                    <Grid item container xs={11}>
+                        <Grid xs={12}>
+                        <Typography variant="h3" component="h4">
+                            {election.title}
                         </Typography>
+                        </Grid>
+                        {election.description && <Grid xs={12}>
+                            <Typography gutterBottom variant="h6" component="h5">
+                                {election.description}
+                            </Typography>
+                        </Grid>}
+                        {(election.start_time || election.end_time) && 
+                            <Grid xs={12}>
+                            <Typography sx={{mt: 2}} component="p" variant='subtitle2'>
+                                {election.start_time ? formatDate(election.start_time, election.settings.time_zone) : 'none'} - {election.end_time ? formatDate(election.end_time, election.settings.time_zone) : 'none'}
+                            </Typography>
+                            </Grid>
+                        }
                     </Grid>
-                    <Grid xs={12}>
-                        <Typography gutterBottom component="p">
-                            Description: {election.description}
-                        </Typography>
-                    </Grid>
-                    <Grid xs={12}>
-                        <Typography gutterBottom component="p">
-                            Start Time: {election.start_time ? formatDate(election.start_time, election.settings.time_zone) : 'none'}
-                        </Typography>
-                    </Grid>
-                    <Grid xs={12}>
-                        <Typography gutterBottom component="p">
-                            End Time: {election.end_time ? formatDate(election.end_time, election.settings.time_zone) : 'none'}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={11}></Grid>
                     <Grid item xs={1} sx={{ m: 0, p: 1 }}>
 
                         <Box sx={{}}>
@@ -98,6 +97,7 @@ export default function ElectionDetailsInlineForm() {
 
                 </Box>
             </>}
+        </>
         </Paper>
 
     )

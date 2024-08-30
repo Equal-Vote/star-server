@@ -26,7 +26,7 @@ export default function SummaryPage({ election, onBack, onSubmit, submitText }) 
                 </Grid>
                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                     <Typography align='left' variant="body1">
-                        {`Election Title: ${election.title}`}
+                        {election.title}
                     </Typography>
                 </Grid>
                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
