@@ -33,11 +33,9 @@ export default function RankedBallotView({onlyGrid=false}) {
 
 
   const { t } = useSubstitutedTranslation();
-  
   let columnValues = ballotContext.candidates.slice(0, ballotContext.maxRankings).map((c, i) => i+1)
   let columns = columnValues.map(v => t('number.rank', {count: v, ordinal: true}))
-  debugger;
-  return (
+    return (
     <GenericBallotView
       key="rankedBallot"
       methodKey={

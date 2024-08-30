@@ -173,8 +173,8 @@ export default function ElectionSettings() {
                                         <Checkbox
                                             id="rank-limit"
                                             name="Rank Limit"
-                                            checked={editedElectionSettings.max_rankings != 0}
-                                            onChange={(e) => applySettingsUpdate(settings => { settings.max_rankings = e.target.checked ? 3 : 0 })}
+                                            checked={!!editedElectionSettings.max_rankings}
+                                            onChange={(e) => applySettingsUpdate(settings => { settings.max_rankings = e.target.checked ? 3 : undefined })}
                                         />
 
                                     }
@@ -186,11 +186,11 @@ export default function ElectionSettings() {
                                 <TextField
                                             id="rank-limit"
                                             type="number"
-                                            value={editedElectionSettings.max_rankings == 0 ? '' : editedElectionSettings.max_rankings}
+                                            value={editedElectionSettings.max_rankings ? editedElectionSettings.max_rankings : null}
                                             onChange={(e) => applySettingsUpdate(settings => { settings.max_rankings = e.target.value })}
                                             variant='standard'
                                             InputProps={{ inputProps: { min: 3, max: 8 } }}
-                                            sx={{ pl: 4, mt: -1, display: editedElectionSettings.max_rankings == 0 ? 'none' : 'block' }}
+                                            sx={{ pl: 4, mt: -1, display: editedElectionSettings.max_rankings ? 'block' : 'none' }}
                                         />
                             </FormGroup>
                         </FormControl>
