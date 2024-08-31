@@ -93,7 +93,6 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                             <Checkbox
                                 checked={enableStartEndTime}
                                 onChange={(e) => {
-                                    debugger;
                                     setEnableStartEndTime(e.target.checked)
                                     if (e.target.checked) {
                                         applyUpdate(election => { 

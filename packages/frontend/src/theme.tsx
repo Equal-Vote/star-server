@@ -62,6 +62,21 @@ declare module '@mui/material/styles' {
     gray2?: string;
     gray1?: string;
     grayAlpha?: string;
+
+    //transparent colors
+    purpleTransparent20?: string;
+    ltblueTransparent20?: string;
+    blueTransparent20?: string;
+    goldTransparent20?: string;
+    redTransparent20?: string;
+    orangeTransparent20?: string;
+    greenTransparent20?: string;
+    blackTransparent20?: string;
+    gray5Transparent20?: string;
+    gray4Transparent20?: string;
+    gray3Transparent20?: string;
+    gray2Transparent20?: string;
+    gray1Transparent20?: string;
   }
 
   interface SimplePaletteColorOptions {
@@ -80,6 +95,21 @@ declare module '@mui/material/styles' {
     gray2?: string;
     gray1?: string;
     grayAlpha?: string;
+    
+    //transparent colors
+    purpleTransparent20?: string;
+    ltblueTransparent20?: string;
+    blueTransparent20?: string;
+    goldTransparent20?: string;
+    redTransparent20?: string;
+    orangeTransparent20?: string;
+    greenTransparent20?: string;
+    blackTransparent20?: string;
+    gray5Transparent20?: string;
+    gray4Transparent20?: string;
+    gray3Transparent20?: string;
+    gray2Transparent20?: string;
+    gray1Transparent20?: string;
   }
 
 }
@@ -103,6 +133,20 @@ const brandPalette: PaletteOptions = {
     gray2: '#CCCCCC', /* Stars on STAR ballots */
     gray1: '#ECECEC', /* Highlight for alternating candidates on ballots */
     grayAlpha: '#7B7B7B7D', /* For graying out candidates for the "How does STAR Voting Work?" Graphic (has transparency)*/
+
+    purpleTransparent20: '#4D258633',  // 20% opacity
+    ltblueTransparent20: '#2AA2B333',
+    blueTransparent20: '#02627C33',
+    goldTransparent20: '#FFE15633',
+    redTransparent20: '#EE2C5333',
+    orangeTransparent20: '#FF990033',
+    greenTransparent20: '#60B33C33',
+    blackTransparent20: '#00000033',
+    gray5Transparent20: '#1F1F1F33',
+    gray4Transparent20: '#66666633',
+    gray3Transparent20: '#99999933',
+    gray2Transparent20: '#CCCCCC33',
+    gray1Transparent20: '#ECECEC33',
   }
 }
 
