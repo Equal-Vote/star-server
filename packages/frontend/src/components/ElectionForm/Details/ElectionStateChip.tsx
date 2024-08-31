@@ -23,9 +23,7 @@ export default function ElectionStateChip({ state }: { state: 'draft' | 'finaliz
             backgroundColor: `brand.${chipColor}Transparent20`,
             color: `brand.${chipColor}`,
             borderColor: `brand.${chipColor}`,
-            padding: 3,
-            borderRadius: 6,
-            marginX: 3,
+            marginX: 2,
 
         }
     }
@@ -35,7 +33,11 @@ export default function ElectionStateChip({ state }: { state: 'draft' | 'finaliz
 
   return (
     <Chip
-      label={<Typography variant="h4">{state}</Typography>}
+      label={
+        <Typography variant="h5" component="span">
+          {state}
+        </Typography>
+      }
       sx={chipStyle}
       variant="outlined"
     />
