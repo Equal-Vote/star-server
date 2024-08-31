@@ -33,12 +33,12 @@ export default function ElectionDetailsInlineForm() {
                     }}
                 >
                     <Grid item container xs={11}>
-                        <Grid xs={12} display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'space-between'}>
-                        <Typography variant="h3" component="h4">
-                            {election.title}
-                        </Typography>
-                            <ElectionStateChip state={election.state} />
-                        </Grid>
+                    <Grid item xs={12}>
+                                <Typography variant="h3" component="h4">
+                                    {election.title}
+                                    <ElectionStateChip state={election.state} />
+                                </Typography>
+                            </Grid>
                         {election.description && <Grid xs={12}>
                             <Typography gutterBottom variant="h6" component="h5">
                                 {election.description}
