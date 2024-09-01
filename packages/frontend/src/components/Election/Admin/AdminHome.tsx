@@ -94,97 +94,6 @@ const AdminHome = () => {
         />
     }
 
-    const ViewBallotSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-        return <Section
-            Description={
-                (<>
-                    <Typography variant="h5">
-                        View ballots
-                    </Typography>
-                    {!hasPermission(permissions, 'canViewBallots') &&
-                        <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                            You do not have the correct permissions for this action
-                        </Typography>
-                    }
-                </>)}
-            Button={(<>
-                <StyledButton
-                    type='button'
-                    variant='contained'
-                    disabled={!hasPermission(permissions, 'canViewBallots')}
-                    fullwidth
-                    component={Link} to={`/${election.election_id}/admin/ballots`}
-                >
-                    View ballots
-                </StyledButton>
-
-            </>)}
-        />
-    }
-
-    const EditElectionSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-        return <Section
-            Description={
-                (<>
-                    <Typography variant="h5">
-                        Edit your election
-                    </Typography>
-                    {!hasPermission(permissions, 'canEditElection') &&
-                        <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                            You do not have the correct permissions for this action
-                        </Typography>
-                    }
-                </>)}
-            Button={(<>
-                <StyledButton
-                    type='button'
-                    variant='contained'
-                    disabled={!hasPermission(permissions, 'canEditElection')}
-                    fullwidth
-                    component={Link} to={`/${election.election_id}/edit`}
-                >
-                    <Typography align='center' variant="body2">
-                        Edit Election
-                    </Typography>
-                </StyledButton>
-
-            </>)}
-        />
-    }
-
-    const VotersSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-        return <Section
-            Description={
-                (<>
-                    <Typography variant="h5">
-                        {election.state === 'draft' ? 'Add voters to your election' : 'View voters'}
-                    </Typography>
-                    <Typography variant="body1" sx={{ pl: 2 }}>
-                        {election.state === 'draft' ? 'Add voters who are approved to vote in your election' : 'View the status of your voters'}
-                    </Typography>
-                    {!hasPermission(permissions, 'canViewElectionRoll') &&
-                        <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                            You do not have the correct permissions for this action
-                        </Typography>
-                    }
-                </>)}
-            Button={(<>
-                <StyledButton
-                    type='button'
-                    variant='contained'
-                    disabled={!hasPermission(permissions, 'canViewElectionRoll')}
-                    fullwidth
-                    component={Link} to={`/${election.election_id}/admin/voters`}
-                >
-                    <Typography align='center' variant="body2">
-                        {election.state === 'draft' ? 'Add voters' : 'View voters'}
-                    </Typography>
-                </StyledButton>
-
-            </>)}
-        />
-    }
-
     const PreviewBallotSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
         return <Section
             Description={
@@ -529,18 +438,12 @@ const AdminHome = () => {
                     <Divider style={{ width: '100%' }} />
                 </>
                 }
-                {(election.settings.voter_access === 'closed') && <>
-                    <VotersSection election={election} permissions={permissions} />
-                    <Divider style={{ width: '100%' }} />
-                </>}
                 {(election.state !== 'draft' && election.state !== 'finalized') && <>
                     <ShareSection election={election} permissions={permissions} />
                     <Divider style={{ width: '100%' }} />
                     <ResultsSection election={election} permissions={permissions} preliminary={false} />
                     <Divider style={{ width: '100%' }} />
                     <TogglePublicResultsSection election={election} permissions={permissions} togglePublicResults={togglePublicResults} />
-                    <Divider style={{ width: '100%' }} />
-                    <ViewBallotSection election={election} permissions={permissions} />
                     <Divider style={{ width: '100%' }} />
                 </>}
                 <EditRolesSection election={election} permissions={permissions} />
