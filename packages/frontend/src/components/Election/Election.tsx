@@ -37,7 +37,6 @@ const Election = () => {
             <Route path='/vote' element={<VotePage />} />
             <Route path='/thanks' element={<Thanks />} />
             <Route path='/results' element={<ViewElectionResults />} />
-            <Route path='/edit' element={<EditElection />} />
             <Route path='/admin/*' element={<Admin />} />
             <Route path='/ballot/:ballot_id' element={<ViewBallot ballot={null} onClose={null} />} />
             <Route path='/id/:voter_id' element={<ElectionHome />} />
