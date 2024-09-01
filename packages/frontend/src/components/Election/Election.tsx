@@ -1,7 +1,6 @@
 import { useParams } from "react-router";
 import React, { useEffect } from 'react'
 import ElectionHome from "./ElectionHome";
-import EditElection from '../ElectionForm/EditElection'
 import VotePage from './Voting/VotePage'
 import Admin from './Admin/Admin'
 import ViewElectionResults from './Results/ViewElectionResults'

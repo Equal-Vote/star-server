@@ -42,7 +42,7 @@ export default function ElectionSettings() {
     }
 
     return (
-        <Paper elevation={3}>
+        <Paper elevation={3} sx={{width: '100%', px: 4, py: 1}}>
             <Box
                 sx={{ display: 'flex', bgcolor: 'background.paper', borderRadius: 10 }}
                 alignItems={'center'}

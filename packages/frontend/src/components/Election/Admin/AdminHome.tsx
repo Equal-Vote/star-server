@@ -22,6 +22,7 @@ type SectionProps = {
     text: {[key: string]: string}
     button: any
     permission?: string
+    includeDivider?: boolean
 }
 
 const AdminHome = () => {
@@ -88,8 +89,8 @@ const AdminHome = () => {
         navigate(`/${newElection.election.election_id}/admin`)
     }
 
-    const Section = ({ text, button, permission }: SectionProps) => 
-        <Grid container sx={{ width: 800 }}>
+    const Section = ({ text, button, permission, includeDivider=true }: SectionProps) => 
+        <Grid container sx={{ maxWidth: 800}}>
             <Grid xs={12} md={8} sx={{ p: 1 }}>
                 <Box sx={{ minHeight: { xs: 0, md: 60 } }}>
                     <Typography variant="h5">
@@ -110,7 +111,7 @@ const AdminHome = () => {
             <Grid xs={12} md={4} sx={{ p: 1, pl: 2, display: 'flex', alignItems: 'center' }}>
                 {button}
             </Grid>
-            <Divider style={{width: '100%'}}/>
+            {includeDivider && <Divider style={{width: '100%'}}/>}
         </Grid>
 
     const EditRolesSection = () => <Section
@@ -123,9 +124,7 @@ const AdminHome = () => {
                 fullwidth
                 component={Link} to={`/${election.election_id}/admin/roles`}
             >
-                <Typography align='center' variant="body2">
-                    {t('admin_home.roles.button')}
-                </Typography>
+                {t('admin_home.roles.button')}
             </StyledButton>
         </>)}
     />
@@ -140,9 +139,7 @@ const AdminHome = () => {
                 fullwidth
                 component={Link} to={`/${election.election_id}`}
             >
-                <Typography align='center' variant="body2">
-                    {t('admin_home.test_ballot.button')}
-                </Typography>
+                {t('admin_home.test_ballot.button')}
             </StyledButton>
         </>)}
     />
@@ -157,9 +154,7 @@ const AdminHome = () => {
                 fullwidth
                 onClick={() => duplicateElection()}
             >
-                <Typography align='center' variant="body2">
-                    {t('admin_home.duplicate.button')}
-                </Typography>
+                {t('admin_home.duplicate.button')}
             </StyledButton>
         }
     />
@@ -168,15 +163,7 @@ const AdminHome = () => {
         text={t('admin_home.view_results')}
         permission='canViewPreliminaryResults'
         button={(<>
-            <StyledButton
-                type='button'
-                variant='contained'
-                disabled={!(hasPermission('canViewPreliminaryResults') || election.settings.public_results === true)}
-                fullwidth
-                component={Link} to={`/${election.election_id}/results`}
-            >
-                {t('admin_home.view_results.button')}
-            </StyledButton>
+            
         </>)}
     />
 
@@ -206,6 +193,7 @@ const AdminHome = () => {
     const ArchiveElectionSection = () => <Section
         text={t('admin_home.archive')}
         permission='canEditElectionState'
+        includeDivider={false}
         button={(<>
             <StyledButton
                 type='button'
@@ -219,91 +207,37 @@ const AdminHome = () => {
         </>)}
     />
 
-    const ShareSection = () => <Section
-        text={t('admin_home.share')}
-        button={<ShareButton url={`${window.location.origin}/Election/${election.election_id}`} />}
-    />
-
     const HeaderSection = () => {
-        return <>
-            {election.state === 'finalized' &&
-                <>
-                    <Grid xs={12}>
-                        <Typography align='center' gutterBottom variant="h6" component="h6">
-                            {t('admin_home.header_finalized')}
-                        </Typography>
-                    </Grid>
-                    {election.settings.invitation &&
-                        <Grid xs={12}>
-                            <Typography align='center' gutterBottom variant="h6" component="h6">
-                                {t('admin_home.header_invitations_sent')}
-                            </Typography>
-                        </Grid>
-                    }
-                    {election.start_time &&
-                        <Grid xs={12}>
-                            <Typography align='center' gutterBottom variant="h6" component="h6">
-                                {t('admin_home.header_start_time', {datetime: election.start_time})}
-                            </Typography>
-                        </Grid>}
-                </>
+        return <Box width='100%'>
+            {(election.state === 'open' || election.state == 'finalized') && election.settings.invitation &&
+                <Typography align='center' gutterBottom variant="h6" component="h6">
+                    {t('admin_home.header_invitations_sent')}
+                </Typography>
             }
-            {election.state === 'open' &&
-                <>
-                    <Grid xs={12}>
-                        <Typography align='center' gutterBottom variant="h6" component="h6">
-                            {t('admin_home.header_open')}
-                        </Typography>
-                    </Grid>
-                    {election.settings.invitation &&
-                        <Grid xs={12}>
-                            <Typography align='center' gutterBottom variant="h6" component="h6">
-                                {t('admin_home.header_invitations_sent')}
-                            </Typography>
-                        </Grid>
-                    }
-                    {election.end_time &&
-                        <Grid xs={12}>
-                            <Typography align='center' gutterBottom variant="h6" component="h6">
-                                {t('admin_home.header_end_time', {datetime: election.end_time})}
-                            </Typography>
-                        </Grid>}
-                </>
+            {election.state === 'finalized' && election.start_time &&
+                <Typography align='center' gutterBottom variant="h6" component="h6">
+                    {t('admin_home.header_start_time', {datetime: election.start_time})}
+                </Typography>
             }
-            {election.state === 'closed' &&
-                <>
-                    <Grid xs={12}>
-                        <Typography align='center' gutterBottom variant="h6" component="h6">
-                            {t('admin_home.header_closed')}
-                        </Typography>
-                    </Grid>
-                    {election.end_time &&
-                        <Grid xs={12}>
-                            <Typography align='center' gutterBottom variant="h6" component="h6">
-                                {t('admin_home.header_ended_time', {datetime: election.end_time})}
-                            </Typography>
-                        </Grid>}
-                </>
+            {election.state === 'open' && election.end_time &&
+                <Typography align='center' gutterBottom variant="h6" component="h6">
+                    {t('admin_home.header_end_time', {datetime: election.end_time})}
+                </Typography>
             }
-            {election.state === 'archived' &&
-                <>
-                    <Grid xs={12}>
-                        <Typography align='center' gutterBottom variant="h6" component="h6">
-                            {t('admin_home.header_archived')}
-                        </Typography>
-                    </Grid>
-                    {election.end_time &&
-                        <Grid xs={12}>
-                            <Typography align='center' gutterBottom variant="h6" component="h6">
-                                {t('admin_home.header_ended_time', {datetime: election.end_time})}
-                            </Typography>
-                        </Grid>}
-                </>
+            {election.state === 'closed' && election.end_time && 
+                <Typography align='center' gutterBottom variant="h6" component="h6">
+                    {t('admin_home.header_ended_time', {datetime: election.end_time})}
+                </Typography>
             }
-        </>
+            {election.state === 'archived' && election.end_time &&
+                <Typography align='center' gutterBottom variant="h6" component="h6">
+                    {t('admin_home.header_ended_time', {datetime: election.end_time})}
+                </Typography>
+            }
+        </Box>
     }
 
-    const FinalizeSection = () => <Box sx={{width: 800}}>
+    const FinalizeSection = () => <Box sx={{maxWidth: 800}}>
         <Grid xs={12} sx={{ p: 1, pt: 3, pb: 0 }}>
             <Typography align='center' variant="body1" sx={{ pl: 2 }}>
                 {t('admin_home.finalize_description')}
@@ -342,37 +276,40 @@ const AdminHome = () => {
         justifyContent="center"
         alignItems="center"
         flexDirection='column'
-        sx={{ width: '100%' }}
+        gap={6}
+        sx={{ width: '100%', maxWidth: 800, margin: 'auto' }}
     >
-        <Grid container sx={{ width: 800 }}>
-            <Grid xs={12} sx={{ p: 1 }}>
-                <HeaderSection />
-            </Grid>
-            <Grid xs={12} sx={{ p: 1 }}>
-                <ElectionDetailsInlineForm />
-            </Grid>
-            {(election.settings.voter_access === 'open') && 
-                <Grid xs={12} sx={{ p: 1 }}>
-                    <ElectionAuthForm />
-                </Grid>
-            }
-            <Grid xs={12} sx={{ p: 1 }}>
-                <Races />
-            </Grid>
-            <Grid xs={12} sx={{ p: 1 }}>
-                <ElectionSettings />
-            </Grid>
-        </Grid>
+        <HeaderSection />
+        <ElectionDetailsInlineForm />
+        {(election.state !== 'draft' && election.state !== 'finalized') && 
+            <Box display='flex' sx={{flexDirection:{xs: 'column', sm: 'row'}}} alignItems='center' gap={2} justifyContent='space-evenly' width='100%'>
+                <Box sx={{width: '100%', maxWidth: 300}}>
+                    <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} />
+                </Box>
+                <Box sx={{width: '100%', maxWidth: 300}}>
+                    <StyledButton
+                        type='button'
+                        variant='contained'
+                        disabled={!(hasPermission('canViewPreliminaryResults') || election.settings.public_results === true)}
+                        fullwidth
+                        component={Link} to={`/${election.election_id}/results`}
+                    >
+                        {t('admin_home.view_results.button')}
+                    </StyledButton>
+                </Box>
+            </Box>
+        }
+        {(election.settings.voter_access === 'open') && <ElectionAuthForm />}
+        <ElectionSettings />
+        <Races />
+        <Box sx={{width: '100%'}}>
+            {(election.state === 'draft') && <TestBallotSection /> }
+            {(election.state !== 'draft' && election.state !== 'finalized') && <TogglePublicResultsSection/>}
+            {flags.isSet('ELECTION_ROLES') && <EditRolesSection />}
+            <DuplicateElectionSection/>
+            <ArchiveElectionSection />
+        </Box>
 
-        {(election.state === 'draft') && <TestBallotSection /> }
-        {(election.state !== 'draft' && election.state !== 'finalized') && <>
-            <ShareSection />
-            <ResultsSection />
-            <TogglePublicResultsSection/>
-        </>}
-        {flags.isSet('ELECTION_ROLES') && <EditRolesSection />}
-        <DuplicateElectionSection/>
-        <ArchiveElectionSection/>
         {election.state === 'draft' && <FinalizeSection /> }
     </Box>
 }

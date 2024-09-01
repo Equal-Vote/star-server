@@ -33,7 +33,7 @@ export default function Race({ race, race_index }) {
     }
 
     return (
-        <Paper elevation={4} sx={{ width: '100%' }}>
+        <Paper elevation={4} sx={{ width: '100%'}}>
             <Box
                 sx={{ display: 'flex', bgcolor: 'background.paper', borderRadius: 10 }}
                 alignItems={'center'}

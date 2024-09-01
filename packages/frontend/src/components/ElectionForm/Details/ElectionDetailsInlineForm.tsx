@@ -36,7 +36,7 @@ export default function ElectionDetailsInlineForm() {
     }, [election.start_time, election.end_time, election.settings.time_zone])
 
     return (
-        <Paper elevation={3}>
+        <Paper elevation={3} sx={{width:'100%'}}>
         <>
             {!open &&
                 <Grid container

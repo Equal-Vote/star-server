@@ -531,10 +531,6 @@ tips:
 
 # Admin Home
 admin_home:
-  header_finalized: Your {{lowercase_election}} is finalized
-  header_open: Your {{lowercase_election}} is open
-  header_closed: Your {{lowercase_election}} is closed
-  header_archived: Your {{lowercase_election}} has been archived
   header_invitations_sent: Invitations have been sent to your voters
   header_start_time: Your {{lowercase_election}} will open on {{datetime, datetime}}
   header_end_time: Your {{lowercase_election}} will end on {{datetime, datetime}}

@@ -19,7 +19,7 @@ export default function ElectionAuthForm() {
     const {t} = useSubstitutedTranslation(election.settings.term_type);
 
     return (
-        <Paper elevation={3} sx={{p: 4}}>
+        <Paper elevation={3} sx={{p: 4, width: '100%'}}>
             <Grid container
                 sx={{
                     m: 0,
