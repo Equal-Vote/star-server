@@ -546,6 +546,47 @@ admin_home:
 
   permissions_error: You do not have the correct permissions for this action
 
+  roles:
+    description: Add people to help run your {{lowercase_election}}
+    subtext: Add {{lowercase_election}} administrators, auditors, credentialers
+    button: Edit {{election}} Roles
+  
+  test_ballot:
+    description: Cast test ballot
+    button: Cast Ballot
+
+  duplicate:
+    description: Duplicate
+    subtext: Create copy of this {{lowercase_election}}
+    button: Duplicate
+
+  view_results:
+    description: View Results
+    button: View Results
+
+  public_results: 
+    make_public: Make results public
+    make_private: Make results private
+
+  archive:
+    description: Archive
+    subtext: Archives {{lowercase_election}}, preventing future changes and hiding it from the {{lowercase_elections}} page
+    button: Archive
+
+  archive_confirm:
+    title: Confirm Archive {{election}}
+    message: Are you sure you wish to archive this {{lowercase_election}}? This action cannot be undone.
+
+  share:
+    description: Share
+    # Button is defined in the top level share section
+
+  finalize_invitations_will_send: Invitations will be sent to your voters
+  finalize_description: When finished setting up your {{lowercase_election}}, finalize it. Once final, it can't be edited. 
+  finalize_voting_begins_later: Voting begins after your specified start time.
+  finalize_voting_begins_now: Voting begins immediately.
+  finalize_button: Finalize {{election}}
+
   voter_authentication:
     form_label: Voter Authentication
     help_text: Limit to one {{vote}} per...
@@ -558,10 +599,6 @@ admin_home:
     title: Confirm Finalize Election
     message: Are you sure you want to finalize your election? Once finalized you won't be able to edit it.
   
-  archive_confirm:
-    title: Confirm Archive Election
-    message: Are you sure you wish to archive this election? This action cannot be undone.
-
   duplicate_confirm:
     title: Confirm Duplicate Election
     message: Are you sure you wish to duplicate this election?
@@ -580,6 +617,7 @@ admin_home:
 keyword:
   election: 
     election: Election
+    elections: Elections
     candidate: Candidate
     candidates: Candidates
     race: Race
@@ -587,6 +625,7 @@ keyword:
     vote: vote
   poll:
     election: Poll
+    elections: Polls
     candidate: Option
     candidates: Options
     race: Question
