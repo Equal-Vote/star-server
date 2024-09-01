@@ -31,7 +31,7 @@ export default function ElectionDetailsInlineForm() {
         } else if (election.end_time) {
             return t('admin_home.time_only_end', {datetime: election.end_time})
         } else {
-            return ''
+            return t('admin_home.time_none')
         }
     }, [election.start_time, election.end_time, election.settings.time_zone])
 
@@ -52,16 +52,14 @@ export default function ElectionDetailsInlineForm() {
                                     <ElectionStateChip state={election.state} />
                                 </Typography>
                             </Grid>
-                        {election.description && <Grid xs={12}>
-                            <Typography gutterBottom variant="h6" component="h5">
-                                {election.description}
+                        <Grid xs={12}>
+                            <Typography gutterBottom variant="h6" component="h5" sx={{opacity: election.description == '' ? .5 : 1}}>
+                                {election.description == '' ? t('admin_home.description_unset') : election.description}
                             </Typography>
-                        </Grid>}
-                        {(election.start_time || election.end_time) && 
-                            <Grid xs={12}>
-                            <Typography sx={{mt: 2}} component="p" variant='subtitle2'>{timeRange}</Typography>
-                            </Grid>
-                        }
+                        </Grid>
+                        <Grid xs={12}>
+                            <Typography sx={{mt: 2, opacity: (election.start_time || election.end_time)? 1 : .5}} component="p" variant='subtitle2'>{timeRange}</Typography>
+                        </Grid>
                     </Grid>
                     <Grid item xs={1} sx={{ m: 0, p: 1 }}>
 

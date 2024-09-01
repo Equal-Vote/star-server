@@ -543,6 +543,9 @@ admin_home:
   time_start_to_end: '{{datetime, datetime}} - {{datetime2, datetime}}'
   time_only_start: Starts on {{datetime, datetime}}
   time_only_end: Ends on {{datetime, datetime}}
+  time_none: (start and end times disabled)
+
+  description_unset: (no description)
 
   permissions_error: You do not have the correct permissions for this action
 

@@ -243,7 +243,7 @@ const AdminHome = () => {
                     {election.start_time &&
                         <Grid xs={12}>
                             <Typography align='center' gutterBottom variant="h6" component="h6">
-                                {t('admin_home.header_start_time', {datetime: election.end_time})}
+                                {t('admin_home.header_start_time', {datetime: election.start_time})}
                             </Typography>
                         </Grid>}
                 </>
