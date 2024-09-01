@@ -42,295 +42,311 @@ const Section = ({ Description, Button }: SectionProps) => {
     )
 }
 
-const EditRolesSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-    const flags = useFeatureFlags();
-    if (!flags.isSet('ELECTION_ROLES')) return <></>;
-    return <Section
-        Description={
-            (<>
-                <Typography variant="h5">
-                    Add people to help run your election
-                </Typography>
-                <Typography variant="body1" sx={{ pl: 2 }}>
-                    Add election administrators, auditors, credentialers
-                </Typography>
-                {!hasPermission(permissions, 'canEditElectionRoles') &&
-                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                        You do not have the correct permissions for this action
+const AdminHome = () => {
+    const authSession = useAuthSession()
+    const { election, refreshElection: fetchElection, permissions } = useElection()
+    const {t} = useSubstitutedTranslation(election.settings.term_type);
+    const { makeRequest } = useSetPublicResults(election.election_id)
+    const togglePublicResults = async () => {
+        const public_results = !election.settings.public_results
+        await makeRequest({ public_results: public_results })
+        await fetchElection()
+    }
+    const { makeRequest: finalize } = useFinalizeElection(election.election_id)
+    const { makeRequest: archive } = useArchiveEleciton(election.election_id)
+
+    const navigate = useNavigate()
+    const { error, isPending, makeRequest: postElection } = usePostElection()
+    
+    const confirm = useConfirm()
+
+    const EditRolesSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
+        const flags = useFeatureFlags();
+        if (!flags.isSet('ELECTION_ROLES')) return <></>;
+        return <Section
+            Description={
+                (<>
+                    <Typography variant="h5">
+                        Add people to help run your election
                     </Typography>
-                }
+                    <Typography variant="body1" sx={{ pl: 2 }}>
+                        Add election administrators, auditors, credentialers
+                    </Typography>
+                    {!hasPermission(permissions, 'canEditElectionRoles') &&
+                        <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                            You do not have the correct permissions for this action
+                        </Typography>
+                    }
+                </>)}
+            Button={(<>
+                <StyledButton
+                    variant='contained'
+                    disabled={!hasPermission(permissions, 'canEditElectionRoles')}
+                    fullwidth
+                    component={Link} to={`/${election.election_id}/admin/roles`}
+                >
+                    <Typography align='center' variant="body2">
+                        Edit Election Roles
+                    </Typography>
+                </StyledButton>
+
             </>)}
-        Button={(<>
-            <StyledButton
-                variant='contained'
-                disabled={!hasPermission(permissions, 'canEditElectionRoles')}
-                fullwidth
-                component={Link} to={`/${election.election_id}/admin/roles`}
-            >
-                <Typography align='center' variant="body2">
-                    Edit Election Roles
-                </Typography>
-            </StyledButton>
+        />
+    }
 
-        </>)}
-    />
-}
-
-const ViewBallotSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-    return <Section
-        Description={
-            (<>
-                <Typography variant="h5">
+    const ViewBallotSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
+        return <Section
+            Description={
+                (<>
+                    <Typography variant="h5">
+                        View ballots
+                    </Typography>
+                    {!hasPermission(permissions, 'canViewBallots') &&
+                        <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                            You do not have the correct permissions for this action
+                        </Typography>
+                    }
+                </>)}
+            Button={(<>
+                <StyledButton
+                    type='button'
+                    variant='contained'
+                    disabled={!hasPermission(permissions, 'canViewBallots')}
+                    fullwidth
+                    component={Link} to={`/${election.election_id}/admin/ballots`}
+                >
                     View ballots
-                </Typography>
-                {!hasPermission(permissions, 'canViewBallots') &&
-                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                        You do not have the correct permissions for this action
+                </StyledButton>
+
+            </>)}
+        />
+    }
+
+    const EditElectionSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
+        return <Section
+            Description={
+                (<>
+                    <Typography variant="h5">
+                        Edit your election
                     </Typography>
-                }
-            </>)}
-        Button={(<>
-            <StyledButton
-                type='button'
-                variant='contained'
-                disabled={!hasPermission(permissions, 'canViewBallots')}
-                fullwidth
-                component={Link} to={`/${election.election_id}/admin/ballots`}
-            >
-                View ballots
-            </StyledButton>
-
-        </>)}
-    />
-}
-
-const EditElectionSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-    return <Section
-        Description={
-            (<>
-                <Typography variant="h5">
-                    Edit your election
-                </Typography>
-                {!hasPermission(permissions, 'canEditElection') &&
-                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                        You do not have the correct permissions for this action
+                    {!hasPermission(permissions, 'canEditElection') &&
+                        <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                            You do not have the correct permissions for this action
+                        </Typography>
+                    }
+                </>)}
+            Button={(<>
+                <StyledButton
+                    type='button'
+                    variant='contained'
+                    disabled={!hasPermission(permissions, 'canEditElection')}
+                    fullwidth
+                    component={Link} to={`/${election.election_id}/edit`}
+                >
+                    <Typography align='center' variant="body2">
+                        Edit Election
                     </Typography>
-                }
+                </StyledButton>
+
             </>)}
-        Button={(<>
-            <StyledButton
-                type='button'
-                variant='contained'
-                disabled={!hasPermission(permissions, 'canEditElection')}
-                fullwidth
-                component={Link} to={`/${election.election_id}/edit`}
-            >
-                <Typography align='center' variant="body2">
-                    Edit Election
-                </Typography>
-            </StyledButton>
+        />
+    }
 
-        </>)}
-    />
-}
-
-const VotersSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-    return <Section
-        Description={
-            (<>
-                <Typography variant="h5">
-                    {election.state === 'draft' ? 'Add voters to your election' : 'View voters'}
-                </Typography>
-                <Typography variant="body1" sx={{ pl: 2 }}>
-                    {election.state === 'draft' ? 'Add voters who are approved to vote in your election' : 'View the status of your voters'}
-                </Typography>
-                {!hasPermission(permissions, 'canViewElectionRoll') &&
-                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                        You do not have the correct permissions for this action
+    const VotersSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
+        return <Section
+            Description={
+                (<>
+                    <Typography variant="h5">
+                        {election.state === 'draft' ? 'Add voters to your election' : 'View voters'}
                     </Typography>
-                }
-            </>)}
-        Button={(<>
-            <StyledButton
-                type='button'
-                variant='contained'
-                disabled={!hasPermission(permissions, 'canViewElectionRoll')}
-                fullwidth
-                component={Link} to={`/${election.election_id}/admin/voters`}
-            >
-                <Typography align='center' variant="body2">
-                    {election.state === 'draft' ? 'Add voters' : 'View voters'}
-                </Typography>
-            </StyledButton>
-
-        </>)}
-    />
-}
-
-const PreviewBallotSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-    return <Section
-        Description={
-            (<>
-                <Typography variant="h5">
-                    Cast test ballot
-                </Typography>
-                {!hasPermission(permissions, 'canViewElectionRoll') &&
-                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                        You do not have the correct permissions for this action
+                    <Typography variant="body1" sx={{ pl: 2 }}>
+                        {election.state === 'draft' ? 'Add voters who are approved to vote in your election' : 'View the status of your voters'}
                     </Typography>
-                }
-            </>)}
-        Button={(<>
-            <StyledButton
-                type='button'
-                variant='contained'
-                fullwidth
-                component={Link} to={`/${election.election_id}`}
-            >
-                <Typography align='center' variant="body2">
-                    Cast Ballot
-                </Typography>
-            </StyledButton>
-
-        </>)}
-    />
-}
-
-const DuplicateElectionSection = ({ election, permissions, duplicateElection }: { election: Election, permissions: string[], duplicateElection: Function }) => {
-    return <Section
-        Description={
-            (<>
-                <Typography variant="h5">
-                    Duplicate
-                </Typography>
-                <Typography variant="body1" sx={{ pl: 2 }}>
-                    Create copy of this election
-                </Typography>
-            </>)}
-        Button={(<>
-            <StyledButton
-                type='button'
-                variant='contained'
-                disabled={!hasPermission(permissions, 'canEditElectionState')}
-                fullwidth
-                onClick={() => duplicateElection()}
-            >
-                <Typography align='center' variant="body2">
-                    Duplicate
-                </Typography>
-            </StyledButton>
-        </>)}
-    />
-}
-
-
-const ResultsSection = ({ election, permissions, preliminary }: { election: Election, permissions: string[], preliminary: boolean }) => {
-    return <Section
-        Description={
-            (<>
-                <Typography variant="h5">
-                    {preliminary ? 'View preliminary results' : 'View results'}
-                </Typography>
-                {!(hasPermission(permissions, 'canViewPreliminaryResults') || election.settings.public_results === true) &&
-                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                        You do not have the correct permissions for this action
+                    {!hasPermission(permissions, 'canViewElectionRoll') &&
+                        <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                            You do not have the correct permissions for this action
+                        </Typography>
+                    }
+                </>)}
+            Button={(<>
+                <StyledButton
+                    type='button'
+                    variant='contained'
+                    disabled={!hasPermission(permissions, 'canViewElectionRoll')}
+                    fullwidth
+                    component={Link} to={`/${election.election_id}/admin/voters`}
+                >
+                    <Typography align='center' variant="body2">
+                        {election.state === 'draft' ? 'Add voters' : 'View voters'}
                     </Typography>
-                }
+                </StyledButton>
+
             </>)}
-        Button={(<>
-            <StyledButton
-                type='button'
-                variant='contained'
-                disabled={!(hasPermission(permissions, 'canViewPreliminaryResults') || election.settings.public_results === true)}
-                fullwidth
-                component={Link} to={`/${election.election_id}/results`}
-            >
-                View results
-            </StyledButton>
+        />
+    }
 
-        </>)}
-    />
-}
+    const PreviewBallotSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
+        return <Section
+            Description={
+                (<>
+                    <Typography variant="h5">
+                        Cast test ballot
+                    </Typography>
+                    {!hasPermission(permissions, 'canViewElectionRoll') &&
+                        <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                            You do not have the correct permissions for this action
+                        </Typography>
+                    }
+                </>)}
+            Button={(<>
+                <StyledButton
+                    type='button'
+                    variant='contained'
+                    fullwidth
+                    component={Link} to={`/${election.election_id}`}
+                >
+                    <Typography align='center' variant="body2">
+                        Cast Ballot
+                    </Typography>
+                </StyledButton>
 
-const TogglePublicResultsSection = ({ election, permissions, togglePublicResults }: { election: Election, permissions: string[], togglePublicResults: Function }) => {
-    return <Section
-        Description={
-            (<>
-                <Typography variant="h5">
+            </>)}
+        />
+    }
+
+    const DuplicateElectionSection = ({ election, permissions, duplicateElection }: { election: Election, permissions: string[], duplicateElection: Function }) => {
+        return <Section
+            Description={
+                (<>
+                    <Typography variant="h5">
+                        Duplicate
+                    </Typography>
+                    <Typography variant="body1" sx={{ pl: 2 }}>
+                        Create copy of this election
+                    </Typography>
+                </>)}
+            Button={(<>
+                <StyledButton
+                    type='button'
+                    variant='contained'
+                    disabled={!hasPermission(permissions, 'canEditElectionState')}
+                    fullwidth
+                    onClick={() => duplicateElection()}
+                >
+                    <Typography align='center' variant="body2">
+                        Duplicate
+                    </Typography>
+                </StyledButton>
+            </>)}
+        />
+    }
+
+
+    const ResultsSection = ({ election, permissions, preliminary }: { election: Election, permissions: string[], preliminary: boolean }) => {
+        return <Section
+            Description={
+                (<>
+                    <Typography variant="h5">
+                        {preliminary ? 'View preliminary results' : 'View results'}
+                    </Typography>
+                    {!(hasPermission(permissions, 'canViewPreliminaryResults') || election.settings.public_results === true) &&
+                        <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                            You do not have the correct permissions for this action
+                        </Typography>
+                    }
+                </>)}
+            Button={(<>
+                <StyledButton
+                    type='button'
+                    variant='contained'
+                    disabled={!(hasPermission(permissions, 'canViewPreliminaryResults') || election.settings.public_results === true)}
+                    fullwidth
+                    component={Link} to={`/${election.election_id}/results`}
+                >
+                    View results
+                </StyledButton>
+
+            </>)}
+        />
+    }
+
+    const TogglePublicResultsSection = ({ election, permissions, togglePublicResults }: { election: Election, permissions: string[], togglePublicResults: Function }) => {
+        return <Section
+            Description={
+                (<>
+                    <Typography variant="h5">
+                        {election.settings.public_results === true ? 'Make results private' : 'Make results public'}
+                    </Typography>
+                    {!hasPermission(permissions, 'canEditElectionState') &&
+                        <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                            You do not have the correct permissions for this action
+                        </Typography>
+                    }
+                </>)}
+            Button={(<>
+                <StyledButton
+                    type='button'
+                    variant='contained'
+                    disabled={!hasPermission(permissions, 'canEditElectionState')}
+                    fullwidth
+                    onClick={() => togglePublicResults()}
+                >
                     {election.settings.public_results === true ? 'Make results private' : 'Make results public'}
-                </Typography>
-                {!hasPermission(permissions, 'canEditElectionState') &&
-                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                        You do not have the correct permissions for this action
-                    </Typography>
-                }
+                </StyledButton>
+
             </>)}
-        Button={(<>
-            <StyledButton
-                type='button'
-                variant='contained'
-                disabled={!hasPermission(permissions, 'canEditElectionState')}
-                fullwidth
-                onClick={() => togglePublicResults()}
-            >
-                {election.settings.public_results === true ? 'Make results private' : 'Make results public'}
-            </StyledButton>
+        />
+    }
 
-        </>)}
-    />
-}
-
-const ArchiveElectionSection = ({ election, permissions, archiveElection }: { election: Election, permissions: string[], archiveElection: Function }) => {
-    return <Section
-        Description={
-            (<>
-                <Typography variant="h5">
+    const ArchiveElectionSection = ({ election, permissions, archiveElection }: { election: Election, permissions: string[], archiveElection: Function }) => {
+        return <Section
+            Description={
+                (<>
+                    <Typography variant="h5">
+                        Archive
+                    </Typography>
+                    <Typography variant="body1" sx={{ pl: 2 }}>
+                        Achives election, preventing future changes and hiding it from the elections page
+                    </Typography>
+                    {!hasPermission(permissions, 'canEditElectionState') &&
+                        <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                            You do not have the correct permissions for this action
+                        </Typography>
+                    }
+                </>)}
+            Button={(<>
+                <StyledButton
+                    type='button'
+                    variant='contained'
+                    disabled={!hasPermission(permissions, 'canEditElectionState')}
+                    fullwidth
+                    onClick={() => archiveElection()}
+                >
                     Archive
-                </Typography>
-                <Typography variant="body1" sx={{ pl: 2 }}>
-                    Achives election, preventing future changes and hiding it from the elections page
-                </Typography>
-                {!hasPermission(permissions, 'canEditElectionState') &&
-                    <Typography variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                        You do not have the correct permissions for this action
+                </StyledButton>
+
+            </>)}
+        />
+    }
+
+    const ShareSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
+        return <Section
+            Description={
+                (<>
+                    <Typography variant="h5">
+                        Share your election
                     </Typography>
-                }
+                </>)}
+            Button={(<>
+                <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} />
+
             </>)}
-        Button={(<>
-            <StyledButton
-                type='button'
-                variant='contained'
-                disabled={!hasPermission(permissions, 'canEditElectionState')}
-                fullwidth
-                onClick={() => archiveElection()}
-            >
-                Archive
-            </StyledButton>
+        />
+    }
 
-        </>)}
-    />
-}
-
-
-const ShareSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-    return <Section
-        Description={
-            (<>
-                <Typography variant="h5">
-                    Share your election
-                </Typography>
-            </>)}
-        Button={(<>
-            <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} />
-
-        </>)}
-    />
-}
-
-const HeaderSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-    const {t} = useSubstitutedTranslation(election.settings.term_type, {time_zone: election.settings.time_zone});
-    return (
-        <>
+    const HeaderSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
+        const {t} = useSubstitutedTranslation(election.settings.term_type, {time_zone: election.settings.time_zone});
+        return <>
             {election.state === 'finalized' &&
                 <>
                     <Grid xs={12}>
@@ -405,14 +421,11 @@ const HeaderSection = ({ election, permissions }: { election: Election, permissi
                         </Grid>}
                 </>
             }
+        </>
+    }
 
-
-        </>)
-}
-
-const FinalizeSection = ({ election, permissions, finalizeElection }: { election: Election, permissions: string[], finalizeElection: Function }) => {
-    return (
-        <>
+    const FinalizeSection = ({ election, permissions, finalizeElection }: { election: Election, permissions: string[], finalizeElection: Function }) => {
+        return <>
             <Grid xs={12} sx={{ p: 1, pt: 3, pb: 0 }}>
                 <Typography align='center' variant="body1" sx={{ pl: 2 }}>
                     {/* {`If you're finished setting up your election you can finalize it. This will prevent future edits ${election.settings.invitation ? ', send out invitations, ' : ''} and open the election for voters to submit ballots${election.start_time ? ' after your specified start time' : ''}.`} */}
@@ -442,27 +455,8 @@ const FinalizeSection = ({ election, permissions, finalizeElection }: { election
                     </Typography>
                 </StyledButton>
             </Grid>
-        </>)
-}
-    
-const AdminHome = () => {
-
-    const authSession = useAuthSession()
-    const { election, refreshElection: fetchElection, permissions } = useElection()
-    const {t} = useSubstitutedTranslation(election.settings.term_type);
-    const { makeRequest } = useSetPublicResults(election.election_id)
-    const togglePublicResults = async () => {
-        const public_results = !election.settings.public_results
-        await makeRequest({ public_results: public_results })
-        await fetchElection()
+        </>
     }
-    const { makeRequest: finalize } = useFinalizeElection(election.election_id)
-    const { makeRequest: archive } = useArchiveEleciton(election.election_id)
-
-    const navigate = useNavigate()
-    const { error, isPending, makeRequest: postElection } = usePostElection()
-    
-    const confirm = useConfirm()
 
     const finalizeElection = async () => {
         const confirmed = await confirm(t('admin_home.finalize_confirm'))
