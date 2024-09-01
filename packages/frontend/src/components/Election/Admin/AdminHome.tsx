@@ -89,7 +89,6 @@ const AdminHome = () => {
                         Edit Election Roles
                     </Typography>
                 </StyledButton>
-
             </>)}
         />
     }
@@ -118,7 +117,6 @@ const AdminHome = () => {
                         Cast Ballot
                     </Typography>
                 </StyledButton>
-
             </>)}
         />
     }
@@ -174,7 +172,6 @@ const AdminHome = () => {
                 >
                     View results
                 </StyledButton>
-
             </>)}
         />
     }
@@ -202,7 +199,6 @@ const AdminHome = () => {
                 >
                     {election.settings.public_results === true ? 'Make results private' : 'Make results public'}
                 </StyledButton>
-
             </>)}
         />
     }
@@ -233,7 +229,6 @@ const AdminHome = () => {
                 >
                     Archive
                 </StyledButton>
-
             </>)}
         />
     }
@@ -241,15 +236,11 @@ const AdminHome = () => {
     const ShareSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
         return <Section
             Description={
-                (<>
-                    <Typography variant="h5">
-                        Share your election
-                    </Typography>
-                </>)}
-            Button={(<>
-                <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} />
-
-            </>)}
+                <Typography variant="h5">
+                    Share your election
+                </Typography>
+            }
+            Button={<ShareButton url={`${window.location.origin}/Election/${election.election_id}`} />}
         />
     }
 
