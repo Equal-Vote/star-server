@@ -544,6 +544,8 @@ admin_home:
   time_only_start: Starts on {{datetime, datetime}}
   time_only_end: Ends on {{datetime, datetime}}
 
+  permissions_error: You do not have the correct permissions for this action
+
   voter_authentication:
     form_label: Voter Authentication
     help_text: Limit to one {{vote}} per...

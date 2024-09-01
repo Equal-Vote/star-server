@@ -80,7 +80,7 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
   const processValues = (values) => {
     Object.entries(values).forEach(([key, value]) => {
       if(typeof value === 'string'){
-        if(key == 'datetime' || key == 'listed_datetime'){
+        if(key == 'datetime' || key == 'datetime2' || key == 'listed_datetime'){
           values[key] = new Date(value)
         }else{
           values[`lowercase_${key}`] = value.toLowerCase()
@@ -93,11 +93,14 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
     return values
   }
 
-  let values = processValues({...en.keyword, ...en.keyword[electionTermType], ...v, formatParams: {
-    datetime: {
+  let dt = {
       year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric',
       timeZoneName: 'short', timeZone: v['time_zone'] ?? undefined
-    },
+    }
+
+  let values = processValues({...en.keyword, ...en.keyword[electionTermType], ...v, formatParams: {
+    datetime: dt,
+    datetime2: dt,
     listed_datetime: {
       year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric',
       timeZoneName: undefined, timeZone: v['time_zone'] ?? undefined
