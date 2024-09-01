@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import Grid from "@mui/material/Grid";
 import { Box, IconButton, Paper, Typography } from "@mui/material"
 import ElectionStateChip from './ElectionStateChip';
@@ -21,6 +21,18 @@ export default function ElectionDetailsInlineForm() {
         const success = await onSave()
         if (success) handleClose()
     }
+    const timeRange = useMemo(() => {
+        if (election.start_time && election.end_time) {
+            return `${formatDate(election.start_time, election.settings.time_zone)} - ${formatDate(election.end_time, election.settings.time_zone)}`
+        } else if (election.start_time) {
+            return `Starts ${formatDate(election.start_time, election.settings.time_zone)}`
+        } else if (election.end_time) {
+            return `Ends ${formatDate(election.end_time, election.settings.time_zone)}`
+        } else {
+            return 'none'
+        }
+    }, [election.start_time, election.end_time, election.settings.time_zone])
+
 
     return (
         <Paper elevation={3}>
@@ -46,9 +58,7 @@ export default function ElectionDetailsInlineForm() {
                         </Grid>}
                         {(election.start_time || election.end_time) && 
                             <Grid xs={12}>
-                            <Typography sx={{mt: 2}} component="p" variant='subtitle2'>
-                                {election.start_time ? formatDate(election.start_time, election.settings.time_zone) : 'none'} - {election.end_time ? formatDate(election.end_time, election.settings.time_zone) : 'none'}
-                            </Typography>
+                            <Typography sx={{mt: 2}} component="p" variant='subtitle2'>{timeRange}</Typography>
                             </Grid>
                         }
                     </Grid>
