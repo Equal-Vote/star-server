@@ -76,15 +76,11 @@ export const useOnScrollAnimator = () => {
 }
 
 // NOTE: I'm setting a electionTermType default for backwards compatibility with elections that don't have a term set
-
-//DateTime.fromJSDate(new Date(datetime))
-//    .setZone(displayTimezone)
-//    .toLocaleString(DateTime.DATETIME_MED)
 export const useSubstitutedTranslation = (electionTermType='election', v={}) => { // election or poll
   const processValues = (values) => {
     Object.entries(values).forEach(([key, value]) => {
       if(typeof value === 'string'){
-        if(key == 'datetime'){
+        if(key == 'datetime' || key == 'listed_datetime'){
           values[key] = new Date(value)
         }else{
           values[`lowercase_${key}`] = value.toLowerCase()
@@ -98,7 +94,14 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
   }
 
   let values = processValues({...en.keyword, ...en.keyword[electionTermType], ...v, formatParams: {
-    datetime: { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short', timeZone: v['time_zone'] ?? undefined },
+    datetime: {
+      year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric',
+      timeZoneName: 'short', timeZone: v['time_zone'] ?? undefined
+    },
+    listed_datetime: {
+      year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric',
+      timeZoneName: undefined, timeZone: v['time_zone'] ?? undefined
+    },
   }})
 
   const { t, i18n } = useTranslation()
@@ -637,14 +640,11 @@ export const DetailExpanderGroup = ({
   );
 };
 
-export const formatDate = (datetime, displayTimezone = null) => {
-  if (!datetime) return "";
-  if (displayTimezone === null) displayTimezone = DateTime.now().zone.name;
-
-  return DateTime.fromJSDate(new Date(datetime))
-    .setZone(displayTimezone)
-    .toLocaleString(DateTime.DATETIME_MED);
-};
+export const epochToDateString = (e) => {
+  let d = new Date(0);
+  d.setUTCSeconds(e / 1000);
+  return d.toString();
+}
 
 export const isValidDate = (d) => {
   if (d instanceof Date) return !isNaN(d.valueOf());

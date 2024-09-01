@@ -8,7 +8,7 @@ import PermissionHandler from "../../PermissionHandler";
 import ViewBallot from "./ViewBallot";
 import { CSVLink } from "react-csv";
 import { useGetBallots } from "../../../hooks/useAPI";
-import { formatDate } from "../../util";
+import { epochToDateString, getLocalTimeZoneShort, useSubstitutedTranslation } from "../../util";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 
@@ -22,6 +22,8 @@ const ViewBallots = () => {
     const [selectedBallot, setSelectedBallot] = useState(null)
     const [csvData, setcsvData] = useState([])
     const [csvHeaders, setcsvHeaders] = useState([])
+
+    const {t} = useSubstitutedTranslation(election.settings.term_type)
 
     const onOpen = (ballot) => {
         setIsViewing(true)
@@ -83,7 +85,7 @@ const ViewBallots = () => {
                                 {flags.isSet('VOTER_FLAGGING') &&
                                     <TableCell> Precinct </TableCell>
                                 }
-                                <TableCell> Date Submitted </TableCell>
+                                <TableCell align='right'> {`Date Submitted (${getLocalTimeZoneShort()})`} </TableCell>
                                 <TableCell> Status </TableCell>
                                 {election.races.map((race) => (
                                     race.candidates.map((candidate) => (
@@ -101,7 +103,7 @@ const ViewBallots = () => {
                                         {flags.isSet('VOTER_FLAGGING') &&
                                             <TableCell >{ballot.precinct || ''}</TableCell>
                                         }
-                                        <TableCell >{formatDate(Number(ballot.date_submitted), election.settings.time_zone)}</TableCell>
+                                        <TableCell align="right" >{ t('listed_datetime', {listed_datetime: epochToDateString(ballot.date_submitted)} )}</TableCell>
                                         <TableCell >{ballot.status.toString()}</TableCell>
                                         {ballot.votes.map((vote) => (
                                             vote.scores.map((score) => (

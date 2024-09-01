@@ -8,13 +8,14 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 import PermissionHandler from "../../PermissionHandler";
 import { useParams } from "react-router";
 import { useGetBallot } from "../../../hooks/useAPI";
-import { formatDate } from "../../util";
+import { epochToDateString, getLocalTimeZoneShort, useSubstitutedTranslation } from "../../util";
 import useElection from "../../ElectionContextProvider";
 
 const ViewBallot = ({ ballot, onClose }) => {
     
     const { election, refreshElection, permissions, updateElection } = useElection()
     const { ballot_id } = useParams();
+    const { t } = useSubstitutedTranslation(election.settings.term_type);
 
     const { data, isPending, error, makeRequest: fetchBallots } = useGetBallot(election.election_id, ballot_id)
 
@@ -45,7 +46,7 @@ const ViewBallot = ({ ballot, onClose }) => {
                     }
                     <Grid item sm={12}>
                         <Typography align='left' variant="h6" component="h6">
-                            {`Date Submitted: ${formatDate(Number(myballot.date_submitted), election.settings.time_zone)}`}
+                            {`Date Submitted: ${t('datetime', {datetime: epochToDateString(myballot.date_submitted)})}`}
                         </Typography>
                     </Grid>
                     <Grid item sm={12}>
@@ -97,7 +98,7 @@ const ViewBallot = ({ ballot, onClose }) => {
                                     <TableHead>
                                         <TableCell> Action </TableCell>
                                         <TableCell align="right"> Actor </TableCell>
-                                        <TableCell align="right"> Timestamp </TableCell>
+                                        <TableCell align="right"> {`Timestamp (${getLocalTimeZoneShort()})`} </TableCell>
                                     </TableHead>
                                     <TableBody>
                                         {myballot.history.map((history, i) => (
@@ -106,7 +107,7 @@ const ViewBallot = ({ ballot, onClose }) => {
                                                     {history.action_type}
                                                 </TableCell>
                                                 <TableCell align="right" >{history.actor}</TableCell>
-                                                <TableCell align="right" >{formatDate(history.timestamp, election.settings.time_zone)}</TableCell>
+                                                <TableCell align="right" >{ t('listed_datetime', {listed_datetime: history.timestamp} )}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>

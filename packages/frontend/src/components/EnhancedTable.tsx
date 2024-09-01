@@ -16,8 +16,9 @@ import Paper from '@mui/material/Paper';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { visuallyHidden } from '@mui/utils';
-import { formatDate, getLocalTimeZoneShort } from './util';
+import { epochToDateString, getLocalTimeZoneShort, useSubstitutedTranslation } from './util';
 import { Checkbox, FormControl, ListItemText, MenuItem, Select, TextField } from '@mui/material';
+import { DateTime } from 'luxon';
 
 export type HeadKey = keyof typeof headCellPool;
 
@@ -53,7 +54,6 @@ interface EnhancedTableHeadProps {
   filters: any[];
   setFilters: Function
 }
-
 
 const headCellPool = {
     voter_id: {
@@ -166,10 +166,10 @@ const headCellPool = {
         id: 'create_date',
         numeric: false,
         disablePadding: false,
-        label: `Create Date ${getLocalTimeZoneShort()}`,
+        label: `Create Date (${getLocalTimeZoneShort()})`,
         filterType: 'search',
         isDate: true,
-        formatter: (time, election) => formatDate(time, null)
+        formatter: (time, election, t) => t('listed_datetime', {datetime: time})
     },
     update_date: {
       id: 'update_date',
@@ -178,8 +178,9 @@ const headCellPool = {
       label: `Last Updated (${getLocalTimeZoneShort()})`,
       filterType: 'search',
       isDate: true,
-      formatter: (time, election) => formatDate(parseInt(time), null)
-  },
+      // NOTE: not sure why update time is an epoch while everything else is tring 🤷
+      formatter: (time, election, t) => t('listed_datetime', {listed_datetime: epochToDateString(time)})
+    },
     start_time: {
         id: 'start_time',
         numeric: false,
@@ -187,7 +188,7 @@ const headCellPool = {
         label: `Start Time (${getLocalTimeZoneShort()})`,
         filterType: 'search',
         isDate: true,
-        formatter: (time, election) => formatDate(time, null)
+        formatter: (time, election, t) => time ? t('listed_datetime', {listed_datetime: time}) : ''
     },
     end_time: {
         id: 'end_time',
@@ -196,7 +197,7 @@ const headCellPool = {
         label: `End Time (${getLocalTimeZoneShort()})`,
         filterType: 'search',
         isDate: true,
-        formatter: (time, election) => formatDate(time, election.settings.time_zone)
+        formatter: (time, election, t) => time ? t('listed_datetime', {listed_datetime: time}) : ''
     },
     description: {
         id: 'description',
@@ -223,18 +224,6 @@ interface EnhancedTableProps {
 const limit = (string = '', limit = 0) => {
     if (!string) return ''
     return string.substring(0, limit)
-}
-
-const formatTableData = (headKeys, data) => {
-    let fData = data.map(item => {
-        let fItem = {};
-        headKeys.forEach( key => {
-            fItem[key] = key in headCellPool ? headCellPool[key].formatter(item[key], item) : item[key];
-        });
-        fItem['raw'] = item;
-        return fItem;
-    });
-    return fData;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T, isDate: boolean) {
@@ -430,6 +419,7 @@ export default function EnhancedTable(props: EnhancedTableProps) {
   const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const headCells: HeadCell[] = props.headKeys.map(key => headCellPool[key] as HeadCell);
+  const {t} = useSubstitutedTranslation();
   const [filters, setFilters] = React.useState(headCells.map(col => {
     if (!col.filterType) {
       return null
@@ -463,6 +453,18 @@ export default function EnhancedTable(props: EnhancedTableProps) {
   const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDense(event.target.checked);
   };
+
+  const formatTableData = (headKeys, data) => {
+    let fData = data.map(item => {
+        let fItem = {};
+        headKeys.forEach( key => {
+          fItem[key] = key in headCellPool ? headCellPool[key].formatter(item[key], item, t) : item[key];
+        });
+        fItem['raw'] = item;
+        return fItem;
+    });
+    return fData;
+  }
 
   const filteredRows = React.useMemo(
     () => {

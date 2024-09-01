@@ -628,3 +628,4 @@ number:
 
 # Convenience entry for localizing date
 datetime: '{{datetime, datetime}}'
+listed_datetime: '{{listed_datetime, datetime}}'

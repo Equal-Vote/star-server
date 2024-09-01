@@ -7,7 +7,7 @@ import Container from '@mui/material/Container';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
 import PermissionHandler from "../../PermissionHandler";
 import { useApproveRoll, useFlagRoll, useInvalidateRoll, useSendInvite, useUnflagRoll } from "../../../hooks/useAPI";
-import { formatDate } from "../../util";
+import { getLocalTimeZoneShort, useSubstitutedTranslation } from "../../util";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
@@ -22,6 +22,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
     const { election, permissions } = useElection()
     const [updatedRoll, setUpdatedRoll] = useState(roll)
     const flags = useFeatureFlags();
+    const {t} = useSubstitutedTranslation(election.settings.term_type);
 
     const approve = useApproveRoll(election.election_id)
     const flag = useFlagRoll(election.election_id)
@@ -145,7 +146,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
                             <TableHead>
                                 <TableCell> Action </TableCell>
                                 <TableCell align="right"> Actor </TableCell>
-                                <TableCell align="right"> Timestamp </TableCell>
+                                <TableCell align="right"> {`Timestamp (${getLocalTimeZoneShort()})`} </TableCell>
                             </TableHead>
                             <TableBody>
                                 {roll.history.map((history, i) => (
@@ -154,8 +155,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
                                             {history.action_type}
                                         </TableCell>
                                         <TableCell align="right" >{history.actor}</TableCell>
-                                        {/* TODO: for now this is displayed as local timezone, but we may want it to use the election timezone in the future*/}
-                                        <TableCell align="right" >{formatDate(history.timestamp)}</TableCell>
+                                        <TableCell align="right" >{ t('listed_datetime', {listed_datetime: history.timestamp} )}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
