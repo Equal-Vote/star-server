@@ -17,9 +17,6 @@ import structuredClone from '@ungap/structured-clone';
 import useAuthSession from '../../AuthSessionContextProvider';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
 import ElectionAuthForm from '~/components/ElectionForm/Details/ElectionAuthForm';
-const hasPermission = (permissions: string[], requiredPermission: string) => {
-    return (permissions && permissions.includes(requiredPermission))
-}
 
 type SectionProps = {
     Description: string
@@ -46,6 +43,51 @@ const AdminHome = () => {
     
     const confirm = useConfirm()
 
+    const hasPermission = (requiredPermission: string) => {
+        return (permissions && permissions.includes(requiredPermission))
+    }
+
+    const finalizeElection = async () => {
+        const confirmed = await confirm(t('admin_home.finalize_confirm'))
+        if (!confirmed) return
+        try {
+            await finalize()
+            await fetchElection()
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    const archiveElection = async () => {
+        const confirmed = await confirm(t('admin_home.finalize_confirm'))
+        if (!confirmed) return
+        try {
+            await archive()
+            await fetchElection()
+        } catch (err) {
+            console.error(err)
+        }
+    }
+    const duplicateElection = async () => {
+        const confirmed = await confirm(t('admin_home.duplicate_confirm'))
+        if (!confirmed) return
+        const copiedElection = structuredClone(election)
+        copiedElection.title = t('admin_home.copied_title', {title: copiedElection.title})
+        copiedElection.frontend_url = ''
+        copiedElection.owner_id = authSession.getIdField('sub')
+        copiedElection.state = 'draft'
+
+        const newElection = await postElection(
+            {
+                Election: copiedElection,
+            })
+
+        if ((!newElection)) {
+            throw Error("Error submitting election");
+        }
+        navigate(`/${newElection.election.election_id}/admin`)
+    }
+
     const Section = ({ Description, Button, Subtext, Permission }: SectionProps) => 
         <Grid container sx={{ width: 800 }}>
             <Grid xs={12} md={8} sx={{ p: 1 }}>
@@ -58,7 +100,7 @@ const AdminHome = () => {
                             {Subtext}
                         </Typography>
                     }
-                    {Permission && !hasPermission(permissions, Permission) &&
+                    {Permission && !hasPermission(Permission) &&
                         <Typography align='center' variant="body1" sx={{ color: 'error.main', pl: 2 }}>
                                 {t('admin_home.permissions_error')}
                         </Typography>
@@ -71,131 +113,114 @@ const AdminHome = () => {
             <Divider style={{width: '100%'}}/>
         </Grid>
 
-    const EditRolesSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-        const flags = useFeatureFlags();
-        if (!flags.isSet('ELECTION_ROLES')) return <></>;
-        return <Section
-            Description='Add people to help run your election'
-            Subtext='Add election administrators, auditors, credentialers'
-            Permission='canEditElectionRoles'
-            Button={(<>
-                <StyledButton
-                    variant='contained'
-                    disabled={!hasPermission(permissions, 'canEditElectionRoles')}
-                    fullwidth
-                    component={Link} to={`/${election.election_id}/admin/roles`}
-                >
-                    <Typography align='center' variant="body2">
-                        Edit Election Roles
-                    </Typography>
-                </StyledButton>
-            </>)}
-        />
-    }
+    const EditRolesSection = () => <Section
+        Description='Add people to help run your election'
+        Subtext='Add election administrators, auditors, credentialers'
+        Permission='canEditElectionRoles'
+        Button={(<>
+            <StyledButton
+                variant='contained'
+                disabled={!hasPermission('canEditElectionRoles')}
+                fullwidth
+                component={Link} to={`/${election.election_id}/admin/roles`}
+            >
+                <Typography align='center' variant="body2">
+                    Edit Election Roles
+                </Typography>
+            </StyledButton>
+        </>)}
+    />
 
-    const PreviewBallotSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-        return <Section
-            Description='Cast test ballot'
-            Permission='canViewElectionRoll'
-            Button={(<>
-                <StyledButton
-                    type='button'
-                    variant='contained'
-                    fullwidth
-                    component={Link} to={`/${election.election_id}`}
-                >
-                    <Typography align='center' variant="body2">
-                        Cast Ballot
-                    </Typography>
-                </StyledButton>
-            </>)}
-        />
-    }
+    const PreviewBallotSection = () => <Section
+        Description='Cast test ballot'
+        Permission='canViewElectionRoll'
+        Button={(<>
+            <StyledButton
+                type='button'
+                variant='contained'
+                fullwidth
+                component={Link} to={`/${election.election_id}`}
+            >
+                <Typography align='center' variant="body2">
+                    Cast Ballot
+                </Typography>
+            </StyledButton>
+        </>)}
+    />
 
-    const DuplicateElectionSection = ({ election, permissions, duplicateElection }: { election: Election, permissions: string[], duplicateElection: Function }) => {
-        return <Section
-            Description='Duplicate'
-            Subtext='Create copy of this election'
-            Button={(<>
-                <StyledButton
-                    type='button'
-                    variant='contained'
-                    disabled={!hasPermission(permissions, 'canEditElectionState')}
-                    fullwidth
-                    onClick={() => duplicateElection()}
-                >
-                    <Typography align='center' variant="body2">
-                        Duplicate
-                    </Typography>
-                </StyledButton>
-            </>)}
-        />
-    }
+    const DuplicateElectionSection = () => <Section
+        Description='Duplicate'
+        Subtext='Create copy of this election'
+        Button={
+            <StyledButton
+                type='button'
+                variant='contained'
+                disabled={!hasPermission('canEditElectionState')}
+                fullwidth
+                onClick={() => duplicateElection()}
+            >
+                <Typography align='center' variant="body2">
+                    Duplicate
+                </Typography>
+            </StyledButton>
+        }
+    />
 
+    const ResultsSection = () => <Section
+        Description='View results'
+        Permission='canViewPreliminaryResults'
+        Button={(<>
+            <StyledButton
+                type='button'
+                variant='contained'
+                disabled={!(hasPermission('canViewPreliminaryResults') || election.settings.public_results === true)}
+                fullwidth
+                component={Link} to={`/${election.election_id}/results`}
+            >
+                View results
+            </StyledButton>
+        </>)}
+    />
 
-    const ResultsSection = ({ election, permissions, preliminary }: { election: Election, permissions: string[], preliminary: boolean }) => {
-        return <Section
-            Description={preliminary ? 'View preliminary results' : 'View results'}
-            Permission='canViewPreliminaryResults'
-            Button={(<>
-                <StyledButton
-                    type='button'
-                    variant='contained'
-                    disabled={!(hasPermission(permissions, 'canViewPreliminaryResults') || election.settings.public_results === true)}
-                    fullwidth
-                    component={Link} to={`/${election.election_id}/results`}
-                >
-                    View results
-                </StyledButton>
-            </>)}
-        />
-    }
+    const TogglePublicResultsSection = () => <Section
+        Description={election.settings.public_results === true ? 'Make results private' : 'Make results public'}
+        Permission='canEditElectionState'
+        Button={(<>
+            <StyledButton
+                type='button'
+                variant='contained'
+                disabled={!hasPermission('canEditElectionState')}
+                fullwidth
+                onClick={() => togglePublicResults()}
+            >
+                {election.settings.public_results === true ? 'Make results private' : 'Make results public'}
+            </StyledButton>
+        </>)}
+    />
 
-    const TogglePublicResultsSection = ({ election, permissions, togglePublicResults }: { election: Election, permissions: string[], togglePublicResults: Function }) => {
-        return <Section
-            Description={election.settings.public_results === true ? 'Make results private' : 'Make results public'}
-            Permission='canEditElectionState'
-            Button={(<>
-                <StyledButton
-                    type='button'
-                    variant='contained'
-                    disabled={!hasPermission(permissions, 'canEditElectionState')}
-                    fullwidth
-                    onClick={() => togglePublicResults()}
-                >
-                    {election.settings.public_results === true ? 'Make results private' : 'Make results public'}
-                </StyledButton>
-            </>)}
-        />
-    }
+    const ArchiveElectionSection = () => <Section
+        Description='Archive'
+        Subtext='Archives election, preventing future changes and hiding it from the elections page'
+        Permission='canEditElectionState'
+        Button={(<>
+            <StyledButton
+                type='button'
+                variant='contained'
+                disabled={!hasPermission('canEditElectionState')}
+                fullwidth
+                onClick={() => archiveElection()}
+            >
+                Archive
+            </StyledButton>
+        </>)}
+    />
 
-    const ArchiveElectionSection = ({ election, permissions, archiveElection }: { election: Election, permissions: string[], archiveElection: Function }) => {
-        return <Section
-            Description='Archive'
-            Subtext='Archives election, preventing future changes and hiding it from the elections page'
-            Permission='canEditElectionState'
-            Button={(<>
-                <StyledButton
-                    type='button'
-                    variant='contained'
-                    disabled={!hasPermission(permissions, 'canEditElectionState')}
-                    fullwidth
-                    onClick={() => archiveElection()}
-                >
-                    Archive
-                </StyledButton>
-            </>)}
-        />
-    }
+    const ShareSection = () => <Section
+        Description='Share your election'
+        Button={<ShareButton url={`${window.location.origin}/Election/${election.election_id}`} />}
+    />
 
-    const ShareSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
-        return <Section
-            Description='Share your election'
-            Button={<ShareButton url={`${window.location.origin}/Election/${election.election_id}`} />}
-        />
-    }
-
-    const HeaderSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
+    const HeaderSection = () => {
         return <>
             {election.state === 'finalized' &&
                 <>
@@ -274,90 +299,50 @@ const AdminHome = () => {
         </>
     }
 
-    const FinalizeSection = ({ election, permissions, finalizeElection }: { election: Election, permissions: string[], finalizeElection: Function }) => {
-        return <>
-            <Grid xs={12} sx={{ p: 1, pt: 3, pb: 0 }}>
+    const FinalizeSection = () => <Box sx={{width: 800}}>
+        <Grid xs={12} sx={{ p: 1, pt: 3, pb: 0 }}>
+            <Typography align='center' variant="body1" sx={{ pl: 2 }}>
+                {/* {`If you're finished setting up your election you can finalize it. This will prevent future edits ${election.settings.invitation ? ', send out invitations, ' : ''} and open the election for voters to submit ballots${election.start_time ? ' after your specified start time' : ''}.`} */}
+                {`When finished setting up your election, finalize it. Once final, it can't be edited. Voting begins ${election.start_time ? 'after your specified start time.' : 'immediately.'}`}
+            </Typography>
+            {election.settings.invitation &&
                 <Typography align='center' variant="body1" sx={{ pl: 2 }}>
-                    {/* {`If you're finished setting up your election you can finalize it. This will prevent future edits ${election.settings.invitation ? ', send out invitations, ' : ''} and open the election for voters to submit ballots${election.start_time ? ' after your specified start time' : ''}.`} */}
-                    {`When finished setting up your election, finalize it. Once final, it can't be edited. Voting begins ${election.start_time ? 'after your specified start time.' : 'immediately.'}`}
+                    Invitations will be sent to your voters
                 </Typography>
-                {election.settings.invitation &&
-                    <Typography align='center' variant="body1" sx={{ pl: 2 }}>
-                        Invitations will be sent to your voters
-                    </Typography>
-                }
-                {!hasPermission(permissions, 'canEditElectionState') &&
-                    <Typography align='center' variant="body1" sx={{ color: 'error.main', pl: 2 }}>
-                        You do not have the correct permissions for this action
-                    </Typography>
-                }
-            </Grid>
-            <Grid xs={12} sx={{ p: 1, pt: 0, display: 'flex', alignItems: 'center' }}>
-                <StyledButton
-                    type='button'
-                    variant='contained'
-                    disabled={election.title.length === 0 || election.races.length === 0 || !hasPermission(permissions, 'canEditElectionState')}
-                    fullwidth
-                    onClick={() => finalizeElection()}
-                >
-                    <Typography align='center' variant="h4" fontWeight={'bold'}>
-                        Finalize Election
-                    </Typography>
-                </StyledButton>
-            </Grid>
-        </>
-    }
-
-    const finalizeElection = async () => {
-        const confirmed = await confirm(t('admin_home.finalize_confirm'))
-        if (!confirmed) return
-        try {
-            await finalize()
-            await fetchElection()
-        } catch (err) {
-            console.error(err)
-        }
-    }
-
-    const archiveElection = async () => {
-        const confirmed = await confirm(t('admin_home.finalize_confirm'))
-        if (!confirmed) return
-        try {
-            await archive()
-            await fetchElection()
-        } catch (err) {
-            console.error(err)
-        }
-    }
-    const duplicateElection = async () => {
-        const confirmed = await confirm(t('admin_home.duplicate_confirm'))
-        if (!confirmed) return
-        const copiedElection = structuredClone(election)
-        copiedElection.title = t('admin_home.copied_title', {title: copiedElection.title})
-        copiedElection.frontend_url = ''
-        copiedElection.owner_id = authSession.getIdField('sub')
-        copiedElection.state = 'draft'
-
-        const newElection = await postElection(
-            {
-                Election: copiedElection,
-            })
-
-        if ((!newElection)) {
-            throw Error("Error submitting election");
-        }
-        navigate(`/${newElection.election.election_id}/admin`)
-    }
+            }
+            {!hasPermission('canEditElectionState') &&
+                <Typography align='center' variant="body1" sx={{ color: 'error.main', pl: 2 }}>
+                    You do not have the correct permissions for this action
+                </Typography>
+            }
+        </Grid>
+        <Grid xs={12} sx={{ p: 1, pt: 0, display: 'flex', alignItems: 'center' }}>
+            <StyledButton
+                type='button'
+                variant='contained'
+                disabled={election.title.length === 0 || election.races.length === 0 || !hasPermission('canEditElectionState')}
+                fullwidth
+                onClick={() => finalizeElection()}
+            >
+                <Typography align='center' variant="h4" fontWeight={'bold'}>
+                    Finalize Election
+                </Typography>
+            </StyledButton>
+        </Grid>
+    </Box>
     
+    const flags = useFeatureFlags();
+
     return <Box
         display='flex'
         justifyContent="center"
         alignItems="center"
         flexDirection='column'
-        sx={{ width: '100%' }}>
+        sx={{ width: '100%' }}
+    >
         <Grid container sx={{ width: 800 }}>
             <Grid xs={12} sx={{ p: 1 }}>
-                <HeaderSection election={election} permissions={permissions} />
+                <HeaderSection />
             </Grid>
             <Grid xs={12} sx={{ p: 1 }}>
                 <ElectionDetailsInlineForm />
@@ -375,23 +360,16 @@ const AdminHome = () => {
             </Grid>
         </Grid>
 
-        {(election.state === 'draft') && <>
-            <PreviewBallotSection election={election} permissions={permissions} />
-        </>
-        }
+        {(election.state === 'draft') && <PreviewBallotSection /> }
         {(election.state !== 'draft' && election.state !== 'finalized') && <>
-            <ShareSection election={election} permissions={permissions} />
-            <ResultsSection election={election} permissions={permissions} preliminary={false} />
-            <TogglePublicResultsSection election={election} permissions={permissions} togglePublicResults={togglePublicResults} />
+            <ShareSection />
+            <ResultsSection />
+            <TogglePublicResultsSection/>
         </>}
-        <EditRolesSection election={election} permissions={permissions} />
-        <DuplicateElectionSection election={election} permissions={permissions} duplicateElection={duplicateElection}/>
-        <ArchiveElectionSection election={election} permissions={permissions} archiveElection={archiveElection} />
-        {election.state === 'draft' &&
-            <Box sx={{width: 800}}>
-                <FinalizeSection election={election} permissions={permissions} finalizeElection={finalizeElection} />
-            </Box>
-        }
+        {!flags.isSet('ELECTION_ROLES') && <EditRolesSection />}
+        <DuplicateElectionSection/>
+        <ArchiveElectionSection/>
+        {election.state === 'draft' && <FinalizeSection /> }
     </Box>
 }
 
