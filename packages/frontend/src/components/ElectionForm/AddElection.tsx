@@ -22,6 +22,7 @@ const AddElection = () => {
         navigate(`/${newElection.election.election_id}/admin`)
     }
 
+    return <></>
     return (
         < >
             {!authSession.isLoggedIn() && <div> Must be logged in to create elections </div>}

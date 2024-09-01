@@ -281,6 +281,8 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
 
     const containerRef = useRef(null);
 
+    return <ElectionDetails election={election} applyElectionUpdate={applyElectionUpdate} getStyle={getStyle} onBack={() => setPage('ElectionDetails')} onNext={() => setPage('RaceDetails')} />
+
     return (
         <Box
             display='flex'
@@ -296,7 +298,6 @@ const ElectionForm = ({ authSession, onSubmitElection, prevElectionData, submitT
                 <form id={'electionForm'} onSubmit={(e) => e.preventDefault()}>
                     <Fade in={page === 'ElectionDetails'} mountOnEnter unmountOnExit timeout={{ appear: 500, enter: 500, exit: 0 }}>
                         <div>
-                            <ElectionDetails election={election} applyElectionUpdate={applyElectionUpdate} getStyle={getStyle} onBack={() => setPage('ElectionDetails')} onNext={() => setPage('RaceDetails')} />
                         </div>
                     </Fade>
                     <Fade in={page === 'RaceDetails'} mountOnEnter unmountOnExit timeout={{ appear: 500, enter: 500, exit: 0 }}>

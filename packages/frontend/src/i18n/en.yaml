@@ -167,24 +167,15 @@ draft_warning:
     shall be reset prior to the final {{lowercase_election}}.
 
 election_home:
-  begin_time: '{{election}} begins {{date}} at {{time}}'
-  end_time: '{{election}} ends {{date}} at {{time}}'
-  ended_time: '{{election}} ended {{date}} at {{time}}'
+  start_time: '{{election}} begins on {{datetime, datetime}}'
+  end_time: '{{election}} ends on {{datetime, datetime}}'
+  ended_time: '{{election}} ended on {{datetime, datetime}}'
   vote: Vote
   or_view_results: or view results
   ballot_submitted: '{{ballot}} Submitted'
   view_results: View Results
   drafted: This election is still being drafted
   archived: This election has been archived
-
-admin_home:
-  voter_authentication:
-    form_label: Voter Authentication
-    help_text: Limit to one {{vote}} per...
-    no_limit_label: No Limit
-    ip_label: IP Address
-    device_label: Device
-    email_label: Login Email Address
 
 # Ballot
 ballot:
@@ -538,6 +529,51 @@ tips:
     title: $t(methods.ranked_robin.full_name)
     description: The candidate who wins the most runoffs wins
 
+# Admin Home
+admin_home:
+  header_finalized: Your {{lowercase_election}} is finalized
+  header_open: Your {{lowercase_election}} is open
+  header_closed: Your {{lowercase_election}} is closed
+  header_archived: Your {{lowercase_election}} has been archived
+  header_invitations_sent: Invitations have been sent to your voters
+  header_start_time: Your {{lowercase_election}} will open on {{datetime, datetime}}
+  header_end_time: Your {{lowercase_election}} will end on {{datetime, datetime}}
+  header_ended_time: Your {{lowercase_election}} ended on {{datetime, datetime}}
+
+  time_start_to_end: '{{datetime, datetime}} - {{datetime2, datetime}}'
+  time_only_start: Starts on {{datetime, datetime}}
+  time_only_end: Ends on {{datetime, datetime}}
+
+  voter_authentication:
+    form_label: Voter Authentication
+    help_text: Limit to one {{vote}} per...
+    no_limit_label: No Limit
+    ip_label: IP Address
+    device_label: Device
+    email_label: Login Email Address
+
+  finalize_confirm:
+    title: Confirm Finalize Election
+    message: Are you sure you want to finalize your election? Once finalized you won't be able to edit it.
+  
+  archive_confirm:
+    title: Confirm Archive Election
+    message: Are you sure you wish to archive this election? This action cannot be undone.
+
+  duplicate_confirm:
+    title: Confirm Duplicate Election
+    message: Are you sure you wish to duplicate this election?
+
+  copied_title: Copy of {{title}}
+
+# Admin Home -> Extra Settings
+
+# Admin Home -> Add/Edit Race
+
+# Voters
+
+# Ballots
+
 # General Terms
 keyword:
   election: 
@@ -589,3 +625,6 @@ number:
   rank_ordinal_two: "{{count}}nd"
   rank_ordinal_few: "{{count}}rd"
   rank_ordinal_other: "{{count}}th"
+
+# Convenience entry for localizing date
+datetime: '{{datetime, datetime}}'

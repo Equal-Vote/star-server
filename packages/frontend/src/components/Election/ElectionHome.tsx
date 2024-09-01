@@ -1,18 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { Paper } from "@mui/material";
 import ShareButton from "./ShareButton";
 import VoterAuth from "./VoterAuth";
-import { formatDate, useSubstitutedTranslation } from '../util';
+import { useSubstitutedTranslation } from '../util';
 import useElection from '../ElectionContextProvider';
 import DraftWarning from "./DraftWarning";
 
 const ElectionHome = () => {
   const { election, voterAuth, refreshElection, permissions, updateElection } = useElection();
 
-  const {t} = useSubstitutedTranslation(election.settings.term_type);
+  const {t, i18n} = useSubstitutedTranslation(election.settings.term_type, {time_zone: election.settings.time_zone});
 
   return (
     <>
@@ -54,10 +54,7 @@ const ElectionHome = () => {
             {election.state === 'finalized' && election.start_time &&
               <Box sx={{ flexGrow: 1 }}>
                 <Typography align='center' variant="h6" component="h6">
-                  {t('election_home.begin_time',{
-                      date: new Date(election.start_time).toLocaleDateString(),
-                      time: new Date(election.start_time).toLocaleTimeString()
-                  })}
+                  {t('election_home.start_time',{datetime: election.start_time})}
                 </Typography>
               </Box>
             }
@@ -67,10 +64,7 @@ const ElectionHome = () => {
               {election.end_time &&
                 <Box sx={{ flexGrow: 1 }}>
                   < Typography align='center' variant="h6" component="h6">
-                    {t('election_home.end_time',{
-                        date: new Date(election.end_time).toLocaleDateString(),
-                        time: new Date(election.end_time).toLocaleTimeString()
-                    })}
+                    {t('election_home.end_time',{datetime: election.end_time})}
                   </Typography>
                 </Box>}
               {

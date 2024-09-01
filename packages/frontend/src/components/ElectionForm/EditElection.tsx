@@ -28,6 +28,7 @@ const EditElection = () => {
         navigate(`/${election.election_id}/admin`)
     }
 
+    return <></>
     return (
         <Container >
         <>

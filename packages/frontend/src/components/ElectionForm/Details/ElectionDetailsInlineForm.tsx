@@ -4,7 +4,7 @@ import { Box, IconButton, Paper, Typography } from "@mui/material"
 import ElectionStateChip from './ElectionStateChip';
 import { StyledButton } from '../../styles';
 import useElection from '../../ElectionContextProvider';
-import { formatDate } from '../../util';
+import { useSubstitutedTranslation } from '../../util';
 import EditIcon from '@mui/icons-material/Edit';
 import ElectionDetailsForm from './ElectionDetailsForm';
 import { useEditElectionDetails } from './useEditElectionDetails';
@@ -12,6 +12,8 @@ import { useEditElectionDetails } from './useEditElectionDetails';
 export default function ElectionDetailsInlineForm() {
     const { editedElection, applyUpdate, onSave, errors, setErrors } = useEditElectionDetails()
     const { election } = useElection()
+
+    const {t} = useSubstitutedTranslation(election.settings.term_type, {time_zone: election.settings.time_zone});
 
     const [open, setOpen] = useState(election.title.length==0);
     const handleOpen = () => setOpen(true);
@@ -23,16 +25,15 @@ export default function ElectionDetailsInlineForm() {
     }
     const timeRange = useMemo(() => {
         if (election.start_time && election.end_time) {
-            return `${formatDate(election.start_time, election.settings.time_zone)} - ${formatDate(election.end_time, election.settings.time_zone)}`
+            return t('admin_home.time_start_to_end', {datetime: election.start_time, datetime2: election.end_time})
         } else if (election.start_time) {
-            return `Starts ${formatDate(election.start_time, election.settings.time_zone)}`
+            return t('admin_home.time_only_start', {datetime: election.start_time})
         } else if (election.end_time) {
-            return `Ends ${formatDate(election.end_time, election.settings.time_zone)}`
+            return t('admin_home.time_only_end', {datetime: election.end_time})
         } else {
-            return 'none'
+            return ''
         }
     }, [election.start_time, election.end_time, election.settings.time_zone])
-
 
     return (
         <Paper elevation={3}>

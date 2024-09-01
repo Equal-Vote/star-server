@@ -124,7 +124,7 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                                 id="demo-simple-select"
                                 value={timeZone}
                                 label="Time Zone"
-                                onChange={(e) => applyUpdate(election => { election.end_time = e.target.value})}
+                                onChange={(e) => applyUpdate(election => { election.settings.time_zone = e.target.value })}
                             >
                                 <MenuItem value={DateTime.now().zone.name}>{DateTime.now().zone.name}</MenuItem>
                                 <Divider />

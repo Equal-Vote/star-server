@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import ShareButton from "../ShareButton";
 import { useArchiveEleciton, useFinalizeElection, usePostElection, useSetPublicResults } from "../../../hooks/useAPI";
-import { formatDate } from '../../util';
+import { useSubstitutedTranslation } from '../../util';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useElection from '../../ElectionContextProvider';
 import ElectionDetailsInlineForm from '../../ElectionForm/Details/ElectionDetailsInlineForm';
@@ -328,26 +328,27 @@ const ShareSection = ({ election, permissions }: { election: Election, permissio
 }
 
 const HeaderSection = ({ election, permissions }: { election: Election, permissions: string[] }) => {
+    const {t} = useSubstitutedTranslation(election.settings.term_type, {time_zone: election.settings.time_zone});
     return (
         <>
             {election.state === 'finalized' &&
                 <>
                     <Grid xs={12}>
                         <Typography align='center' gutterBottom variant="h6" component="h6">
-                            Your election is finalized
+                            {t('admin_home.header_finalized')}
                         </Typography>
                     </Grid>
                     {election.settings.invitation &&
                         <Grid xs={12}>
                             <Typography align='center' gutterBottom variant="h6" component="h6">
-                                Invitations have been sent to your voters
+                                {t('admin_home.header_invitations_sent')}
                             </Typography>
                         </Grid>
                     }
                     {election.start_time &&
                         <Grid xs={12}>
                             <Typography align='center' gutterBottom variant="h6" component="h6">
-                                {`Your election will open on ${formatDate(election.start_time, election.settings.time_zone)}`}
+                                {t('admin_home.header_start_time', {datetime: election.end_time})}
                             </Typography>
                         </Grid>}
                 </>
@@ -356,20 +357,20 @@ const HeaderSection = ({ election, permissions }: { election: Election, permissi
                 <>
                     <Grid xs={12}>
                         <Typography align='center' gutterBottom variant="h6" component="h6">
-                            Your election is open
+                            {t('admin_home.header_open')}
                         </Typography>
                     </Grid>
                     {election.settings.invitation &&
                         <Grid xs={12}>
                             <Typography align='center' gutterBottom variant="h6" component="h6">
-                                Invitations have been sent to your voters
+                                {t('admin_home.header_invitations_sent')}
                             </Typography>
                         </Grid>
                     }
                     {election.end_time &&
                         <Grid xs={12}>
                             <Typography align='center' gutterBottom variant="h6" component="h6">
-                                {`Your election will end on ${formatDate(election.end_time, election.settings.time_zone)}`}
+                                {t('admin_home.header_end_time', {datetime: election.end_time})}
                             </Typography>
                         </Grid>}
                 </>
@@ -378,13 +379,13 @@ const HeaderSection = ({ election, permissions }: { election: Election, permissi
                 <>
                     <Grid xs={12}>
                         <Typography align='center' gutterBottom variant="h6" component="h6">
-                            Your election is closed
+                            {t('admin_home.header_closed')}
                         </Typography>
                     </Grid>
                     {election.end_time &&
                         <Grid xs={12}>
                             <Typography align='center' gutterBottom variant="h6" component="h6">
-                                {`Your election ended on ${formatDate(election.end_time, election.settings.time_zone)}`}
+                                {t('admin_home.header_ended_time', {datetime: election.end_time})}
                             </Typography>
                         </Grid>}
                 </>
@@ -393,13 +394,13 @@ const HeaderSection = ({ election, permissions }: { election: Election, permissi
                 <>
                     <Grid xs={12}>
                         <Typography align='center' gutterBottom variant="h6" component="h6">
-                            This election has been archived
+                            {t('admin_home.header_archived')}
                         </Typography>
                     </Grid>
                     {election.end_time &&
                         <Grid xs={12}>
                             <Typography align='center' gutterBottom variant="h6" component="h6">
-                                {`Your election ended on ${formatDate(election.end_time, election.settings.time_zone)}`}
+                                {t('admin_home.header_ended_time', {datetime: election.end_time})}
                             </Typography>
                         </Grid>}
                 </>
@@ -445,9 +446,10 @@ const FinalizeSection = ({ election, permissions, finalizeElection }: { election
 }
     
 const AdminHome = () => {
-    
-  const authSession = useAuthSession()
+
+    const authSession = useAuthSession()
     const { election, refreshElection: fetchElection, permissions } = useElection()
+    const {t} = useSubstitutedTranslation(election.settings.term_type);
     const { makeRequest } = useSetPublicResults(election.election_id)
     const togglePublicResults = async () => {
         const public_results = !election.settings.public_results
@@ -463,11 +465,7 @@ const AdminHome = () => {
     const confirm = useConfirm()
 
     const finalizeElection = async () => {
-        const confirmed = await confirm(
-            {
-                title: 'Confirm Finalize Election',
-                message: "Are you sure you want to finalize your election? Once finalized you won't be able to edit it."
-            })
+        const confirmed = await confirm(t('admin_home.finalize_confirm'))
         if (!confirmed) return
         try {
             await finalize()
@@ -478,11 +476,7 @@ const AdminHome = () => {
     }
 
     const archiveElection = async () => {
-        const confirmed = await confirm(
-            {
-                title: 'Confirm Archive Election',
-                message: "Are you sure you wish to archive this election? This action cannot be undone."
-            })
+        const confirmed = await confirm(t('admin_home.finalize_confirm'))
         if (!confirmed) return
         try {
             await archive()
@@ -492,14 +486,10 @@ const AdminHome = () => {
         }
     }
     const duplicateElection = async () => {
-        const confirmed = await confirm(
-            {
-                title: 'Confirm Duplicate Election',
-                message: "Are you sure you wish to duplicate this election?"
-            })
+        const confirmed = await confirm(t('admin_home.duplicate_confirm'))
         if (!confirmed) return
         const copiedElection = structuredClone(election)
-        copiedElection.title = 'Copy of ' + copiedElection.title
+        copiedElection.title = t('admin_home.copied_title', {title: copiedElection.title})
         copiedElection.frontend_url = ''
         copiedElection.owner_id = authSession.getIdField('sub')
         copiedElection.state = 'draft'
