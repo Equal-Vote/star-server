@@ -1,8 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import Typography from '@mui/material/Typography';
 import { BallotContext } from "./VotePage";
 import GenericBallotView from "./GenericBallotView";
 import { useSubstitutedTranslation } from "~/components/util";
+import { min } from "date-fns";
 
 function scoresAreOverVote({scores}){
   let uniqueScores = new Set();
@@ -33,11 +34,20 @@ export default function RankedBallotView({onlyGrid=false}) {
 
 
   const { t } = useSubstitutedTranslation();
-
-  let columnValues = ballotContext.candidates.slice(0, Number(process.env.REACT_APP_MAX_BALLOT_RANKS??999999)).map((c, i) => i+1)
-  let columns = columnValues.map(v => t('number.rank', {count: v, ordinal: true}))
-
-  return (
+  const maxRankings = useMemo(() => {
+    if (ballotContext.maxRankings) {
+      return min(ballotContext.maxRankings, Number(process.env.REACT_APP_MAX_BALLOT_RANKS));
+    } else {
+      return Number(process.env.REACT_APP_MAX_BALLOT_RANKS);
+    }
+  }, [ballotContext.maxRankings]);
+  const columnValues = useMemo (() => { 
+    return ballotContext.candidates.slice(0, maxRankings).map((c, i) => i+1)
+  }, [ballotContext.candidates, maxRankings]);
+  const columns = useMemo (() => {
+    return columnValues.map(v => t('number.rank', {count: v, ordinal: true}))
+}, [columnValues, t]);
+    return (
     <GenericBallotView
       key="rankedBallot"
       methodKey={

@@ -1,4 +1,4 @@
-import { createContext, useState } from "react"
+import { createContext, useMemo, useState } from "react"
 import BallotPageSelector from "./BallotPageSelector";
 import { useParams } from "react-router";
 import React from 'react'
@@ -39,6 +39,7 @@ export interface IBallotContext {
   onUpdate: (any) => void,
   receiptEmail: receiptEmail,
   setReceiptEmail: React.Dispatch<receiptEmail>
+  maxRankings?: number,
 }
 
 export const BallotContext = createContext<IBallotContext>(null);
@@ -143,7 +144,8 @@ const VotePage = () => {
         race: election.races[currentPage],
         onUpdate: newRankings => onUpdate(currentPage, newRankings),
         receiptEmail: receiptEmail,
-        setReceiptEmail: setReceiptEmail
+        setReceiptEmail: setReceiptEmail,
+        maxRankings: election.settings.max_rankings
       }}>
         <BallotPageSelector votingMethod={pages[currentPage].voting_method} />
       </BallotContext.Provider>

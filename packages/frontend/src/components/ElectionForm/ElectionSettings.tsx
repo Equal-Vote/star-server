@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from '@mui/material/Typography';
-import { Checkbox, FormGroup, FormHelperText, FormLabel, InputLabel, Radio, RadioGroup, Tooltip, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Box, IconButton } from "@mui/material"
+import { Checkbox, FormGroup, FormHelperText, FormLabel, InputLabel, Radio, RadioGroup, Tooltip, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Box, IconButton, TextField } from "@mui/material"
 import { StyledButton } from '../styles';
 import useElection, { ElectionContext } from '../ElectionContextProvider';
 import structuredClone from '@ungap/structured-clone';
@@ -168,6 +168,30 @@ export default function ElectionSettings() {
                                 <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                     Allow election to be searchable in the public elections tab.
                                 </FormHelperText>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            id="rank-limit"
+                                            name="Rank Limit"
+                                            checked={!!editedElectionSettings.max_rankings}
+                                            onChange={(e) => applySettingsUpdate(settings => { settings.max_rankings = e.target.checked ? 3 : undefined })}
+                                        />
+
+                                    }
+                                    label="Rank Limit"
+                                />
+                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                    Set a maximum number of rankings for ranked voting. (Must be between 3 and 8)
+                                </FormHelperText>
+                                <TextField
+                                            id="rank-limit"
+                                            type="number"
+                                            value={editedElectionSettings.max_rankings ? editedElectionSettings.max_rankings : null}
+                                            onChange={(e) => applySettingsUpdate(settings => { settings.max_rankings = e.target.value })}
+                                            variant='standard'
+                                            InputProps={{ inputProps: { min: 3, max: 8 } }}
+                                            sx={{ pl: 4, mt: -1, display: editedElectionSettings.max_rankings ? 'block' : 'none' }}
+                                        />
                             </FormGroup>
                         </FormControl>
                     </Grid >
