@@ -98,7 +98,7 @@ export default ({}) => {
             },
             setReceiptEmail: () => {},
             onUpdate: onUpdate,
-            maxRankings: Number(process.env.REACT_APP_MAX_BALLOT_RANKS)
+            maxRankings: undefined
         }
     }
 

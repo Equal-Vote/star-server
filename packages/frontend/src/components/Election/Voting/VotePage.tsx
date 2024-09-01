@@ -39,7 +39,7 @@ export interface IBallotContext {
   onUpdate: (any) => void,
   receiptEmail: receiptEmail,
   setReceiptEmail: React.Dispatch<receiptEmail>
-  maxRankings: number,
+  maxRankings?: number,
 }
 
 export const BallotContext = createContext<IBallotContext>(null);
@@ -88,11 +88,6 @@ const VotePage = () => {
     // shallow copy to trigger a refresh
     setPages([...pages])
   }
-  const maxRankings = useMemo(() => {
-    debugger;
-    return election.settings.max_rankings ? election.settings.max_rankings : Number(process.env.REACT_APP_MAX_BALLOT_RANKS??999)
-  }, [election.settings.max_rankings])
-
   const [isOpen, setIsOpen] = useState(false)
 
   const { data, isPending, error, makeRequest: postBallot } = usePostBallot(election.election_id)
@@ -150,7 +145,7 @@ const VotePage = () => {
         onUpdate: newRankings => onUpdate(currentPage, newRankings),
         receiptEmail: receiptEmail,
         setReceiptEmail: setReceiptEmail,
-        maxRankings: maxRankings
+        maxRankings: election.settings.max_rankings
       }}>
         <BallotPageSelector votingMethod={pages[currentPage].voting_method} />
       </BallotContext.Provider>
