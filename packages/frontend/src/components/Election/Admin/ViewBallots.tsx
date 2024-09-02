@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import React from 'react'
 import Button from "@mui/material/Button";
 import Container from '@mui/material/Container';
@@ -11,6 +11,7 @@ import { useGetBallots } from "../../../hooks/useAPI";
 import { epochToDateString, getLocalTimeZoneShort, useSubstitutedTranslation } from "../../util";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
+import { use } from "i18next";
 
 const ViewBallots = () => {
     const { election } = useElection()
@@ -22,19 +23,31 @@ const ViewBallots = () => {
     const [selectedBallot, setSelectedBallot] = useState(null)
     const [csvData, setcsvData] = useState([])
     const [csvHeaders, setcsvHeaders] = useState([])
+    const navigate = useNavigate();
+    const location = useLocation();
+
 
     const {t} = useSubstitutedTranslation(election.settings.term_type)
 
     const onOpen = (ballot) => {
-        setIsViewing(true)
+        setIsViewing(true);
         setSelectedBallot({ ...ballot })
+        navigate(`${location.pathname}?viewing=true`, { replace: false });
     }
-    const onClose = (roll) => {
+    const onClose = () => {
         setIsViewing(false)
         setAddRollPage(false)
         setSelectedBallot(null)
         fetchBallots()
+        navigate(location.pathname, { replace: false });
     }
+    useEffect(() => {
+        if (!location.search.includes('viewing=true') && isViewing) {
+            onClose();
+        }
+    }, [location.search])
+    
+
 
     const buildCsvData = () => {
         let header = [
