@@ -11,7 +11,7 @@ import { useGetBallots } from "../../../hooks/useAPI";
 import { epochToDateString, getLocalTimeZoneShort, useSubstitutedTranslation } from "../../util";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
-import { use } from "i18next";
+import DraftWarning from "../DraftWarning";
 
 const ViewBallots = () => {
     const { election } = useElection()
@@ -71,6 +71,7 @@ const ViewBallots = () => {
     }
     return (
         <Container>
+            <DraftWarning />
             <Typography align='center' gutterBottom variant="h4" component="h4">
                 {election.title}
             </Typography>
