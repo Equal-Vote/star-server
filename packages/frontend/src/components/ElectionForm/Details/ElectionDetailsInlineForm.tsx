@@ -46,18 +46,18 @@ export default function ElectionDetailsInlineForm() {
                     }}
                 >
                     <Grid item container xs={11}>
-                    <Grid item xs={12}>
-                                <Typography variant="h3" component="h4">
-                                    {election.title}
-                                    <ElectionStateChip state={election.state} />
-                                </Typography>
-                            </Grid>
-                        <Grid xs={12}>
+                        <Grid item xs={12}>
+                            <Typography variant="h3" component="h4">
+                                {election.title}
+                                <ElectionStateChip state={election.state} />
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
                             <Typography gutterBottom variant="h6" component="h5" sx={{opacity: election.description == '' ? .5 : 1}}>
                                 {election.description == '' ? t('admin_home.description_unset') : election.description}
                             </Typography>
                         </Grid>
-                        <Grid xs={12}>
+                        <Grid item xs={12}>
                             <Typography sx={{mt: 2, opacity: (election.start_time || election.end_time)? 1 : .5}} component="p" variant='subtitle2'>{timeRange}</Typography>
                         </Grid>
                     </Grid>
@@ -93,7 +93,7 @@ export default function ElectionDetailsInlineForm() {
                             fullWidth={false}
                             onClick={handleClose}
                             disabled={election.title.length==0}>
-                            Cancel
+                            {t('keyword.cancel')}
                         </StyledButton>
                     </Box>
                     <Box sx={{ p: 1 }}>
@@ -102,10 +102,9 @@ export default function ElectionDetailsInlineForm() {
                             variant="contained"
                             fullWidth={false}
                             onClick={() => handleSave()}>
-                            Save
+                            {t('keyword.save')}
                         </StyledButton>
                     </Box>
-
                 </Box>
             </>}
         </>

@@ -3,6 +3,8 @@ import { ElectionSettings } from "./ElectionSettings";
 import { Race } from "./Race";
 import { Uid } from "./Uid";
 
+export type ElectionState = 'draft' | 'finalized' | 'open' | 'closed' | 'archived'; 
+
 export interface Election {
     election_id:    Uid; // identifier assigned by the system
     title:          string; // one-line election title
@@ -15,7 +17,7 @@ export interface Election {
     audit_ids?:     Uid[];  // user_id of account with audit access
     admin_ids?:     Uid[];  // user_id of account with admin access
     credential_ids?:Uid[];  // user_id of account with credentialling access
-    state:          'draft' | 'finalized' | 'open' | 'closed' | 'archived'; // State of election, In development, finalized, etc
+    state:          ElectionState; // State of election, In development, finalized, etc
     races:          Race[]; // one or more race definitions
     settings:       ElectionSettings;
     auth_key?:      string;

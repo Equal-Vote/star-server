@@ -1,8 +1,12 @@
+import { ElectionState } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { BorderColor } from '@mui/icons-material';
 import { Chip, Typography } from '@mui/material';
 import { useMemo } from 'react';
+import { useSubstitutedTranslation } from '~/components/util';
 
-export default function ElectionStateChip({ state }: { state: 'draft' | 'finalized' | 'open' | 'closed' | 'archived' }) {
+export default function ElectionStateChip({ state }: { state: ElectionState }) {
+  const {t} = useSubstitutedTranslation();
+
   const chipColor = useMemo(() => {
     switch (state) {
         case 'draft':
@@ -24,7 +28,6 @@ export default function ElectionStateChip({ state }: { state: 'draft' | 'finaliz
             color: `brand.${chipColor}`,
             borderColor: `brand.${chipColor}`,
             marginX: 2,
-
         }
     }
 
@@ -35,7 +38,7 @@ export default function ElectionStateChip({ state }: { state: 'draft' | 'finaliz
     <Chip
       label={
         <Typography variant="h5" component="span">
-          {state}
+          {t(`election_state.${state}`)}
         </Typography>
       }
       sx={chipStyle}

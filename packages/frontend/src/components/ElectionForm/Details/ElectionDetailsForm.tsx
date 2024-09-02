@@ -7,51 +7,58 @@ import { Checkbox, Divider, FormControlLabel, FormGroup, FormHelperText, InputLa
 import { Input } from '@mui/material';
 import { DateTime } from 'luxon'
 import { timeZones } from './TimeZones'
-import { isValidDate } from '../../util';
+import { isValidDate, useSubstitutedTranslation } from '../../util';
 import { dateToLocalLuxonDate } from './useEditElectionDetails';
 
-export const ElectionTitleField = ({value, onUpdateValue, errors, setErrors, showLabel=true}) => <>
-    <TextField
-        inputProps={{ pattern: "[a-z]{3,15}" }}
-        error={errors.title !== ''}
-        required
-        id="election-name"
-        name="name"
-        // TODO: This bolding method only works for the text fields, if we like it we should figure out a way to add it to other fields as well
-        // inputProps={getStyle('title')}
-        label={showLabel? "Election Title" : ""}
-        type="text"
-        value={value}
-        sx={{
-            m: 0,
-            p: 0,
-            boxShadow: 2,
-        }}
-        fullWidth
-        onChange={(e) => {
-            setErrors({ ...errors, title: '' });
-            onUpdateValue(e.target.value);
-        }}
-        
-    />
-    <FormHelperText error sx={{ pl: 1, pt: 0 }}>
-        {errors.title}
-    </FormHelperText>
-</>;
-
+export const ElectionTitleField = ({election, value, onUpdateValue, errors, setErrors, showLabel=true}) => {
+    const {t} = useSubstitutedTranslation(election.settings.term_type);
+    return <>
+        <TextField
+            inputProps={{ pattern: "[a-z]{3,15}" }}
+            error={errors.title !== ''}
+            required
+            id="election-name"
+            name="name"
+            // TODO: This bolding method only works for the text fields, if we like it we should figure out a way to add it to other fields as well
+            // inputProps={getStyle('title')}
+            label={showLabel? t('election_details.title') : ""}
+            type="text"
+            value={value}
+            sx={{
+                m: 0,
+                p: 0,
+                boxShadow: 2,
+            }}
+            fullWidth
+            onChange={(e) => {
+                setErrors({ ...errors, title: '' });
+                onUpdateValue(e.target.value);
+            }}
+            
+        />
+        <FormHelperText error sx={{ pl: 1, pt: 0 }}>
+            {errors.title}
+        </FormHelperText>
+    </>;
+}
 
 export default function ElectionDetailsForm({editedElection, applyUpdate, errors, setErrors}) {
 
     const timeZone = editedElection.settings.time_zone ? editedElection.settings.time_zone : DateTime.now().zone.name
 
+    let {t} = useSubstitutedTranslation(editedElection.settings.term_type, {time_zone: timeZone});
+
     const [enableStartEndTime, setEnableStartEndTime] = useState(isValidDate(editedElection.start_time) || isValidDate(editedElection.end_time))
     const [defaultStartTime, setDefaultStartTime] = useState(isValidDate(editedElection.start_time) ? editedElection.start_time : DateTime.now().setZone(timeZone, { keepLocalTime: true }).toJSDate())
     const [defaultEndTime, setDefaultEndTime] = useState(isValidDate(editedElection.end_time) ? editedElection.end_time : DateTime.now().plus({ days: 1 }).setZone(timeZone, { keepLocalTime: true }).toJSDate())
+
+    
     
     return (
         <Grid container sx={{p: 4}}>
             <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <ElectionTitleField
+                    election={editedElection}
                     value={editedElection.title}
                     onUpdateValue={
                         (value) => applyUpdate(election => { election.title = value })
@@ -64,7 +71,7 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                 <TextField
                     id="election-description"
                     name="description"
-                    label="Description"
+                    label={t('election_details.description')}
                     multiline
                     fullWidth
                     type="text"
@@ -86,7 +93,6 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
             </Grid>
 
             <Grid item xs={12} sx={{ m: 0, p: 1 }}>
-
                 <FormGroup>
                     <FormControlLabel
                         control={
@@ -110,7 +116,7 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                                 }
                             />
                         }
-                        label="Enable Start/End Times?" />
+                        label={t('election_details.enable_times')} />
                 </FormGroup>
             </Grid>
 
@@ -118,18 +124,22 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                 <>
                     <Grid item xs={4} sx={{ m: 0, p: 1 }} justifyContent='center'>
                         <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Time Zone</InputLabel>
+                            <InputLabel id="demo-simple-select-label">{t('election_details.time_zone')}</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 value={timeZone}
-                                label="Time Zone"
-                                onChange={(e) => applyUpdate(election => { election.settings.time_zone = e.target.value })}
+                                label={t('election_details.time_zone')}
+                                onChange={(e) => {
+                                    applyUpdate(election => { election.settings.time_zone = e.target.value })
+                                    const p = useSubstitutedTranslation(editedElection.settings.term_type, {time_zone: e.target.value});
+                                    t = p.t;
+                                }}
                             >
                                 <MenuItem value={DateTime.now().zone.name}>{DateTime.now().zone.name}</MenuItem>
                                 <Divider />
                                 {timeZones.map(tz =>
-                                    <MenuItem value={tz.ID}>{tz.name}</MenuItem>
+                                    <MenuItem value={tz}>{t(`time_zones.${tz}`)}</MenuItem>
                                 )}
                             </Select>
                         </FormControl>
@@ -137,9 +147,8 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                     <Grid item xs={8}></Grid>
                     <Grid item xs={6} sx={{ m: 0, p: 1 }} justifyContent='center' >
                         <FormControl fullWidth>
-                            <InputLabel shrink>
-                                Start Date
-                            </InputLabel>
+                            <InputLabel shrink>{t('election_details.start_date')}</InputLabel>
+                            {/* datetime-local is formatted according to the OS locale, I don't think there's a way to override it*/}
                             <Input
                                 type='datetime-local'
                                 error={errors.startTime !== ''}
@@ -149,10 +158,10 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                                     if (e.target.value == null || e.target.value == '') {
                                         applyUpdate(election => { election.start_time = undefined })
                                     } else {
-                                        applyUpdate(election => { election.start_time = DateTime.fromISO(e.target.value).setZone(timeZone, { keepLocalTime: true }).toJSDate()})
-                                        setDefaultStartTime(DateTime.fromISO(e.target.value).setZone(timeZone, { keepLocalTime: true }).toJSDate())
+                                        const dt = DateTime.fromISO(e.target.value).setZone(timeZone, { keepLocalTime: true }).toJSDate();
+                                        applyUpdate(election => { election.start_time = dt})
+                                        setDefaultStartTime(dt)
                                     }
-
                                 }}
                             />
                             <FormHelperText error sx={{ pl: 0, mt: 0 }}>
@@ -162,9 +171,8 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                     </Grid>
                     <Grid item xs={6} sx={{ m: 0, p: 1 }} justifyContent='center'>
                         <FormControl fullWidth>
-                            <InputLabel shrink>
-                                Stop Date
-                            </InputLabel>
+                            <InputLabel shrink>{t('election_details.end_date')}</InputLabel>
+                            {/* datetime-local is formatted according to the OS locale, I don't think there's a way to override it*/}
                             <Input
                                 type='datetime-local'
                                 error={errors.endTime !== ''}
@@ -184,9 +192,7 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                             </FormHelperText>
                         </FormControl>
                     </Grid>
-
                 </>
-
             }
         </Grid>
     )

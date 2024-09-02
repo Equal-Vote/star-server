@@ -18,12 +18,12 @@ i18n
     // I may need to add whitelist for commaListSeparator in util.tsx to be accurate, but it didn't work
     // https://github.com/i18next/react-i18next/issues/475
     // whitelist: ['en'],
-    fallbackLng: 'en',
+    fallbackLng: 'nl',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
     resources: {
-      en: {
+      nl: {
         translation: en
       },
     }
