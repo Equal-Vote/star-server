@@ -3,7 +3,6 @@ import Typography from '@mui/material/Typography';
 import { BallotContext } from "./VotePage";
 import GenericBallotView from "./GenericBallotView";
 import { useSubstitutedTranslation } from "~/components/util";
-import { min } from "date-fns";
 
 function scoresAreOverVote({scores}){
   let uniqueScores = new Set();
@@ -36,7 +35,7 @@ export default function RankedBallotView({onlyGrid=false}) {
   const { t } = useSubstitutedTranslation();
   const maxRankings = useMemo(() => {
     if (ballotContext.maxRankings) {
-      return min(ballotContext.maxRankings, Number(process.env.REACT_APP_MAX_BALLOT_RANKS));
+      return Math.min(ballotContext.maxRankings, Number(process.env.REACT_APP_MAX_BALLOT_RANKS));
     } else {
       return Number(process.env.REACT_APP_MAX_BALLOT_RANKS);
     }
