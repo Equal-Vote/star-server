@@ -4,8 +4,7 @@
       {
         "label": "Port-Forward PostgreSQL",
         "type": "shell",
-        //You will need to add an entry in your .vscode/settings.json file to store the database port. 
-        "command": "kubectl port-forward service/postgresql -n starvote ${config:databasePort}:5432",
+        "command": "kubectl port-forward service/postgresql -n starvote 5432:5432",
         "isBackground": true,
         "problemMatcher": {
           "base": "$tsc-watch",
