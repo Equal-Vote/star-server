@@ -7,3 +7,5 @@
 **/coverage
 *Workspacenpm-cache*
 **/.env
+.vscode/settings.json
+

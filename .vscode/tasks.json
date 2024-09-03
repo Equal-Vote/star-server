@@ -4,7 +4,7 @@
       {
         "label": "Port-Forward PostgreSQL",
         "type": "shell",
-        "command": "kubectl port-forward service/postgresql -n starvote 6000:5432",
+        "command": "kubectl port-forward service/postgresql -n starvote ${config:databasePort}:5432",
         "isBackground": true,
         "problemMatcher": {
           "base": "$tsc-watch",
