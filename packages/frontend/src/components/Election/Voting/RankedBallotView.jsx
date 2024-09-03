@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import Typography from '@mui/material/Typography';
 import { BallotContext } from "./VotePage";
 import GenericBallotView from "./GenericBallotView";
@@ -22,14 +22,22 @@ export default function RankedBallotView({onlyGrid=false}) {
 
   // disabling warnings until we have a better solution, see slack convo
   // https://starvoting.slack.com/archives/C01EBAT283H/p1677023113477139
-  //if(race.voting_method == 'IRV' && scoresAreOverVote({scores: scores})){
-  //  warning=(
-  //    <>
-  //    Giving multiple candidates the same ranking is not recommended in IRV.<br/>
-  //    This could result in your ballot getting exhausted early
-  //    </>
-  //  )
-  //}
+  const race = ballotContext.race;
+  const scores = ballotContext.candidates.map(c => c.score);
+  if(race.voting_method == 'IRV' && scoresAreOverVote({scores: scores})){
+   warning=(
+     <>
+     Giving multiple candidates the same ranking is not recommended in IRV.<br/>
+     This could result in your ballot getting exhausted early
+     </>
+   )
+  }
+  const onClick = useCallback((candidateIndex, columnValue) => {
+    const newScores = ballotContext.candidates.map(candidate => candidate.score);
+    // If the candidate already has the score, remove it. Otherwise, set it with the new score.
+    newScores[candidateIndex] = newScores[candidateIndex] === columnValue ? null : columnValue;
+    ballotContext.onUpdate(newScores);
+  }, [ballotContext]);
 
 
   const { t } = useSubstitutedTranslation();

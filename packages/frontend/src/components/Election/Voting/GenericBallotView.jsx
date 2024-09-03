@@ -13,6 +13,7 @@ import { BallotContext } from "./VotePage";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { useSubstitutedTranslation } from "~/components/util";
+import BubbleGrid from "./BubbleGrid";
 
 const ScoreIcon = ({opacity, value, fontSX}) => (
   <Box align='center' sx={{ position: 'relative', aspectRatio: '1 / 1'}}>
@@ -132,20 +133,16 @@ const GenericBallotGrid = ({
       )}
 
       {/* Bubble Grid */}
-      {/* I need to do this weird loop in order to avoid the key error while also not breaking css grid*/}
-      {ballotContext.candidates.map((_,i) => columnValues.map((columnValue, j) => [i, j, columnValue])).flat().map(([i, j, columnValue]) =>
-        <Box 
-          key={`${i}-${j}`}
-          className={`circle ${columnValue === ballotContext.candidates[i].score ? "filled" : ""} ${ballotContext.instructionsRead? 'unblurred' : ''}`}
-          onClick={() => onClick(i, columnValue)}
-          sx={{
-            margin: 'auto',
-            gridArea: makeArea(numHeaderRows+1+2*i+1, 2+j),
-          }}
-        >
-          <Typography varaint='p' sx={{...fontSX}}> {columns.length == 1 ? ' ' : columnValue} </Typography>
-        </Box>
-      )}
+      <BubbleGrid
+        candidates={ballotContext.candidates}
+        columnValues={columnValues}
+        columns={columns}
+        numHeaderRows={numHeaderRows}
+        instructionsRead={ballotContext.instructionsRead}
+        onClick={onClick}
+        makeArea={makeArea}
+        fontSX = {fontSX}
+        />
     </Box>
   </Box>
 }
@@ -156,13 +153,13 @@ export default function GenericBallotView({
   methodKey,
   columnValues=null,
   starHeadings=false,
-  warning=null,
+  warning,
   onlyGrid=false,
 }) {
   if(columnValues == null){
     columnValues = columns
   }
-
+  
   const flags = useFeatureFlags();
   const { election } = useElection();
 
