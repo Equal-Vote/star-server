@@ -4,15 +4,7 @@ import { BallotContext } from "./VotePage";
 import GenericBallotView from "./GenericBallotView";
 import { useSubstitutedTranslation } from "~/components/util";
 
-function scoresAreOverVote({scores}){
-  let uniqueScores = new Set();
-  for(let i = 0; i < scores.length; i++){
-    if(scores[i] == null) continue;
-    if(uniqueScores.has(scores[i])) return true;
-    uniqueScores.add(scores[i]);
-  }
-  return false;
-}
+
 
 // Renders a complete RCV ballot for a single race
 export default function RankedBallotView({onlyGrid=false}) {
@@ -24,18 +16,16 @@ export default function RankedBallotView({onlyGrid=false}) {
   // https://starvoting.slack.com/archives/C01EBAT283H/p1677023113477139
   const race = ballotContext.race;
   const scores = ballotContext.candidates.map(c => c.score);
-  if(race.voting_method == 'IRV' && scoresAreOverVote({scores: scores})){
-   warning=(
-     <>
-     Giving multiple candidates the same ranking is not recommended in IRV.<br/>
-     This could result in your ballot getting exhausted early
-     </>
-   )
-  }
+  
   const onClick = useCallback((candidateIndex, columnValue) => {
     const newScores = ballotContext.candidates.map(candidate => candidate.score);
+    const duplicateScoreIndex = newScores.indexOf(columnValue);
+    if (duplicateScoreIndex !== -1 && duplicateScoreIndex !== candidateIndex && race.voting_method === 'RankedChoice') {
+      newScores[duplicateScoreIndex] = null;
+    }
     // If the candidate already has the score, remove it. Otherwise, set it with the new score.
     newScores[candidateIndex] = newScores[candidateIndex] === columnValue ? null : columnValue;
+    
     ballotContext.onUpdate(newScores);
   }, [ballotContext]);
 
@@ -63,11 +53,7 @@ export default function RankedBallotView({onlyGrid=false}) {
       }
       columnValues={columnValues}
       columns={columns}
-      onClick={(i, j) => {
-        const newScores = ballotContext.candidates.map(c => c.score);
-        newScores[i] = newScores[i] === j ? null : j;
-        ballotContext.onUpdate(newScores);
-      }}
+      onClick={onClick}
       warning={warning}
       onlyGrid={onlyGrid}
     />
