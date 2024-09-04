@@ -5,8 +5,8 @@ import { useSubstitutedTranslation } from '~/components/util';
 
 export default function RankedBallotView({ onlyGrid = false }) {
   const ballotContext = useContext(BallotContext);
+  const { t } = useSubstitutedTranslation();
 
-  let warning = null;
 
   // disabling warnings until we have a better solution, see slack convo
   // https://starvoting.slack.com/archives/C01EBAT283H/p1677023113477139
@@ -61,13 +61,16 @@ export default function RankedBallotView({ onlyGrid = false }) {
 
     return matchingScores
   }, [scores]);
-  
-
-
-
-
-    
-
+  const warnings = useMemo(() => {
+    const warnings = [];
+    if (skippedColumns.length) {
+      warnings.push({ message: t('ballot.methods.rcv.skipped_rank_warning'), color: 'brand.goldTransparent20' });
+    } 
+    if (matchingScores.length) {
+      warnings.push({ message: t('ballot.methods.rcv.duplicate_rank_warning'), color: 'brand.red' });
+    }
+    return warnings;
+  }, [skippedColumns, matchingScores, t]);
   const onClick = useCallback((candidateIndex, columnValue) => {
     const duplicateScoreIndex = scores.indexOf(columnValue);
     if (duplicateScoreIndex !== -1 && duplicateScoreIndex !== candidateIndex && race.voting_method === 'RankedChoice') {
@@ -79,7 +82,7 @@ export default function RankedBallotView({ onlyGrid = false }) {
     ballotContext.onUpdate(scores);
   }, [scores, race.voting_method, ballotContext]);
 
-  const { t } = useSubstitutedTranslation();
+
 
   const columnValues = useMemo(() => {
     return ballotContext.candidates.slice(0, maxRankings).map((c, i) => i + 1);
@@ -99,7 +102,7 @@ export default function RankedBallotView({ onlyGrid = false }) {
       columnValues={columnValues}
       columns={columns}
       onClick={onClick}
-      warning={warning}
+      warnings={warnings}
       onlyGrid={onlyGrid}
       warningColumns={skippedColumns}
       alertBubbles={matchingScores}

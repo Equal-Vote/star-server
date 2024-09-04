@@ -229,6 +229,8 @@ ballot:
 
         Each round the candidate with the least first-choice votes is eliminated and 
         their voters will be distributed to their next preference.
+      duplicate_rank_warning: Giving multiple candidates the same ranking is not recommended in IRV. This could result in your ballot getting exhausted early.
+      skipped_rank_warning: Skipping a rank is not recommended in IRV. This could create some abiguity in your ballot.
       heading_prefix: 'Rank {{candidates}}:'
     ranked_robin:
       instruction_bullets:

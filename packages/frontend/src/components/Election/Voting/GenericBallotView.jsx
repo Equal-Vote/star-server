@@ -160,7 +160,7 @@ export default function GenericBallotView({
   methodKey,
   columnValues=null,
   starHeadings=false,
-  warning,
+  warnings,
   onlyGrid=false,
   warningColumns=[],
   alertBubbles=[],
@@ -269,12 +269,12 @@ export default function GenericBallotView({
             {learnLink != '' && <Link href={learnLink} target='_blank'>{t('ballot.learn_more', {voting_method: methodName})}</Link>}
           </Grid>
 
-          { warning !== null &&
-            <Box style={{backgroundColor: 'var(--brand-gold)', marginLeft:'10%', marginRight:'10%', marginBottom:'.4cm', padding: '.2cm'}}>
-              <Typography>⚠️</Typography>
-              <Typography style={{paddingLeft:'30px'}}>{warning}</Typography>
+          { warnings.map((warning, i) => 
+            <Box backgroundColor={warning.color} style={{marginLeft:'10%', marginRight:'10%', marginBottom:'.4cm', padding: '.2cm'}}>
+              {/* <Typography>⚠️</Typography> */}
+              <Typography style={{paddingLeft:'30px'}}>{warning.message}</Typography>
             </Box>
-          }
+          )}
         </Grid>
       </Box>
   );
