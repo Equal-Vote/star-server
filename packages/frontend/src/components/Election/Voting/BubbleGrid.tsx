@@ -35,12 +35,12 @@ const candidateColumnPairsNested = useMemo(() => {
     if (instructionsRead) {
       className =  className + ' unblurred';
     }
-    if (columnValue === candidates[candidateIndex].score) {
-      className = className + ' filled';
-    }
     if (alertBubbles.length && alertBubbles.some(([alertCandidateIndex, alertColumnValue]) => alertCandidateIndex === candidateIndex && alertColumnValue === columnValue)) {
       className = className + ' alert';
+    } else if (columnValue === candidates[candidateIndex].score) {
+      className = className + ' filled';
     }
+    
     return className;
   }, [candidates, instructionsRead, alertBubbles]);
 

@@ -296,9 +296,10 @@ code {
   background-color: black;
 }
 
-.circle.alarm,
-.oval.alarm {
+.circle.alert,
+.oval.alert {
   background-color: var(--brand-red);
+  transition: background-color 400ms;
 }
 
 .circle.unblurred:hover,
@@ -315,6 +316,11 @@ code {
   background-color: var(--brand-black);
   color: var(--ballot-bubble-filled-text-gray);
   transition: color 200ms;
+}
+
+.circle.alert:hover {
+  background-color: var(--brand-red);
+  transition: background-color 400ms;
 }
 
 .circle p {
