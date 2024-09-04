@@ -12,9 +12,10 @@ interface BubbleGridProps {
   onClick: (candidateIndex: number, columnValue: number) => void;
   makeArea: (row: number, column: number, width?: number) => string;
   fontSX: object;
+  alertBubbles: [number, number][];
 }
 
-const BubbleGrid: React.FC<BubbleGridProps> = ({ candidates, columnValues, columns, numHeaderRows, instructionsRead, onClick, makeArea, fontSX }) => {
+const BubbleGrid: React.FC<BubbleGridProps> = ({ candidates, columnValues, columns, numHeaderRows, instructionsRead, onClick, makeArea, fontSX, alertBubbles }) => {
 
 
 

@@ -33,11 +33,12 @@ const GenericBallotGrid = ({
   columnValues,
   leftTitle,
   rightTitle,
+  warningColumns,
 }) => {
   const numHeaderRows = (leftTitle != '') + (columns.length > 1);
   const dividerHeight = '2px';  //  Note that we can't use gap here
-  const makeArea = (row, column, width=1) => {
-    return `${row} / ${column} / ${row+1} / ${column+width}`
+  const makeArea = (row, column, width=1, height=1) => {
+    return `${row} / ${column} / ${row+height} / ${column+width}`
   }
   const rowColor = (i) => {
     if(i < numHeaderRows) return 'var(--brand-white)';
@@ -82,6 +83,10 @@ const GenericBallotGrid = ({
       [...Array(numHeaderRows + 2*ballotContext.candidates.length + 1)].map((_,i) => 
         <Box key={i} className={(i == numHeaderRows + 2*ballotContext.candidates.length || (i == 0 && numHeaderRows==0)) && 'hiddenInHero'} sx={{gridArea: makeArea(i+1, 1, 2+columns.length), mx: '-500px', background: rowColor(i)}}/>
       )}
+      {/* Column Warnings */}
+      {warningColumns.map((columnValue, index) =>
+        <Box key={index} backgroundColor="brand.goldTransparent20" sx={{gridArea: makeArea(1, 1+columnValue, 1, numHeaderRows + 1 + ballotContext.candidates.length * 2), height: '100%'}}/>
+      )} 
 
       {/* HEADING TITLES (i.e. worst best for STAR )*/}
       {leftTitle != '' && <>
@@ -121,7 +126,7 @@ const GenericBallotGrid = ({
       {/* Candidates */}
       {ballotContext.candidates.map((candidate,i) =>
         <Box key={i} sx={{
-          gridArea: makeArea(numHeaderRows+1+2*i+1, 1)
+          gridArea: makeArea(numHeaderRows+1+2*i+1, 1),
         }}>
           <Typography wrap='true' className="rowHeading" align='left' variant="h6" component="h6" sx={{
             wordwrap: "break-word",
@@ -142,6 +147,7 @@ const GenericBallotGrid = ({
         onClick={onClick}
         makeArea={makeArea}
         fontSX = {fontSX}
+        warningColumns={warningColumns}
         />
     </Box>
   </Box>
@@ -155,6 +161,7 @@ export default function GenericBallotView({
   starHeadings=false,
   warning,
   onlyGrid=false,
+  warningColumns=[],
 }) {
   if(columnValues == null){
     columnValues = columns
@@ -191,6 +198,7 @@ export default function GenericBallotView({
         headingPrefix={headingPrefix}
         onClick={onClick}
         columnValues={columnValues}
+        warningColumns={warningColumns}
       />
     </Box>
 
@@ -246,6 +254,7 @@ export default function GenericBallotView({
             headingPrefix={headingPrefix}
             onClick={onClick}
             columnValues={columnValues}
+            warningColumns={warningColumns}
           />
 
           <Grid item xs={10} sx={{ p:5, px:4 }} className="footer">
