@@ -17,7 +17,7 @@ nav:
 landing_page: 
   # Hero Section
   hero:
-    title: Create Polls and Elections with
+    title: Create polls and elections with
     candidates: 
       - Least Favorite
       - Lesser-Evil
