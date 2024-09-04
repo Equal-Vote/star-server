@@ -1,7 +1,8 @@
 import React, { useContext, useMemo, useCallback } from 'react';
 import { BallotContext } from './VotePage'; 
-import GenericBallotView from './GenericBallotView'; 
+import GenericBallotView from './GenericBallotView/GenericBallotView'; 
 import { useSubstitutedTranslation } from '~/components/util'; 
+
 
 export default function RankedBallotView({ onlyGrid = false }) {
   const ballotContext = useContext(BallotContext);
@@ -72,10 +73,6 @@ export default function RankedBallotView({ onlyGrid = false }) {
     return warnings;
   }, [skippedColumns, matchingScores, t]);
   const onClick = useCallback((candidateIndex, columnValue) => {
-    const duplicateScoreIndex = scores.indexOf(columnValue);
-    if (duplicateScoreIndex !== -1 && duplicateScoreIndex !== candidateIndex && race.voting_method === 'RankedChoice') {
-      scores[duplicateScoreIndex] = null;
-    }
     // If the candidate already has the score, remove it. Otherwise, set it with the new score.
     scores[candidateIndex] = scores[candidateIndex] === columnValue ? null : columnValue;
 

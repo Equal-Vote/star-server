@@ -32,7 +32,7 @@ type receiptEmail = {
   email: string
 }
 export interface IBallotContext {
-  instructionsRead: Boolean,
+  instructionsRead: boolean,
   setInstructionsRead: () => void,
   candidates: Candidate[],
   race: Race,
@@ -66,13 +66,14 @@ const VotePage = () => {
   const authSession = useAuthSession()
   const makePages = () => {
     // generate ballot pages
-    let pages = election.races.map((race, i) => {
-      let candidates = race.candidates.map(c => ({ ...c, score: null }))
+    let pages = election.races.map((race, raceIndex) => {
+      let candidates = race.candidates.map(candidate => ({ ...candidate, score: null }))
       return {
         instructionsRead: (flags.isSet('FORCE_DISABLE_INSTRUCTION_CONFIRMATION') || !election.settings.require_instruction_confirmation)? true : false, // I could just do !require_... , but this is more clear
         candidates: (flags.isSet('FORCE_DISABLE_RANDOM_CANDIDATES') || !election.settings.random_candidate_order) ? candidates : shuffle(candidates),
         voting_method: race.voting_method,
-        race_index: i
+        race_index: raceIndex,
+        hasWarning: false
       }
     })
     return pages
@@ -93,7 +94,7 @@ const VotePage = () => {
   const { data, isPending, error, makeRequest: postBallot } = usePostBallot(election.election_id)
   const onUpdate = (pageIndex, newRaceScores) => {
     var newPages = [...pages]
-    newPages[pageIndex].candidates.forEach((c, i) => c.score = newRaceScores[i])
+    newPages[pageIndex].candidates.forEach((candidate, candidateIndex) => candidate.score = newRaceScores[candidateIndex])
     // newPages[pageIndex].scores = newRaceScores
     setPages(newPages)
   }
@@ -160,16 +161,16 @@ const VotePage = () => {
               {t('ballot.previous')}
           </Button>
           <Stepper sx={{display: 'flex', flexWrap: 'wrap'}}>
-            {pages.map((page, n) => (
-              <Box key={n}>
+            {pages.map((page, pageIndex) => (
+              <Box key={pageIndex}>
                 <Step
-                  onClick={() => setCurrentPage(n)}
+                  onClick={() => setCurrentPage(pageIndex)}
                   style={{ fontSize: "16px", width: "auto", minWidth: "0px", marginTop: "10px", paddingLeft: "0px", paddingRight: "0px" }}
                 >
                   <StepLabel>
                     {/*TODO: I can probably do this in css using the :selected property*/}
-                    <SvgIcon style={{ color: (n === currentPage) ? 'var(--brand-black)' : 'var(--ballot-race-icon-teal)' }}>
-                      {page.candidates.some((c) => (c.score > 0)) ? <path d={CHECKED_BOX} /> : <path d={DOT_ICON} />}
+                    <SvgIcon style={{ color: (pageIndex === currentPage) ? 'var(--brand-black)' : 'var(--ballot-race-icon-teal)' }}>
+                      {page.candidates.some((candidate) => (candidate.score > 0)) ? <path d={CHECKED_BOX} /> : <path d={DOT_ICON} />}
                     </SvgIcon>
                   </StepLabel>
                 </Step>
