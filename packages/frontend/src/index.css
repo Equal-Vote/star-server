@@ -296,6 +296,11 @@ code {
   background-color: black;
 }
 
+.circle.alarm,
+.oval.alarm {
+  background-color: var(--brand-red);
+}
+
 .circle.unblurred:hover,
 .oval.unblurred:hover {
   background-color: var(--ballot-bubble-hover-ltblue);

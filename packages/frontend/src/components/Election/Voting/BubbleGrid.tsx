@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Box, Typography } from '@mui/material';
 import { Candidate } from '@equal-vote/star-vote-shared/domain_model/Candidate';
 
@@ -30,6 +30,20 @@ const candidateColumnPairsNested = useMemo(() => {
 
   // Step 2: Flatten the nested array into a single array of triplets
   const candidateColumnPairsFlat = useMemo (() => candidateColumnPairsNested.flat(), [candidateColumnPairsNested]);
+  const className = useCallback((candidateIndex: number, columnIndex: number, columnValue: number) => {
+    let className = 'circle';
+    if (instructionsRead) {
+      className =  className + ' unblurred';
+    }
+    if (columnValue === candidates[candidateIndex].score) {
+      className = className + ' filled';
+    }
+    if (alertBubbles.length && alertBubbles.some(([alertCandidateIndex, alertColumnValue]) => alertCandidateIndex === candidateIndex && alertColumnValue === columnValue)) {
+      className = className + ' alert';
+    }
+    return className;
+  }, [candidates, instructionsRead, alertBubbles]);
+
 
   // Step 3: Map over the flattened array to render the Box components
   return (
@@ -37,7 +51,7 @@ const candidateColumnPairsNested = useMemo(() => {
       {candidateColumnPairsFlat.map(([candidateIndex, columnIndex, columnValue]) => (
     <Box 
       key={`${candidateIndex}-${columnIndex}`}
-      className={`circle ${columnValue === candidates[candidateIndex].score ? "filled" : ""} ${instructionsRead ? 'unblurred' : ''}`}
+      className={className(candidateIndex, columnIndex, columnValue)}
       onClick={() => onClick(candidateIndex, columnValue)}
       sx={{
         margin: 'auto',

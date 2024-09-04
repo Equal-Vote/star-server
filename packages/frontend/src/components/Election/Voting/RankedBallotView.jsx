@@ -39,6 +39,34 @@ export default function RankedBallotView({ onlyGrid = false }) {
     }
     return skippedColumns;
   }, [scores, maxRankings]);
+  const matchingScores = useMemo(() => {
+    const scoreMap = new Map();
+  
+    // Populate the map with indexes for each score
+    scores.forEach((score, index) => {
+      if (scoreMap.has(score)) {
+        scoreMap.get(score).push(index);
+      } else if (score) {
+        scoreMap.set(score, [index]);
+      }
+    });
+  
+    // Filter out entries with only one index
+    const matchingScores = []
+    scoreMap.forEach((indexes, score) => {
+      if (indexes.length > 1) {
+        indexes.map(index => matchingScores.push([index, score]))
+      }
+    });
+
+    return matchingScores
+  }, [scores]);
+  
+
+
+
+
+    
 
   const onClick = useCallback((candidateIndex, columnValue) => {
     const duplicateScoreIndex = scores.indexOf(columnValue);
@@ -74,6 +102,7 @@ export default function RankedBallotView({ onlyGrid = false }) {
       warning={warning}
       onlyGrid={onlyGrid}
       warningColumns={skippedColumns}
+      alertBubbles={matchingScores}
     />
   );
 }

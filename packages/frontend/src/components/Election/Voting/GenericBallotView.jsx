@@ -34,6 +34,7 @@ const GenericBallotGrid = ({
   leftTitle,
   rightTitle,
   warningColumns,
+  alertBubbles,
 }) => {
   const numHeaderRows = (leftTitle != '') + (columns.length > 1);
   const dividerHeight = '2px';  //  Note that we can't use gap here
@@ -147,7 +148,7 @@ const GenericBallotGrid = ({
         onClick={onClick}
         makeArea={makeArea}
         fontSX = {fontSX}
-        warningColumns={warningColumns}
+        alertBubbles={alertBubbles}
         />
     </Box>
   </Box>
@@ -162,6 +163,7 @@ export default function GenericBallotView({
   warning,
   onlyGrid=false,
   warningColumns=[],
+  alertBubbles=[],
 }) {
   if(columnValues == null){
     columnValues = columns
@@ -199,6 +201,7 @@ export default function GenericBallotView({
         onClick={onClick}
         columnValues={columnValues}
         warningColumns={warningColumns}
+        alertBubbles={alertBubbles}
       />
     </Box>
 
@@ -255,6 +258,7 @@ export default function GenericBallotView({
             onClick={onClick}
             columnValues={columnValues}
             warningColumns={warningColumns}
+            alertBubbles={alertBubbles}
           />
 
           <Grid item xs={10} sx={{ p:5, px:4 }} className="footer">
