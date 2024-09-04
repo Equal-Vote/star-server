@@ -622,6 +622,19 @@ election_details:
   end_date: End Date
 
 # Admin Home -> Extra Settings
+election_settings:
+  button_title: Extra Settings
+  dialog_title: Election Settings
+
+  not_supported: ' (currently not supported)'
+
+  random_candidate_order: 
+    label: Randomize Candidate Order
+    description: Randomizes the order of candidates on the ballots.
+
+  ballot_updates:
+    label: Ballot Updates
+    description: Allow voters to update their ballots while election is still open
 
 # Admin Home -> Add/Edit Race
 
@@ -679,6 +692,7 @@ methods:
     full_name: Choose One
     short_name: Choose One
 
+# Full list of time zones
 time_zones:
     Pacific/Midway: Midway Island, Samoa
     Pacific/Pago_Pago: Pago Pago

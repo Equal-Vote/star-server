@@ -8,9 +8,12 @@ import { StyledButton } from '../styles';
 import useElection, { ElectionContext } from '../ElectionContextProvider';
 import structuredClone from '@ungap/structured-clone';
 import EditIcon from '@mui/icons-material/Edit';
+import { useSubstitutedTranslation } from '../util';
 
 export default function ElectionSettings() {
     const { election, refreshElection, permissions, updateElection } = useElection()
+
+    const {t} = useSubstitutedTranslation(election.settings.term_type);
 
     const [editedElectionSettings, setEditedElectionSettings] = useState(election.settings)
     const [editedIsPublic, setEditedIsPublic] = useState(election.is_public)
@@ -41,6 +44,22 @@ export default function ElectionSettings() {
         handleClose()
     }
 
+    const CheckboxSetting = ({setting, disabled=false}) => <>
+        <FormControlLabel disabled={disabled} control={
+            <Checkbox
+                id={setting}
+                name={t(`election_settings.${setting}.label`)}
+                checked={editedElectionSettings[setting]}
+                onChange={(e) => applySettingsUpdate(settings => { settings[setting] = e.target.checked })}
+            />}
+            label={t(`election_settings.${setting}.label`)}
+        />
+        <FormHelperText sx={{ pl: 4, mt: -1 }}>
+            {t(`election_settings.${setting}.description`)}
+            {disabled && t(`election_settings.not_supported`)}
+        </FormHelperText>
+    </>;
+
     return (
         <Paper elevation={3} sx={{width: '100%', px: 4, py: 1}}>
             <Box
@@ -48,7 +67,7 @@ export default function ElectionSettings() {
                 alignItems={'center'}
             >
                 <Box sx={{ width: '100%', pl: 2 }}>
-                    <Typography variant="h4" component="h4">Extra Settings</Typography>
+                    <Typography variant="h4" component="h4">{t('election_settings.button_title')}</Typography>
                 </Box>
                 <Box sx={{ flexShrink: 1, p: 1 }}>
                     <IconButton
@@ -62,23 +81,14 @@ export default function ElectionSettings() {
                 open={open}
                 onClose={handleClose}
             >
-                <DialogTitle> Election Settings</DialogTitle>
+                <DialogTitle>{t('election_settings.dialog_title')}</DialogTitle>
                 <DialogContent>
                     <Grid item xs={12} sx={{ m: 0, my: 1, p: 1 }}>
                         <FormControl component="fieldset" variant="standard">
                             <FormGroup>
-                                <FormControlLabel control={
-                                    <Checkbox
-                                        id="candidate-order"
-                                        name="Randomize Candidate Order"
-                                        checked={editedElectionSettings.random_candidate_order}
-                                        onChange={(e) => applySettingsUpdate(settings => { settings.random_candidate_order = e.target.checked })}
-                                    />}
-                                    label="Randomize Candidate Order"
-                                />
-                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                    Randomizes the order of candidates on the ballots.
-                                </FormHelperText>
+                                <CheckboxSetting setting='random_candidate_order'/>
+                                <CheckboxSetting setting='ballot_updates' disabled/>
+
                                 <FormControlLabel disabled control={
                                     <Checkbox
                                         id="ballot-updates"
