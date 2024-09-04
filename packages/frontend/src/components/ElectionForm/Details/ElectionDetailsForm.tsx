@@ -10,8 +10,8 @@ import { timeZones } from './TimeZones'
 import { isValidDate, useSubstitutedTranslation } from '../../util';
 import { dateToLocalLuxonDate } from './useEditElectionDetails';
 
-export const ElectionTitleField = ({election, value, onUpdateValue, errors, setErrors, showLabel=true}) => {
-    const {t} = useSubstitutedTranslation(election.settings.term_type);
+export const ElectionTitleField = ({termType, value, onUpdateValue, errors, setErrors, showLabel=true}) => {
+    const {t} = useSubstitutedTranslation(termType);
     return <>
         <TextField
             inputProps={{ pattern: "[a-z]{3,15}" }}
@@ -58,7 +58,7 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
         <Grid container sx={{p: 4}}>
             <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <ElectionTitleField
-                    election={editedElection}
+                    termType={editedElection.settings.term_type}
                     value={editedElection.title}
                     onUpdateValue={
                         (value) => applyUpdate(election => { election.title = value })

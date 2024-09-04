@@ -271,6 +271,7 @@ export default () => {
                     <StepContent>
                         <Typography>{t('election_creation.title_question')}</Typography>
                         <ElectionTitleField
+                            termType={election.settings.term_type}
                             value={election.title}
                             onUpdateValue={
                                 (value) => setElection({...election, title: value})
