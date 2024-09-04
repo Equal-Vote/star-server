@@ -93,8 +93,8 @@ export default function GenericBallotView({
               {t('ballot.this_election_uses', {voting_method: methodName})}
             </Typography>
 
-            {t(`ballot.methods.${methodKey}.instruction_bullets`).map(bullet => 
-              <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
+            {t(`ballot.methods.${methodKey}.instruction_bullets`).map((bullet, bulletIndex) => 
+              <Typography key={bulletIndex} align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }} component="li">
                 {bullet}
               </Typography>
             )}
@@ -137,7 +137,7 @@ export default function GenericBallotView({
           </Grid>
 
           { warnings.map((warning, i) => 
-            <Box style={{
+            <Box sx={{
               marginLeft:'10%', 
               marginRight:'10%', 
               marginBottom:'.4cm', 

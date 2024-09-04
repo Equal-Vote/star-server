@@ -1,7 +1,11 @@
-import React, { useContext, useMemo, useCallback } from 'react';
+import React, { useContext, useMemo, useCallback, useEffect, useState } from 'react';
 import { BallotContext } from './VotePage'; 
 import GenericBallotView from './GenericBallotView/GenericBallotView'; 
 import { useSubstitutedTranslation } from '~/components/util'; 
+import { use } from 'i18next';
+import { ca } from 'date-fns/locale';
+import { set } from 'date-fns';
+import { get } from 'http';
 
 
 export default function RankedBallotView({ onlyGrid = false }) {
@@ -27,20 +31,16 @@ export default function RankedBallotView({ onlyGrid = false }) {
       return Number(process.env.REACT_APP_DEFAULT_BALLOT_RANKS);
     }
   }, [ballotContext.maxRankings]);
-
-  const race = ballotContext.race;
-  const scores = useMemo(() => ballotContext.candidates.map(candidate => candidate.score), [ballotContext]);
-
-  const skippedColumns = useMemo(() => {
-    const skippedColumns = [];
+  const findSkippedColumns = useCallback((scores: number[]): number[] => {
+    const skippedColumns: number[] = [];
     for (let i = 1; i <= maxRankings; i++) {
       if (!scores.includes(i) && scores.some(score => score > i)) {
         skippedColumns.push(i);
       }
     }
     return skippedColumns;
-  }, [scores, maxRankings]);
-  const matchingScores = useMemo(() => {
+  }, [maxRankings]);
+    const findMatchingScores = useCallback((scores: number[]): [number, number][] => {
     const scoreMap = new Map();
   
     // Populate the map with indexes for each score
@@ -53,7 +53,7 @@ export default function RankedBallotView({ onlyGrid = false }) {
     });
   
     // Filter out entries with only one index
-    const matchingScores = []
+    const matchingScores= []
     scoreMap.forEach((indexes, score) => {
       if (indexes.length > 1) {
         indexes.map(index => matchingScores.push([index, score]))
@@ -61,24 +61,40 @@ export default function RankedBallotView({ onlyGrid = false }) {
     });
 
     return matchingScores
-  }, [scores]);
-  const warnings = useMemo(() => {
+  }, []);
+   const getWarnings = useCallback((skippedColumns, matchingScores):{color: string, message:string}[] => {
     const warnings = [];
     if (skippedColumns.length) {
-      warnings.push({ message: t('ballot.methods.rcv.skipped_rank_warning'), color: 'brand.goldTransparent20' });
+      warnings.push({ message: t('ballot.methods.rcv.skipped_rank_warning'), color: "brand.goldTransparent20" });
     } 
     if (matchingScores.length) {
-      warnings.push({ message: t('ballot.methods.rcv.duplicate_rank_warning'), color: 'brand.red' });
+      warnings.push({ message: t('ballot.methods.rcv.duplicate_rank_warning'), color: "brand.red" });
     }
     return warnings;
-  }, [skippedColumns, matchingScores, t]);
+  }, [t]);
+ const race = useMemo(() => ballotContext.race, [ballotContext.race]);
+  const [skippedColumns, setSkippedColumns] = useState(findSkippedColumns(ballotContext.candidates.map((c) => c.score)));
+  const [matchingScores, setMatchingScores] = useState(findMatchingScores(ballotContext.candidates.map((c) => c.score)));
+  const [warnings, setWarnings] = useState(getWarnings(skippedColumns, matchingScores));
+
+
   const onClick = useCallback((candidateIndex, columnValue) => {
     // If the candidate already has the score, remove it. Otherwise, set it with the new score.
+    const scores = ballotContext.candidates.map((candidate) => candidate.score);
     scores[candidateIndex] = scores[candidateIndex] === columnValue ? null : columnValue;
-
+    const skippedColumns = findSkippedColumns(scores);
+    const matchingScores = findMatchingScores(scores);
+    const warnings = getWarnings(skippedColumns, matchingScores);
+    setSkippedColumns(skippedColumns);
+    setMatchingScores(matchingScores);
+    setWarnings(warnings);
+    if (warnings.length) {
+      ballotContext.setHasAlert(true);
+    } else {
+      ballotContext.setHasAlert(false);
+    }
     ballotContext.onUpdate(scores);
-  }, [scores, race.voting_method, ballotContext]);
-
+  }, [race.voting_method, ballotContext]);
 
 
   const columnValues = useMemo(() => {
