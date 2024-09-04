@@ -13,10 +13,14 @@ import { useSubstitutedTranslation } from '../util';
 export default function ElectionSettings() {
     const { election, refreshElection, permissions, updateElection } = useElection()
 
-    const {t} = useSubstitutedTranslation(election.settings.term_type);
+    const min_rankings = 3;
+    const max_rankings = Number(process.env.REACT_APP_MAX_BALLOT_RANKS);
+    const default_rankings = Number(process.env.REACT_APP_DEFAULT_BALLOT_RANKS);
+
+    const {t} = useSubstitutedTranslation(election.settings.term_type, {min_rankings, max_rankings});
 
     const [editedElectionSettings, setEditedElectionSettings] = useState(election.settings)
-    const [editedIsPublic, setEditedIsPublic] = useState(election.is_public)
+    let [editedIsPublic, setEditedIsPublic] = useState(election.is_public)
 
     const applySettingsUpdate = (updateFunc: (settings) => any) => {
         const settingsCopy = structuredClone(editedElectionSettings)
@@ -44,19 +48,19 @@ export default function ElectionSettings() {
         handleClose()
     }
 
-    const CheckboxSetting = ({setting, disabled=false}) => <>
+    const CheckboxSetting = ({setting, disabled=false, checked=undefined, onChange=undefined}) => <>
         <FormControlLabel disabled={disabled} control={
             <Checkbox
                 id={setting}
                 name={t(`election_settings.${setting}.label`)}
-                checked={editedElectionSettings[setting]}
-                onChange={(e) => applySettingsUpdate(settings => { settings[setting] = e.target.checked })}
+                checked={disabled? !!checked : (checked ?? !!editedElectionSettings[setting])}
+                onChange={onChange ?? ((e) => applySettingsUpdate(settings => { settings[setting] = e.target.checked; }))}
             />}
             label={t(`election_settings.${setting}.label`)}
         />
         <FormHelperText sx={{ pl: 4, mt: -1 }}>
             {t(`election_settings.${setting}.description`)}
-            {disabled && t(`election_settings.not_supported`)}
+            {disabled && !checked && t(`election_settings.not_supported`)}
         </FormHelperText>
     </>;
 
@@ -88,120 +92,26 @@ export default function ElectionSettings() {
                             <FormGroup>
                                 <CheckboxSetting setting='random_candidate_order'/>
                                 <CheckboxSetting setting='ballot_updates' disabled/>
+                                <CheckboxSetting setting='public_results'/>
+                                <CheckboxSetting setting='random_ties' disabled checked/>
+                                <CheckboxSetting setting='voter_groups' disabled/>
+                                <CheckboxSetting setting='custom_email_invite' disabled/>
+                                <CheckboxSetting setting='require_instruction_confirmation'/>
+                                <CheckboxSetting setting='publicly_searchable' checked={editedIsPublic === true} onChange={(e) => setEditedIsPublic(e.target.checked)}/>
+                                <CheckboxSetting setting='max_rankings' onChange={(e) => applySettingsUpdate(settings => {
+                                    settings.max_rankings = e.target.checked ? default_rankings : undefined })
+                                }/>
 
-                                <FormControlLabel disabled control={
-                                    <Checkbox
-                                        id="ballot-updates"
-                                        name="Ballot Updates"
-                                        checked={editedElectionSettings.ballot_updates}
-                                        onChange={(e) => applySettingsUpdate(settings => { settings.ballot_updates = e.target.checked })}
-                                    />}
-                                    label="Ballot Updates"
-                                />
-                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                    Allow voters to update their ballots while election is still open (currently not supported)
-                                </FormHelperText>
-                                <FormControlLabel control={
-                                    <Checkbox
-                                        id="public-results"
-                                        name="Public Results"
-                                        checked={editedElectionSettings.public_results}
-                                        onChange={(e) => applySettingsUpdate(settings => { settings.public_results = e.target.checked })}
-                                    />}
-                                    label="Public Results"
-                                />
-                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                    Allow voters to view preliminary results. (Administrators can make results public at any time.)
-                                </FormHelperText>
-                                <FormControlLabel
-                                    disabled={true}
-                                    control={
-                                        <Checkbox
-                                            id="random-ties"
-                                            name="Enable Random Tie-Breakers"
-                                            checked={true}
-                                        />}
-                                    label="Enable Random Tie-Breakers"
-                                />
-                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                    While ties are unlikely, yada yada yada, Link to info on ties.
-                                </FormHelperText>
-                                <FormControlLabel
-                                    disabled={true}
-                                    control={
-                                        <Checkbox
-                                            id="voter-groups"
-                                            name="Enable Voter Groups"
-                                            checked={false}
-                                        />}
-                                    label="Enable Voter Groups"
-                                />
-                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                    Manage which races voters can vote in.
-                                </FormHelperText>
-                                <FormControlLabel
-                                    disabled={true}
-                                    control={
-                                        <Checkbox
-                                            id="custom-email-text"
-                                            name="Custom Email Invite Text"
-                                            checked={false}
-                                        />}
-                                    label="Custom Email Invite Text"
-                                />
-                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                    Set greetings and instructions for your email invitations.
-                                </FormHelperText>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            id="require-instructions-confirmations"
-                                            name="Require Instruction Confirmations"
-                                            checked={editedElectionSettings.require_instruction_confirmation}
-                                            onChange={(e) => applySettingsUpdate(settings => { settings.require_instruction_confirmation = e.target.checked })}
-                                        />}
-                                    label="Require Instruction Confirmations"
-                                />
-                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                    Requires voters to confirm that they have read ballot instructions in order to vote.
-                                </FormHelperText>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            id="publicly-searchable"
-                                            name="Publicly Searchable"
-                                            checked={editedIsPublic == true}
-                                            onChange={(e) => setEditedIsPublic(e.target.checked )}
-                                        />}
-                                    label="Publicly Searchable"
-                                />
-                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                    Allow election to be searchable in the public elections tab.
-                                </FormHelperText>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            id="rank-limit"
-                                            name="Rank Limit"
-                                            checked={!!editedElectionSettings.max_rankings}
-                                            onChange={(e) => applySettingsUpdate(settings => { settings.max_rankings = e.target.checked ? 3 : undefined })}
-                                        />
-
-                                    }
-                                    label="Rank Limit"
-                                />
-                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                    Set a maximum number of rankings for ranked voting. (Must be between 3 and 8)
-                                </FormHelperText>
                                 <TextField
-                                            id="rank-limit"
-                                            type="number"
-                                            value={editedElectionSettings.max_rankings ? editedElectionSettings.max_rankings : null}
-                                            onChange={(e) => applySettingsUpdate(settings => { settings.max_rankings = e.target.value })}
-                                            variant='standard'
-                                            InputProps={{ inputProps: { min: 3, max: 8 } }}
-                                            sx={{ pl: 4, mt: -1, display: editedElectionSettings.max_rankings ? 'block' : 'none' }}
-                                        />
+                                    id="rank-limit"
+                                    type="number"
+                                    value={editedElectionSettings.max_rankings ? editedElectionSettings.max_rankings : default_rankings}
+                                    onChange={(e) => applySettingsUpdate(settings => { settings.max_rankings = e.target.value })}
+                                    variant='standard'
+                                    InputProps={{ inputProps: { min: min_rankings, max: max_rankings } }}
+                                    sx={{ pl: 4, mt: -1, display: 'block'}}
+                                    disabled={!editedElectionSettings.max_rankings}
+                                />
                             </FormGroup>
                         </FormControl>
                     </Grid >
@@ -212,15 +122,17 @@ export default function ElectionSettings() {
                         variant="contained"
                         width="100%"
                         fullWidth={false}
-                        onClick={handleClose}>
-                        Cancel
+                        onClick={handleClose}
+                    >
+                        {t('keyword.cancel')}
                     </StyledButton>
                     <StyledButton
                         type='button'
                         variant="contained"
                         fullWidth={false}
-                        onClick={() => onSave()}>
-                        Save
+                        onClick={() => onSave()}
+                    >
+                        {t('keyword.save')}
                     </StyledButton>
                 </DialogActions>
             </Dialog>

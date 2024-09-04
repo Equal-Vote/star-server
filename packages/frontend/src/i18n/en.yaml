@@ -636,6 +636,35 @@ election_settings:
     label: Ballot Updates
     description: Allow voters to update their ballots while election is still open
 
+  public_results:
+    label: Public Results
+    description: Allow voters to view preliminary results. (Administrators can make results public at any time.)
+
+  random_ties:
+    label: Enable Random Tie-Breakers
+    description: Break tie's randomly when the standard tie breaker protocol is insufficient
+
+  voter_groups:
+    label: Enable Voter Groups
+    description: Manage which races voters can vote in.
+
+  custom_email_invite: 
+    label: Custom Email Invite Text
+    description: Set greetings and instructions for your email invitations.
+
+  require_instruction_confirmation:
+    label: Require Instruction Confirmations
+    description: Requires voters to confirm that they have read ballot instructions in order to vote.
+
+  publicly_searchable:
+    label: Publicly Searchable
+    description: Allow election to be searchable in the public elections tab.
+
+  max_rankings:
+    label: Rank Limit
+    description: Set a maximum number of rankings for ranked voting. (Must be between {{min_rankings}} and {{max_rankings}})
+  
+
 # Admin Home -> Add/Edit Race
 
 # Voters

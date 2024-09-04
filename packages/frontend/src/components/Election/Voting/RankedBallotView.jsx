@@ -37,7 +37,7 @@ export default function RankedBallotView({onlyGrid=false}) {
     if (ballotContext.maxRankings) {
       return Math.min(ballotContext.maxRankings, Number(process.env.REACT_APP_MAX_BALLOT_RANKS));
     } else {
-      return Number(process.env.REACT_APP_MAX_BALLOT_RANKS);
+      return Number(process.env.REACT_APP_DEFAULT_BALLOT_RANKS);
     }
   }, [ballotContext.maxRankings]);
   const columnValues = useMemo (() => { 
