@@ -16,7 +16,7 @@ import useAuthSession from "../../AuthSessionContextProvider";
 import { StyledButton } from "../../styles";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
-import { Race } from "@equal-vote/star-vote-shared/domain_model/Race";
+import { Race, VotingMethod } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { useSubstitutedTranslation } from "~/components/util";
 import DraftWarning from "../DraftWarning";
 
@@ -40,9 +40,21 @@ export interface IBallotContext {
   receiptEmail: receiptEmail,
   setReceiptEmail: React.Dispatch<receiptEmail>
   maxRankings?: number,
+  warningColumns?: number[],
+  setWarningColumns: (warningColumns: number[]) => void,
   hasAlert: boolean,
   setHasAlert: (boolean) => void
 }
+
+export interface IPage {
+  instructionsRead: boolean,
+  candidates: Candidate[],
+  voting_method: VotingMethod,
+  race_index: number,
+  hasAlert: boolean,
+  warningColumns?: number[],
+}
+
 
 export const BallotContext = createContext<IBallotContext>(null);
 
@@ -66,7 +78,7 @@ const VotePage = () => {
   const flags = useFeatureFlags();
   const { election } = useElection()
   const authSession = useAuthSession()
-  const makePages = () => {
+  const makePages = ():IPage[] => {
     // generate ballot pages
     let pages = election.races.map((race, raceIndex) => {
       let candidates = race.candidates.map(candidate => ({ ...candidate, score: null }))
@@ -94,6 +106,12 @@ const VotePage = () => {
   const setHasAlert = (hasAlert) => {
     pages[currentPage].hasAlert = hasAlert;
     // shallow copy to trigger a refresh
+    setPages([...pages])
+  }
+
+  const setWarningColumns = (warningColumns: number[]) => {
+    pages[currentPage].warningColumns = warningColumns;
+    //shallow copy to trigger a refresh
     setPages([...pages])
   }
   const [isOpen, setIsOpen] = useState(false)
@@ -155,7 +173,10 @@ const VotePage = () => {
         setReceiptEmail: setReceiptEmail,
         maxRankings: election.settings.max_rankings,
         hasAlert: pages[currentPage].hasAlert,
-        setHasAlert: setHasAlert
+        setHasAlert: setHasAlert,
+        warningColumns: pages[currentPage].warningColumns,
+        setWarningColumns: setWarningColumns
+
       }}>
         <BallotPageSelector votingMethod={pages[currentPage].voting_method} />
       </BallotContext.Provider>

@@ -31,14 +31,14 @@ export default function RankedBallotView({ onlyGrid = false }) {
       return Number(process.env.REACT_APP_DEFAULT_BALLOT_RANKS);
     }
   }, [ballotContext.maxRankings]);
-  const findSkippedColumns = useCallback((scores: number[]): number[] => {
+  const findSkippedColumns = useCallback((scores: number[]): number[] | undefined => {
     const skippedColumns: number[] = [];
     for (let i = 1; i <= maxRankings; i++) {
       if (!scores.includes(i) && scores.some(score => score > i)) {
         skippedColumns.push(i);
       }
     }
-    return skippedColumns;
+    return skippedColumns.length ? skippedColumns : undefined;
   }, [maxRankings]);
     const findMatchingScores = useCallback((scores: number[]): [number, number][] => {
     const scoreMap = new Map();
@@ -64,7 +64,7 @@ export default function RankedBallotView({ onlyGrid = false }) {
   }, []);
    const getWarnings = useCallback((skippedColumns, matchingScores):{severity: 'warning' | 'error', message:string}[] => {
     const warnings: {severity: 'warning' | 'error', message:string}[] = [];
-    if (skippedColumns.length) {
+    if (skippedColumns) {
       warnings.push({ message: t('ballot.methods.rcv.skipped_rank_warning'), severity: "warning" });
     } 
     if (matchingScores.length) {
@@ -73,9 +73,8 @@ export default function RankedBallotView({ onlyGrid = false }) {
     return warnings;
   }, [t]);
  const race = useMemo(() => ballotContext.race, [ballotContext.race]);
-  const [skippedColumns, setSkippedColumns] = useState(findSkippedColumns(ballotContext.candidates.map((c) => c.score)));
   const [matchingScores, setMatchingScores] = useState(findMatchingScores(ballotContext.candidates.map((c) => c.score)));
-  const [warnings, setWarnings] = useState(getWarnings(skippedColumns, matchingScores));
+  const [warnings, setWarnings] = useState(getWarnings(ballotContext.warningColumns, matchingScores));
 
 
   const onClick = useCallback((candidateIndex, columnValue) => {
@@ -86,7 +85,7 @@ export default function RankedBallotView({ onlyGrid = false }) {
       const skippedColumns = findSkippedColumns(scores);
       const matchingScores = findMatchingScores(scores);
       const warnings = getWarnings(skippedColumns, matchingScores);
-      setSkippedColumns(skippedColumns);
+      ballotContext.setWarningColumns(skippedColumns);
       setMatchingScores(matchingScores);
       setWarnings(warnings);
       if (warnings.length) {
@@ -119,7 +118,6 @@ export default function RankedBallotView({ onlyGrid = false }) {
       onClick={onClick}
       warnings={warnings}
       onlyGrid={onlyGrid}
-      warningColumns={skippedColumns}
       alertBubbles={matchingScores}
     />
   );

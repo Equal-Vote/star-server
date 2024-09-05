@@ -17,7 +17,6 @@ interface GenericBallotViewProps {
   starHeadings?: boolean;
   warnings?: {severity: 'warning' | 'error', message: string}[];
   onlyGrid?: boolean;
-  warningColumns?: number[];
   alertBubbles?: [number, number][];
 }
 
@@ -29,7 +28,6 @@ export default function GenericBallotView({
   starHeadings=false,
   warnings=[],
   onlyGrid=false,
-  warningColumns=[],
   alertBubbles=[],
 }: GenericBallotViewProps) {
   if(columnValues == null){
@@ -67,7 +65,6 @@ export default function GenericBallotView({
         headingPrefix={headingPrefix}
         onClick={onClick}
         columnValues={columnValues}
-        warningColumns={warningColumns}
         alertBubbles={alertBubbles}
       />
     </Box>
@@ -124,7 +121,6 @@ export default function GenericBallotView({
             headingPrefix={headingPrefix}
             onClick={onClick}
             columnValues={columnValues}
-            warningColumns={warningColumns}
             alertBubbles={alertBubbles}
           />
 

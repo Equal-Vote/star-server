@@ -19,7 +19,6 @@ interface GenericBallotGridProps {
     columnValues: number[];
     leftTitle: string;
     rightTitle: string;
-    warningColumns: number[];
     alertBubbles: [number, number][];
 }
 
@@ -32,7 +31,6 @@ export default function GenericBallotGrid({
     columnValues,
     leftTitle,
     rightTitle,
-    warningColumns,
     alertBubbles,
 
 }: GenericBallotGridProps) {
@@ -119,7 +117,7 @@ export default function GenericBallotGrid({
             {/* Row Backgrounds */}
             {rowBackgrounds}
             {/* Column Warnings */}
-            {warningColumns.map((columnValue, columnIndex) =>
+            {ballotContext.warningColumns && ballotContext.warningColumns.map((columnValue, columnIndex) =>
                 <Box key={columnIndex}
                     sx={{
                         gridArea: makeArea(1, 1 + columnValue, 1, numHeaderRows + 1 + ballotContext.candidates.length * 2),
