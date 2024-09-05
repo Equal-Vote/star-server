@@ -35,14 +35,14 @@ export default function RaceDialog({ onSaveRace, open, handleClose, children, ed
                     type='button'
                     variant="contained"
                     width="100%"
-                    fullWidth={false}
+                    fullWidth="false"
                     onClick={handleClose}>
                     Cancel
                 </StyledButton>
                 <StyledButton
                     type='button'
                     variant="contained"
-                    fullWidth={false}
+                    fullWidth="false"
                     onClick={() => handleSave()}
                     disabled={election.state!=='draft'}>
                     Save

@@ -301,7 +301,7 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
                 <StyledButton
                     type='button'
                     variant="contained"
-                    fullWidth={false}
+                    fullWidth="false"
                     onClick={() => onSave()}>
                     Close
                 </StyledButton>

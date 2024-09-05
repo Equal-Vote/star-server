@@ -62,13 +62,13 @@ export default function RankedBallotView({ onlyGrid = false }) {
 
     return matchingScores
   }, []);
-   const getWarnings = useCallback((skippedColumns, matchingScores):{color: string, message:string}[] => {
-    const warnings = [];
+   const getWarnings = useCallback((skippedColumns, matchingScores):{severity: 'warning' | 'error', message:string}[] => {
+    const warnings: {severity: 'warning' | 'error', message:string}[] = [];
     if (skippedColumns.length) {
-      warnings.push({ message: t('ballot.methods.rcv.skipped_rank_warning'), color: "brand.goldTransparent20" });
+      warnings.push({ message: t('ballot.methods.rcv.skipped_rank_warning'), severity: "warning" });
     } 
     if (matchingScores.length) {
-      warnings.push({ message: t('ballot.methods.rcv.duplicate_rank_warning'), color: "brand.red" });
+      warnings.push({ message: t('ballot.methods.rcv.duplicate_rank_warning'), severity: "error" });
     }
     return warnings;
   }, [t]);
@@ -82,16 +82,18 @@ export default function RankedBallotView({ onlyGrid = false }) {
     // If the candidate already has the score, remove it. Otherwise, set it with the new score.
     const scores = ballotContext.candidates.map((candidate) => candidate.score);
     scores[candidateIndex] = scores[candidateIndex] === columnValue ? null : columnValue;
-    const skippedColumns = findSkippedColumns(scores);
-    const matchingScores = findMatchingScores(scores);
-    const warnings = getWarnings(skippedColumns, matchingScores);
-    setSkippedColumns(skippedColumns);
-    setMatchingScores(matchingScores);
-    setWarnings(warnings);
-    if (warnings.length) {
-      ballotContext.setHasAlert(true);
-    } else {
-      ballotContext.setHasAlert(false);
+    if (ballotContext.race.voting_method === 'IRV') {
+      const skippedColumns = findSkippedColumns(scores);
+      const matchingScores = findMatchingScores(scores);
+      const warnings = getWarnings(skippedColumns, matchingScores);
+      setSkippedColumns(skippedColumns);
+      setMatchingScores(matchingScores);
+      setWarnings(warnings);
+      if (warnings.length) {
+        ballotContext.setHasAlert(true);
+      } else {
+        ballotContext.setHasAlert(false);
+      }
     }
     ballotContext.onUpdate(scores);
   }, [race.voting_method, ballotContext]);

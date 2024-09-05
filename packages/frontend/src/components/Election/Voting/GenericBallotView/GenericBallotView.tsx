@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import Grid from "@mui/material/Grid";
 import Typography from '@mui/material/Typography';
-import { Checkbox, FormControlLabel, FormGroup, Link, Paper } from "@mui/material";
+import { Alert, Checkbox, FormControlLabel, FormGroup, Link, Paper } from "@mui/material";
 import Box from '@mui/material/Box';
 import { BallotContext } from "../VotePage";
 import useElection from "../../../ElectionContextProvider";
@@ -15,7 +15,7 @@ interface GenericBallotViewProps {
   methodKey: string;
   columnValues?: number[];
   starHeadings?: boolean;
-  warnings?: {color: string, message: string}[];
+  warnings?: {severity: 'warning' | 'error', message: string}[];
   onlyGrid?: boolean;
   warningColumns?: number[];
   alertBubbles?: [number, number][];
@@ -136,17 +136,19 @@ export default function GenericBallotView({
             {learnLink != '' && <Link href={learnLink} target='_blank'>{t('ballot.learn_more', {voting_method: methodName})}</Link>}
           </Grid>
 
-          { warnings.map((warning, i) => 
-            <Box sx={{
+          { warnings.map(({message, severity}, warningIndex) => 
+            <Alert 
+              severity={severity}
+          sx={{
+              key: warningIndex,
               marginLeft:'10%', 
               marginRight:'10%', 
               marginBottom:'.4cm', 
               padding: '.2cm',
-              backgroundColor: warning.color,
               }}>
               {/* <Typography>⚠️</Typography> */}
-              <Typography style={{paddingLeft:'30px'}}>{warning.message}</Typography>
-            </Box>
+              <Typography style={{paddingLeft:'30px'}}>{message}</Typography>
+            </Alert>
           )}
         </Grid>
       </Box>
