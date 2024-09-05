@@ -132,7 +132,7 @@ export default function GenericBallotView({
             {learnLink != '' && <Link href={learnLink} target='_blank'>{t('ballot.learn_more', {voting_method: methodName})}</Link>}
           </Grid>
 
-          { warnings.map(({message, severity}, warningIndex) => 
+          { ballotContext.warnings && ballotContext.warnings.map(({message, severity}, warningIndex) => 
             <Alert 
               severity={severity}
           sx={{

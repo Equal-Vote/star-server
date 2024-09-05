@@ -62,7 +62,7 @@ export default function RankedBallotView({ onlyGrid = false }) {
 
     return matchingScores
   }, []);
-   const getWarnings = useCallback((skippedColumns, matchingScores):{severity: 'warning' | 'error', message:string}[] => {
+   const getWarnings = useCallback((skippedColumns, matchingScores):{severity: 'warning' | 'error', message:string}[] | undefined=> {
     const warnings: {severity: 'warning' | 'error', message:string}[] = [];
     if (skippedColumns) {
       warnings.push({ message: t('ballot.methods.rcv.skipped_rank_warning'), severity: "warning" });
@@ -70,7 +70,7 @@ export default function RankedBallotView({ onlyGrid = false }) {
     if (matchingScores.length) {
       warnings.push({ message: t('ballot.methods.rcv.duplicate_rank_warning'), severity: "error" });
     }
-    return warnings;
+    return warnings.length ? warnings : undefined;
   }, [t]);
  const race = useMemo(() => ballotContext.race, [ballotContext.race]);
   const [matchingScores, setMatchingScores] = useState(findMatchingScores(ballotContext.candidates.map((c) => c.score)));
@@ -87,12 +87,7 @@ export default function RankedBallotView({ onlyGrid = false }) {
       const warnings = getWarnings(skippedColumns, matchingScores);
       ballotContext.setWarningColumns(skippedColumns);
       setMatchingScores(matchingScores);
-      setWarnings(warnings);
-      if (warnings.length) {
-        ballotContext.setHasAlert(true);
-      } else {
-        ballotContext.setHasAlert(false);
-      }
+      ballotContext.setWarnings(warnings);
     }
     ballotContext.onUpdate(scores);
   }, [race.voting_method, ballotContext]);

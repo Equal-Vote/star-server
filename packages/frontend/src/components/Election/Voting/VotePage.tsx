@@ -1,4 +1,4 @@
-import { createContext, useMemo, useState } from "react"
+import { createContext, useCallback, useMemo, useState } from "react"
 import BallotPageSelector from "./BallotPageSelector";
 import { useParams } from "react-router";
 import React from 'react'
@@ -19,6 +19,7 @@ import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import { Race, VotingMethod } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { useSubstitutedTranslation } from "~/components/util";
 import DraftWarning from "../DraftWarning";
+import { set } from "date-fns";
 
 // I'm using the icon codes instead of an import because there was padding I couldn't get rid of
 // https://stackoverflow.com/questions/65721218/remove-material-ui-icon-margin
@@ -42,8 +43,8 @@ export interface IBallotContext {
   maxRankings?: number,
   warningColumns?: number[],
   setWarningColumns: (warningColumns: number[]) => void,
-  hasAlert: boolean,
-  setHasAlert: (boolean) => void
+  warnings?: {severity: 'warning' | 'error', message: string}[],
+  setWarnings: (warnings: {severity: 'warning' | 'error', message: string}[]) => void,
 }
 
 export interface IPage {
@@ -51,8 +52,8 @@ export interface IPage {
   candidates: Candidate[],
   voting_method: VotingMethod,
   race_index: number,
-  hasAlert: boolean,
   warningColumns?: number[],
+  warnings?: {severity: 'warning' | 'error', message: string}[]
 }
 
 
@@ -103,17 +104,17 @@ const VotePage = () => {
     // shallow copy to trigger a refresh
     setPages([...pages])
   }
-  const setHasAlert = (hasAlert) => {
-    pages[currentPage].hasAlert = hasAlert;
-    // shallow copy to trigger a refresh
-    setPages([...pages])
-  }
 
   const setWarningColumns = (warningColumns: number[]) => {
     pages[currentPage].warningColumns = warningColumns;
     //shallow copy to trigger a refresh
     setPages([...pages])
   }
+  const setWarnings = useCallback((warnings: {severity: 'warning' | 'error', message: string}[]) => {
+    pages[currentPage].warnings = warnings;
+    //shallow copy to trigger a refresh
+    setPages([...pages])
+  }, [pages, currentPage])
   const [isOpen, setIsOpen] = useState(false)
 
   const { data, isPending, error, makeRequest: postBallot } = usePostBallot(election.election_id)
@@ -172,10 +173,10 @@ const VotePage = () => {
         receiptEmail: receiptEmail,
         setReceiptEmail: setReceiptEmail,
         maxRankings: election.settings.max_rankings,
-        hasAlert: pages[currentPage].hasAlert,
-        setHasAlert: setHasAlert,
         warningColumns: pages[currentPage].warningColumns,
-        setWarningColumns: setWarningColumns
+        setWarningColumns: setWarningColumns,
+        warnings: pages[currentPage].warnings,
+        setWarnings: setWarnings
 
       }}>
         <BallotPageSelector votingMethod={pages[currentPage].voting_method} />
@@ -199,8 +200,8 @@ const VotePage = () => {
                 >
                   <StepLabel>
                     {/*TODO: I can probably do this in css using the :selected property*/}
-                    <SvgIcon sx={{ color: page.hasAlert ? 'brand.red' : (pageIndex === currentPage) ? 'var(--brand-black)' : 'var(--ballot-race-icon-teal)' }}>
-                      {page.hasAlert ? <path d={WARNING_ICON} /> : page.candidates.some((candidate) => (candidate.score > 0)) ? <path d={CHECKED_BOX} /> : <path d={DOT_ICON} />}
+                    <SvgIcon sx={{ color: page.warnings ? 'brand.red' : (pageIndex === currentPage) ? 'var(--brand-black)' : 'var(--ballot-race-icon-teal)' }}>
+                      {page.warnings ? <path d={WARNING_ICON} /> : page.candidates.some((candidate) => (candidate.score > 0)) ? <path d={CHECKED_BOX} /> : <path d={DOT_ICON} />}
                     </SvgIcon>
                   </StepLabel>
                 </Step>
@@ -221,7 +222,7 @@ const VotePage = () => {
         <Button
           variant='contained'
           onClick={() => setIsOpen(true)}
-          disabled={isPending || currentPage !== pages.length - 1 || pages[currentPage].candidates.every(candidate => candidate.score === null || pages.some(page => page.hasAlert))}//disable unless on last page and at least one candidate scored
+          disabled={isPending || currentPage !== pages.length - 1 || pages[currentPage].candidates.every(candidate => candidate.score === null || pages.some(page => page.warnings))}//disable unless on last page and at least one candidate scored
           style={{ marginLeft: "auto", minWidth: "150px", marginTop: "20px" }}>
               {t('ballot.submit_ballot')}
         </Button>
