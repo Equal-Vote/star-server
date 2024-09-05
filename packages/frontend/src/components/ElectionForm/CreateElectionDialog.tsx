@@ -126,7 +126,7 @@ const templateMappers = {
 const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
     {activeStep < 3 && // hard coding this for now
         <StyledButton
-            fullWidth="false"
+            fullWidth={false}
             variant="contained"
             disabled={!canContinue}
             onClick={() => setActiveStep(i => i+1)}
@@ -137,7 +137,7 @@ const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
     }
     {activeStep > 0 &&
         <StyledButton
-            fullWidth="false"
+            fullWidth={false}
             variant="text"
             onClick={() => setActiveStep(i => i-1)}
             sx={{ mt: 1, mr: 1 }}
@@ -336,7 +336,7 @@ export default () => {
                 type='button'
                 variant="contained"
                 width="100%"
-                fullWidth="false"
+                fullWidth={false}
                 onClick={onClose}>
                 Cancel
             </StyledButton>

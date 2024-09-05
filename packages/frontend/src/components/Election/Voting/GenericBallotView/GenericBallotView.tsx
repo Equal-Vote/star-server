@@ -40,8 +40,8 @@ export default function GenericBallotView({
   const methodName = t(`methods.${methodKey}.full_name`);
 
   const leftKey = `ballot.methods.${methodKey}.left_title`;
-  const leftTitle = (t(leftKey) == leftKey)? '' : t(leftKey);
-  const rightTitle = (t(leftKey) == leftKey)? '' : t(`ballot.methods.${methodKey}.right_title`);
+  const leftTitle = t(leftKey);
+  const rightTitle = t(`ballot.methods.${methodKey}.right_title`);
 
   const headingPrefixKey = `ballot.methods.${methodKey}.heading_prefix`;
   const headingPrefix = (t(headingPrefixKey) == headingPrefixKey)? '' : t(headingPrefixKey);
@@ -128,9 +128,9 @@ export default function GenericBallotView({
 
           { ballotContext.warnings && ballotContext.warnings.map(({message, severity}, warningIndex) => 
             <Alert 
+              key={warningIndex}
               severity={severity}
           sx={{
-              key: warningIndex,
               marginLeft:'10%', 
               marginRight:'10%', 
               marginBottom:'.4cm', 

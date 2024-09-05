@@ -90,7 +90,7 @@ export default function ElectionDetailsInlineForm() {
                             type='button'
                             variant="contained"
                             width="100%"
-                            fullWidth="false"
+                            fullWidth={false}
                             onClick={handleClose}
                             disabled={election.title.length==0}>
                             {t('keyword.cancel')}
@@ -100,7 +100,7 @@ export default function ElectionDetailsInlineForm() {
                         <StyledButton
                             type='button'
                             variant="contained"
-                            fullWidth="false"
+                            fullWidth={false}
                             onClick={() => handleSave()}>
                             {t('keyword.save')}
                         </StyledButton>

@@ -29,7 +29,7 @@ export default function AddRace() {
             <StyledButton
                 type='button'
                 variant="contained"
-                fullWidth="false"
+                fullWidth={false}
                 sx={{ borderRadius: 28, backgroundColor: 'brand.green' }}
                 onClick={handleOpen}
                 disabled={election.state!=='draft'}>

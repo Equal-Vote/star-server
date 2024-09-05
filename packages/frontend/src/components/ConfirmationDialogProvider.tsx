@@ -62,14 +62,14 @@ export function ConfirmDialogProvider({ children }) {
                         type='button'
                         variant="contained"
                         width="100%"
-                        fullWidth="false"
+                        fullWidth={false}
                         onClick={() => fn.current(false)}>
                         Cancel
                     </StyledButton>
                     <StyledButton
                         type='button'
                         variant="contained"
-                        fullWidth="false"
+                        fullWidth={false}
                         onClick={() => fn.current(true)}>
                         Submit
                     </StyledButton>
