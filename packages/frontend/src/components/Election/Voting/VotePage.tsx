@@ -43,6 +43,8 @@ export interface IBallotContext {
   maxRankings?: number,
   warningColumns?: number[],
   setWarningColumns: (warningColumns: number[]) => void,
+  alertBubbles?: [number, number][],
+  setAlertBubbles: (alertBubbles: [number, number][]) => void,
   warnings?: {severity: 'warning' | 'error', message: string}[],
   setWarnings: (warnings: {severity: 'warning' | 'error', message: string}[]) => void,
 }
@@ -53,7 +55,8 @@ export interface IPage {
   voting_method: VotingMethod,
   race_index: number,
   warningColumns?: number[],
-  warnings?: {severity: 'warning' | 'error', message: string}[]
+  warnings?: {severity: 'warning' | 'error', message: string}[],
+  alertBubbles?: [number, number][],
 }
 
 
@@ -117,6 +120,12 @@ const VotePage = () => {
   }, [pages, currentPage])
   const [isOpen, setIsOpen] = useState(false)
 
+  const setAlertBubbles = useCallback((alertBubbles: [number, number][]) => {
+    pages[currentPage].alertBubbles = alertBubbles;
+    //shallow copy to trigger a refresh
+    setPages([...pages])
+  }, [pages, currentPage])
+
   const { data, isPending, error, makeRequest: postBallot } = usePostBallot(election.election_id)
   const onUpdate = (pageIndex, newRaceScores) => {
     var newPages = [...pages]
@@ -176,7 +185,9 @@ const VotePage = () => {
         warningColumns: pages[currentPage].warningColumns,
         setWarningColumns: setWarningColumns,
         warnings: pages[currentPage].warnings,
-        setWarnings: setWarnings
+        setWarnings: setWarnings,
+        alertBubbles: pages[currentPage].alertBubbles,
+        setAlertBubbles: setAlertBubbles,
 
       }}>
         <BallotPageSelector votingMethod={pages[currentPage].voting_method} />

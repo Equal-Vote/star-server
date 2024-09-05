@@ -19,7 +19,6 @@ interface GenericBallotGridProps {
     columnValues: number[];
     leftTitle: string;
     rightTitle: string;
-    alertBubbles: [number, number][];
 }
 
 export default function GenericBallotGrid({
@@ -31,7 +30,7 @@ export default function GenericBallotGrid({
     columnValues,
     leftTitle,
     rightTitle,
-    alertBubbles,
+    
 
 }: GenericBallotGridProps) {
     const numHeaderRows = Number(leftTitle != '') + Number(columns.length > 1);
@@ -166,15 +165,13 @@ export default function GenericBallotGrid({
                     candidate={candidate} gridArea={makeArea(numHeaderRows + 1 + 2 * candidateIndex + 1, 1)} />
             )}
             <BubbleGrid
-                candidates={ballotContext.candidates}
+                ballotContext={ballotContext}
                 columnValues={columnValues}
                 columns={columns}
                 numHeaderRows={numHeaderRows}
-                instructionsRead={ballotContext.instructionsRead}
                 onClick={onClick}
                 makeArea={makeArea}
                 fontSX={fontSX}
-                alertBubbles={alertBubbles}
             />
         </Box>
     </Box>

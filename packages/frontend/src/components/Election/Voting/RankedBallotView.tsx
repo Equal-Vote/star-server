@@ -40,7 +40,7 @@ export default function RankedBallotView({ onlyGrid = false }) {
     }
     return skippedColumns.length ? skippedColumns : undefined;
   }, [maxRankings]);
-    const findMatchingScores = useCallback((scores: number[]): [number, number][] => {
+    const findMatchingScores = useCallback((scores: number[]): [number, number][] | undefined => {
     const scoreMap = new Map();
   
     // Populate the map with indexes for each score
@@ -60,21 +60,19 @@ export default function RankedBallotView({ onlyGrid = false }) {
       }
     });
 
-    return matchingScores
+    return matchingScores.length ? matchingScores : undefined;
   }, []);
    const getWarnings = useCallback((skippedColumns, matchingScores):{severity: 'warning' | 'error', message:string}[] | undefined=> {
     const warnings: {severity: 'warning' | 'error', message:string}[] = [];
     if (skippedColumns) {
       warnings.push({ message: t('ballot.methods.rcv.skipped_rank_warning'), severity: "warning" });
     } 
-    if (matchingScores.length) {
+    if (matchingScores) {
       warnings.push({ message: t('ballot.methods.rcv.duplicate_rank_warning'), severity: "error" });
     }
     return warnings.length ? warnings : undefined;
   }, [t]);
  const race = useMemo(() => ballotContext.race, [ballotContext.race]);
-  const [matchingScores, setMatchingScores] = useState(findMatchingScores(ballotContext.candidates.map((c) => c.score)));
-  const [warnings, setWarnings] = useState(getWarnings(ballotContext.warningColumns, matchingScores));
 
 
   const onClick = useCallback((candidateIndex, columnValue) => {
@@ -86,7 +84,7 @@ export default function RankedBallotView({ onlyGrid = false }) {
       const matchingScores = findMatchingScores(scores);
       const warnings = getWarnings(skippedColumns, matchingScores);
       ballotContext.setWarningColumns(skippedColumns);
-      setMatchingScores(matchingScores);
+      ballotContext.setAlertBubbles(matchingScores);
       ballotContext.setWarnings(warnings);
     }
     ballotContext.onUpdate(scores);
@@ -111,9 +109,7 @@ export default function RankedBallotView({ onlyGrid = false }) {
       columnValues={columnValues}
       columns={columns}
       onClick={onClick}
-      warnings={warnings}
       onlyGrid={onlyGrid}
-      alertBubbles={matchingScores}
     />
   );
 }

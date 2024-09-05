@@ -1,22 +1,21 @@
 import React, { useCallback, useMemo } from 'react';
 import { Box, Typography } from '@mui/material';
 import { Candidate } from '@equal-vote/star-vote-shared/domain_model/Candidate';
+import { IBallotContext } from '../VotePage';
 
 
 interface BubbleGridProps {
-  candidates: Candidate[];
+  ballotContext: IBallotContext;
   columnValues: number[];
   columns: string[];
   numHeaderRows: number;
-  instructionsRead: boolean;
   onClick: (candidateIndex: number, columnValue: number) => void;
   makeArea: (row: number, column: number, width?: number) => string;
   fontSX: object;
-  alertBubbles: [number, number][];
 }
 
-const BubbleGrid: React.FC<BubbleGridProps> = ({ candidates, columnValues, columns, numHeaderRows, instructionsRead, onClick, makeArea, fontSX, alertBubbles }) => {
-
+const BubbleGrid: React.FC<BubbleGridProps> = ({ ballotContext, columnValues, columns, numHeaderRows, onClick, makeArea, fontSX }) => {
+  const { candidates, instructionsRead, alertBubbles } = ballotContext;
   // Step 1: Create a triplet of candidateIndex, columnIndex, and columnValue for each candidate
 
   const candidateColumnPairsNested = useMemo(() => {
@@ -34,7 +33,7 @@ const BubbleGrid: React.FC<BubbleGridProps> = ({ candidates, columnValues, colum
     if (instructionsRead) {
       className = className + ' unblurred';
     }
-    if (alertBubbles.length && alertBubbles.some(([alertCandidateIndex, alertColumnValue]) => alertCandidateIndex === candidateIndex && alertColumnValue === columnValue)) {
+    if (alertBubbles && alertBubbles.some(([alertCandidateIndex, alertColumnValue]) => alertCandidateIndex === candidateIndex && alertColumnValue === columnValue)) {
       className = className + ' alert';
     } else if (columnValue === candidates[candidateIndex].score) {
       className = className + ' filled';

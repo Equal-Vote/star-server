@@ -15,9 +15,7 @@ interface GenericBallotViewProps {
   methodKey: string;
   columnValues?: number[];
   starHeadings?: boolean;
-  warnings?: {severity: 'warning' | 'error', message: string}[];
   onlyGrid?: boolean;
-  alertBubbles?: [number, number][];
 }
 
 export default function GenericBallotView({
@@ -26,9 +24,7 @@ export default function GenericBallotView({
   methodKey,
   columnValues=null,
   starHeadings=false,
-  warnings=[],
   onlyGrid=false,
-  alertBubbles=[],
 }: GenericBallotViewProps) {
   if(columnValues == null){
     columnValues = columns.map(Number);
@@ -65,7 +61,6 @@ export default function GenericBallotView({
         headingPrefix={headingPrefix}
         onClick={onClick}
         columnValues={columnValues}
-        alertBubbles={alertBubbles}
       />
     </Box>
 
@@ -121,7 +116,6 @@ export default function GenericBallotView({
             headingPrefix={headingPrefix}
             onClick={onClick}
             columnValues={columnValues}
-            alertBubbles={alertBubbles}
           />
 
           <Grid item xs={10} sx={{ p:5, px:4 }} className="footer">
