@@ -25,11 +25,14 @@ export default function RankedBallotView({ onlyGrid = false }) {
   //  }  
 
   const maxRankings = useMemo(() => {
-    if (ballotContext.maxRankings) {
+    if (ballotContext.maxRankings && Number(process.env.REACT_APP_MAX_BALLOT_RANKS)){
       return Math.min(ballotContext.maxRankings, Number(process.env.REACT_APP_MAX_BALLOT_RANKS));
+    } else if (Number(process.env.REACT_APP_MAX_BALLOT_RANKS)) {
+      return Number(process.env.REACT_APP_MAX_BALLOT_RANKS);
     } else {
-      return Number(process.env.REACT_APP_DEFAULT_BALLOT_RANKS);
+      return undefined;
     }
+    
   }, [ballotContext.maxRankings]);
   const findSkippedColumns = useCallback((scores: number[]): number[] | undefined => {
     const skippedColumns: number[] = [];

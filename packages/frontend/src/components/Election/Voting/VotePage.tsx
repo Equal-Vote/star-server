@@ -42,11 +42,11 @@ export interface IBallotContext {
   setReceiptEmail: React.Dispatch<receiptEmail>
   maxRankings?: number,
   warningColumns?: number[],
-  setWarningColumns: (warningColumns: number[]) => void,
+  setWarningColumns?: (warningColumns: number[]) => void,
   alertBubbles?: [number, number][],
-  setAlertBubbles: (alertBubbles: [number, number][]) => void,
+  setAlertBubbles?: (alertBubbles: [number, number][]) => void,
   warnings?: {severity: 'warning' | 'error', message: string}[],
-  setWarnings: (warnings: {severity: 'warning' | 'error', message: string}[]) => void,
+  setWarnings?: (warnings: {severity: 'warning' | 'error', message: string}[]) => void,
 }
 
 export interface IPage {
