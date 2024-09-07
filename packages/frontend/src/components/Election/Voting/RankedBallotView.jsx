@@ -34,13 +34,17 @@ export default function RankedBallotView({onlyGrid=false}) {
 
   const { t } = useSubstitutedTranslation();
   const maxRankings = useMemo(() => {
-    if (ballotContext.maxRankings) {
+    if (ballotContext.maxRankings && Number(process.env.REACT_APP_MAX_BALLOT_RANKS)){
       return Math.min(ballotContext.maxRankings, Number(process.env.REACT_APP_MAX_BALLOT_RANKS));
+    } else if (Number(process.env.REACT_APP_MAX_BALLOT_RANKS)) {
+      return Number(process.env.REACT_APP_MAX_BALLOT_RANKS);
     } else {
-      return Number(process.env.REACT_APP_DEFAULT_BALLOT_RANKS);
+      return undefined;
     }
+    
   }, [ballotContext.maxRankings]);
   const columnValues = useMemo (() => { 
+    if (!maxRankings) return ballotContext.candidates.map((c, i) => i+1);
     return ballotContext.candidates.slice(0, maxRankings).map((c, i) => i+1)
   }, [ballotContext.candidates, maxRankings]);
   const columns = useMemo (() => {
