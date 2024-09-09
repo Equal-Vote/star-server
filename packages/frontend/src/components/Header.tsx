@@ -129,7 +129,12 @@ const Header = () => {
                     size="large"
                     href="/"
                     sx={{display: 'flex', gap: 1, flexGrow: {xs: '1', md: '0'}}}>
-                        <Avatar src='/favicon-local.png'/>
+                        {
+                            /* I thought the favicon looked a bit too busy */
+                            /*<Avatar src='/favicon-local.png'/>*/
+                        }
+                        {/* top should be 18.8% of the height*/}
+                        <Box component="img" sx={{position: 'relative', height: '40px', top: '6px'}} src='/logo.png'/>
                 </IconButton>
 
                 {/**** DESKTOP OPTIONS ****/}

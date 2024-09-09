@@ -130,9 +130,9 @@ landing_page:
 
 # Footer (bottom of all pages)
 footer:
-  project_title: dev.star.vote
+  project_title: BetterVoting
   project_description: >
-    dev.star.vote is here to help make your dream election acessible
+    BetterVoting is here to help make your dream election acessible
     to vote in and easy to officiate. Our mission is to support and
     empower the adoption and use of better voting methods like STAR Voting,
     for polling, surveys, and real elections at any scale and for any scenario.
@@ -144,12 +144,12 @@ footer:
   # proportional representation elections with either paper or digital ballots.
   about_us_title: About Us
   about_us_description: >
-    dev.star.vote is a project of the Equal Vote Coalition, a nonpartisan 501c3 nonprofit. 
+    BetterVoting is a project of the Equal Vote Coalition, a nonpartisan 501c3 nonprofit. 
     Our mission is to fight for true equality in the vote itself.
 
 
     [Donations](https://www.equal.vote/donate) are the best way to support our work. All proceeds from
-    dev.star.vote go directly to helping fund and support the adoption and use of STAR Voting.
+    BetterVoting go directly to helping fund and support the adoption and use of STAR Voting.
 
 
     Equal Vote Coalition
@@ -298,9 +298,9 @@ share:
 
 # About
 about:
-  title: About dev.star.vote
+  title: About bettervoting.com
   description: >
-    dev.star.vote is the successor to star.vote that's currently under construction.
+    bettervoting.com is the successor to star.vote that's currently under construction.
 
 
     It gives you an easy way to create secure elections with voting methods
@@ -315,7 +315,7 @@ about:
     It's also flexible to fit your voting scenario, whether it's a massive
     public poll, a high stakes board election, or just a casual poll
     picking a restaurant
-    dev.star.vote can fit your needs and provide a secure, auditable election
+    bettervoting.com can fit your needs and provide a secure, auditable election
   team_title: The Team
   leads_title: Our Leads
   leads:

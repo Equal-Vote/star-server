@@ -13,8 +13,8 @@ Follow these guidelines for setting up star.vote locally on your system. This is
 
 Some of these contribution workflows – like fixing bugs in the codebase – need you to run star.vote locally on your computer.
 
-> **What's the difference between star.vote and dev.star.vote ?**<br>
-> The current star.vote is an old implementation with a separate codebase. dev.star.vote is a work in progress, and will eventually become the new star.vote. When I mention star.vote in the guide I'm referring to the new star.vote
+> **What's the difference between star.vote and bettervoting.com ?**<br>
+> The current star.vote is an old implementation with a separate codebase. bettervoting.com is a work in progress, and will eventually become the new star.vote. When I mention star.vote in the guide I'm referring to the new star.vote
 
 ## Prepare your local machine
 
@@ -229,14 +229,14 @@ Now your .env should have 2 proxy urls, but one of them is commented
 If your running your own backend, then leave the default sample.env
 
 ```
-# PROXY_URL=https://dev.star.vote # Use this one if you want to reference the live backend
+# PROXY_URL=https://bettervoting.com # Use this one if you want to reference the live backend
 PROXY_URL=http://localhost:5000 # use this one if you're running your own backend
 ```
 
 If you're referencing the live developer backend instead of running your own, then update the comments as follows
 
 ```
-PROXY_URL=https://dev.star.vote # Use this one if you want to reference the live backend
+PROXY_URL=https://bettervoting.com # Use this one if you want to reference the live backend
 # PROXY_URL=http://localhost:5000 # use this one if you're running your own backend
 ```
 

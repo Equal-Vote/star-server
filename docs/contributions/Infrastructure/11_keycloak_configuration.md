@@ -93,8 +93,8 @@ Repeat all the the following steps for the STAR Voting realm and the STAR Voting
     * Access Type: confidential (public might be more correct? but our process is setup assuming confidential [link](https://oauth.net/2/client-types/#:~:text=Confidential%20clients%20are%20applications%20that,or%20on%20a%20mobile%20device.))
     * Service Accounts Enabled: OFF (this was ON in the previous setup but I don't think we need it?)
     * Valid Redirect URISs: (these are all the websites that can use this login endpoint)
-        * https://dev.star.vote
-        * https://dev.star.vote/*
+        * https://bettervoting.com
+        * https://bettervoting.com/*
         * http://localhost:3000 (this is useful for testing)
 1. Under "clients" > "star_vote_web" > "Credentials" set the following and hit "Save"
     * Client Authenticator: Client Id and Secret

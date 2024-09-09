@@ -24,7 +24,7 @@ export default function makeApp() {
 
     // CORS (Cross-origin resource sharing), allows for the backend to receive calls from the front end, even though they have different urls/origins
     //      (at least that's my understanding)
-    const prodEndpoints : any = process.env.ALLOWED_URLS?.split(',') || 'https://dev.star.vote/';
+    const prodEndpoints : any = process.env.ALLOWED_URLS?.split(',') || 'https://bettervoting.com/';
     app.use(cors({
         origin: prodEndpoints,
         credentials: true, // allow the backend to receive cookies from the frontend
