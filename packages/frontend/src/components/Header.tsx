@@ -134,7 +134,7 @@ const Header = () => {
                             /*<Avatar src='/favicon-local.png'/>*/
                         }
                         {/* top should be 18.8% of the height*/}
-                        <Box component="img" sx={{position: 'relative', height: '40px', top: '6px'}} src='/logo.png'/>
+                        <Box component="img" sx={{position: 'relative', height: '50px', top: '7px'}} src='/logo.png'/>
                 </IconButton>
 
                 {/**** DESKTOP OPTIONS ****/}

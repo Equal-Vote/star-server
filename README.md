@@ -1,6 +1,6 @@
 # star-server
 
-The live site can be found at https://dev.star.vote
+The live site can be found at https://bettervoting.com
 
 star-server is built using the PERN stack (PostgreSQL, Express, React, and Node)
 
