@@ -143,9 +143,6 @@ export default ({}) => {
                             </BallotContext.Provider>}
                         </Box>
                         <Typography variant="h5" color={'lightShade.contrastText'}>
-                            {t(`landing_page.hero.methods.${methodKeys[imgIndex]}.short_description`)} 
-                        </Typography>
-                        <Typography variant="h5" color={'lightShade.contrastText'}>
                             {t(`landing_page.hero.methods.${methodKeys[imgIndex]}.recommendation`)} 
                         </Typography>
                     </>:<>

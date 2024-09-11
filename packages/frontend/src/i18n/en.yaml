@@ -25,7 +25,6 @@ landing_page:
     methods:
       star:
         title: $t(methods.star.full_name) !tip(star)
-        short_description: Elects the majority preferred winner between the two {{lowercase_candidates}} with highest overall support
         recommendation: Recommended for accuracy
         default_scores:
           - 0 
@@ -33,7 +32,6 @@ landing_page:
           - 5
       approval:
         title: $t(methods.approval.short_name) !tip(approval)
-        short_description: Elects most approved candidate
         recommendation: Recommended for simplicity
         default_scores: 
           - 0 
@@ -41,7 +39,6 @@ landing_page:
           - 1
       ranked_robin:
         title: $t(methods.ranked_robin.short_name) !tip(ranked_robin)
-        short_description: Elects majority preferred winner
         recommendation: Recommended for ranking
         default_ranks: 
           - 3 
@@ -59,7 +56,7 @@ landing_page:
     option_prompt: Option {{number}}
     create: Create Quick Poll
     continue_with_editor: Continue with Full Editor
-    sign_in: Sign in for more settings
+    sign_in: Sign in for more options
     clear_all: Clear All
 
   # Election Stats Section
@@ -72,17 +69,21 @@ landing_page:
     title: Features
     items:
     - title: Voting Methods
-      text: Supports a variety of voting methods including $t(methods.star.short_name), $t(methods.approval.short_name), and $t(methods.ranked_robin.short_name).
-    - title: Multi Winner Methods
-      text: Supports methods that yield multiple winners, including both proportional and block based methods.
-    - title: Multi Race Elections
-      text: Setup multi race elections for when there are mutiples issues or positions to vote on.
-    - title: Security
-      text: There's a spectrum of security options, from creating a direct link to share publicly, to limiting the election to a set of emails or voter ids.
+      text: Recommended voting methods include $t(methods.star.short_name), $t(methods.approval.short_name), and $t(methods.ranked_robin.short_name) (plus proportional versions). Also supports Choose One and Ranked Choice Voting.
+    - title: Multi-Winner Methods
+      text: Supports methods that yield multiple winners, including both proportional and basic multi-winner methods.
+    - title: Multi-Race Elections
+      text: Setup multi-race elections for when there are mutiple issues or positions to vote on.
+    - title: Compare Methods
+      text: Allow voters to vote on one issue with multiple methods to compare the voter experience and winners; Just duplicate your race and select different methods. 
+    - title: Secure Elections
+      text: Offers a spectrum of security options including email verification, voter IDs, imported email lists, and direct voting links.
+    - title: Accessible Polls
+      text: Quick and easy options for creating and sharing a public poll online.
     - title: Open Source
-      text: This project is shared open source under a AGPL-3.0 license. Run your elections via final.xyz or self host on your own server.
-    - title: Equal Vote
-      text: Rest easy knowing that your voters will all have an equal vote, and won't need to worry about vote splitting. 
+      text: This project is shared [open source](https://github.com/Equal-Vote/star-server/) under a AGPL-3.0 license. Run your elections via BetterVoting or self host on your own server.
+    - title: Educational Resources
+      text: Find everything you need to learn about voting methods and choose the best option for you.
 
   # Featured Elections Section
   featured_elections:
@@ -114,10 +115,12 @@ landing_page:
     -  title: Free Tier
        price: $0.00
        description: |
-        Unlimited voters for Public elections
+        Unlimited voters for public elections
+
+        No credit card required
         
         Private elections up to 100 voters
-    -  title: Professional
+    -  title: Professional Tier
        price: Contact for quote
        description: |
         Private elections over 100 voters
@@ -527,15 +530,15 @@ tips:
   
   star:
     title: $t(methods.star.full_name)
-    description: Uses a 0-5 star ballot, and the vote is tallied in 2 rounds. First the stars are added together, and then the 2 front runners face each other in an automatic runoff
+    description: Voters score {{candidates}} from 5 stars (best) to 0 stars (worst). The two top-scored {{candidates}} are finalists, finalist with the most votes wins.
 
   approval:
     title: $t(methods.approval.full_name)
-    description: Voters pick as many {{candidates}} as they like, and then most votes wins
+    description: Voters approve as many {{candidates}} as they like, and then the {{candidate}} with the most approvals wins.
 
   ranked_robin:
     title: $t(methods.ranked_robin.full_name)
-    description: The candidate who wins the most runoffs wins
+    description: The candidate preferred over all others wins. (Also known as Condorcet.)
 
 # Admin Home
 admin_home:
@@ -703,11 +706,11 @@ keyword:
 methods: 
   star:
     full_name: STAR Voting
-    short_name: STAR
+    short_name: STAR Voting
     learn_link: https://www.youtube.com/watch?v=3-mOeUXAkV0
   approval:
     full_name: Approval Voting
-    short_name: Approval
+    short_name: Approval Voting
     learn_link: https://www.youtube.com/watch?v=db6Syys2fmE
   rcv:
     full_name: Ranked Choice Voting
@@ -718,7 +721,7 @@ methods:
     short_name: Ranked Robin
     learn_link: https://www.equal.vote/ranked_robin
   choose_one:
-    full_name: Choose One
+    full_name: Choose One Plurality
     short_name: Choose One
 
 # Full list of time zones
