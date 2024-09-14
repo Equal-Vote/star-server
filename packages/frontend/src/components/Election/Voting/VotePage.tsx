@@ -27,7 +27,7 @@ const INFO_ICON = "M 11 7 h 2 v 2 h -2 Z m 0 4 h 2 v 6 h -2 Z m 1 -9 C 6.48 2 2 
 const CHECKED_BOX = "M 19 3 H 5 c -1.11 0 -2 0.9 -2 2 v 14 c 0 1.1 0.89 2 2 2 h 14 c 1.11 0 2 -0.9 2 -2 V 5 c 0 -1.1 -0.89 -2 -2 -2 Z m -9 14 l -5 -5 l 1.41 -1.41 L 10 14.17 l 7.59 -7.59 L 19 8 l -9 9 Z"
 //const UNCHECKED_BOX = "M 19 5 v 14 H 5 V 5 h 14 m 0 -2 H 5 c -1.1 0 -2 0.9 -2 2 v 14 c 0 1.1 0.9 2 2 2 h 14 c 1.1 0 2 -0.9 2 -2 V 5 c 0 -1.1 -0.9 -2 -2 -2 Z"
 const DOT_ICON = "M12 6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6 2.69-6 6-6m0-2c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8z"
-const WARNING_ICON = "M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+const WARNING_ICON = "M12,5.99L19.53,19H4.47L12,5.99 M12,2L1,21h22L12,2L12,2z"
 type receiptEmail = {
   sendReceipt: boolean,
   email: string
@@ -216,8 +216,15 @@ const VotePage = () => {
                 >
                   <StepLabel>
                     {/*TODO: I can probably do this in css using the :selected property*/}
-                    <SvgIcon sx={{ color: page.warnings ? 'brand.red' : (pageIndex === currentPage) ? 'var(--brand-black)' : 'var(--ballot-race-icon-teal)' }}>
+                    <SvgIcon 
+                      sx={{ 
+                        color: page.warnings ? 'brand.warning' : (pageIndex === currentPage) ? 'var(--brand-black)' : 'var(--ballot-race-icon-teal)' }}>
                       {page.warnings ? <path d={WARNING_ICON} /> : page.candidates.some((candidate) => (candidate.score > 0)) ? <path d={CHECKED_BOX} /> : <path d={DOT_ICON} />}
+                      {page.warnings && <>
+                      <polygon points="13,16 11,16 11,18 13,18"/>
+                      <polygon points="13,10 11,10 11,15 13,15"/>
+                      </>}
+
                     </SvgIcon>
                   </StepLabel>
                 </Step>
