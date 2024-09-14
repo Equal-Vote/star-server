@@ -298,7 +298,7 @@ code {
 
 .circle.alert,
 .oval.alert {
-  background-color: var(--brand-red);
+  background-color: var(--ltbrand-red);
   transition: background-color 400ms;
 }
 
@@ -318,8 +318,8 @@ code {
   transition: color 200ms;
 }
 
-.circle.alert:hover {
-  background-color: var(--brand-red);
+.circle.alert:hover, .oval.alert:hover {
+  background-color: var(--ltbrand-red);
   transition: background-color 400ms;
 }
 

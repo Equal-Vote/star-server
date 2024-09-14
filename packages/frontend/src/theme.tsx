@@ -77,6 +77,7 @@ declare module '@mui/material/styles' {
     gray3Transparent20?: string;
     gray2Transparent20?: string;
     gray1Transparent20?: string;
+    warningColumn?: string;
   }
 
   interface SimplePaletteColorOptions {
@@ -110,6 +111,7 @@ declare module '@mui/material/styles' {
     gray3Transparent20?: string;
     gray2Transparent20?: string;
     gray1Transparent20?: string;
+    warningColumn?: string;
   }
 
 }
@@ -147,6 +149,7 @@ const brandPalette: PaletteOptions = {
     gray3Transparent20: '#99999933',
     gray2Transparent20: '#CCCCCC33',
     gray1Transparent20: '#ECECEC33',
+    warningColumn: '#FFDD0080',
   }
 }
 

@@ -43,8 +43,6 @@ export default function GenericBallotView({
   const leftTitle = t(leftKey);
   const rightTitle = t(`ballot.methods.${methodKey}.right_title`);
 
-  const headingPrefixKey = `ballot.methods.${methodKey}.heading_prefix`;
-  const headingPrefix = (t(headingPrefixKey) == headingPrefixKey)? '' : t(headingPrefixKey);
 
   const learnLinkKey = `methods.${methodKey}.learn_link`
   const learnLink = (t(learnLinkKey) == learnLinkKey)? '' : t(learnLinkKey);
@@ -58,7 +56,6 @@ export default function GenericBallotView({
         columns={columns}
         leftTitle={leftTitle}
         rightTitle={rightTitle}
-        headingPrefix={headingPrefix}
         onClick={onClick}
         columnValues={columnValues}
       />
@@ -113,7 +110,6 @@ export default function GenericBallotView({
             columns={columns}
             leftTitle={leftTitle}
             rightTitle={rightTitle}
-            headingPrefix={headingPrefix}
             onClick={onClick}
             columnValues={columnValues}
           />

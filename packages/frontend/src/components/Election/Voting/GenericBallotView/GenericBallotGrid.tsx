@@ -14,7 +14,6 @@ interface GenericBallotGridProps {
     ballotContext: IBallotContext;
     starHeadings: boolean;
     columns: string[];
-    headingPrefix: string;
     onClick: (candidateIndex: number, columnValue: number) => void;
     columnValues: number[];
     leftTitle: string;
@@ -25,7 +24,6 @@ export default function GenericBallotGrid({
     ballotContext,
     starHeadings,
     columns,
-    headingPrefix,
     onClick,
     columnValues,
     leftTitle,
@@ -121,7 +119,7 @@ export default function GenericBallotGrid({
                     sx={{
                         gridArea: makeArea(1, 1 + columnValue, 1, numHeaderRows + 1 + ballotContext.candidates.length * 2),
                         height: '100%',
-                        backgroundColor: "brand.goldTransparent20"
+                        backgroundColor: "brand.warningColumn"
                     }}
                 />
             )}
@@ -139,11 +137,6 @@ export default function GenericBallotGrid({
 
             {/* HEADINGS (i.e. stars, ranks, etc) */}
             {columns.length > 1 && <>
-                <Box display='flex' flexDirection='column-reverse' sx={{ height: '100%', gridArea: makeArea(numHeaderRows, 1) }} >
-                    <Typography className="headingPrefix" sx={{ mx: '10px' }}>
-                        {headingPrefix}
-                    </Typography>
-                </Box>
                 {columns.map((columnTitle, columnIndex) => 
                 <ColumnHeadings
                     key={columnIndex}

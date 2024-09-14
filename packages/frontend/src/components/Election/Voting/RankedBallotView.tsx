@@ -25,14 +25,13 @@ export default function RankedBallotView({ onlyGrid = false }) {
   //  }  
 
   const maxRankings = useMemo(() => {
-    if (ballotContext.maxRankings && Number(process.env.REACT_APP_MAX_BALLOT_RANKS)){
-      return Math.min(ballotContext.maxRankings, Number(process.env.REACT_APP_MAX_BALLOT_RANKS));
-    } else if (Number(process.env.REACT_APP_MAX_BALLOT_RANKS)) {
-      return Number(process.env.REACT_APP_MAX_BALLOT_RANKS);
+    const MAX_BALLOT_RANKS = Number(process.env.REACT_APP_MAX_BALLOT_RANKS) ? Number(process.env.REACT_APP_MAX_BALLOT_RANKS) : 8;
+    const DEFAULT_BALLOT_RANKS = Number(process.env.REACT_APP_DEFAULT_BALLOT_RANKS) ? Number(process.env.REACT_APP_DEFAULT_BALLOT_RANKS) : 6;
+    if (ballotContext.maxRankings) {
+      return Math.min(ballotContext.maxRankings, MAX_BALLOT_RANKS);
     } else {
-      return undefined;
+      return DEFAULT_BALLOT_RANKS;
     }
-    
   }, [ballotContext.maxRankings]);
   const findSkippedColumns = useCallback((scores: number[]): number[] | undefined => {
     const skippedColumns: number[] = [];
@@ -68,10 +67,10 @@ export default function RankedBallotView({ onlyGrid = false }) {
    const getWarnings = useCallback((skippedColumns, matchingScores):{severity: 'warning' | 'error', message:string}[] | undefined=> {
     const warnings: {severity: 'warning' | 'error', message:string}[] = [];
     if (skippedColumns) {
-      warnings.push({ message: t('ballot.methods.rcv.skipped_rank_warning'), severity: "warning" });
+      warnings.push({ message: t('ballot.warnings.skipped_rank'), severity: "warning" });
     } 
     if (matchingScores) {
-      warnings.push({ message: t('ballot.methods.rcv.duplicate_rank_warning'), severity: "error" });
+      warnings.push({ message: t('ballot.warnings.duplicate_rank'), severity: "error" });
     }
     return warnings.length ? warnings : undefined;
   }, [t]);
@@ -82,14 +81,17 @@ export default function RankedBallotView({ onlyGrid = false }) {
     // If the candidate already has the score, remove it. Otherwise, set it with the new score.
     const scores = ballotContext.candidates.map((candidate) => candidate.score);
     scores[candidateIndex] = scores[candidateIndex] === columnValue ? null : columnValue;
-    if (ballotContext.race.voting_method === 'IRV') {
       const skippedColumns = findSkippedColumns(scores);
-      const matchingScores = findMatchingScores(scores);
+      let matchingScores: [number, number][] | undefined = undefined;
+      if (ballotContext.race.voting_method === 'IRV') {
+        matchingScores = findMatchingScores(scores);
+      }
       const warnings = getWarnings(skippedColumns, matchingScores);
       ballotContext.setWarningColumns(skippedColumns);
       ballotContext.setAlertBubbles(matchingScores);
       ballotContext.setWarnings(warnings);
-    }
+    // }
+    
     ballotContext.onUpdate(scores);
   }, [race.voting_method, ballotContext]);
 
