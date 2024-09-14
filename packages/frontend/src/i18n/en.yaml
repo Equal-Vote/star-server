@@ -2,7 +2,7 @@
 nav:
   about: About 
   help: Help 
-  public_elections: Browse Elections
+  public_elections: Browse Polls
   new_election: New Election
   greeting: Hello, {{name}}
   feedback: Feedback?
@@ -12,12 +12,13 @@ nav:
   logout: Logout
   sign_in: Sign In
   better_voting: Better Voting
+  beta_warning: This app is still being developed and bugs may exist. Please use the feedback button to help us improve.
 
 # Landing Page
 landing_page: 
   # Hero Section
   hero:
-    title: Create polls and elections with
+    title: Create elections and polls with
     candidates: 
       - Least Favorite
       - Lesser-Evil
@@ -51,7 +52,7 @@ landing_page:
 
   # Quick Poll Section
   quick_poll:
-    title: Try a Quick Poll with {{method_name}}
+    title: Try a quick poll with {{method_name}} 
     question_prompt: What is your poll question?
     option_prompt: Option {{number}}
     create: Create Quick Poll
@@ -260,22 +261,22 @@ election_creation:
   term_question: Which term best describes your situation?
 
   title_title: Title?
-  title_question: What's the title for your {{lowercase_election}}? # TERM will be replaced with election or poll
+  title_question: What's the title for your {{lowercase_election}}? !tip(election_title) # TERM will be replaced with election or poll
 
   restricted_title: Restricted?
   restricted_question: Would you like your {{lowercase_election}} to be restricted to a pre-defined voter list?
 
-  template_title: Starting template...
-  template_prompt: Choose a starting template, you can always make further tweaks later
+  template_title: Choose Voters
+  template_prompt: (You can change this later, if needed.)
 
-  demo_title: Demo {{election}}
-  demo_description: Unlimited votes per device. Great for demonstrations where multiple people are using the same device
+  demo_title: Allows multiple votes per device
+  demo_description: Great for demonstrations where multiple people are using the same device
 
   public_title: Public {{election}}
-  public_description: 1 person, 1 vote. {{election}} will be open to anyone via the public polls & elections page, as well as anyone who has been given a direct link
+  public_description: 1 person, 1 vote. {{election}} will be open to anyone via the "Browse Polls" page, as well as anyone who has been given a direct link
 
-  unlisted_title: Unlisted {{election}}
-  unlisted_description: 1 person, 1 vote. {{election}} will be inclusive and open to anyone who has been given the ballot link
+  unlisted_title: 1 person, 1 vote 
+  unlisted_description: '{{election}} will be open to anyone who has been given the ballot link'
 
   email_list_title: Email List
   email_list_description: Provide a list of emails for your voters. Personal links will be sent to each of these voters once the election starts
@@ -520,13 +521,41 @@ election_state:
 
 # Info bubbles
 tips:
+  no_auth:
+    title: No Voting Limit
+    description: Allows unlimited votes per device. Great for demos or where all your voters are sharing the same device.
+
+  ip_auth:
+    title: One vote per Network
+    description: >
+      Only allows 1 vote per IP address. This makes it harder to vote multiple times on the same device, but it won't allow
+      for multiple voters if they're sharing the same WiFi network. Great for adding security in anonymous online polls,
+      without impacting the user experience. 
+
+  device_auth:
+    title: One vote per device
+    description: >
+      Stores a cookie to ensure voter can't vote multiple times while using the same browser.
+      Provides a great user experience, while also ensuring basic security.
+
+  login_auth:
+    title: One for per User
+    description: >
+      Only allow votes from people who have created a BetterVoting account and verified their email address. 
+      Great for maximizing security of anonymous elections election. 
+
+  election_title:
+    title: Title
+    description: >
+      This is the {{lowercase_election}} title, not the title for each {{lowercase_race}}, each {{lowercase_race}} will have it's own separate title that you will create later.
+
   polls_vs_elections:
-    title: Polls versus Elections
-    description: There's no functional difference between polls and elections. This only impacts which terminology is shown to you and your voters.
+    title: Elections versus Polls
+    description: A poll will use terms like “option” and “question”. An election will use terms like “candidate” and “race”.
 
   restricted:
-    title: Restricted Polls or Elections
-    description: Restricted Polls or Elections only allow those on the voter list to vote. The voter list can be a set of emails or voter IDs.
+    title: Restricted {{election}}
+    description: Restricted {{elections}} only allow those on the voter list to vote. The voter list can be a set of emails or voter IDs.
   
   star:
     title: $t(methods.star.full_name)
@@ -598,12 +627,12 @@ admin_home:
   finalize_button: Finalize {{election}}
 
   voter_authentication:
-    form_label: Voter Authentication
+    form_label: Who can vote?
     help_text: Limit to one {{vote}} per...
-    no_limit_label: No Limit
-    ip_label: IP Address
-    device_label: Device
-    email_label: Login Email Address
+    no_limit_label: No Limit !tip(no_auth)
+    ip_label: Network !tip(ip_auth)
+    device_label: Device !tip(device_auth)
+    email_label: User (login required) !tip(login_auth)
 
   finalize_confirm:
     title: Confirm Finalize Election
@@ -627,7 +656,7 @@ election_details:
 # Admin Home -> Extra Settings
 election_settings:
   button_title: Extra Settings
-  dialog_title: Election Settings
+  dialog_title: '{{election}} Settings'
 
   not_supported: ' (currently not supported)'
 
@@ -667,7 +696,6 @@ election_settings:
     label: Rank Limit
     description: Set a maximum number of rankings for ranked voting. (Must be between {{min_rankings}} and {{max_rankings}})
   
-
 # Admin Home -> Add/Edit Race
 
 # Voters

@@ -79,7 +79,7 @@ const GenericBallotGrid = ({
       {/* Row Backgrounds */}
       {/*not sure why the [...] is necessary but it is*/
       [...Array(numHeaderRows + 2*ballotContext.candidates.length + 1)].map((_,i) => 
-        <Box key={i} sx={{gridArea: makeArea(i+1, 1, 2+columns.length), mx: '-500px', background: rowColor(i), height: '100%'}}/>
+        <Box key={i} className={(i == numHeaderRows + 2*ballotContext.candidates.length || (i == 0 && numHeaderRows==0)) && 'hiddenInHero'} sx={{gridArea: makeArea(i+1, 1, 2+columns.length), mx: '-500px', background: rowColor(i)}}/>
       )}
 
       {/* HEADING TITLES (i.e. worst best for STAR )*/}

@@ -68,6 +68,7 @@ const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
             public_results: true,
             random_candidate_order: false,
             require_instruction_confirmation: true,
+            term_type: 'poll',
         }
     }
 
@@ -173,7 +174,8 @@ const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
                 borderRadius: '20px',
                 minWidth: {xs: '0px', md: '400px'}
             }}>
-                <Typography component="h2" color={'lightShade.contrastText'}
+                {/*we use comonent here instead of variant since we want the styling to match p*/}
+                <Typography component="h5" color={'lightShade.contrastText'}
                     className={grow? 'heroGrow' : 'heroShrink'}
                 >{t('landing_page.quick_poll.title')}</Typography>
                 <StyledTextField

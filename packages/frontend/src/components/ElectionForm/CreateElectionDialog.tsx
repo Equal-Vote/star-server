@@ -76,7 +76,7 @@ const templateMappers = {
     'demo': (election:NewElection):NewElection => ({
         ...election,
     }),
-    'public': (election:NewElection):NewElection => ({
+    /*'public': (election:NewElection):NewElection => ({
         ...election,
         is_public: true,
         settings: {
@@ -86,7 +86,7 @@ const templateMappers = {
                 voter_id: true
             },
         }
-    }),
+    }),*/
     'unlisted': (election:NewElection):NewElection => ({
         ...election,
         is_public: false,
@@ -317,7 +317,7 @@ export default () => {
                             {t('election_creation.template_prompt')}
                         </Typography>
                         <Box style={{height: '10px'}}/> {/*hacky padding*/}
-                        {(election.settings.voter_access === 'closed'? ['email_list', 'id_list'] : ['demo', 'public', 'unlisted']).map((name, i) =>
+                        {(election.settings.voter_access === 'closed'? ['email_list', 'id_list'] : ['demo', 'unlisted']).map((name, i) =>
                             <StartingOption
                                 title={t(`election_creation.${name}_title`)}
                                 description={t(`election_creation.${name}_description`)}

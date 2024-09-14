@@ -131,7 +131,7 @@ export default ({}) => {
                     sx={{width: '100%'}}
                 >
                     {imgIndex != methodKeys.length-1 ? <>
-                        <Box sx={{width: {xs: '100%', md:'80%'}, maxWidth: '450px', margin: 'auto'}}>
+                        <Box className="heroBallot" sx={{width: {xs: '100%', md:'80%'}, maxWidth: '450px', margin: 'auto'}}>
                             {imgIndex == 0 && <BallotContext.Provider value={makeBallotContext(starScores, setStarScores)}>
                                 <StarBallotView onlyGrid={true}/>
                             </BallotContext.Provider>}
