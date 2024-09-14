@@ -10,5 +10,4 @@ export interface Candidate {
     candidate_url?: string; // link to info about candidate
     partyUrl?:      string; // link to info about party
     photo_filename?:string; // link to info about party
-    score?:         number; // score for the candidate
   }

@@ -74,6 +74,7 @@ export default function GenericBallotGrid({
             rowBackgrounds.push(
                 <Box
                     key={rowIndex}
+                    className={(rowIndex == numHeaderRows + 2*ballotContext.candidates.length || (rowIndex == 0 && numHeaderRows==0)) && 'hiddenInHero'}
                     sx={{
                         gridArea: makeArea(rowIndex + 1, 1, 2 + columns.length),
                         mx: '-500px',
@@ -83,6 +84,7 @@ export default function GenericBallotGrid({
                 />
             );
         }
+
         return rowBackgrounds;
     }, [numHeaderRows, columns.length, ballotContext.candidates.length]);
 

@@ -32,10 +32,15 @@ type receiptEmail = {
   sendReceipt: boolean,
   email: string
 }
+
+export interface BallotCandidate extends Candidate {
+  score: number
+}
+
 export interface IBallotContext {
   instructionsRead: boolean,
   setInstructionsRead: () => void,
-  candidates: Candidate[],
+  candidates: BallotCandidate[],
   race: Race,
   onUpdate: (any) => void,
   receiptEmail: receiptEmail,
@@ -51,7 +56,7 @@ export interface IBallotContext {
 
 export interface IPage {
   instructionsRead: boolean,
-  candidates: Candidate[],
+  candidates: BallotCandidate[],
   voting_method: VotingMethod,
   race_index: number,
   warningColumns?: number[],
