@@ -196,6 +196,9 @@ ballot:
   dialog_email_placeholder: Receipt Email
   dialog_cancel: Cancel
   dialog_submit: Submit
+  warnings:
+    skipped_rank: Do not skip rankings. Rank candidates in order to clearly show preferences. Candidates left blank are ranked last.
+    duplicate_rank: Do not rank multiple candidates equally. (Ranking candidates equally can void your ballot.)
 
   methods:
     approval:
@@ -204,6 +207,9 @@ ballot:
         - You can select as many {{lowercase_candidates}} as you like
       footer_single_winner: The {{lowercase_candidate}} with the most votes wins
       footer_multi_winner: The {{n}} {{lowercase_candidates}} with the most votes wins
+      left_title: ''
+      right_title: ''
+      heading_prefix: ''
     star:
       instruction_bullets:
        - Give your favorite(s) five stars.
@@ -221,15 +227,16 @@ ballot:
       right_title: 'Best'
     rcv: 
       instruction_bullets:
-        - Rank the {{lowercase_candidates}} in order of preference.
-        - Equal ranks are not recommended, since they risk your vote being exhausted early
+        - Rank the {{lowercase_candidates}} in order of preference. (1st, 2nd, 3rd, etc.)
+        - Ranking {{lowercase_candidates}} equally is not allowed.
         - '{{candidates}} left blank are ranked last'
       footer_single_winner: > 
-        The winner is selected after a series of elimination rounds.
-
-        Each round the candidate with the least first-choice votes is eliminated and 
-        their voters will be distributed to their next preference.
-      heading_prefix: 'Rank {{candidates}}:'
+        How RCV is counted: Ballots are counted in elimination rounds. In each round, your vote goes to the candidate you ranked highest, 
+        if possible. If no candidate has a majority of remaining votes the candidate with the fewest votes is eliminated. 
+        If your vote is unable to transfer, it will not be counted in later rounds. If a candidate has a majority of remaining votes 
+        in a round, they are elected.
+      left_title: ''
+      right_title: ''
     ranked_robin:
       instruction_bullets:
         - Rank the {{lowercase_candidates}} in order of preference.
@@ -238,12 +245,15 @@ ballot:
       footer_single_winner: |
         {{candidates}} are compared in 1-on-1 match-ups.
         A {{lowercase_candidate}} wins a match-up if they are ranked higher than the opponent by more voters
-      heading_prefix: 'Rank {{candidates}}:'
+      left_title: ''
+      right_title: ''
     choose_one:
       instruction_bullets:
         - Fill in the bubble next to your favorite
       footer_single_winner: The {{lowercase_candidate}} with the most votes wins
       footer_multi_winner: The {{n}} {{lowercase_candidates}} with the most votes win
+      left_title: ''
+      right_title: ''
     
 # Confirmation (after you've submitted a ballot)
 ballot_submitted:

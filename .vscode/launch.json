@@ -23,6 +23,7 @@
         "sourceMaps": true,
         "skipFiles": ["<node_internals>/**"],
         "preLaunchTask": "Start All",
+        "postDebugTask": "Terminate All",
         "runtimeArgs": ["--remote-debugging-port=9222"],
         "env": {
           "NODE_ENV": "development"

@@ -296,6 +296,12 @@ code {
   background-color: black;
 }
 
+.circle.alert,
+.oval.alert {
+  background-color: var(--ltbrand-red);
+  transition: background-color 400ms;
+}
+
 .circle.unblurred:hover,
 .oval.unblurred:hover {
   background-color: var(--ballot-bubble-hover-ltblue);
@@ -310,6 +316,11 @@ code {
   background-color: var(--brand-black);
   color: var(--ballot-bubble-filled-text-gray);
   transition: color 200ms;
+}
+
+.circle.alert:hover, .oval.alert:hover {
+  background-color: var(--ltbrand-red);
+  transition: background-color 400ms;
 }
 
 .circle p {

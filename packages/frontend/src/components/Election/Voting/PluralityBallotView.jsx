@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import GenericBallotView from "./GenericBallotView";
+import GenericBallotView from "./GenericBallotView/GenericBallotView";
 import { BallotContext } from "./VotePage";
 
 // Renders a complete RCV ballot for a single race

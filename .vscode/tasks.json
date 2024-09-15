@@ -44,10 +44,22 @@
         }
       },
       {
+        "label": "Terminate All",
+        "command": "echo ${input:terminate}",
+      },
+      {
         "label": "Start All",
         "dependsOn": ["Port-Forward PostgreSQL", "Start Backend", "Start Frontend"],
         "group": "build",
         "dependsOrder": "sequence"
+      }
+    ],
+    "inputs": [
+      {
+        "id": "terminate",
+        "type": "command",
+        "command": "workbench.action.tasks.terminate",
+        "args": "terminateAll"
       }
     ]
   }

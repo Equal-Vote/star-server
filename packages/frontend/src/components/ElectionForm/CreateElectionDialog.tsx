@@ -243,7 +243,7 @@ export default () => {
                     }</strong></StepLabel>
                     <StepContent>
                         <Typography>{t('election_creation.term_question')}
-                            <Tip name='polls_vs_elections'/>
+                            <Tip name='polls_vs_elections' electionTermType={election.settings.term_type}/>
                         </Typography>
                         <RadioGroup row>
                             {['poll', 'election'].map( (type, i) => 
@@ -290,7 +290,7 @@ export default () => {
                     <StepContent>
                         <Typography>
                             {t('election_creation.restricted_question')}
-                            <Tip name='restricted'/>
+                            <Tip name='restricted' electionTermType={election.settings.term_type}/>
                         </Typography>
 
                         <RadioGroup row>
