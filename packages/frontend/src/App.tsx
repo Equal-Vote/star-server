@@ -5,7 +5,7 @@ import Header from './components/Header'
 import Election from './components/Election/Election'
 import Sandbox from './components/Sandbox'
 import LandingPage from './components/LandingPage'
-import { Box, Button, CssBaseline, Dialog } from '@mui/material'
+import { Box, Button, CssBaseline, Dialog, Typography } from '@mui/material'
 import { SnackbarContextProvider } from './components/SnackbarContext'
 import Footer from './components/Footer'
 import { ConfirmDialogProvider } from './components/ConfirmationDialogProvider'
@@ -20,8 +20,10 @@ import CreateElectionDialog, { CreateElectionContextProvider } from './component
 import ComposeContextProviders from './components/ComposeContextProviders'
 import './i18n/i18n'
 import ReturnToClassicDialog, { ReturnToClassicContextProvider } from './components/ReturnToClassicDialog'
+import { useSubstitutedTranslation } from './components/util'
 
 const App = () => {
+  const {t} = useSubstitutedTranslation();
   return (
     <Router>
       <ComposeContextProviders providers={[
@@ -37,6 +39,9 @@ const App = () => {
         <Box display='flex' flexDirection='column' minHeight={'100vh'} sx={{backgroundColor:'lightShade.main'}} >
           <Header />
           <CreateElectionDialog/>
+          <Typography sx={{textAlign:'center', padding: 2, opacity: 0.5}}>
+            {t('nav.beta_warning')}
+          </Typography>
           <ReturnToClassicDialog/>
           <Box
             sx={{
