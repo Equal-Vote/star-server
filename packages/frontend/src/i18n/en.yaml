@@ -455,6 +455,12 @@ results:
       - Ties are 10 times less likely to occur with STAR Voting than with Choose-One Voting and generally resolve as the number of voters increases.
     equal_preferences_title: Distribution of Equal Preferences
     equal_preferences: Equal Preferences
+  star_pr:
+    chart_title: Round Results
+    table_title: Results Table
+    table_columns:
+      - '{{candidate}}'
+    round_column: Round {{n}}
 
 # Tabulation Logs
 tabulation_logs:

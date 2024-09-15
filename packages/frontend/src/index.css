@@ -87,7 +87,8 @@ code {
   border: 1px solid black;
 }
 
-.resultTable tr:nth-child(1) > td{
+
+.starScoreTable tr:nth-child(1) > td{
   background: var(--brand-gold);
 }
 
@@ -98,8 +99,18 @@ code {
 .starRunoffTable tr:nth-child(3) > td{
   background: var(--brand-gray-1);
 }
+
 .starRunoffTable tr:nth-child(4) > td{
   background: var(--brand-gray-2);
+}
+
+
+.approvalTable tr:nth-child(1) > td{
+  background: var(--brand-gold);
+}
+
+.chooseOneTable tr:nth-child(1) > td{
+  background: var(--brand-gold);
 }
 
 .login-form {
