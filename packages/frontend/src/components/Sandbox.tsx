@@ -100,6 +100,9 @@ const Sandbox = () => {
                                 <MenuItem key="IRV" value="IRV">
                                     Ranked Choice Voting (IRV)
                                 </MenuItem>
+                                <MenuItem key="STV" value="STV">
+                                    Single Transferable Vote (STV)
+                                </MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>

@@ -357,6 +357,12 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
               <IRVResultsViewer results={result.results} t={t}/>
             </ResultViewer>
           }
+
+          {result.votingMethod === "STV" &&
+            <ResultViewer methodKey='rcv' results={result.results}>
+              <IRVResultsViewer results={result.results} t={t}/>
+            </ResultViewer>
+          }
         </>}
       </div>
     </div>

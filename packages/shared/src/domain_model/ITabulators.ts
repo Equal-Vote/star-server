@@ -144,6 +144,7 @@ export type ElectionResults = {
 } | {
     votingMethod: 'Plurality',
     results: pluralityResults
+} | {
+    votingMethod: 'STV',
+    results: irvResults
 }
-
-

@@ -1,7 +1,7 @@
 import { Candidate } from "./Candidate";
 import { Uid } from "./Uid";
 
-export type VotingMethod = 'STAR' | 'STAR_PR' | 'Approval' | 'RankedRobin' | 'IRV' | 'Plurality'
+export type VotingMethod = 'STAR' | 'STAR_PR' | 'Approval' | 'RankedRobin' | 'IRV' | 'Plurality' | 'STV'
 
 export interface Race {
     race_id:        Uid; // short mnemonic for the race
