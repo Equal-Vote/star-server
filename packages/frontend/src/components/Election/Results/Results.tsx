@@ -1,4 +1,4 @@
-import { Box, Grid, Paper } from "@mui/material";
+import { Box, Grid, Pagination, Paper } from "@mui/material";
 import React from "react";
 import MatrixViewer from "./MatrixViewer";
 import IconButton from '@mui/material/IconButton'
@@ -251,49 +251,41 @@ function ResultViewer({ methodKey, results, children }:{methodKey: string, resul
 }
 
 function PRResultsViewer({ result, t }: {result: allocatedScoreResults, t: Function}) {
+  const [page, setPage] = useState(1);
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+
+  const tabulationRows = result.summaryData.candidates.map(({index, name}) => {
+    return [name].concat(
+      (result.summaryData.weightedScoresByRound as Array<Number[]>).map(counts => counts[index] == 0? '' : '' + counts[index])
+    )
+  });
+
+  tabulationRows.unshift([t('results.star_pr.table_columns')].concat([...Array(result.summaryData.weightedScoresByRound.length).keys()].map(i =>
+    t('results.star_pr.round_column', {n: i+1})
+  )))
 
   return (
-    <div>
-      <h2>Summary</h2>
-      <p>Voting Method: Proportional STAR Voting</p>
-      <p>{`Winners: ${result.elected.map((winner) => winner.name).join(', ')}`}</p>
-      <p>{`Number of voters: ${result.summaryData.nValidVotes}`}</p>
-      <h2>Detailed Results</h2>
-      <h3>Scores By Round</h3>
-      <table className='matrix'>
-        <thead className='matrix'>
-          <tr className='matrix'>
-            <th className='matrix'> Candidate</th>
-            {result.elected.map((c, n) => (
-              <th className='matrix' key={`h${n}`} >Round {n + 1} </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className='matrix'>
-          {/* Loop over each candidate, for each loop over each round and return score */}
-          {/* Data is stored in the transpose of the desired format which is why loops look weird */}
-          {result.summaryData.weightedScoresByRound[0].map((col, cand_ind) => (
-            <tr className='matrix' key={`d${cand_ind}`}>
-              <th className='matrix' key={`dh${cand_ind}`} >{result.summaryData.candidates[cand_ind].name}</th>
-              {result.summaryData.weightedScoresByRound.map((row, round_ind) => {
-                const score = Math.round(result.summaryData.weightedScoresByRound[round_ind][cand_ind] * 10) / 10
-                return (
-                  result.elected[round_ind].index === result.summaryData.candidates[cand_ind].index ?
-                    <td className='highlight' key={`c${cand_ind},${round_ind}`}>
-                      <h3>{ score }</h3>
-                    </td>
-                    :
-                    <td className='matrix' key={`c${cand_ind},${round_ind}`}>
-                      <h3>{score}</h3>
-                    </td>
-                )
-              }
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <WidgetContainer>
+        <Widget title={t('results.star_pr.chart_title')}>
+          <ResultsBarChart
+            data={
+              result.summaryData.weightedScoresByRound[page-1].map((totalScore, i) => ({
+                name: result.summaryData.candidates[i].name,
+                votes: totalScore,
+              }))
+            }
+            sortFunc = {false}
+          />
+            <Pagination count={result.summaryData.weightedScoresByRound.length} page={page} onChange={handleChange} />
+          </Widget>
+        <Widget title={t('results.star_pr.table_title')}>
+          <ResultsTable className='starPRTable' data={tabulationRows}/>
+        </Widget>
+      </WidgetContainer>
+    </>
   )
 }
 
