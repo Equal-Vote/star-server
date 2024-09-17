@@ -77,6 +77,9 @@
   opacity: .7; /* Hack to make the hover color less intense */
 }
 
+.MuiMenu-list a, .MuiMenu-list a:visited{
+  color: rgba(0, 0, 0, 0.87);
+}
 
 a, a:visited {
   color: var(--brand-green);
