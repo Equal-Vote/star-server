@@ -29,18 +29,20 @@ interface BaseItem {
 
 interface Props<T extends BaseItem> {
   items: T[];
+  identifierKey: keyof T;
   onChange(items: T[]): void;
-  renderItem(item: T): ReactNode;
+  renderItem(item: T, index: number): ReactNode;
 }
 
 export function SortableList<T extends BaseItem>({
   items,
+  identifierKey,
   onChange,
   renderItem
 }: Props<T>) {
   const [active, setActive] = useState<Active | null>(null);
   const activeItem = useMemo(
-    () => items.find((item) => item.id === active?.id),
+    () => items.find((item) => item[identifierKey] === active?.id),
     [active, items]
   );
   const sensors = useSensors(
@@ -58,8 +60,8 @@ export function SortableList<T extends BaseItem>({
       }}
       onDragEnd={({ active, over }) => {
         if (over && active.id !== over?.id) {
-          const activeIndex = items.findIndex(({ id }) => id === active.id);
-          const overIndex = items.findIndex(({ id }) => id === over.id);
+          const activeIndex = items.findIndex((item) => item[identifierKey] === active.id);
+          const overIndex = items.findIndex((item) => item[identifierKey] === over.id);
 
           onChange(arrayMove(items, activeIndex, overIndex));
         }
@@ -69,15 +71,15 @@ export function SortableList<T extends BaseItem>({
         setActive(null);
       }}
     >
-      <SortableContext items={items}>
+      <SortableContext items={items.map(item => item[identifierKey] as string)}>
         <ul className="SortableList" role="application">
-          {items.map((item) => (
-            <React.Fragment key={item.id}>{renderItem(item)}</React.Fragment>
+          {items.map((item, index) => (
+            <React.Fragment key={item[identifierKey] as string}>{renderItem(item, index)}</React.Fragment>
           ))}
         </ul>
       </SortableContext>
       <SortableOverlay>
-        {activeItem ? renderItem(activeItem) : null}
+        {activeItem ? renderItem(activeItem, items.findIndex(item => item[identifierKey] === activeItem.id)) : null}
       </SortableOverlay>
     </DndContext>
   );

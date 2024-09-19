@@ -16,7 +16,8 @@ import useElection from '../../ElectionContextProvider';
 import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
-import { SortableItem, DragHandle, SortableList, SortableOverlay } from '~/components/DragAndDrop';
+import { SortableList } from '~/components/DragAndDrop';
+import { set } from 'date-fns';
 
 export default function RaceForm({ race_index, editedRace, errors, setErrors, applyRaceUpdate }) {
     const flags = useFeatureFlags();
@@ -24,10 +25,11 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
     const { election } = useElection()
     const confirm = useConfirm();
     const inputRefs = useRef([]);
-    const ephemeralCandidates = useMemo(() => 
-        [...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }], 
-        [editedRace.candidates]
-    );    // BottomRef creates a reference to the bottom of the window to scroll to when a new candidate is added
+    // const ephemeralCandidates = useMemo(() => 
+    //     [...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }], 
+    //     [editedRace.candidates]
+    // );   
+    const [ephemeralCandidates, setEphemeralCandidates] = useState([...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }]);
 
 
     const onEditCandidate = useCallback((candidate, index) => {
@@ -305,20 +307,40 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
             </Grid>
             <Stack spacing={2}>
                 {
-                    ephemeralCandidates.map((candidate, index) => (
-                        <CandidateForm
-                            key={candidate.candidate_id}
-                            onEditCandidate={(newCandidate) => onEditCandidate(newCandidate, index)}
-                            candidate={candidate}
-                            index={index}
-                            onDeleteCandidate={() => onDeleteCandidate(index)}
-                            moveCandidateUp={() => moveCandidateUp(index)}
-                            moveCandidateDown={() => moveCandidateDown(index)}
-                            disabled={ephemeralCandidates.length -1 === index}
-                            inputRef={el => inputRefs.current[index] = el}
-                            onKeyDown={event => handleKeyDown(event, index)}/>
+                    // ephemeralCandidates.map((candidate, index) => (
+                    //     <CandidateForm
+                    //         key={candidate.candidate_id}
+                    //         onEditCandidate={(newCandidate) => onEditCandidate(newCandidate, index)}
+                    //         candidate={candidate}
+                    //         index={index}
+                    //         onDeleteCandidate={() => onDeleteCandidate(index)}
+                    //         moveCandidateUp={() => moveCandidateUp(index)}
+                    //         moveCandidateDown={() => moveCandidateDown(index)}
+                    //         disabled={ephemeralCandidates.length -1 === index}
+                    //         inputRef={el => inputRefs.current[index] = el}
+                    //         onKeyDown={event => handleKeyDown(event, index)}/>
                         
-                    ))
+                    // ))
+                    <SortableList
+                        items={ephemeralCandidates}
+                        identifierKey="candidate_id"
+                        onChange={setEphemeralCandidates}
+                        renderItem={(candidate, index) => (
+                            <SortableList.Item id={candidate.candidate_id}>
+                                <CandidateForm
+                                    key={candidate.candidate_id}
+                                    onEditCandidate={(newCandidate) => onEditCandidate(newCandidate, index)}
+                                    candidate={candidate}
+                                    index={index}
+                                    onDeleteCandidate={() => onDeleteCandidate(index)}
+                                    moveCandidateUp={() => moveCandidateUp(index)}
+                                    moveCandidateDown={() => moveCandidateDown(index)}
+                                    disabled={ephemeralCandidates.length - 1 === index}
+                                    inputRef={el => inputRefs.current[index] = el}
+                                    onKeyDown={event => handleKeyDown(event, index)}/>
+                            </SortableList.Item>
+                        )}
+                    />
                 }
             </Stack>
         </>

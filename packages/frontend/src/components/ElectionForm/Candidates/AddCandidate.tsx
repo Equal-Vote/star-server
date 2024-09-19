@@ -15,6 +15,7 @@ import useConfirm from '../../ConfirmationDialogProvider';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
+import { DragHandle } from '~/components/DragAndDrop';
 
 type CandidateProps = {
     onEditCandidate: Function,
@@ -323,6 +324,8 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
                 sx={{ display: 'flex', justifyContent: 'space-between', bgcolor: 'background.paper', borderRadius: 10 }}
                 alignItems={'center'}
             >
+                <DragHandle />
+
                 <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', pl: 2 }}>
                     <TextField
                         id={'candidate-name'}
@@ -337,7 +340,8 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
                         inputRef={inputRef}
                         onKeyDown={onKeyDown}
                     />
-                </Box>
+                </Box>                    
+
                 {/* <IconButton
                     aria-label="edit"
                     onClick={moveCandidateUp}
