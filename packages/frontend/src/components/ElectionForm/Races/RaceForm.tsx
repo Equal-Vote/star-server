@@ -11,13 +11,11 @@ import { Box, FormHelperText, Radio, RadioGroup, Stack } from "@mui/material"
 import IconButton from '@mui/material/IconButton'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-import { scrollToElement } from '../../util';
 import useElection from '../../ElectionContextProvider';
 import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
-import { use } from 'i18next';
-import { on } from 'events';
+import { SortableList } from '~/components/DragAndDrop';
 
 export default function RaceForm({ race_index, editedRace, errors, setErrors, applyRaceUpdate }) {
     const flags = useFeatureFlags();
@@ -28,18 +26,11 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
     const ephemeralCandidates = useMemo(() => 
         [...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }], 
         [editedRace.candidates]
-    );    // BottomRef creates a reference to the bottom of the window to scroll to when a new candidate is added
-    const bottomRef = useRef(null);
-    useEffect(() => {
-            bottomRef.current.scrollIntoView(false)
-    }, [ephemeralCandidates])
+    );   
 
     const onEditCandidate = useCallback((candidate, index) => {
         applyRaceUpdate(race => {
-            if (candidate.candidate_name === '' && index === race.candidates.length - 1 && race.candidates.length > 1) {
-                race.candidates.splice(index, 1);
-                inputRefs.current[index - 1].focus();
-            } else if (race.candidates[index]) {
+            if (race.candidates[index]) {
                 race.candidates[index] = candidate;
             } else {
                 race.candidates.push(candidate);
@@ -49,23 +40,19 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
         setErrors(prev => ({ ...prev, candidates: '', raceNumWinners: '' }));
     }, [applyRaceUpdate, setErrors]);
 
-    const moveCandidate = useCallback((fromIndex, toIndex) => {
+    const handleChangeCandidates = useCallback((newCandidateList: any[]) => {
+        //remove the last candidate if it is empty
+        if (newCandidateList.length > 1 && newCandidateList[newCandidateList.length - 1].candidate_name === '') {
+            newCandidateList.pop();
+        }
         applyRaceUpdate(race => {
-            const [movedCandidate] = race.candidates.splice(fromIndex, 1);
-            race.candidates.splice(toIndex, 0, movedCandidate);
-        });
+            race.candidates = newCandidateList;
+        }
+        );
     }, [applyRaceUpdate]);
 
-    const moveCandidateUp = useCallback((index) => {
-        if (index > 0) moveCandidate(index, index - 1);
-    }, [moveCandidate]);
-
-    const moveCandidateDown = useCallback((index) => {
-        if (index < editedRace.candidates.length - 1) moveCandidate(index, index + 1);
-    }, [moveCandidate, editedRace.candidates.length]);
-
     const onDeleteCandidate = useCallback(async (index) => {
-        if (editedRace.candidates.length < 3) {
+        if (editedRace.candidates.length < 2) {
             setErrors(prev => ({ ...prev, candidates: 'At least 2 candidates are required' }));
             return;
         }
@@ -97,8 +84,13 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
             // Move focus to the previous candidate when backspacing on an empty candidate
             event.preventDefault();
             inputRefs.current[index - 1].focus();
+            //this makes it so the candidate is deleted without the "are you sure?" dialog when backspacing on an empty candidate
+            applyRaceUpdate(race => {
+                race.candidates.splice(index, 1);
+            }
+            )
         }
-    }, [ephemeralCandidates.length]);
+    }, [ephemeralCandidates.length, applyRaceUpdate]);
 
     return (
         <>
@@ -303,24 +295,26 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
             </Grid>
             <Stack spacing={2}>
                 {
-                    ephemeralCandidates.map((candidate, index) => (
-                        <CandidateForm
-                            key={candidate.candidate_id}
-                            onEditCandidate={(newCandidate) => onEditCandidate(newCandidate, index)}
-                            candidate={candidate}
-                            index={index}
-                            onDeleteCandidate={() => onDeleteCandidate(index)}
-                            moveCandidateUp={() => moveCandidateUp(index)}
-                            moveCandidateDown={() => moveCandidateDown(index)}
-                            disabled={ephemeralCandidates.length -1 === index}
-                            inputRef={el => inputRefs.current[index] = el}
-                            onKeyDown={event => handleKeyDown(event, index)}/>
-                        
-                    ))
+                    <SortableList
+                        items={ephemeralCandidates}
+                        identifierKey="candidate_id"
+                        onChange={handleChangeCandidates}
+                        renderItem={(candidate, index) => (
+                            <SortableList.Item id={candidate.candidate_id}>
+                                <CandidateForm
+                                    key={candidate.candidate_id}
+                                    onEditCandidate={(newCandidate) => onEditCandidate(newCandidate, index)}
+                                    candidate={candidate}
+                                    index={index}
+                                    onDeleteCandidate={() => onDeleteCandidate(index)}
+                                    disabled={ephemeralCandidates.length - 1 === index}
+                                    inputRef={el => inputRefs.current[index] = el}
+                                    onKeyDown={event => handleKeyDown(event, index)}/>
+                            </SortableList.Item>
+                        )}
+                    />
                 }
             </Stack>
-            {/* Scroll anchor for when a new candidate is added */}
-            <div style={{height: '5px'}} ref={bottomRef}/>
         </>
     )
 }
