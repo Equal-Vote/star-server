@@ -40,7 +40,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
         setErrors(prev => ({ ...prev, candidates: '', raceNumWinners: '' }));
     }, [applyRaceUpdate, setErrors]);
 
-    const handleCandidateChange = useCallback((newCandidateList: any[]) => {
+    const handleChangeCandidates = useCallback((newCandidateList: any[]) => {
         //remove the last candidate if it is empty
         if (newCandidateList.length > 1 && newCandidateList[newCandidateList.length - 1].candidate_name === '') {
             newCandidateList.pop();
@@ -90,7 +90,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
             }
             )
         }
-    }, [ephemeralCandidates.length]);
+    }, [ephemeralCandidates.length, applyRaceUpdate]);
 
     return (
         <>
@@ -298,7 +298,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                     <SortableList
                         items={ephemeralCandidates}
                         identifierKey="candidate_id"
-                        onChange={handleCandidateChange}
+                        onChange={handleChangeCandidates}
                         renderItem={(candidate, index) => (
                             <SortableList.Item id={candidate.candidate_id}>
                                 <CandidateForm
