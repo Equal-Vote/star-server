@@ -26,6 +26,7 @@ export const makeChipStyle = (state: ElectionState | "") => {
   return {
     backgroundColor: `brand.${chipColor}Transparent20`,
     color: `brand.${chipColor}`,
+    border: "solid 1px",
     borderColor: `brand.${chipColor}`,
     // marginX: 2,
   }
@@ -44,7 +45,7 @@ export default function ElectionStateChip({ state }: { state: ElectionState }) {
           {t(`election_state.${state}`)}
         </Typography>
       }
-      sx={chipStyle}
+      sx={{...chipStyle, marginX: 2}}
       variant="outlined"
     />
   );

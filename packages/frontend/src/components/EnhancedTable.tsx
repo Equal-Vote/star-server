@@ -552,6 +552,7 @@ export default function EnhancedTable(props: EnhancedTableProps) {
                     sx={{ cursor: 'pointer' }}
                   >
                     {headCells.map((col, colInd) => {
+                      const isElectionState = col.id === 'election_state';
                       if (colInd == 0) {
                         return <TableCell
                           component="th"
@@ -565,7 +566,7 @@ export default function EnhancedTable(props: EnhancedTableProps) {
                           align={col.numeric ? 'right' : 'left'}
                           key={`${labelId}-${colInd}`}
                         >
-                          {row[col.id]}
+                          {isElectionState ? <Chip label={row[col.id]} sx={makeChipStyle(row[col.id])} /> : row[col.id]}
                         </TableCell>
                       }
                     }
