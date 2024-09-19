@@ -33,7 +33,31 @@ interface Props<T extends BaseItem> {
   onChange(items: T[]): void;
   renderItem(item: T, index: number): ReactNode;
 }
-
+/**
+ * A sortable list component that allows items to be dragged and reordered.
+ * 
+ * @template T - The type of the items in the list.
+ * 
+ * @param {T[]} items - The list of items to be displayed and sorted.
+ * @param {keyof T} identifierKey - The key in each item object that uniquely identifies it.
+ * @param {(items: T[]) => void} onChange - Callback function triggered when the list order changes.
+ * @param {(item: T, index: number) => ReactNode} renderItem - Function to render each item in the list.
+ * 
+ * @returns {JSX.Element} The rendered sortable list component.
+ * 
+ * @example
+ * <SortableList
+ *   items={candidates}
+ *   identifierKey="candidate_id"
+ *   onChange={setCandidates}
+ *   renderItem={(candidate, index) => (
+ *     <SortableList.Item id={candidate.candidate_id}>
+ *       {candidate.name}
+ *       <SortableList.DragHandle />
+ *     </SortableList.Item>
+ *   )}
+ * />
+ */
 export function SortableList<T extends BaseItem>({
   items,
   identifierKey,

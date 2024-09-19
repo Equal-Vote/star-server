@@ -25,12 +25,10 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
     const { election } = useElection()
     const confirm = useConfirm();
     const inputRefs = useRef([]);
-    // const ephemeralCandidates = useMemo(() => 
-    //     [...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }], 
-    //     [editedRace.candidates]
-    // );   
-    const [ephemeralCandidates, setEphemeralCandidates] = useState([...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }]);
-
+    const ephemeralCandidates = useMemo(() => 
+        [...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }], 
+        [editedRace.candidates]
+    );   
 
     const onEditCandidate = useCallback((candidate, index) => {
         applyRaceUpdate(race => {
@@ -48,20 +46,16 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
         setErrors(prev => ({ ...prev, candidates: '', raceNumWinners: '' }));
     }, [applyRaceUpdate, setErrors]);
 
-    const moveCandidate = useCallback((fromIndex, toIndex) => {
+    const handleCandidateChange = useCallback((newCandidateList: any[]) => {
+        //remove the last candidate if it is empty
+        if (newCandidateList.length > 1 && newCandidateList[newCandidateList.length - 1].candidate_name === '') {
+            newCandidateList.pop();
+        }
         applyRaceUpdate(race => {
-            const [movedCandidate] = race.candidates.splice(fromIndex, 1);
-            race.candidates.splice(toIndex, 0, movedCandidate);
-        });
+            race.candidates = newCandidateList;
+        }
+        );
     }, [applyRaceUpdate]);
-
-    const moveCandidateUp = useCallback((index) => {
-        if (index > 0) moveCandidate(index, index - 1);
-    }, [moveCandidate]);
-
-    const moveCandidateDown = useCallback((index) => {
-        if (index < editedRace.candidates.length - 1) moveCandidate(index, index + 1);
-    }, [moveCandidate, editedRace.candidates.length]);
 
     const onDeleteCandidate = useCallback(async (index) => {
         if (editedRace.candidates.length < 2) {
@@ -307,24 +301,10 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
             </Grid>
             <Stack spacing={2}>
                 {
-                    // ephemeralCandidates.map((candidate, index) => (
-                    //     <CandidateForm
-                    //         key={candidate.candidate_id}
-                    //         onEditCandidate={(newCandidate) => onEditCandidate(newCandidate, index)}
-                    //         candidate={candidate}
-                    //         index={index}
-                    //         onDeleteCandidate={() => onDeleteCandidate(index)}
-                    //         moveCandidateUp={() => moveCandidateUp(index)}
-                    //         moveCandidateDown={() => moveCandidateDown(index)}
-                    //         disabled={ephemeralCandidates.length -1 === index}
-                    //         inputRef={el => inputRefs.current[index] = el}
-                    //         onKeyDown={event => handleKeyDown(event, index)}/>
-                        
-                    // ))
                     <SortableList
                         items={ephemeralCandidates}
                         identifierKey="candidate_id"
-                        onChange={setEphemeralCandidates}
+                        onChange={handleCandidateChange}
                         renderItem={(candidate, index) => (
                             <SortableList.Item id={candidate.candidate_id}>
                                 <CandidateForm
@@ -333,8 +313,6 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                                     candidate={candidate}
                                     index={index}
                                     onDeleteCandidate={() => onDeleteCandidate(index)}
-                                    moveCandidateUp={() => moveCandidateUp(index)}
-                                    moveCandidateDown={() => moveCandidateDown(index)}
                                     disabled={ephemeralCandidates.length - 1 === index}
                                     inputRef={el => inputRefs.current[index] = el}
                                     onKeyDown={event => handleKeyDown(event, index)}/>
