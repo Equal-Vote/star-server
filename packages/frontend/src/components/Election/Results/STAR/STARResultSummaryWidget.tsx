@@ -96,7 +96,7 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
                 </ToggleButtonGroup>
                 <STAREXtraContext results={results} />
             </Widget>
-            <STAREXtraContext results={results} />
+            {/* <STAREXtraContext results={results} /> */}
         </WidgetContainer>
         </Box>
     );

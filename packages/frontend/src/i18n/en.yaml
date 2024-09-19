@@ -466,11 +466,19 @@ results:
       - Ties are 10 times less likely to occur with STAR Voting than with Choose-One Voting and generally resolve as the number of voters increases.
     equal_preferences_title: Distribution of Equal Preferences
     equal_preferences: Equal Preferences
-    score_higher_than_runoff_title: Score Higher Than Runoff
+    score_higher_than_runoff_title: Why is the top scoring candidate different from the winner?
     score_higher_than_runoff_text: |
-      The candidate with the highest score in the first round did not win the election. 
-      This can happen when a candidate has a high score in the first round, but is not preferred by a majority of voters. 
-      The STAR voting method is designed to elect the candidate who is preferred by a majority of voters.
+      The top-scoring candidate often matches the runoff winner, but not always. 
+      In the runoff, only the most preferred votes count, which can shift the outcome. 
+      For example, a 5 vs. 4-star vote has less impact in scoring but counts fully in the runoff, 
+      while a 5 vs. 0-star vote makes a big difference in scoring but is equal in the runoff. 
+      The runoff winner comes out on top because more voters prefer them over the runner-up.
+    # Alternate Text:
+    # The top-scoring candidate usually matches the winner in the runoff, but not always. 
+    # The runoff round counts only the votes for the candidate a voter most prefers, which can lead to different weightings than in the scoring round. 
+    # For example, a slight preference (like 5 vs. 4 stars) has a small impact in scoring but counts as one full vote in the runoff. 
+    # Conversely, a strong preference (like 5 vs. 0 stars) makes a big difference in scoring but carries the same weight in the runoff. 
+    # Ultimately, the runoff winner becomes the final winner because they are preferred by more voters over the runner-up.
 
   star_pr:
     chart_title: Round Results
