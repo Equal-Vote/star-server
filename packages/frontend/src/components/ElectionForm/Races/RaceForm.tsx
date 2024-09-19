@@ -11,13 +11,11 @@ import { Box, FormHelperText, Radio, RadioGroup, Stack } from "@mui/material"
 import IconButton from '@mui/material/IconButton'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-import { scrollToElement } from '../../util';
 import useElection from '../../ElectionContextProvider';
 import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
 import { SortableList } from '~/components/DragAndDrop';
-import { set } from 'date-fns';
 
 export default function RaceForm({ race_index, editedRace, errors, setErrors, applyRaceUpdate }) {
     const flags = useFeatureFlags();
@@ -32,10 +30,6 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
 
     const onEditCandidate = useCallback((candidate, index) => {
         applyRaceUpdate(race => {
-            // if (candidate.candidate_name === '' && index === race.candidates.length - 1 && race.candidates.length > 1) {
-            //     //race.candidates.splice(index, 1);
-            //     inputRefs.current[index - 1].focus();
-            // } else 
             if (race.candidates[index]) {
                 race.candidates[index] = candidate;
             } else {
