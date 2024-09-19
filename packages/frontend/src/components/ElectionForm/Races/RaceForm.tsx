@@ -16,8 +16,7 @@ import useElection from '../../ElectionContextProvider';
 import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
-import { use } from 'i18next';
-import { on } from 'events';
+import { SortableItem, DragHandle, SortableList, SortableOverlay } from '~/components/DragAndDrop';
 
 export default function RaceForm({ race_index, editedRace, errors, setErrors, applyRaceUpdate }) {
     const flags = useFeatureFlags();
@@ -29,17 +28,15 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
         [...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }], 
         [editedRace.candidates]
     );    // BottomRef creates a reference to the bottom of the window to scroll to when a new candidate is added
-    const bottomRef = useRef(null);
-    useEffect(() => {
-            bottomRef.current.scrollIntoView(false)
-    }, [ephemeralCandidates])
+
 
     const onEditCandidate = useCallback((candidate, index) => {
         applyRaceUpdate(race => {
-            if (candidate.candidate_name === '' && index === race.candidates.length - 1 && race.candidates.length > 1) {
-                race.candidates.splice(index, 1);
-                inputRefs.current[index - 1].focus();
-            } else if (race.candidates[index]) {
+            // if (candidate.candidate_name === '' && index === race.candidates.length - 1 && race.candidates.length > 1) {
+            //     //race.candidates.splice(index, 1);
+            //     inputRefs.current[index - 1].focus();
+            // } else 
+            if (race.candidates[index]) {
                 race.candidates[index] = candidate;
             } else {
                 race.candidates.push(candidate);
@@ -65,7 +62,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
     }, [moveCandidate, editedRace.candidates.length]);
 
     const onDeleteCandidate = useCallback(async (index) => {
-        if (editedRace.candidates.length < 3) {
+        if (editedRace.candidates.length < 2) {
             setErrors(prev => ({ ...prev, candidates: 'At least 2 candidates are required' }));
             return;
         }
@@ -97,6 +94,11 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
             // Move focus to the previous candidate when backspacing on an empty candidate
             event.preventDefault();
             inputRefs.current[index - 1].focus();
+            //this makes it so the candidate is deleted without the "are you sure?" dialog when backspacing on an empty candidate
+            applyRaceUpdate(race => {
+                race.candidates.splice(index, 1);
+            }
+            )
         }
     }, [ephemeralCandidates.length]);
 
@@ -319,8 +321,6 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                     ))
                 }
             </Stack>
-            {/* Scroll anchor for when a new candidate is added */}
-            <div style={{height: '5px'}} ref={bottomRef}/>
         </>
     )
 }

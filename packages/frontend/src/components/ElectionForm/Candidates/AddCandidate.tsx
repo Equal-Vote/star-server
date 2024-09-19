@@ -338,7 +338,7 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
                         onKeyDown={onKeyDown}
                     />
                 </Box>
-                <IconButton
+                {/* <IconButton
                     aria-label="edit"
                     onClick={moveCandidateUp}
                     disabled={disabled}>
@@ -349,7 +349,7 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
                     onClick={moveCandidateDown}
                     disabled={disabled}>
                     <ArrowDownwardIcon />
-                </IconButton>
+                </IconButton> */}
                 {flags.isSet('CANDIDATE_DETAILS') &&
                     <IconButton
                         aria-label="edit"
