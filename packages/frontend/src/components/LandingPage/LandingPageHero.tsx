@@ -71,7 +71,7 @@ export default ({}) => {
     let quickPollIndex = transitionStep < 4 ? prevMethodIndex : methodIndex;
     if(quickPollIndex == methodKeys.length-1) quickPollIndex = methodKeys.length-2;
 
-    const makeBallotContext = (scores, onUpdate):IBallotContext  => {
+    const makeBallotContext = (scores, onUpdate, voting_method: VotingMethod):IBallotContext  => {
         const candidateNames = t('landing_page.hero.candidates')
         return {
             instructionsRead: true,
@@ -89,7 +89,7 @@ export default ({}) => {
                 "title": "",
                 "race_id": "",
                 "num_winners": 1,
-                "voting_method": "STAR" as VotingMethod, // picking an arbitrary method to make typescript happy
+                "voting_method": voting_method,
                 "candidates": []
             },
             receiptEmail: {
@@ -132,13 +132,13 @@ export default ({}) => {
                 >
                     {imgIndex != methodKeys.length-1 ? <>
                         <Box className="heroBallot" sx={{width: {xs: '100%', md:'80%'}, maxWidth: '450px', margin: 'auto'}}>
-                            {imgIndex == 0 && <BallotContext.Provider value={makeBallotContext(starScores, setStarScores)}>
+                            {imgIndex == 0 && <BallotContext.Provider value={makeBallotContext(starScores, setStarScores, 'STAR')}>
                                 <StarBallotView onlyGrid={true}/>
                             </BallotContext.Provider>}
-                            {imgIndex == 1 && <BallotContext.Provider value={makeBallotContext(approvalScores, setApprovalScores)}>
+                            {imgIndex == 1 && <BallotContext.Provider value={makeBallotContext(approvalScores, setApprovalScores, 'Approval')}>
                                 <ApprovalBallotView onlyGrid={true}/>
                             </BallotContext.Provider>}
-                            {imgIndex == 2 && <BallotContext.Provider value={makeBallotContext(rrRanks, setRrRanks)}>
+                            {imgIndex == 2 && <BallotContext.Provider value={makeBallotContext(rrRanks, setRrRanks, 'RankedRobin')}>
                                 <RankedBallotView onlyGrid={true}/>
                             </BallotContext.Provider>}
                         </Box>

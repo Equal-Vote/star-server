@@ -104,6 +104,7 @@ export default function RankedBallotView({ onlyGrid = false }) {
     return columnValues.map(v => t('number.rank', { count: v, ordinal: true }));
   }, [columnValues, t]);
 
+  console.log(ballotContext.race.voting_method);
   return (
     <GenericBallotView
       key="rankedBallot"
