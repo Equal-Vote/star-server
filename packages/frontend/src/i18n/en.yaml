@@ -183,7 +183,7 @@ election_home:
 
 # Ballot
 ballot:
-  this_election_uses: This election uses {{voting_method}}
+  this_election_uses: This election uses {{voting_method}} to elect {{spelled_count}} $t(winner.winner).
   instructions_checkbox: I have read the instructions
   learn_more: Learn more about {{voting_method}}
   previous: Previous
@@ -916,3 +916,21 @@ number:
 # Convenience entry for localizing date
 datetime: '{{datetime, datetime}}'
 listed_datetime: '{{listed_datetime, datetime}}'
+
+# Number translations
+spelled_numbers:
+  1: one
+  2: two
+  3: three
+  4: four
+  5: five
+  6: six
+  7: seven
+  8: eight
+  9: nine
+  10: ten
+
+# Winner pluralization
+winner:
+  winner_one: winner
+  winner_other: winners
