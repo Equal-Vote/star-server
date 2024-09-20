@@ -6,12 +6,12 @@ import Container from '@mui/material/Container';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
 import PermissionHandler from "../../PermissionHandler";
 import ViewBallot from "./ViewBallot";
-import { CSVLink } from "react-csv";
 import { useGetBallots } from "../../../hooks/useAPI";
 import { epochToDateString, getLocalTimeZoneShort, useSubstitutedTranslation } from "../../util";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import DraftWarning from "../DraftWarning";
+import { DownloadCSV } from "../Results/DowloadCSV";
 
 const ViewBallots = () => {
     const { election } = useElection()
@@ -21,8 +21,6 @@ const ViewBallots = () => {
     const [isViewing, setIsViewing] = useState(false)
     const [addRollPage, setAddRollPage] = useState(false)
     const [selectedBallot, setSelectedBallot] = useState(null)
-    const [csvData, setcsvData] = useState([])
-    const [csvHeaders, setcsvHeaders] = useState([])
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -49,26 +47,6 @@ const ViewBallots = () => {
     
 
 
-    const buildCsvData = () => {
-        let header = [
-            { label: 'ballot_id', key: 'ballot_id' },
-            ...data.election.races[0].candidates.map((c) => ({ label: c.candidate_name, key: c.candidate_id }))
-        ]
-        let tempCsvData = data.ballots.map(ballot => {
-            let row = {ballot_id: ballot.ballot_id}
-            ballot.votes[0].scores.forEach(score => {
-                row[score.candidate_id] = score.score
-            });
-            return row
-        })
-        setcsvHeaders(header)
-        setcsvData(tempCsvData)
-        return false
-    }
-    const limit = (string = '', limit = 0) => {
-        if (!string) return ''
-        return string.substring(0, limit)
-    }
     return (
         <Container>
             <DraftWarning />
@@ -130,18 +108,7 @@ const ViewBallots = () => {
                         </Table>
                     </TableContainer>
 
-                    <CSVLink
-                        data={csvData}
-                        headers={csvHeaders}
-                        target="_blank"
-                        filename={ `Ballot Data - ${limit(data.election.title, 50)}.csv`}
-                        enclosingCharacter={``}
-                        onClick={() => {
-                            buildCsvData()
-                        }}
-                    >
-                        Download CSV
-                    </CSVLink>
+                    <DownloadCSV data={data}/>
                 </>
             }
             {isViewing && selectedBallot &&
