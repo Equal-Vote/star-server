@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import Results from './Results';
 import Box from '@mui/material/Box';
 import { Paper, Typography } from "@mui/material";
-import { DetailExpanderGroup, useSubstitutedTranslation } from '../../util';
+import { useSubstitutedTranslation } from '../../util';
 import { useGetResults } from '../../../hooks/useAPI';
 import useElection from '../../ElectionContextProvider';
 import DraftWarning from '../DraftWarning';
@@ -47,7 +47,8 @@ const ViewElectionResults = () => {
                     ))}
                     <hr/>
                     <Box sx={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2}}>
-                        <Box sx={{ minWidth: 750, display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
+                            <Box sx={{ minWidth: 750, display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
+                        {election.settings.public_download === true &&
                             <Box sx={{ width: '100%',  p: 1, px:{xs: 5, sm: 1} }}>
                                 <StyledButton
                                     type='button'
@@ -57,6 +58,7 @@ const ViewElectionResults = () => {
                                     Download CSV
                                 </StyledButton>
                             </Box>
+                            }
                         
                         {election.settings.voter_access !== 'closed' &&
                             <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1}  }}>

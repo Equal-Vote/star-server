@@ -90,6 +90,7 @@ export default function ElectionSettings() {
                                 <CheckboxSetting setting='random_candidate_order'/>
                                 <CheckboxSetting setting='ballot_updates' disabled/>
                                 <CheckboxSetting setting='public_results'/>
+                                <CheckboxSetting setting='public_download'/>
                                 <CheckboxSetting setting='random_ties' disabled checked/>
                                 <CheckboxSetting setting='voter_groups' disabled/>
                                 <CheckboxSetting setting='custom_email_invite' disabled/>

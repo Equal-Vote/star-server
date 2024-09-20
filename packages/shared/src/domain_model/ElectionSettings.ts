@@ -23,6 +23,7 @@ export interface ElectionSettings {
     reminders?:           boolean; //   Send reminders to voters who haven't voted? Requires voter_access='closed'
     ballot_updates?:	    boolean; //		allows voters to update their ballots before election ends
     public_results?:	    boolean; //		allows public to view results
+    public_download?:	    boolean; //		allows public to download results
     time_zone?:           string; // Time zone for displaying election start/end times 
     random_candidate_order?: boolean; // Randomize order of candidates on the ballot
     require_instruction_confirmation?: boolean; // Require voter to confirm that they've read the instructions in order to vote
