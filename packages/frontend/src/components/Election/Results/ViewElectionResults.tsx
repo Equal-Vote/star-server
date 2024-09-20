@@ -7,6 +7,8 @@ import { DetailExpanderGroup, useSubstitutedTranslation } from '../../util';
 import { useGetResults } from '../../../hooks/useAPI';
 import useElection from '../../ElectionContextProvider';
 import DraftWarning from '../DraftWarning';
+import { StyledButton } from '~/components/styles';
+import ShareButton from '../ShareButton';
 
 const ViewElectionResults = () => {
     
@@ -34,7 +36,6 @@ const ViewElectionResults = () => {
                 </Typography>
                 {isPending && <div> {t('results.loading_election')} </div>}
 
-                <DetailExpanderGroup defaultSelectedIndex={-1} allowMultiple>
                     {data?.results.map((result, race_index) => (
                         <Results 
                             key={`results-${race_index}`}
@@ -44,7 +45,35 @@ const ViewElectionResults = () => {
                             result={result}
                         />
                     ))}
-                </DetailExpanderGroup>
+                    <hr/>
+                    <Box sx={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2}}>
+                        <Box sx={{ minWidth: 750, display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
+                            <Box sx={{ width: '100%',  p: 1, px:{xs: 5, sm: 1} }}>
+                                <StyledButton
+                                    type='button'
+                                    variant='contained'
+                                    fullwidth
+                                    href={`/${election.election_id}`} >
+                                    Download CSV
+                                </StyledButton>
+                            </Box>
+                        
+                        {election.settings.voter_access !== 'closed' &&
+                            <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1}  }}>
+                                <ShareButton url={`${window.location.origin}/${election.election_id}`}/>
+                            </Box>
+                        }
+                        <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1} }}>
+                            <StyledButton
+                                type='button'
+                                variant='contained'
+                                fullwidth
+                                href={'https://www.equal.vote/donate'} >
+                                {t('ballot_submitted.donate')}
+                            </StyledButton>
+                        </Box>
+                    </Box>
+                </Box>
                 
             </Paper>
         </Box>
