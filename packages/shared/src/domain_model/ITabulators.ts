@@ -111,8 +111,15 @@ export interface rankedRobinResults extends genericResults {
     summaryData: rankedRobinSummaryData,
 }
 
+export interface irvRoundResults {
+    winners: candidate[],
+    eliminated: candidate[],
+    logs: string[],
+}
+
 export interface irvResults extends Omit<genericResults, 'roundResults'> {
     summaryData: rankedRobinSummaryData,
+    roundResults: irvRoundResults[],
     logs: string[],
     voteCounts: number[][],
     exhaustedVoteCounts: number[],
@@ -137,6 +144,7 @@ export type ElectionResults = {
 } | {
     votingMethod: 'Plurality',
     results: pluralityResults
+} | {
+    votingMethod: 'STV',
+    results: irvResults
 }
-
-
