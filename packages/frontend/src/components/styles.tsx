@@ -4,14 +4,15 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useState } from "react";
 import en from './en.yaml';
 import { useSubstitutedTranslation } from "./util";
+import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
 // this doesn't work yet, I filed a github issue
 // https://github.com/Modyfi/vite-plugin-yaml/issues/27
 type TipName = keyof typeof en.tips;
 
 
-export const Tip = (props: {name: TipName}) => {
-    const {t} = useSubstitutedTranslation('election');
+export const Tip = (props: {name: TipName, electionTermType: TermType | undefined}) => {
+    const {t} = useSubstitutedTranslation(props.electionTermType ?? 'election');
     const [clicked, setClicked] = useState(false);
     const [hovered, setHovered] = useState(false);
     return <ClickAwayListener onClickAway={() => setClicked(false)}>
@@ -60,13 +61,13 @@ export const StyledButton = (props) => (
 
 export const StyledTextField = (props) => (
     <TextField
+        className='styledTextField'
         fullWidth
         sx={{
             m: 0,
             p: 0,
-            boxShadow: 2,
-            color: 'lightShade.contrastText',
-            backgroundColor: 'lightShade.main'
+            boxShadow: 0, // this is set manually in index.css. By default MUI creates weird corner artifacts
+            backgroundColor: 'lightShade.main',
         }}
         {...props}
     >

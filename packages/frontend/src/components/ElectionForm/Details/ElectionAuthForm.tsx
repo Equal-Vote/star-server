@@ -36,14 +36,6 @@ export default function ElectionAuthForm() {
                     <FormControlLabel control={
                         <Radio
                             disabled = {election.state !== 'draft'}
-                            checked={none}
-                            onChange={() => handleUpdate({})}
-                            value="none"
-                        />}
-                        label={t('admin_home.voter_authentication.no_limit_label')} />
-                    <FormControlLabel control={
-                        <Radio
-                            disabled = {election.state !== 'draft'}
                             checked={ip}
                             onChange={() => handleUpdate({ ip_address: true })}
                             value="ip"
@@ -66,6 +58,14 @@ export default function ElectionAuthForm() {
                             value="email"
                         />}
                         label={t('admin_home.voter_authentication.email_label')} />
+                    <FormControlLabel control={
+                        <Radio
+                            disabled = {election.state !== 'draft'}
+                            checked={none}
+                            onChange={() => handleUpdate({})}
+                            value="none"
+                        />}
+                        label={t('admin_home.voter_authentication.no_limit_label')} />
                 </FormControl>
             </Grid>
         </Paper>

@@ -17,8 +17,21 @@ export default ({electionId}) => {
     const { data, isPending, error, makeRequest: fetchElections } = useGetElection(electionId);
 
     useEffect(() => {
-        fetchElections()
-    }, []);
+        //isMounted is used to prevent memory leaks by ensuring that the component is still mounted before updating the state
+        let isMounted = true;
+
+        const fetchData = async () => {
+  
+            if (isMounted) {
+                await fetchElections();            }
+        };
+
+        fetchData();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [fetchElections]);
 
     return <Card className='featuredElection' onClick={() => navigate(`/${electionId}`)} elevation={8} sx={{
         width: '100%',

@@ -20,25 +20,27 @@ export default () => {
             p: { xs: 2},
         }}>
             <Box sx={{
-                width: '50%',
+                width: '100%',
                 maxWidth: '650px',
-                minWidth: '250px',
                 margin: 'auto',
                 display: 'flex',
-                flexDirection: 'row',
+                flexDirection: {xs: 'column', md: 'row'},
+                alignContent: 'center',
                 justifyContent: 'space-between',
             }}>
-                <Typography variant='h6' sx={{textAlign: 'left'}}>{t('landing_page.sign_up.text')}</Typography>
+                <Typography variant='h6' sx={{textAlign: {xs: 'center', md: 'left'}}}>{t('landing_page.sign_up.text')}</Typography>
                 {/*I just copied styled button but removed the full width*/ }
                 <Button
                     variant="contained"
                     sx={{
-                        p: 1,
+                        p: 2,
                         m: 0,
                         boxShadow: 2,
                         backgroundColor: 'primary.main',
                         fontWeight: 'bold',
                         fontSize: 18,
+                        maxWidth: '200px',
+                        margin: 'auto'
                     }}
                     onClick={() => authSession.openLogin()}
                 >

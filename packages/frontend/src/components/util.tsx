@@ -30,6 +30,7 @@ import { Trans, useTranslation } from "react-i18next";
 import en from '../i18n/en.yaml';
 import { Tip } from "./styles";
 import i18n from "~/i18n/i18n";
+import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
 const rLink = /\[(.*?)\]\((.*?)\)/;
 const rTip = / \!tip\((.*)\)/
@@ -124,7 +125,7 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
       if(typeof txt !== 'string') return txt;
       return txt.split(rTip).map((str, i) => {
           if(i%2 == 0) return str;
-          return <Tip key={`tip_${keyPrefix}_${i}`} name={str}/>
+          return <Tip key={`tip_${keyPrefix}_${i}`} name={str} electionTermType={electionTermType as TermType}/>
       })
     }
 

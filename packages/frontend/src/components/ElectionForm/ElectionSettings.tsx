@@ -14,8 +14,8 @@ export default function ElectionSettings() {
     const { election, refreshElection, permissions, updateElection } = useElection()
 
     const min_rankings = 3;
-    const max_rankings = Number(process.env.REACT_APP_MAX_BALLOT_RANKS);
-    const default_rankings = Number(process.env.REACT_APP_DEFAULT_BALLOT_RANKS);
+    const max_rankings = Number(process.env.REACT_APP_MAX_BALLOT_RANKS) ? Number(process.env.REACT_APP_MAX_BALLOT_RANKS) : 8;
+    const default_rankings = Number(process.env.REACT_APP_DEFAULT_BALLOT_RANKS) ? Number(process.env.REACT_APP_DEFAULT_BALLOT_RANKS) : 6;
 
     const {t} = useSubstitutedTranslation(election.settings.term_type, {min_rankings, max_rankings});
 

@@ -10,7 +10,7 @@ import { useLocalStorage } from '../../hooks/useLocalStorage'
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import { StyledButton, Tip } from '../styles'
-import { BallotContext } from '../Election/Voting/VotePage'
+import { BallotContext, IBallotContext } from '../Election/Voting/VotePage'
 import StarBallotView from '../Election/Voting/StarBallotView'
 import { ElectionContextProvider } from '../ElectionContextProvider'
 import { VotingMethod } from '@equal-vote/star-vote-shared/domain_model/Race'
@@ -71,7 +71,7 @@ export default ({}) => {
     let quickPollIndex = transitionStep < 4 ? prevMethodIndex : methodIndex;
     if(quickPollIndex == methodKeys.length-1) quickPollIndex = methodKeys.length-2;
 
-    const makeBallotContext = (scores, onUpdate)  => {
+    const makeBallotContext = (scores, onUpdate):IBallotContext  => {
         const candidateNames = t('landing_page.hero.candidates')
         return {
             instructionsRead: true,
@@ -98,7 +98,7 @@ export default ({}) => {
             },
             setReceiptEmail: () => {},
             onUpdate: onUpdate,
-            maxRankings: undefined
+            maxRankings: undefined,
         }
     }
 
@@ -131,7 +131,7 @@ export default ({}) => {
                     sx={{width: '100%'}}
                 >
                     {imgIndex != methodKeys.length-1 ? <>
-                        <Box sx={{width: {xs: '100%', md:'80%'}, maxWidth: '450px', margin: 'auto'}}>
+                        <Box className="heroBallot" sx={{width: {xs: '100%', md:'80%'}, maxWidth: '450px', margin: 'auto'}}>
                             {imgIndex == 0 && <BallotContext.Provider value={makeBallotContext(starScores, setStarScores)}>
                                 <StarBallotView onlyGrid={true}/>
                             </BallotContext.Provider>}

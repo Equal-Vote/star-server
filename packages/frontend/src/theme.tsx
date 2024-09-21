@@ -51,6 +51,7 @@ declare module '@mui/material/styles' {
     ltblue?: string;
     blue?: string;
     gold?: string;
+    warning?: string;
     red?: string;
     orange?: string;
     green?: string;
@@ -77,6 +78,7 @@ declare module '@mui/material/styles' {
     gray3Transparent20?: string;
     gray2Transparent20?: string;
     gray1Transparent20?: string;
+    warningColumn?: string;
   }
 
   interface SimplePaletteColorOptions {
@@ -84,6 +86,7 @@ declare module '@mui/material/styles' {
     ltblue?: string;
     blue?: string;
     gold?: string;
+    warning?: string;
     red?: string;
     orange?: string;
     green?: string;
@@ -110,6 +113,7 @@ declare module '@mui/material/styles' {
     gray3Transparent20?: string;
     gray2Transparent20?: string;
     gray1Transparent20?: string;
+    warningColumn?: string;
   }
 
 }
@@ -121,6 +125,7 @@ const brandPalette: PaletteOptions = {
     ltblue: '#2AA2B3',
     blue: '#02627C',
     gold: '#FFE156',
+    warning: '#ed6c02',
     red: '#EE2C53',
     orange: '#FF9900',
     green: '#60B33C',
@@ -147,6 +152,7 @@ const brandPalette: PaletteOptions = {
     gray3Transparent20: '#99999933',
     gray2Transparent20: '#CCCCCC33',
     gray1Transparent20: '#ECECEC33',
+    warningColumn: '#FFDD0080',
   }
 }
 

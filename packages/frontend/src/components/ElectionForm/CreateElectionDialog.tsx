@@ -76,7 +76,7 @@ const templateMappers = {
     'demo': (election:NewElection):NewElection => ({
         ...election,
     }),
-    'public': (election:NewElection):NewElection => ({
+    /*'public': (election:NewElection):NewElection => ({
         ...election,
         is_public: true,
         settings: {
@@ -86,7 +86,7 @@ const templateMappers = {
                 voter_id: true
             },
         }
-    }),
+    }),*/
     'unlisted': (election:NewElection):NewElection => ({
         ...election,
         is_public: false,
@@ -243,7 +243,7 @@ export default () => {
                     }</strong></StepLabel>
                     <StepContent>
                         <Typography>{t('election_creation.term_question')}
-                            <Tip name='polls_vs_elections'/>
+                            <Tip name='polls_vs_elections' electionTermType={election.settings.term_type}/>
                         </Typography>
                         <RadioGroup row>
                             {['poll', 'election'].map( (type, i) => 
@@ -290,7 +290,7 @@ export default () => {
                     <StepContent>
                         <Typography>
                             {t('election_creation.restricted_question')}
-                            <Tip name='restricted'/>
+                            <Tip name='restricted' electionTermType={election.settings.term_type}/>
                         </Typography>
 
                         <RadioGroup row>
@@ -317,7 +317,7 @@ export default () => {
                             {t('election_creation.template_prompt')}
                         </Typography>
                         <Box style={{height: '10px'}}/> {/*hacky padding*/}
-                        {(election.settings.voter_access === 'closed'? ['email_list', 'id_list'] : ['demo', 'public', 'unlisted']).map((name, i) =>
+                        {(election.settings.voter_access === 'closed'? ['email_list', 'id_list'] : ['demo', 'unlisted']).map((name, i) =>
                             <StartingOption
                                 title={t(`election_creation.${name}_title`)}
                                 description={t(`election_creation.${name}_description`)}
