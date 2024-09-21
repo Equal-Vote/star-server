@@ -258,7 +258,7 @@ function PRResultsViewer({ result, t }: {result: allocatedScoreResults, t: Funct
 
   const tabulationRows = result.summaryData.candidates.map(({index, name}) => {
     return [name].concat(
-      (result.summaryData.weightedScoresByRound as Array<Number[]>).map(counts => counts[index] == 0? '' : '' + counts[index])
+      (result.summaryData.weightedScoresByRound as Array<number[]>).map(counts => counts[index] == 0? '' : '' + Math.round(counts[index]*10)/10)
     )
   });
 
@@ -274,7 +274,7 @@ function PRResultsViewer({ result, t }: {result: allocatedScoreResults, t: Funct
             data={
               result.summaryData.weightedScoresByRound[page-1].map((totalScore, i) => ({
                 name: result.summaryData.candidates[i].name,
-                votes: totalScore,
+                votes: Math.round(totalScore*10)/10,
               }))
             }
             sortFunc = {false}
