@@ -66,7 +66,8 @@ const LandingPage = () => {
                 }}/>
             </Box>
             <LandingPageHero />
-            <LandingPageFeatureElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>
+            {/* temporarily disabling because it was sending continuous requests to the backend for some reason */}
+            {/*<LandingPageFeatureElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>*/}
             <LandingPageStats/> 
             <LandingPageFeatures/>
             <LandingPageSignUpBar />

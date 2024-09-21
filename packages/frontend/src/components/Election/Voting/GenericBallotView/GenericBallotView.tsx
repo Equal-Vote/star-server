@@ -49,7 +49,6 @@ export default function GenericBallotView({
   const numWinners = ballotContext.race.num_winners;
   const spelledNumWinners = numWinners < 11 ? t(`spelled_numbers.${numWinners}`) : numWinners;
 
-
   if(onlyGrid)
     return <Box border={2} sx={{ mt: 0, ml: 0, mr: 0, width: '100%' }} className="ballot">
       <GenericBallotGrid
