@@ -11,6 +11,7 @@ import { Box, FormHelperText, Radio, RadioGroup, Stack } from "@mui/material"
 import IconButton from '@mui/material/IconButton'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
+import { scrollToElement, useSubstitutedTranslation } from '../../util';
 import useElection from '../../ElectionContextProvider';
 import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
@@ -18,6 +19,7 @@ import useFeatureFlags from '../../FeatureFlagContextProvider';
 import { SortableList } from '~/components/DragAndDrop';
 
 export default function RaceForm({ race_index, editedRace, errors, setErrors, applyRaceUpdate }) {
+    const {t} = useSubstitutedTranslation();
     const flags = useFeatureFlags();
     const [showsAllMethods, setShowsAllMethods] = useState(false)
     const { election } = useElection()
@@ -175,7 +177,21 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                     flags.isSet('MULTI_WINNER') &&
                     <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                         <Typography gutterBottom variant="h6" component="h6">
-                            Number of Winners
+                            Multi-Winner?
+                        </Typography>
+                        <RadioGroup
+                            aria-labelledby="voting-method-radio-group"
+                            name="voter-method-radio-buttons-group"
+                            value={editedRace.voting_method}
+                            onChange={(e) => applyRaceUpdate(race => { race.voting_method = e.target.value })}
+                        >
+                            <FormControlLabel value="Single-Winner" control={<Radio />} label={t('edit_race.single_winner')} sx={{ mb: 0, pb: 0 }} />
+                            <FormControlLabel value="Basic Multi-Winner" control={<Radio />} label={t('edit_race.bloc_multi_winner')} sx={{ mb: 0, pb: 0 }} />
+                            <FormControlLabel value="Proportional Multi-Winner" control={<Radio />} label={t('edit_race.proportional_multi_winner')} sx={{ mb: 0, pb: 0 }} />
+                        </RadioGroup>
+
+                        <Typography gutterBottom component="p" sx={{marginTop: 2}}>
+                            <b>Number of Winners?</b>
                         </Typography>
                         <TextField
                             id={`num-winners-${String(race_index)}`}
@@ -212,13 +228,13 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                         >
                             <FormControlLabel value="STAR" control={<Radio />} label="STAR" sx={{ mb: 0, pb: 0 }} />
                             <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                Score candidates 0-5, single winner or multi-winner
+                                Score candidates 0-5
                             </FormHelperText>
 
                             {flags.isSet('METHOD_STAR_PR') && <>
                                 <FormControlLabel value="STAR_PR" control={<Radio />} label="Proportional STAR" />
                                 <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                    Score candidates 0-5, proportional multi-winner
+                                    Score candidates 0-5
                                 </FormHelperText>
                             </>}
 

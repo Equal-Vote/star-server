@@ -128,7 +128,7 @@ const Header = () => {
                 <IconButton
                     size="large"
                     href="/"
-                    sx={{display: 'flex', gap: 1, flexGrow: {xs: '1', md: '0'}}}>
+                    sx={{display: 'flex', gap: 1, flexGrow: {xs: '1', md: '0'}, marginRight: 5}}>
                         {
                             /* I thought the favicon looked a bit too busy */
                             /*<Avatar src='/favicon-local.png'/>*/
@@ -139,10 +139,10 @@ const Header = () => {
 
                 {/**** DESKTOP OPTIONS ****/}
                 <Box
-                    sx={{ flexGrow: 100, flexWrap: 'wrap', display: { xs: 'none', md: 'flex' }, gap: 2, rowGap: 0 }}>
+                    sx={{ flexGrow: 100, flexWrap: 'wrap', display: { xs: 'none', md: 'flex' }, gap: 4, rowGap: 0 }}>
                     {navItems.map((item, i) => 
                         <Button key={`desktop-nav-${i}`} href={item.href} target={item.target}>
-                            <Typography sx={navTextSx} color={headerTextColor}>
+                            <Typography variant="h6" sx={navTextSx} color={headerTextColor} textTransform={'none'}>
                                 {item.text}
                             </Typography>
                         </Button>
@@ -156,10 +156,10 @@ const Header = () => {
                 </Box>
 
                 {/**** ACCOUNT OPTIONS ****/}
-                <Box sx={{ flexGrow: 0, display: 'flex' }}>
+                <Box sx={{ flexGrow: 0, display: 'flex', gap: 4 }}>
                     {authSession.isLoggedIn() && <>
                         <Button color='inherit' onClick={() => createElectionContext.openDialog()} sx={{display: { xs: 'none', md: 'flex' }}}>
-                            <Typography sx={navTextSx} color={headerTextColor}>
+                            <Typography variant="h6" sx={navTextSx} color={headerTextColor} textTransform={'none'}>
                                 {t('nav.new_election')}
                             </Typography>
                         </Button>
@@ -175,7 +175,7 @@ const Header = () => {
                             <AccountCircleIcon />
                         </IconButton>
                         <Button color='inherit' onClick={handleOpenUserMenu} sx={{display: { xs: 'none', md: 'flex' }}}>
-                            <Typography sx={navTextSx} color={headerTextColor}>
+                            <Typography variant="h6" sx={navTextSx} color={headerTextColor} textTransform={'none'}>
                                 {t('nav.greeting', {name: authSession.getIdField('given_name')})}
                             </Typography>
                             <KeyboardArrowDownRoundedIcon sx={{transition: 'transform .2s', '&:hover': {transform: 'translateY(3px)'}}}/>

@@ -73,7 +73,7 @@
   border-width: 2px;
 }
 
-.styledTextField:hover > div > fieldset{
+styledTextField:hover > div > fieldset{
   opacity: .7; /* Hack to make the hover color less intense */
 }
 
