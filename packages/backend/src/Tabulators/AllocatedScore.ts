@@ -349,7 +349,7 @@ function findSplitPoint(cand_df_sorted: winner_scores[], quota: typeof Fraction)
     var cumsum = new Fraction(0);
     cand_df_sorted.forEach((c, i) => {
         cumsum = cumsum.add(c.ballot_weight);
-        if (cumsum < quota) {
+        if (cumsum < quota || i == 0) {
             under_quota.push(c);
             under_quota_scores.push(c.weighted_score);
         }
