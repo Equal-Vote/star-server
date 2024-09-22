@@ -38,6 +38,6 @@ const createAndCheckElection = async (
     return newElection;
 };
 
-module.exports = {
+export {
     createElectionController
 }

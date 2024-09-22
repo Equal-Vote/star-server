@@ -60,7 +60,7 @@ const sendInvitationsController = async (req: IElectionRequest, res: Response, n
 
     await sendBatchEmailInvites(req, electionRollFiltered, election)
 
-    return res.json({})
+    res.json({})
 }
 
 async function sendBatchEmailInvites(req: any, electionRoll: ElectionRoll[], election: Election) {
@@ -168,7 +168,7 @@ async function sendInvitation(ctx: any, election:Election, electionRoll: Electio
     }
 }
 
-module.exports = {
+export {
     sendInvitationsController,
     sendInvitationController,
     handleSendInviteEvent,

@@ -66,6 +66,6 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
     )
 }
 
-module.exports = {
+export {
     getElectionResults
 }

@@ -38,6 +38,6 @@ const editElectionRoles = async (req: IElectionRequest, res: Response, next: Nex
     res.status(200).json({election: req.election})
 }
 
-module.exports = {
+export {
     editElectionRoles
 }

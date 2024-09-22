@@ -28,9 +28,9 @@ const setPublicResults = async (req: IElectionRequest, res: Response, next: Next
         throw new BadRequest(failMsg)
     }
 
-    return res.json({ election: updatedElection })
+    res.json({ election: updatedElection })
 }
 
-module.exports = {
+export  {
     setPublicResults,
 }

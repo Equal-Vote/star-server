@@ -24,6 +24,6 @@ const getBallotsByElectionID = async (req: IElectionRequest, res: Response, next
     res.json({ election: req.election, ballots: ballots })
 }
 
-module.exports = {
+export {
     getBallotsByElectionID
 }

@@ -33,6 +33,6 @@ const editElectionRoll = async (req: IElectionRequest, res: Response, next: Next
     res.status(200).json(electionRollEntry)
 }
 
-module.exports = {
+export {
     editElectionRoll,
 }

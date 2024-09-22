@@ -50,9 +50,9 @@ const finalizeElection = async (req: IElectionRequest, res: Response, next: Next
             await sendBatchEmailInvites(req, electionRoll, updatedElection)
         }
     }
-    return res.json({ election: updatedElection })
+    res.json({ election: updatedElection })
 }
 
-module.exports = {
+export  {
     finalizeElection,
 }

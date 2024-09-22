@@ -45,7 +45,6 @@ import asyncHandler from 'express-async-handler';
 import { IElectionRequest } from '../IRequest';
 
 
-  
 
 /**
  * @swagger
@@ -69,11 +68,13 @@ import { IElectionRequest } from '../IRequest';
  *               type: object
  *               $ref: '#/components/schemas/Election'
  *       404:
- *         description: Election not found
- */
+ *         description: Election not found 
+*/
+
 router.get('/Election/:id', asyncHandler(returnElection));
 
-/**
+
+/** 
  * @swagger
  * /Election/{_id}/exists:
  *   get:
@@ -81,7 +82,7 @@ router.get('/Election/:id', asyncHandler(returnElection));
  *     tags: [Elections]
  *     parameters:
  *       - in: path
- *         name: _id
+ *         name: id
  *         schema:
  *           type: string
  *         required: true
@@ -104,6 +105,27 @@ router.get('/Election/:_id/exists', asyncHandler(electionExistsByID))
 
 /**
  * @swagger
+ * /Election/{id}:
+ *  delete:
+ *    summary: Delete election by ID
+ *    tags: [Elections]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The election ID
+ *    responses:
+ *      200:
+ *        description: Election deleted
+ *      404:
+ *        description: Election not found
+*/
+router.delete('/Election/:id', asyncHandler(deleteElection))
+
+/** 
+ * @swagger
  * /Election/{id}/ballot:
  *   post:
  *     summary: Return election ballot
@@ -125,14 +147,14 @@ router.get('/Election/:_id/exists', asyncHandler(electionExistsByID))
  *             properties:
  *               ballot: 
  *                type: object
- *                  $ref: '#/components/schemas/NewBallot'
+ *                $ref: '#/components/schemas/NewBallot'
  *                
  *       404:
  *         description: Election not found
  */
 router.post('/Election/:id/ballot', asyncHandler(returnElection))
 
-/**
+/** 
  * @swagger
  * /Election/{id}/register:
  *   post:
@@ -148,11 +170,24 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Voter registered
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 election:
+ *                   type: object
+ *                   $ref: '#/components/schemas/Election'
+ *                 NewElectionRoll:
+ *                   type: object
+ *                   $ref: '#/components/schemas/NewElectionRoll'
  *       404:
  *         description: Election not found
  */
+router.post('/Election/:id/register',asyncHandler(registerVoter))
 
-/**
+
+/** 
  * @swagger
  * /Election/{id}/ballots:
  *   get:
@@ -168,11 +203,25 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: List of ballots
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 election:
+ *                   type: object
+ *                   $ref: '#/components/schemas/Election'
+ *                 ballots:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Ballot'
  *       404:
  *         description: Election not found
- */
+*/
+router.get('/Election/:id/ballots', asyncHandler(getBallotsByElectionID))
 
-/**
+
+/** 
  * @swagger
  * /Election/{id}/ballots:
  *   delete:
@@ -188,11 +237,20 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: All ballots deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: If the deletion was successful
  *       404:
- *         description: Election not found
- */
+ *         description: Election not found */
+router.delete('/Election/:id/ballots', asyncHandler(deleteAllBallotsForElectionID))
 
-/**
+
+/** 
  * @swagger
  * /Election/{id}/ballot/{ballot_id}:
  *   get:
@@ -214,11 +272,23 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Ballot details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 ballot:
+ *                   type: object
+ *                   $ref: '#/components/schemas/Ballot'
+ *                 
  *       404:
- *         description: Ballot not found
- */
+ *        description: Ballot not found 
+*/
+router.get('/Election/:id/ballot/:ballot_id', asyncHandler(getBallotByBallotID))
 
-/**
+
+
+/** 
  * @swagger
  * /Election/{id}/rolls:
  *   get:
@@ -234,11 +304,22 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: List of rolls
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 electionRollEntry:
+ *                   type: object
+ *                   $ref: '#/components/schemas/ElectionRoll'
  *       404:
- *         description: Election not found
- */
+ *         description: Election not found 
+*/
+router.get('/Election/:id/rolls', asyncHandler(getRollsByElectionID))
 
-/**
+
+
+/** 
  * @swagger
  * /Election/{id}/rolls/{voter_id}:
  *   get:
@@ -260,11 +341,21 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Roll details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 electionRollEntry:
+ *                   type: object
+ *                   $ref: '#/components/schemas/ElectionRoll'
  *       404:
- *         description: Roll not found
- */
+ *         description: Roll not found 
+*/
+router.get('/Election/:id/rolls/:voter_id', asyncHandler(getByVoterID))
 
-/**
+
+/** 
  * @swagger
  * /Election/{id}/rolls:
  *   post:
@@ -280,11 +371,23 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Roll added
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 election:
+ *                   type: object
+ *                   $ref: '#/components/schemas/Election'
+ *                 NewElectionRoll:
+ *                   type: object
+ *                   $ref: '#/components/schemas/NewElectionRoll'
  *       404:
  *         description: Election not found
  */
+router.post('/Election/:id/rolls/', asyncHandler(addElectionRoll))
 
-/**
+/** 
  * @swagger
  * /Election/{id}/rolls:
  *   put:
@@ -300,11 +403,19 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Roll edited
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 electionRollEntry:
+ *                   type: object
+ *                   $ref: '#/components/schemas/ElectionRoll'
  *       404:
- *         description: Election not found
- */
+ *         description: Election not found */
+ router.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
 
-/**
+ /** 
  * @swagger
  * /Election/{id}/rolls/approve:
  *   post:
@@ -321,10 +432,10 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *       200:
  *         description: Roll approved
  *       404:
- *         description: Election not found
- */
+ *         description: Election not found */
+ router.post('/Election/:id/rolls/approve', asyncHandler(approveElectionRoll))
 
-/**
+ /** 
  * @swagger
  * /Election/{id}/rolls/flag:
  *   post:
@@ -341,11 +452,10 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *       200:
  *         description: Roll flagged
  *       404:
- *         description: Election not found
- */
+ *         description: Election not found */
+ router.post('/Election/:id/rolls/flag', asyncHandler(flagElectionRoll))
 
-/**
- * @swagger
+ /** @swagger
  * /Election/{id}/rolls/invalidate:
  *   post:
  *     summary: Invalidate an election roll
@@ -361,10 +471,11 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *       200:
  *         description: Roll invalidated
  *       404:
- *         description: Election not found
- */
-
-/**
+ *         description: Election not found */
+ router.post('/Election/:id/rolls/invalidate', asyncHandler(invalidateElectionRoll))
+ 
+/** 
+ * 
  * @swagger
  * /Election/{id}/rolls/unflag:
  *   post:
@@ -381,10 +492,10 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *       200:
  *         description: Roll unflagged
  *       404:
- *         description: Election not found
- */
+ *         description: Election not found */
+ router.post('/Election/:id/rolls/unflag', asyncHandler(uninvalidateElectionRoll))
 
-/**
+/** 
  * @swagger
  * /Elections:
  *   get:
@@ -393,9 +504,40 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: List of elections
- */
-
-/**
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 elections_as_official:
+ *                   oneOf:
+ *                     - type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Election'
+ *                     - type: null
+ *                 elections_as_unsubmitted_voter:
+ *                   oneOf:
+ *                     - type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Election'
+ *                     - type: null
+ *                     - type: undefined
+ *                 elections_as_submitted_voter:
+ *                   oneOf:
+ *                     - type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Election'
+ *                     - type: null
+ *                 open_elections:
+ *                   oneOf:
+ *                     - type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Election'
+ *                     - type: null
+  */
+ router.get('/Elections', asyncHandler(getElections))
+ 
+/** 
  * @swagger
  * /Elections:
  *   post:
@@ -404,9 +546,18 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Election created
- */
-
-/**
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 election:
+ *                   type: object
+ *                   $ref: '#/components/schemas/Election'
+ *  */
+ router.post('/Elections/', asyncHandler(createElectionController))
+ /** 
+ * 
  * @swagger
  * /GlobalElectionStats:
  *   get:
@@ -415,9 +566,20 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Global election statistics
- */
-
-/**
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 elections:
+ *                   type: number
+ *                   description: Number of elections
+ *                 votes:
+ *                   type: number
+ *                   description: Number of votes
+ *  */
+ router.get('/GlobalElectionStats', asyncHandler(getGlobalElectionStats))
+/** 
  * @swagger
  * /Election/{id}/edit:
  *   post:
@@ -433,11 +595,34 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Election edited
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 election:
+ *                   type: object
+ *                   $ref: '#/components/schemas/Election'
+ *                 voterAuth:
+ *                   type: object
+ *                   properties:
+ *                     authorized_voter:
+ *                       type: boolean
+ *                     has_voted:
+ *                       type: boolean
+ *                     roles:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/roles'
+ *                     permissions:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/permissions'
  *       404:
- *         description: Election not found
- */
+ *         description: Election not found */
+ router.post('/Election/:id/edit', asyncHandler(editElection))
 
-/**
+ /** 
  * @swagger
  * /Election/{id}/roles:
  *   put:
@@ -453,11 +638,19 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Roles edited
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 election:
+ *                   type: object
+ *                   $ref: '#/components/schemas/Election'
  *       404:
- *         description: Election not found
- */
-
-/**
+ *         description: Election not found */
+ router.put('/Election/:id/roles', asyncHandler(editElectionRoles))
+ 
+/** 
  * @swagger
  * /ElectionResult/{id}:
  *   get:
@@ -473,11 +666,22 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Election results
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 election:
+ *                   type: object
+ *                   $ref: '#/components/schemas/Election'
+ *                 results:
+ *                   type: object
+ *                   $ref: '#/components/schemas/ElectionResults'
  *       404:
- *         description: Election not found
- */
-
-/**
+ *         description: Election not found */
+ router.get('/ElectionResult/:id', asyncHandler(getElectionResults))
+ 
+/** 
  * @swagger
  * /Election/{id}/vote:
  *   post:
@@ -493,11 +697,20 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Vote cast
+ *         content: 
+ *          application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               ballot:
+ *                 type: object
+ *                 $ref: '#/components/schemas/Ballot'
  *       404:
- *         description: Election not found
- */
+ *         description: Election not found */
+ router.post('/Election/:id/vote', asyncHandler(castVoteController))
 
-/**
+
+/** 
  * @swagger
  * /Election/{id}/finalize:
  *   post:
@@ -513,11 +726,19 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Election finalized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 election:
+ *                   type: object
+ *                   $ref: '#/components/schemas/Election'
  *       404:
- *         description: Election not found
- */
+ *         description: Election not found */
+router.post('/Election/:id/finalize',asyncHandler(finalizeElection))
 
-/**
+/** 
  * @swagger
  * /Election/{id}/setPublicResults:
  *   post:
@@ -533,11 +754,19 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Public results set
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 election:
+ *                   type: object
+ *                   $ref: '#/components/schemas/Election'
  *       404:
- *         description: Election not found
- */
+ *         description: Election not found */
+router.post('/Election/:id/setPublicResults',asyncHandler(setPublicResults))
 
-/**
+ /** 
  * @swagger
  * /Election/{id}/archive:
  *   post:
@@ -553,11 +782,20 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Election archived
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 election:
+ *                   type: object
+ *                   $ref: '#/components/schemas/Election'
  *       404:
- *         description: Election not found
- */
+ *         description: Election not found 
+*/
+router.post('/Election/:id/archive', asyncHandler(archiveElection))
 
-/**
+/** 
  * @swagger
  * /Election/{id}/sendInvites:
  *   post:
@@ -574,10 +812,9 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *       200:
  *         description: Invitations sent
  *       404:
- *         description: Election not found
- */
-
-/**
+ *         description: Election not found */
+router.post('/Election/:id/sendInvites', asyncHandler(sendInvitationsController))
+/** 
  * @swagger
  * /Election/{id}/sendInvite/{voter_id}:
  *   post:
@@ -599,11 +836,19 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Invitation sent
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 electionRollEntry:
+ *                   type: object
+ *                   $ref: '#/components/schemas/ElectionRoll'
  *       404:
- *         description: Election or voter not found
- */
+ *         description: Election or voter not found */
+router.post('/Election/:id/sendInvite/:voter_id', asyncHandler(sendInvitationController))
 
-/**
+ /** 
  * @swagger
  * /Sandbox:
  *   post:
@@ -612,9 +857,23 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Sandbox results
- */
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 results:
+ *                   type: object
+ *                   $ref: '#/components/schemas/ElectionResults'
+ *                 nWinners:
+ *                   type: number
+ *                   description: Number of winners
+ *                 candidates:
+ *                   type: array
+ *                   items: string */
+ router.post('/Sandbox',asyncHandler(getSandboxResults))
 
-/**
+/** 
  * @swagger
  * /images:
  *   post:
@@ -632,39 +891,22 @@ router.post('/Election/:id/ballot', asyncHandler(returnElection))
  *     responses:
  *       200:
  *         description: Image uploaded
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 photo_filename:
+ *                   typeOf: 
+ *                     - string
+ *                     - null
  */
-
-// using _id so that it doesn't trigger async handers in routes.params
-router.delete('/Election/:id', asyncHandler(deleteElection));
-router.post('/Election/:id/register',asyncHandler(registerVoter))
-router.get('/Election/:id/ballots', asyncHandler(getBallotsByElectionID))
-router.delete('/Election/:id/ballots', asyncHandler(deleteAllBallotsForElectionID))
-router.get('/Election/:id/ballot/:ballot_id', asyncHandler(getBallotByBallotID))
-router.get('/Election/:id/rolls', asyncHandler(getRollsByElectionID))
-router.get('/Election/:id/rolls/:voter_id', asyncHandler(getByVoterID))
-router.post('/Election/:id/rolls/', asyncHandler(addElectionRoll))
-router.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
-router.post('/Election/:id/rolls/approve', asyncHandler(approveElectionRoll))
-router.post('/Election/:id/rolls/flag', asyncHandler(flagElectionRoll))
-router.post('/Election/:id/rolls/invalidate', asyncHandler(invalidateElectionRoll))
-router.post('/Election/:id/rolls/unflag', asyncHandler(uninvalidateElectionRoll))
-router.get('/Elections', asyncHandler(getElections))
-router.post('/Elections/', asyncHandler(createElectionController.createElectionController))
-router.get('/GlobalElectionStats', asyncHandler(getGlobalElectionStats))
-
-router.post('/Election/:id/edit', asyncHandler(editElection))
-router.put('/Election/:id/roles', asyncHandler(editElectionRoles))
-router.get('/ElectionResult/:id', asyncHandler(getElectionResults))
-router.post('/Election/:id/vote', asyncHandler(castVoteController))
-router.post('/Election/:id/finalize',asyncHandler(finalizeElection))
-router.post('/Election/:id/setPublicResults',asyncHandler(setPublicResults))
-router.post('/Election/:id/archive', asyncHandler(archiveElection))
-router.post('/Election/:id/sendInvites', asyncHandler(sendInvitationsController))
-router.post('/Election/:id/sendInvite/:voter_id', asyncHandler(sendInvitationController))
-
-router.post('/Sandbox',asyncHandler(getSandboxResults))
-
 router.post('/images',upload.single("file"), asyncHandler(uploadImageController))
+
+
+  
+
+
 
 //router.param('id', asyncHandler(electionController.getElectionByID))
 router.param('id', asyncHandler(getElectionByID))

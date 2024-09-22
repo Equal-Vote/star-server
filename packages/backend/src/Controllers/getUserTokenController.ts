@@ -8,6 +8,6 @@ const getUserToken = async (req: Request, res: Response, next: NextFunction) => 
     res.json(data)
 }
 
-module.exports = {
+export {
     getUserToken,
 }

@@ -44,7 +44,7 @@ const getByVoterID = async (req: IElectionRequest, res: Response, next: NextFunc
     next()
 }
 
-module.exports = {
+export {
     getRollsByElectionID,
     getByVoterID
 }

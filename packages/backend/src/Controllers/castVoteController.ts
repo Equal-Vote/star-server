@@ -159,7 +159,7 @@ function assertVoterMayVote(voterAuthorization:any, ctx:ILoggingContext ): void{
     Logger.debug(ctx, "Voter authorized");
 }
 
-module.exports = {
+export {
     castVoteController,
     handleCastVoteEvent
 }

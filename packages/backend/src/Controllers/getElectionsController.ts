@@ -89,7 +89,7 @@ const getGlobalElectionStats = async (req: IRequest, res: Response, next: NextFu
     res.json(innerGetGlobalElectionStats(req));
 }
 
-module.exports = {
+export {
     getElections,
     innerGetGlobalElectionStats,
     getGlobalElectionStats,

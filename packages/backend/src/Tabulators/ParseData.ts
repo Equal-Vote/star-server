@@ -22,7 +22,7 @@ function getStarBallotValidity(ballot: ballot) {
     return { isValid: true, isUnderVote: isUnderVote }
 }
 
-module.exports = function ParseData(data: ballot[], validityCheck = getStarBallotValidity): IparsedData {
+export function ParseData(data: ballot[], validityCheck = getStarBallotValidity): IparsedData {
     // Initialize arrays
     const scores: ballot[] = [];
     const validVotes: voter[] = [];
@@ -53,4 +53,4 @@ module.exports = function ParseData(data: ballot[], validityCheck = getStarBallo
     };
 }
 
-// module.exports = ParseData
+// export 

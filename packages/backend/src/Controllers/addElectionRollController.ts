@@ -68,6 +68,6 @@ const addElectionRoll = async (req: IElectionRequest, res: Response, next: NextF
     return next()
 }
 
-module.exports = {
+export {
     addElectionRoll,
 }

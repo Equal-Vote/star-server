@@ -23,9 +23,9 @@ const deleteElection = async (req: IElectionRequest, res: Response, next: NextFu
         throw new BadRequest(msg)
     }
     Logger.info(req, `Deleted election ${electionId}`);
-    return res.status(200)
+    res.status(200)
 
 }
-module.exports = {
+export  {
     deleteElection
 }

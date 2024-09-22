@@ -44,6 +44,6 @@ const editElection = async (req: IElectionRequest, res: Response, next: NextFunc
     res.json({ election: req.election, voterAuth: { authorized_voter: req.authorized_voter, has_voted: req.has_voted, roles: req.user_auth.roles, permissions: req.user_auth.permissions  } })
 }
 
-module.exports = {
+export  {
     editElection
 }

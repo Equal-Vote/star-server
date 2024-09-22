@@ -4,6 +4,8 @@ import { permission, permissions } from '@equal-vote/star-vote-shared/domain_mod
 
 type p = keyof typeof permissions
 export {}
+//apparently this is expresses official recommedation for extending types in typescript. I had to add
+// this to get elections.routes.ts to work.
 declare global {
     namespace Express {
         interface Request {
@@ -17,6 +19,7 @@ declare global {
             }
             authorized_voter?: boolean;
             has_voted?: boolean;
+            file: any
         }
     }
 }

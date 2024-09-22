@@ -1,6 +1,6 @@
 require('dotenv').config();
 import express from 'express';
-var electionRouter = require('./Routes/elections.routes')
+import electionRouter from './Routes/elections.routes'
 // var debugRouter = require('./Routes/debug.routes')
 
 import cors from 'cors';

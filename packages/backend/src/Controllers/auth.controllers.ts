@@ -51,7 +51,7 @@ const assertOwnership = (req: any, res: any, next: any) => {
   next()
 }
 
-module.exports = {
+export  {
   getUser,
   isLoggedIn,
   assertOwnership,

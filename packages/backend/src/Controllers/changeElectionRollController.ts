@@ -66,7 +66,7 @@ const changeElectionRollState = async (req: IElectionRequest, newState: Election
     }
 }
 
-module.exports = {
+export  {
     changeElectionRollState,
     approveElectionRoll,
     flagElectionRoll,

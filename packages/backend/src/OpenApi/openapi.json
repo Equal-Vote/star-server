@@ -1750,6 +1750,31 @@
             "description": "Election not found"
           }
         }
+      },
+      "delete": {
+        "summary": "Delete election by ID",
+        "tags": [
+          "Elections"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Election deleted"
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
       }
     },
     "/Election/{_id}/exists": {
@@ -1761,7 +1786,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "_id",
+            "name": "id",
             "schema": {
               "type": "string"
             },
@@ -1771,7 +1796,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Election exists"
+            "description": "Election exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "exists": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -1798,7 +1835,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Election ballot returned"
+            "description": "Election ballot returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ballot": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/NewBallot"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -1825,7 +1875,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Voter registered"
+            "description": "Voter registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    },
+                    "NewElectionRoll": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/NewElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -1852,7 +1919,26 @@
         ],
         "responses": {
           "200": {
-            "description": "List of ballots"
+            "description": "List of ballots",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    },
+                    "ballots": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Ballot"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -1877,7 +1963,20 @@
         ],
         "responses": {
           "200": {
-            "description": "All ballots deleted"
+            "description": "All ballots deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "If the deletion was successful"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -1913,7 +2012,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Ballot details"
+            "description": "Ballot details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ballot": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Ballot"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Ballot not found"
@@ -1940,7 +2052,20 @@
         ],
         "responses": {
           "200": {
-            "description": "List of rolls"
+            "description": "List of rolls",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "electionRollEntry": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -1965,7 +2090,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Roll added"
+            "description": "Roll added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    },
+                    "NewElectionRoll": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/NewElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -1990,7 +2132,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Roll edited"
+            "description": "Roll edited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "electionRollEntry": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -2026,7 +2181,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Roll details"
+            "description": "Roll details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "electionRollEntry": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Roll not found"
@@ -2150,7 +2318,71 @@
         ],
         "responses": {
           "200": {
-            "description": "List of elections"
+            "description": "List of elections",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "elections_as_official": {
+                      "oneOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Election"
+                          }
+                        },
+                        {
+                          "type": null
+                        }
+                      ]
+                    },
+                    "elections_as_unsubmitted_voter": {
+                      "oneOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Election"
+                          }
+                        },
+                        {
+                          "type": null
+                        },
+                        {
+                          "type": "undefined"
+                        }
+                      ]
+                    },
+                    "elections_as_submitted_voter": {
+                      "oneOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Election"
+                          }
+                        },
+                        {
+                          "type": null
+                        }
+                      ]
+                    },
+                    "open_elections": {
+                      "oneOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Election"
+                          }
+                        },
+                        {
+                          "type": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -2161,7 +2393,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Election created"
+            "description": "Election created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -2174,7 +2419,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Global election statistics"
+            "description": "Global election statistics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "elections": {
+                      "type": "number",
+                      "description": "Number of elections"
+                    },
+                    "votes": {
+                      "type": "number",
+                      "description": "Number of votes"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -2198,7 +2460,43 @@
         ],
         "responses": {
           "200": {
-            "description": "Election edited"
+            "description": "Election edited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    },
+                    "voterAuth": {
+                      "type": "object",
+                      "properties": {
+                        "authorized_voter": {
+                          "type": "boolean"
+                        },
+                        "has_voted": {
+                          "type": "boolean"
+                        },
+                        "roles": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/roles"
+                          }
+                        },
+                        "permissions": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/permissions"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -2225,7 +2523,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Roles edited"
+            "description": "Roles edited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -2252,7 +2563,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Election results"
+            "description": "Election results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    },
+                    "results": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionResults"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -2279,7 +2607,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Vote cast"
+            "description": "Vote cast",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ballot": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Ballot"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -2306,7 +2647,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Election finalized"
+            "description": "Election finalized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -2333,7 +2687,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Public results set"
+            "description": "Public results set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -2360,7 +2727,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Election archived"
+            "description": "Election archived",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election not found"
@@ -2423,7 +2803,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Invitation sent"
+            "description": "Invitation sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "electionRollEntry": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Election or voter not found"
@@ -2439,7 +2832,28 @@
         ],
         "responses": {
           "200": {
-            "description": "Sandbox results"
+            "description": "Sandbox results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionResults"
+                    },
+                    "nWinners": {
+                      "type": "number",
+                      "description": "Number of winners"
+                    },
+                    "candidates": {
+                      "type": "array",
+                      "items": "string"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -2467,7 +2881,22 @@
         },
         "responses": {
           "200": {
-            "description": "Image uploaded"
+            "description": "Image uploaded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "photo_filename": {
+                      "typeOf": [
+                        "string",
+                        null
+                      ]
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }

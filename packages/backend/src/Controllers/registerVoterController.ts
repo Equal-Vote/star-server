@@ -73,6 +73,6 @@ const registerVoter = async (req: IElectionRequest, res: Response, next: NextFun
     return next()
 }
 
-module.exports = {
+export  {
     registerVoter
 }

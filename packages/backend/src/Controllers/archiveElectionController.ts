@@ -31,9 +31,9 @@ const archiveElection = async (req: IElectionRequest, res: Response, next: NextF
         throw new BadRequest(failMsg)
     }
 
-    return res.json({ election: updatedElection })
+    res.json({ election: updatedElection })
 }
 
-module.exports = {
+export {
     archiveElection,
 }

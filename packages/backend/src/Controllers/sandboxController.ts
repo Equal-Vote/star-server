@@ -30,6 +30,6 @@ const getSandboxResults = async (req: Request, res: Response, next: NextFunction
     );
 }
 
-module.exports = {
+export {
     getSandboxResults
 }

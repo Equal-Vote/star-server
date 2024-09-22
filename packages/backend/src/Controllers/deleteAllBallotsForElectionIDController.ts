@@ -34,7 +34,7 @@ const deleteAllBallotsForElectionID = async (req: IElectionRequest, res: Respons
     res.json({ success: innerDeleteAllBallotsForElectionID(req) })
 }
 
-module.exports = {
+export {
     deleteAllBallotsForElectionID,
     innerDeleteAllBallotsForElectionID
 }
