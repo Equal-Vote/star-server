@@ -1,4 +1,4 @@
-module.exports = {
+export {
     transform: {
       '^.+\\.ts?$': [
         'ts-jest',

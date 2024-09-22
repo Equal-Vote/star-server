@@ -12,6 +12,8 @@ import { errorCatch } from './errorCatchMiddleware'
 import registerEvents from './Routes/registerEvents';
 import { setupSockets } from './socketHandler';
 import { getMetaTags } from './Util';
+import swaggerUi from 'swagger-ui-express';
+import openapi from './OpenApi/openapi.json'
 
 const { getUserToken } = require('./Controllers/getUserTokenController')
 const authController = require('./Controllers/auth.controllers')
@@ -45,7 +47,7 @@ export default function makeApp() {
     //Routes
     app.use('/API',authController.getUser, electionRouter)
     // app.use('/debug',debugRouter)
-
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapi));
     app.post('/API/Token', asyncHandler(getUserToken));
 
     // NOTE: I've removed express.static because it doesn't allow me to inject meta tags

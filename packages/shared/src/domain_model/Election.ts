@@ -22,7 +22,7 @@ export interface Election {
     settings:       ElectionSettings;
     auth_key?:      string;
     claim_key_hash?: string;
-    is_public?:     Boolean;
+    is_public?:     boolean;
     create_date:    Date | string; // Date this object was created
     update_date:    Date | string;  // Date this object was last updated
     head:           boolean;// Head version of this object
