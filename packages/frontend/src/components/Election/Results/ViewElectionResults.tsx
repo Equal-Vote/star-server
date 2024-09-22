@@ -9,7 +9,7 @@ import useElection from '../../ElectionContextProvider';
 import DraftWarning from '../DraftWarning';
 import { StyledButton } from '~/components/styles';
 import ShareButton from '../ShareButton';
-import { DownloadCSV } from './DowloadCSV';
+import { DownloadCSV } from './DownloadCSV';
 import { useGetBallots } from '~/hooks/useAPI';
 
 const ViewElectionResults = () => {
@@ -18,8 +18,6 @@ const ViewElectionResults = () => {
     
     const { data, isPending, error, makeRequest: getResults } = useGetResults(election.election_id)
     useEffect(() => { getResults() }, [])
-	const { data: ballotsData, isPending: isPendingBallots, error: ballotsError, makeRequest: fetchBallots } = useGetBallots(election.election_id)
-    useEffect(() => { fetchBallots() }, [])
     const {t} = useSubstitutedTranslation(election.settings.term_type);
     return (<>
         <DraftWarning/>
@@ -50,9 +48,9 @@ const ViewElectionResults = () => {
                     <hr/>
                     <Box sx={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2}}>
                             <Box sx={{ minWidth: 750, display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
-                        {(election.settings.public_download === true && !isPendingBallots && ballotsData) &&
+                        {(election.settings.public_download === true) &&
                             <Box sx={{ width: '100%',  p: 1, px:{xs: 5, sm: 1} }}>
-                                <DownloadCSV data={{election, ballots: ballotsData.ballots}}/>
+                                <DownloadCSV election={election}/>
                             </Box>
                             }
                         
