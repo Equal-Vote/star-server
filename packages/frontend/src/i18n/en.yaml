@@ -234,7 +234,7 @@ ballot:
         The two highest scoring {{lowercase_candidates}} are finalists.
         Your full vote goes to the finalist you prefer.
       footer_multi_winner: >
-        his election uses STAR Voting and will elect {{n}} winners.
+        This election uses STAR Voting and will elect {{n}} winners.
         In STAR Voting the two highest scoring {{lowercase_candidates}} are finalists and the finalist preferred by more voters wins.
       # These show above the star columns 
       left_title: 'Worst'
@@ -780,6 +780,10 @@ methods:
     full_name: STAR Voting
     short_name: STAR Voting
     learn_link: https://www.youtube.com/watch?v=3-mOeUXAkV0
+  star_pr:
+    full_name: Proportional STAR Voting
+    short_name: STAR PR
+    learn_link: https://www.equal.vote/pr
   approval:
     full_name: Approval Voting
     short_name: Approval Voting
