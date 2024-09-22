@@ -63,7 +63,6 @@ const defaultElection: NewElection = {
         },
         ballot_updates: false,
         public_results: true,
-        public_download: true,
         time_zone: DateTime.now().zone.name,
         random_candidate_order: false,
         require_instruction_confirmation: true,

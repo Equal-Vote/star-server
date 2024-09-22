@@ -14,7 +14,7 @@ const getAnonymizedBallotsByElectionID = async (req: IElectionRequest, res: Resp
     var electionId = req.election.election_id;
     Logger.debug(req, "getBallotsByElectionID: " + electionId);
     const election = req.election;
-    if (!election.settings.public_download) {
+    if (!election.settings.public_results) {
         expectPermission(req.user_auth.roles, permissions.canViewBallots)
     }
 

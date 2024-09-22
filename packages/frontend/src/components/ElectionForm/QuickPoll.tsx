@@ -66,7 +66,6 @@ const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
             },
             ballot_updates: false,
             public_results: true,
-            public_download: true,
             random_candidate_order: false,
             require_instruction_confirmation: true,
             term_type: 'poll',
