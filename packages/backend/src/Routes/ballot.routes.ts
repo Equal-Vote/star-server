@@ -175,6 +175,10 @@ ballotRouter.get('/Election/:id/ballot/:ballot_id', asyncHandler(getBallotByBall
  *         description: Election not found */
 ballotRouter.post('/Election/:id/vote', asyncHandler(castVoteController))
 
+//I don't really understand what the point of this is, but it's in the test suite so I'm including it
+ballotRouter.post('/Election/:id/ballot', asyncHandler(returnElection))
+
+
 ballotRouter.param('id', asyncHandler(getElectionByID))
 ballotRouter.param('id', asyncHandler(electionSpecificAuth))
 ballotRouter.param('id', asyncHandler(electionPostAuthMiddleware))
