@@ -4,7 +4,21 @@
     "title": "API Documentation",
     "version": "1.0.0"
   },
+  "servers": [
+    {
+      "url": "/API",
+      "description": "Base URL for the API"
+    }
+  ],
   "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "id_token",
+        "description": "This uses authenticaion token generated with keycloak, the token can be sent both as a cookie or in the auth_key property of the election object. Unfortunately, the swagger-ui does not support setting cookies, so you will need to manually set the cookie in your browser to test the API"
+      }
+    },
     "schemas": {
       "Ballot": {
         "properties": {
@@ -1723,6 +1737,11 @@
         "tags": [
           "Ballots"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1766,6 +1785,11 @@
         "summary": "Delete all ballots for an election",
         "tags": [
           "Ballots"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [
           {
@@ -1871,6 +1895,11 @@
         "summary": "Cast a vote in an election",
         "tags": [
           "Ballots"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [
           {

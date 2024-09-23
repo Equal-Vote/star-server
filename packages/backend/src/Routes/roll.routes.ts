@@ -10,6 +10,12 @@ import {
     invalidateElectionRoll,
     uninvalidateElectionRoll
 } from '../Controllers/Roll';
+import {
+    getElectionByID,
+    electionSpecificAuth,
+    electionPostAuthMiddleware
+} from '../Controllers/Election';
+
 import asyncHandler  from 'express-async-handler';
 export const rollRouter = Router();
 
@@ -302,3 +308,6 @@ rollRouter.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
  *         description: Election not found */
 rollRouter.post('/Election/:id/rolls/unflag', asyncHandler(uninvalidateElectionRoll))
 
+rollRouter.param('id', asyncHandler(getElectionByID))
+rollRouter.param('id', asyncHandler(electionSpecificAuth))
+rollRouter.param('id', asyncHandler(electionPostAuthMiddleware))

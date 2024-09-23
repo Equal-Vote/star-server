@@ -3,10 +3,14 @@ import {
     deleteAllBallotsForElectionID,
     getBallotByBallotID,
     castVoteController,
-    ballotByID,
-    handleCastVoteEvent,
-    innerDeleteAllBallotsForElectionID
+
 } from '../Controllers/Ballot';
+import {
+    getElectionByID,
+    electionSpecificAuth,
+    electionPostAuthMiddleware
+} from '../Controllers/Election';
+
 import { returnElection } from '../Controllers/Election';
 import { Router } from 'express';
 import asyncHandler  from 'express-async-handler';
@@ -20,6 +24,8 @@ export const ballotRouter = Router();
  *   get:
  *     summary: Get ballots by election ID
  *     tags: [Ballots]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -47,12 +53,15 @@ export const ballotRouter = Router();
 */
 ballotRouter.get('/Election/:id/ballots', asyncHandler(getBallotsByElectionID))
 
+
 /** 
  * @swagger
  * /Election/{id}/ballots:
  *   delete:
  *     summary: Delete all ballots for an election
  *     tags: [Ballots]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -128,6 +137,8 @@ ballotRouter.get('/Election/:id/ballot/:ballot_id', asyncHandler(getBallotByBall
  *   post:
  *     summary: Cast a vote in an election
  *     tags: [Ballots]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -164,3 +175,6 @@ ballotRouter.get('/Election/:id/ballot/:ballot_id', asyncHandler(getBallotByBall
  *         description: Election not found */
 ballotRouter.post('/Election/:id/vote', asyncHandler(castVoteController))
 
+ballotRouter.param('id', asyncHandler(getElectionByID))
+ballotRouter.param('id', asyncHandler(electionSpecificAuth))
+ballotRouter.param('id', asyncHandler(electionPostAuthMiddleware))
