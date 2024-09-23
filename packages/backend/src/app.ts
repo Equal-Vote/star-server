@@ -15,8 +15,7 @@ import { getMetaTags } from './Util';
 import swaggerUi from 'swagger-ui-express';
 import openapi from './OpenApi/openapi.json'
 
-const { getUserToken } = require('./Controllers/getUserTokenController')
-const authController = require('./Controllers/auth.controllers')
+import { getUserToken, getUser } from './Controllers/User';
 const asyncHandler = require('express-async-handler')
 require('./socketHandler')
 
@@ -45,7 +44,7 @@ export default function makeApp() {
     const path = require('path');
     app.use(express.json());
     //Routes
-    app.use('/API',authController.getUser, electionRouter)
+    app.use('/API', getUser, electionRouter)
     // app.use('/debug',debugRouter)
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapi));
     app.post('/API/Token', asyncHandler(getUserToken));

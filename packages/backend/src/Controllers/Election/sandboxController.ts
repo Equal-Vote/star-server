@@ -1,7 +1,7 @@
 import { ElectionResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
-import Logger from '../Services/Logging/Logger';
+import Logger from '../../Services/Logging/Logger';
 const className = "Elections.Controllers";
-import { VotingMethods } from '../Tabulators/VotingMethodSelecter'
+import { VotingMethods } from '../../Tabulators/VotingMethodSelecter'
 import { Request, Response, NextFunction } from 'express';
 
 const getSandboxResults = async (req: Request, res: Response, next: NextFunction) => {

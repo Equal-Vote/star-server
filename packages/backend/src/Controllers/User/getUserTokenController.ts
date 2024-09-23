@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import ServiceLocator from "../ServiceLocator";
+import ServiceLocator from "../../ServiceLocator";
 
 const AccountService = ServiceLocator.accountService()
 

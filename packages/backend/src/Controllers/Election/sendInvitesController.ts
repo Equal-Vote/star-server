@@ -1,14 +1,14 @@
-import ServiceLocator from '../ServiceLocator';
-import Logger from '../Services/Logging/Logger';
+import ServiceLocator from '../../ServiceLocator';
+import Logger from '../../Services/Logging/Logger';
 import { permissions } from '@equal-vote/star-vote-shared/domain_model/permissions';
-import { expectPermission } from "./controllerUtils";
+import { expectPermission } from "../controllerUtils";
 import { BadRequest, InternalServerError } from "@curveball/http-errors";
-import { Invites } from "../Services/Email/EmailTemplates"
+import { Invites } from "../../Services/Email/EmailTemplates"
 import { ElectionRoll } from '@equal-vote/star-vote-shared/domain_model/ElectionRoll';
 import { Uid } from "@equal-vote/star-vote-shared/domain_model/Uid";
 import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { randomUUID } from "crypto";
-import { IElectionRequest } from "../IRequest";
+import { IElectionRequest } from "../../IRequest";
 import { Response, NextFunction } from 'express';
 
 var ElectionRollModel = ServiceLocator.electionRollDb();

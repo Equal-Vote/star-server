@@ -1,11 +1,11 @@
 import { Election, electionValidation } from "@equal-vote/star-vote-shared/domain_model/Election";
 import { ElectionRoll, ElectionRollState } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
-import { IRequest } from "../IRequest";
-import ServiceLocator from "../ServiceLocator";
-import Logger from "../Services/Logging/Logger";
+import { IRequest } from "../../IRequest";
+import ServiceLocator from "../../ServiceLocator";
+import Logger from "../../Services/Logging/Logger";
 import { InternalServerError } from "@curveball/http-errors";
-import { ILoggingContext } from "../Services/Logging/ILogger";
-import { expectValidElectionFromRequest, catchAndRespondError, expectPermission } from "./controllerUtils";
+import { ILoggingContext } from "../../Services/Logging/ILogger";
+import { expectValidElectionFromRequest, catchAndRespondError, expectPermission } from "../controllerUtils";
 import { Response, NextFunction } from "express";
 
 var ElectionsModel = ServiceLocator.electionsDb();

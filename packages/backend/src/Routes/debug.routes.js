@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 import { tempTestSuite } from '../test/TempTestSuite';
 
-const voterRollController = require('../Controllers/registerVoterController')
+const voterRollController = require('../Controllers/Roll/registerVoterController')
 
 // Just for debugging
 router.get('/', (req, res) => {

@@ -1,10 +1,8 @@
-import { isConstructorDeclaration } from "typescript"
-import { Election } from "@equal-vote/star-vote-shared/domain_model/Election"
-import Logger from "../Services/Logging/Logger"
-import { responseErr } from "../Util"
+import Logger from "../../Services/Logging/Logger"
+import { responseErr } from "../../Util"
 import { permission } from "@equal-vote/star-vote-shared/domain_model/permissions"
 import { roles } from "@equal-vote/star-vote-shared/domain_model/roles"
-import ServiceLocator from "../ServiceLocator"
+import ServiceLocator from "../../ServiceLocator"
 
 const className = 'Auth.Controllers';
 const accountService = ServiceLocator.accountService();

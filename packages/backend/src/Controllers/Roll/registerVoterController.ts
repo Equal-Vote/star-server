@@ -1,6 +1,6 @@
 import { ElectionRoll, ElectionRollState } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
-import ServiceLocator from "../ServiceLocator";
-import Logger from "../Services/Logging/Logger";
+import ServiceLocator from "../../ServiceLocator";
+import Logger from "../../Services/Logging/Logger";
 
 const ElectionRollModel = ServiceLocator.electionRollDb();
 const className = "VoterRolls.Controllers";
@@ -8,9 +8,9 @@ import { getOrCreateElectionRoll, checkForMissingAuthenticationData, getVoterAut
 import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-errors";
 import { Election } from "@equal-vote/star-vote-shared/domain_model/Election";
 import { randomUUID } from "crypto";
-import { IElectionRequest } from "../IRequest";
+import { IElectionRequest } from "../../IRequest";
 import { Response, NextFunction } from 'express';
-import { hashString } from "./controllerUtils";
+import { hashString } from "../controllerUtils";
 
 const registerVoter = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.registerVoter ${req.election.election_id}`);

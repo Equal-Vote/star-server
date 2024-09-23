@@ -1,19 +1,19 @@
 import { Election, electionValidation } from "@equal-vote/star-vote-shared/domain_model/Election";
 import { ElectionRoll, ElectionRollState } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
 import { Ballot, Ballot as BallotType, ballotValidation } from '@equal-vote/star-vote-shared/domain_model/Ballot';
-import { IRequest } from "../IRequest";
-import ServiceLocator from "../ServiceLocator";
-import Logger from "../Services/Logging/Logger";
+import { IRequest } from "../../IRequest";
+import ServiceLocator from "../../ServiceLocator";
+import Logger from "../../Services/Logging/Logger";
 import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-errors";
-import { ILoggingContext } from "../Services/Logging/ILogger";
+import { ILoggingContext } from "../../Services/Logging/ILogger";
 import { randomUUID } from "crypto";
 import { Uid } from "@equal-vote/star-vote-shared/domain_model/Uid";
-import { Receipt } from "../Services/Email/EmailTemplates"
-import { getOrCreateElectionRoll, checkForMissingAuthenticationData, getVoterAuthorization } from "./voterRollUtils"
-const { innerGetGlobalElectionStats} = require('./getElectionsController')
-import { IElectionRequest } from "../IRequest";
+import { Receipt } from "../../Services/Email/EmailTemplates"
+import { getOrCreateElectionRoll, checkForMissingAuthenticationData, getVoterAuthorization } from "../Roll/voterRollUtils"
+import { innerGetGlobalElectionStats } from "../Election";
+import { IElectionRequest } from "../../IRequest";
 import { Response, NextFunction } from 'express';
-import { io } from "../socketHandler";
+import { io } from "../../socketHandler";
 import { Server } from "socket.io";
 
 const ElectionsModel = ServiceLocator.electionsDb();
@@ -117,7 +117,7 @@ async function castVoteController(req: IElectionRequest, res: Response, next: Ne
     await (await EventQueue).publish(castVoteEventQueue, event);
 
     if(io != null){ // necessary for tests
-        (io as Server).to('landing_page').emit('updated_stats', await innerGetGlobalElectionStats());
+        (io as Server).to('landing_page').emit('updated_stats', await innerGetGlobalElectionStats(req));
     }
 
     res.status(200).json({ ballot: inputBallot} );

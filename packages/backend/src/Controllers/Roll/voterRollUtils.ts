@@ -1,12 +1,12 @@
 import { Election } from "@equal-vote/star-vote-shared/domain_model/Election";
 import { ElectionRoll, ElectionRollState } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
-import { IRequest } from "../IRequest";
-import ServiceLocator from "../ServiceLocator";
-import Logger from "../Services/Logging/Logger";
+import { IRequest } from "../../IRequest";
+import ServiceLocator from "../../ServiceLocator";
+import Logger from "../../Services/Logging/Logger";
 import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-errors";
-import { ILoggingContext } from "../Services/Logging/ILogger";
+import { ILoggingContext } from "../../Services/Logging/ILogger";
 import { randomUUID } from "crypto";
-import { hashString } from "./controllerUtils";
+import { hashString } from "../controllerUtils";
 
 const ElectionRollModel = ServiceLocator.electionRollDb();
 

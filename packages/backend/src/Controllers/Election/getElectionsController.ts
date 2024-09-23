@@ -1,8 +1,8 @@
-import ServiceLocator from '../ServiceLocator';
-import Logger from '../Services/Logging/Logger';
+import ServiceLocator from '../../ServiceLocator';
+import Logger from '../../Services/Logging/Logger';
 import { BadRequest } from "@curveball/http-errors";
 import { Election, removeHiddenFields } from '@equal-vote/star-vote-shared/domain_model/Election';
-import { IElectionRequest, IRequest } from "../IRequest";
+import { IElectionRequest, IRequest } from "../../IRequest";
 import { Response, NextFunction } from 'express';
 
 

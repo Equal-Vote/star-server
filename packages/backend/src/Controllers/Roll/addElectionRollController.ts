@@ -1,12 +1,12 @@
 import { ElectionRoll, ElectionRollState } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
-import ServiceLocator from "../ServiceLocator";
-import Logger from "../Services/Logging/Logger";
-import { responseErr } from "../Util";
+import ServiceLocator from "../../ServiceLocator";
+import Logger from "../../Services/Logging/Logger";
+import { responseErr } from "../../Util";
 import { hasPermission, permission, permissions } from '@equal-vote/star-vote-shared/domain_model/permissions';
-import { expectPermission } from "./controllerUtils";
+import { expectPermission } from "../controllerUtils";
 import { BadRequest, InternalServerError } from "@curveball/http-errors";
 import { randomUUID } from "crypto";
-import { IElectionRequest } from "../IRequest";
+import { IElectionRequest } from "../../IRequest";
 import { Response, NextFunction } from 'express';
 import { sharedConfig } from "@equal-vote/star-vote-shared/config";
 
