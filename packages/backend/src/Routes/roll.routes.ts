@@ -58,6 +58,8 @@ rollRouter.post('/Election/:id/register',asyncHandler(registerVoter))
  *   get:
  *     summary: Get rolls by election ID
  *     tags: [Rolls]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -87,6 +89,8 @@ rollRouter.get('/Election/:id/rolls', asyncHandler(getRollsByElectionID))
  *   get:
  *     summary: Get roll by voter ID
  *     tags: [Rolls]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -122,6 +126,8 @@ rollRouter.get('/Election/:id/rolls/:voter_id', asyncHandler(getByVoterID))
  *   post:
  *     summary: Add a list of rolls to an election
  *     tags: [Rolls]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -166,6 +172,8 @@ rollRouter.post('/Election/:id/rolls/', asyncHandler(addElectionRoll))
  *   put:
  *     summary: Edit an election roll
  *     tags: [Rolls]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -194,6 +202,8 @@ rollRouter.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
  *   post:
  *     summary: Approve an election roll
  *     tags: [Rolls]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -224,6 +234,8 @@ rollRouter.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
  *   post:
  *     summary: Flag an election roll
  *     tags: [Rolls]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -253,6 +265,8 @@ rollRouter.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
  *   post:
  *     summary: Invalidate an election roll
  *     tags: [Rolls]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -283,6 +297,8 @@ rollRouter.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
  *   post:
  *     summary: Unflag an election roll
  *     tags: [Rolls]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id

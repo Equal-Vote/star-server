@@ -23,7 +23,7 @@ const deleteElection = async (req: IElectionRequest, res: Response, next: NextFu
         throw new BadRequest(msg)
     }
     Logger.info(req, `Deleted election ${electionId}`);
-    res.status(200)
+    res.status(200).send('Election Deleted');
 
 }
 export  {

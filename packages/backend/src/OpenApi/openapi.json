@@ -16,7 +16,7 @@
         "type": "apiKey",
         "in": "cookie",
         "name": "id_token",
-        "description": "This uses authenticaion token generated with keycloak, the token can be sent both as a cookie or in the auth_key property of the election object. Unfortunately, the swagger-ui does not support setting cookies, so you will need to manually set the cookie in your browser to test the API"
+        "description": "This uses authenticaion token generated with keycloak, the token can be sent both as a cookie or in the auth_key property of the election object. [More information about token generation can be found here](https://github.com/Equal-Vote/star-server/blob/6fdb2f653266b5f2710f0701509f54e1e558ecc1/docs/api.md) Unfortunately, the swagger-ui does not support setting cookies, so you will need to manually set the cookie in your browser to test the API"
       }
     },
     "schemas": {
@@ -2000,6 +2000,11 @@
         "tags": [
           "Elections"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -2166,7 +2171,7 @@
                   "properties": {
                     "election": {
                       "type": "object",
-                      "$ref": "#/components/schemas/Election"
+                      "$ref": "#/components/schemas/NewElection"
                     }
                   }
                 }
@@ -2211,6 +2216,11 @@
         "summary": "Edit an election",
         "tags": [
           "Elections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [
           {
@@ -2286,6 +2296,11 @@
     "/Election/{id}/roles": {
       "put": {
         "summary": "Edit election roles",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "tags": [
           "Elections"
         ],
@@ -2352,6 +2367,11 @@
         "tags": [
           "Elections"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -2396,6 +2416,11 @@
         "tags": [
           "Elections"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -2435,6 +2460,11 @@
         "summary": "Set public results for an election",
         "tags": [
           "Elections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [
           {
@@ -2487,6 +2517,11 @@
     "/Election/{id}/archive": {
       "post": {
         "summary": "Archive an election",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "tags": [
           "Elections"
         ],
@@ -2530,6 +2565,11 @@
         "tags": [
           "Elections"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -2556,6 +2596,11 @@
         "summary": "Send an invitation to a specific voter",
         "tags": [
           "Elections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [
           {
@@ -2727,6 +2772,11 @@
         "tags": [
           "Rolls"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -2764,6 +2814,11 @@
         "summary": "Add a list of rolls to an election",
         "tags": [
           "Rolls"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [
           {
@@ -2826,6 +2881,11 @@
         "tags": [
           "Rolls"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -2865,6 +2925,11 @@
         "summary": "Get roll by voter ID",
         "tags": [
           "Rolls"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [
           {
@@ -2915,6 +2980,11 @@
         "tags": [
           "Rolls"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -2957,6 +3027,11 @@
         "summary": "Flag an election roll",
         "tags": [
           "Rolls"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [
           {
@@ -3001,6 +3076,11 @@
         "tags": [
           "Rolls"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -3043,6 +3123,11 @@
         "summary": "Unflag an election roll",
         "tags": [
           "Rolls"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [
           {

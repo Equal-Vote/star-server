@@ -91,6 +91,9 @@ electionsRouter.get('/Election/:_id/exists', asyncHandler(electionExistsByID))
  *  delete:
  *    summary: Delete election by ID
  *    tags: [Elections]
+ *    security:
+ *      - ApiKeyAuth: []
+
  *    parameters:
  *      - in: path
  *        name: id
@@ -174,7 +177,7 @@ electionsRouter.delete('/Election/:id', asyncHandler(deleteElection))
  *               properties:
  *                 election:
  *                   type: object
- *                   $ref: '#/components/schemas/Election'
+ *                   $ref: '#/components/schemas/NewElection'
  *  */
  electionsRouter.post('/Elections/', asyncHandler(createElectionController))
  
@@ -207,6 +210,8 @@ electionsRouter.delete('/Election/:id', asyncHandler(deleteElection))
  *   post:
  *     summary: Edit an election
  *     tags: [Elections]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -257,6 +262,8 @@ electionsRouter.delete('/Election/:id', asyncHandler(deleteElection))
  * /Election/{id}/roles:
  *   put:
  *     summary: Edit election roles
+ *     security:
+ *      - ApiKeyAuth: []
  *     tags: [Elections]
  *     parameters:
  *       - in: path
@@ -301,6 +308,8 @@ electionsRouter.delete('/Election/:id', asyncHandler(deleteElection))
  *   get:
  *     summary: Get election results by ID
  *     tags: [Elections]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -333,6 +342,8 @@ electionsRouter.delete('/Election/:id', asyncHandler(deleteElection))
  *   post:
  *     summary: Finalize an election
  *     tags: [Elections]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -361,6 +372,8 @@ electionsRouter.post('/Election/:id/finalize',asyncHandler(finalizeElection))
  *   post:
  *     summary: Set public results for an election
  *     tags: [Elections]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -396,6 +409,8 @@ electionsRouter.post('/Election/:id/setPublicResults',asyncHandler(setPublicResu
  * /Election/{id}/archive:
  *   post:
  *     summary: Archive an election
+ *     security:
+ *      - ApiKeyAuth: []
  *     tags: [Elections]
  *     parameters:
  *       - in: path
@@ -426,6 +441,8 @@ electionsRouter.post('/Election/:id/archive', asyncHandler(archiveElection))
  *   post:
  *     summary: Send invitations for an election
  *     tags: [Elections]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -446,6 +463,8 @@ electionsRouter.post('/Election/:id/sendInvites', asyncHandler(sendInvitationsCo
  *   post:
  *     summary: Send an invitation to a specific voter
  *     tags: [Elections]
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
