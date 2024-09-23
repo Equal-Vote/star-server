@@ -499,4 +499,4 @@ electionsRouter.param('id', asyncHandler(getElectionByID))
 electionsRouter.param('id', asyncHandler(electionSpecificAuth))
 electionsRouter.param('id', asyncHandler(electionPostAuthMiddleware))
 
-export default electionsRouter;
+export {electionsRouter};

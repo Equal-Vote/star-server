@@ -1,6 +1,7 @@
 require('dotenv').config();
 import express from 'express';
-import electionRouter from './Routes/elections.routes'
+import {electionsRouter, ballotRouter, rollRouter} from './Routes';
+ 
 // var debugRouter = require('./Routes/debug.routes')
 
 import cors from 'cors';
@@ -44,7 +45,9 @@ export default function makeApp() {
     const path = require('path');
     app.use(express.json());
     //Routes
-    app.use('/API', getUser, electionRouter)
+    app.use('/API', getUser, electionsRouter)
+    app.use('/API', getUser, ballotRouter)
+    app.use('/API', getUser, rollRouter)
     // app.use('/debug',debugRouter)
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapi));
     app.post('/API/Token', asyncHandler(getUserToken));

@@ -10,14 +10,14 @@ import {
 import { returnElection } from '../Controllers/Election';
 import { Router } from 'express';
 import asyncHandler  from 'express-async-handler';
-const ballotRouter = Router();
+export const ballotRouter = Router();
 
 /** 
  * @swagger
  * /Election/{id}/ballot:
  *   post:
  *     summary: Return election ballot
- *     tags: [Elections]
+ *     tags: [Ballots]
  *     parameters:
  *       - in: path
  *         name: id
@@ -47,7 +47,7 @@ ballotRouter.post('/Election/:id/ballot', asyncHandler(returnElection))
  * /Election/{id}/ballots:
  *   get:
  *     summary: Get ballots by election ID
- *     tags: [Elections]
+ *     tags: [Ballots]
  *     parameters:
  *       - in: path
  *         name: id
@@ -80,7 +80,7 @@ ballotRouter.get('/Election/:id/ballots', asyncHandler(getBallotsByElectionID))
  * /Election/{id}/ballots:
  *   delete:
  *     summary: Delete all ballots for an election
- *     tags: [Elections]
+ *     tags: [Ballots]
  *     parameters:
  *       - in: path
  *         name: id
@@ -108,7 +108,7 @@ ballotRouter.delete('/Election/:id/ballots', asyncHandler(deleteAllBallotsForEle
  * /Election/{id}/ballot/{ballot_id}:
  *   get:
  *     summary: Get ballot by ballot ID
- *     tags: [Elections]
+ *     tags: [Ballots]
  *     parameters:
  *       - in: path
  *         name: id
@@ -144,7 +144,7 @@ ballotRouter.get('/Election/:id/ballot/:ballot_id', asyncHandler(getBallotByBall
  * /Election/{id}/vote:
  *   post:
  *     summary: Cast a vote in an election
- *     tags: [Elections]
+ *     tags: [Ballots]
  *     parameters:
  *       - in: path
  *         name: id

@@ -11,7 +11,7 @@ import {
     uninvalidateElectionRoll
 } from '../Controllers/Roll';
 import asyncHandler  from 'express-async-handler';
-const rollRouter = Router();
+export const rollRouter = Router();
 
 
 /** 
@@ -19,7 +19,7 @@ const rollRouter = Router();
  * /Election/{id}/register:
  *   post:
  *     summary: Register a voter for an election
- *     tags: [Elections]
+ *     tags: [Rolls]
  *     parameters:
  *       - in: path
  *         name: id
@@ -40,7 +40,7 @@ const rollRouter = Router();
  *                   $ref: '#/components/schemas/Election'
  *                 NewElectionRoll:
  *                   type: object
- *                   $ref: '#/components/schemas/NewElectionRoll'
+ *                   $ref: '#/components/schemas/ElectionRoll'
  *       404:
  *         description: Election not found
  */
@@ -51,7 +51,7 @@ rollRouter.post('/Election/:id/register',asyncHandler(registerVoter))
  * /Election/{id}/rolls:
  *   get:
  *     summary: Get rolls by election ID
- *     tags: [Elections]
+ *     tags: [Rolls]
  *     parameters:
  *       - in: path
  *         name: id
@@ -80,7 +80,7 @@ rollRouter.get('/Election/:id/rolls', asyncHandler(getRollsByElectionID))
  * /Election/{id}/rolls/{voter_id}:
  *   get:
  *     summary: Get roll by voter ID
- *     tags: [Elections]
+ *     tags: [Rolls]
  *     parameters:
  *       - in: path
  *         name: id
@@ -115,7 +115,7 @@ rollRouter.get('/Election/:id/rolls/:voter_id', asyncHandler(getByVoterID))
  * /Election/{id}/rolls:
  *   post:
  *     summary: Add a new roll to an election
- *     tags: [Elections]
+ *     tags: [Rolls]
  *     parameters:
  *       - in: path
  *         name: id
@@ -136,7 +136,7 @@ rollRouter.get('/Election/:id/rolls/:voter_id', asyncHandler(getByVoterID))
  *                   $ref: '#/components/schemas/Election'
  *                 NewElectionRoll:
  *                   type: object
- *                   $ref: '#/components/schemas/NewElectionRoll'
+ *                   $ref: '#/components/schemas/ElectionRoll'
  *       404:
  *         description: Election not found
  */
@@ -147,7 +147,7 @@ rollRouter.post('/Election/:id/rolls/', asyncHandler(addElectionRoll))
  * /Election/{id}/rolls:
  *   put:
  *     summary: Edit an election roll
- *     tags: [Elections]
+ *     tags: [Rolls]
  *     parameters:
  *       - in: path
  *         name: id
@@ -175,7 +175,7 @@ rollRouter.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
  * /Election/{id}/rolls/approve:
  *   post:
  *     summary: Approve an election roll
- *     tags: [Elections]
+ *     tags: [Rolls]
  *     parameters:
  *       - in: path
  *         name: id
@@ -195,7 +195,7 @@ rollRouter.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
  * /Election/{id}/rolls/flag:
  *   post:
  *     summary: Flag an election roll
- *     tags: [Elections]
+ *     tags: [Rolls]
  *     parameters:
  *       - in: path
  *         name: id
@@ -214,7 +214,7 @@ rollRouter.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
  * /Election/{id}/rolls/invalidate:
  *   post:
  *     summary: Invalidate an election roll
- *     tags: [Elections]
+ *     tags: [Rolls]
  *     parameters:
  *       - in: path
  *         name: id
@@ -234,7 +234,7 @@ rollRouter.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
  * /Election/{id}/rolls/unflag:
  *   post:
  *     summary: Unflag an election roll
- *     tags: [Elections]
+ *     tags: [Rolls]
  *     parameters:
  *       - in: path
  *         name: id

@@ -1717,6 +1717,219 @@
     }
   },
   "paths": {
+    "/Election/{id}/ballot": {
+      "post": {
+        "summary": "Return election ballot",
+        "tags": [
+          "Ballots"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Election ballot returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ballot": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/NewBallot"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/ballots": {
+      "get": {
+        "summary": "Get ballots by election ID",
+        "tags": [
+          "Ballots"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of ballots",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    },
+                    "ballots": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Ballot"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete all ballots for an election",
+        "tags": [
+          "Ballots"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All ballots deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "If the deletion was successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/ballot/{ballot_id}": {
+      "get": {
+        "summary": "Get ballot by ballot ID",
+        "tags": [
+          "Ballots"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          },
+          {
+            "in": "path",
+            "name": "ballot_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The ballot ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ballot details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ballot": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Ballot"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ballot not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/vote": {
+      "post": {
+        "summary": "Cast a vote in an election",
+        "tags": [
+          "Ballots"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vote cast",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ballot": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Ballot"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
     "/Election/{id}": {
       "get": {
         "summary": "Get election by ID",
@@ -1809,500 +2022,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Election not found"
-          }
-        }
-      }
-    },
-    "/Election/{id}/ballot": {
-      "post": {
-        "summary": "Return election ballot",
-        "tags": [
-          "Elections"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Election ballot returned",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "ballot": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/NewBallot"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Election not found"
-          }
-        }
-      }
-    },
-    "/Election/{id}/register": {
-      "post": {
-        "summary": "Register a voter for an election",
-        "tags": [
-          "Elections"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Voter registered",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "election": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/Election"
-                    },
-                    "NewElectionRoll": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/NewElectionRoll"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Election not found"
-          }
-        }
-      }
-    },
-    "/Election/{id}/ballots": {
-      "get": {
-        "summary": "Get ballots by election ID",
-        "tags": [
-          "Elections"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of ballots",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "election": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/Election"
-                    },
-                    "ballots": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Ballot"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Election not found"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete all ballots for an election",
-        "tags": [
-          "Elections"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "All ballots deleted",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "description": "If the deletion was successful"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Election not found"
-          }
-        }
-      }
-    },
-    "/Election/{id}/ballot/{ballot_id}": {
-      "get": {
-        "summary": "Get ballot by ballot ID",
-        "tags": [
-          "Elections"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          },
-          {
-            "in": "path",
-            "name": "ballot_id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The ballot ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Ballot details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "ballot": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/Ballot"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Ballot not found"
-          }
-        }
-      }
-    },
-    "/Election/{id}/rolls": {
-      "get": {
-        "summary": "Get rolls by election ID",
-        "tags": [
-          "Elections"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of rolls",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "electionRollEntry": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ElectionRoll"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Election not found"
-          }
-        }
-      },
-      "post": {
-        "summary": "Add a new roll to an election",
-        "tags": [
-          "Elections"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Roll added",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "election": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/Election"
-                    },
-                    "NewElectionRoll": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/NewElectionRoll"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Election not found"
-          }
-        }
-      },
-      "put": {
-        "summary": "Edit an election roll",
-        "tags": [
-          "Elections"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Roll edited",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "electionRollEntry": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ElectionRoll"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Election not found"
-          }
-        }
-      }
-    },
-    "/Election/{id}/rolls/{voter_id}": {
-      "get": {
-        "summary": "Get roll by voter ID",
-        "tags": [
-          "Elections"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          },
-          {
-            "in": "path",
-            "name": "voter_id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The voter ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Roll details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "electionRollEntry": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ElectionRoll"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Roll not found"
-          }
-        }
-      }
-    },
-    "/Election/{id}/rolls/approve": {
-      "post": {
-        "summary": "Approve an election roll",
-        "tags": [
-          "Elections"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Roll approved"
-          },
-          "404": {
-            "description": "Election not found"
-          }
-        }
-      }
-    },
-    "/Election/{id}/rolls/flag": {
-      "post": {
-        "summary": "Flag an election roll",
-        "tags": [
-          "Elections"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Roll flagged"
-          },
-          "404": {
-            "description": "Election not found"
-          }
-        }
-      }
-    },
-    "/Election/{id}/rolls/invalidate": {
-      "post": {
-        "summary": "Invalidate an election roll",
-        "tags": [
-          "Elections"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Roll invalidated"
-          },
-          "404": {
-            "description": "Election not found"
-          }
-        }
-      }
-    },
-    "/Election/{id}/rolls/unflag": {
-      "post": {
-        "summary": "Unflag an election roll",
-        "tags": [
-          "Elections"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Roll unflagged"
           },
           "404": {
             "description": "Election not found"
@@ -2588,46 +2307,6 @@
         }
       }
     },
-    "/Election/{id}/vote": {
-      "post": {
-        "summary": "Cast a vote in an election",
-        "tags": [
-          "Elections"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Vote cast",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "ballot": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/Ballot"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Election not found"
-          }
-        }
-      }
-    },
     "/Election/{id}/finalize": {
       "post": {
         "summary": "Finalize an election",
@@ -2897,6 +2576,327 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/Election/{id}/register": {
+      "post": {
+        "summary": "Register a voter for an election",
+        "tags": [
+          "Rolls"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Voter registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    },
+                    "NewElectionRoll": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/rolls": {
+      "get": {
+        "summary": "Get rolls by election ID",
+        "tags": [
+          "Rolls"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of rolls",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "electionRollEntry": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a new roll to an election",
+        "tags": [
+          "Rolls"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roll added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    },
+                    "NewElectionRoll": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Edit an election roll",
+        "tags": [
+          "Rolls"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roll edited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "electionRollEntry": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/rolls/{voter_id}": {
+      "get": {
+        "summary": "Get roll by voter ID",
+        "tags": [
+          "Rolls"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          },
+          {
+            "in": "path",
+            "name": "voter_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The voter ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roll details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "electionRollEntry": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Roll not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/rolls/approve": {
+      "post": {
+        "summary": "Approve an election roll",
+        "tags": [
+          "Rolls"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roll approved"
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/rolls/flag": {
+      "post": {
+        "summary": "Flag an election roll",
+        "tags": [
+          "Rolls"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roll flagged"
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/rolls/invalidate": {
+      "post": {
+        "summary": "Invalidate an election roll",
+        "tags": [
+          "Rolls"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roll invalidated"
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/rolls/unflag": {
+      "post": {
+        "summary": "Unflag an election roll",
+        "tags": [
+          "Rolls"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roll unflagged"
+          },
+          "404": {
+            "description": "Election not found"
           }
         }
       }
