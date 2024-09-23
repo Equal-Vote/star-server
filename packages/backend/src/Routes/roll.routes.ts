@@ -114,7 +114,7 @@ rollRouter.get('/Election/:id/rolls/:voter_id', asyncHandler(getByVoterID))
  * @swagger
  * /Election/{id}/rolls:
  *   post:
- *     summary: Add a new roll to an election
+ *     summary: Add a list of rolls to an election
  *     tags: [Rolls]
  *     parameters:
  *       - in: path
@@ -123,9 +123,21 @@ rollRouter.get('/Election/:id/rolls/:voter_id', asyncHandler(getByVoterID))
  *           type: string
  *         required: true
  *         description: The election ID
+ *     requestBody:
+ *      required: true
+ *      content:
+ *       application/json:
+ *         schema:
+ *          type: object
+ *          properties:
+ *           electionRoll: 
+ *             type: array
+ *             items:
+ *                 type: object
+ *                 $ref: '#/components/schemas/ElectionRoll'
  *     responses:
  *       200:
- *         description: Roll added
+ *         description: Rolls added
  *         content:
  *           application/json:
  *             schema:
@@ -183,6 +195,16 @@ rollRouter.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
  *           type: string
  *         required: true
  *         description: The election ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 electionRollEntry:
+ *                   type: object
+ *                   $ref: '#/components/schemas/ElectionRoll'
  *     responses:
  *       200:
  *         description: Roll approved
@@ -203,6 +225,16 @@ rollRouter.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
  *           type: string
  *         required: true
  *         description: The election ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               electionRollEntry:
+ *                 type: object
+ *                 $ref: '#/components/schemas/ElectionRoll' 
  *     responses:
  *       200:
  *         description: Roll flagged
@@ -222,6 +254,16 @@ rollRouter.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
  *           type: string
  *         required: true
  *         description: The election ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               electionRollEntry:
+ *                 type: object
+ *                 $ref: '#/components/schemas/ElectionRoll'
  *     responses:
  *       200:
  *         description: Roll invalidated
@@ -242,6 +284,17 @@ rollRouter.put('/Election/:id/rolls/', asyncHandler(editElectionRoll))
  *           type: string
  *         required: true
  *         description: The election ID
+ * 
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               electionRollEntry:
+ *                 type: object
+ *                 $ref: '#/components/schemas/ElectionRoll'
  *     responses:
  *       200:
  *         description: Roll unflagged

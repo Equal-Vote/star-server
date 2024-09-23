@@ -1717,46 +1717,6 @@
     }
   },
   "paths": {
-    "/Election/{id}/ballot": {
-      "post": {
-        "summary": "Return election ballot",
-        "tags": [
-          "Ballots"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "The election ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Election ballot returned",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "ballot": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/NewBallot"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Election not found"
-          }
-        }
-      }
-    },
     "/Election/{id}/ballots": {
       "get": {
         "summary": "Get ballots by election ID",
@@ -1818,6 +1778,22 @@
             "description": "The election ID"
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "public_results": {
+                    "type": "boolean",
+                    "description": "If the election results are public"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "All ballots deleted",
@@ -1907,6 +1883,32 @@
             "description": "The election ID"
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ballot": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/Ballot"
+                  },
+                  "recieptEmail": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": null
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Vote cast",
@@ -2110,6 +2112,21 @@
         "tags": [
           "Elections"
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Election": {
+                    "$ref": "#/components/schemas/Election"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Election created",
@@ -2177,6 +2194,20 @@
             "description": "The election ID"
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Election": {
+                    "$ref": "#/components/schemas/Election"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Election edited",
@@ -2240,6 +2271,29 @@
             "description": "The election ID"
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "admin_ids": {
+                    "type": "array",
+                    "items": "string"
+                  },
+                  "audit_ids": {
+                    "type": "array",
+                    "items": "string"
+                  },
+                  "credential_ids": {
+                    "type": "array",
+                    "items": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Roles edited",
@@ -2364,6 +2418,20 @@
             "description": "The election ID"
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "public_results": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Public results set",
@@ -2567,7 +2635,7 @@
                   "type": "object",
                   "properties": {
                     "photo_filename": {
-                      "typeOf": [
+                      "oneOf": [
                         "string",
                         null
                       ]
@@ -2664,7 +2732,7 @@
         }
       },
       "post": {
-        "summary": "Add a new roll to an election",
+        "summary": "Add a list of rolls to an election",
         "tags": [
           "Rolls"
         ],
@@ -2679,9 +2747,28 @@
             "description": "The election ID"
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "electionRoll": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Roll added",
+            "description": "Rolls added",
             "content": {
               "application/json": {
                 "schema": {
@@ -2810,6 +2897,22 @@
             "description": "The election ID"
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "electionRollEntry": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/ElectionRoll"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Roll approved"
@@ -2837,6 +2940,22 @@
             "description": "The election ID"
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "electionRollEntry": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/ElectionRoll"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Roll flagged"
@@ -2864,6 +2983,22 @@
             "description": "The election ID"
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "electionRollEntry": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/ElectionRoll"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Roll invalidated"
@@ -2891,6 +3026,22 @@
             "description": "The election ID"
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "electionRollEntry": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/ElectionRoll"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Roll unflagged"

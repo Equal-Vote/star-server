@@ -155,6 +155,15 @@ electionsRouter.delete('/Election/:id', asyncHandler(deleteElection))
  *   post:
  *     summary: Create a new election
  *     tags: [Elections]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *                 Election:
+ *                  $ref: '#/components/schemas/Election'
  *     responses:
  *       200:
  *         description: Election created
@@ -205,6 +214,14 @@ electionsRouter.delete('/Election/:id', asyncHandler(deleteElection))
  *           type: string
  *         required: true
  *         description: The election ID
+ *     requestBody:
+ *      content:
+ *       application/json:
+ *        schema:
+ *          type: object
+ *          properties:
+ *           Election:
+ *             $ref: '#/components/schemas/Election'
  *     responses:
  *       200:
  *         description: Election edited
@@ -248,6 +265,21 @@ electionsRouter.delete('/Election/:id', asyncHandler(deleteElection))
  *           type: string
  *         required: true
  *         description: The election ID
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               admin_ids:
+ *                type: array
+ *                items: string
+ *               audit_ids:
+ *                type: array
+ *                items: string
+ *               credential_ids:
+ *                type: array
+ *                items: string
  *     responses:
  *       200:
  *         description: Roles edited
@@ -336,6 +368,14 @@ electionsRouter.post('/Election/:id/finalize',asyncHandler(finalizeElection))
  *           type: string
  *         required: true
  *         description: The election ID
+ *     requestBody:
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *                public_results:
+ *                  type: boolean
  *     responses:
  *       200:
  *         description: Public results set
@@ -483,7 +523,7 @@ electionsRouter.post('/Election/:id/sendInvite/:voter_id', asyncHandler(sendInvi
  *               type: object
  *               properties:
  *                 photo_filename:
- *                   typeOf: 
+ *                   oneOf: 
  *                     - string
  *                     - null
  */

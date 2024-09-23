@@ -12,35 +12,7 @@ import { Router } from 'express';
 import asyncHandler  from 'express-async-handler';
 export const ballotRouter = Router();
 
-/** 
- * @swagger
- * /Election/{id}/ballot:
- *   post:
- *     summary: Return election ballot
- *     tags: [Ballots]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: The election ID
- *     responses:
- *       200:
- *         description: Election ballot returned
- *         content:
- *          application/json:
- *            schema:
- *             type: object
- *             properties:
- *               ballot: 
- *                type: object
- *                $ref: '#/components/schemas/NewBallot'
- *                
- *       404:
- *         description: Election not found
- */
-ballotRouter.post('/Election/:id/ballot', asyncHandler(returnElection))
+
 
 /** 
  * @swagger
@@ -88,6 +60,17 @@ ballotRouter.get('/Election/:id/ballots', asyncHandler(getBallotsByElectionID))
  *           type: string
  *         required: true
  *         description: The election ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               public_results:
+ *                type: boolean
+ *                description: If the election results are public
+ * 
  *     responses:
  *       200:
  *         description: All ballots deleted
@@ -152,6 +135,20 @@ ballotRouter.get('/Election/:id/ballot/:ballot_id', asyncHandler(getBallotByBall
  *           type: string
  *         required: true
  *         description: The election ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *        application/json:
+ *          schema:
+ *           type: object
+ *           properties:
+ *            ballot:
+ *              type: object
+ *              $ref: '#/components/schemas/Ballot'
+ *            recieptEmail:
+ *              oneOf:
+ *               - type: string
+ *               - type: null 
  *     responses:
  *       200:
  *         description: Vote cast
