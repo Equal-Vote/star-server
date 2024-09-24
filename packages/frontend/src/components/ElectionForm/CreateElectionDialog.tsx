@@ -105,7 +105,8 @@ const templateMappers = {
             ...election.settings,
             voter_authentication: {
                 ...election.settings.voter_authentication,
-                email: true
+                // email: true <- this means login will be required, that's not what we want for this setting. TODO: figure out refactored name
+                voter_id: true 
             },
             invitation: 'email',
         }
