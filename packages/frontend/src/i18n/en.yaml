@@ -183,7 +183,7 @@ election_home:
 
 # Ballot
 ballot:
-  this_election_uses: This election uses {{voting_method}} to elect {{spelled_count}} $t(winner.winner).
+  this_election_uses: This {{lowercase_election}} will use {{voting_method}} to elect {{spelled_count}} $t(winner.winner).
   instructions_checkbox: I have read the instructions
   learn_more: Learn more about {{voting_method}}
   previous: Previous
