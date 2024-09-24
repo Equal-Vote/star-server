@@ -14,7 +14,7 @@ import registerEvents from './Routes/registerEvents';
 import { setupSockets } from './socketHandler';
 import { getMetaTags } from './Util';
 import swaggerUi from 'swagger-ui-express';
-import openapi from './OpenApi/openapi.json'
+import openapi from '../build/src/OpenApi/swagger.json';
 
 import { getUserToken, getUser } from './Controllers/User';
 const asyncHandler = require('express-async-handler')

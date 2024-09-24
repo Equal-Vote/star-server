@@ -7,13 +7,13 @@
     "test": "jest --forceExit --detectOpenHandles",
     "start": "npm run build && node ./build/src/index.js",
     "dev": "tsx watch ./src",
-    "build": "tsc --project ./ && npm run generate:openapi",
+    "build": "npm run generate:openapi && tsc --project ./",
     "clean": "npx rimraf build node_modules ../node_modules",
     "migrate:latest": "node ./build/src/Migrators/migrate-to-latest.js",
     "migrate:up": "node ./build/src/Migrators/migrate-up.js",
     "migrate:down": "node ./build/src/Migrators/migrate-down.js",
     "db_sandbox": "npm run-script build && node ./build/src/test/database_sandbox.js",
-    "generate:openapi": "ts-node ./src/OpenApi/generateOpenApi.ts"
+    "generate:openapi": "ts-node ./src/OpenApi/generateSwaggerJSON.ts"
   },
   "keywords": [],
   "author": "",

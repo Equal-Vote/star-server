@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 // Load the generated schema
-const schemaPath = './schema.json';
+const schemaPath = './dist/schema.json';
 const schema = JSON.parse(fs.readFileSync(schemaPath, 'utf-8'));
 
 // Function to recursively replace $ref values

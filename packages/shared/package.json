@@ -8,7 +8,7 @@
     "test": "npm install && npm test",
     "clean": "npx rimraf dist node_modules ../node_modules",
     "build": "tsc --project ./ && npm run generate:schema",
-    "generate:schema": "typescript-json-schema tsconfig.json \"*\" --out schema.json && node ./fixSchemaRefs.ts"
+    "generate:schema": "typescript-json-schema tsconfig.json \"*\" --required --out dist/schema.json && node ./fixSchemaRefs.ts"
   },
   "keywords": [],
   "author": "",
@@ -38,7 +38,7 @@
       "default": "./dist/domain_model/*.js"
     },
     "./schema.json": {
-      "default": "./schema.json"
+      "default": "./dist/schema.json"
     }
   },
   "dependencies": {
