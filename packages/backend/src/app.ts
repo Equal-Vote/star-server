@@ -14,7 +14,7 @@ import registerEvents from './Routes/registerEvents';
 import { setupSockets } from './socketHandler';
 import { getMetaTags } from './Util';
 import swaggerUi from 'swagger-ui-express';
-import openapi from '../build/src/OpenApi/swagger.json';
+import swagger from './OpenApi/swagger.json';
 
 import { getUserToken, getUser } from './Controllers/User';
 const asyncHandler = require('express-async-handler')
@@ -49,7 +49,7 @@ export default function makeApp() {
     app.use('/API', getUser, ballotRouter)
     app.use('/API', getUser, rollRouter)
     // app.use('/debug',debugRouter)
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapi));
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swagger));
     app.post('/API/Token', asyncHandler(getUserToken));
 
     // NOTE: I've removed express.static because it doesn't allow me to inject meta tags

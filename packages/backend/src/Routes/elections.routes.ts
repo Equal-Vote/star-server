@@ -280,13 +280,16 @@ electionsRouter.delete('/Election/:id', asyncHandler(deleteElection))
  *             properties:
  *               admin_ids:
  *                type: array
- *                items: string
+ *                items: 
+ *                 type: string
  *               audit_ids:
  *                type: array
- *                items: string
+ *                items: 
+ *                 type: string
  *               credential_ids:
  *                type: array
- *                items: string
+ *                items: 
+ *                 type: string
  *     responses:
  *       200:
  *         description: Roles edited
@@ -499,6 +502,29 @@ electionsRouter.post('/Election/:id/sendInvite/:voter_id', asyncHandler(sendInvi
  *   post:
  *     summary: Get sandbox results
  *     tags: [Elections]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               cvr:
+ *                 type: array
+ *                 items:
+ *                   type: array
+ *                   items: 
+ *                     type: "number"
+ *               candidates:
+ *                 type: array
+ *                 items: 
+ *                   type: string
+ *               num_winners:
+ *                 type: number
+ *               votingMethod:
+ *                 type: object
+ *                 $ref: '#/components/schemas/VotingMethod'
+ *                 
  *     responses:
  *       200:
  *         description: Sandbox results
@@ -515,7 +541,10 @@ electionsRouter.post('/Election/:id/sendInvite/:voter_id', asyncHandler(sendInvi
  *                   description: Number of winners
  *                 candidates:
  *                   type: array
- *                   items: string */
+ *                   items: 
+ *                      type: string 
+ * 
+ */
  electionsRouter.post('/Sandbox',asyncHandler(getSandboxResults))
 
 /** 
