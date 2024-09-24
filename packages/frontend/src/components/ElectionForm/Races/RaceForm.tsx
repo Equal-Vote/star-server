@@ -176,20 +176,6 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                 {
                     flags.isSet('MULTI_WINNER') &&
                     <Grid item xs={12} sx={{ m: 0, p: 1 }}>
-                        <Typography gutterBottom variant="h6" component="h6">
-                            Multi-Winner?
-                        </Typography>
-                        <RadioGroup
-                            aria-labelledby="voting-method-radio-group"
-                            name="voter-method-radio-buttons-group"
-                            value={editedRace.voting_method}
-                            onChange={(e) => applyRaceUpdate(race => { race.voting_method = e.target.value })}
-                        >
-                            <FormControlLabel value="Single-Winner" control={<Radio />} label={t('edit_race.single_winner')} sx={{ mb: 0, pb: 0 }} />
-                            <FormControlLabel value="Basic Multi-Winner" control={<Radio />} label={t('edit_race.bloc_multi_winner')} sx={{ mb: 0, pb: 0 }} />
-                            <FormControlLabel value="Proportional Multi-Winner" control={<Radio />} label={t('edit_race.proportional_multi_winner')} sx={{ mb: 0, pb: 0 }} />
-                        </RadioGroup>
-
                         <Typography gutterBottom component="p" sx={{marginTop: 2}}>
                             <b>Number of Winners?</b>
                         </Typography>
