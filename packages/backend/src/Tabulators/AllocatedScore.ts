@@ -54,6 +54,7 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
     // Run election rounds until there are no remaining candidates
     // Keep running elections rounds even if all seats have been filled to determine candidate order
 
+
     // Normalize scores array
     var scoresNorm = normalizeArray(parsedData.scores, maxScore);
 
@@ -81,7 +82,10 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
             // sum scores for each candidate
             // weighted_sums[r] = sumArray(weighted_scores[r]);
         });
-        summaryData.weightedScoresByRound.push(weighted_sums.map(w => w.valueOf()))
+        summaryData.weightedScoresByRound.push(weighted_sums.map(w => {
+            return w.valueOf()
+        }))
+
         candidatesByRound.push([...remainingCandidates])
         // get index of winner
         var maxAndTies = indexOfMax(weighted_sums, summaryData.candidates, breakTiesRandomly);

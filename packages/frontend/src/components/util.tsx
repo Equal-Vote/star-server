@@ -217,7 +217,7 @@ export const ResultsBarChart = ({
       // hack to get smaller values to allign different than larger ones
       left: percentage
         ? `${Math.round((100 * d[xKey]) / percentDenominator)}%`
-        : d[xKey],
+        : Math.round(d[xKey]*100)/100,
       right: "",
     };
 
@@ -477,7 +477,7 @@ export const ResultsTable = ({ className, data, minCellWidth = "120px" }) => {
                     paddingLeft: j == 0 ? "8px" : "0",
                   }}
                 >
-                  {value}
+                  {isNaN(value/100) ? value : Math.round(100*value)/100}
                 </td>
               ))}
             </tr>

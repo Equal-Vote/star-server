@@ -183,7 +183,7 @@ election_home:
 
 # Ballot
 ballot:
-  this_election_uses: This election uses {{voting_method}}
+  this_election_uses: This election uses {{voting_method}} to elect {{spelled_count}} $t(winner.winner).
   instructions_checkbox: I have read the instructions
   learn_more: Learn more about {{voting_method}}
   previous: Previous
@@ -210,6 +210,20 @@ ballot:
       left_title: ''
       right_title: ''
       heading_prefix: ''
+    star_pr:
+      instruction_bullets:
+       - Give your favorite(s) five stars.
+       - Give your last choice(s) zero stars or leave blank.
+       - Score other {{lowercase_candidates}} as desired.
+       - Equal scores indicate equal preference.
+      footer_single_winner: ''
+      footer_multi_winner: >
+        Winners in Proportional STAR Voting are selected in rounds. Each round elects the {{lowercase_candidate}} with the highest total score,
+        then designates that {{lowercase_candidate}}'s strongest supporters as represented. Subsequent rounds include all voters who are not yet
+        fully represented.
+      # These show above the star columns 
+      left_title: 'Worst'
+      right_title: 'Best'
     star:
       instruction_bullets:
        - Give your favorite(s) five stars.
@@ -220,7 +234,7 @@ ballot:
         The two highest scoring {{lowercase_candidates}} are finalists.
         Your full vote goes to the finalist you prefer.
       footer_multi_winner: >
-        his election uses STAR Voting and will elect {{n}} winners.
+        This election uses STAR Voting and will elect {{n}} winners.
         In STAR Voting the two highest scoring {{lowercase_candidates}} are finalists and the finalist preferred by more voters wins.
       # These show above the star columns 
       left_title: 'Worst'
@@ -466,6 +480,20 @@ results:
       - Ties are 10 times less likely to occur with STAR Voting than with Choose-One Voting and generally resolve as the number of voters increases.
     equal_preferences_title: Distribution of Equal Preferences
     equal_preferences: Equal Preferences
+    score_higher_than_runoff_title: Why is the top scoring candidate different from the winner?
+    score_higher_than_runoff_text: |
+      The top-scoring candidate often matches the runoff winner, but not always. 
+      In the runoff, only the most preferred votes count, which can shift the outcome. 
+      For example, a 5 vs. 4-star vote has less impact in scoring but counts fully in the runoff, 
+      while a 5 vs. 0-star vote makes a big difference in scoring but is equal in the runoff. 
+      The runoff winner comes out on top because more voters prefer them over the runner-up.
+    # Alternate Text:
+    # The top-scoring candidate usually matches the winner in the runoff, but not always. 
+    # The runoff round counts only the votes for the candidate a voter most prefers, which can lead to different weightings than in the scoring round. 
+    # For example, a slight preference (like 5 vs. 4 stars) has a small impact in scoring but counts as one full vote in the runoff. 
+    # Conversely, a strong preference (like 5 vs. 0 stars) makes a big difference in scoring but carries the same weight in the runoff. 
+    # Ultimately, the runoff winner becomes the final winner because they are preferred by more voters over the runner-up.
+
   star_pr:
     chart_title: Round Results
     table_title: Results Table
@@ -752,6 +780,10 @@ methods:
     full_name: STAR Voting
     short_name: STAR Voting
     learn_link: https://www.youtube.com/watch?v=3-mOeUXAkV0
+  star_pr:
+    full_name: Proportional STAR Voting
+    short_name: STAR PR
+    learn_link: https://www.equal.vote/pr
   approval:
     full_name: Approval Voting
     short_name: Approval Voting
@@ -916,3 +948,21 @@ number:
 # Convenience entry for localizing date
 datetime: '{{datetime, datetime}}'
 listed_datetime: '{{listed_datetime, datetime}}'
+
+# Number translations
+spelled_numbers:
+  1: one
+  2: two
+  3: three
+  4: four
+  5: five
+  6: six
+  7: seven
+  8: eight
+  9: nine
+  10: ten
+
+# Winner pluralization
+winner:
+  winner_one: winner
+  winner_other: winners

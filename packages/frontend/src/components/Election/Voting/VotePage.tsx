@@ -284,8 +284,7 @@ const VotePage = () => {
                     onChange={(e) => setReceiptEmail({...receiptEmail, email: e.target.value})}
                 />
             {pages.map((page, pageIndex) => (
-              <>
-                key={pageIndex}
+              <Box key={pageIndex}>
                 <Typography variant="h6">
                   {election.races[page.race_index].title}
                 </Typography>
@@ -294,7 +293,7 @@ const VotePage = () => {
                     {`${candidate.candidate_name}: ${candidate.score ? candidate.score : 0}`}
                   </Typography>
                 ))}
-              </>
+              </Box>
             ))}
           </DialogContentText>
         </DialogContent>

@@ -13,12 +13,14 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
+import { makeChipStyle } from './ElectionForm/Details/ElectionStateChip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { visuallyHidden } from '@mui/utils';
 import { epochToDateString, getLocalTimeZoneShort, useSubstitutedTranslation } from './util';
-import { Checkbox, FormControl, ListItemText, MenuItem, Select, TextField } from '@mui/material';
+import { Checkbox, FormControl, ListItemText, MenuItem, Select, TextField, Chip } from '@mui/material';
 import { DateTime } from 'luxon';
+import { ElectionState } from '@equal-vote/star-vote-shared/domain_model/Election';
 
 export type HeadKey = keyof typeof headCellPool;
 
@@ -311,13 +313,16 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
     })
   }
 
-  const handleGroupFilterChange = (ind: number, group: string, value: boolean) => {
+  const handleGroupFilterChange = (ind: number, value: string[]) => {
     props.setFilters(filters => {
-      let newFilters = [...filters]
-      newFilters[ind][group] = value
-      return newFilters
-    })
-  }
+      let newFilters: ElectionState[] = [...filters];
+      // Update the filter groups based on the selected values
+      Object.keys(newFilters[ind]).forEach(group => {
+        newFilters[ind][group] = value.includes(group);
+      });
+      return newFilters as ElectionState[];
+    });
+  };
 
   return (
     <TableHead>
@@ -351,22 +356,43 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
               />
             }
             {headCell.filterType === 'groups' &&
-              <FormControl
-                sx={{ my: 1, width: 120 }} size="small"
-              >
+              // <FormControl
+              //   sx={{ my: 1, width: 120 }} size="small"
+              // >
+              //   <Select
+              //     multiple
+              //     value={Object.keys(props.filters[cellInd]).filter(group => props.filters[cellInd][group])}
+              //     renderValue={(selected) => selected.join(', ')}
+              //   >
+              //     {Object.keys(headCell.filterGroups).map((group, i) => (
+              //       <MenuItem 
+              //         onClick={(e) => handleGroupFilterChange(cellInd, group, !props.filters[cellInd][group])}
+              //         key={`group-${i}`}
+              //       >
+              //         <Checkbox
+              //           checked={props.filters[cellInd][group] == true}
+              //         />
+              //         <ListItemText primary={group} />
+              //       </MenuItem>
+              //     ))}
+              //   </Select>
+              // </FormControl>
+              <FormControl sx={{ my: 1, width: 130 }} size="small">
                 <Select
                   multiple
-                  value={Object.keys(props.filters[cellInd]).filter(group => props.filters[cellInd][group])}
-                  renderValue={(selected) => selected.join(', ')}
+                  value={Object.keys(props.filters[cellInd]).filter(group => props.filters[cellInd][group]) as ( | ElectionState)[]}
+                  onChange={(e) => handleGroupFilterChange(cellInd, e.target.value as ("" | ElectionState)[])}
+                  renderValue={(selected: ("" | ElectionState)[]) => (
+                    <Box sx={{ display: 'flex',  gap: 0.5 }}>
+                      {selected.map((value: "" | ElectionState) => (
+                        <Chip key={value} label={value} sx={makeChipStyle(value)}/>
+                      ))}
+                    </Box>
+                  )}
                 >
                   {Object.keys(headCell.filterGroups).map((group, i) => (
-                    <MenuItem 
-                      onClick={(e) => handleGroupFilterChange(cellInd, group, !props.filters[cellInd][group])}
-                      key={`group-${i}`}
-                    >
-                      <Checkbox
-                        checked={props.filters[cellInd][group] == true}
-                      />
+                    <MenuItem key={`group-${i}`} value={group}>
+                      <Checkbox checked={props.filters[cellInd][group] == true} />
                       <ListItemText primary={group} />
                     </MenuItem>
                   ))}
@@ -526,6 +552,7 @@ export default function EnhancedTable(props: EnhancedTableProps) {
                     sx={{ cursor: 'pointer' }}
                   >
                     {headCells.map((col, colInd) => {
+                      const isElectionState = col.id === 'election_state';
                       if (colInd == 0) {
                         return <TableCell
                           component="th"
@@ -539,7 +566,7 @@ export default function EnhancedTable(props: EnhancedTableProps) {
                           align={col.numeric ? 'right' : 'left'}
                           key={`${labelId}-${colInd}`}
                         >
-                          {row[col.id]}
+                          {isElectionState ? <Chip label={row[col.id]} sx={makeChipStyle(row[col.id])} /> : row[col.id]}
                         </TableCell>
                       }
                     }

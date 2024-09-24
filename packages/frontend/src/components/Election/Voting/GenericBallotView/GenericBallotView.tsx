@@ -46,7 +46,8 @@ export default function GenericBallotView({
 
   const learnLinkKey = `methods.${methodKey}.learn_link`
   const learnLink = (t(learnLinkKey) == learnLinkKey)? '' : t(learnLinkKey);
-
+  const numWinners = ballotContext.race.num_winners;
+  const spelledNumWinners = numWinners < 11 ? t(`spelled_numbers.${numWinners}`) : numWinners;
 
   if(onlyGrid)
     return <Box border={2} sx={{ mt: 0, ml: 0, mr: 0, width: '100%' }} className="ballot">
@@ -79,7 +80,7 @@ export default function GenericBallotView({
 
           <Grid item xs={8} sx={{ pb:1, px:4 }} className="instructions">
             <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }}>
-              {t('ballot.this_election_uses', {voting_method: methodName})}
+              {t('ballot.this_election_uses', {voting_method: methodName, count: ballotContext.race.num_winners, spelled_count: spelledNumWinners})}
             </Typography>
 
             {t(`ballot.methods.${methodKey}.instruction_bullets`).map((bullet, bulletIndex) => 

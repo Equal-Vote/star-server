@@ -11,10 +11,8 @@ import getCroppedImg from './PhotoCropper';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { StyledButton } from '../../styles';
-import useConfirm from '../../ConfirmationDialogProvider';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
+import { DragHandle } from '~/components/DragAndDrop';
 
 type CandidateProps = {
     onEditCandidate: Function,
@@ -310,7 +308,7 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
     )
 }
 
-export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandidate, moveCandidateUp, moveCandidateDown, disabled, inputRef, onKeyDown}) => {
+export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandidate, disabled, inputRef, onKeyDown}) => {
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -323,6 +321,8 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
                 sx={{ display: 'flex', justifyContent: 'space-between', bgcolor: 'background.paper', borderRadius: 10 }}
                 alignItems={'center'}
             >
+                <DragHandle style={{marginLeft: 5}} disabled={disabled}/>
+
                 <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', pl: 2 }}>
                     <TextField
                         id={'candidate-name'}
@@ -337,19 +337,8 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
                         inputRef={inputRef}
                         onKeyDown={onKeyDown}
                     />
-                </Box>
-                <IconButton
-                    aria-label="edit"
-                    onClick={moveCandidateUp}
-                    disabled={disabled}>
-                    <ArrowUpwardIcon />
-                </IconButton>
-                <IconButton
-                    aria-label="edit"
-                    onClick={moveCandidateDown}
-                    disabled={disabled}>
-                    <ArrowDownwardIcon />
-                </IconButton>
+                </Box>                    
+
                 {flags.isSet('CANDIDATE_DETAILS') &&
                     <IconButton
                         aria-label="edit"

@@ -7,6 +7,7 @@ import { ResultsBarChart } from '~/components/util';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import { useTranslation } from 'react-i18next';
+import STAREXtraContext from './STARExtraContext';
 
 const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResults, roundIndex: number, t: Function }) => {
     const [pie, setPie] = useState(false);
@@ -93,7 +94,9 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
                         <PieChartIcon sx={{transform: 'scale(.7)'}}/>
                     </ToggleButton>
                 </ToggleButtonGroup>
+                <STAREXtraContext results={results} />
             </Widget>
+            {/* <STAREXtraContext results={results} /> */}
         </WidgetContainer>
         </Box>
     );
