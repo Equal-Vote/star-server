@@ -38,9 +38,9 @@ const ViewElectionResults = () => {
                     {data?.results.map((result, race_index) => (
                         <Results 
                             key={`results-${race_index}`}
-                            title={t('results.race_title', {n: race_index+1, title: election.races[race_index].title})}
+                            title={t('results.race_title', {n: race_index+1, title: data.election.races[race_index].title})}
                             raceIndex={race_index}
-                            race={election.races[race_index]}
+                            race={data.election.races[race_index]}
                             result={result}
                         />
                     ))}
