@@ -183,7 +183,7 @@ election_home:
 
 # Ballot
 ballot:
-  this_election_uses: This election uses {{voting_method}} to elect {{spelled_count}} $t(winner.winner).
+  this_election_uses: This {{lowercase_election}} will use {{voting_method}} to elect {{spelled_count}} $t(winner.winner).
   instructions_checkbox: I have read the instructions
   learn_more: Learn more about {{voting_method}}
   previous: Previous
@@ -257,7 +257,7 @@ ballot:
         - Equal ranks are allowed
         - '{{candidates}} left blank are ranked last'
       footer_single_winner: |
-        {{candidates}} are compared in 1-on-1 match-ups.
+        {{candidates}} are compared in one-on-one match-ups.
         A {{lowercase_candidate}} wins a match-up if they are ranked higher than the opponent by more voters
       left_title: ''
       right_title: ''
@@ -297,9 +297,9 @@ election_creation:
   demo_description: Great for demonstrations where multiple people are using the same device
 
   public_title: Public {{election}}
-  public_description: 1 person, 1 vote. {{election}} will be open to anyone via the "Browse Polls" page, as well as anyone who has been given a direct link
+  public_description: one person, one vote. {{election}} will be open to anyone via the "Browse Polls" page, as well as anyone who has been given a direct link
 
-  unlisted_title: 1 person, 1 vote 
+  unlisted_title: one person, one vote 
   unlisted_description: '{{election}} will be open to anyone who has been given the ballot link'
 
   email_list_title: Email List
@@ -565,6 +565,19 @@ election_state:
 
 # Info bubbles
 tips:
+  bloc_multi_winner:
+    title: Basic Multi-Winner
+    description: >
+      Elect the first winner as you would in single-winner, then repeat the process until all seats are filled.
+      Best for electing strong winners with as much support as possible.
+
+  proportional_multi_winner:
+    title: Proportional Multi-Winner
+    description: >
+      Use a proportional representation algorithm to determine a win quota and ensure that factions can win if they have a quotas worth of supporters.
+      Best for electing diversified winners that reflect the idealogical makeup of the electorate.
+      [Learn more](https://equal.vote/pr)
+
   no_auth:
     title: No Voting Limit
     description: Allows unlimited votes per device. Great for demos or where all your voters are sharing the same device.
@@ -572,8 +585,8 @@ tips:
   ip_auth:
     title: One vote per Network
     description: >
-      Only allows 1 vote per IP address. This makes it harder to vote multiple times on the same device, but it won't allow
-      for multiple voters if they're sharing the same WiFi network. Great for adding security in anonymous online polls,
+      Only allows one vote per IP address. This makes it harder to vote multiple times on the same device, but it won't allow
+      for multiple voters if they're sharing the same WiFi network. Great for adding security in anonymous public {{elections}},
       without impacting the user experience. 
 
   device_auth:
@@ -586,7 +599,7 @@ tips:
     title: One for per User
     description: >
       Only allow votes from people who have created a BetterVoting account and verified their email address. 
-      Great for maximizing security of anonymous elections election. 
+      Great for maximizing security for anonymous public {{elections}}. 
 
   election_title:
     title: Title
@@ -674,7 +687,7 @@ admin_home:
     form_label: Who can vote?
     help_text: Limit to one {{vote}} per...
     no_limit_label: No Limit !tip(no_auth)
-    ip_label: Network !tip(ip_auth)
+    ip_label: WiFi/Cellular Network !tip(ip_auth)
     device_label: Device !tip(device_auth)
     email_label: User (login required) !tip(login_auth)
 
@@ -709,11 +722,11 @@ election_settings:
     description: Randomizes the order of candidates on the ballots.
 
   ballot_updates:
-    label: Ballot Updates
+    label: Allow Voters To Edit Vote
     description: Allow voters to update their ballots while election is still open
 
   public_results:
-    label: Public Results
+    label: Show Preliminary Results
     description: Allow voters to view preliminary results. (Administrators can make results public at any time.)
 
   random_ties:
@@ -722,25 +735,29 @@ election_settings:
 
   voter_groups:
     label: Enable Voter Groups
-    description: Manage which races voters can vote in.
+    description: Allow different voter groups access to different races within a larger election (ex. districts within jurisdiction).
 
   custom_email_invite: 
-    label: Custom Email Invite Text
-    description: Set greetings and instructions for your email invitations.
+    label: Customize Emails To Voters
+    description: Customize the content for emails sent to your voters.
 
   require_instruction_confirmation:
-    label: Require Instruction Confirmations
-    description: Requires voters to confirm that they have read ballot instructions in order to vote.
+    label: Confirm That Voter Read Instructions
+    description: Requires voters to confirm that they have read the ballot instructions before voting.
 
   publicly_searchable:
-    label: Publicly Searchable
-    description: Allow election to be searchable in the public elections tab.
+    label: Make {{election}} Publicly Searchable
+    description: Allow {{election}} to be listed under the browse polls tab.
 
   max_rankings:
-    label: Rank Limit
-    description: Set a maximum number of rankings for ranked voting. (Must be between {{min_rankings}} and {{max_rankings}})
+    label: Set Number Of Rankings Allowed
+    description: Set a maximum number of rankings supported on ranked ballots. (Must be between {{min_rankings}} and {{max_rankings}})
   
 # Admin Home -> Add/Edit Race
+edit_race:
+  single_winner: Single-Winner
+  bloc_multi_winner:  Basic Multi-Winner !tip(bloc_multi_winner)
+  proportional_multi_winner:  Proportional Multi-Winner !tip(proportional_multi_winner)
 
 # Voters
 

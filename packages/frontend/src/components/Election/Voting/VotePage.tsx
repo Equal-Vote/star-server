@@ -199,9 +199,9 @@ const VotePage = () => {
       </BallotContext.Provider>
 
       {pages.length > 1 &&
-        <Box sx={{ display: 'flex', justifyContent: "space-between" }}>
+        <Box sx={{ display: 'flex', justifyContent: "space-between", marginTop: '10px' }}>
           <Button
-            variant='outlined'
+            variant='contained'
             onClick={() => setCurrentPage(count => count - 1)}
             disabled={currentPage === 0}
             sx={{ maxHeight: '40px', minWidth: '100px', marginRight: {xs: '10px', md: '40px'}, visibility: (currentPage === 0) ? 'hidden' : 'visible' }}>
@@ -224,7 +224,6 @@ const VotePage = () => {
                       <polygon points="13,16 11,16 11,18 13,18"/>
                       <polygon points="13,10 11,10 11,15 13,15"/>
                       </>}
-
                     </SvgIcon>
                   </StepLabel>
                 </Step>
@@ -232,7 +231,7 @@ const VotePage = () => {
             ))}
           </Stepper>
           <Button
-            variant='outlined'
+            variant='contained'
             onClick={() => setCurrentPage(count => count + 1)}
             disabled={currentPage === pages.length - 1}
             sx={{ maxHeight: '40px', minWidth: '100px', marginLeft: {xs: '10px', md: '40px'}, visibility: (currentPage === pages.length - 1) ? 'hidden' : 'visible' }}>
@@ -246,8 +245,8 @@ const VotePage = () => {
           variant='contained'
           onClick={() => setIsOpen(true)}
           disabled={isPending || currentPage !== pages.length - 1 || pages[currentPage].candidates.every(candidate => candidate.score === null || pages.some(page => page.warnings))}//disable unless on last page and at least one candidate scored
-          style={{ marginLeft: "auto", minWidth: "150px", marginTop: "20px" }}>
-              {t('ballot.submit_ballot')}
+          style={{ margin: "auto", minWidth: "150px", marginTop: "40px" }}>
+              <Typography variant="h6">{t('ballot.submit_ballot')}</Typography>
         </Button>
       </Box>
       {isPending && <div> {t('ballot.submitting')} </div>}

@@ -116,11 +116,17 @@ export default function GenericBallotView({
           />
 
           <Grid item xs={10} sx={{ p:5, px:4 }} className="footer">
-            {t(`ballot.methods.${methodKey}.footer_${ballotContext.race.num_winners == 1 ? 'single_winner' : 'multi_winner'}`,
-              {n: ballotContext.race.num_winners})
-            }
+            <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }}>
+              {t(`ballot.methods.${methodKey}.footer_${ballotContext.race.num_winners == 1 ? 'single_winner' : 'multi_winner'}`,
+                {n: ballotContext.race.num_winners})
+              }
+            </Typography>
             <br/>
-            {learnLink != '' && <Link href={learnLink} target='_blank'>{t('ballot.learn_more', {voting_method: methodName})}</Link>}
+            {learnLink != '' &&
+            <Typography align='left' sx={{ typography: { sm: 'body1', xs: 'body2' } }}>
+              <Link href={learnLink} target='_blank'>{t('ballot.learn_more', {voting_method: methodName})}</Link>
+            </Typography>
+            }
           </Grid>
 
           { ballotContext.warnings && ballotContext.warnings.map(({message, severity}, warningIndex) => 

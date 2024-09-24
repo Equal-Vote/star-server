@@ -157,28 +157,35 @@ const brandPalette: PaletteOptions = {
 }
 
 const brandTypeography: TypographyOptions = {
+  // fontFamily: 'Montserrat',
   fontFamily: 'Verdana',
   h1: {
+    fontFamily: 'Montserrat',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h2: {
+    fontFamily: 'Montserrat',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h3: {
+    fontFamily: 'Montserrat',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h4: {
+    fontFamily: 'Montserrat',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h5: {
+    fontFamily: 'Montserrat',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h6: {
+    fontFamily: 'Montserrat',
     marginTop: '1rem',
     marginBottom: '1rem',
   }

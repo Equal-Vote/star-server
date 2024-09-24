@@ -26,21 +26,15 @@ export default function ElectionAuthForm() {
                     p: 1,
                 }}
             >
-                <Grid xs={12}>
+                <Grid xs={12} sx={{marginBottom: 1}}>
                     <Typography gutterBottom variant="h4" component="h4">
                         {t('admin_home.voter_authentication.form_label')}
                     </Typography>
                 </Grid>
                 <FormControl>
-                    <FormLabel id="demo-radio-buttons-group-label">{t('admin_home.voter_authentication.help_text')}</FormLabel>
-                    <FormControlLabel control={
-                        <Radio
-                            disabled = {election.state !== 'draft'}
-                            checked={ip}
-                            onChange={() => handleUpdate({ ip_address: true })}
-                            value="ip"
-                        />}
-                        label={t('admin_home.voter_authentication.ip_label')} />
+                    <FormLabel id="demo-radio-buttons-group-label" sx={{marginBottom: 1}}>
+                        {t('admin_home.voter_authentication.help_text')}
+                    </FormLabel>
                     <FormControlLabel control={
                         <Radio
                             disabled = {election.state !== 'draft'}
@@ -49,7 +43,6 @@ export default function ElectionAuthForm() {
                             value="device_id"
                         />}
                         label={t('admin_home.voter_authentication.device_label')} />
-
                     <FormControlLabel control={
                         <Radio
                             disabled = {election.state !== 'draft'}
@@ -58,6 +51,14 @@ export default function ElectionAuthForm() {
                             value="email"
                         />}
                         label={t('admin_home.voter_authentication.email_label')} />
+                    <FormControlLabel control={
+                        <Radio
+                            disabled = {election.state !== 'draft'}
+                            checked={ip}
+                            onChange={() => handleUpdate({ ip_address: true })}
+                            value="ip"
+                        />}
+                        label={t('admin_home.voter_authentication.ip_label')} />
                     <FormControlLabel control={
                         <Radio
                             disabled = {election.state !== 'draft'}

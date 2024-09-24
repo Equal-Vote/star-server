@@ -87,7 +87,7 @@ export default function ElectionSettings() {
             >
                 <DialogTitle>{t('election_settings.dialog_title')}</DialogTitle>
                 <DialogContent>
-                    <Grid item xs={12} sx={{ m: 0, my: 1, p: 1 }}>
+                    <Grid item xs={12} sx={{ m: 0, my: 0, p: 1 }}>
                         <FormControl component="fieldset" variant="standard">
                             <FormGroup>
                                 <CheckboxSetting setting='random_candidate_order'/>
