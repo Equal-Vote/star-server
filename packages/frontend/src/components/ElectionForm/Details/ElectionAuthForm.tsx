@@ -23,7 +23,7 @@ export default function ElectionAuthForm() {
             <Grid container
                 sx={{
                     m: 0,
-                    p: 1,
+                    p: 0,
                 }}
             >
                 <Grid xs={12} sx={{marginBottom: 1}}>
@@ -32,7 +32,7 @@ export default function ElectionAuthForm() {
                     </Typography>
                 </Grid>
                 <FormControl>
-                    <FormLabel id="demo-radio-buttons-group-label" sx={{marginBottom: 1}}>
+                    <FormLabel id="demo-radio-buttons-group-label" sx={{marginBottom: 1, color: '#000000DE'}}>
                         {t('admin_home.voter_authentication.help_text')}
                     </FormLabel>
                     <FormControlLabel control={

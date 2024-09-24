@@ -51,6 +51,7 @@ export const StyledButton = (props) => (
             m: 0,
             boxShadow: 2,
             backgroundColor: 'primary.main',
+            fontFamily: 'Montserrat',
             fontWeight: 'bold',
             fontSize: 18,
             color: 'primary.contrastText',

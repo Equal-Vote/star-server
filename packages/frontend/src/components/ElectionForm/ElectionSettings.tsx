@@ -52,16 +52,13 @@ export default function ElectionSettings() {
         <FormControlLabel disabled={disabled} control={
             <Checkbox
                 id={setting}
-                name={t(`election_settings.${setting}.label`)}
+                name={t(`election_settings.${setting}`)}
                 checked={disabled? !!checked : (checked ?? !!editedElectionSettings[setting])}
                 onChange={onChange ?? ((e) => applySettingsUpdate(settings => { settings[setting] = e.target.checked; }))}
+                sx={{mb: 1}}
             />}
-            label={t(`election_settings.${setting}.label`)}
+            label={t(`election_settings.${setting}`)}
         />
-        <FormHelperText sx={{ pl: 4, mt: -1 }}>
-            {t(`election_settings.${setting}.description`)}
-            {disabled && !checked && t(`election_settings.not_supported`)}
-        </FormHelperText>
     </>;
 
     return (
@@ -85,7 +82,7 @@ export default function ElectionSettings() {
                 open={open}
                 onClose={handleClose}
             >
-                <DialogTitle>{t('election_settings.dialog_title')}</DialogTitle>
+                <DialogTitle sx={{m: 0}}>{t('election_settings.dialog_title')}</DialogTitle>
                 <DialogContent>
                     <Grid item xs={12} sx={{ m: 0, my: 0, p: 1 }}>
                         <FormControl component="fieldset" variant="standard">

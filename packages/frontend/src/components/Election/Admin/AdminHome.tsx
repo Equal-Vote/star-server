@@ -209,13 +209,17 @@ const AdminHome = () => {
 
     const HeaderSection = () => {
         return <Box width='100%'>
-            {(election.state === 'open' || election.state == 'finalized') && election.settings.invitation &&
-                <Typography align='center' gutterBottom variant="h6" component="h6">
+
+            {
+            /* Sometimes the email blast will bug, and then this message will make the UX of the bug worse */
+            /*{(election.state === 'open' || election.state == 'finalized') && election.settings.invitation &&
+                <Typography align='center' gutterBottom variant="h6" component="h6" >
                     {t('admin_home.header_invitations_sent')}
                 </Typography>
-            }
+            }*/}
+
             {election.state === 'finalized' && election.start_time &&
-                <Typography align='center' gutterBottom variant="h6" component="h6">
+                <Typography align='center' gutterBottom variant="h6" component="h6" >
                     {t('admin_home.header_start_time', {datetime: election.start_time})}
                 </Typography>
             }

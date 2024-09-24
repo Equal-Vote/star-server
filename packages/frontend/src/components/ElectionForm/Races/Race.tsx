@@ -39,7 +39,7 @@ export default function Race({ race, race_index }) {
                 alignItems={'center'}
             >
                 <Box sx={{ width: '100%', pl: 2 }}>
-                    <Typography variant="h4" component="h4">{race.title}</Typography>
+                    <Typography variant="h5" component="h5">{race.title}</Typography>
                 </Box>
                 <Box sx={{ flexShrink: 1, p: 1 }}>
                     <Tooltip title='Duplicate'>

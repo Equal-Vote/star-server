@@ -565,6 +565,42 @@ election_state:
 
 # Info bubbles
 tips:
+  random_candidate_order: 
+    title: Randomize Candidate Order
+    description: Randomizes the order of candidates on the ballots.
+
+  ballot_updates:
+    title: Allow Voters To Edit Vote
+    description: Allow voters to update their ballots while election is still open
+
+  public_results:
+    title: Show Preliminary Results
+    description: Allow voters to view preliminary results. (Administrators can make results public at any time.)
+
+  random_ties:
+    title: Enable Random Tie-Breakers
+    description: Break tie's randomly when the standard tie breaker protocol is insufficient
+
+  voter_groups:
+    title: Enable Voter Groups
+    description: Allow different voter groups access to different races within a larger election (ex. districts within jurisdiction).
+
+  custom_email_invite: 
+    title: Customize Emails To Voters
+    description: Customize the content for emails sent to your voters.
+
+  require_instruction_confirmation:
+    title: Confirm That Voter Read Instructions
+    description: Requires voters to confirm that they have read the ballot instructions before voting.
+
+  publicly_searchable:
+    title: Make {{election}} Publicly Searchable
+    description: Allow {{election}} to be listed under the browse polls tab.
+
+  max_rankings:
+    title: Set Number Of Rankings Allowed
+    description: Set a maximum number of rankings supported on ranked ballots. (Must be between {{min_rankings}} and {{max_rankings}})
+
   bloc_multi_winner:
     title: Basic Multi-Winner
     description: >
@@ -686,10 +722,10 @@ admin_home:
   voter_authentication:
     form_label: Who can vote?
     help_text: Limit to one {{vote}} per...
-    no_limit_label: No Limit !tip(no_auth)
-    ip_label: WiFi/Cellular Network !tip(ip_auth)
-    device_label: Device !tip(device_auth)
-    email_label: User (login required) !tip(login_auth)
+    no_limit_label: no limit !tip(no_auth)
+    ip_label: WiFi/cellular network !tip(ip_auth)
+    device_label: device !tip(device_auth)
+    email_label: user (login required) !tip(login_auth)
 
   finalize_confirm:
     title: Confirm Finalize Election
@@ -717,41 +753,23 @@ election_settings:
 
   not_supported: ' (currently not supported)'
 
-  random_candidate_order: 
-    label: Randomize Candidate Order
-    description: Randomizes the order of candidates on the ballots.
+  random_candidate_order: Randomize Candidate Order !tip(random_candidate_order)
 
-  ballot_updates:
-    label: Allow Voters To Edit Vote
-    description: Allow voters to update their ballots while election is still open
+  ballot_updates: Allow Voters To Edit Vote !tip(ballot_updates)
 
-  public_results:
-    label: Show Preliminary Results
-    description: Allow voters to view preliminary results. (Administrators can make results public at any time.)
+  public_results: Show Preliminary Results !tip(public_results)
 
-  random_ties:
-    label: Enable Random Tie-Breakers
-    description: Break tie's randomly when the standard tie breaker protocol is insufficient
+  random_ties: Enable Random Tie-Breakers !tip(random_ties)
 
-  voter_groups:
-    label: Enable Voter Groups
-    description: Allow different voter groups access to different races within a larger election (ex. districts within jurisdiction).
+  voter_groups: Enable Voter Groups !tip(voter_groups)
 
-  custom_email_invite: 
-    label: Customize Emails To Voters
-    description: Customize the content for emails sent to your voters.
+  custom_email_invite: Customize Emails To Voters !tip(custom_email_invite)
 
-  require_instruction_confirmation:
-    label: Confirm That Voter Read Instructions
-    description: Requires voters to confirm that they have read the ballot instructions before voting.
+  require_instruction_confirmation: Confirm That Voter Read Instructions !tip(require_instruction_confirmation)
 
-  publicly_searchable:
-    label: Make {{election}} Publicly Searchable
-    description: Allow {{election}} to be listed under the browse polls tab.
+  publicly_searchable: Make {{election}} Publicly Searchable !tip(publicly_searchable)
 
-  max_rankings:
-    label: Set Number Of Rankings Allowed
-    description: Set a maximum number of rankings supported on ranked ballots. (Must be between {{min_rankings}} and {{max_rankings}})
+  max_rankings: Set Number Of Rankings Allowed !tip(max_rankings)
   
 # Admin Home -> Add/Edit Race
 edit_race:

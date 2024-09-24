@@ -156,9 +156,12 @@ const brandPalette: PaletteOptions = {
   }
 }
 
-const brandTypeography: TypographyOptions = {
+const brandTypography: TypographyOptions = {
   // fontFamily: 'Montserrat',
   fontFamily: 'Verdana',
+  button:{
+    fontFamily: 'Montserrat',
+  },
   h1: {
     fontFamily: 'Montserrat',
     marginTop: '1rem',
@@ -196,7 +199,7 @@ const themes = {
     palette: {
       brand: brandPalette.brand
     },
-    typography: brandTypeography
+    typography: brandTypography
   }
   )),
   turquoise: responsiveFontSizes(createTheme({
@@ -227,15 +230,14 @@ const themes = {
       },
       brand: brandPalette.brand
     },
-    typography: brandTypeography
+    typography: brandTypography
   })),
   darkMode: responsiveFontSizes(createTheme({
     palette: {
       mode: 'dark',
       brand: brandPalette.brand
     },
-    
-    typography: brandTypeography
+    typography: brandTypography
   })),
 }
 
