@@ -17,7 +17,7 @@ interface Props {
     election: Election;
 }
 
-export const DownloadCSV = ({ election }: Props) => {
+export const BallotDataExport = ({ election }: Props) => {
     const [csvData, setCsvData] = useState([]);
     const [csvHeaders, setCsvHeaders] = useState([]);
 	const { data, error, isPending, makeRequest } = useGetAnonymizedBallots(election.election_id);
