@@ -4,7 +4,7 @@ import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/Election
 import useFetch from "./useFetch";
 import { VotingMethod } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { ElectionResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
-import { Ballot, NewBallot } from "@equal-vote/star-vote-shared/domain_model/Ballot";
+import { Ballot, NewBallot, AnonymizedBallot } from "@equal-vote/star-vote-shared/domain_model/Ballot";
 
 export const useGetElection = (electionID: string | undefined) => {
     return useFetch<undefined, { election: Election, voterAuth: VoterAuth }>(`/API/Election/${electionID}`, 'get')
@@ -104,6 +104,10 @@ export const useGetBallot = (election_id: string, ballot_id: string | undefined)
 
 export const useGetBallots = (election_id: string | undefined) => {
     return useFetch<undefined, { election: Election, ballots: Ballot[] }>(`/API/Election/${election_id}/ballots`, 'get')
+}
+
+export const useGetAnonymizedBallots = (election_id: string | undefined) => {
+    return useFetch<undefined, { ballots: AnonymizedBallot[] }>(`/API/Election/${election_id}/anonymizedBallots`, 'get')
 }
 
 export const useGetResults = (election_id: string | undefined) => {

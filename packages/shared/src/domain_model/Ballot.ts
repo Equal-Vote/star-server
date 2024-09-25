@@ -19,6 +19,11 @@ export interface Ballot {
     head:           boolean;// Head version of this object
 }
 
+export interface AnonymizedBallot {
+    ballot_id:  string; //ID of ballot
+    votes: Vote[];         // One per poll
+}
+
 export interface BallotAction {
     action_type:string;
     actor:Uid;

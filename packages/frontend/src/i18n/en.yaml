@@ -757,6 +757,7 @@ election_settings:
 
   ballot_updates: Allow Voters To Edit Vote !tip(ballot_updates)
 
+
   public_results: Show Preliminary Results !tip(public_results)
 
   random_ties: Enable Random Tie-Breakers !tip(random_ties)

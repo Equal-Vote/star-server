@@ -304,6 +304,10 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
   const {t} = useSubstitutedTranslation(election?.settings?.term_type ?? 'poll');
   return (
     <div>
+      <hr/>
+      <Typography variant="h2" component="h2" sx={{marginBottom: 2}}>
+          {race.title}
+      </Typography>
       <div className="flexContainer" style={{textAlign: 'center'}}>
         <Box sx={{pageBreakAfter:'avoid', pageBreakInside:'avoid'}}>
         {result.results.summaryData.nValidVotes == 0 && <h2>{t('results.waiting_for_results')}</h2>}
