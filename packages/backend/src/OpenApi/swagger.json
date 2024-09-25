@@ -733,6 +733,13 @@
       "Email": {
         "type": "string"
       },
+      "InvitationType": {
+        "enum": [
+          "address",
+          "email"
+        ],
+        "type": "string"
+      },
       "NewBallot": {
         "properties": {
           "ballot_id": {
@@ -1188,6 +1195,14 @@
           "scores"
         ],
         "type": "object"
+      },
+      "VoterAccess": {
+        "enum": [
+          "closed",
+          "open",
+          "registration"
+        ],
+        "type": "string"
       },
       "VoterAuth": {
         "properties": {
@@ -2540,7 +2555,7 @@
                 "properties": {
                   "ballot": {
                     "type": "object",
-                    "$ref": "#/components/schemas/Ballot"
+                    "$ref": "#/components/schemas/NewBallot"
                   },
                   "recieptEmail": {
                     "oneOf": [
@@ -2567,7 +2582,7 @@
                   "properties": {
                     "ballot": {
                       "type": "object",
-                      "$ref": "#/components/schemas/NewBallot"
+                      "$ref": "#/components/schemas/Ballot"
                     }
                   }
                 }

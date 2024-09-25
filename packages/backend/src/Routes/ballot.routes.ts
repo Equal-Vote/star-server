@@ -185,7 +185,7 @@ ballotRouter.get('/Election/:id/ballot/:ballot_id', asyncHandler(getBallotByBall
  *           properties:
  *            ballot:
  *              type: object
- *              $ref: '#/components/schemas/Ballot'
+ *              $ref: '#/components/schemas/NewBallot'
  *            recieptEmail:
  *              oneOf:
  *               - type: string
@@ -200,7 +200,7 @@ ballotRouter.get('/Election/:id/ballot/:ballot_id', asyncHandler(getBallotByBall
  *             properties:
  *               ballot:
  *                 type: object
- *                 $ref: '#/components/schemas/NewBallot'
+ *                 $ref: '#/components/schemas/Ballot'
  *       404:
  *         description: Election not found */
 ballotRouter.post('/Election/:id/vote', asyncHandler(castVoteController))

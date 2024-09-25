@@ -151,9 +151,9 @@ export function electionValidation(obj:Election): string | null {
     }
   }
   if (obj.update_date) {
-    const date = new Date(obj.update_date);
+    const date = new Date(Number(obj.update_date));
     if (isNaN(date.getTime())) {
-      return "Invalid Update Date Format";
+      return `Invalid Update Date Format, it should be milliseconds since epoch: ${obj.update_date}`;
     }
   }
   if (obj.head && typeof obj.head !== 'boolean'){

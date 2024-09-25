@@ -19,7 +19,7 @@ const editElection = async (req: IElectionRequest, res: Response, next: NextFunc
     const validationErr = electionValidation(inputElection);
     if (validationErr) {
         Logger.info(req, "Invalid Election: " + validationErr);
-        throw new BadRequest("Invalid Election")
+        throw new BadRequest("Invalid Election: " + validationErr);
     }
 
     if (inputElection.state !== 'draft') {

@@ -103,7 +103,7 @@ export function electionRollValidation(obj:ElectionRoll): string | null {
         }
     }
     if (obj.update_date) {
-        const date = new Date(obj.update_date);
+        const date = new Date(Number(obj.update_date));
         if (isNaN(date.getTime())) {
             return "Invalid Update Date Format";
         }
