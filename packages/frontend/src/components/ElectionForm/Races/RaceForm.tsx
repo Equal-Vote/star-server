@@ -2,12 +2,13 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useState } from "react"
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate"
 import AddCandidate, { CandidateForm } from "../Candidates/AddCandidate"
+import EditIcon from '@mui/icons-material/Edit';
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from '@mui/material/Typography';
-import { Box, FormHelperText, Radio, RadioGroup, Stack } from "@mui/material"
+import { Box, FormHelperText, Radio, RadioGroup, Stack, Step, StepButton, StepConnector, StepContent, StepLabel, Stepper } from "@mui/material"
 import IconButton from '@mui/material/IconButton'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
@@ -22,7 +23,19 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
     const {t} = useSubstitutedTranslation();
     const flags = useFeatureFlags();
     const [showsAllMethods, setShowsAllMethods] = useState(false)
+    const [activeStep, setActiveStep] = useState(0)
     const { election } = useElection()
+    const PR_METHODS = ['STV', 'STAR_PR'];
+    const [methodFamily, setMethodFamily] = useState(
+        editedRace.num_winners == 1?
+            'single_winner'
+        : (
+            PR_METHODS.includes(editedRace.voting_method)?
+                'proportional_multi_winner'
+            :
+                'bloc_multi_winner'
+        )
+    )
     const confirm = useConfirm();
     const inputRefs = useRef([]);
     const ephemeralCandidates = useMemo(() => 
@@ -97,7 +110,6 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
     return (
         <>
             <Grid container sx={{ m: 0, p: 1 }} >
-
                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                     <TextField
                         id={`race-title-${String(race_index)}`}
@@ -173,103 +185,132 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                         />
                     </Grid>
                 }
-                {
-                    flags.isSet('MULTI_WINNER') &&
-                    <Grid item xs={12} sx={{ m: 0, p: 1 }}>
-                        <Typography gutterBottom component="p" sx={{marginTop: 2}}>
-                            <b>Number of Winners?</b>
-                        </Typography>
-                        <TextField
-                            id={`num-winners-${String(race_index)}`}
-                            name="Number Of Winners"
-                            type="number"
-                            error={errors.raceNumWinners !== ''}
-                            fullWidth
-                            value={editedRace.num_winners}
-                            sx={{
-                                p: 0,
-                                boxShadow: 2,
-                            }}
-                            onChange={(e) => {
-                                setErrors({ ...errors, raceNumWinners: '' })
-                                applyRaceUpdate(race => { race.num_winners = parseInt(e.target.value) })
-                            }}
-                        />
-                        <FormHelperText error sx={{ pl: 1, pt: 0 }}>
-                            {errors.raceNumWinners}
-                        </FormHelperText>
-                    </Grid>
-                }
+            </Grid>
 
-                <Grid item xs={12} sx={{ m: 0, my: 1, p: 1 }}>
-                    <FormControl component="fieldset" variant="standard">
-                        <Typography gutterBottom variant="h6" component="h6">
-                            Voting Method
-                        </Typography>
+            <Stepper nonLinear activeStep={activeStep} orientation="vertical" sx={{my: 3}}>
+                <Step>
+                    <StepButton onClick={() => setActiveStep(0)}>How many winners?</StepButton>
+                    <StepContent>
                         <RadioGroup
-                            aria-labelledby="voting-method-radio-group"
-                            name="voter-method-radio-buttons-group"
-                            value={editedRace.voting_method}
-                            onChange={(e) => applyRaceUpdate(race => { race.voting_method = e.target.value })}
+                            aria-labelledby="method-family-radio-group"
+                            name="method-family-radio-buttons-group"
+                            value={methodFamily}
+                            onChange={(e) => {
+                                if(e.target.value == 'single'){
+                                    setErrors({ ...errors, raceNumWinners: '' })
+                                    applyRaceUpdate(race => { race.num_winners = 1 })
+                                }
+                                setMethodFamily(e.target.value)
+                            }}
                         >
-                            <FormControlLabel value="STAR" control={<Radio />} label="STAR" sx={{ mb: 0, pb: 0 }} />
-                            <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                Score candidates 0-5
+                            <FormControlLabel value="single_winner" control={<Radio />} label={t('edit_race.single_winner')} sx={{ mb: 0, pb: 0 }} />
+                            <FormControlLabel value="bloc_multi_winner" control={<Radio />} label={t('edit_race.bloc_multi_winner')} sx={{ mb: 0, pb: 0 }} />
+                            <FormControlLabel value="proportional_multi_winner" control={<Radio />} label={t('edit_race.proportional_multi_winner')} sx={{ mb: 0, pb: 0 }} />
+                        </RadioGroup>
+                        <Box sx={{
+                            height: methodFamily == 'single_winner' ? 0 : '105px', // copied from the value for auto
+                            opacity: methodFamily == 'single_winner' ? 0 : 1,
+                            overflow: 'hidden',
+                            transition: 'height .4s, opacity .7s',
+                            maxWidth: '300px'
+                        }}>
+                            <Typography gutterBottom component="p" sx={{marginTop: 2}}>
+                                <b>Number of Winners?</b>
+                            </Typography>
+                            <TextField
+                                id={`num-winners-${String(race_index)}`}
+                                name="Number Of Winners"
+                                type="number"
+                                error={errors.raceNumWinners !== ''}
+                                fullWidth
+                                value={editedRace.num_winners}
+                                sx={{
+                                    p: 0,
+                                    boxShadow: 2,
+                                }}
+                                onChange={(e) => {
+                                    setErrors({ ...errors, raceNumWinners: '' })
+                                    applyRaceUpdate(race => { race.num_winners = parseInt(e.target.value) })
+                                }}
+                            />
+                            <FormHelperText error sx={{ pl: 1, pt: 0 }}>
+                                {errors.raceNumWinners}
                             </FormHelperText>
+                        </Box>
+                    </StepContent>
+                </Step>
 
-                            {flags.isSet('METHOD_STAR_PR') && <>
-                                <FormControlLabel value="STAR_PR" control={<Radio />} label="Proportional STAR" />
+                <Step>
+                    <StepButton onClick={() => setActiveStep(1)}>Voting Method</StepButton>
+                    <StepContent>
+                        <FormControl component="fieldset" variant="standard">
+                            <RadioGroup
+                                aria-labelledby="voting-method-radio-group"
+                                name="voter-method-radio-buttons-group"
+                                value={editedRace.voting_method}
+                                onChange={(e) => applyRaceUpdate(race => { race.voting_method = e.target.value })}
+                            >
+                                <FormControlLabel value="STAR" control={<Radio />} label="STAR" sx={{ mb: 0, pb: 0 }} />
                                 <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                     Score candidates 0-5
                                 </FormHelperText>
-                            </>}
 
-                            {flags.isSet('METHOD_RANKED_ROBIN') && <>
-                                <FormControlLabel value="RankedRobin" control={<Radio />} label="Ranked Robin" />
-                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                    Rank candidates in order of preference, single winner or multi-winner
-                                </FormHelperText>
-                            </>}
+                                {flags.isSet('METHOD_STAR_PR') && <>
+                                    <FormControlLabel value="STAR_PR" control={<Radio />} label="Proportional STAR" />
+                                    <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                        Score candidates 0-5
+                                    </FormHelperText>
+                                </>}
 
-                            {flags.isSet('METHOD_APPROVAL') && <>
-                                <FormControlLabel value="Approval" control={<Radio />} label="Approval" />
-                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                    Mark all candidates you approve of, single winner or multi-winner
-                                </FormHelperText>
-                            </>}
+                                {flags.isSet('METHOD_RANKED_ROBIN') && <>
+                                    <FormControlLabel value="RankedRobin" control={<Radio />} label="Ranked Robin" />
+                                    <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                        Rank candidates in order of preference
+                                    </FormHelperText>
+                                </>}
 
-                            <Box
-                                display='flex'
-                                justifyContent="left"
-                                alignItems="center"
-                                sx={{ width: '100%', ml: -1 }}>
+                                {flags.isSet('METHOD_APPROVAL') && <>
+                                    <FormControlLabel value="Approval" control={<Radio />} label="Approval" />
+                                    <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                        Mark all candidates you approve of
+                                    </FormHelperText>
+                                </>}
 
-                                {!showsAllMethods &&
-                                    <IconButton aria-label="Home" onClick={() => { setShowsAllMethods(true) }}>
-                                        <ExpandMore />
-                                    </IconButton>}
-                                {showsAllMethods &&
-                                    <IconButton aria-label="Home" onClick={() => { setShowsAllMethods(false) }}>
-                                        <ExpandLess />
-                                    </IconButton>}
-                                <Typography variant="body1" >
-                                    More Options
-                                </Typography>
-                            </Box>
-                            {showsAllMethods &&
                                 <Box
                                     display='flex'
                                     justifyContent="left"
                                     alignItems="center"
-                                    sx={{ width: '100%', pl: 4, mt: -1 }}>
+                                    sx={{ width: '100%', ml: -1 }}>
 
-                                    <FormHelperText >
-                                        These voting methods do not guarantee every voter an equally powerful vote if there are more than two candidates.
-                                    </FormHelperText>
+                                    {!showsAllMethods &&
+                                        <IconButton aria-label="Home" onClick={() => { setShowsAllMethods(true) }}>
+                                            <ExpandMore />
+                                        </IconButton>}
+                                    {showsAllMethods &&
+                                        <IconButton aria-label="Home" onClick={() => { setShowsAllMethods(false) }}>
+                                            <ExpandLess />
+                                        </IconButton>}
+                                    <Typography variant="body1" >
+                                        More Options
+                                    </Typography>
                                 </Box>
-                            }
-                            {showsAllMethods &&
-                                <>
+                                <Box sx={{
+                                    height: showsAllMethods? 0 : '163px', // copied the value from auto
+                                    opacity: showsAllMethods? 0 : 1,
+                                    overflow: 'hidden',
+                                    transition: 'height .4s, opacity .7s',
+                                }}
+                                >
+                                    <Box
+                                        display='flex'
+                                        justifyContent="left"
+                                        alignItems="center"
+                                        sx={{ width: '100%', pl: 4, mt: -1 }}>
+
+                                        <FormHelperText >
+                                            These voting methods do not guarantee every voter an equally powerful vote if there are more than two candidates.
+                                        </FormHelperText>
+                                    </Box>
                                     <FormControlLabel value="Plurality" control={<Radio />} label="Plurality" />
                                     <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                         Mark one candidate only. Not recommended with more than 2 candidates.
@@ -278,14 +319,24 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                                     {flags.isSet('METHOD_RANKED_CHOICE') && <>
                                         <FormControlLabel value="IRV" control={<Radio />} label="Ranked Choice" />
                                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                            Rank candidates in order of preference, single winner, only recommended for educational purposes
+                                            Rank candidates in order of preference, only recommended for educational purposes
                                         </FormHelperText>
                                     </>}
-                                </>
-                            }
-                        </RadioGroup>
-                    </FormControl>
-                </Grid>
+
+                                    {flags.isSet('METHOD_RANKED_CHOICE') && <>
+                                        <FormControlLabel value="STV" control={<Radio />} label="STV" />
+                                        <FormHelperText sx={{ pl: 4, mt: -1 }}>
+                                            Proportaionl Version of RCV
+                                        </FormHelperText>
+                                    </>}
+                                </Box>
+                            </RadioGroup>
+                        </FormControl>
+                    </StepContent>
+                </Step>
+            </Stepper>
+
+            <Grid container sx={{ m: 0, p: 1 }} >
                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                     <Typography gutterBottom variant="h6" component="h6">
                         Candidates
