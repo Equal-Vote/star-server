@@ -49,7 +49,7 @@ export default function makeApp() {
     app.use('/API', getUser, ballotRouter)
     app.use('/API', getUser, rollRouter)
     // app.use('/debug',debugRouter)
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swagger));
+    app.use('/APIDocs', swaggerUi.serve, swaggerUi.setup(swagger)); // NOTE: this will be directly available at bettervoting.com/APIDocs (unlike the other ones)
     app.post('/API/Token', asyncHandler(getUserToken));
 
     // NOTE: I've removed express.static because it doesn't allow me to inject meta tags
