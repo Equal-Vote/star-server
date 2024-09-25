@@ -1,10 +1,12 @@
 import { ElectionRoll } from "./ElectionRoll";
-import { ElectionSettings } from "./ElectionSettings";
+import { ElectionSettings, electionSettingsValidation } from "./ElectionSettings";
 import { Race } from "./Race";
 import { Uid } from "./Uid";
+import { raceValidation } from "./Race";
+import { checkForDuplicates, emailRegex } from "./Util";
 
-export type ElectionState = 'draft' | 'finalized' | 'open' | 'closed' | 'archived'; 
-
+const validElectionStates = ['draft', 'finalized', 'open', 'closed', 'archived'] as const;
+export type ElectionState = typeof validElectionStates[number]; 
 export interface Election {
     election_id:    Uid; // identifier assigned by the system
     title:          string; // one-line election title
@@ -32,6 +34,10 @@ export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
 export interface NewElection extends PartialBy<Election,'election_id'|'create_date'|'update_date'|'head'> {}
 
+
+
+
+
 export function electionValidation(obj:Election): string | null {
   if (!obj){
     return "Election is null";
@@ -47,6 +53,114 @@ export function electionValidation(obj:Election): string | null {
   if (obj.state !== 'draft' && (obj.title.length < 3 || obj.title.length > 256)) {
     return "invalid Title length";
   }
+  if (obj.description && typeof obj.description !== 'string'){
+    return "Invalid Description";
+  }
+  if (obj.frontend_url && typeof obj.frontend_url !== 'string'){
+    return "Invalid Frontend URL";
+  }
+  if (obj.start_time) {
+    const date = new Date(obj.start_time);
+    if (isNaN(date.getTime())) {
+      return "Invalid Start Time Date Format";
+    }
+  }
+  if (obj.end_time) {
+    const date = new Date(obj.end_time);
+    if (isNaN(date.getTime())) {
+      return "Invalid End Time Date Format";
+    }
+  }
+  if (obj.support_email) {
+    if (!emailRegex.test(obj.support_email)) {
+      return "Invalid Support Email Format";
+    }
+  }
+  if (typeof obj.owner_id !== 'string'){
+    return "Invalid Owner ID";
+  }
+  if (obj.audit_ids) {
+    if (!Array.isArray(obj.audit_ids)) {
+      return "Invalid Audit IDs";
+    }
+    if (checkForDuplicates(obj.audit_ids)){
+      return "Duplicate Audit IDs";
+    }
+  }
+  if (obj.admin_ids) {
+    if (!Array.isArray(obj.admin_ids)) {
+      return "Invalid Admin IDs";
+    }
+    if (checkForDuplicates(obj.admin_ids)){
+      return "Duplicate Admin IDs";
+    }
+  }
+  if (obj.credential_ids) {
+    if (!Array.isArray(obj.credential_ids)) {
+      return "Invalid Credential IDs";
+    }
+    if (checkForDuplicates(obj.credential_ids)){
+      return "Duplicate Credential IDs";
+    }
+  }
+  if (obj.state && !validElectionStates.includes(obj.state)){
+    return "Invalid Election State";
+  }
+  if (Array.isArray(obj.races)){
+    if(checkForDuplicates(obj.races.map(race => race.race_id))){
+      return "Duplicate race IDs";
+    }
+    if(checkForDuplicates(obj.races.map(race => race.title))){
+      return "Duplicate race titles";
+    }
+    let raceErrors = ''
+    obj.races.forEach(race => {
+      let raceError = raceValidation(race)
+      if (raceError){
+        raceErrors += `race_id: ${race.race_id}: ${raceError} `
+      }
+    });
+    if (raceErrors !== ''){
+      return raceErrors;
+    }
+    
+  } else {
+    return "Race is not an array";
+  }
+  if (!obj.settings){
+    return "Invalid Election Settings";
+  } else {
+    const settingsError = electionSettingsValidation(obj.settings);
+    if (settingsError){
+      return settingsError;
+    }
+  }
+  if (obj.auth_key && typeof obj.auth_key !== 'string'){
+    return "Invalid Auth Key";
+  }
+  if (obj.claim_key_hash && typeof obj.claim_key_hash !== 'string'){
+    return "Invalid Claim Key Hash";
+  }
+  if (obj.is_public && typeof obj.is_public !== 'boolean'){
+    return "Invalid Is Public";
+  }
+  if (obj.create_date) {
+    const date = new Date(obj.create_date);
+    if (isNaN(date.getTime())) {
+      return "Invalid Create Date Format";
+    }
+  }
+  if (obj.update_date) {
+    const date = new Date(obj.update_date);
+    if (isNaN(date.getTime())) {
+      return "Invalid Update Date Format";
+    }
+  }
+  if (obj.head && typeof obj.head !== 'boolean'){
+    return "Invalid Head";
+  }
+  
+
   //TODO... etc
   return null;
 }

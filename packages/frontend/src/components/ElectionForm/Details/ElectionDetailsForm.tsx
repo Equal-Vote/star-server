@@ -45,6 +45,7 @@ export const ElectionTitleField = ({termType, value, onUpdateValue, errors, setE
 export default function ElectionDetailsForm({editedElection, applyUpdate, errors, setErrors}) {
 
     const timeZone = editedElection.settings.time_zone ? editedElection.settings.time_zone : DateTime.now().zone.name
+    const possibleTimeZones = timeZones;
 
     let {t} = useSubstitutedTranslation(editedElection.settings.term_type, {time_zone: timeZone});
 
