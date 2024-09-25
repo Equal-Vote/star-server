@@ -24,11 +24,16 @@ export const getAnonymizedBallotsByElectionID = async (req: IElectionRequest, re
         Logger.info(req, msg);
         throw new BadRequest(msg)
     }
-    const anonymizedBallots: AnonymizedBallot[] = ballots.map((ballot) => {
-        return {
-            ballot_id: ballot.ballot_id,
-            votes: ballot.votes
-        }
+    const anonymizedBallots: AnonymizedBallot[] = ballots.filter(ballot => {
+        return ballot.status === "submitted" && ballot.head;
+    }).map((ballot) => {
+            return {
+                ballot_id: ballot.ballot_id,
+                election_id: ballot.election_id,
+                precinct: ballot.precinct,
+                votes: ballot.votes
+            }
+      
     });
     Logger.debug(req, "ballots = ", ballots);
     res.json({ ballots: anonymizedBallots })
