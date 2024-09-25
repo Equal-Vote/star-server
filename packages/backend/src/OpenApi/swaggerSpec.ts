@@ -1,6 +1,18 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import schema from '@equal-vote/star-vote-shared/schema.json'; // Adjust the import path to your schema file
+import ServiceLocator from '../ServiceLocator';
 
+const mainUrl = ServiceLocator.globalData().mainUrl;
+const isDev = mainUrl.includes('localhost');
+const redirectUri = isDev ? 'http://localhost:3000' : 'https://bettervoting.com/API/Docs';
+const loginUrl = `https://keycloak.prod.equal.vote/realms/Prod/protocol/openid-connect/auth?client_id=web&response_type=code&redirect_uri=${redirectUri}&scope=openid`
+const devInstructions = `For API testing:<br>
+                        1. [log in here](${loginUrl})<br>
+                        2. Copy the token from the cookie named id_token by inspecting the page and going to the Application tab.<br>
+                        3. Inspect this page and create an id_token cookie with the value you copied from the previous step.<br>
+                        **Pasting it into the field below won't work since swagger doesn't allow setting cookies**`
+const prodInstructions = `For API testing [log in here](${loginUrl})`;
+const testingInstructions = isDev ? devInstructions : prodInstructions;
 const options = {
   encoding: 'utf-8',
   failOnErrors: true,
@@ -24,11 +36,11 @@ const options = {
           type: 'apiKey',
           in: 'cookie',
           name: 'id_token',
-          description:  'This uses authenticaion token generated with keycloak, the token can be sent both as a cookie ' +
-                        'or in the auth_key property of the election object. [More information about token generation can ' +
-                        'be found here](https://github.com/Equal-Vote/star-server/blob/6fdb2f653266b5f2710f0701509f54e1e558ecc1/docs/api.md) ' +
-                        'Unfortunately, the swagger-ui does not support ' +
-                        'setting cookies, so you will need to manually set the cookie in your browser to test the API',
+          description:  'This uses authenticaion token generated with a secret obtained from keycloak, the token can be ' +
+                        'sent both as a cookie named id_token or in the auth_key property of the election object. [More information about ' +
+                        'token generation can be found here](https://github.com/Equal-Vote/star-server/blob/6fdb2f653266' +
+                        'b5f2710f0701509f54e1e558ecc1/docs/api.md)<br><br>' +
+                        testingInstructions
         }
       },
       schemas: {
