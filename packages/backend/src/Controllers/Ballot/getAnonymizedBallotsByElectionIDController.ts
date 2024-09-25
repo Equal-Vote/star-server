@@ -1,16 +1,16 @@
-import ServiceLocator from "../ServiceLocator";
-import Logger from "../Services/Logging/Logger";
+import ServiceLocator from "../../ServiceLocator";
+import Logger from "../../Services/Logging/Logger";
 import { BadRequest } from "@curveball/http-errors";
-import { expectPermission } from "./controllerUtils";
+import { expectPermission } from "../controllerUtils";
 import { permissions } from '@equal-vote/star-vote-shared/domain_model/permissions';
-import { IElectionRequest } from "../IRequest";
+import { IElectionRequest } from "../../IRequest";
 import { Response, NextFunction } from 'express';
 import { AnonymizedBallot } from "@equal-vote/star-vote-shared/domain_model/Ballot";
 
 
 const BallotModel = ServiceLocator.ballotsDb();
 
-const getAnonymizedBallotsByElectionID = async (req: IElectionRequest, res: Response, next: NextFunction) => {
+export const getAnonymizedBallotsByElectionID = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     var electionId = req.election.election_id;
     Logger.debug(req, "getBallotsByElectionID: " + electionId);
     const election = req.election;
@@ -34,6 +34,3 @@ const getAnonymizedBallotsByElectionID = async (req: IElectionRequest, res: Resp
     res.json({ ballots: anonymizedBallots })
 }
 
-module.exports = {
-    getAnonymizedBallotsByElectionID
-}

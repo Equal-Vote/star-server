@@ -3,6 +3,7 @@ import {
     deleteAllBallotsForElectionID,
     getBallotByBallotID,
     castVoteController,
+    getAnonymizedBallotsByElectionID
 
 } from '../Controllers/Ballot';
 import {
@@ -53,6 +54,35 @@ export const ballotRouter = Router();
 */
 ballotRouter.get('/Election/:id/ballots', asyncHandler(getBallotsByElectionID))
 
+/**
+ * @swagger
+ * /Election/{id}/anonymizedBallots:
+ *  get:
+ *    summary: Get anonymized ballots by election ID
+ *    tags: [Ballots]
+ *    parameters:
+ *     - in: path
+ *       name: id
+ *       schema:
+ *         type: string
+ *       required: true
+ *       description: The election ID
+ *    responses:
+ *      200:
+ *       description: List of anonymized ballots
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               ballots:
+ *                type: array
+ *                items:
+ *                 $ref: '#/components/schemas/AnonymizedBallot'
+ * 
+ * 
+ */
+ballotRouter.get('/Election/:id/anonymizedBallots', asyncHandler(getAnonymizedBallotsByElectionID))
 
 /** 
  * @swagger

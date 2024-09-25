@@ -20,6 +20,24 @@
       }
     },
     "schemas": {
+      "AnonymizedBallot": {
+        "properties": {
+          "ballot_id": {
+            "type": "string"
+          },
+          "votes": {
+            "items": {
+              "$ref": "#/components/schemas/Vote"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "ballot_id",
+          "votes"
+        ],
+        "type": "object"
+      },
       "Ballot": {
         "properties": {
           "ballot_id": {
@@ -2122,6 +2140,45 @@
           },
           "404": {
             "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/anonymizedBallots": {
+      "get": {
+        "summary": "Get anonymized ballots by election ID",
+        "tags": [
+          "Ballots"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of anonymized ballots",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ballots": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AnonymizedBallot"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
