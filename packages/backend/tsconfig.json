@@ -10,13 +10,15 @@
     "moduleResolution": "nodenext",
     "strict": true,
     "types": [
-      "jest"
+      "jest",
+      "node"
     ],
     "lib": [
       "ES6",
       "DOM",
       "ES2021.String", // Added for replaceAll
-    ]
+    ],
+    "resolveJsonModule": true,
   },
   "include": ["./src/**/*"]
 }

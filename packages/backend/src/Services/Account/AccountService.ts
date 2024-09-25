@@ -79,6 +79,7 @@ export default class AccountService {
 
     extractUserFromRequest = (req:IRequest, customKey?:string) => {
         const token = customKey ? req.cookies.custom_id_token : req.cookies.id_token;
+        console.log('token', token);
         if (token){
             const key = customKey ? customKey : this.publicKey;
             return AccountServiceUtils.extractUserFromRequest(req, token, key);

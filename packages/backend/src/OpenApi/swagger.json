@@ -1,0 +1,3555 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Documentation",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/API",
+      "description": "Base URL for the API"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "id_token",
+        "description": "This uses authenticaion token generated with keycloak, the token can be sent both as a cookie or in the auth_key property of the election object. [More information about token generation can be found here](https://github.com/Equal-Vote/star-server/blob/6fdb2f653266b5f2710f0701509f54e1e558ecc1/docs/api.md) Unfortunately, the swagger-ui does not support setting cookies, so you will need to manually set the cookie in your browser to test the API"
+      }
+    },
+    "schemas": {
+      "AnonymizedBallot": {
+        "properties": {
+          "ballot_id": {
+            "type": "string"
+          },
+          "votes": {
+            "items": {
+              "$ref": "#/components/schemas/Vote"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "ballot_id",
+          "votes"
+        ],
+        "type": "object"
+      },
+      "Ballot": {
+        "properties": {
+          "ballot_id": {
+            "type": "string"
+          },
+          "create_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "date_submitted": {
+            "type": "number"
+          },
+          "election_id": {
+            "type": "string"
+          },
+          "head": {
+            "type": "boolean"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/BallotAction"
+            },
+            "type": "array"
+          },
+          "ip_hash": {
+            "type": "string"
+          },
+          "precinct": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "update_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "votes": {
+            "items": {
+              "$ref": "#/components/schemas/Vote"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "ballot_id",
+          "create_date",
+          "date_submitted",
+          "election_id",
+          "head",
+          "status",
+          "update_date",
+          "votes"
+        ],
+        "type": "object"
+      },
+      "BallotAction": {
+        "properties": {
+          "action_type": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "action_type",
+          "actor",
+          "timestamp"
+        ],
+        "type": "object"
+      },
+      "Candidate": {
+        "properties": {
+          "bio": {
+            "type": "string"
+          },
+          "candidate_id": {
+            "type": "string"
+          },
+          "candidate_name": {
+            "type": "string"
+          },
+          "candidate_url": {
+            "type": "string"
+          },
+          "full_name": {
+            "type": "string"
+          },
+          "party": {
+            "type": "string"
+          },
+          "partyUrl": {
+            "type": "string"
+          },
+          "party_url": {
+            "type": "string"
+          },
+          "photo_filename": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "candidate_id",
+          "candidate_name"
+        ],
+        "type": "object"
+      },
+      "Credentials": {
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object"
+      },
+      "Election": {
+        "properties": {
+          "admin_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "audit_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "auth_key": {
+            "type": "string"
+          },
+          "claim_key_hash": {
+            "type": "string"
+          },
+          "create_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "credential_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "description": {
+            "type": "string"
+          },
+          "election_id": {
+            "type": "string"
+          },
+          "end_time": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "frontend_url": {
+            "type": "string"
+          },
+          "head": {
+            "type": "boolean"
+          },
+          "is_public": {
+            "type": "boolean"
+          },
+          "owner_id": {
+            "type": "string"
+          },
+          "races": {
+            "items": {
+              "$ref": "#/components/schemas/Race"
+            },
+            "type": "array"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/ElectionSettings"
+          },
+          "start_time": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "state": {
+            "$ref": "#/components/schemas/ElectionState"
+          },
+          "support_email": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "update_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "required": [
+          "create_date",
+          "election_id",
+          "frontend_url",
+          "head",
+          "owner_id",
+          "races",
+          "settings",
+          "state",
+          "title",
+          "update_date"
+        ],
+        "type": "object"
+      },
+      "ElectionResults": {
+        "anyOf": [
+          {
+            "properties": {
+              "results": {
+                "$ref": "#/components/schemas/starResults"
+              },
+              "votingMethod": {
+                "const": "STAR",
+                "type": "string"
+              }
+            },
+            "required": [
+              "results",
+              "votingMethod"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "results": {
+                "$ref": "#/components/schemas/allocatedScoreResults"
+              },
+              "votingMethod": {
+                "const": "STAR_PR",
+                "type": "string"
+              }
+            },
+            "required": [
+              "results",
+              "votingMethod"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "results": {
+                "$ref": "#/components/schemas/approvalResults"
+              },
+              "votingMethod": {
+                "const": "Approval",
+                "type": "string"
+              }
+            },
+            "required": [
+              "results",
+              "votingMethod"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "results": {
+                "$ref": "#/components/schemas/rankedRobinResults"
+              },
+              "votingMethod": {
+                "const": "RankedRobin",
+                "type": "string"
+              }
+            },
+            "required": [
+              "results",
+              "votingMethod"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "results": {
+                "$ref": "#/components/schemas/irvResults"
+              },
+              "votingMethod": {
+                "const": "IRV",
+                "type": "string"
+              }
+            },
+            "required": [
+              "results",
+              "votingMethod"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "results": {
+                "$ref": "#/components/schemas/pluralityResults"
+              },
+              "votingMethod": {
+                "const": "Plurality",
+                "type": "string"
+              }
+            },
+            "required": [
+              "results",
+              "votingMethod"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "results": {
+                "$ref": "#/components/schemas/irvResults"
+              },
+              "votingMethod": {
+                "const": "STV",
+                "type": "string"
+              }
+            },
+            "required": [
+              "results",
+              "votingMethod"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ElectionRoll": {
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "ballot_id": {
+            "type": "string"
+          },
+          "create_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "election_id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "email_data": {
+            "properties": {
+              "inviteResponse": {},
+              "reminderResponse": {}
+            },
+            "type": "object"
+          },
+          "head": {
+            "type": "boolean"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/ElectionRollAction"
+            },
+            "type": "array"
+          },
+          "ip_hash": {
+            "type": "string"
+          },
+          "precinct": {
+            "type": "string"
+          },
+          "registration": {},
+          "state": {
+            "$ref": "#/components/schemas/ElectionRollState"
+          },
+          "submitted": {
+            "type": "boolean"
+          },
+          "update_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "voter_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "create_date",
+          "election_id",
+          "head",
+          "state",
+          "submitted",
+          "update_date",
+          "voter_id"
+        ],
+        "type": "object"
+      },
+      "ElectionRollAction": {
+        "properties": {
+          "action_type": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "action_type",
+          "actor",
+          "timestamp"
+        ],
+        "type": "object"
+      },
+      "ElectionRollState": {
+        "enum": [
+          "approved",
+          "flagged",
+          "registered",
+          "invalid"
+        ],
+        "type": "string"
+      },
+      "ElectionSettings": {
+        "properties": {
+          "ballot_updates": {
+            "type": "boolean"
+          },
+          "break_ties_randomly": {
+            "type": "boolean"
+          },
+          "invitation": {
+            "enum": [
+              "address",
+              "email"
+            ],
+            "type": "string"
+          },
+          "max_rankings": {
+            "type": "number"
+          },
+          "public_results": {
+            "type": "boolean"
+          },
+          "random_candidate_order": {
+            "type": "boolean"
+          },
+          "reminders": {
+            "type": "boolean"
+          },
+          "require_instruction_confirmation": {
+            "type": "boolean"
+          },
+          "term_type": {
+            "enum": [
+              "election",
+              "poll"
+            ],
+            "type": "string"
+          },
+          "time_zone": {
+            "type": "string"
+          },
+          "voter_access": {
+            "enum": [
+              "closed",
+              "open",
+              "registration"
+            ],
+            "type": "string"
+          },
+          "voter_authentication": {
+            "$ref": "#/components/schemas/authentication"
+          }
+        },
+        "required": [
+          "voter_authentication"
+        ],
+        "type": "object"
+      },
+      "ElectionState": {
+        "enum": [
+          "archived",
+          "closed",
+          "draft",
+          "finalized",
+          "open"
+        ],
+        "type": "string"
+      },
+      "Email": {
+        "type": "string"
+      },
+      "NewBallot": {
+        "properties": {
+          "ballot_id": {
+            "type": "string"
+          },
+          "create_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "date_submitted": {
+            "type": "number"
+          },
+          "election_id": {
+            "type": "string"
+          },
+          "head": {
+            "type": "boolean"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/BallotAction"
+            },
+            "type": "array"
+          },
+          "ip_hash": {
+            "type": "string"
+          },
+          "precinct": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "update_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "votes": {
+            "items": {
+              "$ref": "#/components/schemas/Vote"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "date_submitted",
+          "election_id",
+          "status",
+          "votes"
+        ],
+        "type": "object"
+      },
+      "NewElection": {
+        "properties": {
+          "admin_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "audit_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "auth_key": {
+            "type": "string"
+          },
+          "claim_key_hash": {
+            "type": "string"
+          },
+          "create_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "credential_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "description": {
+            "type": "string"
+          },
+          "election_id": {
+            "type": "string"
+          },
+          "end_time": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "frontend_url": {
+            "type": "string"
+          },
+          "head": {
+            "type": "boolean"
+          },
+          "is_public": {
+            "type": "boolean"
+          },
+          "owner_id": {
+            "type": "string"
+          },
+          "races": {
+            "items": {
+              "$ref": "#/components/schemas/Race"
+            },
+            "type": "array"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/ElectionSettings"
+          },
+          "start_time": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "state": {
+            "$ref": "#/components/schemas/ElectionState"
+          },
+          "support_email": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "update_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "required": [
+          "frontend_url",
+          "owner_id",
+          "races",
+          "settings",
+          "state",
+          "title"
+        ],
+        "type": "object"
+      },
+      "NewPassword": {
+        "properties": {
+          "newPassword": {
+            "type": "string"
+          },
+          "oldPassword": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "newPassword",
+          "oldPassword"
+        ],
+        "type": "object"
+      },
+      "Omit": {
+        "type": "object"
+      },
+      "Omit<T,K>_1": {
+        "type": "object"
+      },
+      "Partial<Pick<T,K>>": {
+        "type": "object"
+      },
+      "PartialBy": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Omit<T,K>_1"
+          },
+          {
+            "$ref": "#/components/schemas/Partial<Pick<T,K>>"
+          }
+        ]
+      },
+      "Race": {
+        "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/Candidate"
+            },
+            "type": "array"
+          },
+          "description": {
+            "type": "string"
+          },
+          "num_winners": {
+            "type": "number"
+          },
+          "precincts": {
+            "items": {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "string"
+                }
+              },
+              "properties": {
+                "length": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "length"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "race_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "voting_method": {
+            "$ref": "#/components/schemas/VotingMethod"
+          }
+        },
+        "required": [
+          "candidates",
+          "num_winners",
+          "race_id",
+          "title",
+          "voting_method"
+        ],
+        "type": "object"
+      },
+      "Score": {
+        "properties": {
+          "candidate_id": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "candidate_id",
+          "score"
+        ],
+        "type": "object"
+      },
+      "TermType": {
+        "enum": [
+          "election",
+          "poll"
+        ],
+        "type": "string"
+      },
+      "Uid": {
+        "type": "string"
+      },
+      "Vote": {
+        "properties": {
+          "race_id": {
+            "type": "string"
+          },
+          "scores": {
+            "items": {
+              "$ref": "#/components/schemas/Score"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "race_id",
+          "scores"
+        ],
+        "type": "object"
+      },
+      "VoterAuth": {
+        "properties": {
+          "authorized_voter": {
+            "type": "boolean"
+          },
+          "has_voted": {
+            "type": "boolean"
+          },
+          "permissions": {
+            "items": {
+              "enum": [
+                "canAddToElectionRoll",
+                "canApproveElectionRoll",
+                "canDeleteAllBallots",
+                "canDeleteElection",
+                "canDeleteElectionRoll",
+                "canEditBallot",
+                "canEditElection",
+                "canEditElectionRoles",
+                "canEditElectionRoll",
+                "canEditElectionState",
+                "canFlagBallot",
+                "canFlagElectionRoll",
+                "canInvalidateBallot",
+                "canInvalidateElectionRoll",
+                "canSendEmails",
+                "canUnflagElectionRoll",
+                "canViewBallot",
+                "canViewBallots",
+                "canViewElection",
+                "canViewElectionRoll",
+                "canViewElectionRollIDs",
+                "canViewPreliminaryResults"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "required": {
+            "type": "string"
+          },
+          "roles": {
+            "items": {
+              "$ref": "#/components/schemas/roles"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "authorized_voter",
+          "has_voted",
+          "permissions",
+          "required",
+          "roles"
+        ],
+        "type": "object"
+      },
+      "VotingMethod": {
+        "enum": [
+          "Approval",
+          "IRV",
+          "Plurality",
+          "RankedRobin",
+          "STAR",
+          "STAR_PR",
+          "STV"
+        ],
+        "type": "string"
+      },
+      "allocatedScoreResults": {
+        "properties": {
+          "elected": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "other": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "roundResults": {
+            "items": {
+              "$ref": "#/components/schemas/roundResults"
+            },
+            "type": "array"
+          },
+          "summaryData": {
+            "$ref": "#/components/schemas/allocatedScoreSummaryData"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/candidate"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "elected",
+          "other",
+          "roundResults",
+          "summaryData",
+          "tieBreakType",
+          "tied"
+        ],
+        "type": "object"
+      },
+      "allocatedScoreSummaryData": {
+        "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "nBulletVotes": {
+            "type": "number"
+          },
+          "nInvalidVotes": {
+            "type": "number"
+          },
+          "nUnderVotes": {
+            "type": "number"
+          },
+          "nValidVotes": {
+            "type": "number"
+          },
+          "noPreferenceStars": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "pairwiseMatrix": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "preferenceMatrix": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "scoreHist": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "spentAboves": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "splitPoints": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "totalScores": {
+            "items": {
+              "$ref": "#/components/schemas/totalScore"
+            },
+            "type": "array"
+          },
+          "weight_on_splits": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "weightedScoresByRound": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "candidates",
+          "nInvalidVotes",
+          "nUnderVotes",
+          "nValidVotes",
+          "noPreferenceStars",
+          "pairwiseMatrix",
+          "preferenceMatrix",
+          "scoreHist",
+          "spentAboves",
+          "splitPoints",
+          "totalScores",
+          "weight_on_splits",
+          "weightedScoresByRound"
+        ],
+        "type": "object"
+      },
+      "approvalResults": {
+        "properties": {
+          "elected": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "other": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "roundResults": {
+            "items": {
+              "$ref": "#/components/schemas/roundResults"
+            },
+            "type": "array"
+          },
+          "summaryData": {
+            "$ref": "#/components/schemas/approvalSummaryData"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "elected",
+          "other",
+          "roundResults",
+          "summaryData",
+          "tieBreakType",
+          "tied"
+        ],
+        "type": "object"
+      },
+      "approvalSummaryData": {
+        "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "nBulletVotes": {
+            "type": "number"
+          },
+          "nInvalidVotes": {
+            "type": "number"
+          },
+          "nUnderVotes": {
+            "type": "number"
+          },
+          "nValidVotes": {
+            "type": "number"
+          },
+          "totalScores": {
+            "items": {
+              "$ref": "#/components/schemas/totalScore"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "candidates",
+          "nInvalidVotes",
+          "nUnderVotes",
+          "nValidVotes",
+          "totalScores"
+        ],
+        "type": "object"
+      },
+      "authentication": {
+        "properties": {
+          "address": {
+            "type": "boolean"
+          },
+          "email": {
+            "type": "boolean"
+          },
+          "ip_address": {
+            "type": "boolean"
+          },
+          "phone": {
+            "type": "boolean"
+          },
+          "registration_api_endpoint": {
+            "type": "string"
+          },
+          "registration_data": {
+            "items": [
+              {
+                "$ref": "#/components/schemas/registration_field"
+              }
+            ],
+            "maxItems": 1,
+            "minItems": 1,
+            "type": "array"
+          },
+          "voter_id": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "ballot": {
+        "items": {
+          "type": "number"
+        },
+        "type": "array"
+      },
+      "ballots": {
+        "items": {
+          "items": {
+            "type": "number"
+          },
+          "type": "array"
+        },
+        "type": "array"
+      },
+      "candidate": {
+        "properties": {
+          "index": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tieBreakOrder": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "index",
+          "name",
+          "tieBreakOrder"
+        ],
+        "type": "object"
+      },
+      "fiveStarCount": {
+        "properties": {
+          "candidate": {
+            "$ref": "#/components/schemas/candidate"
+          },
+          "counts": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "candidate",
+          "counts"
+        ],
+        "type": "object"
+      },
+      "genericResults": {
+        "properties": {
+          "elected": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "other": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "roundResults": {
+            "items": {
+              "$ref": "#/components/schemas/roundResults"
+            },
+            "type": "array"
+          },
+          "summaryData": {
+            "$ref": "#/components/schemas/genericSummaryData"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "elected",
+          "other",
+          "roundResults",
+          "summaryData",
+          "tieBreakType",
+          "tied"
+        ],
+        "type": "object"
+      },
+      "genericSummaryData": {
+        "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "nBulletVotes": {
+            "type": "number"
+          },
+          "nInvalidVotes": {
+            "type": "number"
+          },
+          "nUnderVotes": {
+            "type": "number"
+          },
+          "nValidVotes": {
+            "type": "number"
+          },
+          "totalScores": {
+            "items": {
+              "$ref": "#/components/schemas/totalScore"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "candidates",
+          "nInvalidVotes",
+          "nUnderVotes",
+          "nValidVotes",
+          "totalScores"
+        ],
+        "type": "object"
+      },
+      "irvResults": {
+        "properties": {
+          "elected": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "exhaustedVoteCounts": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "logs": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "other": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "overVoteCounts": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "roundResults": {
+            "items": {
+              "$ref": "#/components/schemas/irvRoundResults"
+            },
+            "type": "array"
+          },
+          "summaryData": {
+            "$ref": "#/components/schemas/rankedRobinSummaryData"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "voteCounts": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "elected",
+          "exhaustedVoteCounts",
+          "logs",
+          "other",
+          "overVoteCounts",
+          "roundResults",
+          "summaryData",
+          "tieBreakType",
+          "tied",
+          "voteCounts"
+        ],
+        "type": "object"
+      },
+      "irvRoundResults": {
+        "properties": {
+          "eliminated": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "logs": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "winners": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "eliminated",
+          "logs",
+          "winners"
+        ],
+        "type": "object"
+      },
+      "irvSummaryData": {
+        "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "nBulletVotes": {
+            "type": "number"
+          },
+          "nInvalidVotes": {
+            "type": "number"
+          },
+          "nUnderVotes": {
+            "type": "number"
+          },
+          "nValidVotes": {
+            "type": "number"
+          },
+          "pairwiseMatrix": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "preferenceMatrix": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "rankHist": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "totalScores": {
+            "items": {
+              "$ref": "#/components/schemas/totalScore"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "candidates",
+          "nInvalidVotes",
+          "nUnderVotes",
+          "nValidVotes",
+          "pairwiseMatrix",
+          "preferenceMatrix",
+          "rankHist",
+          "totalScores"
+        ],
+        "type": "object"
+      },
+      "pairwiseMatrix": {
+        "items": {
+          "items": {
+            "type": "number"
+          },
+          "type": "array"
+        },
+        "type": "array"
+      },
+      "permission": {
+        "items": {
+          "$ref": "#/components/schemas/roles"
+        },
+        "type": "array"
+      },
+      "pluralityResults": {
+        "properties": {
+          "elected": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "other": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "roundResults": {
+            "items": {
+              "$ref": "#/components/schemas/roundResults"
+            },
+            "type": "array"
+          },
+          "summaryData": {
+            "$ref": "#/components/schemas/pluralitySummaryData"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "elected",
+          "other",
+          "roundResults",
+          "summaryData",
+          "tieBreakType",
+          "tied"
+        ],
+        "type": "object"
+      },
+      "pluralitySummaryData": {
+        "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "nBulletVotes": {
+            "type": "number"
+          },
+          "nInvalidVotes": {
+            "type": "number"
+          },
+          "nUnderVotes": {
+            "type": "number"
+          },
+          "nValidVotes": {
+            "type": "number"
+          },
+          "totalScores": {
+            "items": {
+              "$ref": "#/components/schemas/totalScore"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "candidates",
+          "nInvalidVotes",
+          "nUnderVotes",
+          "nValidVotes",
+          "totalScores"
+        ],
+        "type": "object"
+      },
+      "preferenceMatrix": {
+        "items": {
+          "items": {
+            "type": "number"
+          },
+          "type": "array"
+        },
+        "type": "array"
+      },
+      "rankHist": {
+        "items": {
+          "items": {
+            "type": "number"
+          },
+          "type": "array"
+        },
+        "type": "array"
+      },
+      "rankedRobinResults": {
+        "properties": {
+          "elected": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "other": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "roundResults": {
+            "items": {
+              "$ref": "#/components/schemas/roundResults"
+            },
+            "type": "array"
+          },
+          "summaryData": {
+            "$ref": "#/components/schemas/rankedRobinSummaryData"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "elected",
+          "other",
+          "roundResults",
+          "summaryData",
+          "tieBreakType",
+          "tied"
+        ],
+        "type": "object"
+      },
+      "rankedRobinSummaryData": {
+        "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "nBulletVotes": {
+            "type": "number"
+          },
+          "nInvalidVotes": {
+            "type": "number"
+          },
+          "nUnderVotes": {
+            "type": "number"
+          },
+          "nValidVotes": {
+            "type": "number"
+          },
+          "pairwiseMatrix": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "preferenceMatrix": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "rankHist": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "totalScores": {
+            "items": {
+              "$ref": "#/components/schemas/totalScore"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "candidates",
+          "nInvalidVotes",
+          "nUnderVotes",
+          "nValidVotes",
+          "pairwiseMatrix",
+          "preferenceMatrix",
+          "rankHist",
+          "totalScores"
+        ],
+        "type": "object"
+      },
+      "registration_field": {
+        "properties": {
+          "field_name": {
+            "type": "string"
+          },
+          "field_type": {
+            "enum": [
+              "photo",
+              "text"
+            ],
+            "type": "string"
+          },
+          "help_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "field_name",
+          "field_type"
+        ],
+        "type": "object"
+      },
+      "roles": {
+        "enum": [
+          "owner",
+          "admin",
+          "auditor",
+          "system_admin",
+          "credentialer"
+        ],
+        "type": "string"
+      },
+      "roundResults": {
+        "properties": {
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/tabulatorLog"
+            },
+            "type": "array"
+          },
+          "runner_up": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "winners": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "logs",
+          "runner_up",
+          "tieBreakType",
+          "tied",
+          "winners"
+        ],
+        "type": "object"
+      },
+      "score": {
+        "type": "number"
+      },
+      "scoreHist": {
+        "items": {
+          "items": {
+            "type": "number"
+          },
+          "type": "array"
+        },
+        "type": "array"
+      },
+      "starResults": {
+        "properties": {
+          "elected": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "other": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "roundResults": {
+            "items": {
+              "$ref": "#/components/schemas/roundResults"
+            },
+            "type": "array"
+          },
+          "summaryData": {
+            "$ref": "#/components/schemas/starSummaryData"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "elected",
+          "other",
+          "roundResults",
+          "summaryData",
+          "tieBreakType",
+          "tied"
+        ],
+        "type": "object"
+      },
+      "starSummaryData": {
+        "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/candidate"
+            },
+            "type": "array"
+          },
+          "nBulletVotes": {
+            "type": "number"
+          },
+          "nInvalidVotes": {
+            "type": "number"
+          },
+          "nUnderVotes": {
+            "type": "number"
+          },
+          "nValidVotes": {
+            "type": "number"
+          },
+          "noPreferenceStars": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "pairwiseMatrix": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "preferenceMatrix": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "scoreHist": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "totalScores": {
+            "items": {
+              "$ref": "#/components/schemas/totalScore"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "candidates",
+          "nInvalidVotes",
+          "nUnderVotes",
+          "nValidVotes",
+          "noPreferenceStars",
+          "pairwiseMatrix",
+          "preferenceMatrix",
+          "scoreHist",
+          "totalScores"
+        ],
+        "type": "object"
+      },
+      "tabulatorLog": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/tabulatorLogObject"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "tabulatorLogObject": {
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": [
+                "string",
+                "number"
+              ]
+            }
+          ]
+        },
+        "properties": {
+          "key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "tieBreakType": {
+        "enum": [
+          "five_star",
+          "none",
+          "random",
+          "score"
+        ],
+        "type": "string"
+      },
+      "totalScore": {
+        "properties": {
+          "index": {
+            "type": "number"
+          },
+          "score": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "index",
+          "score"
+        ],
+        "type": "object"
+      },
+      "voter": {
+        "properties": {
+          "csvRow": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "csvRow"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "paths": {
+    "/Election/{id}/ballots": {
+      "get": {
+        "summary": "Get ballots by election ID",
+        "tags": [
+          "Ballots"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of ballots",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    },
+                    "ballots": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Ballot"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete all ballots for an election",
+        "tags": [
+          "Ballots"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "public_results": {
+                    "type": "boolean",
+                    "description": "If the election results are public"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "All ballots deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "If the deletion was successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/anonymizedBallots": {
+      "get": {
+        "summary": "Get anonymized ballots by election ID",
+        "tags": [
+          "Ballots"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of anonymized ballots",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ballots": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AnonymizedBallot"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Election/{id}/ballot/{ballot_id}": {
+      "get": {
+        "summary": "Get ballot by ballot ID",
+        "tags": [
+          "Ballots"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          },
+          {
+            "in": "path",
+            "name": "ballot_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The ballot ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ballot details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ballot": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Ballot"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ballot not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/vote": {
+      "post": {
+        "summary": "Cast a vote in an election",
+        "tags": [
+          "Ballots"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ballot": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/Ballot"
+                  },
+                  "recieptEmail": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": null
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Vote cast",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ballot": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/NewBallot"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}": {
+      "get": {
+        "summary": "Get election by ID",
+        "tags": [
+          "Elections"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The election description by ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Election"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete election by ID",
+        "tags": [
+          "Elections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Election deleted"
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{_id}/exists": {
+      "get": {
+        "summary": "Check if election exists by ID",
+        "tags": [
+          "Elections"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Election exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "exists": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Elections": {
+      "get": {
+        "summary": "Get all elections",
+        "tags": [
+          "Elections"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of elections",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "elections_as_official": {
+                      "oneOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Election"
+                          }
+                        },
+                        {
+                          "type": null
+                        }
+                      ]
+                    },
+                    "elections_as_unsubmitted_voter": {
+                      "oneOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Election"
+                          }
+                        },
+                        {
+                          "type": null
+                        },
+                        {
+                          "type": "undefined"
+                        }
+                      ]
+                    },
+                    "elections_as_submitted_voter": {
+                      "oneOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Election"
+                          }
+                        },
+                        {
+                          "type": null
+                        }
+                      ]
+                    },
+                    "open_elections": {
+                      "oneOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Election"
+                          }
+                        },
+                        {
+                          "type": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new election",
+        "tags": [
+          "Elections"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Election": {
+                    "$ref": "#/components/schemas/Election"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Election created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/NewElection"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/GlobalElectionStats": {
+      "get": {
+        "summary": "Get global election statistics",
+        "tags": [
+          "Elections"
+        ],
+        "responses": {
+          "200": {
+            "description": "Global election statistics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "elections": {
+                      "type": "number",
+                      "description": "Number of elections"
+                    },
+                    "votes": {
+                      "type": "number",
+                      "description": "Number of votes"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Election/{id}/edit": {
+      "post": {
+        "summary": "Edit an election",
+        "tags": [
+          "Elections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Election": {
+                    "$ref": "#/components/schemas/Election"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Election edited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    },
+                    "voterAuth": {
+                      "type": "object",
+                      "properties": {
+                        "authorized_voter": {
+                          "type": "boolean"
+                        },
+                        "has_voted": {
+                          "type": "boolean"
+                        },
+                        "roles": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/roles"
+                          }
+                        },
+                        "permissions": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/permissions"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/roles": {
+      "put": {
+        "summary": "Edit election roles",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": [
+          "Elections"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "admin_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "audit_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "credential_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Roles edited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/ElectionResult/{id}": {
+      "get": {
+        "summary": "Get election results by ID",
+        "tags": [
+          "Elections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Election results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    },
+                    "results": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionResults"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/finalize": {
+      "post": {
+        "summary": "Finalize an election",
+        "tags": [
+          "Elections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Election finalized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/setPublicResults": {
+      "post": {
+        "summary": "Set public results for an election",
+        "tags": [
+          "Elections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "public_results": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Public results set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/archive": {
+      "post": {
+        "summary": "Archive an election",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": [
+          "Elections"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Election archived",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/sendInvites": {
+      "post": {
+        "summary": "Send invitations for an election",
+        "tags": [
+          "Elections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invitations sent"
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/sendInvite/{voter_id}": {
+      "post": {
+        "summary": "Send an invitation to a specific voter",
+        "tags": [
+          "Elections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          },
+          {
+            "in": "path",
+            "name": "voter_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The voter ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invitation sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "electionRollEntry": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election or voter not found"
+          }
+        }
+      }
+    },
+    "/Sandbox": {
+      "post": {
+        "summary": "Get sandbox results",
+        "tags": [
+          "Elections"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cvr": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      }
+                    }
+                  },
+                  "candidates": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "num_winners": {
+                    "type": "number"
+                  },
+                  "votingMethod": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/VotingMethod"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sandbox results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionResults"
+                    },
+                    "nWinners": {
+                      "type": "number",
+                      "description": "Number of winners"
+                    },
+                    "candidates": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/images": {
+      "post": {
+        "summary": "Upload an image",
+        "tags": [
+          "Elections"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Image uploaded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "photo_filename": {
+                      "oneOf": [
+                        "string",
+                        null
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Election/{id}/register": {
+      "post": {
+        "summary": "Register a voter for an election",
+        "tags": [
+          "Rolls"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Voter registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    },
+                    "NewElectionRoll": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/rolls": {
+      "get": {
+        "summary": "Get rolls by election ID",
+        "tags": [
+          "Rolls"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of rolls",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "electionRollEntry": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a list of rolls to an election",
+        "tags": [
+          "Rolls"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "electionRoll": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rolls added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "election": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Election"
+                    },
+                    "NewElectionRoll": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Edit an election roll",
+        "tags": [
+          "Rolls"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roll edited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "electionRollEntry": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/rolls/{voter_id}": {
+      "get": {
+        "summary": "Get roll by voter ID",
+        "tags": [
+          "Rolls"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          },
+          {
+            "in": "path",
+            "name": "voter_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The voter ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roll details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "electionRollEntry": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ElectionRoll"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Roll not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/rolls/approve": {
+      "post": {
+        "summary": "Approve an election roll",
+        "tags": [
+          "Rolls"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "electionRollEntry": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/ElectionRoll"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Roll approved"
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/rolls/flag": {
+      "post": {
+        "summary": "Flag an election roll",
+        "tags": [
+          "Rolls"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "electionRollEntry": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/ElectionRoll"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Roll flagged"
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/rolls/invalidate": {
+      "post": {
+        "summary": "Invalidate an election roll",
+        "tags": [
+          "Rolls"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "electionRollEntry": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/ElectionRoll"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Roll invalidated"
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/rolls/unflag": {
+      "post": {
+        "summary": "Unflag an election roll",
+        "tags": [
+          "Rolls"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "electionRollEntry": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/ElectionRoll"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Roll unflagged"
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}
