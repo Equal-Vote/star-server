@@ -58,6 +58,41 @@ export function ballotValidation(election: Election, obj:Ballot): string | null 
     if (!validIds) {
         return "Invalid IDs";
     }
-
+    const maxRankings = election.settings.max_rankings
+    
+    const racesWithScoresOutOfBounds = approvedRaces.filter(race => {
+    //Checks if the score exceeds max_rankings or number of candidates for ranked elections
+        if (['RankedRobin', 'IRV', 'STV'].includes(race.voting_method)) {
+            const numCandidates = race.candidates.length;
+            return obj.votes.some(vote => {
+                return vote.scores.some(score => {
+                    if (score.score > numCandidates || (maxRankings && score.score > maxRankings) || score.score < 1) {
+                        return true;
+                    }
+                })
+            })
+        //Checks if the score exceeds 5 for STAR and STAR_PR elections
+        } else if ([ 'STAR', 'STAR_PR'].includes(race.voting_method)) {
+            return obj.votes.some(vote => {
+                return vote.scores.some(score => {
+                    if (score.score > 5 || score.score < 0) {
+                        return true;
+                    }
+                })
+            })
+        //Checks if the score exceeds 1 for Approval and Plurality elections
+        } else if (['Approval', 'Plurality'].includes(race.voting_method)) {
+            return obj.votes.some(vote => {
+                return vote.scores.some(score => {
+                    if (score.score > 1 || score.score < 0) {
+                        return true;
+                    }
+                })
+            })
+        }
+    }).map(race => race.race_id)
+    if (racesWithScoresOutOfBounds.length > 0) {
+        return "The following races have scores that are out of bounds: " + racesWithScoresOutOfBounds.toString();
+    }
     return null;
   }
