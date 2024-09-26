@@ -55,19 +55,30 @@ function STARResultsViewer({ results, rounds, t, filterRandomFromLogs }: {result
       <WinnerResultTabs numWinners={rounds}>
         {roundIndexes.map((i) => <STARResultSummaryWidget key={i} results={results} roundIndex={i} t={t}/>)}
       </WinnerResultTabs>
-      <DetailExpander>
-        <STARDetailedResults results={results} rounds={rounds} t={t}/>
-        <DetailExpander level={1}>
-          <WidgetContainer>
-            <Widget title={t('results.star.detailed_steps_title')}>
-              <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
-            </Widget>
-            <Widget title={t('results.star.equal_preferences_title')}>
-              <ResultsBarChart data={noPrefStarData} xKey='count' percentage={true} sortFunc={false}/>
-            </Widget>
-          </WidgetContainer>
+      {rounds == 1 &&
+        <DetailExpander>
+          <STARDetailedResults results={results} rounds={rounds} t={t}/>
+          <DetailExpander level={1}>
+            <WidgetContainer>
+              <Widget title={t('results.star.detailed_steps_title')}>
+                <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
+              </Widget>
+              <Widget title={t('results.star.equal_preferences_title')}>
+                <ResultsBarChart data={noPrefStarData} xKey='count' percentage={true} sortFunc={false}/>
+              </Widget>
+            </WidgetContainer>
+          </DetailExpander>
         </DetailExpander>
-      </DetailExpander>
+      }
+      {rounds > 1 &&
+        <DetailExpander>
+            <WidgetContainer>
+              <Widget wide title={t('results.star.detailed_steps_title')}> 
+                <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
+              </Widget>
+            </WidgetContainer>
+        </DetailExpander>
+      }
     </>
   );
 }
