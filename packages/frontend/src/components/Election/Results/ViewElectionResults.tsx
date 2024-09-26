@@ -9,7 +9,7 @@ import useElection from '../../ElectionContextProvider';
 import DraftWarning from '../DraftWarning';
 import { StyledButton } from '~/components/styles';
 import ShareButton from '../ShareButton';
-import { DownloadCSV } from './DownloadCSV';
+import { BallotDataExport } from './BallotDataExport';
 import { useGetBallots } from '~/hooks/useAPI';
 
 const ViewElectionResults = () => {
@@ -50,7 +50,7 @@ const ViewElectionResults = () => {
                             <Box sx={{ minWidth: 750, display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
                         {(election.settings.public_results === true) &&
                             <Box sx={{ width: '100%',  p: 1, px:{xs: 5, sm: 1} }}>
-                                <DownloadCSV election={election}/>
+                                <BallotDataExport election={election}/>
                             </Box>
                             }
                         

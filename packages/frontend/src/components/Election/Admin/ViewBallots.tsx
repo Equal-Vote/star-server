@@ -11,7 +11,7 @@ import { epochToDateString, getLocalTimeZoneShort, useSubstitutedTranslation } f
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import DraftWarning from "../DraftWarning";
-import { DownloadCSV } from "../Results/DownloadCSV";
+import { BallotDataExport } from "../Results/BallotDataExport";
 
 const ViewBallots = () => {
     const { election } = useElection()
@@ -108,7 +108,7 @@ const ViewBallots = () => {
                         </Table>
                     </TableContainer>
 
-                    <DownloadCSV election={election}/>
+                    <BallotDataExport election={election}/>
                 </>
             }
             {isViewing && selectedBallot &&

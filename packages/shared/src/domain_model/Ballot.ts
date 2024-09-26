@@ -20,8 +20,10 @@ export interface Ballot {
 }
 
 export interface AnonymizedBallot {
-    ballot_id:  string; //ID of ballot
-    votes: Vote[];         // One per poll
+    ballot_id:  Uid;    //ID of ballot
+    election_id: Uid;   //ID of election ballot is cast in
+    votes: Vote[];      // One per poll
+    precinct?: string;  // Precint of voter
 }
 
 export interface BallotAction {
