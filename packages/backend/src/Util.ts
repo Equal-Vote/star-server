@@ -92,7 +92,7 @@ export async function getMetaTags(req: any) : Promise<TagObject>  {
     }
   }
 
-  let len = election?.races[0]?.candidates.length ?? 0;
+  let len = election?.races?.[0]?.candidates.length ?? 0;
   let n_hidden = (len > 5) ? 1 : (5-len);
   let n_cropped = (len > 5) ? 0 : (5-len);
 
