@@ -305,7 +305,7 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
   return (
     <div>
       <hr/>
-      <Typography variant="h2" component="h2" sx={{marginBottom: 2}}>
+      <Typography variant="h3" component="h3" sx={{marginBottom: 2}}>
           {race.title}
       </Typography>
       <div className="flexContainer" style={{textAlign: 'center'}}>
