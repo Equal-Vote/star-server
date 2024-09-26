@@ -4,11 +4,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Menu, { menuClasses } from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 interface MenuButtonProps {
-    menuItems: React.ReactElement<typeof MenuItem>[];
     label: React.ReactNode;
+    children?: React.ReactNode;
 }
 
-export function MenuButton({ menuItems: children, label }: MenuButtonProps) {
+export function MenuButton({ children, label }: MenuButtonProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     return (
         <div>
