@@ -92,9 +92,11 @@ export async function getMetaTags(req: any) : Promise<TagObject>  {
     }
   }
 
-  let len = election?.races?.[0]?.candidates.length ?? 0;
+  let race = election?.races?.[0] ?? undefined;
+  let len = race?.candidates.length ?? 0;
   let n_hidden = (len > 5) ? 1 : (5-len);
   let n_cropped = (len > 5) ? 0 : (5-len);
+
 
   return {
       __META_TITLE__: election?.title ?? 'BetterVoting | Create elections & polls that don\'t spoil the vote',
@@ -124,18 +126,18 @@ export async function getMetaTags(req: any) : Promise<TagObject>  {
             h: 22+n_hidden*110+((n_hidden%2 == 0) ? -10 : 10),
           },
           // Draw the candidates from the first race
-          ...election.races[0].candidates.slice(0,5).map((c, i) => ({
+          ...(race?.candidates.slice(0,5).map((c, i) => ({
             type: 'l-text',
-            i: (i == 4 && ((election?.races[0]?.candidates.length ?? 0) > 5))? `+${(election?.races[0]?.candidates.length ?? 0) - 4} more` : truncName(c.candidate_name, 40),
+            i: (i == 4 && ((race?.candidates.length ?? 0) > 5))? `+${(race?.candidates.length ?? 0) - 4} more` : truncName(c.candidate_name, 40),
             w: 400,
             lx: 30,
             ly: 450+i*110
             // HACK: this will help center candidates when they only need 1 line to spell the name
-              +(((election?.races[0]?.candidates.length ?? 0) < 27)? 20 : 0),
+              +(((len ?? 0) < 27)? 20 : 0),
             fs: 30,
             ia: 'left',
             ff: 'Montserrat-Black.ttf',
-          })),
+          })) ?? []),
           // Crop out the unused rows
           {
             type: 'cm-extract',
