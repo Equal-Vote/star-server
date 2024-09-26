@@ -97,7 +97,6 @@ export async function getMetaTags(req: any) : Promise<TagObject>  {
   let n_hidden = (len > 5) ? 1 : (5-len);
   let n_cropped = (len > 5) ? 0 : (5-len);
 
-
   return {
       __META_TITLE__: election?.title ?? 'BetterVoting | Create elections & polls that don\'t spoil the vote',
       __META_DESCRIPTION__: election?.description ?? "Create secure elections with voting methods that don't spoil the vote.",
