@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import React from 'react'
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import { useNavigate } from "react-router";
-import { Box, Checkbox, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Step, StepLabel, Stepper, SvgIcon, TextField, Typography } from "@mui/material";
+import { Box, Checkbox, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Step, StepConnector, StepLabel, Stepper, SvgIcon, TextField, Typography } from "@mui/material";
 import { Ballot, NewBallot } from "@equal-vote/star-vote-shared/domain_model/Ballot";
 import { Vote } from "@equal-vote/star-vote-shared/domain_model/Vote";
 import { Score } from "@equal-vote/star-vote-shared/domain_model/Score";
@@ -207,7 +207,7 @@ const VotePage = () => {
             sx={{ maxHeight: '40px', minWidth: '100px', marginRight: {xs: '10px', md: '40px'}, visibility: (currentPage === 0) ? 'hidden' : 'visible' }}>
               {t('ballot.previous')}
           </Button>
-          <Stepper sx={{display: 'flex', flexWrap: 'wrap'}}>
+          <Stepper className='racePageStepper' sx={{display: 'flex', flexWrap: 'wrap'}}>
             {pages.map((page, pageIndex) => (
               <Box key={pageIndex}>
                 <Step

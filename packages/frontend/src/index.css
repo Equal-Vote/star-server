@@ -49,6 +49,9 @@
   --dark-bkg-gray: #1F1F1F;
 }
 
+.racePageStepper .MuiStepConnector-line {
+  opacity: 0;
+}
 
 .heroBallot > div{
   /* border-color: rgba(0, 0, 0, .7); */
