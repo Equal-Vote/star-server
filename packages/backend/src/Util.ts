@@ -85,7 +85,11 @@ export async function getMetaTags(req: any) : Promise<TagObject>  {
     election = null;
   }else{
     const electionID = (parts[1] == 'Election' ? parts[2] : parts[1])
-    election = await ElectionsModel.getElectionByID(electionID, req);
+    try{
+      election = await ElectionsModel.getElectionByID(electionID, req);
+    } catch (err:any) {
+      election = null;
+    }
   }
 
   let len = election?.races[0]?.candidates.length ?? 0;
