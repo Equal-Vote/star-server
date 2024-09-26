@@ -19,21 +19,14 @@ const getElectionByID = async (req: any, res: any, next: any) => {
         return next();
     }
     try {
-        var election = await ElectionsModel.getElectionByID(req.params.id, req);
-        Logger.debug(req, `get election ${req.params.id}`);
-        var failMsg = "Election not found";
-        if (!election) {
-            Logger.info(req, `${failMsg} electionId=${req.params.id}}`);
-            return responseErr(res, req, 400, failMsg);
-        }
+        let election = await ElectionsModel.getElectionByID(req.params.id, req);
 
         req.election = election;
         return next();
-
     } catch (err:any) {
-        var failMsg = "Could not retrieve election";
-        Logger.error(req, `${failMsg} ${err.message}`);
-        return responseErr(res, req, 500, failMsg);
+        let failMsg = 'Election not found';
+        Logger.error(req, `${failMsg} electionId=${req.params.id}}`);
+        return responseErr(res, req, 400, failMsg);
     }
 }
 
