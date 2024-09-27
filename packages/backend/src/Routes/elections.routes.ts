@@ -166,7 +166,7 @@ electionsRouter.delete('/Election/:id', asyncHandler(deleteElection))
  *             type: object
  *             properties:
  *                 Election:
- *                  $ref: '#/components/schemas/Election'
+ *                  $ref: '#/components/schemas/NewElection'
  *     responses:
  *       200:
  *         description: Election created
@@ -177,7 +177,7 @@ electionsRouter.delete('/Election/:id', asyncHandler(deleteElection))
  *               properties:
  *                 election:
  *                   type: object
- *                   $ref: '#/components/schemas/NewElection'
+ *                   $ref: '#/components/schemas/Election'
  *  */
  electionsRouter.post('/Elections/', asyncHandler(createElectionController))
  
