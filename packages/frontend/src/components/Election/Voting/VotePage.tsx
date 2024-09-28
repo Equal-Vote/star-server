@@ -113,6 +113,18 @@ const VotePage = () => {
     setPages([...pages])
   }
 
+  const setCurrentPageAndScroll = (a) => {
+    setCurrentPage(a);
+    // HACK: the scroll wasn't work if the button was disabled after press (like for pressing next to the last page)
+    //       adding the setTimeout fixed it
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    },1)
+  }
+
   const setWarningColumns = (warningColumns: number[]) => {
     pages[currentPage].warningColumns = warningColumns;
     //shallow copy to trigger a refresh
@@ -202,7 +214,7 @@ const VotePage = () => {
         <Box sx={{ display: 'flex', justifyContent: "space-between", marginTop: '10px' }}>
           <Button
             variant='contained'
-            onClick={() => setCurrentPage(count => count - 1)}
+            onClick={() => setCurrentPageAndScroll(count => count - 1)}
             disabled={currentPage === 0}
             sx={{ maxHeight: '40px', minWidth: '100px', marginRight: {xs: '10px', md: '40px'}, visibility: (currentPage === 0) ? 'hidden' : 'visible' }}>
               {t('ballot.previous')}
@@ -211,7 +223,7 @@ const VotePage = () => {
             {pages.map((page, pageIndex) => (
               <Box key={pageIndex}>
                 <Step
-                  onClick={() => setCurrentPage(pageIndex)}
+                  onClick={() => setCurrentPageAndScroll(pageIndex)}
                   style={{ fontSize: "16px", width: "auto", minWidth: "0px", marginTop: "10px", paddingLeft: "0px", paddingRight: "0px" }}
                 >
                   <StepLabel>
@@ -232,7 +244,7 @@ const VotePage = () => {
           </Stepper>
           <Button
             variant='contained'
-            onClick={() => setCurrentPage(count => count + 1)}
+            onClick={() => setCurrentPageAndScroll(count => count + 1)}
             disabled={currentPage === pages.length - 1}
             sx={{ maxHeight: '40px', minWidth: '100px', marginLeft: {xs: '10px', md: '40px'}, visibility: (currentPage === pages.length - 1) ? 'hidden' : 'visible' }}>
               {t('ballot.next')}
