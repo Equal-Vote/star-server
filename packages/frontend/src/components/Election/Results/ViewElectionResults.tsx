@@ -47,7 +47,7 @@ const ViewElectionResults = () => {
                     ))}
                     <hr/>
                     <Box sx={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2}}>
-                            <Box sx={{ minWidth: 750, display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
+                            <Box sx={{ width: '100%', maxWidth: 750, display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
                         {(election.settings.public_results === true) &&
                             <Box sx={{ width: '100%',  p: 1, px:{xs: 5, sm: 1} }}>
                                 <BallotDataExport election={election}/>
