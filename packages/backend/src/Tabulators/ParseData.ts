@@ -53,4 +53,4 @@ module.exports = function ParseData(data: ballot[], validityCheck = getStarBallo
     };
 }
 
-// module.exports = ParseData
+// export 

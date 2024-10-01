@@ -49,6 +49,9 @@
   --dark-bkg-gray: #1F1F1F;
 }
 
+.racePageStepper .MuiStepConnector-line {
+  opacity: 0;
+}
 
 .heroBallot > div{
   /* border-color: rgba(0, 0, 0, .7); */
@@ -73,7 +76,7 @@
   border-width: 2px;
 }
 
-.styledTextField:hover > div > fieldset{
+styledTextField:hover > div > fieldset{
   opacity: .7; /* Hack to make the hover color less intense */
 }
 
@@ -411,11 +414,6 @@ code {
 .heroShrink {
   transform: scale(1);
   transition: transform .1s ease-out;
-}
-
-/* HACK: The log statements were widening the display and this is a quick fix */
-.detailedSteps{
-  max-width: 550px;
 }
 
 .winnerResult{

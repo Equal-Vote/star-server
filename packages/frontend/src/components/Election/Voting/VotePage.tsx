@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import React from 'react'
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import { useNavigate } from "react-router";
-import { Box, Checkbox, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Step, StepLabel, Stepper, SvgIcon, TextField, Typography } from "@mui/material";
+import { Box, Checkbox, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Step, StepConnector, StepLabel, Stepper, SvgIcon, TextField, Typography } from "@mui/material";
 import { Ballot, NewBallot } from "@equal-vote/star-vote-shared/domain_model/Ballot";
 import { Vote } from "@equal-vote/star-vote-shared/domain_model/Vote";
 import { Score } from "@equal-vote/star-vote-shared/domain_model/Score";
@@ -113,6 +113,18 @@ const VotePage = () => {
     setPages([...pages])
   }
 
+  const setCurrentPageAndScroll = (a) => {
+    setCurrentPage(a);
+    // HACK: the scroll wasn't work if the button was disabled after press (like for pressing next to the last page)
+    //       adding the setTimeout fixed it
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    },1)
+  }
+
   const setWarningColumns = (warningColumns: number[]) => {
     pages[currentPage].warningColumns = warningColumns;
     //shallow copy to trigger a refresh
@@ -199,19 +211,19 @@ const VotePage = () => {
       </BallotContext.Provider>
 
       {pages.length > 1 &&
-        <Box sx={{ display: 'flex', justifyContent: "space-between" }}>
+        <Box sx={{ display: 'flex', justifyContent: "space-between", marginTop: '10px' }}>
           <Button
-            variant='outlined'
-            onClick={() => setCurrentPage(count => count - 1)}
+            variant='contained'
+            onClick={() => setCurrentPageAndScroll(count => count - 1)}
             disabled={currentPage === 0}
             sx={{ maxHeight: '40px', minWidth: '100px', marginRight: {xs: '10px', md: '40px'}, visibility: (currentPage === 0) ? 'hidden' : 'visible' }}>
               {t('ballot.previous')}
           </Button>
-          <Stepper sx={{display: 'flex', flexWrap: 'wrap'}}>
+          <Stepper className='racePageStepper' sx={{display: 'flex', flexWrap: 'wrap'}}>
             {pages.map((page, pageIndex) => (
               <Box key={pageIndex}>
                 <Step
-                  onClick={() => setCurrentPage(pageIndex)}
+                  onClick={() => setCurrentPageAndScroll(pageIndex)}
                   style={{ fontSize: "16px", width: "auto", minWidth: "0px", marginTop: "10px", paddingLeft: "0px", paddingRight: "0px" }}
                 >
                   <StepLabel>
@@ -224,7 +236,6 @@ const VotePage = () => {
                       <polygon points="13,16 11,16 11,18 13,18"/>
                       <polygon points="13,10 11,10 11,15 13,15"/>
                       </>}
-
                     </SvgIcon>
                   </StepLabel>
                 </Step>
@@ -232,8 +243,8 @@ const VotePage = () => {
             ))}
           </Stepper>
           <Button
-            variant='outlined'
-            onClick={() => setCurrentPage(count => count + 1)}
+            variant='contained'
+            onClick={() => setCurrentPageAndScroll(count => count + 1)}
             disabled={currentPage === pages.length - 1}
             sx={{ maxHeight: '40px', minWidth: '100px', marginLeft: {xs: '10px', md: '40px'}, visibility: (currentPage === pages.length - 1) ? 'hidden' : 'visible' }}>
               {t('ballot.next')}
@@ -246,8 +257,8 @@ const VotePage = () => {
           variant='contained'
           onClick={() => setIsOpen(true)}
           disabled={isPending || currentPage !== pages.length - 1 || pages[currentPage].candidates.every(candidate => candidate.score === null || pages.some(page => page.warnings))}//disable unless on last page and at least one candidate scored
-          style={{ marginLeft: "auto", minWidth: "150px", marginTop: "20px" }}>
-              {t('ballot.submit_ballot')}
+          style={{ margin: "auto", minWidth: "150px", marginTop: "40px" }}>
+              <Typography variant="h6">{t('ballot.submit_ballot')}</Typography>
         </Button>
       </Box>
       {isPending && <div> {t('ballot.submitting')} </div>}

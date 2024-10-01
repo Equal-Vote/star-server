@@ -3,10 +3,14 @@ import { useParams } from "react-router";
 import Results from './Results';
 import Box from '@mui/material/Box';
 import { Paper, Typography } from "@mui/material";
-import { DetailExpanderGroup, useSubstitutedTranslation } from '../../util';
+import { useSubstitutedTranslation } from '../../util';
 import { useGetResults } from '../../../hooks/useAPI';
 import useElection from '../../ElectionContextProvider';
 import DraftWarning from '../DraftWarning';
+import { StyledButton } from '~/components/styles';
+import ShareButton from '../ShareButton';
+import { BallotDataExport } from './BallotDataExport';
+import { useGetBallots } from '~/hooks/useAPI';
 
 const ViewElectionResults = () => {
     
@@ -14,9 +18,7 @@ const ViewElectionResults = () => {
     
     const { data, isPending, error, makeRequest: getResults } = useGetResults(election.election_id)
     useEffect(() => { getResults() }, [])
-
     const {t} = useSubstitutedTranslation(election.settings.term_type);
-
     return (<>
         <DraftWarning/>
         <Box
@@ -34,7 +36,6 @@ const ViewElectionResults = () => {
                 </Typography>
                 {isPending && <div> {t('results.loading_election')} </div>}
 
-                <DetailExpanderGroup defaultSelectedIndex={-1} allowMultiple>
                     {data?.results.map((result, race_index) => (
                         <Results 
                             key={`results-${race_index}`}
@@ -44,7 +45,31 @@ const ViewElectionResults = () => {
                             result={result}
                         />
                     ))}
-                </DetailExpanderGroup>
+                    <hr/>
+                    <Box sx={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2}}>
+                            <Box sx={{ width: '100%', maxWidth: 750, display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
+                        {(election.settings.public_results === true) &&
+                            <Box sx={{ width: '100%',  p: 1, px:{xs: 5, sm: 1} }}>
+                                <BallotDataExport election={election}/>
+                            </Box>
+                            }
+                        
+                        {election.settings.voter_access !== 'closed' &&
+                            <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1}  }}>
+                                <ShareButton url={`${window.location.origin}/${election.election_id}`}/>
+                            </Box>
+                        }
+                        <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1} }}>
+                            <StyledButton
+                                type='button'
+                                variant='contained'
+                                fullwidth
+                                href={'https://www.equal.vote/donate'} >
+                                {t('ballot_submitted.donate')}
+                            </StyledButton>
+                        </Box>
+                    </Box>
+                </Box>
                 
             </Paper>
         </Box>

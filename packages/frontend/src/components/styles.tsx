@@ -29,7 +29,9 @@ export const Tip = (props: {name: TipName, electionTermType: TermType | undefine
             componentsProps={{
                 tooltip: {
                     sx: {
-                        background: '#888888FF'
+                        background: '#2B344AFF', 
+                        border: '2px solid white',
+                        //boxShadow: '0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)',
                     }
                 }
             }}
@@ -49,6 +51,7 @@ export const StyledButton = (props) => (
             m: 0,
             boxShadow: 2,
             backgroundColor: 'primary.main',
+            fontFamily: 'Montserrat, Verdana, sans-serif',
             fontWeight: 'bold',
             fontSize: 18,
             color: 'primary.contrastText',

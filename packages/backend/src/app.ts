@@ -1,6 +1,7 @@
 require('dotenv').config();
 import express from 'express';
-var electionRouter = require('./Routes/elections.routes')
+import {electionsRouter, ballotRouter, rollRouter} from './Routes';
+ 
 // var debugRouter = require('./Routes/debug.routes')
 
 import cors from 'cors';
@@ -12,9 +13,10 @@ import { errorCatch } from './errorCatchMiddleware'
 import registerEvents from './Routes/registerEvents';
 import { setupSockets } from './socketHandler';
 import { getMetaTags } from './Util';
+import swaggerUi from 'swagger-ui-express';
+import swagger from './OpenApi/swagger.json';
 
-const { getUserToken } = require('./Controllers/getUserTokenController')
-const authController = require('./Controllers/auth.controllers')
+import { getUserToken, getUser } from './Controllers/User';
 const asyncHandler = require('express-async-handler')
 require('./socketHandler')
 
@@ -43,9 +45,11 @@ export default function makeApp() {
     const path = require('path');
     app.use(express.json());
     //Routes
-    app.use('/API',authController.getUser, electionRouter)
+    app.use('/API', getUser, electionsRouter)
+    app.use('/API', getUser, ballotRouter)
+    app.use('/API', getUser, rollRouter)
     // app.use('/debug',debugRouter)
-
+    app.use('/API/Docs', swaggerUi.serve, swaggerUi.setup(swagger));
     app.post('/API/Token', asyncHandler(getUserToken));
 
     // NOTE: I've removed express.static because it doesn't allow me to inject meta tags

@@ -14,6 +14,7 @@ import { usePostElection } from "~/hooks/useAPI";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
+import { TimeZone } from "@equal-vote/star-vote-shared/domain_model/Util";
 
 /////// PROVIDER SETUP /////
 export interface ICreateElectionContext{
@@ -63,7 +64,7 @@ const defaultElection: NewElection = {
         },
         ballot_updates: false,
         public_results: true,
-        time_zone: DateTime.now().zone.name,
+        time_zone: DateTime.now().zone.name as TimeZone,
         random_candidate_order: false,
         require_instruction_confirmation: true,
         invitation: undefined,
@@ -105,7 +106,8 @@ const templateMappers = {
             ...election.settings,
             voter_authentication: {
                 ...election.settings.voter_authentication,
-                email: true
+                // email: true <- this means login will be required, that's not what we want for this setting. TODO: figure out refactored name
+                voter_id: true 
             },
             invitation: 'email',
         }

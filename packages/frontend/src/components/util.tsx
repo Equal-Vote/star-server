@@ -172,19 +172,17 @@ export const CHART_COLORS = [
   "var(--ltbrand-lime)",
 ];
 
-export const WidgetContainer = ({ children }) => (
-  <Box
-    display="flex"
-    flexDirection="row"
-    flexWrap="wrap"
-    gap="30px"
-    className="graphs"
-    justifyContent="center"
-    sx={{ marginBottom: "30px" }}
-  >
-    {children}
-  </Box>
-);
+export const WidgetContainer = ({ children }) => <Box
+  display="flex"
+  flexDirection="row"
+  flexWrap="wrap"
+  gap="30px"
+  className="graphs"
+  justifyContent="center"
+  sx={{ marginBottom: "30px" }}
+>
+  {children}
+</Box>
 
 const truncName = (name, maxSize) => {
   if (!(typeof name === 'string')) return name;
@@ -422,13 +420,13 @@ export const ResultsPieChart = ({ data, colorOffset = 0, star = false }) => {
   );
 };
 
-export const Widget = ({ children, title }) => (
+export const Widget = ({ children, title, wide=false }) => (
   <Paper
     elevation={5}
     className="graph"
     sx={{
       width: "100%", // maybe I'll try 90?
-      maxWidth: "500px",
+      maxWidth: wide ? '800px' : '500px',
       backgroundColor: "brand.white",
       borderRadius: "10px",
       padding: {xs: "6px", md: "18px"},

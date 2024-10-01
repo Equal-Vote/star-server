@@ -7,12 +7,13 @@
     "test": "jest --forceExit --detectOpenHandles",
     "start": "npm run build && node ./build/src/index.js",
     "dev": "tsx watch ./src",
-    "build": "tsc --project ./",
+    "build": "npm run generate:openapi && tsc --project ./",
     "clean": "npx rimraf build node_modules ../node_modules",
     "migrate:latest": "node ./build/src/Migrators/migrate-to-latest.js",
     "migrate:up": "node ./build/src/Migrators/migrate-up.js",
     "migrate:down": "node ./build/src/Migrators/migrate-down.js",
-    "db_sandbox": "npm run-script build && node ./build/src/test/database_sandbox.js"
+    "db_sandbox": "npm run-script build && node ./build/src/test/database_sandbox.js",
+    "generate:openapi": "ts-node ./src/OpenApi/generateSwaggerJSON.ts"
   },
   "keywords": [],
   "author": "",
@@ -27,7 +28,7 @@
     "@types/express": "^4.17.13",
     "@types/jest": "^27.4.1",
     "@types/luxon": "^3.3.0",
-    "@types/node": "^16.11.26",
+    "@types/node": "^16.18.108",
     "@types/pg": "^8.10.2",
     "@types/socket.io": "^3.0.2",
     "axios": "^1.6.8",
@@ -47,10 +48,14 @@
     "pg-format": "^1.0.4",
     "qs": "^6.10.3",
     "seedrandom": "^3.0.5",
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.7.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@types/supertest": "^2.0.12",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.6",
     "jest": "^29.7.0",
     "rimraf": "^5.0.5",
     "supertest": "^6.2.2",

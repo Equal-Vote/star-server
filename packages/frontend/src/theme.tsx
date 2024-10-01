@@ -156,29 +156,39 @@ const brandPalette: PaletteOptions = {
   }
 }
 
-const brandTypeography: TypographyOptions = {
-  fontFamily: 'Verdana',
+const brandTypography: TypographyOptions = {
+  // fontFamily: 'Montserrat',
+  fontFamily: 'Verdana, sans-serif',
+  button:{
+    fontFamily: 'Montserrat, Verdana, sans-serif',
+  },
   h1: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h2: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h3: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h4: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h5: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h6: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
     marginTop: '1rem',
     marginBottom: '1rem',
   }
@@ -189,7 +199,7 @@ const themes = {
     palette: {
       brand: brandPalette.brand
     },
-    typography: brandTypeography
+    typography: brandTypography
   }
   )),
   turquoise: responsiveFontSizes(createTheme({
@@ -220,15 +230,14 @@ const themes = {
       },
       brand: brandPalette.brand
     },
-    typography: brandTypeography
+    typography: brandTypography
   })),
   darkMode: responsiveFontSizes(createTheme({
     palette: {
       mode: 'dark',
       brand: brandPalette.brand
     },
-    
-    typography: brandTypeography
+    typography: brandTypography
   })),
 }
 

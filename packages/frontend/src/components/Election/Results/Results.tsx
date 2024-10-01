@@ -55,19 +55,30 @@ function STARResultsViewer({ results, rounds, t, filterRandomFromLogs }: {result
       <WinnerResultTabs numWinners={rounds}>
         {roundIndexes.map((i) => <STARResultSummaryWidget key={i} results={results} roundIndex={i} t={t}/>)}
       </WinnerResultTabs>
-      <DetailExpander>
-        <STARDetailedResults results={results} rounds={rounds} t={t}/>
-        <DetailExpander level={1}>
-          <WidgetContainer>
-            <Widget title={t('results.star.detailed_steps_title')}>
-              <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
-            </Widget>
-            <Widget title={t('results.star.equal_preferences_title')}>
-              <ResultsBarChart data={noPrefStarData} xKey='count' percentage={true} sortFunc={false}/>
-            </Widget>
-          </WidgetContainer>
+      {rounds == 1 &&
+        <DetailExpander>
+          <STARDetailedResults results={results} rounds={rounds} t={t}/>
+          <DetailExpander level={1}>
+            <WidgetContainer>
+              <Widget title={t('results.star.detailed_steps_title')}>
+                <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
+              </Widget>
+              <Widget title={t('results.star.equal_preferences_title')}>
+                <ResultsBarChart data={noPrefStarData} xKey='count' percentage={true} sortFunc={false}/>
+              </Widget>
+            </WidgetContainer>
+          </DetailExpander>
         </DetailExpander>
-      </DetailExpander>
+      }
+      {rounds > 1 &&
+        <DetailExpander>
+            <WidgetContainer>
+              <Widget wide title={t('results.star.detailed_steps_title')}> 
+                <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
+              </Widget>
+            </WidgetContainer>
+        </DetailExpander>
+      }
     </>
   );
 }
@@ -304,6 +315,10 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
   const {t} = useSubstitutedTranslation(election?.settings?.term_type ?? 'poll');
   return (
     <div>
+      <hr/>
+      <Typography variant="h3" component="h3" sx={{marginBottom: 2}}>
+          {race.title}
+      </Typography>
       <div className="flexContainer" style={{textAlign: 'center'}}>
         <Box sx={{pageBreakAfter:'avoid', pageBreakInside:'avoid'}}>
         {result.results.summaryData.nValidVotes == 0 && <h2>{t('results.waiting_for_results')}</h2>}
