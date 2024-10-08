@@ -125,6 +125,21 @@ export const useEditRace = (race, race_index) => {
         return true
     }
 
+    const onDuplicateRace = async () => {
+        if (!validatePage()) return false
+        let success = await updateElection(election => {
+            election.races.push({
+                ...editedRace,
+                title: 'Copy Of ' + editedRace.title,
+                race_id: uuidv4()
+            })
+        })
+        success = success && await deleteAllBallots()
+        if (!success) return false
+        await refreshElection()
+        return true
+    }
+
     const onSaveRace = async () => {
         if (!validatePage()) return false
         let success = await updateElection(election => {
@@ -148,6 +163,6 @@ export const useEditRace = (race, race_index) => {
         return true
     }
 
-    return { editedRace, errors, setErrors, applyRaceUpdate, onSaveRace, onDeleteRace, onAddRace }
+    return { editedRace, errors, setErrors, applyRaceUpdate, onSaveRace, onDeleteRace, onAddRace, onDuplicateRace }
 
 }
