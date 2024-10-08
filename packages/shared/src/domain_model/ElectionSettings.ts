@@ -106,9 +106,10 @@ export function electionSettingsValidation(obj:ElectionSettings): string | null 
   if (obj.term_type && !TermTypes.includes(obj.term_type)){
     return "Invalid Term Type";
   }
-  if (obj.max_rankings && (typeof obj.max_rankings !== 'number' || obj.max_rankings < 0)){
-    return "Invalid Max Rankings";
-  }
+  // NOTE: temporarily disabling because this broke the ability to set the max rankings from the frontend
+  //if (obj.max_rankings && (typeof obj.max_rankings !== 'number' || obj.max_rankings < 0)){
+  //  return "Invalid Max Rankings";
+  //}
   return null;
 }
 
