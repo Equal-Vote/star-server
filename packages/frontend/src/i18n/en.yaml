@@ -550,7 +550,7 @@ tabulation_logs:
     random_tiebreak_end: '' # not used
 
     # Automatic runoff
-    automatic_runoff_start: Advance to automatic runoff round.
+    automatic_runoff_start: Advance to automatic runoff round between {{winner}} and {{loser}}
     automatic_runoff_win: >
       {{winner}} is preferred over {{loser}} by {{winner_votes}} votes to {{loser_votes}}, and {{equal_votes}} voters have an [equal preference](https://www.starvoting.org/equal_preference).
     automatic_runoff_tie: >
