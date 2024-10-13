@@ -408,6 +408,7 @@ results:
     {{election}} Name:
     {{title}}
   race_title: '{{race}} {{n}}: {{title}}'
+  single_candidate_result: '{{name}} is the only {{lowercase_candidate}}, and wins by default'
   loading_election: Loading {{election}}...
   details: Details
   additional_info: Additional Info

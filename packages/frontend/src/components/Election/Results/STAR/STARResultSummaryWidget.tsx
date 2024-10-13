@@ -12,6 +12,7 @@ import STAREXtraContext from './STARExtraContext';
 const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResults, roundIndex: number, t: Function }) => {
     const [pie, setPie] = useState(false);
 
+
     const prevWinners = results.roundResults
         .filter((_, i) => i < roundIndex)
         .map(round => round.winners)
@@ -29,6 +30,10 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
         .filter((_, i) => !prevWinners.includes(i));
 
     const winnerIndex = results.roundResults[roundIndex].winners[0].index;
+
+    if(results.roundResults[roundIndex].runner_up.length == 0)
+        return <Typography>{t('results.single_candidate_result', {name: histData[0].name})}</Typography>
+
     const runnerUpIndex = results.roundResults[roundIndex].runner_up[0].index;
     const winnerVotes = results.summaryData.preferenceMatrix[winnerIndex][runnerUpIndex];
     const runnerUpVotes = results.summaryData.preferenceMatrix[runnerUpIndex][winnerIndex];
