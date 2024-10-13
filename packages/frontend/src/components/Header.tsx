@@ -128,8 +128,8 @@ const Header = () => {
                 <IconButton
                     size="large"
                     href="/"
-                    {/* I don't remember what the margin right 5 was for, but I added xs since it was breaking mobile*/}
                     sx={{display: 'flex', gap: 1, flexGrow: {xs: '1', md: '0'}, mr: {xs: 0, md: 5}}}>
+                        {/* I don't remember what the margin right 5 was for, but I added xs since it was breaking mobile*/}
                         {
                             /* I thought the favicon looked a bit too busy */
                             /*<Avatar src='/favicon-local.png'/>*/
