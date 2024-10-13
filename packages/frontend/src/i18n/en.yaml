@@ -317,7 +317,7 @@ return_to_classic:
 
 # Share Button dropdown
 share:
-  button: Share
+  button: Share {{election}}
   facebook: Facebook
   X: X
   reddit: Reddit
@@ -711,7 +711,7 @@ admin_home:
     message: Are you sure you wish to archive this {{lowercase_election}}? This action cannot be undone.
 
   share:
-    description: Share
+    description: Share {{election}}
     # Button is defined in the top level share section
 
   finalize_invitations_will_send: Invitations will be sent to your voters
