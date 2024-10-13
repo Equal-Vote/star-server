@@ -347,6 +347,8 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
 
   roundResults.logs.push({
       key: 'tabulation_logs.star.automatic_runoff_start',
+      candidate_a: finalists[0].name,
+      candidate_b: finalists[1].name,
   })
 
   if (leftVotes > rightVotes){
