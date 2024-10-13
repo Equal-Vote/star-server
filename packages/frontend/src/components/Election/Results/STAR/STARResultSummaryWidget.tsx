@@ -80,7 +80,7 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
                     <ResultsPieChart data={pieData} star />
                 :
                 <>
-                    <ResultsBarChart data={runoffData} star runoff percentage={false} sortFunc={false} majorityLegend={t('results.star.runoff_majority')} />
+                    <ResultsBarChart data={runoffData} star runoff percentage sortFunc={false} majorityLegend={t('results.star.runoff_majority')} />
                     <Box height={50}/> {/*HACK to get the bar chart to be the same height as the pie chart*/}
                 </>
                 }
