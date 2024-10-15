@@ -9,6 +9,7 @@ import useElection, { ElectionContext } from '../ElectionContextProvider';
 import structuredClone from '@ungap/structured-clone';
 import EditIcon from '@mui/icons-material/Edit';
 import { useSubstitutedTranslation } from '../util';
+import { ElectionSettings as IElectionSettings } from '@equal-vote/star-vote-shared/domain_model/ElectionSettings';
 
 export default function ElectionSettings() {
     const { election, refreshElection, permissions, updateElection } = useElection()
@@ -103,7 +104,7 @@ export default function ElectionSettings() {
                                     id="rank-limit"
                                     type="number"
                                     value={editedElectionSettings.max_rankings ? editedElectionSettings.max_rankings : default_rankings}
-                                    onChange={(e) => applySettingsUpdate(settings => { settings.max_rankings = e.target.value })}
+                                    onChange={(e) => applySettingsUpdate((settings: IElectionSettings) => { settings.max_rankings = Number(e.target.value) })}
                                     variant='standard'
                                     InputProps={{ inputProps: { min: min_rankings, max: max_rankings } }}
                                     sx={{ pl: 4, mt: -1, display: 'block'}}
