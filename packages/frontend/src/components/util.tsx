@@ -209,12 +209,13 @@ export const ResultsBarChart = ({
   percentDenominator ??= data.reduce((sum, d) => sum + d[xKey], 0);
   percentDenominator = Math.max(1, percentDenominator);
   data = rawData.map((d, i) => {
+    let percentValue = Math.round((100 * d[xKey]) / percentDenominator);
     let s = {
       ...d,
       name: (star && i == 0 ? "⭐" : "") + truncName(d["name"], 40),
       // hack to get smaller values to allign different than larger ones
       left: percentage
-        ? `${Math.round((100 * d[xKey]) / percentDenominator)}%`
+        ? ((percentValue == 0 && d[xKey] > 0) ? '<1%' : `${Math.round((100 * d[xKey]) / percentDenominator)}%`)
         : Math.round(d[xKey]*100)/100,
       right: "",
     };
@@ -243,13 +244,14 @@ export const ResultsBarChart = ({
   for (let i = 0; i < colorOffset; i++) {
     colors.push(colors.shift());
   }
-  if (runoff) {
-    colors = colors.slice(0, 2).concat(["var(--brand-gray-1)"]);
-  }
 
   // Add majority
   if (majorityLegend || majorityOffset) {
-    let m = (data[0][xKey] + data[1][xKey]) / 2;
+    let sum = data.reduce((prev, d, i) => {
+      if(i == data.length-1) return prev; // don't include exhausted or equal preference votes in the denominator
+      return prev + d[xKey];
+    }, 0);
+    let m = sum / 2;
     data = data.map((d, i) => {
       let s = { ...d };
       s[majorityLegend] = i < 2 ? m : null;
@@ -317,7 +319,7 @@ export const ResultsBarChart = ({
             <LabelList dataKey="right" position="insideLeft" fill="black" />
           </>}
           {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+            <Cell key={`cell-${index}`} fill={(runoff && index == data.length-1)? 'var(--brand-gray-1)' : colors[index % colors.length]} />
           ))}
         </Bar>
         <Line

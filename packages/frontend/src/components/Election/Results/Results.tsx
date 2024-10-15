@@ -125,7 +125,7 @@ function IRVResultsViewer({ results, t }: {results: irvResults, t: Function}) {
   const runoffData = results.voteCounts.slice(-1)[0]
     .map((c,i) => ({name: results.summaryData.candidates[i].name, votes: c}))
     .sort((a, b) => b.votes - a.votes)
-    .slice(0, 2)
+    .filter(a => a.votes != 0) // filter out eliminated candidates
     .concat([{
       name: t('results.rcv.exhausted'),
       votes: results.exhaustedVoteCounts.slice(-1)[0]
