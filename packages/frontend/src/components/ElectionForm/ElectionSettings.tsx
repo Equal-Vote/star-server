@@ -9,10 +9,12 @@ import useElection, { ElectionContext } from '../ElectionContextProvider';
 import structuredClone from '@ungap/structured-clone';
 import EditIcon from '@mui/icons-material/Edit';
 import { useSubstitutedTranslation } from '../util';
+import { ElectionSettings as IElectionSettings, electionSettingsValidation } from '@equal-vote/star-vote-shared/domain_model/ElectionSettings';
+import useSnackbar from '../SnackbarContext';
 
 export default function ElectionSettings() {
     const { election, refreshElection, permissions, updateElection } = useElection()
-
+    const { setSnack } = useSnackbar()
     const min_rankings = 3;
     const max_rankings = Number(process.env.REACT_APP_MAX_BALLOT_RANKS) ? Number(process.env.REACT_APP_MAX_BALLOT_RANKS) : 8;
     const default_rankings = Number(process.env.REACT_APP_DEFAULT_BALLOT_RANKS) ? Number(process.env.REACT_APP_DEFAULT_BALLOT_RANKS) : 6;
@@ -22,15 +24,15 @@ export default function ElectionSettings() {
     const [editedElectionSettings, setEditedElectionSettings] = useState(election.settings)
     let [editedIsPublic, setEditedIsPublic] = useState(election.is_public)
 
-    const applySettingsUpdate = (updateFunc: (settings) => any) => {
+    const applySettingsUpdate = (updateFunc: (settings: IElectionSettings) => any) => {
         const settingsCopy = structuredClone(editedElectionSettings)
         updateFunc(settingsCopy)
         setEditedElectionSettings(settingsCopy)
     };
 
-    const validatePage = () => {
+    const validatePage = (electionSettings:IElectionSettings) => {
         // Placeholder function
-        return true
+        return electionSettingsValidation(electionSettings)
     }
 
     const [open, setOpen] = React.useState(false);
@@ -38,7 +40,15 @@ export default function ElectionSettings() {
     const handleClose = () => setOpen(false);
 
     const onSave = async () => {
-        if (!validatePage()) return
+        if (validatePage(editedElectionSettings)) {
+            setSnack({
+                message: validatePage(editedElectionSettings),
+                severity: 'error',
+                open: true,
+                autoHideDuration: 6000,
+            })
+            return false
+        }
         const success = await updateElection(election => {
             election.settings = editedElectionSettings
             election.is_public = editedIsPublic
@@ -103,7 +113,7 @@ export default function ElectionSettings() {
                                     id="rank-limit"
                                     type="number"
                                     value={editedElectionSettings.max_rankings ? editedElectionSettings.max_rankings : default_rankings}
-                                    onChange={(e) => applySettingsUpdate(settings => { settings.max_rankings = e.target.value })}
+                                    onChange={(e) => applySettingsUpdate((settings) => { settings.max_rankings = Number(e.target.value) })}
                                     variant='standard'
                                     InputProps={{ inputProps: { min: min_rankings, max: max_rankings } }}
                                     sx={{ pl: 4, mt: -1, display: 'block'}}
