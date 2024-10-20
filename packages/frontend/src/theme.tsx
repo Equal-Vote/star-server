@@ -14,6 +14,34 @@ declare module '@mui/material/styles' {
   interface PaletteOptions {
     brand?: PaletteOptions['primary'];
   }
+  interface Palette {
+    lightAccent: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    lightAccent?: PaletteOptions['primary'];
+  }
+  interface Palette {
+    darkAccent: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    darkAccent?: PaletteOptions['primary'];
+  }
+  interface Palette {
+    lightShade: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    lightShade?: PaletteOptions['primary'];
+  }
+  interface Palette {
+    darkShade: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    darkShade?: PaletteOptions['primary'];
+  }
 }
 
 declare module '@mui/material/styles' {
@@ -23,6 +51,7 @@ declare module '@mui/material/styles' {
     ltblue?: string;
     blue?: string;
     gold?: string;
+    warning?: string;
     red?: string;
     orange?: string;
     green?: string;
@@ -34,6 +63,22 @@ declare module '@mui/material/styles' {
     gray2?: string;
     gray1?: string;
     grayAlpha?: string;
+
+    //transparent colors
+    purpleTransparent20?: string;
+    ltblueTransparent20?: string;
+    blueTransparent20?: string;
+    goldTransparent20?: string;
+    redTransparent20?: string;
+    orangeTransparent20?: string;
+    greenTransparent20?: string;
+    blackTransparent20?: string;
+    gray5Transparent20?: string;
+    gray4Transparent20?: string;
+    gray3Transparent20?: string;
+    gray2Transparent20?: string;
+    gray1Transparent20?: string;
+    warningColumn?: string;
   }
 
   interface SimplePaletteColorOptions {
@@ -41,6 +86,7 @@ declare module '@mui/material/styles' {
     ltblue?: string;
     blue?: string;
     gold?: string;
+    warning?: string;
     red?: string;
     orange?: string;
     green?: string;
@@ -52,6 +98,22 @@ declare module '@mui/material/styles' {
     gray2?: string;
     gray1?: string;
     grayAlpha?: string;
+    
+    //transparent colors
+    purpleTransparent20?: string;
+    ltblueTransparent20?: string;
+    blueTransparent20?: string;
+    goldTransparent20?: string;
+    redTransparent20?: string;
+    orangeTransparent20?: string;
+    greenTransparent20?: string;
+    blackTransparent20?: string;
+    gray5Transparent20?: string;
+    gray4Transparent20?: string;
+    gray3Transparent20?: string;
+    gray2Transparent20?: string;
+    gray1Transparent20?: string;
+    warningColumn?: string;
   }
 
 }
@@ -63,6 +125,7 @@ const brandPalette: PaletteOptions = {
     ltblue: '#2AA2B3',
     blue: '#02627C',
     gold: '#FFE156',
+    warning: '#ed6c02',
     red: '#EE2C53',
     orange: '#FF9900',
     green: '#60B33C',
@@ -75,32 +138,57 @@ const brandPalette: PaletteOptions = {
     gray2: '#CCCCCC', /* Stars on STAR ballots */
     gray1: '#ECECEC', /* Highlight for alternating candidates on ballots */
     grayAlpha: '#7B7B7B7D', /* For graying out candidates for the "How does STAR Voting Work?" Graphic (has transparency)*/
+
+    purpleTransparent20: '#4D258633',  // 20% opacity
+    ltblueTransparent20: '#2AA2B333',
+    blueTransparent20: '#02627C33',
+    goldTransparent20: '#FFE15633',
+    redTransparent20: '#EE2C5333',
+    orangeTransparent20: '#FF990033',
+    greenTransparent20: '#60B33C33',
+    blackTransparent20: '#00000033',
+    gray5Transparent20: '#1F1F1F33',
+    gray4Transparent20: '#66666633',
+    gray3Transparent20: '#99999933',
+    gray2Transparent20: '#CCCCCC33',
+    gray1Transparent20: '#ECECEC33',
+    warningColumn: '#FFDD0080',
   }
 }
 
-const brandTypeography: TypographyOptions = {
-  fontFamily: 'Verdana',
+const brandTypography: TypographyOptions = {
+  // fontFamily: 'Montserrat',
+  fontFamily: 'Verdana, sans-serif',
+  button:{
+    fontFamily: 'Montserrat, Verdana, sans-serif',
+  },
   h1: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h2: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h3: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h4: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h5: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
     marginTop: '1rem',
     marginBottom: '1rem',
   },
   h6: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
     marginTop: '1rem',
     marginBottom: '1rem',
   }
@@ -111,34 +199,45 @@ const themes = {
     palette: {
       brand: brandPalette.brand
     },
-    typography: brandTypeography
+    typography: brandTypography
   }
   )),
   turquoise: responsiveFontSizes(createTheme({
     palette: {
+      lightShade: {
+        main: '#F7F9F8',
+        contrastText: '#000',
+      },
+      lightAccent: {
+        main: '#82BFCF',
+        contrastText: '#000',
+      },
       primary: {
-        light: '#5ac7d6',
-        main: '#2aa2b3',
-        dark: '#02627c',
-        contrastText: '#ffffff',
+        main: '#2AA2B3',
       },
       secondary: {
-        light: '#ffca47',
-        main: '#ff9900',
-        dark: '#c66a00',
-        contrastText: '#000',
+        main: '#6C757D',
+        light: '#a9cef4',
+        dark: '#343A40'
+      },
+      darkAccent: {
+        main: '#898A85',
+        contrastText: '#fff',
+      },
+      darkShade: {
+        main: '#2B344A',
+        contrastText: '#fff',
       },
       brand: brandPalette.brand
     },
-    typography: brandTypeography
+    typography: brandTypography
   })),
   darkMode: responsiveFontSizes(createTheme({
     palette: {
       mode: 'dark',
       brand: brandPalette.brand
     },
-    
-    typography: brandTypeography
+    typography: brandTypography
   })),
 }
 

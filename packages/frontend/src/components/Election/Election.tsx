@@ -1,7 +1,6 @@
 import { useParams } from "react-router";
 import React, { useEffect } from 'react'
 import ElectionHome from "./ElectionHome";
-import EditElection from '../ElectionForm/EditElection'
 import VotePage from './Voting/VotePage'
 import Admin from './Admin/Admin'
 import ViewElectionResults from './Results/ViewElectionResults'
@@ -37,7 +36,6 @@ const Election = () => {
             <Route path='/vote' element={<VotePage />} />
             <Route path='/thanks' element={<Thanks />} />
             <Route path='/results' element={<ViewElectionResults />} />
-            <Route path='/edit' element={<EditElection />} />
             <Route path='/admin/*' element={<Admin />} />
             <Route path='/ballot/:ballot_id' element={<ViewBallot ballot={null} onClose={null} />} />
             <Route path='/id/:voter_id' element={<ElectionHome />} />

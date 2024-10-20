@@ -1,0 +1,71 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Build",
+        "type": "shell",
+        "command": "npm run build -w @equal-vote/star-vote-shared",
+      },
+      {
+        "label": "Port-Forward PostgreSQL",
+        "type": "shell",
+        "command": "kubectl port-forward service/postgresql -n starvote 5432:5432",
+        "isBackground": true,
+        "problemMatcher": {
+          "base": "$tsc-watch",
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".",
+            "endsPattern": "Forwarding from"
+          }
+        }
+      },
+      {
+        "label": "Start Frontend",
+        "type": "shell",
+        "command": "npm run dev -w @equal-vote/star-vote-frontend",
+        "isBackground": true,
+        "problemMatcher": {
+          "base": "$tsc-watch",
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".",
+            "endsPattern": "ready"
+          }
+        }
+      },
+      {
+        "label": "Start Backend",
+        "type": "shell",
+        "command": "npm run dev -w @equal-vote/star-vote-backend",
+        "isBackground": true,
+        "problemMatcher": {
+          "base": "$tsc-watch",
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".",
+            "endsPattern": "Server started on port 5000"
+          }
+        }
+      },
+      {
+        "label": "Terminate All",
+        "command": "echo ${input:terminate}",
+      },
+      {
+        "label": "Start All",
+        "dependsOn": ["Port-Forward PostgreSQL", "Start Backend", "Start Frontend"],
+        "group": "build",
+        "dependsOrder": "sequence"
+      }
+    ],
+    "inputs": [
+      {
+        "id": "terminate",
+        "type": "command",
+        "command": "workbench.action.tasks.terminate",
+        "args": "terminateAll"
+      }
+    ]
+  }
+  

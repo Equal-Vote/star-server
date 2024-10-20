@@ -1,10 +1,10 @@
-import { createContext, useState } from "react"
+import { createContext, useCallback, useMemo, useState } from "react"
 import BallotPageSelector from "./BallotPageSelector";
 import { useParams } from "react-router";
 import React from 'react'
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import { useNavigate } from "react-router";
-import { Box, Checkbox, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Step, StepLabel, Stepper, SvgIcon, TextField, Typography } from "@mui/material";
+import { Box, Checkbox, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Step, StepConnector, StepLabel, Stepper, SvgIcon, TextField, Typography } from "@mui/material";
 import { Ballot, NewBallot } from "@equal-vote/star-vote-shared/domain_model/Ballot";
 import { Vote } from "@equal-vote/star-vote-shared/domain_model/Vote";
 import { Score } from "@equal-vote/star-vote-shared/domain_model/Score";
@@ -16,9 +16,10 @@ import useAuthSession from "../../AuthSessionContextProvider";
 import { StyledButton } from "../../styles";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
-import { Race } from "@equal-vote/star-vote-shared/domain_model/Race";
+import { Race, VotingMethod } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { useSubstitutedTranslation } from "~/components/util";
-
+import DraftWarning from "../DraftWarning";
+import { set } from "date-fns";
 
 // I'm using the icon codes instead of an import because there was padding I couldn't get rid of
 // https://stackoverflow.com/questions/65721218/remove-material-ui-icon-margin
@@ -26,20 +27,43 @@ const INFO_ICON = "M 11 7 h 2 v 2 h -2 Z m 0 4 h 2 v 6 h -2 Z m 1 -9 C 6.48 2 2 
 const CHECKED_BOX = "M 19 3 H 5 c -1.11 0 -2 0.9 -2 2 v 14 c 0 1.1 0.89 2 2 2 h 14 c 1.11 0 2 -0.9 2 -2 V 5 c 0 -1.1 -0.89 -2 -2 -2 Z m -9 14 l -5 -5 l 1.41 -1.41 L 10 14.17 l 7.59 -7.59 L 19 8 l -9 9 Z"
 //const UNCHECKED_BOX = "M 19 5 v 14 H 5 V 5 h 14 m 0 -2 H 5 c -1.1 0 -2 0.9 -2 2 v 14 c 0 1.1 0.9 2 2 2 h 14 c 1.1 0 2 -0.9 2 -2 V 5 c 0 -1.1 -0.9 -2 -2 -2 Z"
 const DOT_ICON = "M12 6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6 2.69-6 6-6m0-2c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8z"
-
+const WARNING_ICON = "M12,5.99L19.53,19H4.47L12,5.99 M12,2L1,21h22L12,2L12,2z"
 type receiptEmail = {
   sendReceipt: boolean,
   email: string
 }
+
+export interface BallotCandidate extends Candidate {
+  score: number
+}
+
 export interface IBallotContext {
-  instructionsRead: Boolean,
+  instructionsRead: boolean,
   setInstructionsRead: () => void,
-  candidates: Candidate[],
+  candidates: BallotCandidate[],
   race: Race,
   onUpdate: (any) => void,
   receiptEmail: receiptEmail,
   setReceiptEmail: React.Dispatch<receiptEmail>
+  maxRankings?: number,
+  warningColumns?: number[],
+  setWarningColumns?: (warningColumns: number[]) => void,
+  alertBubbles?: [number, number][],
+  setAlertBubbles?: (alertBubbles: [number, number][]) => void,
+  warnings?: {severity: 'warning' | 'error', message: string}[],
+  setWarnings?: (warnings: {severity: 'warning' | 'error', message: string}[]) => void,
 }
+
+export interface IPage {
+  instructionsRead: boolean,
+  candidates: BallotCandidate[],
+  voting_method: VotingMethod,
+  race_index: number,
+  warningColumns?: number[],
+  warnings?: {severity: 'warning' | 'error', message: string}[],
+  alertBubbles?: [number, number][],
+}
+
 
 export const BallotContext = createContext<IBallotContext>(null);
 
@@ -63,15 +87,16 @@ const VotePage = () => {
   const flags = useFeatureFlags();
   const { election } = useElection()
   const authSession = useAuthSession()
-  const makePages = () => {
+  const makePages = ():IPage[] => {
     // generate ballot pages
-    let pages = election.races.map((race, i) => {
-      let candidates = race.candidates.map(c => ({ ...c, score: null }))
+    let pages = election.races.map((race, raceIndex) => {
+      let candidates = race.candidates.map(candidate => ({ ...candidate, score: null }))
       return {
         instructionsRead: (flags.isSet('FORCE_DISABLE_INSTRUCTION_CONFIRMATION') || !election.settings.require_instruction_confirmation)? true : false, // I could just do !require_... , but this is more clear
         candidates: (flags.isSet('FORCE_DISABLE_RANDOM_CANDIDATES') || !election.settings.random_candidate_order) ? candidates : shuffle(candidates),
         voting_method: race.voting_method,
-        race_index: i
+        race_index: raceIndex,
+        hasAlert: false
       }
     })
     return pages
@@ -87,12 +112,41 @@ const VotePage = () => {
     // shallow copy to trigger a refresh
     setPages([...pages])
   }
+
+  const setCurrentPageAndScroll = (a) => {
+    setCurrentPage(a);
+    // HACK: the scroll wasn't work if the button was disabled after press (like for pressing next to the last page)
+    //       adding the setTimeout fixed it
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    },1)
+  }
+
+  const setWarningColumns = (warningColumns: number[]) => {
+    pages[currentPage].warningColumns = warningColumns;
+    //shallow copy to trigger a refresh
+    setPages([...pages])
+  }
+  const setWarnings = useCallback((warnings: {severity: 'warning' | 'error', message: string}[]) => {
+    pages[currentPage].warnings = warnings;
+    //shallow copy to trigger a refresh
+    setPages([...pages])
+  }, [pages, currentPage])
   const [isOpen, setIsOpen] = useState(false)
+
+  const setAlertBubbles = useCallback((alertBubbles: [number, number][]) => {
+    pages[currentPage].alertBubbles = alertBubbles;
+    //shallow copy to trigger a refresh
+    setPages([...pages])
+  }, [pages, currentPage])
 
   const { data, isPending, error, makeRequest: postBallot } = usePostBallot(election.election_id)
   const onUpdate = (pageIndex, newRaceScores) => {
     var newPages = [...pages]
-    newPages[pageIndex].candidates.forEach((c, i) => c.score = newRaceScores[i])
+    newPages[pageIndex].candidates.forEach((candidate, candidateIndex) => candidate.score = newRaceScores[candidateIndex])
     // newPages[pageIndex].scores = newRaceScores
     setPages(newPages)
   }
@@ -128,8 +182,14 @@ const VotePage = () => {
 
   const {t} = useSubstitutedTranslation(election.settings.term_type)
 
+
+  if(pages.length == 0){
+    return <Container disableGutters={true} maxWidth="sm"><h3>No races created for election</h3></Container>
+  }
+
   return (
     <Container disableGutters={true} maxWidth="sm">
+      <DraftWarning/>
       <BallotContext.Provider value={{
         instructionsRead: pages[currentPage].instructionsRead,
         setInstructionsRead: setInstructionsRead,
@@ -137,31 +197,45 @@ const VotePage = () => {
         race: election.races[currentPage],
         onUpdate: newRankings => onUpdate(currentPage, newRankings),
         receiptEmail: receiptEmail,
-        setReceiptEmail: setReceiptEmail
+        setReceiptEmail: setReceiptEmail,
+        maxRankings: election.settings.max_rankings,
+        warningColumns: pages[currentPage].warningColumns,
+        setWarningColumns: setWarningColumns,
+        warnings: pages[currentPage].warnings,
+        setWarnings: setWarnings,
+        alertBubbles: pages[currentPage].alertBubbles,
+        setAlertBubbles: setAlertBubbles,
+
       }}>
         <BallotPageSelector votingMethod={pages[currentPage].voting_method} />
       </BallotContext.Provider>
 
       {pages.length > 1 &&
-        <Box sx={{ display: 'flex', justifyContent: "space-between" }}>
+        <Box sx={{ display: 'flex', justifyContent: "space-between", marginTop: '10px' }}>
           <Button
-            variant='outlined'
-            onClick={() => setCurrentPage(count => count - 1)}
+            variant='contained'
+            onClick={() => setCurrentPageAndScroll(count => count - 1)}
             disabled={currentPage === 0}
             sx={{ maxHeight: '40px', minWidth: '100px', marginRight: {xs: '10px', md: '40px'}, visibility: (currentPage === 0) ? 'hidden' : 'visible' }}>
               {t('ballot.previous')}
           </Button>
-          <Stepper sx={{display: 'flex', flexWrap: 'wrap'}}>
-            {pages.map((page, n) => (
-              <Box key={n}>
+          <Stepper className='racePageStepper' sx={{display: 'flex', flexWrap: 'wrap'}}>
+            {pages.map((page, pageIndex) => (
+              <Box key={pageIndex}>
                 <Step
-                  onClick={() => setCurrentPage(n)}
+                  onClick={() => setCurrentPageAndScroll(pageIndex)}
                   style={{ fontSize: "16px", width: "auto", minWidth: "0px", marginTop: "10px", paddingLeft: "0px", paddingRight: "0px" }}
                 >
                   <StepLabel>
                     {/*TODO: I can probably do this in css using the :selected property*/}
-                    <SvgIcon style={{ color: (n === currentPage) ? 'var(--brand-black)' : 'var(--ballot-race-icon-teal)' }}>
-                      {page.candidates.some((c) => (c.score > 0)) ? <path d={CHECKED_BOX} /> : <path d={DOT_ICON} />}
+                    <SvgIcon 
+                      sx={{ 
+                        color: page.warnings ? 'brand.warning' : (pageIndex === currentPage) ? 'var(--brand-black)' : 'var(--ballot-race-icon-teal)' }}>
+                      {page.warnings ? <path d={WARNING_ICON} /> : page.candidates.some((candidate) => (candidate.score > 0)) ? <path d={CHECKED_BOX} /> : <path d={DOT_ICON} />}
+                      {page.warnings && <>
+                      <polygon points="13,16 11,16 11,18 13,18"/>
+                      <polygon points="13,10 11,10 11,15 13,15"/>
+                      </>}
                     </SvgIcon>
                   </StepLabel>
                 </Step>
@@ -169,8 +243,8 @@ const VotePage = () => {
             ))}
           </Stepper>
           <Button
-            variant='outlined'
-            onClick={() => setCurrentPage(count => count + 1)}
+            variant='contained'
+            onClick={() => setCurrentPageAndScroll(count => count + 1)}
             disabled={currentPage === pages.length - 1}
             sx={{ maxHeight: '40px', minWidth: '100px', marginLeft: {xs: '10px', md: '40px'}, visibility: (currentPage === pages.length - 1) ? 'hidden' : 'visible' }}>
               {t('ballot.next')}
@@ -182,9 +256,9 @@ const VotePage = () => {
         <Button
           variant='contained'
           onClick={() => setIsOpen(true)}
-          disabled={isPending || currentPage !== pages.length - 1 || pages[currentPage].candidates.every(candidate => candidate.score === null)}//disable unless on last page and at least one candidate scored
-          style={{ marginLeft: "auto", minWidth: "150px", marginTop: "20px" }}>
-              {t('ballot.submit_ballot')}
+          disabled={isPending || currentPage !== pages.length - 1 || pages[currentPage].candidates.every(candidate => candidate.score === null || pages.some(page => page.warnings))}//disable unless on last page and at least one candidate scored
+          style={{ margin: "auto", minWidth: "150px", marginTop: "40px" }}>
+              <Typography variant="h6">{t('ballot.submit_ballot')}</Typography>
         </Button>
       </Box>
       {isPending && <div> {t('ballot.submitting')} </div>}
@@ -220,8 +294,8 @@ const VotePage = () => {
                     }}
                     onChange={(e) => setReceiptEmail({...receiptEmail, email: e.target.value})}
                 />
-            {pages.map((page) => (
-              <>
+            {pages.map((page, pageIndex) => (
+              <Box key={pageIndex}>
                 <Typography variant="h6">
                   {election.races[page.race_index].title}
                 </Typography>
@@ -230,7 +304,7 @@ const VotePage = () => {
                     {`${candidate.candidate_name}: ${candidate.score ? candidate.score : 0}`}
                   </Typography>
                 ))}
-              </>
+              </Box>
             ))}
           </DialogContentText>
         </DialogContent>
@@ -257,3 +331,4 @@ const VotePage = () => {
 }
 
 export default VotePage
+

@@ -11,11 +11,10 @@ import { Button, Paper } from '@mui/material';
 import LandingPagePricing from './LandingPage/LandingPagePricing';
 import useFeatureFlags from './FeatureFlagContextProvider';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-
-import { useGetGlobalElectionStats } from '~/hooks/useAPI';
 import LandingPageStats from './LandingPage/LandingPageStats';
 import ReturnToClassicDialog, { ReturnToClassicContext, ReturnToClassicContextProvider } from './ReturnToClassicDialog';
 import { useSubstitutedTranslation } from './util';
+
 
 const LandingPage = () => {
     const flags = useFeatureFlags();
@@ -40,8 +39,9 @@ const LandingPage = () => {
     //apparently box doesn't have onScroll
     return (
         <div ref={boxRef}>
-        <Box sx={{ position: 'fixed', pointerEvents: 'none', display: {md: 'flex', xs: 'none'}, flexDirection: 'column-reverse', alignItems: 'flex-end', width: '100%', height: '100%', paddingBottom: '150px', paddingRight: '30px'}}>
-            <Button variant='contained' sx={{pointerEvents: 'auto', width: '170px', fontWeight: 'bold', fontSize: 10, backgroundColor: '#006063'}} onClick={returnToClassicContext.openDialog}>
+        <Box sx={{ position: 'fixed', pointerEvents: 'none', display: {md: 'flex', xs: 'none'}, flexDirection: 'column-reverse', alignItems: 'flex-end', width: '100%', height: '100%', paddingBottom: '210px', paddingRight: '30px'}}>
+            {/*Color is copied from the feedback button*/}
+            <Button variant='contained' sx={{pointerEvents: 'auto', width: '170px', fontWeight: 'bold', fontSize: 10, backgroundColor: '#006063'}}  onClick={returnToClassicContext.openDialog}>
                 {t('return_to_classic.button')}
             </Button>
         </Box>
@@ -66,7 +66,8 @@ const LandingPage = () => {
                 }}/>
             </Box>
             <LandingPageHero />
-            <LandingPageFeatureElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>
+            {/* temporarily disabling because it was sending continuous requests to the backend for some reason */}
+            {/*<LandingPageFeatureElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>*/}
             <LandingPageStats/> 
             <LandingPageFeatures/>
             <LandingPageSignUpBar />

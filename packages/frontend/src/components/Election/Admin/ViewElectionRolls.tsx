@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react"
-import { useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import React from 'react'
 import Button from "@mui/material/Button";
 import Container from '@mui/material/Container';
@@ -24,17 +24,26 @@ const ViewElectionRolls = () => {
     const [addRollPage, setAddRollPage] = useState(false)
     const [editedRoll, setEditedRoll] = useState<ElectionRoll|null>(null)
     const flags = useFeatureFlags();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const onOpen = (voter) => {
         setIsEditing(true)
         setEditedRoll(data.electionRoll.find(roll => roll.voter_id === voter.voter_id))
+        navigate(`${location.pathname}?editing=true`, { replace: false });
     }
-    const onClose = (roll) => {
+    const onClose = () => {
         setIsEditing(false)
         setAddRollPage(false)
         setEditedRoll(null)
         fetchRolls()
+        navigate(location.pathname, { replace: false });
     }
+    useEffect(() => {
+        if (!location.search.includes('editing=true') && isEditing) {
+            onClose();
+        }
+    }, [location.search])
 
     const onSendInvites = () => {
         // NOTE: since we don't have await here, it 

@@ -14,6 +14,7 @@ import { usePostElection } from "~/hooks/useAPI";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
+import { TimeZone } from "@equal-vote/star-vote-shared/domain_model/Util";
 
 /////// PROVIDER SETUP /////
 export interface ICreateElectionContext{
@@ -63,8 +64,8 @@ const defaultElection: NewElection = {
         },
         ballot_updates: false,
         public_results: true,
-        time_zone: DateTime.now().zone.name,
-        random_candidate_order: true,
+        time_zone: DateTime.now().zone.name as TimeZone,
+        random_candidate_order: false,
         require_instruction_confirmation: true,
         invitation: undefined,
         // election_term, and voter_access are intentially omitted
@@ -76,17 +77,17 @@ const templateMappers = {
     'demo': (election:NewElection):NewElection => ({
         ...election,
     }),
-    'public': (election:NewElection):NewElection => ({
+    /*'public': (election:NewElection):NewElection => ({
         ...election,
         is_public: true,
         settings: {
             ...election.settings,
             voter_authentication: {
                 ...election.settings.voter_authentication,
-                ip_address: true
+                voter_id: true
             },
         }
-    }),
+    }),*/
     'unlisted': (election:NewElection):NewElection => ({
         ...election,
         is_public: false,
@@ -94,7 +95,7 @@ const templateMappers = {
             ...election.settings,
             voter_authentication: {
                 ...election.settings.voter_authentication,
-                ip_address: true
+                voter_id: true
             },
         }
     }),
@@ -105,21 +106,21 @@ const templateMappers = {
             ...election.settings,
             voter_authentication: {
                 ...election.settings.voter_authentication,
-                email: true
+                // email: true <- this means login will be required, that's not what we want for this setting. TODO: figure out refactored name
+                voter_id: true 
             },
-            invitation: true,
-            is_public: false
+            invitation: 'email',
         }
     }),
     'id_list': (election) => ({
         ...election,
+        is_public: false,
         settings: {
             ...election.settings,
             voter_authentication: {
                 ...election.settings.voter_authentication,
                 voter_id: true
             },
-            is_public: false
         }
     }),
 }
@@ -181,7 +182,7 @@ export default () => {
 
     const [election, setElection] = useState(defaultElection);
 
-    const { t } = useSubstitutedTranslation();
+    const { t } = useSubstitutedTranslation(election.settings.term_type);
 
     const { error, isPending, makeRequest: postElection } = usePostElection()
 
@@ -244,7 +245,7 @@ export default () => {
                     }</strong></StepLabel>
                     <StepContent>
                         <Typography>{t('election_creation.term_question')}
-                            <Tip name='polls_vs_elections'/>
+                            <Tip name='polls_vs_elections' electionTermType={election.settings.term_type}/>
                         </Typography>
                         <RadioGroup row>
                             {['poll', 'election'].map( (type, i) => 
@@ -272,6 +273,7 @@ export default () => {
                     <StepContent>
                         <Typography>{t('election_creation.title_question')}</Typography>
                         <ElectionTitleField
+                            termType={election.settings.term_type}
                             value={election.title}
                             onUpdateValue={
                                 (value) => setElection({...election, title: value})
@@ -290,7 +292,7 @@ export default () => {
                     <StepContent>
                         <Typography>
                             {t('election_creation.restricted_question')}
-                            <Tip name='restricted'/>
+                            <Tip name='restricted' electionTermType={election.settings.term_type}/>
                         </Typography>
 
                         <RadioGroup row>
@@ -317,7 +319,7 @@ export default () => {
                             {t('election_creation.template_prompt')}
                         </Typography>
                         <Box style={{height: '10px'}}/> {/*hacky padding*/}
-                        {(election.settings.voter_access === 'closed'? ['email_list', 'id_list'] : ['demo', 'public', 'unlisted']).map((name, i) =>
+                        {(election.settings.voter_access === 'closed'? ['email_list', 'id_list'] : ['demo', 'unlisted']).map((name, i) =>
                             <StartingOption
                                 title={t(`election_creation.${name}_title`)}
                                 description={t(`election_creation.${name}_description`)}

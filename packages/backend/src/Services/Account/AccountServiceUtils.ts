@@ -23,7 +23,7 @@ export default class AccountServiceUtils {
         try {
             return jwt.verify(token, key);
         } catch (e: any) {
-            Logger.warn(req, "Invalid JWT signature");
+            Logger.warn(req, "JWT Verify Error: ", e.message);
             throw new Unauthorized();
         }
     };

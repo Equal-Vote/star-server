@@ -13,6 +13,22 @@
         "cwd": "${workspaceRoot}/backend",
         "internalConsoleOptions": "openOnSessionStart",
         "skipFiles": ["<node_internals>/**", "node_modules/**"]
+      },
+      {
+        "name": "Vite Frontend Debug",
+        "type": "chrome",
+        "request": "launch",
+        "url": "http://localhost:3000",
+        "webRoot": "${workspaceFolder}/packages/frontend/src",
+        "sourceMaps": true,
+        "skipFiles": ["<node_internals>/**"],
+        "preLaunchTask": "Start All",
+        "postDebugTask": "Terminate All",
+        "runtimeArgs": ["--remote-debugging-port=9222"],
+        "env": {
+          "NODE_ENV": "development"
+        }
       }
     ]
   }
+  

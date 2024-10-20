@@ -1,4 +1,4 @@
-import { Box, Grid, Paper } from "@mui/material";
+import { Box, Grid, Pagination, Paper } from "@mui/material";
 import React from "react";
 import MatrixViewer from "./MatrixViewer";
 import IconButton from '@mui/material/IconButton'
@@ -41,7 +41,7 @@ const GenericDetailedStepsWidget = ({ title, results, rounds}: {title: string, r
   </div>
 }
 
-function STARResultsViewer({ results, rounds, t }: {results: starResults, rounds: number, t: Function }) {
+function STARResultsViewer({ results, rounds, t, filterRandomFromLogs }: {results: starResults, rounds: number, t: Function, filterRandomFromLogs: boolean }) {
   let i = 0;
   const roundIndexes = Array.from({length: rounds}, () => i++);
 
@@ -55,19 +55,30 @@ function STARResultsViewer({ results, rounds, t }: {results: starResults, rounds
       <WinnerResultTabs numWinners={rounds}>
         {roundIndexes.map((i) => <STARResultSummaryWidget key={i} results={results} roundIndex={i} t={t}/>)}
       </WinnerResultTabs>
-      <DetailExpander>
-        <STARDetailedResults results={results} rounds={rounds} t={t}/>
-        <DetailExpander level={1}>
-          <WidgetContainer>
-            <Widget title={t('results.star.detailed_steps_title')}>
-              <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t}/>
-            </Widget>
-            <Widget title={t('results.star.equal_preferences_title')}>
-              <ResultsBarChart data={noPrefStarData} xKey='count' percentage={true} sortFunc={false}/>
-            </Widget>
-          </WidgetContainer>
+      {rounds == 1 &&
+        <DetailExpander>
+          <STARDetailedResults results={results} rounds={rounds} t={t}/>
+          <DetailExpander level={1}>
+            <WidgetContainer>
+              <Widget title={t('results.star.detailed_steps_title')}>
+                <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
+              </Widget>
+              <Widget title={t('results.star.equal_preferences_title')}>
+                <ResultsBarChart data={noPrefStarData} xKey='count' percentage={true} sortFunc={false}/>
+              </Widget>
+            </WidgetContainer>
+          </DetailExpander>
         </DetailExpander>
-      </DetailExpander>
+      }
+      {rounds > 1 &&
+        <DetailExpander>
+            <WidgetContainer>
+              <Widget wide title={t('results.star.detailed_steps_title')}> 
+                <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
+              </Widget>
+            </WidgetContainer>
+        </DetailExpander>
+      }
     </>
   );
 }
@@ -251,49 +262,41 @@ function ResultViewer({ methodKey, results, children }:{methodKey: string, resul
 }
 
 function PRResultsViewer({ result, t }: {result: allocatedScoreResults, t: Function}) {
+  const [page, setPage] = useState(1);
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+
+  const tabulationRows = result.summaryData.candidates.map(({index, name}) => {
+    return [name].concat(
+      (result.summaryData.weightedScoresByRound as Array<number[]>).map(counts => counts[index] == 0? '' : '' + Math.round(counts[index]*10)/10)
+    )
+  });
+
+  tabulationRows.unshift([t('results.star_pr.table_columns')].concat([...Array(result.summaryData.weightedScoresByRound.length).keys()].map(i =>
+    t('results.star_pr.round_column', {n: i+1})
+  )))
 
   return (
-    <div>
-      <h2>Summary</h2>
-      <p>Voting Method: Proportional STAR Voting</p>
-      <p>{`Winners: ${result.elected.map((winner) => winner.name).join(', ')}`}</p>
-      <p>{`Number of voters: ${result.summaryData.nValidVotes}`}</p>
-      <h2>Detailed Results</h2>
-      <h3>Scores By Round</h3>
-      <table className='matrix'>
-        <thead className='matrix'>
-          <tr className='matrix'>
-            <th className='matrix'> Candidate</th>
-            {result.elected.map((c, n) => (
-              <th className='matrix' key={`h${n}`} >Round {n + 1} </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className='matrix'>
-          {/* Loop over each candidate, for each loop over each round and return score */}
-          {/* Data is stored in the transpose of the desired format which is why loops look weird */}
-          {result.summaryData.weightedScoresByRound[0].map((col, cand_ind) => (
-            <tr className='matrix' key={`d${cand_ind}`}>
-              <th className='matrix' key={`dh${cand_ind}`} >{result.summaryData.candidates[cand_ind].name}</th>
-              {result.summaryData.weightedScoresByRound.map((row, round_ind) => {
-                const score = Math.round(result.summaryData.weightedScoresByRound[round_ind][cand_ind] * 10) / 10
-                return (
-                  result.elected[round_ind].index === result.summaryData.candidates[cand_ind].index ?
-                    <td className='highlight' key={`c${cand_ind},${round_ind}`}>
-                      <h3>{ score }</h3>
-                    </td>
-                    :
-                    <td className='matrix' key={`c${cand_ind},${round_ind}`}>
-                      <h3>{score}</h3>
-                    </td>
-                )
-              }
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <WidgetContainer>
+        <Widget title={t('results.star_pr.chart_title')}>
+          <ResultsBarChart
+            data={
+              result.summaryData.weightedScoresByRound[page-1].map((totalScore, i) => ({
+                name: result.summaryData.candidates[i].name,
+                votes: Math.round(totalScore*10)/10,
+              }))
+            }
+            sortFunc = {false}
+          />
+            <Pagination count={result.summaryData.weightedScoresByRound.length} page={page} onChange={handleChange} />
+          </Widget>
+        <Widget title={t('results.star_pr.table_title')}>
+          <ResultsTable className='starPRTable' data={tabulationRows}/>
+        </Widget>
+      </WidgetContainer>
+    </>
   )
 }
 
@@ -306,19 +309,16 @@ type ResultsProps = {
 
 export default function Results({ title, raceIndex, race, result }: ResultsProps) {
   const { election, voterAuth, refreshElection, permissions, updateElection } = useElection();
-  let showTitleAsTie = ['random', '5-star'].includes(result.results.tieBreakType);
+  let showTitleAsTie = ['random', 'five_star'].includes(result.results.tieBreakType);
   // added a null check for sandbox support
   let removeTieBreakFromTitle = (election?.settings.break_ties_randomly ?? false) && result.results.tieBreakType == 'random';
-  // quick hack for basic tie title support
-  if(!showTitleAsTie && result.votingMethod === "STAR"){
-    // copied from STARResultDetailedStepsWidget.tsx
-    const showTieBreakerWarning = (result.results as starResults).roundResults.some(round => (round.logs.some(log => (log.includes('tiebreaker')))));
-    if(showTieBreakerWarning) showTitleAsTie = true;
-  }
-
-  const {t} = useSubstitutedTranslation(election.settings.term_type);
+  const {t} = useSubstitutedTranslation(election?.settings?.term_type ?? 'poll');
   return (
     <div>
+      <hr/>
+      <Typography variant="h3" component="h3" sx={{marginBottom: 2}}>
+          {race.title}
+      </Typography>
       <div className="flexContainer" style={{textAlign: 'center'}}>
         <Box sx={{pageBreakAfter:'avoid', pageBreakInside:'avoid'}}>
         {result.results.summaryData.nValidVotes == 0 && <h2>{t('results.waiting_for_results')}</h2>}
@@ -340,7 +340,7 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
         {result.results.summaryData.nValidVotes > 1 &&
           <>
           {result.votingMethod === "STAR" && <ResultViewer methodKey='star' results={result.results}>
-              <STARResultsViewer results={result.results} rounds={race.num_winners} t={t}/>
+              <STARResultsViewer results={result.results} rounds={race.num_winners} t={t} filterRandomFromLogs={removeTieBreakFromTitle}/>
           </ResultViewer> }
 
           {result.votingMethod === "Approval" && <ResultViewer methodKey='approval' results={result.results}>
@@ -368,6 +368,12 @@ export default function Results({ title, raceIndex, race, result }: ResultsProps
 
 
           {result.votingMethod === "IRV" &&
+            <ResultViewer methodKey='rcv' results={result.results}>
+              <IRVResultsViewer results={result.results} t={t}/>
+            </ResultViewer>
+          }
+
+          {result.votingMethod === "STV" &&
             <ResultViewer methodKey='rcv' results={result.results}>
               <IRVResultsViewer results={result.results} t={t}/>
             </ResultViewer>

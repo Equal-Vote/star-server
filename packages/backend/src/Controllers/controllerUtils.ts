@@ -19,7 +19,7 @@ export async function expectValidElectionFromRequest(req:IRequest):Promise<Elect
     const validationErr = electionValidation(inputElection);
     if (validationErr) {
         Logger.info(req, "Invalid Election: " + validationErr, inputElection);
-        throw new BadRequest("Invalid Election");
+        throw new BadRequest("Invalid Election " + validationErr);
     }
     return inputElection;
 }

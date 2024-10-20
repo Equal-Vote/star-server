@@ -15,7 +15,7 @@ export default () => {
         <Box sx={{
             display: 'flex',
             flexDirection: 'column',
-            backgroundColor: themeSelector.mode === 'darkMode' ? 'brand.gray5' : 'brand.gray1',
+            backgroundColor: 'darkShade.main',
             clip: 'unset',
             width: '100%',
             p: { xs: 2},
@@ -25,7 +25,7 @@ export default () => {
                 maxWidth: '1300px',
                 margin: 'auto',
             }}>
-                <Typography variant='h4' sx={{textAlign: 'center'}}>{t('landing_page.pricing.title')}</Typography>
+                <Typography variant='h4'color={'darkShade.contrastText'}  sx={{textAlign: 'center'}}>{t('landing_page.pricing.title')}</Typography>
             </Box>
             <Box sx={{
                 display: 'flex',

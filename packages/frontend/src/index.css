@@ -49,6 +49,45 @@
   --dark-bkg-gray: #1F1F1F;
 }
 
+.racePageStepper .MuiStepConnector-line {
+  opacity: 0;
+}
+
+.heroBallot > div{
+  /* border-color: rgba(0, 0, 0, .7); */
+  border-color: #A9C8CC;
+  border-radius: 8px;
+  border-width: 2px;
+  overflow: hidden;
+}
+
+.heroBallot > div{
+  background: #E0F0F3;
+}
+
+.heroBallot .hiddenInHero{
+  display: none;
+}
+
+.styledTextField > div > fieldset{
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  /* border-color: rgba(0, 0, 0, .7); */
+  border-color: #A9C8CC;
+  border-width: 2px;
+}
+
+styledTextField:hover > div > fieldset{
+  opacity: .7; /* Hack to make the hover color less intense */
+}
+
+a {
+  color: var(--brand-green);
+}
+
+.recharts-surface {
+  overflow: visible;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -64,7 +103,6 @@ code {
 }
 
 .resultTable{
-  width: 100%;
   border: 1px solid black;
   margin: 0;
   border-collapse: collapse;
@@ -84,7 +122,8 @@ code {
   border: 1px solid black;
 }
 
-.resultTable tr:nth-child(1) > td{
+
+.starScoreTable tr:nth-child(1) > td{
   background: var(--brand-gold);
 }
 
@@ -95,8 +134,18 @@ code {
 .starRunoffTable tr:nth-child(3) > td{
   background: var(--brand-gray-1);
 }
+
 .starRunoffTable tr:nth-child(4) > td{
   background: var(--brand-gray-2);
+}
+
+
+.approvalTable tr:nth-child(1) > td{
+  background: var(--brand-gold);
+}
+
+.chooseOneTable tr:nth-child(1) > td{
+  background: var(--brand-gold);
 }
 
 .login-form {
@@ -256,6 +305,12 @@ code {
   background-color: black;
 }
 
+.circle.alert,
+.oval.alert {
+  background-color: var(--ltbrand-red);
+  transition: background-color 400ms;
+}
+
 .circle.unblurred:hover,
 .oval.unblurred:hover {
   background-color: var(--ballot-bubble-hover-ltblue);
@@ -270,6 +325,11 @@ code {
   background-color: var(--brand-black);
   color: var(--ballot-bubble-filled-text-gray);
   transition: color 200ms;
+}
+
+.circle.alert:hover, .oval.alert:hover {
+  background-color: var(--ltbrand-red);
+  transition: background-color 400ms;
 }
 
 .circle p {
@@ -344,11 +404,6 @@ code {
 .heroShrink {
   transform: scale(1);
   transition: transform .1s ease-out;
-}
-
-/* HACK: The log statements were widening the display and this is a quick fix */
-.detailedSteps{
-  max-width: 550px;
 }
 
 .winnerResult{

@@ -22,6 +22,32 @@ describe("IRV Tests", () => {
         expect(results.voteCounts[0]).toStrictEqual([5,2,1,1]);  
         
     })
+
+    test("Multiwinner ", () => {
+        // Simple multiwinner test, shows first winner's votes transfer correctly
+        const candidates = ['Alice', 'Bob', 'Carol', 'Dave']
+
+        const votes = [
+            [1, 2, 3, 4],
+            [1, 2, 3, 4],
+            [1, 2, 3, 4],
+            [1, 2, 3, 4],
+            [1, 3, 2, 4],
+            [2, 1, 3, 4],
+            [2, 1, 3, 4],
+            [2, 3, 1, 4],
+            [2, 3, 4, 1],
+        ]
+        const results = IRV(candidates, votes, 2)
+        expect(results.elected.length).toBe(2); 
+        expect(results.elected[0].name).toBe('Alice');
+        expect(results.elected[1].name).toBe('Bob');
+        expect(results.voteCounts.length).toBe(2); 
+        expect(results.voteCounts[0]).toStrictEqual([5,2,1,1]);  
+        expect(results.voteCounts[1]).toStrictEqual([0,6,2,1]);  
+        
+    })
+
     test("2 round test", () => {
         // Majority can't be found in first round
         const candidates = ['Alice', 'Bob', 'Carol']

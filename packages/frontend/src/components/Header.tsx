@@ -71,12 +71,10 @@ const Header = () => {
         }
     ];
 
-    const [title, _] = useLocalStorage('title_override', process.env.REACT_APP_TITLE);
-
     const returnToClassicContext = useContext(ReturnToClassicContext);
 
     return (
-        <AppBar className="navbar" position="sticky" sx={{ backgroundColor: "black", '@media print': {display: 'none', boxShadow: 'none'}}}>
+        <AppBar className="navbar" position="sticky" sx={{ backgroundColor: "darkShade.main", '@media print': {display: 'none', boxShadow: 'none'}}}>
             <Toolbar>
                 {/**** MOBILE HAMBURGER MENU ****/}
                 <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
@@ -130,16 +128,22 @@ const Header = () => {
                 <IconButton
                     size="large"
                     href="/"
-                    sx={{display: 'flex', gap: 1, flexGrow: {xs: '1', md: '0'}}}>
-                        <Avatar src='/favicon.png'/>
+                    sx={{display: 'flex', gap: 1, flexGrow: {xs: '1', md: '0'}, mr: {xs: 0, md: 5}}}>
+                        {/* I don't remember what the margin right 5 was for, but I added xs since it was breaking mobile*/}
+                        {
+                            /* I thought the favicon looked a bit too busy */
+                            /*<Avatar src='/favicon-local.png'/>*/
+                        }
+                        {/* top should be 18.8% of the height*/}
+                        <Box component="img" sx={{position: 'relative', height: '50px', top: '7px'}} src='/logo.png'/>
                 </IconButton>
 
                 {/**** DESKTOP OPTIONS ****/}
                 <Box
-                    sx={{ flexGrow: 100, flexWrap: 'wrap', display: { xs: 'none', md: 'flex' }, gap: 2, rowGap: 0 }}>
+                    sx={{ flexGrow: 100, flexWrap: 'wrap', display: { xs: 'none', md: 'flex' }, gap: 4, rowGap: 0 }}>
                     {navItems.map((item, i) => 
                         <Button key={`desktop-nav-${i}`} href={item.href} target={item.target}>
-                            <Typography sx={navTextSx} color={headerTextColor}>
+                            <Typography variant="h6" sx={navTextSx} color={headerTextColor} textTransform={'none'}>
                                 {item.text}
                             </Typography>
                         </Button>
@@ -153,10 +157,10 @@ const Header = () => {
                 </Box>
 
                 {/**** ACCOUNT OPTIONS ****/}
-                <Box sx={{ flexGrow: 0, display: 'flex' }}>
+                <Box sx={{ flexGrow: 0, display: 'flex', gap: 4 }}>
                     {authSession.isLoggedIn() && <>
                         <Button color='inherit' onClick={() => createElectionContext.openDialog()} sx={{display: { xs: 'none', md: 'flex' }}}>
-                            <Typography sx={navTextSx} color={headerTextColor}>
+                            <Typography variant="h6" sx={navTextSx} color={headerTextColor} textTransform={'none'}>
                                 {t('nav.new_election')}
                             </Typography>
                         </Button>
@@ -172,7 +176,7 @@ const Header = () => {
                             <AccountCircleIcon />
                         </IconButton>
                         <Button color='inherit' onClick={handleOpenUserMenu} sx={{display: { xs: 'none', md: 'flex' }}}>
-                            <Typography sx={navTextSx} color={headerTextColor}>
+                            <Typography variant="h6" sx={navTextSx} color={headerTextColor} textTransform={'none'}>
                                 {t('nav.greeting', {name: authSession.getIdField('given_name')})}
                             </Typography>
                             <KeyboardArrowDownRoundedIcon sx={{transition: 'transform .2s', '&:hover': {transform: 'translateY(3px)'}}}/>

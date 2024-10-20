@@ -106,7 +106,7 @@ function getSummaryData(candidates: string[], parsedData: IparsedData, randomTie
     let nSupported = 0
     for (let i = 0; i < nCandidates; i++) {
       let iRank = vote[i]
-      if (iRank === 0) {
+      if (iRank === 0 || iRank === null) {
         iRank = nCandidates
       }
       rankHist[i][iRank-1] += 1
@@ -183,6 +183,8 @@ function runRankedRobinRound(summaryData: rankedRobinSummaryData, remainingCandi
   const roundResults: roundResults = {
     winners: [],
     runner_up: [],
+    tied: [],
+    tieBreakType: 'none',
     logs: [],
   }
 

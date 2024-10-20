@@ -69,10 +69,20 @@ export interface rankedRobinSummaryData extends genericSummaryData {
 
 export interface irvSummaryData extends rankedRobinSummaryData { }
 
+export type tabulatorLog = string | tabulatorLogObject;
+
+interface tabulatorLogObject {
+    key: string,
+    [key: string]: string | number | string[]
+}
+
+type tieBreakType = 'none' | 'score' | 'five_star' | 'random';
 export interface roundResults {
     winners: candidate[],
     runner_up: candidate[],
-    logs: string[],
+    tied: candidate[],
+    tieBreakType: tieBreakType,
+    logs: tabulatorLog[],
 }
 
 interface genericResults {
@@ -81,7 +91,7 @@ interface genericResults {
     other: candidate[],
     roundResults: roundResults[],
     summaryData: genericSummaryData,
-    tieBreakType: string,
+    tieBreakType: tieBreakType,
 }
 
 export interface starResults extends genericResults {
@@ -109,8 +119,15 @@ export interface rankedRobinResults extends genericResults {
     summaryData: rankedRobinSummaryData,
 }
 
+export interface irvRoundResults {
+    winners: candidate[],
+    eliminated: candidate[],
+    logs: string[],
+}
+
 export interface irvResults extends Omit<genericResults, 'roundResults'> {
     summaryData: rankedRobinSummaryData,
+    roundResults: irvRoundResults[],
     logs: string[],
     voteCounts: number[][],
     exhaustedVoteCounts: number[],
@@ -135,6 +152,7 @@ export type ElectionResults = {
 } | {
     votingMethod: 'Plurality',
     results: pluralityResults
+} | {
+    votingMethod: 'STV',
+    results: irvResults
 }
-
-

@@ -7,9 +7,11 @@ import { ResultsBarChart } from '~/components/util';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import { useTranslation } from 'react-i18next';
+import STAREXtraContext from './STARExtraContext';
 
 const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResults, roundIndex: number, t: Function }) => {
     const [pie, setPie] = useState(false);
+
 
     const prevWinners = results.roundResults
         .filter((_, i) => i < roundIndex)
@@ -28,6 +30,10 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
         .filter((_, i) => !prevWinners.includes(i));
 
     const winnerIndex = results.roundResults[roundIndex].winners[0].index;
+
+    if(results.roundResults[roundIndex].runner_up.length == 0)
+        return <Typography>{t('results.single_candidate_result', {name: histData[0].name})}</Typography>
+
     const runnerUpIndex = results.roundResults[roundIndex].runner_up[0].index;
     const winnerVotes = results.summaryData.preferenceMatrix[winnerIndex][runnerUpIndex];
     const runnerUpVotes = results.summaryData.preferenceMatrix[runnerUpIndex][winnerIndex];
@@ -93,7 +99,9 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
                         <PieChartIcon sx={{transform: 'scale(.7)'}}/>
                     </ToggleButton>
                 </ToggleButtonGroup>
+                <STAREXtraContext results={results} />
             </Widget>
+            {/* <STAREXtraContext results={results} /> */}
         </WidgetContainer>
         </Box>
     );

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import GenericBallotView from "./GenericBallotView";
+import GenericBallotView from "./GenericBallotView/GenericBallotView";
 import Typography from '@mui/material/Typography';
 import { BallotContext } from "./VotePage";
 

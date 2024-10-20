@@ -54,6 +54,7 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
     // Run election rounds until there are no remaining candidates
     // Keep running elections rounds even if all seats have been filled to determine candidate order
 
+
     // Normalize scores array
     var scoresNorm = normalizeArray(parsedData.scores, maxScore);
 
@@ -81,7 +82,10 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
             // sum scores for each candidate
             // weighted_sums[r] = sumArray(weighted_scores[r]);
         });
-        summaryData.weightedScoresByRound.push(weighted_sums.map(w => w.valueOf()))
+        summaryData.weightedScoresByRound.push(weighted_sums.map(w => {
+            return w.valueOf()
+        }))
+
         candidatesByRound.push([...remainingCandidates])
         // get index of winner
         var maxAndTies = indexOfMax(weighted_sums, summaryData.candidates, breakTiesRandomly);
@@ -349,7 +353,7 @@ function findSplitPoint(cand_df_sorted: winner_scores[], quota: typeof Fraction)
     var cumsum = new Fraction(0);
     cand_df_sorted.forEach((c, i) => {
         cumsum = cumsum.add(c.ballot_weight);
-        if (cumsum < quota) {
+        if (cumsum < quota || i == 0) {
             under_quota.push(c);
             under_quota_scores.push(c.weighted_score);
         }

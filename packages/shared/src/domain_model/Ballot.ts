@@ -19,6 +19,13 @@ export interface Ballot {
     head:           boolean;// Head version of this object
 }
 
+export interface AnonymizedBallot {
+    ballot_id:  Uid;    //ID of ballot
+    election_id: Uid;   //ID of election ballot is cast in
+    votes: Vote[];      // One per poll
+    precinct?: string;  // Precint of voter
+}
+
 export interface BallotAction {
     action_type:string;
     actor:Uid;
@@ -53,6 +60,44 @@ export function ballotValidation(election: Election, obj:Ballot): string | null 
     if (!validIds) {
         return "Invalid IDs";
     }
+    const maxRankings = election.settings.max_rankings
+    
+    let outOfBoundsError = ''
+    obj.votes.forEach(vote => {
+    //Checks if the score exceeds max_rankings or number of candidates for ranked elections
+        const race = approvedRaces.find(race => race.race_id === vote.race_id)
+        if (!race) {
+            return
+        }
+        if (['RankedRobin', 'IRV', 'STV'].includes(race.voting_method)) {
+            const numCandidates = race.candidates.length;
+            vote.scores.forEach(score => {
+                    if (score && score.score > numCandidates || (maxRankings && score.score > maxRankings) || score.score < 0) {
+                        outOfBoundsError +=  `Race: ${race.title}, Score: ${score.score}; `;
+                    }
+                })
+        }
 
+        //Checks if the score exceeds 5 for STAR and STAR_PR elections
+         else  if ([ 'STAR', 'STAR_PR'].includes(race.voting_method)) {
+            vote.scores.forEach(score => {
+                    if (score && score.score > 5 || score.score < 0) {
+                        outOfBoundsError +=  `Race: ${race.title}, Score: ${score.score}; `;
+                    }
+                })
+            }
+        //Checks if the score exceeds 1 for Approval and Plurality elections
+         else if (['Approval', 'Plurality'].includes(race.voting_method)) {
+            vote.scores.forEach(score => {
+                    if (score && score.score > 1 || score.score < 0) {
+                        outOfBoundsError +=  `Race: ${race.title}, Score: ${score.score}; `;
+                    }
+                })
+            }
+        
+    });
+    if (outOfBoundsError !== '') {
+        return "The following races have scores that are out of bounds: " + outOfBoundsError;
+    }
     return null;
   }

@@ -1,6 +1,6 @@
 import React from 'react'
 import Typography from '@mui/material/Typography';
-import { Stack } from "@mui/material"
+import { Box, Divider, Stack } from "@mui/material"
 import useElection from '../../ElectionContextProvider';
 import Race from './Race';
 import AddRace from './AddRace';
@@ -9,14 +9,16 @@ export default function Races() {
     const { election } = useElection()
 
     return (
-        <Stack spacing={2}>
-            <Typography gutterBottom variant="h4" component="h4">Races</Typography>
+        <Stack spacing={2} sx={{width: '100%'}}>
+            <Box display='flex' flexDirection='row' gap={4} alignItems='center'>
+                <Typography gutterBottom variant="h4" component="h4">Races</Typography>
+                <AddRace/>
+            </Box>
 
             {election.races?.map((race, race_index) => (
                 <Race race={race} race_index={race_index} />
             ))
             }
-            <AddRace/>
         </Stack >
     )
 }

@@ -4,17 +4,20 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
 import PermissionHandler from "../../PermissionHandler";
 import { useParams } from "react-router";
 import { useGetBallot } from "../../../hooks/useAPI";
-import { formatDate } from "../../util";
+import { epochToDateString, getLocalTimeZoneShort, useSubstitutedTranslation } from "../../util";
 import useElection from "../../ElectionContextProvider";
+import { StyledButton } from "~/components/styles";
+import ShareButton from "../ShareButton";
 
 const ViewBallot = ({ ballot, onClose }) => {
     
     const { election, refreshElection, permissions, updateElection } = useElection()
     const { ballot_id } = useParams();
+    const { t } = useSubstitutedTranslation(election.settings.term_type);
 
     const { data, isPending, error, makeRequest: fetchBallots } = useGetBallot(election.election_id, ballot_id)
 
@@ -30,6 +33,35 @@ const ViewBallot = ({ ballot, onClose }) => {
         <Container>
             {isPending && <div> Loading Data... </div>}
             {myballot &&
+                <>
+                <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
+                    {['draft', 'open', 'closed'].includes(election.state) && election.settings.public_results === true &&
+                        <Box sx={{ width: '100%',  p: 1, px:{xs: 5, sm: 1} }}>
+                            <StyledButton
+                                type='button'
+                                variant='contained'
+                                fullwidth
+                                href={`/${election.election_id}/results`} >
+                                {t('ballot_submitted.results')}
+                            </StyledButton>
+                        </Box>
+                    }
+                    {election.settings.voter_access !== 'closed' &&
+                        <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1}  }}>
+                            <ShareButton url={`${window.location.origin}/${election.election_id}`}/>
+                        </Box>
+                    }
+                    <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1} }}>
+                        <StyledButton
+                            type='button'
+                            variant='contained'
+                            fullwidth
+                            href={'https://www.equal.vote/donate'} >
+                            {t('ballot_submitted.donate')}
+                        </StyledButton>
+                    </Box>
+                </Box>
+
                 <Grid container direction="column" >
                     <Grid item sm={12}>
                         <Typography align='left' variant="h6" component="h6">
@@ -45,7 +77,7 @@ const ViewBallot = ({ ballot, onClose }) => {
                     }
                     <Grid item sm={12}>
                         <Typography align='left' variant="h6" component="h6">
-                            {`Date Submitted: ${formatDate(Number(myballot.date_submitted), election.settings.time_zone)}`}
+                            {`Date Submitted: ${t('datetime', {datetime: epochToDateString(myballot.date_submitted)})}`}
                         </Typography>
                     </Grid>
                     <Grid item sm={12}>
@@ -97,7 +129,7 @@ const ViewBallot = ({ ballot, onClose }) => {
                                     <TableHead>
                                         <TableCell> Action </TableCell>
                                         <TableCell align="right"> Actor </TableCell>
-                                        <TableCell align="right"> Timestamp </TableCell>
+                                        <TableCell align="right"> {`Timestamp (${getLocalTimeZoneShort()})`} </TableCell>
                                     </TableHead>
                                     <TableBody>
                                         {myballot.history.map((history, i) => (
@@ -106,7 +138,7 @@ const ViewBallot = ({ ballot, onClose }) => {
                                                     {history.action_type}
                                                 </TableCell>
                                                 <TableCell align="right" >{history.actor}</TableCell>
-                                                <TableCell align="right" >{formatDate(history.timestamp, election.settings.time_zone)}</TableCell>
+                                                <TableCell align="right" >{ t('listed_datetime', {listed_datetime: history.timestamp} )}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -120,7 +152,7 @@ const ViewBallot = ({ ballot, onClose }) => {
                         </Grid>
                     }
                 </Grid>
-            }
+            </>}
         </Container>
     )
 }

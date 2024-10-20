@@ -8,16 +8,23 @@ import structuredClone from '@ungap/structured-clone';
 import useConfirm from '../../ConfirmationDialogProvider';
 import { v4 as uuidv4 } from 'uuid';
 import { Candidate } from '@equal-vote/star-vote-shared/domain_model/Candidate';
+import { useDeleteAllBallots } from '~/hooks/useAPI';
 
 export const useEditRace = (race, race_index) => {
     const { election, refreshElection, permissions, updateElection } = useElection()
+    const { makeRequest: deleteAllBallots } = useDeleteAllBallots(election.election_id);
     const confirm = useConfirm();
     const defaultRace = {
         title: '',
         race_id: '',
         num_winners: 1,
         voting_method: 'STAR',
-        candidates: [] as Candidate[],
+        candidates: [
+            { 
+                candidate_id: uuidv4(),
+                candidate_name: ''
+            },
+        ] as Candidate[],
         precincts: undefined,
     }
     const [editedRace, setEditedRace] = useState(race !== null ? race : defaultRace)
@@ -37,7 +44,7 @@ export const useEditRace = (race, race_index) => {
             raceNumWinners: '',
             candidates: ''
         })
-    }, [race_index])
+    }, [race, race_index])
 
     const applyRaceUpdate = (updateFunc: (race: iRace) => any) => {
         const raceCopy: iRace = structuredClone(editedRace)
@@ -48,7 +55,6 @@ export const useEditRace = (race, race_index) => {
     const validatePage = () => {
         let isValid = true
         let newErrors: any = {}
-        if (election.races.length > 1) {
             if (!editedRace.title) {
                 newErrors.raceTitle = 'Race title required';
                 isValid = false;
@@ -61,7 +67,18 @@ export const useEditRace = (race, race_index) => {
                 newErrors.raceDescription = 'Race title must be less than 1000 characters';
                 isValid = false;
             }
-        }
+            if (election.races.some(race => {
+                // Check if the race ID is the same
+                if (race.race_id != editedRace.race_id) {
+                    // Check if the title is the same
+                    if (race.title === editedRace.title) return true;
+                    return false;
+                }
+            })) {
+                newErrors.raceTitle = 'Races must have unique titles';
+                isValid = false;
+            }
+        
         if (editedRace.num_winners < 1) {
             newErrors.raceNumWinners = 'Must have at least one winner';
             isValid = false;
@@ -80,6 +97,11 @@ export const useEditRace = (race, race_index) => {
             newErrors.candidates = 'Candidates must have unique names';
             isValid = false;
         }
+        // Check if any candidates are empty
+        if (editedRace.candidates.some(candidate => candidate.candidate_name === '')) {
+            newErrors.candidates = 'Candidates must have names';
+            isValid = false;
+        }
         setErrors(errors => ({ ...errors, ...newErrors }))
 
         // NOTE: I'm passing the element as a function so that we can delay the query until the elements have been updated
@@ -90,23 +112,40 @@ export const useEditRace = (race, race_index) => {
 
     const onAddRace = async () => {
         if (!validatePage()) return false
-        const success = await updateElection(election => {
+        let success = await updateElection(election => {
             election.races.push({
                 ...editedRace,
                 race_id: uuidv4()
             })
         })
+        success = success && await deleteAllBallots()
         if (!success) return false
         await refreshElection()
         setEditedRace(defaultRace)
         return true
     }
 
+    const onDuplicateRace = async () => {
+        if (!validatePage()) return false
+        let success = await updateElection(election => {
+            election.races.push({
+                ...editedRace,
+                title: 'Copy Of ' + editedRace.title,
+                race_id: uuidv4()
+            })
+        })
+        success = success && await deleteAllBallots()
+        if (!success) return false
+        await refreshElection()
+        return true
+    }
+
     const onSaveRace = async () => {
         if (!validatePage()) return false
-        const success = await updateElection(election => {
+        let success = await updateElection(election => {
             election.races[race_index] = editedRace
         })
+        success = success && await deleteAllBallots()
         if (!success) return false
         await refreshElection()
         return true
@@ -115,14 +154,15 @@ export const useEditRace = (race, race_index) => {
     const onDeleteRace = async () => {
         const confirmed = await confirm({ title: 'Confirm', message: 'Are you sure?' })
         if (!confirmed) return false
-        const success = await updateElection(election => {
+        let success = await updateElection(election => {
             election.races.splice(race_index, 1)
         })
-        if (!success) return true
+        success = success && await deleteAllBallots()
+        if (!success) return false
         await refreshElection()
         return true
     }
 
-    return { editedRace, errors, setErrors, applyRaceUpdate, onSaveRace, onDeleteRace, onAddRace }
+    return { editedRace, errors, setErrors, applyRaceUpdate, onSaveRace, onDeleteRace, onAddRace, onDuplicateRace }
 
 }

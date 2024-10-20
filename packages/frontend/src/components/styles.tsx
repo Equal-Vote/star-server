@@ -4,14 +4,15 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useState } from "react";
 import en from './en.yaml';
 import { useSubstitutedTranslation } from "./util";
+import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
 // this doesn't work yet, I filed a github issue
 // https://github.com/Modyfi/vite-plugin-yaml/issues/27
 type TipName = keyof typeof en.tips;
 
 
-export const Tip = (props: {name: TipName}) => {
-    const {t} = useSubstitutedTranslation('election');
+export const Tip = (props: {name: TipName, electionTermType: TermType | undefined}) => {
+    const {t} = useSubstitutedTranslation(props.electionTermType ?? 'election');
     const [clicked, setClicked] = useState(false);
     const [hovered, setHovered] = useState(false);
     return <ClickAwayListener onClickAway={() => setClicked(false)}>
@@ -28,7 +29,9 @@ export const Tip = (props: {name: TipName}) => {
             componentsProps={{
                 tooltip: {
                     sx: {
-                        background: '#888888FF'
+                        background: '#2B344AFF', 
+                        border: '2px solid white',
+                        //boxShadow: '0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)',
                     }
                 }
             }}
@@ -48,8 +51,10 @@ export const StyledButton = (props) => (
             m: 0,
             boxShadow: 2,
             backgroundColor: 'primary.main',
+            fontFamily: 'Montserrat, Verdana, sans-serif',
             fontWeight: 'bold',
             fontSize: 18,
+            color: 'primary.contrastText',
         }}
         {...props}
     >
@@ -59,11 +64,13 @@ export const StyledButton = (props) => (
 
 export const StyledTextField = (props) => (
     <TextField
+        className='styledTextField'
         fullWidth
         sx={{
             m: 0,
             p: 0,
-            boxShadow: 2,
+            boxShadow: 0, // this is set manually in index.css. By default MUI creates weird corner artifacts
+            backgroundColor: 'lightShade.main',
         }}
         {...props}
     >

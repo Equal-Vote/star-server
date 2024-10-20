@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import Grid from "@mui/material/Grid";
 import { Box, IconButton, Paper, Typography } from "@mui/material"
+import ElectionStateChip from './ElectionStateChip';
 import { StyledButton } from '../../styles';
 import useElection from '../../ElectionContextProvider';
-import { formatDate } from '../../util';
+import { useSubstitutedTranslation } from '../../util';
 import EditIcon from '@mui/icons-material/Edit';
 import ElectionDetailsForm from './ElectionDetailsForm';
 import { useEditElectionDetails } from './useEditElectionDetails';
@@ -11,6 +12,8 @@ import { useEditElectionDetails } from './useEditElectionDetails';
 export default function ElectionDetailsInlineForm() {
     const { editedElection, applyUpdate, onSave, errors, setErrors } = useEditElectionDetails()
     const { election } = useElection()
+
+    const {t} = useSubstitutedTranslation(election.settings.term_type, {time_zone: election.settings.time_zone});
 
     const [open, setOpen] = useState(election.title.length==0);
     const handleOpen = () => setOpen(true);
@@ -20,37 +23,44 @@ export default function ElectionDetailsInlineForm() {
         const success = await onSave()
         if (success) handleClose()
     }
+    const timeRange = useMemo(() => {
+        if (election.start_time && election.end_time) {
+            return t('admin_home.time_start_to_end', {datetime: election.start_time, datetime2: election.end_time})
+        } else if (election.start_time) {
+            return t('admin_home.time_only_start', {datetime: election.start_time})
+        } else if (election.end_time) {
+            return t('admin_home.time_only_end', {datetime: election.end_time})
+        } else {
+            return t('admin_home.time_none')
+        }
+    }, [election.start_time, election.end_time, election.settings.time_zone])
 
     return (
-        <Paper elevation={3}>
+        <Paper elevation={3} sx={{width:'100%'}}>
+        <>
             {!open &&
                 <Grid container
                     sx={{
                         m: 0,
-                        p: 1,
+                        p: 4,
                     }}
                 >
-                    <Grid xs={12}>
-                        <Typography gutterBottom variant="h4" component="h4">
-                            Election Title: {election.title}
-                        </Typography>
+                    <Grid item container xs={11}>
+                        <Grid item xs={12}>
+                            <Typography variant="h3" component="h4">
+                                {election.title}
+                                <ElectionStateChip state={election.state} />
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography gutterBottom variant="h6" component="h5" sx={{opacity: election.description == '' ? .5 : 1}}>
+                                {election.description == '' ? t('admin_home.description_unset') : election.description}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography sx={{mt: 2, opacity: (election.start_time || election.end_time)? 1 : .5}} component="p" variant='subtitle2'>{timeRange}</Typography>
+                        </Grid>
                     </Grid>
-                    <Grid xs={12}>
-                        <Typography gutterBottom component="p">
-                            Description: {election.description}
-                        </Typography>
-                    </Grid>
-                    <Grid xs={12}>
-                        <Typography gutterBottom component="p">
-                            Start Time: {election.start_time ? formatDate(election.start_time, election.settings.time_zone) : 'none'}
-                        </Typography>
-                    </Grid>
-                    <Grid xs={12}>
-                        <Typography gutterBottom component="p">
-                            End Time: {election.end_time ? formatDate(election.end_time, election.settings.time_zone) : 'none'}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={11}></Grid>
                     <Grid item xs={1} sx={{ m: 0, p: 1 }}>
 
                         <Box sx={{}}>
@@ -83,7 +93,7 @@ export default function ElectionDetailsInlineForm() {
                             fullWidth={false}
                             onClick={handleClose}
                             disabled={election.title.length==0}>
-                            Cancel
+                            {t('keyword.cancel')}
                         </StyledButton>
                     </Box>
                     <Box sx={{ p: 1 }}>
@@ -92,12 +102,12 @@ export default function ElectionDetailsInlineForm() {
                             variant="contained"
                             fullWidth={false}
                             onClick={() => handleSave()}>
-                            Save
+                            {t('keyword.save')}
                         </StyledButton>
                     </Box>
-
                 </Box>
             </>}
+        </>
         </Paper>
 
     )

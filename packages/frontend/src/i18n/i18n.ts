@@ -7,7 +7,7 @@ import en from './en.yaml';
 i18n
   // detect user language
   // learn more: https://github.com/i18next/i18next-browser-languageDetector
-  .use(LanguageDetector)
+  //.use(LanguageDetector)
   // pass the i18n instance to react-i18next.
   .use(initReactI18next)
   // init i18next
@@ -15,6 +15,9 @@ i18n
   .init({
     debug: true,
     returnObjects: true,
+    // I may need to add whitelist for commaListSeparator in util.tsx to be accurate, but it didn't work
+    // https://github.com/i18next/react-i18next/issues/475
+    // whitelist: ['en'],
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
@@ -22,7 +25,7 @@ i18n
     resources: {
       en: {
         translation: en
-      }
+      },
     }
   });
 

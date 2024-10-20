@@ -65,13 +65,13 @@ const uploadImageController = async (req: ImageRequest, res: Response, next: Nex
       const uploadResult = await parallelUploads3.done();
       const photo_filename = uploadResult.Location;
       Logger.info(req, `File uploaded successfully. ${photo_filename}`);
-      return res.json({ photo_filename });
+      res.json({ photo_filename });
     } catch (e: any) {
       throw new InternalServerError(e);
     }
 }
 
-module.exports = {
+export {
     uploadImageController,
     upload,
 }

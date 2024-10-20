@@ -7,7 +7,8 @@
   "scripts": {
     "test": "npm install && npm test",
     "clean": "npx rimraf dist node_modules ../node_modules",
-    "build": "tsc --project ./"
+    "build": "tsc --project ./ && npm run generate:schema",
+    "generate:schema": "typescript-json-schema tsconfig.json \"*\" --required --out dist/schema.json && node ./fixSchemaRefs.ts"
   },
   "keywords": [],
   "author": "",
@@ -35,6 +36,16 @@
     "./domain_model/*": {
       "types": "./dist/types/domain_model/*.d.ts",
       "default": "./dist/domain_model/*.js"
+    },
+    "./schema.json": {
+      "default": "./dist/schema.json"
     }
+  },
+  "dependencies": {
+    "@equal-vote/star-vote-backend": "^1.0.0",
+    "@equal-vote/star-vote-frontend": "^0.1.0",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
+    "typescript-json-schema": "^0.65.1"
   }
 }
