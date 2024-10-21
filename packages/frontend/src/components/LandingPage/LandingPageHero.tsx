@@ -112,8 +112,6 @@ export default ({}) => {
             <Box display='flex' flexDirection='column' sx={{
                 alignItems: 'center',
                 textAlign: 'center',
-                width: {xs: '100%', md: '600px'}, // not the same ax maxWidth 600px!, we want to make sure the carousel doesn't effect size on larger screens
-                minHeight: '600px'
             }}>
                 <Typography variant="h4" color={'lightShade.contrastText'}> {t('landing_page.hero.title')} </Typography>
                 <Box width='90%' display='flex' flexDirection='row' justifyContent='space-between' sx={{alignItems: 'center', paddingBottom: 3}}>
