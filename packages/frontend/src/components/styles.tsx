@@ -45,6 +45,7 @@ export const Tip = (props: {name: TipName, electionTermType: TermType | undefine
 
 export const StyledButton = (props) => (
     <Button
+        role='button'
         fullWidth
         sx={{
             p: 1,
