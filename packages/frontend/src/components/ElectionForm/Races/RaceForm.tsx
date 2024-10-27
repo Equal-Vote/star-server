@@ -38,7 +38,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
     )
     const confirm = useConfirm();
     const inputRefs = useRef([]);
-    const ephemeralCandidates = useMemo(() => 
+    const ephemeralCandidates:Candidate[] = useMemo(() => 
         [...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }], 
         [editedRace.candidates]
     );   
@@ -80,8 +80,8 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
         }
     }, [confirm, editedRace.candidates.length, applyRaceUpdate, setErrors]);
     // Handle tab and shift+tab to move focus between candidates
-    const handleKeyDown = useCallback((event, index) => {
-        
+    const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+        const target = event.target as HTMLInputElement;
         if (event.key === 'Tab' && event.shiftKey) {
             // Move focus to the previous candidate
             event.preventDefault();
@@ -95,7 +95,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
             if (nextIndex < ephemeralCandidates.length && inputRefs.current[nextIndex]) {
                 inputRefs.current[nextIndex].focus();
             }
-        } else if (event.key === 'Backspace' && event.target.value === '' && index > 0) {
+        } else if (event.key === 'Backspace' && target.value === '' && index > 0) {
             // Move focus to the previous candidate when backspacing on an empty candidate
             event.preventDefault();
             inputRefs.current[index - 1].focus();
@@ -113,6 +113,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                     <TextField
                         id={`race-title-${String(race_index)}`}
+                        disabled={election.state != 'draft'}
                         name="title"
                         label="Title"
                         type="text"
@@ -140,6 +141,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                         id={`race-description-${String(race_index)}`}
                         name="description"
                         label="Description"
+                        disabled={election.state != 'draft'}
                         multiline
                         fullWidth
                         type="text"
@@ -189,7 +191,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
 
             <Stepper nonLinear activeStep={activeStep} orientation="vertical" sx={{my: 3}}>
                 <Step>
-                    <StepButton onClick={() => setActiveStep(0)}>How many winners?</StepButton>
+                    <StepButton name='edit-multiwinner' onClick={() => setActiveStep(0)}>How many winners?</StepButton>
                     <StepContent>
                         <RadioGroup
                             aria-labelledby="method-family-radio-group"
@@ -203,9 +205,9 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                                 setMethodFamily(e.target.value)
                             }}
                         >
-                            <FormControlLabel value="single_winner" control={<Radio />} label={t('edit_race.single_winner')} sx={{ mb: 0, pb: 0 }} />
-                            <FormControlLabel value="bloc_multi_winner" control={<Radio />} label={t('edit_race.bloc_multi_winner')} sx={{ mb: 0, pb: 0 }} />
-                            <FormControlLabel value="proportional_multi_winner" control={<Radio />} label={t('edit_race.proportional_multi_winner')} sx={{ mb: 0, pb: 0 }} />
+                            <FormControlLabel disabled={election.state != 'draft'} value="single_winner" control={<Radio />} label={t('edit_race.single_winner')} sx={{ mb: 0, pb: 0 }} />
+                            <FormControlLabel disabled={election.state != 'draft'} value="bloc_multi_winner" control={<Radio />} label={t('edit_race.bloc_multi_winner')} sx={{ mb: 0, pb: 0 }} />
+                            <FormControlLabel disabled={election.state != 'draft'} value="proportional_multi_winner" control={<Radio />} label={t('edit_race.proportional_multi_winner')} sx={{ mb: 0, pb: 0 }} />
                         </RadioGroup>
                         <Box sx={{
                             height: methodFamily == 'single_winner' ? 0 : '105px', // copied from the value for auto
@@ -241,7 +243,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                 </Step>
 
                 <Step>
-                    <StepButton onClick={() => setActiveStep(1)}>Voting Method</StepButton>
+                    <StepButton name='edit-voting-method' onClick={() => setActiveStep(1)}>Voting Method</StepButton>
                     <StepContent>
                         <FormControl component="fieldset" variant="standard">
                             <RadioGroup
@@ -249,28 +251,29 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                                 name="voter-method-radio-buttons-group"
                                 value={editedRace.voting_method}
                                 onChange={(e) => applyRaceUpdate(race => { race.voting_method = e.target.value })}
+                                
                             >
-                                <FormControlLabel value="STAR" control={<Radio />} label="STAR" sx={{ mb: 0, pb: 0 }} />
+                                <FormControlLabel disabled={election.state != 'draft'} value="STAR" control={<Radio />} label="STAR" sx={{ mb: 0, pb: 0 }} />
                                 <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                     Score candidates 0-5
                                 </FormHelperText>
 
                                 {flags.isSet('METHOD_STAR_PR') && <>
-                                    <FormControlLabel value="STAR_PR" control={<Radio />} label="Proportional STAR" />
+                                    <FormControlLabel disabled={election.state != 'draft'} value="STAR_PR" control={<Radio />} label="Proportional STAR" />
                                     <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                         Score candidates 0-5
                                     </FormHelperText>
                                 </>}
 
                                 {flags.isSet('METHOD_RANKED_ROBIN') && <>
-                                    <FormControlLabel value="RankedRobin" control={<Radio />} label="Ranked Robin" />
+                                    <FormControlLabel disabled={election.state != 'draft'} value="RankedRobin" control={<Radio />} label="Ranked Robin" />
                                     <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                         Rank candidates in order of preference
                                     </FormHelperText>
                                 </>}
 
                                 {flags.isSet('METHOD_APPROVAL') && <>
-                                    <FormControlLabel value="Approval" control={<Radio />} label="Approval" />
+                                    <FormControlLabel disabled={election.state != 'draft'} value="Approval" control={<Radio />} label="Approval" />
                                     <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                         Mark all candidates you approve of
                                     </FormHelperText>
@@ -283,11 +286,11 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                                     sx={{ width: '100%', ml: -1 }}>
 
                                     {!showsAllMethods &&
-                                        <IconButton aria-label="Home" onClick={() => { setShowsAllMethods(true) }}>
+                                        <IconButton disabled={election.state != 'draft'} aria-label="Home" onClick={() => { setShowsAllMethods(true) }}>
                                             <ExpandMore />
                                         </IconButton>}
                                     {showsAllMethods &&
-                                        <IconButton aria-label="Home" onClick={() => { setShowsAllMethods(false) }}>
+                                        <IconButton disabled={election.state != 'draft'} aria-label="Home" onClick={() => { setShowsAllMethods(false) }}>
                                             <ExpandLess />
                                         </IconButton>}
                                     <Typography variant="body1" >
@@ -311,20 +314,20 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                                             These voting methods do not guarantee every voter an equally powerful vote if there are more than two candidates.
                                         </FormHelperText>
                                     </Box>
-                                    <FormControlLabel value="Plurality" control={<Radio />} label="Plurality" />
+                                    <FormControlLabel disabled={election.state != 'draft'} value="Plurality" control={<Radio />} label="Plurality" />
                                     <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                         Mark one candidate only. Not recommended with more than 2 candidates.
                                     </FormHelperText>
 
                                     {flags.isSet('METHOD_RANKED_CHOICE') && <>
-                                        <FormControlLabel value="IRV" control={<Radio />} label="Ranked Choice" />
+                                        <FormControlLabel disabled={election.state != 'draft'} value="IRV" control={<Radio />} label="Ranked Choice" />
                                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                             Rank candidates in order of preference, only recommended for educational purposes
                                         </FormHelperText>
                                     </>}
 
                                     {flags.isSet('METHOD_RANKED_CHOICE') && <>
-                                        <FormControlLabel value="STV" control={<Radio />} label="STV" />
+                                        <FormControlLabel disabled={election.state != 'draft'} value="STV" control={<Radio />} label="STV" />
                                         <FormHelperText sx={{ pl: 4, mt: -1 }}>
                                             Proportaionl Version of RCV
                                         </FormHelperText>
@@ -349,7 +352,7 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
             <Stack spacing={2}>
                 {
                     <SortableList
-                        items={ephemeralCandidates}
+                        items={election.state === 'draft' ? ephemeralCandidates : editedRace.candidates}
                         identifierKey="candidate_id"
                         onChange={handleChangeCandidates}
                         renderItem={(candidate, index) => (
@@ -360,9 +363,10 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                                     candidate={candidate}
                                     index={index}
                                     onDeleteCandidate={() => onDeleteCandidate(index)}
-                                    disabled={ephemeralCandidates.length - 1 === index}
-                                    inputRef={el => inputRefs.current[index] = el}
-                                    onKeyDown={event => handleKeyDown(event, index)}/>
+                                    disabled={ephemeralCandidates.length - 1 === index || election.state !== 'draft'}
+                                    inputRef={(el:React.MutableRefObject<any[]>) => inputRefs.current[index] = el}
+                                    onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(event, index)}
+                                    electionState={election.state}/>
                             </SortableList.Item>
                         )}
                     />
