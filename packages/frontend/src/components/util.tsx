@@ -33,7 +33,8 @@ import i18n from "~/i18n/i18n";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
 const rLink = /\[(.*?)\]\((.*?)\)/;
-const rTip = / \!tip\((.*)\)/
+const rBold = /\*\*(.*?)\*\*/;
+const rTip = / \!tip\((.*)\)/;
 
 
 declare namespace Intl {
@@ -121,6 +122,14 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
       })
     }
 
+    const applyBold = (txt, keyPrefix) => {
+      if(typeof txt !== 'string') return txt;
+      return txt.split(rBold).map((str, i) => {
+        if(i%2 == 0) return str
+        return <b key={`b_${keyPrefix}_${i}`}>{str}</b>;
+      })
+    }
+
     const applyTips = (txt, keyPrefix) => {
       if(typeof txt !== 'string') return txt;
       return txt.split(rTip).map((str, i) => {
@@ -138,12 +147,13 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
     // hack for testing if we've missed any text
     // return '----'; 
 
-    if(!rLink.test(txt) && !rTip.test(txt) && !txt.includes('\n')) return txt;
+    if(!rLink.test(txt) && !rTip.test(txt) && !txt.includes('\n') && !rBold.test(txt)) return txt;
 
     return <>
       {applyLinks(txt)
         .map((comp, i) => applyTips(comp, i)).flat()
         .map((comp, i) => applyLineBreaks(comp, i)).flat()
+        .map((comp, i) => applyBold(comp, i)).flat()
       }
     </>
   }

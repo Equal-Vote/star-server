@@ -776,9 +776,42 @@ election_settings:
   
 # Admin Home -> Add/Edit Race
 edit_race:
+  how_many_winners: How many winners?
+  which_voting_method: Which Voting Method?
+  number_of_winners: Number of winners
   single_winner: Single-Winner
   bloc_multi_winner:  Basic Multi-Winner !tip(bloc_multi_winner)
   proportional_multi_winner:  Proportional Multi-Winner !tip(proportional_multi_winner)
+  count_with_family: '**{{count}}** using **{{family}}**'
+  methods:
+    star:
+      title: $t(methods.star.full_name) !tip(star)
+      description: Score candidates 0-5. Recommended for accuracy.
+    star_pr:
+      # !tip(star_pr) we don't have a tip written yet
+      title: $t(methods.star_pr.full_name) 
+      description: Score candidates 0-5. Recommended for accuracy.
+    approval:
+      title: $t(methods.approval.full_name) !tip(approval)
+      description: Mark all the candidates you approve of. Recommended for simplicity.
+    ranked_robin:
+      title: $t(methods.ranked_robin.full_name) !tip(ranked_robin)
+      description: Rank candidates in order of preference. Recommended for ranking.
+    rcv:
+      # !tip(rcv) we don't have a tip written yet
+      title: $t(methods.rcv.full_name)
+      description: Rank candidates in order of preference, only recommended for educational purposes
+    stv:
+      # !tip(stv) we don't have a tip written yet
+      title: $t(methods.stv.full_name)
+      description: Proportaionl Version of RCV
+    choose_one:
+      # !tip(choose_one) we don't have a tip written yet
+      title: $t(methods.choose_one.full_name)
+      description: Mark one candidate only. Not recommended with more than 2 candidates.
+
+                                        
+
 
 # Voters
 
@@ -830,6 +863,10 @@ methods:
     full_name: Ranked Choice Voting
     short_name: RCV
     learn_link: https://www.youtube.com/watch?v=oHRPMJmzBBw
+  stv:
+    full_name: Single Transferable Vote
+    short_name: STV
+    learn_link: https://www.youtube.com/watch?v=ItywbxafCk4
   ranked_robin:
     full_name: Ranked Robin
     short_name: Ranked Robin
