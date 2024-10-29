@@ -6,6 +6,7 @@ import { Election as IElection } from '@equal-vote/star-vote-shared/domain_model
 import { VoterAuth } from '@equal-vote/star-vote-shared/domain_model/VoterAuth';
 import structuredClone from '@ungap/structured-clone';
 import { Share } from '@mui/icons-material';
+import { useSubstitutedTranslation } from './util';
 
 
 export interface IElectionContext {
@@ -14,6 +15,7 @@ export interface IElectionContext {
     refreshElection: Function;
     updateElection: Function;
     permissions: string[];
+    t: Function
 }
 
 
@@ -23,6 +25,7 @@ export const ElectionContext = createContext<IElectionContext>({
     refreshElection: () => false,
     updateElection: () => false,
     permissions: [],
+    t: () => {},
 }
 )
 
@@ -41,6 +44,8 @@ export const ElectionContextProvider = ({ id, children }) => {
         return await editElection({ Election: electionCopy })
     };
 
+    // This should use local timezone by default, consumers will have to call it directly if they want it to use the election timezone
+    const {t} = useSubstitutedTranslation(data?.election?.settings?.term_type ?? 'poll');
 
     return (<ElectionContext.Provider
         value={{
@@ -49,6 +54,7 @@ export const ElectionContextProvider = ({ id, children }) => {
             refreshElection: fetchData,
             updateElection: applyElectionUpdate,
             permissions: data?.voterAuth?.permissions,
+            t,
         }}>
         {data && children}
     </ElectionContext.Provider>

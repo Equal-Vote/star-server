@@ -425,6 +425,16 @@ results:
   method_context: 'Voting Method: {{voting_method}}'
   learn_link_text: How {{voting_method}} works
   head_to_head_title: Head-to-Head Runoffs
+  candidate_selector: '{{candidate}}'
+
+  win_count: '{{count}} Wins'
+  win_count_one: '{{count}} Win'
+
+  tie_count: '{{count}} Ties'
+  tie_count_one: '{{count}} Tie'
+
+  loss_count: '{{count}} Losses'
+  loss_count_one: '{{count}} Loss'
 
   choose_one:
     bar_title: Votes for each {{candidate}}
@@ -759,7 +769,6 @@ election_settings:
   random_candidate_order: Randomize Candidate Order !tip(random_candidate_order)
 
   ballot_updates: Allow Voters To Edit Vote !tip(ballot_updates)
-
 
   public_results: Show Preliminary Results !tip(public_results)
 

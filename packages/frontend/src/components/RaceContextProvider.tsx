@@ -12,21 +12,19 @@ import { ElectionResults } from '@equal-vote/star-vote-shared/domain_model/ITabu
 
 
 export interface IRaceContext {
-  raceIndex: number,
   race: Race,
   results: ElectionResults,
   t: Function
 }
 
 export const RaceContext = createContext<IRaceContext>({
-  raceIndex: 0,
   race: null,
   results: null,
   t: () => {},
 })
 
-export const RaceContextProvider = ({ raceIndex, race, results, t, children }) => {
-    return (<RaceContext.Provider value={{raceIndex, race, results, t}}>
+export const RaceContextProvider = ({ race, results, t, children }) => {
+    return (<RaceContext.Provider value={{race, results, t}}>
         {children}
     </RaceContext.Provider>
     )

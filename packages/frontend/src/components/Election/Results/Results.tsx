@@ -8,7 +8,7 @@ import STARDetailedResults from "./STAR/STARDetailedResults";
 import STARResultDetailedStepsWidget from "./STAR/STARResultDetailedStepsWidget";
 import WinnerResultTabs from "./WinnerResultTabs";
 import { Race } from "@equal-vote/star-vote-shared/domain_model/Race";
-import { allocatedScoreResults, approvalResults, ElectionResults, irvResults, pluralityResults, rankedRobinResults, starResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { allocatedScoreResults, approvalResults, ElectionResults, irvResults, rankedRobinResults, starResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 import useElection from "../../ElectionContextProvider";
 import DetailExpander from "./components/DetailExpander";
 import ResultsTable from "./components/ResultsTable";
@@ -16,8 +16,7 @@ import Widget from "./components/Widget";
 import WidgetContainer from "./components/WidgetContainer";
 import ResultsBarChart from "./components/ResultsBarChart";
 import HeadToHeadWidget from "./components/HeadToHeadWidget";
-import { AnonymizedBallotsContext } from "~/components/AnonymizedBallotsContextProvider";
-import useRace, { IRaceContext, RaceContextProvider } from "~/components/RaceContextProvider";
+import useRace, { RaceContextProvider } from "~/components/RaceContextProvider";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
@@ -290,14 +289,14 @@ function PRResultsViewer() {
   )
 }
 
-export default function Results({ raceIndex, race, results }: {raceIndex: number, race: Race, results: ElectionResults}) {
-  const { election, voterAuth, refreshElection, permissions, updateElection } = useElection();
+export default function Results({ race, results }: {race: Race, results: ElectionResults}) {
+  const { t, election, voterAuth, refreshElection, permissions, updateElection } = useElection();
   let showTitleAsTie = ['random', 'five_star'].includes(results.tieBreakType);
   // added a null check for sandbox support
   let removeTieBreakFromTitle = (election?.settings.break_ties_randomly ?? false) && results.tieBreakType == 'random';
-  const {t} = useSubstitutedTranslation(election?.settings?.term_type ?? 'poll');
+
   return (
-    <RaceContextProvider raceIndex={raceIndex} race={race} results={results} t={t}>
+    <RaceContextProvider race={race} results={results} t={t}>
       <hr/>
       <Typography variant="h3" component="h3" sx={{marginBottom: 2}}>
           {race.title}

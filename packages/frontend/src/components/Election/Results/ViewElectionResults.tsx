@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { useParams } from "react-router";
+import { useEffect } from 'react';
 import Results from './Results';
 import Box from '@mui/material/Box';
 import { Paper, Typography } from "@mui/material";
@@ -10,11 +9,8 @@ import DraftWarning from '../DraftWarning';
 import { StyledButton } from '~/components/styles';
 import ShareButton from '../ShareButton';
 import { BallotDataExport } from './BallotDataExport';
-import { useGetBallots } from '~/hooks/useAPI';
-import useAnonymizedBallots from '~/components/AnonymizedBallotsContextProvider';
 
 const ViewElectionResults = () => {
-    
     const { election } = useElection();
     
     const { data, isPending, error, makeRequest: getResults } = useGetResults(election.election_id)
@@ -40,7 +36,6 @@ const ViewElectionResults = () => {
                     {data?.results.map((results, race_index) => (
                         <Results 
                             key={`results-${race_index}`}
-                            raceIndex={race_index}
                             race={election.races[race_index]}
                             results={results}
                         />

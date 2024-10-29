@@ -159,9 +159,7 @@ const Sandbox = () => {
                         
                     {data && !error && (
                         <Results
-                            title=''
-                            raceIndex={0}
-                            result={data.results}
+                            results={data.results}
                             race={{
                                 race_id: '',
                                 title: '',

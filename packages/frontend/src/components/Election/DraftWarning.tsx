@@ -3,8 +3,7 @@ import { useSubstitutedTranslation } from "../util";
 import useElection from "../ElectionContextProvider";
 
 export default () => {
-    const { election } = useElection();
-    const {t} = useSubstitutedTranslation(election.settings.term_type);
+    const { t, election } = useElection();
 
     if(election.state !== 'draft') return <></>
 

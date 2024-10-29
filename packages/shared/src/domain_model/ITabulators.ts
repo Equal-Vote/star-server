@@ -31,6 +31,8 @@ type preferenceMatrix = number[][]
 
 type pairwiseMatrix = number[][]
 
+type votingMethod = 'IRV' | 'STV' | 'Approval' | 'STAR' | 'RankedRobin' | 'Plurality';
+
 interface genericSummaryData {
     candidates: candidate[],
     totalScores: totalScore[],
@@ -86,7 +88,7 @@ export interface roundResults {
 }
 
 interface genericResults {
-    votingMethod: string,
+    votingMethod: votingMethod,
     elected: candidate[],
     tied: candidate[],
     other: candidate[],
