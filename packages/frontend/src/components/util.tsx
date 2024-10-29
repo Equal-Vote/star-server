@@ -31,6 +31,7 @@ import en from '../i18n/en.yaml';
 import { Tip } from "./styles";
 import i18n from "~/i18n/i18n";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
+import useAnonymizedBallots from "./AnonymizedBallotsContextProvider";
 
 const rLink = /\[(.*?)\]\((.*?)\)/;
 const rBold = /\*\*(.*?)\*\*/;
@@ -546,6 +547,7 @@ export function scrollToElement(e) {
 export const DetailExpander = ({ children, level = 0 }) => {
   const [viewDetails, setViewDetails] = useState(false);
   const expanderId = useRef(_uniqueId("detailExpander")).current;
+  const {ballots, fetchBallots} = useAnonymizedBallots();
 
   let { t } = useSubstitutedTranslation();
   let title = [
@@ -568,6 +570,7 @@ export const DetailExpander = ({ children, level = 0 }) => {
         onClick={() => {
           if (!viewDetails)
             scrollToElement(document.querySelector(`.${expanderId}`));
+          fetchBallots();
           setViewDetails(!viewDetails);
         }}
       >
@@ -581,7 +584,8 @@ export const DetailExpander = ({ children, level = 0 }) => {
           <ExpandLess sx={{ "@media print": { display: "none" } }} />
         )}
       </Box>
-      {viewDetails && children}
+      {viewDetails && ballots && children}
+      {viewDetails && !ballots && 'Loading...'}
     </>
   );
 };

@@ -15,7 +15,6 @@ export const BallotDataExport = ({ election }: Props) => {
     const [csvData, setCsvData] = useState<any[]>([]);
     const [csvHeaders, setCsvHeaders] = useState<any[]>([]);
     const { ballots, fetchBallots } = useAnonymizedBallots();
-	//const {makeRequest } = useGetAnonymizedBallots(election.election_id);
     const downloadCSV = async () => {
         if (!ballots) return
         let header = [
