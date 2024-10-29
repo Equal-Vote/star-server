@@ -48,6 +48,7 @@ export interface starSummaryData extends genericSummaryData {
 }
 
 export interface allocatedScoreSummaryData extends starSummaryData {
+    votingMethod: 'STAR_PR',
     splitPoints: number[],
     spentAboves: number[],
     weight_on_splits: number[],
@@ -55,9 +56,12 @@ export interface allocatedScoreSummaryData extends starSummaryData {
 }
 export interface approvalSummaryData extends genericSummaryData { }
 
-export interface pluralitySummaryData extends genericSummaryData { }
+export interface pluralitySummaryData extends genericSummaryData {
+    votingMethod: 'Plurality',
+}
 
 export interface rankedRobinSummaryData extends genericSummaryData {
+    votingMethod: 'RankedRobin',
     rankHist: rankHist,
     preferenceMatrix: preferenceMatrix,
     pairwiseMatrix: pairwiseMatrix,
@@ -82,6 +86,7 @@ export interface roundResults {
 }
 
 interface genericResults {
+    votingMethod: string,
     elected: candidate[],
     tied: candidate[],
     other: candidate[],
@@ -91,6 +96,7 @@ interface genericResults {
 }
 
 export interface starResults extends genericResults {
+    votingMethod: 'STAR',
     summaryData: starSummaryData,
 }
 
@@ -100,6 +106,7 @@ export interface allocatedScoreResults extends Omit<genericResults, 'tied'> {
 }
 
 export interface approvalResults extends genericResults {
+    votingMethod: 'Approval',
     summaryData: approvalSummaryData,
 }
 
@@ -118,6 +125,7 @@ export interface irvRoundResults {
 }
 
 export interface irvResults extends Omit<genericResults, 'roundResults'> {
+    votingMethod: 'IRV' | 'STV',
     summaryData: rankedRobinSummaryData,
     roundResults: irvRoundResults[],
     logs: string[],
@@ -126,25 +134,11 @@ export interface irvResults extends Omit<genericResults, 'roundResults'> {
     overVoteCounts: number[]
 }
 
-export type ElectionResults = {
-    votingMethod: 'STAR',
-    results: starResults,
-} | {
-    votingMethod: 'STAR_PR',
-    results: allocatedScoreResults
-} | {
-    votingMethod: 'Approval',
-    results: approvalResults
-} | {
-    votingMethod: 'RankedRobin',
-    results: rankedRobinResults
-} | {
-    votingMethod: 'IRV',
-    results: irvResults
-} | {
-    votingMethod: 'Plurality',
-    results: pluralityResults
-} | {
-    votingMethod: 'STV',
-    results: irvResults
-}
+export type ElectionResults =
+    starResults |
+    allocatedScoreResults |
+    approvalResults |
+    rankedRobinResults | 
+    irvResults |
+    pluralityResults |
+    irvResults;

@@ -4,6 +4,7 @@ import { roundResults, starResults, starSummaryData } from '@equal-vote/star-vot
 import WidgetContainer from '../components/WidgetContainer';
 import Widget from '../components/Widget';
 import ResultsTable from '../components/ResultsTable';
+import useRace from '~/components/RaceContextProvider';
 
 type candidateTableEntry = {
   name: string,
@@ -12,7 +13,9 @@ type candidateTableEntry = {
   runoffVotes: number
 }
 
-export default ({results, rounds, t}: {results: starResults, rounds: number, t: Function }) => {
+export default () => {
+    let {results, t} = useRace();
+    results = results as starResults;
     const winnerIndex = results.roundResults[0].winners[0].index;
     const runnerUpIndex = results.roundResults[0].runner_up[0].index;
 

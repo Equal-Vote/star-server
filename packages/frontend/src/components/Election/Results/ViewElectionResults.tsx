@@ -37,13 +37,12 @@ const ViewElectionResults = () => {
                 </Typography>
                 {isPending && <div> {t('results.loading_election')} </div>}
 
-                    {data?.results.map((result, race_index) => (
+                    {data?.results.map((results, race_index) => (
                         <Results 
                             key={`results-${race_index}`}
-                            title={t('results.race_title', {n: race_index+1, title: election.races[race_index].title})}
                             raceIndex={race_index}
                             race={election.races[race_index]}
-                            result={result}
+                            results={results}
                         />
                     ))}
                     <hr/>

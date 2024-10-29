@@ -1,42 +1,15 @@
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import {
-  Box,
-  Grid,
-  IconButton,
-  Paper,
-  TableContainer,
-  Typography,
-} from "@mui/material";
-import React, { useState, useRef, useEffect } from "react";
-import {
-  Bar,
-  BarChart,
-  Cell,
-  ComposedChart,
-  Label,
-  LabelList,
-  Legend,
-  Line,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-} from "recharts";
-import _uniqueId from "lodash/uniqueId";
+import {Box} from "@mui/material";
+import { useEffect } from "react";
 import { DateTime } from "luxon";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import en from '../i18n/en.yaml';
 import { Tip } from "./styles";
 import i18n from "~/i18n/i18n";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
-import useAnonymizedBallots from "./AnonymizedBallotsContextProvider";
 
 const rLink = /\[(.*?)\]\((.*?)\)/;
 const rBold = /\*\*(.*?)\*\*/;
 const rTip = / \!tip\((.*)\)/;
-
 
 declare namespace Intl {
     class ListFormat {
@@ -49,7 +22,7 @@ declare namespace Intl {
     }
 }
 
-const commaListFormatter = new Intl.ListFormat(i18n.languages[0], { style: 'long', type: 'conjunction' });
+export const commaListFormatter = new Intl.ListFormat(i18n.languages[0], { style: 'long', type: 'conjunction' });
 
 export const useOnScrollAnimator = () => {
     //https://www.youtube.com/watch?v=T33NN_pPeNI
