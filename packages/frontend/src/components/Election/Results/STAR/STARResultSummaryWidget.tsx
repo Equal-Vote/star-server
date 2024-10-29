@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Paper, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { starResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
-import { ResultsPieChart, Widget, WidgetContainer } from '~/components/util';
-import { ResultsBarChart } from '~/components/util';
 
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import { useTranslation } from 'react-i18next';
 import STAREXtraContext from './STARExtraContext';
+import WidgetContainer from '../components/WidgetContainer';
+import Widget from '../components/Widget';
+import ResultsBarChart from '../components/ResultsBarChart';
+import ResultsPieChart from '../components/ResultsPieChart';
 
 const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResults, roundIndex: number, t: Function }) => {
     const [pie, setPie] = useState(false);

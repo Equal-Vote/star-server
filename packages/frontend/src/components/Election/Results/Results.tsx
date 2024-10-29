@@ -7,7 +7,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import { useState } from 'react'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Typography from '@mui/material/Typography';
-import { CHART_COLORS, DetailExpander, DetailExpanderGroup, ResultsBarChart, ResultsTable, Widget, WidgetContainer, useSubstitutedTranslation } from '../../util';
+import { CHART_COLORS, useSubstitutedTranslation } from '../../util';
 import STARResultSummaryWidget from "./STAR/STARResultSummaryWidget";
 import STARDetailedResults from "./STAR/STARDetailedResults";
 import STARResultDetailedStepsWidget from "./STAR/STARResultDetailedStepsWidget";
@@ -18,6 +18,11 @@ import useElection from "../../ElectionContextProvider";
 import { t } from "i18next";
 import { Bar, BarChart, CartesianAxis, CartesianGrid, Cell, ComposedChart, Legend, Line, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { useTranslation } from "react-i18next";
+import DetailExpander from "./components/DetailExpander";
+import ResultsTable from "./components/ResultsTable";
+import Widget from "./components/Widget";
+import WidgetContainer from "./components/WidgetContainer";
+import ResultsBarChart from "./components/ResultsBarChart";
 
 declare namespace Intl {
   class ListFormat {

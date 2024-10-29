@@ -94,9 +94,5 @@ export const BallotDataExport = ({ election }: Props) => {
                 />
                     )}
             </>
-                    
-       
-        
-   
     );
 };

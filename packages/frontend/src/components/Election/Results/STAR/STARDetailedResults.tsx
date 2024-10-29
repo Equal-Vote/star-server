@@ -1,8 +1,9 @@
 import React, { useState }  from 'react'
 import { TableContainer, Typography, Paper, Box} from "@mui/material";
 import { roundResults, starResults, starSummaryData } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
-import { Widget, WidgetContainer, ResultsTable, ResultsBarChart, useSubstitutedTranslation } from '~/components/util';
-
+import WidgetContainer from '../components/WidgetContainer';
+import Widget from '../components/Widget';
+import ResultsTable from '../components/ResultsTable';
 
 type candidateTableEntry = {
   name: string,
