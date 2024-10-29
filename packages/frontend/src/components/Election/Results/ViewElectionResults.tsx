@@ -11,10 +11,11 @@ import { StyledButton } from '~/components/styles';
 import ShareButton from '../ShareButton';
 import { BallotDataExport } from './BallotDataExport';
 import { useGetBallots } from '~/hooks/useAPI';
+import useAnonymizedBallots from '~/components/AnonymizedBallotsContextProvider';
 
 const ViewElectionResults = () => {
     
-    const { election } = useElection()
+    const { election } = useElection();
     
     const { data, isPending, error, makeRequest: getResults } = useGetResults(election.election_id)
     useEffect(() => { getResults() }, [])
@@ -70,7 +71,6 @@ const ViewElectionResults = () => {
                         </Box>
                     </Box>
                 </Box>
-                
             </Paper>
         </Box>
     </>)

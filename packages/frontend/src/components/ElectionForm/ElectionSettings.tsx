@@ -5,7 +5,7 @@ import FormControl from "@mui/material/FormControl";
 import Typography from '@mui/material/Typography';
 import { Checkbox, FormGroup, FormHelperText, FormLabel, InputLabel, Radio, RadioGroup, Tooltip, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Box, IconButton, TextField } from "@mui/material"
 import { StyledButton } from '../styles';
-import useElection, { ElectionContext } from '../ElectionContextProvider';
+import useElection  from '../ElectionContextProvider';
 import structuredClone from '@ungap/structured-clone';
 import EditIcon from '@mui/icons-material/Edit';
 import { useSubstitutedTranslation } from '../util';
