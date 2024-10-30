@@ -25,16 +25,15 @@ export const ElectionContext = createContext<IElectionContext>({
     refreshElection: () => false,
     updateElection: () => false,
     permissions: [],
-    t: () => {},
-}
-)
+    t: () => {}
+})
 
 export const ElectionContextProvider = ({ id, children }) => {
     const { data, isPending, error, makeRequest: fetchData } = useGetElection(id)
     const { makeRequest: editElection } = useEditElection(id)
 
     useEffect(() => {
-        fetchData()
+        if(id != undefined) fetchData()
     }, [id])
 
     const applyElectionUpdate = async (updateFunc: (election: IElection) => any) => {
@@ -45,7 +44,7 @@ export const ElectionContextProvider = ({ id, children }) => {
     };
 
     // This should use local timezone by default, consumers will have to call it directly if they want it to use the election timezone
-    const {t} = useSubstitutedTranslation(data?.election?.settings?.term_type ?? 'poll');
+    const {t} = useSubstitutedTranslation(data?.election?.settings?.term_type ?? 'election');
 
     return (<ElectionContext.Provider
         value={{
@@ -56,7 +55,7 @@ export const ElectionContextProvider = ({ id, children }) => {
             permissions: data?.voterAuth?.permissions,
             t,
         }}>
-        {data && children}
+        {(data || id == undefined) && children}
     </ElectionContext.Provider>
     )
 }
