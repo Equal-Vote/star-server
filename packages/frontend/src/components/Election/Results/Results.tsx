@@ -48,7 +48,8 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
             <HeadToHeadWidget candidates={race.candidates
               .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
               .sort((a, b) => 
-                -(results.summaryData.totalScores[a.index].score - results.summaryData.totalScores[b.index].score)
+                -(results.summaryData.totalScores.find(s => s.index == a.index).score -
+                  results.summaryData.totalScores.find(s => s.index == b.index).score)
               )
               .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
             }/>
@@ -104,7 +105,8 @@ function RankedRobinResultsViewer() {
         <HeadToHeadWidget ranked candidates={race.candidates
           .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
           .sort((a, b) => 
-            -(results.summaryData.totalScores[a.index].score - results.summaryData.totalScores[b.index].score)
+            -(results.summaryData.totalScores.find(s => s.index == a.index).score -
+              results.summaryData.totalScores.find(s => s.index == b.index).score)
           )
           .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
         }/>
@@ -163,24 +165,28 @@ function IRVResultsViewer() {
     </WidgetContainer>
     <DetailExpander>
       <WidgetContainer>
-      <Widget title={t('results.rcv.table_title')}>
-        <ResultsTable className='rcvTable' data={tabulationRows}/>
-      </Widget>
-      <HeadToHeadWidget ranked candidates={race.candidates
-        .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
-        .sort((a, b) => {
-          // prioritize ranking in later rounds, but use previous rounds as tiebreaker
-          let i = results.voteCounts.length-1;
-          while(i >= 0){
-            let diff = -(results.voteCounts[i][a.index] - results.voteCounts[i][b.index]);
-            if(diff != 0) return diff;
-            i--;
-          }
-          return 0;
-        })
-        .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
-      }/>
+        <Widget title={t('results.rcv.table_title')}>
+          <ResultsTable className='rcvTable' data={tabulationRows}/>
+        </Widget>
       </WidgetContainer>
+      <DetailExpander level={1}>
+        <WidgetContainer>
+          <HeadToHeadWidget ranked candidates={race.candidates
+            .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
+            .sort((a, b) => {
+              // prioritize ranking in later rounds, but use previous rounds as tiebreaker
+              let i = results.voteCounts.length-1;
+              while(i >= 0){
+                let diff = -(results.voteCounts[i][a.index] - results.voteCounts[i][b.index]);
+                if(diff != 0) return diff;
+                i--;
+              }
+              return 0;
+            })
+            .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
+          }/>
+        </WidgetContainer>
+      </DetailExpander>
     </DetailExpander>
   </ResultsViewer>
 }
@@ -223,7 +229,7 @@ function PluralityResultsViewer() {
 }
 
 function ApprovalResultsViewer() {
-  let {results, t} = useRace();
+  let {results, race, t} = useRace();
   results = results as approvalResults;
 
   return <ResultsViewer methodKey='approval'>
@@ -245,7 +251,14 @@ function ApprovalResultsViewer() {
 
     <DetailExpander>
       <WidgetContainer>
-        <HeadToHeadWidget/>
+        <HeadToHeadWidget candidates={race.candidates
+          .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
+          .sort((a, b) => 
+            -(results.summaryData.totalScores.find(s => s.index == a.index).score -
+              results.summaryData.totalScores.find(s => s.index == b.index).score)
+          )
+          .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
+        }/>
         <Widget title={t('results.approval.table_title')}>
           <ResultsTable className='approvalTable' data={[
             t('results.approval.table_columns'),

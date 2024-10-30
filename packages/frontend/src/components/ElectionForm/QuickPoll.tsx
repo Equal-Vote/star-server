@@ -109,7 +109,6 @@ const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
             return false;
         }
 
-        console.log(election.races[0].candidates)
         if(election.races[0].candidates.filter(c => c.candidate_name != '').length < 2){
             setSnack({
                 message: 'Must provide at least 2 options',

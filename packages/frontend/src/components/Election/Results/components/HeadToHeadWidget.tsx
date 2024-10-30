@@ -36,8 +36,6 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
     const defValue =  (ranked)? Infinity : 0;
     let b = ballotsForRace()
     let numBallots = b.length;
-    console.log(candidates)
-    console.log(b)
     b.forEach(scores => {
         let refValue = scores.find((score) => score.candidate_id == refCandidateId)?.score ?? defValue;
         if(ranked) refValue = -refValue; // this lets us use a max function
@@ -73,13 +71,13 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
         </Box>
         <Divider variant='middle' sx={{width: '100%'}}/>
         <Box display='flex' flexDirection='column' gap={4} sx={{my: 3, width: '100%', overflowY: 'scroll', maxHeight: '500px'}}>
-            {candidates.filter(c => c.candidate_id != refCandidateId).map(c => {
+            {candidates.filter(c => c.candidate_id != refCandidateId).map((c,i) => {
                 let m = matchups[c.candidate_id];
                 let leftPercent = `${Math.round((m.leftVotes / numBallots)*100)}%`;
                 let rightPercent = `${Math.round((m.rightVotes / numBallots)*100)}%`;
                 let midValue = ((numBallots - m.leftVotes - m.rightVotes) / numBallots);
                 let midPercent = `${Math.round(midValue*100)}%`;
-                return <Box sx={{mx: 4}}>
+                return <Box key={i} sx={{mx: 4}}>
                     <Box display='flex' flexDirection='row' justifyContent='space-between' sx={{mb: 1}} gap={2}>
                         <Typography sx={{textAlign: 'left', fontWeight: 'bold'}}>{refCandidateName}</Typography>
                         <Typography sx={{textAlign: 'right', fontWeight: 'bold'}}>{m.name}</Typography>
