@@ -49,7 +49,6 @@ export interface starSummaryData extends genericSummaryData {
 }
 
 export interface allocatedScoreSummaryData extends starSummaryData {
-    votingMethod: 'STAR_PR',
     splitPoints: number[],
     spentAboves: number[],
     weight_on_splits: number[],
@@ -57,12 +56,9 @@ export interface allocatedScoreSummaryData extends starSummaryData {
 }
 export interface approvalSummaryData extends genericSummaryData { }
 
-export interface pluralitySummaryData extends genericSummaryData {
-    votingMethod: 'Plurality',
-}
+export interface pluralitySummaryData extends genericSummaryData {}
 
 export interface rankedRobinSummaryData extends genericSummaryData {
-    votingMethod: 'RankedRobin',
     rankHist: rankHist,
     preferenceMatrix: preferenceMatrix,
     pairwiseMatrix: pairwiseMatrix,
@@ -102,6 +98,7 @@ export interface starResults extends genericResults {
 }
 
 export interface allocatedScoreResults extends Omit<genericResults, 'tied'> {
+    votingMethod: 'STAR_PR',
     tied: candidate[][],
     summaryData: allocatedScoreSummaryData,
 }
@@ -112,10 +109,12 @@ export interface approvalResults extends genericResults {
 }
 
 export interface pluralityResults extends genericResults {
+    votingMethod: 'Plurality',
     summaryData: pluralitySummaryData,
 }
 
 export interface rankedRobinResults extends genericResults {
+    votingMethod: 'RankedRobin',
     summaryData: rankedRobinSummaryData,
 }
 
