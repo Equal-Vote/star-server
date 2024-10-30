@@ -38,6 +38,7 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
 
     // Initialize output data structure
     const results: irvResults = {
+        votingMethod: 'IRV',
         elected: [],
         tied: [],
         other: [],

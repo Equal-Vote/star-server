@@ -30,6 +30,7 @@ export function Star(candidates: string[], votes: ballot[], nWinners = 1, random
 
   // Initialize output data structure
   const results: starResults = {
+    votingMethod: 'STAR',
     elected: [],
     tied: [],
     other: [],
