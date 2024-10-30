@@ -16,7 +16,7 @@ const Sandbox = () => {
     const { data, error, isPending, makeRequest } = useGetSandboxResults()
 
     const [candidates, setCandidates] = useState('A,B,C,D,E')
-    const [cvr, setCvr] = useState('10:2,1,3,4,5\n10:5,4,3,1,2\n3,2,5,4,1')
+    const [cvr, setCvr] = useState('')
     const [nWinners, setNWinners] = useState(1)
     const [votingMethod, setVotingMethod] = useState<VotingMethod>('STAR')
     const [errorText, setErrorText] = useState('')
@@ -31,19 +31,22 @@ const Sandbox = () => {
             setErrorText('Cannot have more winners than candidates')
             return
         }
+        let defValue = votingMethod == 'IRV'? 10000 : 0
         let valid = true
         cvrRows.forEach((row) => {
-            const data = row.split(':')
+            const data = row.split(':\t')
             if (data.length == 2) {
                 const nBallots = parseInt(data[0]);
-                const vote = data[1].split(/[\s,]+/).filter(d => d !== ' ').map((score) => parseInt(score)).filter(d => !isNaN(d))
+                const vote = data[1].split(/\t/).filter(d => d !== ' ').map((score) => score == '' ? defValue : parseInt(score)).filter(d => !isNaN(d))
+                while(vote.length < nCandidates) vote.push(defValue)
                 if (vote.length !== nCandidates) {
                     setErrorText('Each ballot must have the same length as the number of candidates')
                     valid = false
                 }
                 cvrSplit.push(...Array(nBallots).fill(vote))
             } else {
-                const vote = data[0].split(/[\s,]+/).filter(d => d !== ' ').map((score) => parseInt(score)).filter(d => !isNaN(d))
+                const vote = data[0].split(/\t/).filter(d => d !== ' ').map((score) => score == '' ? defValue : parseInt(score)).filter(d => !isNaN(d))
+                while(vote.length < nCandidates) vote.push(defValue)
                 if (vote.length !== nCandidates) {
                     setErrorText('Each ballot must have the same length as the number of candidates')
                     valid = false
@@ -62,9 +65,9 @@ const Sandbox = () => {
 
     }
 
-    useEffect(() => {
-        getResults()
-    }, [nWinners, cvr, votingMethod, candidates])
+    //useEffect(() => {
+    //    getResults()
+    //}, [nWinners, cvr, votingMethod, candidates])
 
     return (
         //Using grid to force results into the center and fill screen on smaller screens.

@@ -31,7 +31,7 @@ export default ({ children, level = 0 }) => {
         onClick={() => {
           if (!viewDetails)
             scrollToElement(document.querySelector(`.${expanderId}`));
-          fetchBallots();
+          //fetchBallots();
           setViewDetails(!viewDetails);
         }}
       >
@@ -45,8 +45,7 @@ export default ({ children, level = 0 }) => {
           <ExpandLess sx={{ "@media print": { display: "none" } }} />
         )}
       </Box>
-      {viewDetails && ballots && children}
-      {viewDetails && !ballots && 'Loading...'}
+      {viewDetails && children}
     </>
   );
 }
