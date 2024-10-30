@@ -14,6 +14,7 @@ import ResultsPieChart from '../components/ResultsPieChart';
 const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResults, roundIndex: number, t: Function }) => {
     const [pie, setPie] = useState(false);
 
+
     const prevWinners = results.roundResults
         .filter((_, i) => i < roundIndex)
         .map(round => round.winners)
