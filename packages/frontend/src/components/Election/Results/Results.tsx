@@ -45,6 +45,13 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
             <Widget title={t('results.star.equal_preferences_title')}>
               <ResultsBarChart data={noPrefStarData} xKey='count' percentage={true} sortFunc={false}/>
             </Widget>
+            <HeadToHeadWidget candidates={race.candidates
+              .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
+              .sort((a, b) => 
+                -(results.summaryData.totalScores[a.index].score - results.summaryData.totalScores[b.index].score)
+              )
+              .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
+            }/>
           </WidgetContainer>
         </DetailExpander>
       </DetailExpander>
@@ -62,7 +69,7 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
 }
 
 function RankedRobinResultsViewer() {
-  let {results, t} = useRace();
+  let {results, race, t} = useRace();
   results = results as rankedRobinResults;
 
   return <ResultsViewer methodKey='ranked_robin'>
@@ -94,13 +101,20 @@ function RankedRobinResultsViewer() {
             ])
           ]}/>
         </Widget>
+        <HeadToHeadWidget ranked candidates={race.candidates
+          .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
+          .sort((a, b) => 
+            -(results.summaryData.totalScores[a.index].score - results.summaryData.totalScores[b.index].score)
+          )
+          .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
+        }/>
       </WidgetContainer>
     </DetailExpander>
   </ResultsViewer>
 }
 
 function IRVResultsViewer() {
-  let {results, t} = useRace();
+  let {results, t, race} = useRace();
   results = results as irvResults;
 
   const firstRoundData = results.voteCounts[0].map((c,i) => ({name: results.summaryData.candidates[i].name, votes: c}));
@@ -152,7 +166,20 @@ function IRVResultsViewer() {
       <Widget title={t('results.rcv.table_title')}>
         <ResultsTable className='rcvTable' data={tabulationRows}/>
       </Widget>
-      <HeadToHeadWidget/>
+      <HeadToHeadWidget ranked candidates={race.candidates
+        .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
+        .sort((a, b) => {
+          // prioritize ranking in later rounds, but use previous rounds as tiebreaker
+          let i = results.voteCounts.length-1;
+          while(i >= 0){
+            let diff = -(results.voteCounts[i][a.index] - results.voteCounts[i][b.index]);
+            if(diff != 0) return diff;
+            i--;
+          }
+          return 0;
+        })
+        .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
+      }/>
       </WidgetContainer>
     </DetailExpander>
   </ResultsViewer>
@@ -218,6 +245,7 @@ function ApprovalResultsViewer() {
 
     <DetailExpander>
       <WidgetContainer>
+        <HeadToHeadWidget/>
         <Widget title={t('results.approval.table_title')}>
           <ResultsTable className='approvalTable' data={[
             t('results.approval.table_columns'),
