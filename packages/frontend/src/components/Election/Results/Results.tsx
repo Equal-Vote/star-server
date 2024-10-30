@@ -251,14 +251,6 @@ function ApprovalResultsViewer() {
 
     <DetailExpander>
       <WidgetContainer>
-        <HeadToHeadWidget candidates={race.candidates
-          .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
-          .sort((a, b) => 
-            -(results.summaryData.totalScores.find(s => s.index == a.index).score -
-              results.summaryData.totalScores.find(s => s.index == b.index).score)
-          )
-          .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
-        }/>
         <Widget title={t('results.approval.table_title')}>
           <ResultsTable className='approvalTable' data={[
             t('results.approval.table_columns'),
@@ -270,6 +262,19 @@ function ApprovalResultsViewer() {
           ]}/>
         </Widget>
       </WidgetContainer>
+
+      <DetailExpander level={1}>
+        <WidgetContainer>
+          <HeadToHeadWidget candidates={race.candidates
+            .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
+            .sort((a, b) => 
+              -(results.summaryData.totalScores.find(s => s.index == a.index).score -
+                results.summaryData.totalScores.find(s => s.index == b.index).score)
+            )
+            .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
+          }/>
+        </WidgetContainer>
+      </DetailExpander>
     </DetailExpander>
   </ResultsViewer>
 }
