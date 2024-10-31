@@ -17,6 +17,7 @@ export default ({
   let rawData = data;
 
   // Truncate names & add percent
+  let maxValue = Math.max(...data.map(d => d[xKey]))
   percentDenominator ??= data.reduce((sum, d) => sum + d[xKey], 0);
   percentDenominator = Math.max(1, percentDenominator);
   data = rawData.map((d, i) => {
@@ -31,7 +32,9 @@ export default ({
       right: "",
     };
 
-    if (d[xKey] / percentDenominator < 0.1 || (majorityLegend && i == 0)) {
+    console.log(d[xKey], maxValue, d[xKey] / maxValue, s["left"]);
+    if ((d[xKey] / maxValue) < 0.3 || (majorityLegend && i == 0)) {
+      console.log('swap');
       s["right"] = s["left"];
       s["left"] = "";
     }
@@ -122,6 +125,7 @@ export default ({
         >
           {/* corresponds to mui md size */}
           {/* also this won't dynamically adjust with resizing the screen  */}
+          {/* ^ I don't remember why I did that, I would think the > 900 behaviour makes sense regardless  */}
           {window.innerWidth > 900 ? <> 
             <LabelList dataKey="left" position="insideRight" fill="black" />
             <LabelList dataKey="right" position="right" fill="black" />

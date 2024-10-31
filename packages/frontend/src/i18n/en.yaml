@@ -424,7 +424,8 @@ results:
   vote_count: '{{n}} voters'
   method_context: 'Voting Method: {{voting_method}}'
   learn_link_text: How {{voting_method}} works
-  head_to_head_title: Head-to-Head Runoffs
+  head_to_head_title: Head-to-Head Matchups
+  voter_profile_title: Average Supporter Profile
   candidate_selector: '{{candidate}}'
 
   win_count: '{{count}} Wins'

@@ -62,7 +62,7 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
             label={t('results.candidateSelector')}
             onChange={(e) => setRefCandidateId(e.target.value as string)}
         >
-            {candidates.map((c, i) => <MenuItem value={c.candidate_id}>{c.candidate_name}</MenuItem>)}
+            {candidates.map((c, i) => <MenuItem key={i} value={c.candidate_id}>{c.candidate_name}</MenuItem>)}
         </Select>
         <Box display='flex' flexDirection='row' gap={2} flexWrap='wrap'>
             <Typography variant='h6'>{t('results.win_count', {count: wins})}</Typography>

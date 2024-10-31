@@ -17,6 +17,7 @@ import WidgetContainer from "./components/WidgetContainer";
 import ResultsBarChart from "./components/ResultsBarChart";
 import HeadToHeadWidget from "./components/HeadToHeadWidget";
 import useRace, { RaceContextProvider } from "~/components/RaceContextProvider";
+import VoterProfileWidget from "./components/VoterProfileWidget";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
@@ -53,6 +54,7 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
               )
               .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
             }/>
+            <VoterProfileWidget topScore={5}/>
           </WidgetContainer>
         </DetailExpander>
       </DetailExpander>
@@ -110,6 +112,7 @@ function RankedRobinResultsViewer() {
           )
           .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
         }/>
+        <VoterProfileWidget topScore={1} ranked/>
       </WidgetContainer>
     </DetailExpander>
   </ResultsViewer>
@@ -185,6 +188,7 @@ function IRVResultsViewer() {
             })
             .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
           }/>
+          <VoterProfileWidget topScore={1} ranked/>
         </WidgetContainer>
       </DetailExpander>
     </DetailExpander>
@@ -273,6 +277,7 @@ function ApprovalResultsViewer() {
             )
             .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
           }/>
+          <VoterProfileWidget topScore={1}/>
         </WidgetContainer>
       </DetailExpander>
     </DetailExpander>
