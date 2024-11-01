@@ -8,6 +8,7 @@ import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAx
 import { CHART_COLORS } from "~/components/util";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import ResultsBarChart from "./ResultsBarChart";
+import HeadToHeadChart from "./HeadToHeadChart";
 
 // candidates helps define the order
 export default ({topScore, frontRunners=[], ranked=false} : {topScore: number, frontRunners?: Candidate[], ranked?: boolean}) => {
@@ -29,13 +30,26 @@ export default ({topScore, frontRunners=[], ranked=false} : {topScore: number, f
 
     let defValue = (ranked)? (election.settings.max_rankings ?? parseInt(process.env.REACT_APP_DEFAULT_BALLOT_RANKS))+1 : 0
 
-    ballotsForRace().forEach(scores => {
+    let b = ballotsForRace()
+    let leftVotes = 0;
+    let rightVotes = 0;
+    b.forEach(scores => {
         let refScore = scores.find((score) => score.candidate_id == refCandidateId)?.score;
         if(refScore != topScore) return;
         totalTopScored++;
+        let fScores = [0, 0];
         scores.forEach(s => {
-            avgBallot[s.candidate_id].score += s.score ?? defValue;
+            let score = s.score ?? defValue;
+            avgBallot[s.candidate_id].score += score;
+            frontRunners.forEach((f, i) => {
+                if(s.candidate_id == f.candidate_id) fScores[i] = score;
+            })
         })
+
+        if(ranked) fScores = fScores.map(s => -s);
+
+        if(fScores[0] > fScores[1]) leftVotes++;
+        if(fScores[0] < fScores[1]) rightVotes++;
     });
 
     let data = Object.values(avgBallot);
@@ -52,5 +66,15 @@ export default ({topScore, frontRunners=[], ranked=false} : {topScore: number, f
         </Select>
         <Divider variant='middle' sx={{width: '100%', m:3}}/>
         <ResultsBarChart data={data} xKey='score' percentage={false} sortFunc={false}/>
+        <Divider variant='middle' sx={{width: '100%', m:3}}/>
+        {frontRunners.length == 2 && 
+            <HeadToHeadChart 
+                leftName={frontRunners[0].candidate_name}
+                rightName={frontRunners[1].candidate_name}
+                leftVotes={leftVotes}
+                rightVotes={rightVotes}
+                total={b.length}
+            />
+        }
     </Widget>
 }
