@@ -32,9 +32,7 @@ export default ({
       right: "",
     };
 
-    console.log(d[xKey], maxValue, d[xKey] / maxValue, s["left"]);
     if ((d[xKey] / maxValue) < 0.3 || (majorityLegend && i == 0)) {
-      console.log('swap');
       s["right"] = s["left"];
       s["left"] = "";
     }

@@ -11,7 +11,7 @@ import ResultsBarChart from "./ResultsBarChart";
 import HeadToHeadChart from "./HeadToHeadChart";
 
 // candidates helps define the order
-export default ({topScore, frontRunners=[], ranked=false} : {topScore: number, frontRunners?: Candidate[], ranked?: boolean}) => {
+export default ({topScore, frontRunners, ranked=false} : {topScore: number, frontRunners: [Candidate,Candidate], ranked?: boolean}) => {
     const {t, election} = useElection();
     const {ballotsForRace} = useAnonymizedBallots();
     const {race} = useRace();
@@ -33,6 +33,7 @@ export default ({topScore, frontRunners=[], ranked=false} : {topScore: number, f
     let b = ballotsForRace()
     let leftVotes = 0;
     let rightVotes = 0;
+    let total = 0;
     b.forEach(scores => {
         let refScore = scores.find((score) => score.candidate_id == refCandidateId)?.score;
         if(refScore != topScore) return;
@@ -50,6 +51,7 @@ export default ({topScore, frontRunners=[], ranked=false} : {topScore: number, f
 
         if(fScores[0] > fScores[1]) leftVotes++;
         if(fScores[0] < fScores[1]) rightVotes++;
+        total++;
     });
 
     let data = Object.values(avgBallot);
@@ -67,14 +69,12 @@ export default ({topScore, frontRunners=[], ranked=false} : {topScore: number, f
         <Divider variant='middle' sx={{width: '100%', m:3}}/>
         <ResultsBarChart data={data} xKey='score' percentage={false} sortFunc={false}/>
         <Divider variant='middle' sx={{width: '100%', m:3}}/>
-        {frontRunners.length == 2 && 
-            <HeadToHeadChart 
-                leftName={frontRunners[0].candidate_name}
-                rightName={frontRunners[1].candidate_name}
-                leftVotes={leftVotes}
-                rightVotes={rightVotes}
-                total={b.length}
-            />
-        }
+        <HeadToHeadChart 
+            leftName={frontRunners[0].candidate_name}
+            rightName={frontRunners[1].candidate_name}
+            leftVotes={leftVotes}
+            rightVotes={rightVotes}
+            total={total}
+        />
     </Widget>
 }
