@@ -18,6 +18,7 @@ import ResultsBarChart from "./components/ResultsBarChart";
 import HeadToHeadWidget from "./components/HeadToHeadWidget";
 import useRace, { RaceContextProvider } from "~/components/RaceContextProvider";
 import VoterProfileWidget from "./components/VoterProfileWidget";
+import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
@@ -55,7 +56,7 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
               <ResultsBarChart data={noPrefStarData} xKey='count' percentage={true} sortFunc={false}/>
             </Widget>
             <HeadToHeadWidget candidates={sortedCandidates}/>
-            <VoterProfileWidget topScore={5} frontRunners={sortedCandidates.slice(0, 2)}/>
+            <VoterProfileWidget topScore={5} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
           </WidgetContainer>
         </DetailExpander>
       </DetailExpander>
@@ -114,7 +115,7 @@ function RankedRobinResultsViewer() {
           ]}/>
         </Widget>
         <HeadToHeadWidget ranked candidates={sortedCandidates}/>
-        <VoterProfileWidget topScore={1} ranked frontRunners={sortedCandidates.slice(0, 2)}/>
+        <VoterProfileWidget topScore={1} ranked frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
       </WidgetContainer>
     </DetailExpander>
   </ResultsViewer>
@@ -191,7 +192,7 @@ function IRVResultsViewer() {
       <DetailExpander level={1}>
         <WidgetContainer>
           <HeadToHeadWidget ranked candidates={sortedCandidates}/>
-          <VoterProfileWidget topScore={1} ranked frontRunners={sortedCandidates.slice(0, 2)}/>
+          <VoterProfileWidget topScore={1} ranked frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
         </WidgetContainer>
       </DetailExpander>
     </DetailExpander>
@@ -281,7 +282,7 @@ function ApprovalResultsViewer() {
       <DetailExpander level={1}>
         <WidgetContainer>
           <HeadToHeadWidget candidates={sortedCandidates}/>
-          <VoterProfileWidget topScore={1} frontRunners={sortedCandidates}/>
+          <VoterProfileWidget topScore={1} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
         </WidgetContainer>
       </DetailExpander>
     </DetailExpander>
