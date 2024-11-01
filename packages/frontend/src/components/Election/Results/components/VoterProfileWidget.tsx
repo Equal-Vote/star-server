@@ -10,7 +10,7 @@ import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import ResultsBarChart from "./ResultsBarChart";
 
 // candidates helps define the order
-export default ({topScore, ranked=false} : {topScore: number, ranked?: boolean}) => {
+export default ({topScore, frontRunners=[], ranked=false} : {topScore: number, frontRunners?: Candidate[], ranked?: boolean}) => {
     const {t, election} = useElection();
     const {ballotsForRace} = useAnonymizedBallots();
     const {race} = useRace();

@@ -54,7 +54,10 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
               )
               .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
             }/>
-            <VoterProfileWidget topScore={5}/>
+            <VoterProfileWidget topScore={5} frontRunners={race.candidates
+              .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
+              .filter(c => (c.index == results.roundResults[0].winners[0].index || c.index == results.roundResults[0].runner_up[0].index))
+            }/>
           </WidgetContainer>
         </DetailExpander>
       </DetailExpander>
