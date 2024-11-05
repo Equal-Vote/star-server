@@ -26,9 +26,9 @@ export default ({topScore, frontRunners, ranked=false} : {topScore: number, fron
         }
     });
 
-    let totalTopScored = 0;
+    let refCandidateName = candidates.find(c => c.candidate_id == refCandidateId).candidate_name;
 
-    let defValue = (ranked)? (election.settings.max_rankings ?? parseInt(process.env.REACT_APP_DEFAULT_BALLOT_RANKS))+1 : 0
+    let totalTopScored = 0;
 
     let b = ballotsForRace()
     let leftVotes = 0;
@@ -39,6 +39,13 @@ export default ({topScore, frontRunners, ranked=false} : {topScore: number, fron
         if(refScore != topScore) return;
         totalTopScored++;
         let fScores = [0, 0];
+
+        let defValue = 0;
+        if(ranked){
+            defValue = Math.max(...scores.map(s => s.score ?? 0))+1;
+        }else{
+            defValue = 0;
+        }
         scores.forEach(s => {
             let score = s.score ?? defValue;
             avgBallot[s.candidate_id].score += score;
@@ -59,6 +66,7 @@ export default ({topScore, frontRunners, ranked=false} : {topScore: number, fron
     data.sort((a,b) => (ranked? 1 : -1)*(a.score-b.score));
 
     return <Widget title={t('results.voter_profile_title')}>
+        {/*<Typography>Average ballot for voters who gave</Typography>*/}
         <Select
             value={refCandidateId}
             label={t('results.candidateSelector')}
@@ -66,9 +74,12 @@ export default ({topScore, frontRunners, ranked=false} : {topScore: number, fron
         >
             {candidates.map((c, i) => <MenuItem key={i} value={c.candidate_id}>{c.candidate_name}</MenuItem>)}
         </Select>
+        {/*<Typography>their maximum support</Typography>*/}
         <Divider variant='middle' sx={{width: '100%', m:3}}/>
+        <Typography variant='h6'>{refCandidateName} supporters' average rankings:</Typography>
         <ResultsBarChart data={data} xKey='score' percentage={false} sortFunc={false}/>
         <Divider variant='middle' sx={{width: '100%', m:3}}/>
+        <Typography variant='h6'>{refCandidateName} supporters' preferred frontrunner:</Typography>
         <HeadToHeadChart 
             leftName={frontRunners[0].candidate_name}
             rightName={frontRunners[1].candidate_name}

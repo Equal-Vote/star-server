@@ -425,7 +425,7 @@ results:
   method_context: 'Voting Method: {{voting_method}}'
   learn_link_text: How {{voting_method}} works
   head_to_head_title: Head-to-Head Matchups
-  voter_profile_title: Average Supporter Profile
+  voter_profile_title: Average Supporter Profile !tip(voter_profile)
   candidate_selector: '{{candidate}}'
 
   win_count: '{{count}} Wins'
@@ -579,6 +579,10 @@ election_state:
 
 # Info bubbles
 tips:
+  voter_profile:
+    title: Average Voter Profile
+    description: Shows how supporters of each candidate ranked/scored/approved other candidates
+
   random_candidate_order: 
     title: Randomize Candidate Order
     description: Randomizes the order of candidates on the ballots.
