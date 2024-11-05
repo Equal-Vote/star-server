@@ -214,7 +214,9 @@ function distributeVotes(remainingCandidates: candidate[], candidateVotes: weigh
 
         ballot.overvote = isOverVote
 
-        if (topRemainingRank === 0 || isOverVote) {
+        let isUnderVote = ballot.vote.reduce((allNull, v) => allNull && (v == null || v == 0), true);
+
+        if (!isUnderVote && (topRemainingRank === 0 || isOverVote)) {
             // ballot is exhausted
             exhaustedVotes.push(ballot)
         }
