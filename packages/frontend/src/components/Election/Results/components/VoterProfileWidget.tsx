@@ -76,9 +76,6 @@ export default ({topScore, frontRunners, ranked=false} : {topScore: number, fron
         </Select>
         {/*<Typography>their maximum support</Typography>*/}
         <Divider variant='middle' sx={{width: '100%', m:3}}/>
-        <Typography variant='h6'>{refCandidateName} supporters' average rankings:</Typography>
-        <ResultsBarChart data={data} xKey='score' percentage={false} sortFunc={false}/>
-        <Divider variant='middle' sx={{width: '100%', m:3}}/>
         <Typography variant='h6'>{refCandidateName} supporters' preferred frontrunner:</Typography>
         <HeadToHeadChart 
             leftName={frontRunners[0].candidate_name}
@@ -87,5 +84,8 @@ export default ({topScore, frontRunners, ranked=false} : {topScore: number, fron
             rightVotes={rightVotes}
             total={total}
         />
+        <Divider variant='middle' sx={{width: '100%', m:3}}/>
+        <Typography variant='h6'>{refCandidateName} supporters' average rankings:</Typography>
+        <ResultsBarChart data={data} xKey='score' percentage={false} sortFunc={false}/>
     </Widget>
 }

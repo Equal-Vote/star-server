@@ -20,7 +20,7 @@ export default (
         <Box height='38px' display='flex' flexDirection='row'>
             {leftValue > 0 &&
                 <Box width={leftPercent} sx={{backgroundColor:CHART_COLORS[0], textAlign: 'left', pt: 1, pl: 1, fontSize: '1rem', overflow: 'visible', zIndex: 1}}>
-                    {leftPercent}
+                    {(leftValue > rightValue)? '⭐ ': ''}{leftPercent}
                 </Box>
             }
             {midValue > 0 &&
@@ -30,7 +30,7 @@ export default (
             }
             {rightValue > 0 &&
                 <Box width={rightPercent} sx={{backgroundColor:CHART_COLORS[1], textAlign: 'right', pt: 1, pr: 1, fontSize: '1rem'}}>
-                    {rightPercent}
+                    {(rightValue > leftValue)? '⭐ ': ''}{rightPercent}
                 </Box>
             }
         </Box>

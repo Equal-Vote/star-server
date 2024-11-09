@@ -3,7 +3,7 @@ import useElection from "~/components/ElectionContextProvider";
 import Widget from "./Widget";
 import useRace from "~/components/RaceContextProvider";
 import { useState } from "react";
-import { Box, Divider, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Divider, MenuItem, Paper, Select, Typography } from "@mui/material";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { CHART_COLORS } from "~/components/util";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
@@ -66,13 +66,9 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
         >
             {candidates.map((c, i) => <MenuItem value={c.candidate_id}>{c.candidate_name}</MenuItem>)}
         </Select>
-        <Box display='flex' flexDirection='row' gap={2} flexWrap='wrap'>
-            <Typography variant='h6'>{t('results.win_count', {count: wins})}</Typography>
-            <Typography variant='h6'>{t('results.tie_count', {count: ties})}</Typography>
-            <Typography variant='h6'>{t('results.loss_count', {count: losses})}</Typography>
-        </Box>
-        <Divider variant='middle' sx={{width: '100%'}}/>
-        <Box display='flex' flexDirection='column' gap={4} sx={{my: 3, width: '100%', overflowY: 'scroll', maxHeight: '500px'}}>
+        <Divider variant='middle' sx={{width: '100%', m: 3}}/>
+        <Typography variant='h6'>{refCandidateName} won {wins} matchups, and lost {losses}.</Typography>
+        <Box display='flex' flexDirection='column' gap={4} sx={{my: 3, width: '100%', overflowY: {xs: 'unset', md: 'scroll'}, maxHeight: {xs: 'unset', md: '750px'}}}>
             {candidates.filter(c => c.candidate_id != refCandidateId).map((c,i) => {
                 let m = matchups[c.candidate_id];
                 return <HeadToHeadChart
@@ -82,5 +78,16 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
                 />
             })}
         </Box>
+        <Paper display='flex' flexDirection='column' gap={2} flexWrap='wrap' sx={{alignContent: 'right', p: 2}}>
+            {[
+                [CHART_COLORS[0], `${refCandidateName}'s support`],
+                ['var(--brand-gray-1)', `Didn't rank either`],
+                [CHART_COLORS[1], `Other candidate's support`],
+            ].map(([col, txt], i) => <Box key={i} display='flex' flexDirection='row' sx={{justifyContent: 'flex-start'}}>
+                <Box sx={{borderWidth: '3px', borderColor: 'black', borderRadius: '50%', mr: 1, my: 'auto', width: '15px', height: '15px', backgroundColor: col}}/>
+                <Typography>{txt}</Typography>
+            </Box>)
+        }
+        </Paper>
     </Widget>
 }

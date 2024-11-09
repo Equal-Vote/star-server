@@ -410,8 +410,8 @@ results:
   race_title: '{{race}} {{n}}: {{title}}'
   single_candidate_result: '{{name}} is the only {{lowercase_candidate}}, and wins by default'
   loading_election: Loading {{election}}...
-  details: Details
-  additional_info: Additional Info
+  details: Race Details
+  additional_info: Stats for Nerds
   waiting_for_results: |
     Still waiting for results
     No votes have been cast
@@ -424,7 +424,7 @@ results:
   vote_count: '{{n}} voters'
   method_context: 'Voting Method: {{voting_method}}'
   learn_link_text: How {{voting_method}} works
-  head_to_head_title: Head-to-Head Matchups
+  head_to_head_title: Head-to-Head Matchups !tip(head_to_head)
   voter_profile_title: Average Supporter Profile !tip(voter_profile)
   candidate_selector: '{{candidate}}'
 
@@ -461,7 +461,7 @@ results:
   rcv:
     first_choice_title: First Choice Preferences
     final_round_title: Final Runoff
-    table_title: All tabulation rounds
+    table_title: Ranked Choice Tabulation Rounds
     runoff_majority: majority of remaining active votes
     exhausted: Exhausted
     tabulation_candidate_column: '{{candidate}}'
@@ -582,6 +582,10 @@ tips:
   voter_profile:
     title: Average Voter Profile
     description: Shows how supporters of each candidate ranked/scored/approved other candidates
+
+  head_to_head:
+    title: Head-to-Head Matchups 
+    description: Shows which candidate would win in each one on one matchup based on the voters' preferences on the ballot. Information is identical to a preference or runoff matrix.
 
   random_candidate_order: 
     title: Randomize Candidate Order
