@@ -1,7 +1,7 @@
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 import { CHART_COLORS, truncName } from "~/components/util";
 
-export default ({ data, colorOffset = 0, star = false }) => {
+export default ({ data, colorOffset = 0, star = false, runoff = false, noLegend = false }) => {
   const renderCustomizedLabel = ({
     cx,
     cy,
@@ -30,11 +30,14 @@ export default ({ data, colorOffset = 0, star = false }) => {
     );
   };
 
-  let pieColors = [
-    CHART_COLORS[colorOffset % CHART_COLORS.length],
-    CHART_COLORS[(colorOffset + 1) % CHART_COLORS.length],
-    "var(--brand-gray-2)",
-  ];
+  let pieColors = CHART_COLORS;
+  if(runoff){
+    pieColors = [
+      CHART_COLORS[colorOffset % CHART_COLORS.length],
+      CHART_COLORS[(colorOffset + 1) % CHART_COLORS.length],
+      "var(--brand-gray-2)",
+    ];
+  }
 
   const pieAngle = 90;
 
@@ -64,15 +67,15 @@ export default ({ data, colorOffset = 0, star = false }) => {
           {data.map((entry, index) => (
             <Cell
               key={`cell-${index}`}
-              fill={pieColors[index]}
+              fill={entry.color ?? pieColors[index % pieColors.length]}
               stroke="var(--brand-white)"
               strokeWidth={6}
             />
           ))}
         </Pie>
-        <Legend
+        {!noLegend && <Legend
           layout="vertical"
-          verticalAlign="top"
+          verticalAlign="bottom"
           align="right"
           formatter={(value) => (
             <span
@@ -82,6 +85,7 @@ export default ({ data, colorOffset = 0, star = false }) => {
             </span>
           )}
         />
+        }
       </PieChart>
     </ResponsiveContainer>
   );

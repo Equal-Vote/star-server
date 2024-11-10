@@ -8,6 +8,7 @@ import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAx
 import { CHART_COLORS } from "~/components/util";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import HeadToHeadChart from "./HeadToHeadChart";
+import ResultsKey from "./ResultsKey";
 
 interface IMatchup {
     name: string
@@ -22,7 +23,6 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
     const {race} = useRace();
     if(candidates.length == 0) candidates = race.candidates;
     const [refCandidateId, setRefCandidateId] = useState(candidates[0].candidate_id);
-
 
     const refCandidateName = candidates.find(c => c.candidate_id == refCandidateId).candidate_name;
     const matchups: {[key: string]:IMatchup} = {};
@@ -78,16 +78,10 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
                 />
             })}
         </Box>
-        <Paper display='flex' flexDirection='column' gap={2} flexWrap='wrap' sx={{alignContent: 'right', p: 2}}>
-            {[
-                [CHART_COLORS[0], `${refCandidateName}'s support`],
-                ['var(--brand-gray-1)', `Didn't rank either`],
-                [CHART_COLORS[1], `Other candidate's support`],
-            ].map(([col, txt], i) => <Box key={i} display='flex' flexDirection='row' sx={{justifyContent: 'flex-start'}}>
-                <Box sx={{borderWidth: '3px', borderColor: 'black', borderRadius: '50%', mr: 1, my: 'auto', width: '15px', height: '15px', backgroundColor: col}}/>
-                <Typography>{txt}</Typography>
-            </Box>)
-        }
-        </Paper>
+        <ResultsKey items={[
+            [CHART_COLORS[0], `${refCandidateName}'s support`],
+            ['var(--brand-gray-1)', `Didn't rank either`],
+            [CHART_COLORS[1], `Other candidate's support`],
+        ]} />
     </Widget>
 }
