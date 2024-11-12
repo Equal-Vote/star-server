@@ -2,6 +2,7 @@ import { Box, Paper, Typography } from '@mui/material';
 import { log } from 'console';
 import React, { useState }  from 'react'
 import { starResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
+import Widget from '../components/Widget';
 
 
 const STARResultDetailedStepsWidget = ({ results, rounds, t, filterRandomFromLogs}: {results: starResults, rounds: number, t: Function, filterRandomFromLogs: boolean }) => {

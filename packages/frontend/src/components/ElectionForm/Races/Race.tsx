@@ -15,7 +15,7 @@ import { ContentCopy } from '@mui/icons-material';
 export default function Race({ race, race_index }) {
 
     const { election } = useElection()
-    const { editedRace, errors, setErrors, applyRaceUpdate, onSaveRace, onDeleteRace, onAddRace } = useEditRace(race, race_index)
+    const { editedRace, errors, setErrors, applyRaceUpdate, onSaveRace, onDeleteRace, onAddRace, onDuplicateRace } = useEditRace(race, race_index)
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -28,7 +28,7 @@ export default function Race({ race, race_index }) {
     }
 
     const onCopy = async () => {
-        const success = await onAddRace()
+        const success = await onDuplicateRace()
         if (!success) return
     }
 

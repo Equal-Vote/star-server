@@ -9,16 +9,18 @@ import useConfirm from '../../ConfirmationDialogProvider';
 import { v4 as uuidv4 } from 'uuid';
 import { Candidate } from '@equal-vote/star-vote-shared/domain_model/Candidate';
 import { useDeleteAllBallots } from '~/hooks/useAPI';
+import useSnackbar from '~/components/SnackbarContext';
 
 export const useEditRace = (race, race_index) => {
     const { election, refreshElection, permissions, updateElection } = useElection()
+    const { snack, setSnack } = useSnackbar()
     const { makeRequest: deleteAllBallots } = useDeleteAllBallots(election.election_id);
     const confirm = useConfirm();
     const defaultRace = {
         title: '',
         race_id: '',
         num_winners: 1,
-        voting_method: 'STAR',
+        voting_method: '',
         candidates: [
             { 
                 candidate_id: uuidv4(),
@@ -55,32 +57,48 @@ export const useEditRace = (race, race_index) => {
     const validatePage = () => {
         let isValid = true
         let newErrors: any = {}
-            if (!editedRace.title) {
-                newErrors.raceTitle = 'Race title required';
-                isValid = false;
+
+        if (!editedRace.title) {
+            newErrors.raceTitle = 'Race title required';
+            isValid = false;
+        }
+        else if (editedRace.title.length < 3 || editedRace.title.length > 256) {
+            newErrors.raceTitle = 'Race title must be between 3 and 256 characters';
+            isValid = false;
+        }
+        if (editedRace.description && editedRace.description.length > 1000) {
+            newErrors.raceDescription = 'Race title must be less than 1000 characters';
+            isValid = false;
+        }
+        if (election.races.some(race => {
+            // Check if the race ID is the same
+            if (race.race_id != editedRace.race_id) {
+                // Check if the title is the same
+                if (race.title === editedRace.title) return true;
+                return false;
             }
-            else if (editedRace.title.length < 3 || editedRace.title.length > 256) {
-                newErrors.raceTitle = 'Race title must be between 3 and 256 characters';
-                isValid = false;
-            }
-            if (editedRace.description && editedRace.description.length > 1000) {
-                newErrors.raceDescription = 'Race title must be less than 1000 characters';
-                isValid = false;
-            }
-            if (election.races.some(race => {
-                // Check if the race ID is the same
-                if (race.race_id != editedRace.race_id) {
-                    // Check if the title is the same
-                    if (race.title === editedRace.title) return true;
-                    return false;
-                }
-            })) {
-                newErrors.raceTitle = 'Races must have unique titles';
-                isValid = false;
-            }
+        })) {
+            newErrors.raceTitle = 'Races must have unique titles';
+            isValid = false;
+        }
         
         if (editedRace.num_winners < 1) {
-            newErrors.raceNumWinners = 'Must have at least one winner';
+            setSnack({
+                message: 'Must have at least one winner',
+                severity: 'warning',
+                open: true,
+                autoHideDuration: 6000,
+            })
+            isValid = false;
+        }
+
+        if (editedRace.voting_method == '') {
+            setSnack({
+                message: 'Must select a voting method',
+                severity: 'warning',
+                open: true,
+                autoHideDuration: 6000,
+            })
             isValid = false;
         }
         const numCandidates = editedRace.candidates.filter(candidate => candidate.candidate_name !== '').length
@@ -125,6 +143,21 @@ export const useEditRace = (race, race_index) => {
         return true
     }
 
+    const onDuplicateRace = async () => {
+        if (!validatePage()) return false
+        let success = await updateElection(election => {
+            election.races.push({
+                ...editedRace,
+                title: 'Copy Of ' + editedRace.title,
+                race_id: uuidv4()
+            })
+        })
+        success = success && await deleteAllBallots()
+        if (!success) return false
+        await refreshElection()
+        return true
+    }
+
     const onSaveRace = async () => {
         if (!validatePage()) return false
         let success = await updateElection(election => {
@@ -148,6 +181,6 @@ export const useEditRace = (race, race_index) => {
         return true
     }
 
-    return { editedRace, errors, setErrors, applyRaceUpdate, onSaveRace, onDeleteRace, onAddRace }
+    return { editedRace, errors, setErrors, applyRaceUpdate, onSaveRace, onDeleteRace, onAddRace, onDuplicateRace }
 
 }

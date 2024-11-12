@@ -10,6 +10,7 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
   const parsedData = ParseData(votes, getApprovalBallotValidity)
   const summaryData = getSummaryData(candidates, parsedData, randomTiebreakOrder)
   const results: approvalResults = {
+    votingMethod: 'Approval',
     elected: [],
     tied: [],
     other: [],

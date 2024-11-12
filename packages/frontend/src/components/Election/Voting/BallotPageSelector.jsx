@@ -6,7 +6,6 @@ import PluralityBallotView from "./PluralityBallotView";
 import RankedBallotView from "./RankedBallotView";
 import ApprovalBallotView from "./ApprovalBallotView";
 import StarPRBallotView from "./StarPRBallotView";
-import { DetailExpander } from '../../util';
 
 export default function BallotPageSelector({votingMethod}) {
   // TODO: it would be more scalable if we selected the class from a dictionary, but I'm not sure how to do that in react

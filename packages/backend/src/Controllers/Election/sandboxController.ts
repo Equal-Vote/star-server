@@ -18,7 +18,7 @@ const getSandboxResults = async (req: Request, res: Response, next: NextFunction
 
     let results: ElectionResults = {
         votingMethod: voting_method,
-        results: VotingMethods[voting_method](candidateNames, cvr, num_winners)
+        ...VotingMethods[voting_method](candidateNames, cvr, num_winners)
     }
 
     res.json(

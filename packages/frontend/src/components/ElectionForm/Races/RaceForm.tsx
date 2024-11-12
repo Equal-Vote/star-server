@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
 import { SortableList } from '~/components/DragAndDrop';
+import useSnackbar from '~/components/SnackbarContext';
 
 export default function RaceForm({ race_index, editedRace, errors, setErrors, applyRaceUpdate }) {
     const {t} = useSubstitutedTranslation();
@@ -107,6 +108,23 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
         }
     }, [ephemeralCandidates.length, applyRaceUpdate]);
 
+    const methodValueToTextKey = {
+        STAR_PR: 'star_pr',
+        STAR: 'star',
+        RankedRobin: 'ranked_robin',
+        Approval: 'approval',
+        STV: 'stv',
+        Plurality: 'choose_one',
+        IRV: 'rcv',
+    };
+
+    const MethodBullet = ({value}) => <>
+        <FormControlLabel value={value} control={<Radio />} label={t(`edit_race.methods.${methodValueToTextKey[value]}.title`)} sx={{ mb: 0, pb: 0 }} />
+        <FormHelperText sx={{ pl: 4, mt: -1 }}>
+            {t(`edit_race.methods.${methodValueToTextKey[value]}.description`)}
+        </FormHelperText>
+    </>
+
     return (
         <>
             <Grid container sx={{ m: 0, p: 1 }} >
@@ -127,7 +145,6 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                             setErrors({ ...errors, raceTitle: '' })
                             applyRaceUpdate(race => { race.title = e.target.value })
                         }
-                        
                     }
                     />
                     <FormHelperText error sx={{ pl: 1, pt: 0 }}>
@@ -189,7 +206,20 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
 
             <Stepper nonLinear activeStep={activeStep} orientation="vertical" sx={{my: 3}}>
                 <Step>
-                    <StepButton onClick={() => setActiveStep(0)}>How many winners?</StepButton>
+                    <StepButton onClick={() => setActiveStep(0)}>
+                        {t('edit_race.how_many_winners')}
+                        &nbsp;
+                        {editedRace.num_winners == 1 ?
+                            <b>{t(`edit_race.${methodFamily}`)}</b> :
+                            t('edit_race.count_with_family', {
+                                count: editedRace.num_winners,
+                                // .props.children[0] is a hack to remove the tip and parse out the string
+                                family: (typeof t(`edit_race.${methodFamily}`) == 'string') ?
+                                    t(`edit_race.${methodFamily}`) :
+                                    t(`edit_race.${methodFamily}`).props.children[0]
+                            })
+                        }
+                    </StepButton>
                     <StepContent>
                         <RadioGroup
                             aria-labelledby="method-family-radio-group"
@@ -203,9 +233,42 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                                 setMethodFamily(e.target.value)
                             }}
                         >
-                            <FormControlLabel value="single_winner" control={<Radio />} label={t('edit_race.single_winner')} sx={{ mb: 0, pb: 0 }} />
-                            <FormControlLabel value="bloc_multi_winner" control={<Radio />} label={t('edit_race.bloc_multi_winner')} sx={{ mb: 0, pb: 0 }} />
-                            <FormControlLabel value="proportional_multi_winner" control={<Radio />} label={t('edit_race.proportional_multi_winner')} sx={{ mb: 0, pb: 0 }} />
+                            <FormControlLabel
+                                value="single_winner"
+                                control={<Radio />}
+                                label={t('edit_race.single_winner')}
+                                sx={{ mb: 0, pb: 0 }}
+                                onClick={() => {
+                                    applyRaceUpdate(race => {
+                                        if(PR_METHODS.includes(race.voting_method)) race.voting_method = '';
+                                        race.num_winners = 1
+                                    })
+                                }}
+                            />
+                            <FormControlLabel
+                                value="bloc_multi_winner"
+                                control={<Radio />}
+                                label={t('edit_race.bloc_multi_winner')}
+                                sx={{ mb: 0, pb: 0 }}
+                                onClick={() => {
+                                    applyRaceUpdate(race => {
+                                        if(PR_METHODS.includes(race.voting_method)) race.voting_method = '';
+                                        race.num_winners = Math.max(2, race.num_winners)
+                                    })
+                                }}
+                            />
+                            <FormControlLabel
+                                value="proportional_multi_winner"
+                                control={<Radio />}
+                                label={t('edit_race.proportional_multi_winner')}
+                                sx={{ mb: 0, pb: 0 }}
+                                onClick={() => {
+                                    applyRaceUpdate(race => {
+                                        if(!PR_METHODS.includes(race.voting_method)) race.voting_method = '';
+                                        race.num_winners = Math.max(2, race.num_winners)
+                                    })
+                                }}
+                            />
                         </RadioGroup>
                         <Box sx={{
                             height: methodFamily == 'single_winner' ? 0 : '105px', // copied from the value for auto
@@ -215,13 +278,17 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                             maxWidth: '300px'
                         }}>
                             <Typography gutterBottom component="p" sx={{marginTop: 2}}>
-                                <b>Number of Winners?</b>
+                                <b>{t('edit_race.number_of_winners')}</b>
                             </Typography>
                             <TextField
                                 id={`num-winners-${String(race_index)}`}
                                 name="Number Of Winners"
                                 type="number"
-                                error={errors.raceNumWinners !== ''}
+                                InputProps={{
+                                    inputProps: { 
+                                        min: 2 
+                                    }
+                                }}
                                 fullWidth
                                 value={editedRace.num_winners}
                                 sx={{
@@ -241,7 +308,11 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                 </Step>
 
                 <Step>
-                    <StepButton onClick={() => setActiveStep(1)}>Voting Method</StepButton>
+                    <StepButton onClick={() => setActiveStep(1)}>
+                        {t('edit_race.which_voting_method')}
+                        &nbsp;
+                        <b>{editedRace.voting_method != '' && t(`methods.${methodValueToTextKey[editedRace.voting_method]}.full_name`)}</b>
+                    </StepButton>
                     <StepContent>
                         <FormControl component="fieldset" variant="standard">
                             <RadioGroup
@@ -250,30 +321,12 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                                 value={editedRace.voting_method}
                                 onChange={(e) => applyRaceUpdate(race => { race.voting_method = e.target.value })}
                             >
-                                <FormControlLabel value="STAR" control={<Radio />} label="STAR" sx={{ mb: 0, pb: 0 }} />
-                                <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                    Score candidates 0-5
-                                </FormHelperText>
-
-                                {flags.isSet('METHOD_STAR_PR') && <>
-                                    <FormControlLabel value="STAR_PR" control={<Radio />} label="Proportional STAR" />
-                                    <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                        Score candidates 0-5
-                                    </FormHelperText>
-                                </>}
-
-                                {flags.isSet('METHOD_RANKED_ROBIN') && <>
-                                    <FormControlLabel value="RankedRobin" control={<Radio />} label="Ranked Robin" />
-                                    <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                        Rank candidates in order of preference
-                                    </FormHelperText>
-                                </>}
-
-                                {flags.isSet('METHOD_APPROVAL') && <>
-                                    <FormControlLabel value="Approval" control={<Radio />} label="Approval" />
-                                    <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                        Mark all candidates you approve of
-                                    </FormHelperText>
+                                {methodFamily == 'proportional_multi_winner' ?
+                                    flags.isSet('METHOD_STAR_PR') && <MethodBullet value='STAR_PR'/>
+                                : <>
+                                    <MethodBullet value='STAR'/>
+                                    {flags.isSet('METHOD_RANKED_ROBIN') && <MethodBullet value='RankedRobin'/>}
+                                    {flags.isSet('METHOD_APPROVAL') && <MethodBullet value='Approval'/>}
                                 </>}
 
                                 <Box
@@ -311,24 +364,15 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                                             These voting methods do not guarantee every voter an equally powerful vote if there are more than two candidates.
                                         </FormHelperText>
                                     </Box>
-                                    <FormControlLabel value="Plurality" control={<Radio />} label="Plurality" />
-                                    <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                        Mark one candidate only. Not recommended with more than 2 candidates.
-                                    </FormHelperText>
 
-                                    {flags.isSet('METHOD_RANKED_CHOICE') && <>
-                                        <FormControlLabel value="IRV" control={<Radio />} label="Ranked Choice" />
-                                        <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                            Rank candidates in order of preference, only recommended for educational purposes
-                                        </FormHelperText>
+
+                                    {methodFamily == 'proportional_multi_winner' ?
+                                        flags.isSet('METHOD_RANKED_CHOICE') && <MethodBullet value='STV'/>
+                                    : <>
+                                        <MethodBullet value='Plurality'/>
+                                        {flags.isSet('METHOD_RANKED_CHOICE') && <MethodBullet value='IRV'/>}
                                     </>}
 
-                                    {flags.isSet('METHOD_RANKED_CHOICE') && <>
-                                        <FormControlLabel value="STV" control={<Radio />} label="STV" />
-                                        <FormHelperText sx={{ pl: 4, mt: -1 }}>
-                                            Proportaionl Version of RCV
-                                        </FormHelperText>
-                                    </>}
                                 </Box>
                             </RadioGroup>
                         </FormControl>

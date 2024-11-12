@@ -19,10 +19,9 @@ type Props = {
     fetchRolls: Function,
   }
 const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
-    const { election, permissions } = useElection()
+    const { t, election, permissions } = useElection()
     const [updatedRoll, setUpdatedRoll] = useState(roll)
     const flags = useFeatureFlags();
-    const {t} = useSubstitutedTranslation(election.settings.term_type);
 
     const approve = useApproveRoll(election.election_id)
     const flag = useFlagRoll(election.election_id)

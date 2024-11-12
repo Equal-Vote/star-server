@@ -43,6 +43,7 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
 
     // Initialize output data structure
     const results: allocatedScoreResults = {
+        votingMethod: 'STAR_PR',
         elected: [],
         tied: [],
         other: [],

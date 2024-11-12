@@ -12,7 +12,7 @@ import DraftWarning from "./DraftWarning";
 const ElectionHome = () => {
   const { election, voterAuth, refreshElection, permissions, updateElection } = useElection();
 
-  const {t, i18n} = useSubstitutedTranslation(election.settings.term_type, {time_zone: election.settings.time_zone});
+  const {t} = useSubstitutedTranslation(election.settings.term_type, {time_zone: election.settings.time_zone});
 
   return (
     <>

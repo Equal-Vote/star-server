@@ -204,7 +204,6 @@ export default class ElectionsDB implements IElectionStore {
             .executeTakeFirst()
 
         return deletedElection.then((election) => {
-            console.log(election)
             if (election) {
                 return true
             } else {

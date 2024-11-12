@@ -46,7 +46,7 @@ export default function Footer() {
             </Typography>
           </Grid>
           <Grid item xs={12} md={4} >
-            <Box component="img" src="https://assets.nationbuilder.com/unifiedprimary/sites/1/meta_images/original/Equal_Vote_website_header_logo.png?1703733898" sx={{width: '100%', padding: 2, background: 'black'}}/>
+            <Box component="img" src="https://assets.nationbuilder.com/unifiedprimary/sites/1/meta_images/original/evc_logo.png?1730324377" sx={{width: '100%', padding: 2, background: 'black'}}/>
             <Typography variant="body2" color="text.primary" gutterBottom sx={{
               pl: 1, pr: 1,
               textAlign: {

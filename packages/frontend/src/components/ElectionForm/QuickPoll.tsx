@@ -11,6 +11,7 @@ import { usePostElection } from '../../hooks/useAPI';
 import { useCookie } from '../../hooks/useCookie';
 import { Election, NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { CreateElectionContext } from './CreateElectionDialog.js';
+import useSnackbar from '../SnackbarContext.js';
 
 import { useSubstitutedTranslation } from '../util.jsx';
 
@@ -18,6 +19,7 @@ const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
     const [tempID, setTempID] = useCookie('temp_id', '0')
     const navigate = useNavigate()
     const { error, isPending, makeRequest: postElection } = usePostElection()
+    const {snack, setSnack} = useSnackbar();
 
     const {t} = useSubstitutedTranslation('poll', {
         method_name: methodName
@@ -74,7 +76,6 @@ const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
 
 
     const [election, setElectionData] = useState<NewElection>(QuickPollTemplate)
-    const [titleError, setTitleError] = useState(false)
     const onSubmitElection = async (election) => {
         // calls post election api, throws error if response not ok
         const newElection = await postElection(
@@ -95,13 +96,34 @@ const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
 
     const createElectionContext = useContext(CreateElectionContext);
 
-    const onSubmit = (e) => {
+    const validateForm = (e) => {
         e.preventDefault()
 
         if (!election.title) {
-            setTitleError(true);
-            return;
+            setSnack({
+                message: 'Must specify poll title',
+                severity: 'warning',
+                open: true,
+                autoHideDuration: 6000,
+            });
+            return false;
         }
+
+        if(election.races[0].candidates.filter(c => c.candidate_name != '').length < 2){
+            setSnack({
+                message: 'Must provide at least 2 options',
+                severity: 'warning',
+                open: true,
+                autoHideDuration: 6000,
+            });
+            return false;
+        }
+
+        return true;
+    }
+
+    const onSubmit = (e) => {
+        if(!validateForm(e)) return;
 
         // This assigns only the new fields, but otherwise keeps the existing election fields
         const newElection = {
@@ -180,7 +202,6 @@ const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
                 >{t('landing_page.quick_poll.title')}</Typography>
                 <StyledTextField
                     autoFocus
-                    error={titleError}
                     id="election-name"
                     name="name"
                     type="text"
@@ -189,9 +210,8 @@ const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
                     inputProps={{
                         minLength: 3
                     }}
-                    required
+                    required 
                     onChange={(e) => {
-                        setTitleError(false)
                         applyElectionUpdate(election => { election.title = e.target.value })
                     }}
                     onKeyPress={(ev) => {
@@ -254,7 +274,11 @@ const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
                     :
                     <Button
                         variant="outlined"
-                        onClick={() => createElectionContext.openDialog(election)}
+                        onClick={(e) => {
+                            if(validateForm(e)){
+                                createElectionContext.openDialog(election)}
+                            }
+                        }
                         sx={{
                             width: '90%',
                             p: 1,

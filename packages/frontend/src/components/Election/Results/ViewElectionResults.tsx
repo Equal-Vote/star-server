@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { useParams } from "react-router";
+import { useEffect } from 'react';
 import Results from './Results';
 import Box from '@mui/material/Box';
 import { Paper, Typography } from "@mui/material";
@@ -10,11 +9,9 @@ import DraftWarning from '../DraftWarning';
 import { StyledButton } from '~/components/styles';
 import ShareButton from '../ShareButton';
 import { BallotDataExport } from './BallotDataExport';
-import { useGetBallots } from '~/hooks/useAPI';
 
 const ViewElectionResults = () => {
-    
-    const { election } = useElection()
+    const { election } = useElection();
     
     const { data, isPending, error, makeRequest: getResults } = useGetResults(election.election_id)
     useEffect(() => { getResults() }, [])
@@ -36,13 +33,11 @@ const ViewElectionResults = () => {
                 </Typography>
                 {isPending && <div> {t('results.loading_election')} </div>}
 
-                    {data?.results.map((result, race_index) => (
+                    {data?.results.map((results, race_index) => (
                         <Results 
                             key={`results-${race_index}`}
-                            title={t('results.race_title', {n: race_index+1, title: data.election.races[race_index].title})}
-                            raceIndex={race_index}
                             race={data.election.races[race_index]}
-                            result={result}
+                            results={results}
                         />
                     ))}
                     <hr/>
@@ -70,7 +65,6 @@ const ViewElectionResults = () => {
                         </Box>
                     </Box>
                 </Box>
-                
             </Paper>
         </Box>
     </>)

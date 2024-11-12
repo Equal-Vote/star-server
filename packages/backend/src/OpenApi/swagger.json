@@ -16,13 +16,19 @@
         "type": "apiKey",
         "in": "cookie",
         "name": "id_token",
-        "description": "This uses authenticaion token generated with a secret obtained from keycloak, the token can be sent both as a cookie named id_token or in the auth_key property of the election object. [More information about token generation can be found here](https://github.com/Equal-Vote/star-server/blob/6fdb2f653266b5f2710f0701509f54e1e558ecc1/docs/api.md)<br><br>For API testing:<br>\n                        1. [log in here](https://keycloak.prod.equal.vote/realms/Prod/protocol/openid-connect/auth?client_id=web&response_type=code&redirect_uri=http://localhost:3000&scope=openid)<br>\n                        2. Copy the token from the cookie named id_token by inspecting the page and going to the Application tab.<br>\n                        3. Inspect this page and create an id_token cookie with the value you copied from the previous step.<br>\n                        **Pasting it into the field below won't work since swagger doesn't allow setting cookies**"
+        "description": "This uses authenticaion token generated with a secret obtained from keycloak, the token can be sent both as a cookie named id_token or in the auth_key property of the election object. [More information about token generation can be found here](https://github.com/Equal-Vote/star-server/blob/6fdb2f653266b5f2710f0701509f54e1e558ecc1/docs/api.md)<br><br>For API testing [log in here](https://keycloak.prod.equal.vote/realms/Prod/protocol/openid-connect/auth?client_id=web&response_type=code&redirect_uri=https://bettervoting.com/API/Docs&scope=openid)"
       }
     },
     "schemas": {
       "AnonymizedBallot": {
         "properties": {
           "ballot_id": {
+            "type": "string"
+          },
+          "election_id": {
+            "type": "string"
+          },
+          "precinct": {
             "type": "string"
           },
           "votes": {
@@ -34,6 +40,7 @@
         },
         "required": [
           "ballot_id",
+          "election_id",
           "votes"
         ],
         "type": "object"
@@ -305,116 +312,22 @@
       "ElectionResults": {
         "anyOf": [
           {
-            "properties": {
-              "results": {
-                "$ref": "#/components/schemas/starResults"
-              },
-              "votingMethod": {
-                "const": "STAR",
-                "type": "string"
-              }
-            },
-            "required": [
-              "results",
-              "votingMethod"
-            ],
-            "type": "object"
+            "$ref": "#/components/schemas/starResults"
           },
           {
-            "properties": {
-              "results": {
-                "$ref": "#/components/schemas/allocatedScoreResults"
-              },
-              "votingMethod": {
-                "const": "STAR_PR",
-                "type": "string"
-              }
-            },
-            "required": [
-              "results",
-              "votingMethod"
-            ],
-            "type": "object"
+            "$ref": "#/components/schemas/allocatedScoreResults"
           },
           {
-            "properties": {
-              "results": {
-                "$ref": "#/components/schemas/approvalResults"
-              },
-              "votingMethod": {
-                "const": "Approval",
-                "type": "string"
-              }
-            },
-            "required": [
-              "results",
-              "votingMethod"
-            ],
-            "type": "object"
+            "$ref": "#/components/schemas/approvalResults"
           },
           {
-            "properties": {
-              "results": {
-                "$ref": "#/components/schemas/rankedRobinResults"
-              },
-              "votingMethod": {
-                "const": "RankedRobin",
-                "type": "string"
-              }
-            },
-            "required": [
-              "results",
-              "votingMethod"
-            ],
-            "type": "object"
+            "$ref": "#/components/schemas/pluralityResults"
           },
           {
-            "properties": {
-              "results": {
-                "$ref": "#/components/schemas/irvResults"
-              },
-              "votingMethod": {
-                "const": "IRV",
-                "type": "string"
-              }
-            },
-            "required": [
-              "results",
-              "votingMethod"
-            ],
-            "type": "object"
+            "$ref": "#/components/schemas/rankedRobinResults"
           },
           {
-            "properties": {
-              "results": {
-                "$ref": "#/components/schemas/pluralityResults"
-              },
-              "votingMethod": {
-                "const": "Plurality",
-                "type": "string"
-              }
-            },
-            "required": [
-              "results",
-              "votingMethod"
-            ],
-            "type": "object"
-          },
-          {
-            "properties": {
-              "results": {
-                "$ref": "#/components/schemas/irvResults"
-              },
-              "votingMethod": {
-                "const": "STV",
-                "type": "string"
-              }
-            },
-            "required": [
-              "results",
-              "votingMethod"
-            ],
-            "type": "object"
+            "$ref": "#/components/schemas/irvResults"
           }
         ]
       },
@@ -1307,6 +1220,10 @@
               "type": "array"
             },
             "type": "array"
+          },
+          "votingMethod": {
+            "const": "STAR_PR",
+            "type": "string"
           }
         },
         "required": [
@@ -1315,7 +1232,8 @@
           "roundResults",
           "summaryData",
           "tieBreakType",
-          "tied"
+          "tied",
+          "votingMethod"
         ],
         "type": "object"
       },
@@ -1454,6 +1372,10 @@
               "$ref": "#/components/schemas/candidate"
             },
             "type": "array"
+          },
+          "votingMethod": {
+            "const": "Approval",
+            "type": "string"
           }
         },
         "required": [
@@ -1462,7 +1384,8 @@
           "roundResults",
           "summaryData",
           "tieBreakType",
-          "tied"
+          "tied",
+          "votingMethod"
         ],
         "type": "object"
       },
@@ -1615,6 +1538,9 @@
               "$ref": "#/components/schemas/candidate"
             },
             "type": "array"
+          },
+          "votingMethod": {
+            "$ref": "#/components/schemas/votingMethod"
           }
         },
         "required": [
@@ -1623,7 +1549,8 @@
           "roundResults",
           "summaryData",
           "tieBreakType",
-          "tied"
+          "tied",
+          "votingMethod"
         ],
         "type": "object"
       },
@@ -1721,6 +1648,13 @@
               "type": "array"
             },
             "type": "array"
+          },
+          "votingMethod": {
+            "enum": [
+              "IRV",
+              "STV"
+            ],
+            "type": "string"
           }
         },
         "required": [
@@ -1733,7 +1667,8 @@
           "summaryData",
           "tieBreakType",
           "tied",
-          "voteCounts"
+          "voteCounts",
+          "votingMethod"
         ],
         "type": "object"
       },
@@ -1877,6 +1812,10 @@
               "$ref": "#/components/schemas/candidate"
             },
             "type": "array"
+          },
+          "votingMethod": {
+            "const": "Plurality",
+            "type": "string"
           }
         },
         "required": [
@@ -1885,7 +1824,8 @@
           "roundResults",
           "summaryData",
           "tieBreakType",
-          "tied"
+          "tied",
+          "votingMethod"
         ],
         "type": "object"
       },
@@ -1974,6 +1914,10 @@
               "$ref": "#/components/schemas/candidate"
             },
             "type": "array"
+          },
+          "votingMethod": {
+            "const": "RankedRobin",
+            "type": "string"
           }
         },
         "required": [
@@ -1982,7 +1926,8 @@
           "roundResults",
           "summaryData",
           "tieBreakType",
-          "tied"
+          "tied",
+          "votingMethod"
         ],
         "type": "object"
       },
@@ -2166,6 +2111,10 @@
               "$ref": "#/components/schemas/candidate"
             },
             "type": "array"
+          },
+          "votingMethod": {
+            "const": "STAR",
+            "type": "string"
           }
         },
         "required": [
@@ -2174,7 +2123,8 @@
           "roundResults",
           "summaryData",
           "tieBreakType",
-          "tied"
+          "tied",
+          "votingMethod"
         ],
         "type": "object"
       },
@@ -2322,6 +2272,18 @@
           "csvRow"
         ],
         "type": "object"
+      },
+      "votingMethod": {
+        "enum": [
+          "Approval",
+          "IRV",
+          "Plurality",
+          "RankedRobin",
+          "STAR",
+          "STAR_PR",
+          "STV"
+        ],
+        "type": "string"
       }
     }
   },
@@ -2788,7 +2750,7 @@
                 "type": "object",
                 "properties": {
                   "Election": {
-                    "$ref": "#/components/schemas/Election"
+                    "$ref": "#/components/schemas/NewElection"
                   }
                 }
               }
@@ -2805,7 +2767,7 @@
                   "properties": {
                     "election": {
                       "type": "object",
-                      "$ref": "#/components/schemas/NewElection"
+                      "$ref": "#/components/schemas/Election"
                     }
                   }
                 }

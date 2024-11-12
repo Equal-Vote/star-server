@@ -7,6 +7,7 @@ export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, r
   const parsedData = ParseData(votes, getPluralityBallotValidity)
   const summaryData = getSummaryData(candidates, parsedData, randomTiebreakOrder)
   const results: pluralityResults = {
+    votingMethod: 'Plurality',
     elected: [],
     tied: [],
     other: [],

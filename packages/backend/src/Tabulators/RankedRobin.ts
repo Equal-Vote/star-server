@@ -24,6 +24,7 @@ export function RankedRobin(candidates: string[], votes: ballot[], nWinners = 1,
 
   // Initialize output data structure
   const results: rankedRobinResults = {
+    votingMethod: 'RankedRobin',
     elected: [],
     tied: [],
     other: [],
@@ -113,7 +114,7 @@ function getSummaryData(candidates: string[], parsedData: IparsedData, randomTie
       for (let j = 0; j < nCandidates; j++) {
         
         let jRank = vote[j]
-        if (jRank === 0) {
+        if (jRank === 0 || jRank === null) {
           jRank = nCandidates
         }
         if (i !== j) {

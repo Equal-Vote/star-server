@@ -317,7 +317,7 @@ return_to_classic:
 
 # Share Button dropdown
 share:
-  button: Share
+  button: Share {{election}}
   facebook: Facebook
   X: X
   reddit: Reddit
@@ -408,9 +408,10 @@ results:
     {{election}} Name:
     {{title}}
   race_title: '{{race}} {{n}}: {{title}}'
+  single_candidate_result: '{{name}} is the only {{lowercase_candidate}}, and wins by default'
   loading_election: Loading {{election}}...
-  details: Details
-  additional_info: Additional Info
+  details: Race Details
+  additional_info: Stats for Nerds
   waiting_for_results: |
     Still waiting for results
     No votes have been cast
@@ -423,6 +424,18 @@ results:
   vote_count: '{{n}} voters'
   method_context: 'Voting Method: {{voting_method}}'
   learn_link_text: How {{voting_method}} works
+  head_to_head_title: Head-to-Head Matchups !tip(head_to_head)
+  voter_profile_title: Average Supporter Profile !tip(voter_profile)
+  candidate_selector: '{{candidate}}'
+
+  win_count: '{{count}} Wins'
+  win_count_one: '{{count}} Win'
+
+  tie_count: '{{count}} Ties'
+  tie_count_one: '{{count}} Tie'
+
+  loss_count: '{{count}} Losses'
+  loss_count_one: '{{count}} Loss'
 
   choose_one:
     bar_title: Votes for each {{candidate}}
@@ -448,7 +461,7 @@ results:
   rcv:
     first_choice_title: First Choice Preferences
     final_round_title: Final Runoff
-    table_title: All tabulation rounds
+    table_title: Ranked Choice Tabulation Rounds
     runoff_majority: majority of remaining active votes
     exhausted: Exhausted
     tabulation_candidate_column: '{{candidate}}'
@@ -549,7 +562,8 @@ tabulation_logs:
     random_tiebreak_end: '' # not used
 
     # Automatic runoff
-    automatic_runoff_start: Advance to automatic runoff round.
+    automatic_runoff_start: >
+      Advance to automatic runoff round between {{candidate_a}} and {{candidate_b}}
     automatic_runoff_win: >
       {{winner}} is preferred over {{loser}} by {{winner_votes}} votes to {{loser_votes}}, and {{equal_votes}} voters have an [equal preference](https://www.starvoting.org/equal_preference).
     automatic_runoff_tie: >
@@ -565,6 +579,14 @@ election_state:
 
 # Info bubbles
 tips:
+  voter_profile:
+    title: Average Voter Profile
+    description: Shows how supporters of each candidate ranked/scored/approved other candidates
+
+  head_to_head:
+    title: Head-to-Head Matchups 
+    description: Shows which candidate would win in each one on one matchup based on the voters' preferences on the ballot. Information is identical to a preference or runoff matrix.
+
   random_candidate_order: 
     title: Randomize Candidate Order
     description: Randomizes the order of candidates on the ballots.
@@ -710,7 +732,7 @@ admin_home:
     message: Are you sure you wish to archive this {{lowercase_election}}? This action cannot be undone.
 
   share:
-    description: Share
+    description: Share {{election}}
     # Button is defined in the top level share section
 
   finalize_invitations_will_send: Invitations will be sent to your voters
@@ -757,7 +779,6 @@ election_settings:
 
   ballot_updates: Allow Voters To Edit Vote !tip(ballot_updates)
 
-
   public_results: Show Preliminary Results !tip(public_results)
 
   random_ties: Enable Random Tie-Breakers !tip(random_ties)
@@ -774,9 +795,42 @@ election_settings:
   
 # Admin Home -> Add/Edit Race
 edit_race:
+  how_many_winners: How many winners?
+  which_voting_method: Which Voting Method?
+  number_of_winners: Number of winners
   single_winner: Single-Winner
   bloc_multi_winner:  Basic Multi-Winner !tip(bloc_multi_winner)
   proportional_multi_winner:  Proportional Multi-Winner !tip(proportional_multi_winner)
+  count_with_family: '**{{count}}** using **{{family}}**'
+  methods:
+    star:
+      title: $t(methods.star.full_name) !tip(star)
+      description: Score candidates 0-5. Recommended for accuracy.
+    star_pr:
+      # !tip(star_pr) we don't have a tip written yet
+      title: $t(methods.star_pr.full_name) 
+      description: Score candidates 0-5. Recommended for accuracy.
+    approval:
+      title: $t(methods.approval.full_name) !tip(approval)
+      description: Mark all the candidates you approve of. Recommended for simplicity.
+    ranked_robin:
+      title: $t(methods.ranked_robin.full_name) !tip(ranked_robin)
+      description: Rank candidates in order of preference. Recommended for ranking.
+    rcv:
+      # !tip(rcv) we don't have a tip written yet
+      title: $t(methods.rcv.full_name)
+      description: Rank candidates in order of preference, only recommended for educational purposes
+    stv:
+      # !tip(stv) we don't have a tip written yet
+      title: $t(methods.stv.full_name)
+      description: Proportaionl Version of RCV
+    choose_one:
+      # !tip(choose_one) we don't have a tip written yet
+      title: $t(methods.choose_one.full_name)
+      description: Mark one candidate only. Not recommended with more than 2 candidates.
+
+                                        
+
 
 # Voters
 
@@ -828,6 +882,10 @@ methods:
     full_name: Ranked Choice Voting
     short_name: RCV
     learn_link: https://www.youtube.com/watch?v=oHRPMJmzBBw
+  stv:
+    full_name: Single Transferable Vote
+    short_name: STV
+    learn_link: https://www.youtube.com/watch?v=ItywbxafCk4
   ranked_robin:
     full_name: Ranked Robin
     short_name: Ranked Robin

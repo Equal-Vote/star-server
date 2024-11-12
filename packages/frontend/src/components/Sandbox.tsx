@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 import { Box, InputLabel } from "@mui/material";
 import { useGetSandboxResults } from '../hooks/useAPI';
 import { VotingMethod } from '@equal-vote/star-vote-shared/domain_model/Race';
+import { ElectionContextProvider } from './ElectionContextProvider';
 
 const Sandbox = () => {
 
@@ -68,6 +69,7 @@ const Sandbox = () => {
     return (
         //Using grid to force results into the center and fill screen on smaller screens.
         //Using theme settings and css can probably replace the grids
+        <ElectionContextProvider id={undefined}>
         <Grid container spacing={0} sx={{ p: 3 }}>
             <Grid item xs={12} md={6}>
                 <Grid container spacing={0} sx={{ p: 3 }}>
@@ -159,9 +161,7 @@ const Sandbox = () => {
                         
                     {data && !error && (
                         <Results
-                            title=''
-                            raceIndex={0}
-                            result={data.results}
+                            results={data.results}
                             race={{
                                 race_id: '',
                                 title: '',
@@ -175,6 +175,7 @@ const Sandbox = () => {
             <Grid item xs={12} sm={2}>
             </Grid>
         </Grid>
+        </ElectionContextProvider>
     )
 }
 export default Sandbox
