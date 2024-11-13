@@ -20,28 +20,28 @@ export default ({eliminationOrderById, winnerId} : {eliminationOrderById : strin
 
     let data = [
         { // Type 1: !hasPassedOver && isWinner
-            name: 'Voter supported the winner and all candidates preferred to the winner were counted',
+            name: 'Voter supported the winner and all candidates preferred over the winner were counted',
             votes: 0,
             color: 'var(--ltbrand-green)'
         },
         { // Type 2: !hasPassedOver && !isWinner && !trailingRanks
             // name: All rankings counted but disliked winner. Additional candidates after winner left blank
             // name: 'Your vote was allocated to a losing candidate but all your preferences were counted.',
-            name: "Voter didn't support the winner but all preferences were still counted.",
+            name: "Voter didn't support the winner but all their preferences were still counted.",
             votes: 0,
             color: 'var(--ltbrand-lime)'
         },
         { // Type 3:  hasPassedOver
             // name: 'Voter\'s preferred candidates were not counted due to order of elimination.',
             name: "Vote couldn't transfer to next choice after an elimination because next choice was already eliminated.",
-            votes: 0,
-            color: 'var(--brand-red)'
+            votes: 300,
+            color: 'var(--brand-red)' //'var(--brand-red)'
         },
         { // Type 4: !hasPassedOver && !isWinner && trailingRanks
             // name: 'Voter\'s next choice wasn\'t counted after their top choice lost in the final round.',
-            name: "Voter was counted toward a losing candidate but they had more preferences that couldn't be counted.",
+            name: "Voter was counted toward a losing candidate but voter had more uncounted preferences",
             votes: 0,
-            color: 'color-mix(in srgb, var(--brand-red) 50%, white)'
+            color: 'var(--ltbrand-red)'// 'color-mix(in srgb, var(--brand-red) 50%, white)'
         },
     ]
 
@@ -116,7 +116,7 @@ export default ({eliminationOrderById, winnerId} : {eliminationOrderById : strin
 
     return <Widget title='Voter Intent'>
         <Typography sx={{textAlign: 'left'}}>
-            In Ranked Choice there's a common misconception that "If your favorite doesn't win, your next choice will be counted," but that didn't
+            In Ranked Choice there's a common misconception that "If your favorite doesn't win, your next choice will be counted" but that didn't
             happen for {Math.round(100*(data[2].votes+data[3].votes)/numBallots)}% of the voters and {Math.round(100*numIgnored / numPref)}%
             of voter's rankings were uncounted in this election.
         </Typography>
