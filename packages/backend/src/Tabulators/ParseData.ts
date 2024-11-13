@@ -38,8 +38,7 @@ module.exports = function ParseData(data: ballot[], validityCheck = getStarBallo
         else if (ballotValidity.isUnderVote) {
             underVotes += 1
             scores.push(row)
-            // under votes should not count as a valid vote
-            //validVotes.push(voter);
+            validVotes.push(voter);
         }
         else {
             scores.push(row)

@@ -187,12 +187,6 @@ const VotePage = () => {
     return <Container disableGutters={true} maxWidth="sm"><h3>No races created for election</h3></Container>
   }
 
-  let pageIsUnderVote = (page) => {
-    let u =  page.candidates.reduce((prev, c) => prev && c.score == 0, true)
-    console.log(u);
-    return page.candidates.reduce((prev, c) => prev && (c.score == 0 || c.score == null), true)
-  }
-
   return (
     <Container disableGutters={true} maxWidth="sm">
       <DraftWarning/>
@@ -250,13 +244,23 @@ const VotePage = () => {
           </Stepper>
           <Button
             variant='contained'
-            onClick={() => (currentPage === pages.length-1)? setIsOpen(true) : setCurrentPageAndScroll(count => count + 1)}
-            sx={{ maxHeight: '40px', minWidth: '100px', marginLeft: {xs: '10px', md: '40px'}, visibility: 'visible' }}>
-              {t((currentPage === pages.length-1)? 'ballot.submit_ballot' : 'ballot.next')}
+            onClick={() => setCurrentPageAndScroll(count => count + 1)}
+            disabled={currentPage === pages.length - 1}
+            sx={{ maxHeight: '40px', minWidth: '100px', marginLeft: {xs: '10px', md: '40px'}, visibility: (currentPage === pages.length - 1) ? 'hidden' : 'visible' }}>
+              {t('ballot.next')}
           </Button>
         </Box>
       }
 
+      <Box sx={{ display: 'flex', justifyContent: "space-between" }}>
+        <Button
+          variant='contained'
+          onClick={() => setIsOpen(true)}
+          disabled={isPending || currentPage !== pages.length - 1 || pages[currentPage].candidates.every(candidate => candidate.score === null || pages.some(page => page.warnings))}//disable unless on last page and at least one candidate scored
+          style={{ margin: "auto", minWidth: "150px", marginTop: "40px" }}>
+              <Typography variant="h6">{t('ballot.submit_ballot')}</Typography>
+        </Button>
+      </Box>
       {isPending && <div> {t('ballot.submitting')} </div>}
       <Dialog
         open={isOpen}
@@ -295,17 +299,11 @@ const VotePage = () => {
                 <Typography variant="h6">
                   {election.races[page.race_index].title}
                 </Typography>
-                {pageIsUnderVote(page) ?
-                  <Typography variant="body1" color='var(--ltbrand-blue)'>
-                    <b>Abstained</b>
+                {page.candidates.map(candidate => (
+                  <Typography variant="body1">
+                    {`${candidate.candidate_name}: ${candidate.score ? candidate.score : 0}`}
                   </Typography>
-                  :
-                  page.candidates.map(candidate => (
-                    <Typography variant="body1">
-                      {`${candidate.candidate_name}: ${candidate.score ? candidate.score : 0}`}
-                    </Typography>
-                  ))
-                }
+                ))}
               </Box>
             ))}
           </DialogContentText>
