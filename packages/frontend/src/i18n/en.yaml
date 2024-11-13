@@ -188,7 +188,7 @@ ballot:
   learn_more: Learn more about {{voting_method}}
   previous: Previous
   next: Next
-  submit_ballot: Submit {{ballot}}
+  submit_ballot: Submit
   submitting: Submitting...
 
   dialog_submit_title: Submit {{ballot}}?
