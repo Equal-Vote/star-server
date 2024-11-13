@@ -119,33 +119,6 @@ const ViewBallot = ({ ballot, onClose }) => {
                             </TableContainer>
                         </>
                     ))}
-                    {myballot?.history &&
-                        <>
-                            <Typography align='left' variant="h6" component="h6">
-                                Ballot History
-                            </Typography>
-                            <TableContainer component={Paper}>
-                                <Table style={{ width: '100%' }} aria-label="simple table">
-                                    <TableHead>
-                                        <TableCell> Action </TableCell>
-                                        <TableCell align="right"> Actor </TableCell>
-                                        <TableCell align="right"> {`Timestamp (${getLocalTimeZoneShort()})`} </TableCell>
-                                    </TableHead>
-                                    <TableBody>
-                                        {myballot.history.map((history, i) => (
-                                            <TableRow key={i} >
-                                                <TableCell component="th" scope="row">
-                                                    {history.action_type}
-                                                </TableCell>
-                                                <TableCell align="right" >{history.actor}</TableCell>
-                                                <TableCell align="right" >{ t('listed_datetime', {listed_datetime: history.timestamp} )}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </>
-                    }
                     {onClose &&
                         <Grid item sm={4}>
                             <Button variant='outlined' onClick={() => { onClose() }} > Close </Button>

@@ -48,6 +48,7 @@ declare module '@mui/material/styles' {
 
   interface PaletteColor {
     purple?: string;
+    yellow?: string;
     ltblue?: string;
     blue?: string;
     gold?: string;
@@ -66,6 +67,7 @@ declare module '@mui/material/styles' {
 
     //transparent colors
     purpleTransparent20?: string;
+    yellowTransparent20?: string;
     ltblueTransparent20?: string;
     blueTransparent20?: string;
     goldTransparent20?: string;
@@ -83,6 +85,7 @@ declare module '@mui/material/styles' {
 
   interface SimplePaletteColorOptions {
     purple?: string;
+    yellow?: string;
     ltblue?: string;
     blue?: string;
     gold?: string;
@@ -101,6 +104,7 @@ declare module '@mui/material/styles' {
     
     //transparent colors
     purpleTransparent20?: string;
+    yellowTransparent20?: string;
     ltblueTransparent20?: string;
     blueTransparent20?: string;
     goldTransparent20?: string;
@@ -122,6 +126,7 @@ const brandPalette: PaletteOptions = {
     main: '#000000',
     /* https://docs.google.com/presentation/d/1NSAirKzmq4YyUPB56NR3pKiRTn3W9btwnUtHi_zteeU/edit#slide=id.g827b1a2992_5_86*/
     purple: '#4D2586',
+    yellow: '#FFFF54FF',
     ltblue: '#2AA2B3',
     blue: '#02627C',
     gold: '#FFE156',
@@ -140,6 +145,7 @@ const brandPalette: PaletteOptions = {
     grayAlpha: '#7B7B7B7D', /* For graying out candidates for the "How does STAR Voting Work?" Graphic (has transparency)*/
 
     purpleTransparent20: '#4D258633',  // 20% opacity
+    yellowTransparent20: '#FFFF5433', 
     ltblueTransparent20: '#2AA2B333',
     blueTransparent20: '#02627C33',
     goldTransparent20: '#FFE15633',
