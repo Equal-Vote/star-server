@@ -207,9 +207,9 @@ function IRVResultsViewer() {
         </Widget>
       </WidgetContainer>
       <DetailExpander level={1}>
-        {/*<WidgetContainer>
+        <WidgetContainer>
           <VoterIntentWidget eliminationOrderById={eliminationOrderById} winnerId={sortedCandidates[0].candidate_id}/>
-        </WidgetContainer>*/}
+        </WidgetContainer>
         <WidgetContainer>
           <HeadToHeadWidget ranked candidates={sortedCandidates}/>
           <VoterProfileWidget topScore={1} ranked frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
