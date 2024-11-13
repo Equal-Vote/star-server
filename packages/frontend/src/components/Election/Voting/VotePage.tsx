@@ -215,16 +215,15 @@ const VotePage = () => {
       }}>
         <BallotPageSelector votingMethod={pages[currentPage].voting_method} />
       </BallotContext.Provider>
-
-      {pages.length > 1 &&
-        <Box sx={{ display: 'flex', justifyContent: "space-between", marginTop: '10px' }}>
-          <Button
-            variant='contained'
-            onClick={() => setCurrentPageAndScroll(count => count - 1)}
-            disabled={currentPage === 0}
-            sx={{ maxHeight: '40px', minWidth: '100px', marginRight: {xs: '10px', md: '40px'}, visibility: (currentPage === 0) ? 'hidden' : 'visible' }}>
-              {t('ballot.previous')}
-          </Button>
+      <Box sx={{ display: 'flex', justifyContent: "space-between", marginTop: '10px' }}>
+        <Button
+          variant='contained'
+          onClick={() => setCurrentPageAndScroll(count => count - 1)}
+          disabled={currentPage === 0}
+          sx={{ maxHeight: '40px', minWidth: '100px', marginRight: {xs: '10px', md: '40px'}, visibility: (currentPage === 0) ? 'hidden' : 'visible' }}>
+            {t('ballot.previous')}
+        </Button>
+        {pages.length > 1 && 
           <Stepper className='racePageStepper' sx={{display: 'flex', flexWrap: 'wrap'}}>
             {pages.map((page, pageIndex) => (
               <Box key={pageIndex}>
@@ -248,14 +247,14 @@ const VotePage = () => {
               </Box>
             ))}
           </Stepper>
-          <Button
-            variant='contained'
-            onClick={() => (currentPage === pages.length-1)? setIsOpen(true) : setCurrentPageAndScroll(count => count + 1)}
-            sx={{ maxHeight: '40px', minWidth: '100px', marginLeft: {xs: '10px', md: '40px'}, visibility: 'visible' }}>
-              {t((currentPage === pages.length-1)? 'ballot.submit_ballot' : 'ballot.next')}
-          </Button>
-        </Box>
-      }
+        }
+        <Button
+          variant='contained'
+          onClick={() => (currentPage === pages.length-1)? setIsOpen(true) : setCurrentPageAndScroll(count => count + 1)}
+          sx={{ maxHeight: '40px', minWidth: '100px', marginLeft: {xs: '10px', md: '40px'}, visibility: 'visible' }}>
+            {t((currentPage === pages.length-1)? 'ballot.submit_ballot' : 'ballot.next')}
+        </Button>
+      </Box>
 
       {isPending && <div> {t('ballot.submitting')} </div>}
       <Dialog
