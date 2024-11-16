@@ -19,5 +19,5 @@ export const sharedConfig = {
     FF_CUSTOM_REGISTRATION: 'false',
     FF_VOTER_FLAGGING: 'false',
     FF_ELECTION_TESTIMONIALS: 'false',
-    FF_PRECINCTS: 'true',
+    FF_PRECINCTS: 'false',
 };
