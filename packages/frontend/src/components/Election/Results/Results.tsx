@@ -19,6 +19,7 @@ import HeadToHeadWidget from "./components/HeadToHeadWidget";
 import useRace, { RaceContextProvider } from "~/components/RaceContextProvider";
 import VoterProfileWidget from "./components/VoterProfileWidget";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
+import VoterIntentWidget from "./components/VoterIntentWidget";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
@@ -174,6 +175,22 @@ function IRVResultsViewer() {
     })
     .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
 
+  const eliminationOrderById = race.candidates
+    .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
+    .filter(c => results.voteCounts.at(-1)[c.index] == 0)
+    .sort((a, b) => {
+      // prioritize ranking in later rounds, but use previous rounds as tiebreaker
+      let i = results.voteCounts.length-1;
+      while(i >= 0){
+        let diff = -(results.voteCounts[i][a.index] - results.voteCounts[i][b.index]);
+        if(diff != 0) return diff;
+        i--;
+      }
+      return 0;
+    })
+    .map(c => c.candidate_id)
+    .reverse();
+
   return <ResultsViewer methodKey='rcv'>
     <WidgetContainer>
       <Widget title={t('results.rcv.first_choice_title')}>
@@ -190,6 +207,9 @@ function IRVResultsViewer() {
         </Widget>
       </WidgetContainer>
       <DetailExpander level={1}>
+        <WidgetContainer>
+          <VoterIntentWidget eliminationOrderById={eliminationOrderById} winnerId={sortedCandidates[0].candidate_id}/>
+        </WidgetContainer>
         <WidgetContainer>
           <HeadToHeadWidget ranked candidates={sortedCandidates}/>
           <VoterProfileWidget topScore={1} ranked frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>

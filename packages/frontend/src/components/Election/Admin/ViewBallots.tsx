@@ -77,7 +77,6 @@ const ViewBallots = () => {
                                 {flags.isSet('VOTER_FLAGGING') &&
                                     <TableCell> Precinct </TableCell>
                                 }
-                                <TableCell align='right'> {`Date Submitted (${getLocalTimeZoneShort()})`} </TableCell>
                                 <TableCell> Status </TableCell>
                                 {election.races.map((race) => (
                                     race.candidates.map((candidate) => (
@@ -95,7 +94,6 @@ const ViewBallots = () => {
                                         {flags.isSet('VOTER_FLAGGING') &&
                                             <TableCell >{ballot.precinct || ''}</TableCell>
                                         }
-                                        <TableCell align="right" >{ t('listed_datetime', {listed_datetime: epochToDateString(ballot.date_submitted)} )}</TableCell>
                                         <TableCell >{ballot.status.toString()}</TableCell>
                                         {ballot.votes.map((vote) => (
                                             vote.scores.map((score) => (
