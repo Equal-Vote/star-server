@@ -34,7 +34,7 @@ export default ({eliminationOrderById, winnerId} : {eliminationOrderById : strin
         { // Type 3:  hasPassedOver
             // name: 'Voter\'s preferred candidates were not counted due to order of elimination.',
             name: "Vote couldn't transfer to next choice after an elimination because next choice was already eliminated.",
-            votes: 300,
+            votes: 0,
             color: 'var(--brand-red)' //'var(--brand-red)'
         },
         { // Type 4: !hasPassedOver && !isWinner && trailingRanks

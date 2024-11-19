@@ -265,6 +265,7 @@ const AdminHome = () => {
                 disabled={election.title.length === 0 || election.races.length === 0 || !hasPermission('canEditElectionState')}
                 fullwidth
                 onClick={() => finalizeElection()}
+                sx={{mt: 2}}
             >
                 <Typography align='center' variant="h4" fontWeight={'bold'}>
                    {t('admin_home.finalize_button')}
