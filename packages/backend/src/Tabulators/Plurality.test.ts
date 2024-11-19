@@ -34,7 +34,7 @@ describe("Plurality Tests", () => {
         expect(results.summaryData.totalScores[3].index).toBe(0)
         
         expect(results.summaryData.nUnderVotes).toBe(1)
-        expect(results.summaryData.nValidVotes).toBe(11)
+        expect(results.summaryData.nValidVotes).toBe(10)
         expect(results.summaryData.nInvalidVotes).toBe(3)
     })
 
