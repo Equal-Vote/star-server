@@ -47,7 +47,8 @@ landing_page:
           - 1
       more_methods:
         title: and more
-        short_description: Sign in for more methods like $t(methods.choose_one.short_name), or $t(methods.rcv.short_name)!
+        full_editor_description: Use full editor for Choose One, Ranked Choice, and multi-winner methods
+        sign_in_description: Sign in for Choose One, Ranked Choice, and multi-winner methods
         sign_in: Sign In
 
   # Quick Poll Section

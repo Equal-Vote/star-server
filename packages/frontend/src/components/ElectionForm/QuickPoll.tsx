@@ -204,10 +204,9 @@ const QuickPoll = () => {
                     <MenuItem value={'approval'}>{t(`methods.approval.full_name`)}</MenuItem>
                     <MenuItem value={'ranked_robin'}>{t(`methods.ranked_robin.full_name`)}</MenuItem>
                     <MenuItem disabled sx={{maxWidth: '350px', whiteSpace: 'normal'}}>{
-                        authSession.isLoggedIn() ?
-                            'Use full editor for Choose One, Ranked Choice, and multi-winner methods'
-                        :
-                            'Sign in for Choose One, Ranked Choice, and multi-winner methods'
+                        t(`landing_page.hero.methods.more_methods.${
+                            authSession.isLoggedIn()? 'full_editor_description' : 'sign_in_description'
+                        }`)
                     }</MenuItem>
                 </Select>
                 <StyledTextField
