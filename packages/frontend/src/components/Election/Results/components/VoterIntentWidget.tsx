@@ -35,13 +35,13 @@ export default ({eliminationOrderById, winnerId} : {eliminationOrderById : strin
             // name: 'Voter\'s preferred candidates were not counted due to order of elimination.',
             name: "Vote couldn't transfer to next choice after an elimination because next choice was already eliminated.",
             votes: 0,
-            color: 'var(--brand-red)' //'var(--brand-red)'
+            color: 'var(--ltbrand-red)'
         },
         { // Type 4: !hasPassedOver && !isWinner && trailingRanks
             // name: 'Voter\'s next choice wasn\'t counted after their top choice lost in the final round.',
             name: "Voter was counted toward a losing candidate but voter had more uncounted preferences",
             votes: 0,
-            color: 'var(--ltbrand-red)'// 'color-mix(in srgb, var(--brand-red) 50%, white)'
+            color: 'var(--brand-orange)'
         },
     ]
 

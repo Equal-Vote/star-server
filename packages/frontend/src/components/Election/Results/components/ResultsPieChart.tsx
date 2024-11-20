@@ -24,7 +24,7 @@ export default ({ data, colorOffset = 0, star = false, runoff = false, noLegend 
       <text
         x={x}
         y={y}
-        fill="black"
+        fill='black'
         style={{ fontWeight: "bold", textAlign: "center" }}
         textAnchor="middle"
         dominantBaseline="central"
