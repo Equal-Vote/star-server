@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router"
 import structuredClone from '@ungap/structured-clone';
 import { StyledButton, StyledTextField } from '../styles.js'
-import { Box, Button, IconButton, Typography } from '@mui/material';
+import { Box, Button, IconButton, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { usePostElection } from '../../hooks/useAPI';
 import { useCookie } from '../../hooks/useCookie';
@@ -14,18 +14,19 @@ import { CreateElectionContext } from './CreateElectionDialog.js';
 import useSnackbar from '../SnackbarContext.js';
 
 import { useSubstitutedTranslation } from '../util.jsx';
+import useAuthSession from '../AuthSessionContextProvider.js';
 
-const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
+const QuickPoll = () => {
+    const authSession = useAuthSession();
     const [tempID, setTempID] = useCookie('temp_id', '0')
     const navigate = useNavigate()
+    const [methodKey, setMethodKey] = useState('star');
     const { error, isPending, makeRequest: postElection } = usePostElection()
     const {snack, setSnack} = useSnackbar();
 
-    const {t} = useSubstitutedTranslation('poll', {
-        method_name: methodName
-    });
+    const {t} = useSubstitutedTranslation('poll');
 
-    // TODO: we may edit the db entries in the future so that these align
+        // TODO: we may edit the db entries in the future so that these align
     const dbKeys = {
         'star': 'STAR',
         'approval': 'Approval',
@@ -197,9 +198,18 @@ const QuickPoll = ({ authSession, methodName, methodKey, grow }) => {
                 minWidth: {xs: '0px', md: '400px'}
             }}>
                 {/*we use comonent here instead of variant since we want the styling to match p*/}
-                <Typography component="h5" color={'lightShade.contrastText'}
-                    className={grow? 'heroGrow' : 'heroShrink'}
-                >{t('landing_page.quick_poll.title')}</Typography>
+                <Typography color={'lightShade.contrastText'}>{t('landing_page.quick_poll.title')}</Typography>
+                <Select value={methodKey} onChange={(ev: SelectChangeEvent) => setMethodKey(ev.target.value as string)}>
+                    <MenuItem value={'star'}>{t(`methods.star.full_name`)}</MenuItem>
+                    <MenuItem value={'approval'}>{t(`methods.approval.full_name`)}</MenuItem>
+                    <MenuItem value={'ranked_robin'}>{t(`methods.ranked_robin.full_name`)}</MenuItem>
+                    <MenuItem disabled sx={{maxWidth: '350px', whiteSpace: 'normal'}}>{
+                        authSession.isLoggedIn() ?
+                            'Use full editor for Choose One, Ranked Choice, and multi-winner methods'
+                        :
+                            'Sign in for Choose One, Ranked Choice, and multi-winner methods'
+                    }</MenuItem>
+                </Select>
                 <StyledTextField
                     autoFocus
                     id="election-name"

@@ -68,8 +68,6 @@ export default ({}) => {
 
     const arrowSX = {transition: 'transform .2s', transform: 'scale(1)', '&:hover': {transform: 'scale(1.3)'}};
     let imgIndex = transitionStep < 2 ? prevMethodIndex : methodIndex;
-    let quickPollIndex = transitionStep < 4 ? prevMethodIndex : methodIndex;
-    if(quickPollIndex == methodKeys.length-1) quickPollIndex = methodKeys.length-2;
 
     const makeBallotContext = (scores, onUpdate, voting_method: VotingMethod):IBallotContext  => {
         const candidateNames = t('landing_page.hero.candidates')
@@ -179,12 +177,7 @@ export default ({}) => {
                     </>}
                 </Box>
             </Box>
-            <QuickPoll
-                authSession={authSession}
-                methodName={t(`methods.${methodKeys[quickPollIndex]}.full_name`)}
-                methodKey={methodKeys[quickPollIndex]}
-                grow={transitionStep == 4 && methodIndex != methodKeys.length-1}
-            />
+            <QuickPoll/>
         </Box>
     )
 }

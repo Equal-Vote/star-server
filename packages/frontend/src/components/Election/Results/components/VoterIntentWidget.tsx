@@ -43,7 +43,7 @@ export default ({eliminationOrderById, winnerId} : {eliminationOrderById : strin
             votes: 0,
             color: 'var(--brand-orange)'
         },
-    ]
+    ];
 
     let b = ballotsForRace();
     let numBallots = b.length;
