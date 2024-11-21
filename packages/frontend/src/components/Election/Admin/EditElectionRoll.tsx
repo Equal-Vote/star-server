@@ -110,7 +110,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
                         }
                         <Grid item sm={4} sx={{py:1}}>
                             <PermissionHandler permissions={permissions} requiredPermission={'canSendEmails'}>
-                                <Button variant='outlined' onClick={() => { setDialogOpen(true) }} > Send Email </Button>
+                                <Button variant='outlined' onClick={() => { setDialogOpen(true) }} > Prepare Email </Button>
                             </PermissionHandler>
                         </Grid>
                     </>
