@@ -312,21 +312,16 @@ const VotePage = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <StyledButton
-            type='button'
-            variant="contained"
-            width="100%"
-            fullWidth={false}
+          <Button
+            variant="outlined"
             onClick={() => setIsOpen(false)}>
             {t('ballot.dialog_cancel')}
-          </StyledButton>
-          <StyledButton
-            type='button'
+          </Button>
+          <Button
             variant="contained"
-            fullWidth={false}
             onClick={() => submit()}>
             {t('ballot.dialog_submit')}
-          </StyledButton>
+          </Button>
         </DialogActions>
       </Dialog>
     </Container>

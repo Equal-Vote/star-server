@@ -1,4 +1,4 @@
-import {Box, Button, Link} from "@mui/material";
+import {Box, Button, FormControlLabel, Link, TextField} from "@mui/material";
 import { useEffect } from "react";
 import { DateTime } from "luxon";
 import { useTranslation } from "react-i18next";
@@ -75,6 +75,26 @@ export const useOnScrollAnimator = () => {
         </Box>,
     }
 }
+
+// defining in separate file: https://stackoverflow.com/questions/58778631/react-input-loses-focus-on-keypress
+export const LabelledTextField = ({label, value, setter, rows=1}) => 
+  <FormControlLabel control={
+          <TextField
+            value={value}
+            onChange={(e) => setter(e.target.value)}
+            sx={{ display: 'block'}}
+            multiline={rows > 1}
+            rows={rows}
+            fullWidth
+          />
+      }
+      label={label}
+      labelPlacement='top'
+      sx={{
+          alignItems: 'start',
+          width: {xs: 'unset', md: '400px'}
+      }}
+  />
 
 // NOTE: I'm setting a electionTermType default for backwards compatibility with elections that don't have a term set
 export const useSubstitutedTranslation = (electionTermType='election', v={}) => { // election or poll

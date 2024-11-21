@@ -13,6 +13,7 @@ import { useGetRolls, useSendInvites } from "../../../hooks/useAPI";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
+import SendEmailDialog from "./SendEmailDialog";
 
 
 const ViewElectionRolls = () => {
@@ -26,6 +27,7 @@ const ViewElectionRolls = () => {
     const flags = useFeatureFlags();
     const navigate = useNavigate();
     const location = useLocation();
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     const onOpen = (voter) => {
         setIsEditing(true)
@@ -46,6 +48,7 @@ const ViewElectionRolls = () => {
     }, [location.search])
 
     const onSendInvites = () => {
+        setDialogOpen(false);
         // NOTE: since we don't have await here, it 
         sendInvites.makeRequest()
     }
@@ -81,7 +84,7 @@ const ViewElectionRolls = () => {
                         </PermissionHandler>
                     }
                     {election.settings.invitation === 'email' &&
-                        < Button variant='outlined' onClick={() => onSendInvites()} > Send Invites </Button>
+                        < Button variant='outlined' onClick={() => setDialogOpen(true)} sx={{ml: 2}}> Send Email Blast </Button>
                     }
                     <EnhancedTable
                         headKeys={headKeys}
@@ -103,6 +106,7 @@ const ViewElectionRolls = () => {
                 addRollPage &&
                 <AddElectionRoll onClose={onClose} />
             }
+            <SendEmailDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onSubmit={onSendInvites}/>
         </Container >
     )
 }

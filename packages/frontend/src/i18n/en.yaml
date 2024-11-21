@@ -845,6 +845,15 @@ edit_race:
       description: Mark one candidate only. Not recommended with more than 2 candidates.
 
 # Voters
+voters:
+  email_form:
+    already_voted: Only those who already voted
+    non_voters: Only those who have not voted
+    all: All voters
+    single: Only send to {{voter_id}}
+    invitation: Invitation
+    receipt: Receipt
+    blank: Blank
 
 # Ballots
 
