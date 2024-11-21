@@ -9,6 +9,7 @@ import DraftWarning from '../DraftWarning';
 import { StyledButton } from '~/components/styles';
 import ShareButton from '../ShareButton';
 import { BallotDataExport } from './BallotDataExport';
+import SupportBlurb from '../SupportBlurb';
 
 const ViewElectionResults = () => {
     const { election } = useElection();
@@ -67,6 +68,7 @@ const ViewElectionResults = () => {
                 </Box>
             </Paper>
         </Box>
+        <SupportBlurb/>
     </>)
 }
 export default ViewElectionResults

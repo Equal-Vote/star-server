@@ -97,6 +97,23 @@ export default function ElectionSettings() {
                     <Grid item xs={12} sx={{ m: 0, my: 0, p: 1 }}>
                         <FormControl component="fieldset" variant="standard">
                             <FormGroup>
+                                <FormControlLabel control={
+                                    <TextField
+                                        id="contact_email"
+                                        name={t(`election_settings.contact_email`)}
+                                        value={editedElectionSettings.contact_email ? editedElectionSettings.contact_email : ''}
+                                        onChange={(e) => applySettingsUpdate((settings) => { settings.contact_email = e.target.value })}
+                                        variant='standard'
+                                        sx={{ mt: -1, display: 'block'}}
+                                    />}
+                                    label={t(`election_settings.contact_email`)}
+                                    labelPlacement='top'
+                                    sx={{
+                                        alignItems: 'start'
+                                    }}
+                                />
+                                <br/>
+
                                 <CheckboxSetting setting='random_candidate_order'/>
                                 <CheckboxSetting setting='ballot_updates' disabled/>
                                 <CheckboxSetting setting='public_results'/>
@@ -119,6 +136,8 @@ export default function ElectionSettings() {
                                     sx={{ pl: 4, mt: -1, display: 'block'}}
                                     disabled={!editedElectionSettings.max_rankings}
                                 />
+
+                                
                             </FormGroup>
                         </FormControl>
                     </Grid >

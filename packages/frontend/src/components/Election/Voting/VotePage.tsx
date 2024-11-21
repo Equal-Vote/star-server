@@ -20,6 +20,7 @@ import { Race, VotingMethod } from "@equal-vote/star-vote-shared/domain_model/Ra
 import { useSubstitutedTranslation } from "~/components/util";
 import DraftWarning from "../DraftWarning";
 import { set } from "date-fns";
+import SupportBlurb from "../SupportBlurb";
 
 // I'm using the icon codes instead of an import because there was padding I couldn't get rid of
 // https://stackoverflow.com/questions/65721218/remove-material-ui-icon-margin
@@ -255,6 +256,7 @@ const VotePage = () => {
             {t((currentPage === pages.length-1)? 'ballot.submit_ballot' : 'ballot.next')}
         </Button>
       </Box>
+      <SupportBlurb/>
 
       {isPending && <div> {t('ballot.submitting')} </div>}
       <Dialog

@@ -20,6 +20,7 @@ import useRace, { RaceContextProvider } from "~/components/RaceContextProvider";
 import VoterProfileWidget from "./components/VoterProfileWidget";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import VoterIntentWidget from "./components/VoterIntentWidget";
+import SupportBlurb from "../SupportBlurb";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;

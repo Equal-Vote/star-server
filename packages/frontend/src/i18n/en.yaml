@@ -131,7 +131,7 @@ landing_page:
 
         Discounts are available on request
         
-        Email elections@equal.vote
+        Email [elections@equal.vote](mailto)
 
 # Footer (bottom of all pages)
 footer:
@@ -143,7 +143,11 @@ footer:
     for polling, surveys, and real elections at any scale and for any scenario.
 
 
-    [starvoting.org](https://www.starvoting.org) | [equal.vote](http://www.equal.vote) | [elections@equal.vote](mailto:elections@equal.vote)
+    [starvoting.org](https://www.starvoting.org)
+
+    [equal.vote](http://www.equal.vote)
+
+    [elections@equal.vote](mailto)
   # TODO: I'll add this section to project description once we have those features in place
   # All of our voting methods can be used for single winner, multi-winner, or 
   # proportional representation elections with either paper or digital ballots.
@@ -167,24 +171,26 @@ footer:
 draft_warning:
   title: Test Mode
   description: >
-    DO NOT SHARE PUBLICLY! This {{lowercase_election}} is still being drafted.
+    DO NOT SHARE PUBLICLY! This {{election}} is still being drafted.
     All ballots will be counted as test votes and
-    shall be reset prior to the final {{lowercase_election}}.
+    shall be reset prior to the final {{election}}.
+
+support_blurb: For support on this {{election}} please contact [{{email}}](mailto)
 
 election_home:
-  start_time: '{{election}} begins on {{datetime, datetime}}'
-  end_time: '{{election}} ends on {{datetime, datetime}}'
-  ended_time: '{{election}} ended on {{datetime, datetime}}'
+  start_time: '{{capital_election}} begins on {{datetime, datetime}}'
+  end_time: '{{capital_election}} ends on {{datetime, datetime}}'
+  ended_time: '{{capital_election}} ended on {{datetime, datetime}}'
   vote: Vote
   or_view_results: or view results
-  ballot_submitted: '{{ballot}} Submitted'
+  ballot_submitted: '{{capital_ballot}} Submitted'
   view_results: View Results
   drafted: This election is still being drafted
   archived: This election has been archived
 
 # Ballot
 ballot:
-  this_election_uses: This {{lowercase_election}} will use {{voting_method}} to elect {{spelled_count}} $t(winner.winner).
+  this_election_uses: This {{election}} will use {{voting_method}} to elect {{spelled_count}} $t(winner.winner).
   instructions_checkbox: I have read the instructions
   learn_more: Learn more about {{voting_method}}
   previous: Previous
@@ -192,7 +198,7 @@ ballot:
   submit_ballot: Submit
   submitting: Submitting...
 
-  dialog_submit_title: Submit {{ballot}}?
+  dialog_submit_title: Submit {{capital_ballot}}?
   dialog_send_receipt: Send Ballot Receipt Email?
   dialog_email_placeholder: Receipt Email
   dialog_cancel: Cancel
@@ -205,9 +211,9 @@ ballot:
     approval:
       instruction_bullets:
         - Fill in the bubble next to your favorite
-        - You can select as many {{lowercase_candidates}} as you like
-      footer_single_winner: The {{lowercase_candidate}} with the most votes wins
-      footer_multi_winner: The {{n}} {{lowercase_candidates}} with the most votes wins
+        - You can select as many {{candidates}} as you like
+      footer_single_winner: The {{candidate}} with the most votes wins
+      footer_multi_winner: The {{n}} {{candidates}} with the most votes wins
       left_title: ''
       right_title: ''
       heading_prefix: ''
@@ -215,12 +221,12 @@ ballot:
       instruction_bullets:
        - Give your favorite(s) five stars.
        - Give your last choice(s) zero stars or leave blank.
-       - Score other {{lowercase_candidates}} as desired.
+       - Score other {{candidates}} as desired.
        - Equal scores indicate equal preference.
       footer_single_winner: ''
       footer_multi_winner: >
-        Winners in Proportional STAR Voting are selected in rounds. Each round elects the {{lowercase_candidate}} with the highest total score,
-        then designates that {{lowercase_candidate}}'s strongest supporters as represented. Subsequent rounds include all voters who are not yet
+        Winners in Proportional STAR Voting are selected in rounds. Each round elects the {{candidate}} with the highest total score,
+        then designates that {{candidate}}'s strongest supporters as represented. Subsequent rounds include all voters who are not yet
         fully represented.
       # These show above the star columns 
       left_title: 'Worst'
@@ -229,22 +235,22 @@ ballot:
       instruction_bullets:
        - Give your favorite(s) five stars.
        - Give your last choice(s) zero stars or leave blank.
-       - Score other {{lowercase_candidates}} as desired.
+       - Score other {{candidates}} as desired.
        - Equal scores indicate equal preference.
       footer_single_winner: |
-        The two highest scoring {{lowercase_candidates}} are finalists.
+        The two highest scoring {{candidates}} are finalists.
         Your full vote goes to the finalist you prefer.
       footer_multi_winner: >
         This election uses STAR Voting and will elect {{n}} winners.
-        In STAR Voting the two highest scoring {{lowercase_candidates}} are finalists and the finalist preferred by more voters wins.
+        In STAR Voting the two highest scoring {{candidates}} are finalists and the finalist preferred by more voters wins.
       # These show above the star columns 
       left_title: 'Worst'
       right_title: 'Best'
     rcv: 
       instruction_bullets:
-        - Rank the {{lowercase_candidates}} in order of preference. (1st, 2nd, 3rd, etc.)
-        - Ranking {{lowercase_candidates}} equally is not allowed.
-        - '{{candidates}} left blank are ranked last'
+        - Rank the {{candidates}} in order of preference. (1st, 2nd, 3rd, etc.)
+        - Ranking {{candidates}} equally is not allowed.
+        - '{{capital_candidates}} left blank are ranked last'
       footer_single_winner: > 
         How RCV is counted: Ballots are counted in elimination rounds. In each round, your vote goes to the candidate you ranked highest, 
         if possible. If no candidate has a majority of remaining votes the candidate with the fewest votes is eliminated. 
@@ -254,29 +260,29 @@ ballot:
       right_title: ''
     ranked_robin:
       instruction_bullets:
-        - Rank the {{lowercase_candidates}} in order of preference.
+        - Rank the {{candidates}} in order of preference.
         - Equal ranks are allowed
-        - '{{candidates}} left blank are ranked last'
+        - '{{capital_candidates}} left blank are ranked last'
       footer_single_winner: |
-        {{candidates}} are compared in one-on-one match-ups.
-        A {{lowercase_candidate}} wins a match-up if they are ranked higher than the opponent by more voters
+        {{capital_candidates}} are compared in one-on-one match-ups.
+        A {{candidate}} wins a match-up if they are ranked higher than the opponent by more voters
       left_title: ''
       right_title: ''
     choose_one:
       instruction_bullets:
         - Fill in the bubble next to your favorite
-      footer_single_winner: The {{lowercase_candidate}} with the most votes wins
-      footer_multi_winner: The {{n}} {{lowercase_candidates}} with the most votes win
+      footer_single_winner: The {{candidate}} with the most votes wins
+      footer_multi_winner: The {{n}} {{candidates}} with the most votes win
       left_title: ''
       right_title: ''
     
 # Confirmation (after you've submitted a ballot)
 ballot_submitted:
-  title: '{{ballot}} Submitted'
+  title: '{{capital_ballot}} Submitted'
   description: Thank you for voting!
   results: Results
   donate: Donate
-  end_time: '{{election}} ends {{date}} at {{time}}'
+  end_time: '{{capital_election}} ends {{date}} at {{time}}'
 
 # Landing Page -> New Election Dialog
 election_creation:
@@ -286,10 +292,10 @@ election_creation:
   term_question: Which term best describes your situation?
 
   title_title: Title?
-  title_question: What's the title for your {{lowercase_election}}? !tip(election_title) # TERM will be replaced with election or poll
+  title_question: What's the title for your {{election}}? !tip(election_title) # TERM will be replaced with election or poll
 
   restricted_title: Restricted?
-  restricted_question: Would you like your {{lowercase_election}} to be restricted to a pre-defined voter list?
+  restricted_question: Would you like your {{election}} to be restricted to a pre-defined voter list?
 
   template_title: Choose Voters
   template_prompt: (You can change this later, if needed.)
@@ -297,11 +303,11 @@ election_creation:
   demo_title: Allows multiple votes per device
   demo_description: Great for demonstrations where multiple people are using the same device
 
-  public_title: Public {{election}}
-  public_description: one person, one vote. {{election}} will be open to anyone via the "Browse Polls" page, as well as anyone who has been given a direct link
+  public_title: Public {{capital_election}}
+  public_description: one person, one vote. {{capital_election}} will be open to anyone via the "Browse Polls" page, as well as anyone who has been given a direct link
 
   unlisted_title: one person, one vote 
-  unlisted_description: '{{election}} will be open to anyone who has been given the ballot link'
+  unlisted_description: '{{capital_election}} will be open to anyone who has been given the ballot link'
 
   email_list_title: Email List
   email_list_description: Provide a list of emails for your voters. Personal links will be sent to each of these voters once the election starts
@@ -318,7 +324,7 @@ return_to_classic:
 
 # Share Button dropdown
 share:
-  button: Share {{election}}
+  button: Share {{capital_election}}
   facebook: Facebook
   X: X
   reddit: Reddit
@@ -406,11 +412,11 @@ results:
   preliminary_title: PRELIMINARY RESULTS
   official_title: OFFICIAL_RESULTS
   election_title: |
-    {{election}} Name:
+    {{capital_election}} Name:
     {{title}}
-  race_title: '{{race}} {{n}}: {{title}}'
-  single_candidate_result: '{{name}} is the only {{lowercase_candidate}}, and wins by default'
-  loading_election: Loading {{election}}...
+  race_title: '{{capital_race}} {{n}}: {{title}}'
+  single_candidate_result: '{{name}} is the only {{candidate}}, and wins by default'
+  loading_election: Loading {{capital_election}}...
   details: Race Details
   additional_info: Stats for Nerds
   waiting_for_results: |
@@ -427,7 +433,7 @@ results:
   learn_link_text: How {{voting_method}} works
   head_to_head_title: Head-to-Head Matchups !tip(head_to_head)
   voter_profile_title: Average Supporter Profile !tip(voter_profile)
-  candidate_selector: '{{candidate}}'
+  candidate_selector: '{{capital_candidate}}'
 
   win_count: '{{count}} Wins'
   win_count_one: '{{count}} Win'
@@ -439,24 +445,24 @@ results:
   loss_count_one: '{{count}} Loss'
 
   choose_one:
-    bar_title: Votes for each {{candidate}}
+    bar_title: Votes for each {{capital_candidate}}
     table_title: Table
     table_columns:
-      - '{{candidate}}'
+      - '{{capital_candidate}}'
       - Votes
       - '% All Votes'
   approval:
     bar_title: Candidate Approval
     table_title: Table
     table_columns:
-      - '{{candidate}}'
+      - '{{capital_candidate}}'
       - Votes
       - '% All Votes'
   ranked_robin:
     bar_title: Head-to-head wins
     table_title: Table
     table_columns:
-      - '{{candidate}}'
+      - '{{capital_candidate}}'
       - '# Wins'
       - Win Rate
   rcv:
@@ -465,13 +471,13 @@ results:
     table_title: Ranked Choice Tabulation Rounds
     runoff_majority: majority of remaining active votes
     exhausted: Exhausted
-    tabulation_candidate_column: '{{candidate}}'
+    tabulation_candidate_column: '{{capital_candidate}}'
     round_column: Round {{n}}
   star:
     score_title: Scoring Round
     score_description:
       - Add the stars from all the ballots.
-      - The two highest scoring {{lowercase_candidates}} are the finalists.
+      - The two highest scoring {{candidates}} are the finalists.
     runoff_title: Automatic Runoff Round
     runoff_description:
       - Each vote goes to the voter's preferred finalist.
@@ -479,11 +485,11 @@ results:
     runoff_majority: majority of voters with preference
     score_table_title: Scores Table
     score_table_columns:
-      - '{{candidate}}'
+      - '{{capital_candidate}}'
       - Score
     runoff_table_title: Runoff Table
     runoff_table_columns:
-      - '{{candidate}}'
+      - '{{capital_candidate}}'
       - Runoff Votes
       - '% Runoff Votes'
       - '% Between Finalists'
@@ -512,7 +518,7 @@ results:
     chart_title: Round Results
     table_title: Results Table
     table_columns:
-      - '{{candidate}}'
+      - '{{capital_candidate}}'
     round_column: Round {{n}}
 
 # Tabulation Logs
@@ -564,7 +570,7 @@ tabulation_logs:
 
     # Automatic runoff
     automatic_runoff_start: >
-      Advance to automatic runoff round between {{candidate_a}} and {{candidate_b}}
+      Advance to automatic runoff round between {{capital_candidate_a}} and {{candidate_b}}
     automatic_runoff_win: >
       {{winner}} is preferred over {{loser}} by {{winner_votes}} votes to {{loser_votes}}, and {{equal_votes}} voters have an [equal preference](https://www.starvoting.org/equal_preference).
     automatic_runoff_tie: >
@@ -617,12 +623,18 @@ tips:
     description: Requires voters to confirm that they have read the ballot instructions before voting.
 
   publicly_searchable:
-    title: Make {{election}} Publicly Searchable
-    description: Allow {{election}} to be listed under the browse polls tab.
+    title: Make {{capital_election}} Publicly Searchable
+    description: Allow {{capital_election}} to be listed under the browse polls tab.
 
   max_rankings:
     title: Set Number Of Rankings Allowed
     description: Set a maximum number of rankings supported on ranked ballots. (Must be between {{min_rankings}} and {{max_rankings}})
+
+  contact_email:
+    title: Contact Email
+    description: >
+      This email will be visible on the election page for your voters to contact you in case they need support with the election configuration.
+      This is especially relevant for private elections where they may need their email to be updated.
 
   bloc_multi_winner:
     title: Basic Multi-Winner
@@ -645,7 +657,7 @@ tips:
     title: One vote per Network
     description: >
       Only allows one vote per IP address. This makes it harder to vote multiple times on the same device, but it won't allow
-      for multiple voters if they're sharing the same WiFi network. Great for adding security in anonymous public {{elections}},
+      for multiple voters if they're sharing the same WiFi network. Great for adding security in anonymous public {{capital_elections}},
       without impacting the user experience. 
 
   device_auth:
@@ -658,28 +670,28 @@ tips:
     title: One for per User
     description: >
       Only allow votes from people who have created a BetterVoting account and verified their email address. 
-      Great for maximizing security for anonymous public {{elections}}. 
+      Great for maximizing security for anonymous public {{capital_elections}}. 
 
   election_title:
     title: Title
     description: >
-      This is the {{lowercase_election}} title, not the title for each {{lowercase_race}}, each {{lowercase_race}} will have it's own separate title that you will create later.
+      This is the {{election}} title, not the title for each {{race}}, each {{race}} will have it's own separate title that you will create later.
 
   polls_vs_elections:
     title: Elections versus Polls
     description: A poll will use terms like “option” and “question”. An election will use terms like “candidate” and “race”.
 
   restricted:
-    title: Restricted {{election}}
-    description: Restricted {{elections}} only allow those on the voter list to vote. The voter list can be a set of emails or voter IDs.
+    title: Restricted {{capital_election}}
+    description: Restricted {{capital_elections}} only allow those on the voter list to vote. The voter list can be a set of emails or voter IDs.
   
   star:
     title: $t(methods.star.full_name)
-    description: Voters score {{candidates}} from 5 stars (best) to 0 stars (worst). The two top-scored {{candidates}} are finalists, finalist with the most votes wins.
+    description: Voters score {{capital_candidates}} from 5 stars (best) to 0 stars (worst). The two top-scored {{candidates}} are finalists, finalist with the most votes wins.
 
   approval:
     title: $t(methods.approval.full_name)
-    description: Voters approve as many {{candidates}} as they like, and then the {{candidate}} with the most approvals wins.
+    description: Voters approve as many {{capital_candidates}} as they like, and then the {{candidate}} with the most approvals wins.
 
   ranked_robin:
     title: $t(methods.ranked_robin.full_name)
@@ -688,9 +700,9 @@ tips:
 # Admin Home
 admin_home:
   header_invitations_sent: Invitations have been sent to your voters
-  header_start_time: Your {{lowercase_election}} will open on {{datetime, datetime}}
-  header_end_time: Your {{lowercase_election}} will end on {{datetime, datetime}}
-  header_ended_time: Your {{lowercase_election}} ended on {{datetime, datetime}}
+  header_start_time: Your {{election}} will open on {{datetime, datetime}}
+  header_end_time: Your {{election}} will end on {{datetime, datetime}}
+  header_ended_time: Your {{election}} ended on {{datetime, datetime}}
 
   time_start_to_end: '{{datetime, datetime}} - {{datetime2, datetime}}'
   time_only_start: Starts on {{datetime, datetime}}
@@ -702,9 +714,9 @@ admin_home:
   permissions_error: You do not have the correct permissions for this action
 
   roles:
-    description: Add people to help run your {{lowercase_election}}
-    subtext: Add {{lowercase_election}} administrators, auditors, credentialers
-    button: Edit {{election}} Roles
+    description: Add people to help run your {{election}}
+    subtext: Add {{election}} administrators, auditors, credentialers
+    button: Edit {{capital_election}} Roles
   
   test_ballot:
     description: Cast test ballot
@@ -712,7 +724,7 @@ admin_home:
 
   duplicate:
     description: Duplicate
-    subtext: Create copy of this {{lowercase_election}}
+    subtext: Create copy of this {{election}}
     button: Duplicate
 
   view_results:
@@ -725,26 +737,26 @@ admin_home:
 
   archive:
     description: Archive
-    subtext: Archives {{lowercase_election}}, preventing future changes and hiding it from the {{lowercase_elections}} page
+    subtext: Archives {{election}}, preventing future changes and hiding it from the {{elections}} page
     button: Archive
 
   archive_confirm:
-    title: Confirm Archive {{election}}
-    message: Are you sure you wish to archive this {{lowercase_election}}? This action cannot be undone.
+    title: Confirm Archive {{capital_election}}
+    message: Are you sure you wish to archive this {{election}}? This action cannot be undone.
 
   share:
-    description: Share {{election}}
+    description: Share {{capital_election}}
     # Button is defined in the top level share section
 
   finalize_invitations_will_send: Invitations will be sent to your voters
-  finalize_description: When finished setting up your {{lowercase_election}}, finalize it. Once final, it can't be edited. 
+  finalize_description: When finished setting up your {{election}}, finalize it. Once final, it can't be edited. 
   finalize_voting_begins_later: Voting begins after your specified start time.
   finalize_voting_begins_now: Voting begins immediately.
-  finalize_button: Finalize {{election}}
+  finalize_button: Finalize {{capital_election}}
 
   voter_authentication:
     form_label: Who can vote?
-    help_text: Limit to one {{vote}} per...
+    help_text: Limit to one {{capital_vote}} per...
     no_limit_label: no limit !tip(no_auth)
     ip_label: WiFi/cellular network !tip(ip_auth)
     device_label: device !tip(device_auth)
@@ -762,7 +774,7 @@ admin_home:
 
 # Admin Home -> Edit Title
 election_details:
-  title: '{{election}} Title'
+  title: '{{capital_election}} Title'
   description: Description
   enable_times: Enable Start/End Times?
   time_zone: Time Zone
@@ -772,7 +784,7 @@ election_details:
 # Admin Home -> Extra Settings
 election_settings:
   button_title: Extra Settings
-  dialog_title: '{{election}} Settings'
+  dialog_title: '{{capital_election}} Settings'
 
   not_supported: ' (currently not supported)'
 
@@ -790,9 +802,11 @@ election_settings:
 
   require_instruction_confirmation: Confirm That Voter Read Instructions !tip(require_instruction_confirmation)
 
-  publicly_searchable: Make {{election}} Publicly Searchable !tip(publicly_searchable)
+  publicly_searchable: Make {{capital_election}} Publicly Searchable !tip(publicly_searchable)
 
   max_rankings: Set Number Of Rankings Allowed !tip(max_rankings)
+
+  contact_email: Contact Email !tip(contact_email)
   
 # Admin Home -> Add/Edit Race
 edit_race:
@@ -830,9 +844,6 @@ edit_race:
       title: $t(methods.choose_one.full_name)
       description: Mark one candidate only. Not recommended with more than 2 candidates.
 
-                                        
-
-
 # Voters
 
 # Ballots
@@ -840,20 +851,20 @@ edit_race:
 # General Terms
 keyword:
   election: 
-    election: Election
-    elections: Elections
-    candidate: Candidate
-    candidates: Candidates
-    race: Race
-    ballot: Ballot
+    election: election
+    elections: elections
+    candidate: candidate
+    candidates: candidates
+    race: race
+    ballot: ballot
     vote: vote
   poll:
-    election: Poll
-    elections: Polls
-    candidate: Option
-    candidates: Options
-    race: Question
-    ballot: Response
+    election: poll
+    elections: polls
+    candidate: option
+    candidates: options
+    race: question
+    ballot: response
     vote: response
 
   yes: Yes
