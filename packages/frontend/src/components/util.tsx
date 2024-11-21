@@ -25,6 +25,8 @@ declare namespace Intl {
 
 export const commaListFormatter = new Intl.ListFormat(i18n.languages[0], { style: 'long', type: 'conjunction' });
 
+export const capitalize = (str) => str[0].toUpperCase() + str.slice(1);
+
 export const MailTo = ({children}) => {
   const {t} = useSubstitutedTranslation();
   const {setSnack} = useSnackbar();
@@ -82,7 +84,7 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
         if(key == 'datetime' || key == 'datetime2' || key == 'listed_datetime'){
           values[key] = new Date(value)
         }else{
-          values[`capital_${key}`] = value[0].toUpperCase() + value.slice(1);
+          values[`capital_${key}`] = capitalize(value)
         }
       }
       if(Array.isArray(value)){

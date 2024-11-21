@@ -633,8 +633,8 @@ tips:
   contact_email:
     title: Contact Email
     description: >
-      This email will be visible on the election page for your voters to contact you in case they need support with the election configuration.
-      This is especially relevant for private elections where they may need their email to be updated.
+      This email will be visible on the election page for your voters to contact you in case they have questions or need support.
+      This is especially relevant for restricted elections where you're managing a specific set of voters.
 
   bloc_multi_winner:
     title: Basic Multi-Winner
