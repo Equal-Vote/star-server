@@ -84,7 +84,7 @@ const ViewElectionRolls = () => {
                         </PermissionHandler>
                     }
                     {election.settings.invitation === 'email' &&
-                        < Button variant='outlined' onClick={() => setDialogOpen(true)} sx={{ml: 2}}>Prepare Email Blast </Button>
+                        < Button variant='outlined' onClick={() => setDialogOpen(true)} sx={{ml: 2}}>Draft Email Blast </Button>
                     }
                     <EnhancedTable
                         headKeys={headKeys}
