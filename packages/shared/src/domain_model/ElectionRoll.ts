@@ -27,6 +27,7 @@ export interface ElectionRollAction {
     action_type:string;
     actor:Uid;
     timestamp:number;
+    email_data?: any;
 }
 function electionRollActionValidation(obj:ElectionRollAction): string | null {
     if (!obj){
