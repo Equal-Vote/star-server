@@ -4,8 +4,9 @@ import { Chip, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import { useSubstitutedTranslation } from '~/components/util';
 
-const getStateColor = (state: ElectionState | "") => {
+const getStateColor = (state: string) => {
   switch (state) {
+    // Election State
     case 'draft':
       return 'purple';
     case 'finalized':
@@ -16,12 +17,24 @@ const getStateColor = (state: ElectionState | "") => {
       return 'red';
     case 'archived':
       return 'gray4';
+    // Voted
+    case 'Voted':
+      return 'green';
+    case 'Not Voted':
+      return 'orange';
+    // Sent
+    case 'Sent':
+      return 'blue';
+    case 'Not Sent':
+      return 'purple';
+    case 'Failed':
+      return 'red';
     default:
       return 'gray4';
   }
 }
 
-export const makeChipStyle = (state: ElectionState | "") => {
+export const makeChipStyle = (state: string) => {
   const chipColor = getStateColor(state);
   return {
     backgroundColor: `brand.${chipColor}Transparent20`,

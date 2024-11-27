@@ -265,6 +265,7 @@ const AdminHome = () => {
                 disabled={election.title.length === 0 || election.races.length === 0 || !hasPermission('canEditElectionState')}
                 fullwidth
                 onClick={() => finalizeElection()}
+                sx={{mt: 2}}
             >
                 <Typography align='center' variant="h4" fontWeight={'bold'}>
                    {t('admin_home.finalize_button')}
@@ -288,7 +289,7 @@ const AdminHome = () => {
         {(election.state !== 'draft' && election.state !== 'finalized') && 
             <Box display='flex' sx={{flexDirection:{xs: 'column', sm: 'row'}}} alignItems='center' gap={2} justifyContent='space-evenly' width='100%'>
                 <Box sx={{width: '100%', maxWidth: 300}}>
-                    <ShareButton url={`${window.location.origin}/Election/${election.election_id}`} />
+                    <ShareButton url={`${window.location.origin}/${election.election_id}`} />
                 </Box>
                 <Box sx={{width: '100%', maxWidth: 300}}>
                     <StyledButton

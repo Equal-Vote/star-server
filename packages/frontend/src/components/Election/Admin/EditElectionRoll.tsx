@@ -11,6 +11,7 @@ import { getLocalTimeZoneShort, useSubstitutedTranslation } from "../../util";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
+import SendEmailDialog from "./SendEmailDialog";
 
 
 type Props = {
@@ -22,6 +23,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
     const { t, election, permissions } = useElection()
     const [updatedRoll, setUpdatedRoll] = useState(roll)
     const flags = useFeatureFlags();
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     const approve = useApproveRoll(election.election_id)
     const flag = useFlagRoll(election.election_id)
@@ -46,6 +48,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
         await fetchRolls()
     }
     const onSendInvite = async () => {
+        setDialogOpen(false);
         if (!await sendInvite.makeRequest()) { return }
 
         await fetchRolls()
@@ -107,7 +110,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
                         }
                         <Grid item sm={4} sx={{py:1}}>
                             <PermissionHandler permissions={permissions} requiredPermission={'canSendEmails'}>
-                                <Button variant='outlined' onClick={() => { onSendInvite() }} > Send Invite </Button>
+                                <Button variant='outlined' onClick={() => { setDialogOpen(true) }} > Draft Email </Button>
                             </PermissionHandler>
                         </Grid>
                     </>
@@ -165,6 +168,12 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
                     <Button variant='outlined' onClick={() => { onClose() }} > Close </Button>
                 </Grid>
             </Grid>
+            <SendEmailDialog
+                open={dialogOpen}
+                onClose={() => setDialogOpen(false)}
+                onSubmit={onSendInvite}
+                targetedEmail={roll.email}
+            />
         </Container>
     )
 }

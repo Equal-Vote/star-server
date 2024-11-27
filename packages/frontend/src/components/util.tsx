@@ -1,4 +1,4 @@
-import {Box} from "@mui/material";
+import {Box, Button, FormControlLabel, Link, TextField} from "@mui/material";
 import { useEffect } from "react";
 import { DateTime } from "luxon";
 import { useTranslation } from "react-i18next";
@@ -6,6 +6,7 @@ import en from '../i18n/en.yaml';
 import { Tip } from "./styles";
 import i18n from "~/i18n/i18n";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
+import useSnackbar from "./SnackbarContext";
 
 const rLink = /\[(.*?)\]\((.*?)\)/;
 const rBold = /\*\*(.*?)\*\*/;
@@ -23,6 +24,30 @@ declare namespace Intl {
 }
 
 export const commaListFormatter = new Intl.ListFormat(i18n.languages[0], { style: 'long', type: 'conjunction' });
+
+export const capitalize = (str) => str[0].toUpperCase() + str.slice(1);
+
+export const MailTo = ({children}) => {
+  const {t} = useSubstitutedTranslation();
+  const {setSnack} = useSnackbar();
+  // https://adamsilver.io/blog/the-trouble-with-mailto-email-links-and-what-to-do-instead/
+  return <span style={{whiteSpace: 'nowrap'}}>
+    <Link href={`mailto:${children}`} sx={{color: 'var(--brand-green)'}}>{children}</Link>
+    <Button
+      variant='contained'
+      onClick={() => {
+        navigator.clipboard.writeText(children)
+        setSnack({
+            message: 'Email Copied!',
+            severity: 'success',
+            open: true,
+            autoHideDuration: 6000,
+        })
+      }}
+      sx={{minWidth: 0, ml: 1, px: 1, py: 0, backgroundColor: 'var(--brand-green)'}}
+    >Copy</Button>
+  </span>
+}
 
 export const useOnScrollAnimator = () => {
     //https://www.youtube.com/watch?v=T33NN_pPeNI
@@ -51,6 +76,26 @@ export const useOnScrollAnimator = () => {
     }
 }
 
+// defining in separate file: https://stackoverflow.com/questions/58778631/react-input-loses-focus-on-keypress
+export const LabelledTextField = ({label, value, setter, rows=1}) => 
+  <FormControlLabel control={
+          <TextField
+            value={value}
+            onChange={(e) => setter(e.target.value)}
+            sx={{ display: 'block'}}
+            multiline={rows > 1}
+            rows={rows}
+            fullWidth
+          />
+      }
+      label={label}
+      labelPlacement='top'
+      sx={{
+          alignItems: 'start',
+          width: {xs: 'unset', md: '400px'}
+      }}
+  />
+
 // NOTE: I'm setting a electionTermType default for backwards compatibility with elections that don't have a term set
 export const useSubstitutedTranslation = (electionTermType='election', v={}) => { // election or poll
   const processValues = (values) => {
@@ -59,7 +104,7 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
         if(key == 'datetime' || key == 'datetime2' || key == 'listed_datetime'){
           values[key] = new Date(value)
         }else{
-          values[`lowercase_${key}`] = value.toLowerCase()
+          values[`capital_${key}`] = capitalize(value)
         }
       }
       if(Array.isArray(value)){
@@ -92,7 +137,11 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
       return parts.map((str, i) => {
         if(i%3 == 0) return str;
         if(i%3 == 2) return '';
-        return <a key={`link_${i}`} href={parts[i+1]}>{parts[i]}</a>
+        if(parts[i+1].startsWith('mailto')){
+          return <MailTo>{parts[i]}</MailTo>
+        }else{
+          return <a key={`link_${i}`} href={parts[i+1]}>{parts[i]}</a>
+        }
       })
     }
 

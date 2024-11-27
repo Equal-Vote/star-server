@@ -66,10 +66,8 @@ export default ({}) => {
         ];
     }
 
-    const arrowSX = {transition: 'transform .2s', transform: 'scale(1)', '&:hover': {transform: 'scale(1.3)'}};
+    const arrowSX = {transition: 'transform .2s', transform: 'scale(1.5)', '&:hover': {transform: 'scale(1.65)'}};
     let imgIndex = transitionStep < 2 ? prevMethodIndex : methodIndex;
-    let quickPollIndex = transitionStep < 4 ? prevMethodIndex : methodIndex;
-    if(quickPollIndex == methodKeys.length-1) quickPollIndex = methodKeys.length-2;
 
     const makeBallotContext = (scores, onUpdate, voting_method: VotingMethod):IBallotContext  => {
         const candidateNames = t('landing_page.hero.candidates')
@@ -117,13 +115,13 @@ export default ({}) => {
             }}>
                 <Typography variant="h4" color={'lightShade.contrastText'}> {t('landing_page.hero.title')} </Typography>
                 <Box width='90%' display='flex' flexDirection='row' justifyContent='space-between' sx={{alignItems: 'center', paddingBottom: 3}}>
-                    <ArrowBackIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == 0? 0 : 1)}} onClick={() => nextMethod(-1)}/>
+                    <ArrowBackIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == 0? .3 : 1)}} onClick={() => nextMethod(-1)}/>
                     <Box display='flex' flexDirection='row' className={transitionStep==0? 'heroGrow' : 'heroShrink'} sx={{alignItems: 'center'}}>
                         <Typography variant="h3" color={'lightShade.contrastText'}>
                             {t(`landing_page.hero.methods.${methodKeys[methodIndex]}.title`)} 
                         </Typography>
                     </Box>
-                    <ArrowForwardIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == methodKeys.length-1? 0 : 1)}} onClick={() => nextMethod(1)}/>
+                    <ArrowForwardIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == methodKeys.length-1? .3 : 1)}} onClick={() => nextMethod(1)}/>
                 </Box>
 
                 <Box
@@ -145,8 +143,14 @@ export default ({}) => {
                         <Typography variant="h5" color={'lightShade.contrastText'}>
                             {t(`landing_page.hero.methods.${methodKeys[imgIndex]}.recommendation`)} 
                         </Typography>
-                    </>:<>
-                        {authSession.isLoggedIn() ?
+                    </>:<Box sx={{width: '70%', margin: 'auto'}}>
+                        <Typography color={'lightShade.contrastText'}>
+                            {t(`landing_page.hero.methods.more_methods.${
+                                authSession.isLoggedIn()? 'full_editor_description' : 'sign_in_description'
+                            }`)}.
+                        </Typography>
+                        <br/>
+                        {authSession.isLoggedIn() &&
                             <Button
                                 variant="outlined"
                                 onClick={() => createElectionContext.openDialog()}
@@ -159,32 +163,25 @@ export default ({}) => {
                                     fontSize: 16,
                                 }}
                             >
-                            {t('landing_page.quick_poll.continue_with_editor')}
-                        </Button>
-                        : <>
-                        <Typography variant="h5" color={'lightShade.contrastText'}>
-                            {t(`landing_page.hero.methods.${methodKeys[imgIndex]}.short_description`)} 
-                        </Typography>
-                        <StyledButton
-                            type='submit'
-                            variant="contained"
-                            onClick={() => authSession.openLogin()}
-                            sx={{
-                                width: '75%'
-                            }}
-                        >
-                            {t('landing_page.hero.methods.more_methods.sign_in')}
-                        </StyledButton>
-                        </>}
-                    </>}
+                                Use Full Editor
+                            </Button>
+                        }
+                        {!authSession.isLoggedIn() &&
+                            <StyledButton
+                                type='submit'
+                                variant="contained"
+                                onClick={() => authSession.openLogin()}
+                                sx={{
+                                    width: '75%'
+                                }}
+                            >
+                                {t('landing_page.hero.methods.more_methods.sign_in')}
+                            </StyledButton>
+                        }
+                    </Box>}
                 </Box>
             </Box>
-            <QuickPoll
-                authSession={authSession}
-                methodName={t(`methods.${methodKeys[quickPollIndex]}.full_name`)}
-                methodKey={methodKeys[quickPollIndex]}
-                grow={transitionStep == 4 && methodIndex != methodKeys.length-1}
-            />
+            <QuickPoll/>
         </Box>
     )
 }

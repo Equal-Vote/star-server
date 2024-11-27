@@ -6,7 +6,7 @@ export interface STARExtraContextProps {
     results: starResults
 }
 
-const STAREXtraContext = ({ results }: STARExtraContextProps) => {
+const STARExtraContext = ({ results }: STARExtraContextProps) => {
     const { t } = useTranslation();
     const isSmallScreen = useMediaQuery('(max-width: 1065px)'); 
     // const width = isSmallScreen ? '500px' : '1030px';
@@ -28,4 +28,4 @@ const STAREXtraContext = ({ results }: STARExtraContextProps) => {
     return null; // Return null if the condition is not met
 }
 
-export default STAREXtraContext;
+export default STARExtraContext;

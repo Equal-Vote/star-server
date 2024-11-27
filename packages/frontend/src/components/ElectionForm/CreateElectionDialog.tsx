@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, IconButton, MenuItem, Radio, RadioGroup, Select, Step, StepConnector, StepContent, StepLabel, Stepper, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Button, capitalize, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, IconButton, MenuItem, Radio, RadioGroup, Select, Step, StepConnector, StepContent, StepLabel, Stepper, TextField, Tooltip, Typography } from "@mui/material";
 import { StyledButton, Tip } from "../styles";
 import { Dispatch, SetStateAction, createContext, useContext, useEffect, useRef, useState } from "react";
 import { ElectionTitleField } from "./Details/ElectionDetailsForm";
@@ -241,7 +241,7 @@ export default () => {
             <Stepper activeStep={activeStep} orientation="vertical">
                 <Step>
                     <StepLabel>{t('election_creation.term_title')} <strong>{
-                        election.settings.term_type === undefined? '' : t(`keyword.${election.settings.term_type}.election`)
+                        election.settings.term_type === undefined? '' : capitalize(t(`keyword.${election.settings.term_type}.election`))
                     }</strong></StepLabel>
                     <StepContent>
                         <Typography>{t('election_creation.term_question')}
@@ -251,9 +251,9 @@ export default () => {
                             {['poll', 'election'].map( (type, i) => 
                                 <FormControlLabel
                                     key={i}
-                                    value={t(`keyword.${type}.election`)}
+                                    value={capitalize(t(`keyword.${type}.election`))}
                                     control={<Radio/>}
-                                    label={t(`keyword.${type}.election`)}
+                                    label={capitalize(t(`keyword.${type}.election`))}
                                     onClick={() => setElection({
                                         ...election,
                                         settings: {
@@ -303,12 +303,53 @@ export default () => {
                                     control={<Radio/>}
                                     label={t(`keyword.${restricted? 'yes' : 'no'}`)}
                                     onClick={() => {
-                                        setElection({...election, settings: { ...election.settings, voter_access: restricted? 'closed' : 'open' }})
+                                        setElection({...election, settings: {
+                                            ...election.settings,
+                                            voter_access: restricted? 'closed' : 'open',
+                                            contact_email: restricted? (
+                                                (election.settings.contact_email != undefined && election.settings.contact_email != '')?
+                                                    election.settings.contact_email : authSession.getIdField('email')
+                                            ): ''
+                                        }})
                                     }}
                                     checked={election.settings.voter_access === (restricted? 'closed' : 'open')}
                                 />
                             )}
                         </RadioGroup>
+
+                        <Box sx={{
+                            // 60px copied from unset, then added some for padding
+                            height: (election.settings.voter_access == 'closed'? '90px' : 0),
+                            opacity: (election.settings.voter_access == 'closed'? 1 : 0),
+                            transition: 'height .4s, opacity .7s',
+                            overflow: 'hidden',
+                            width: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center'
+                        }}>
+                            <FormControlLabel control={
+                                <TextField
+                                    id="contact_email"
+                                    name={t(`election_settings.contact_email`)}
+                                    value={election.settings.contact_email}
+                                    onChange={(e) => 
+                                        setElection({...election, settings: {
+                                            ...election.settings,
+                                            contact_email: e.target.value
+                                        }})
+                                    }
+                                    variant='standard'
+                                    sx={{ mt: -1, display: 'block'}}
+                                />}
+                                label={t(`election_settings.contact_email`)}
+                                labelPlacement='top'
+                                sx={{
+                                    alignItems: 'start',
+                                }}
+                            />
+                        </Box>
+                        
                         <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={election.settings.voter_access !== undefined}/>
                     </StepContent>
                 </Step>

@@ -20,6 +20,7 @@ import { Race, VotingMethod } from "@equal-vote/star-vote-shared/domain_model/Ra
 import { useSubstitutedTranslation } from "~/components/util";
 import DraftWarning from "../DraftWarning";
 import { set } from "date-fns";
+import SupportBlurb from "../SupportBlurb";
 
 // I'm using the icon codes instead of an import because there was padding I couldn't get rid of
 // https://stackoverflow.com/questions/65721218/remove-material-ui-icon-margin
@@ -187,6 +188,12 @@ const VotePage = () => {
     return <Container disableGutters={true} maxWidth="sm"><h3>No races created for election</h3></Container>
   }
 
+  let pageIsUnderVote = (page) => {
+    let u =  page.candidates.reduce((prev, c) => prev && c.score == 0, true)
+    console.log(u);
+    return page.candidates.reduce((prev, c) => prev && (c.score == 0 || c.score == null), true)
+  }
+
   return (
     <Container disableGutters={true} maxWidth="sm">
       <DraftWarning/>
@@ -209,16 +216,15 @@ const VotePage = () => {
       }}>
         <BallotPageSelector votingMethod={pages[currentPage].voting_method} />
       </BallotContext.Provider>
-
-      {pages.length > 1 &&
-        <Box sx={{ display: 'flex', justifyContent: "space-between", marginTop: '10px' }}>
-          <Button
-            variant='contained'
-            onClick={() => setCurrentPageAndScroll(count => count - 1)}
-            disabled={currentPage === 0}
-            sx={{ maxHeight: '40px', minWidth: '100px', marginRight: {xs: '10px', md: '40px'}, visibility: (currentPage === 0) ? 'hidden' : 'visible' }}>
-              {t('ballot.previous')}
-          </Button>
+      <Box sx={{ display: 'flex', justifyContent: "space-between", marginTop: '10px' }}>
+        <Button
+          variant='contained'
+          onClick={() => setCurrentPageAndScroll(count => count - 1)}
+          disabled={currentPage === 0}
+          sx={{ maxHeight: '40px', minWidth: '100px', marginRight: {xs: '10px', md: '40px'}, visibility: (currentPage === 0) ? 'hidden' : 'visible' }}>
+            {t('ballot.previous')}
+        </Button>
+        {pages.length > 1 && 
           <Stepper className='racePageStepper' sx={{display: 'flex', flexWrap: 'wrap'}}>
             {pages.map((page, pageIndex) => (
               <Box key={pageIndex}>
@@ -242,25 +248,16 @@ const VotePage = () => {
               </Box>
             ))}
           </Stepper>
-          <Button
-            variant='contained'
-            onClick={() => setCurrentPageAndScroll(count => count + 1)}
-            disabled={currentPage === pages.length - 1}
-            sx={{ maxHeight: '40px', minWidth: '100px', marginLeft: {xs: '10px', md: '40px'}, visibility: (currentPage === pages.length - 1) ? 'hidden' : 'visible' }}>
-              {t('ballot.next')}
-          </Button>
-        </Box>
-      }
-
-      <Box sx={{ display: 'flex', justifyContent: "space-between" }}>
+        }
         <Button
           variant='contained'
-          onClick={() => setIsOpen(true)}
-          disabled={isPending || currentPage !== pages.length - 1 || pages[currentPage].candidates.every(candidate => candidate.score === null || pages.some(page => page.warnings))}//disable unless on last page and at least one candidate scored
-          style={{ margin: "auto", minWidth: "150px", marginTop: "40px" }}>
-              <Typography variant="h6">{t('ballot.submit_ballot')}</Typography>
+          onClick={() => (currentPage === pages.length-1)? setIsOpen(true) : setCurrentPageAndScroll(count => count + 1)}
+          sx={{ maxHeight: '40px', minWidth: '100px', marginLeft: {xs: '10px', md: '40px'}, visibility: 'visible' }}>
+            {t((currentPage === pages.length-1)? 'ballot.submit_ballot' : 'ballot.next')}
         </Button>
       </Box>
+      <SupportBlurb/>
+
       {isPending && <div> {t('ballot.submitting')} </div>}
       <Dialog
         open={isOpen}
@@ -299,31 +296,32 @@ const VotePage = () => {
                 <Typography variant="h6">
                   {election.races[page.race_index].title}
                 </Typography>
-                {page.candidates.map(candidate => (
-                  <Typography variant="body1">
-                    {`${candidate.candidate_name}: ${candidate.score ? candidate.score : 0}`}
+                {pageIsUnderVote(page) ?
+                  <Typography variant="body1" color='var(--ltbrand-blue)'>
+                    <b>Abstained</b>
                   </Typography>
-                ))}
+                  :
+                  page.candidates.map(candidate => (
+                    <Typography variant="body1">
+                      {`${candidate.candidate_name}: ${candidate.score ? candidate.score : 0}`}
+                    </Typography>
+                  ))
+                }
               </Box>
             ))}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <StyledButton
-            type='button'
-            variant="contained"
-            width="100%"
-            fullWidth={false}
+          <Button
+            variant="outlined"
             onClick={() => setIsOpen(false)}>
             {t('ballot.dialog_cancel')}
-          </StyledButton>
-          <StyledButton
-            type='button'
+          </Button>
+          <Button
             variant="contained"
-            fullWidth={false}
             onClick={() => submit()}>
             {t('ballot.dialog_submit')}
-          </StyledButton>
+          </Button>
         </DialogActions>
       </Dialog>
     </Container>

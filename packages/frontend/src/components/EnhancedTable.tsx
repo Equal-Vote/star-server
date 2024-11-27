@@ -98,10 +98,10 @@ const headCellPool = {
         label: 'Has Voted',
         filterType: 'groups',
         filterGroups: {
-            'false': true,
-            'true': true,
+            'Not Voted': true,
+            'Voted': true,
         },
-        formatter: (_, roll) => roll.submitted.toString(),
+        formatter: (_, roll) => roll.submitted ? 'Voted' : 'Not Voted',
     },
     voter_state: {
         id: 'voter_state',
@@ -385,7 +385,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
                   renderValue={(selected: ("" | ElectionState)[]) => (
                     <Box sx={{ display: 'flex',  gap: 0.5 }}>
                       {selected.map((value: "" | ElectionState) => (
-                        <Chip key={value} label={value} sx={makeChipStyle(value)}/>
+                        <Chip key={value} label={''} sx={makeChipStyle(value)}/>
                       ))}
                     </Box>
                   )}
@@ -552,7 +552,8 @@ export default function EnhancedTable(props: EnhancedTableProps) {
                     sx={{ cursor: 'pointer' }}
                   >
                     {headCells.map((col, colInd) => {
-                      const isElectionState = col.id === 'election_state';
+                      //const isElectionState = col.id === 'election_state';
+                      const groupFilter = col.filterType == 'groups';
                       if (colInd == 0) {
                         return <TableCell
                           component="th"
@@ -566,7 +567,7 @@ export default function EnhancedTable(props: EnhancedTableProps) {
                           align={col.numeric ? 'right' : 'left'}
                           key={`${labelId}-${colInd}`}
                         >
-                          {isElectionState ? <Chip label={row[col.id]} sx={makeChipStyle(row[col.id])} /> : row[col.id]}
+                          {groupFilter ? <Chip label={row[col.id]} sx={makeChipStyle(row[col.id])} /> : row[col.id]}
                         </TableCell>
                       }
                     }

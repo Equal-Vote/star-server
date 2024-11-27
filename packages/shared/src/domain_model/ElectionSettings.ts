@@ -36,6 +36,7 @@ export interface ElectionSettings {
     term_type?: TermType; // whether poll or election should be used as the term
     max_rankings?: number; // maximum rank limit for ranked choice voting
     email_campaign_count?: number;
+    contact_email?: string; // Public contact email for voters to reach out to
 }
 function authenticationValidation(obj:authentication): string | null {
   if (!obj){
