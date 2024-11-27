@@ -180,12 +180,10 @@ async function handleSendEmailEvent(job: { id: string; data: email_request_event
         electionRoll.history = [];
     }
     electionRoll.history.push(historyUpdate)
-    
+
     try {
         const updatedElectionRoll = await ElectionRollModel.update(electionRoll, ctx, `Email Sent`);
-        if (updatedElectionRoll) {
-            return updatedElectionRoll
-        } else {
+        if (!updatedElectionRoll) {
             throw new InternalServerError()
         }
     } catch (err: any) {
