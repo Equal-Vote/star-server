@@ -12,7 +12,6 @@ import { IElectionRequest } from "../../IRequest";
 import { Response, NextFunction } from 'express';
 
 var ElectionRollModel = ServiceLocator.electionRollDb();
-var ElectionModel = ServiceLocator.electionsDb();
 var EmailService = ServiceLocator.emailService();
 const EventQueue = ServiceLocator.eventQueue();
 
