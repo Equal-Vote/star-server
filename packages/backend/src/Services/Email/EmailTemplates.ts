@@ -23,15 +23,16 @@ const makeButton = (text: string, link: string) =>
       <a clicktracking="off" href="${link}" target="_blank" style="border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; padding: 12px 25px; text-decoration: none; text-transform: capitalize; background-color: #3498db; border-color: #3498db; color: #ffffff;">${text}</a>
   </td></tr></table>`
 
-export function Invites(election: Election, voters: ElectionRoll[], url: string): Imsg[] {
+export function Invites(election: Election, voters: ElectionRoll[], url: string, email_subject?: string, email_body?: string): Imsg[] {
     return voters.map((voter) => <Imsg>{
         ...emailSettings,
         to: voter.email, // Change to your recipient
         from: process.env.FROM_EMAIL_ADDRESS ?? '',
-        subject: `Invitation to Vote In ${election.title}`,
-        text: `${election.state === 'draft' ? `[⚠️Test ${election.settings.term_type}]` : ''} You have been invited to vote in ${election.title} ${url}/${election.election_id}`,
+        subject: email_subject ?? `Invitation to Vote In ${election.title}`,
+        text: `${election.state === 'draft' ? `[⚠️Test ${election.settings.term_type}]` : ''} ${email_body ?? '' }  You have been invited to vote in ${election.title} ${url}/${election.election_id}`,
         html: emailTemplate(`
           ${election.state === 'draft' ? `<h3>⚠️This ${election.settings.term_type} is still in test mode. All ballots during test mode will be removed once the election is finalized, and at that time you will need to vote again.⚠️</h3>` : ''}
+          ${email_body ? `<p>${email_body}</p>` : '' }
           <p>You have been invited to vote in the \"${election.title}\" ${election.settings.term_type}.</p>
           ${election.description ?
             `<p>Election ${election.description}<p>` : ''
@@ -50,6 +51,20 @@ export function Invites(election: Election, voters: ElectionRoll[], url: string)
           <p>This link is unique to you, be careful not to share this email with others</p>
         `)
     })
+}
+
+export function Blank(election: Election, voters: ElectionRoll[], url: string, email_subject: string, email_body: string): Imsg[] {
+  return voters.map((voter) => <Imsg>{
+      ...emailSettings,
+      to: voter.email, // Change to your recipient
+      from: process.env.FROM_EMAIL_ADDRESS ?? '',
+      subject: email_subject,
+      text: `${email_body}`,
+      html: emailTemplate(`
+        <p>${email_body}</p>
+        ${makeButton('View Election', `${url}/${election.election_id}`)}
+      `)
+  })
 }
 
 export function Receipt(election: Election, email: string, ballot: Ballot, url: string): Imsg {

@@ -5,6 +5,7 @@ import useFetch from "./useFetch";
 import { VotingMethod } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { ElectionResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 import { Ballot, NewBallot, AnonymizedBallot } from "@equal-vote/star-vote-shared/domain_model/Ballot";
+import { email_request_data } from "@equal-vote/star-vote-backend/src/Controllers/Election/sendEmailController"
 
 export const useGetElection = (electionID: string | undefined) => {
     return useFetch<undefined, { election: Election, voterAuth: VoterAuth }>(`/API/Election/${electionID}`, 'get')
@@ -40,6 +41,14 @@ export const useSendInvites = (electionID: string | undefined) => {
         `/API/Election/${electionID}/sendInvites`,
         'post',
         'Email Invites Sent!',
+    )
+}
+
+export const useSendEmails = (electionID: string | undefined) => {
+    return useFetch<email_request_data, {}>(
+        `/API/Election/${electionID}/sendEmail`,
+        'post',
+        'Emails Sent!',
     )
 }
 

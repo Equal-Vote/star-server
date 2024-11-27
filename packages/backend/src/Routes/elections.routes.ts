@@ -20,7 +20,8 @@ import {
     getSandboxResults,
     sendInvitationController,
     sendInvitationsController,
-    setPublicResults
+    setPublicResults,
+    sendEmailsController,
 } from '../Controllers/Election';
 import {upload, uploadImageController} from '../Controllers/uploadImageController';
 import asyncHandler from 'express-async-handler';
@@ -459,6 +460,28 @@ electionsRouter.post('/Election/:id/archive', asyncHandler(archiveElection))
  *       404:
  *         description: Election not found */
 electionsRouter.post('/Election/:id/sendInvites', asyncHandler(sendInvitationsController))
+
+/** 
+ * @swagger
+ * /Election/{id}/sendInvites:
+ *   post:
+ *     summary: Send invitations for an election
+ *     tags: [Elections]
+ *     security:
+ *      - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The election ID
+ *     responses:
+ *       200:
+ *         description: Invitations sent
+ *       404:
+ *         description: Election not found */
+electionsRouter.post('/Election/:id/sendEmails', asyncHandler(sendEmailsController))
 
 /** 
  * @swagger
