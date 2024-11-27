@@ -7,10 +7,10 @@ import { LabelledTextField } from "~/components/util";
 
 export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
     const authSession = useAuthSession()
-    const [audience, setAudience] = useState(targetedEmail? 'single' : 'all') // TODO: replace this with the official type
-    const [template, setTemplate] = useState('invitation') // TODO: replace this with the official type
-    const [subject, setSubject] = useState('Update for election') // TODO: replace this with the official type
-    const [customMessage, setCustomMessage] = useState('This is an update from the admin') // TODO: replace this with the official type
+    const [audience, setAudience] = useState(targetedEmail? 'single' : 'all')
+    const [template, setTemplate] = useState('invite') 
+    const [subject, setSubject] = useState('Update for Election')
+    const [customMessage, setCustomMessage] = useState('')
     const [testEmails, setTestEmails] = useState(authSession.getIdField('email')) // TODO: replace this with the official type
     const {t} = useElection();
 
@@ -42,23 +42,21 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
                     label='Audience'
                     disabled={targetedEmail}
                     value={audience}
-                    values={targetedEmail? ['single']: ['all', 'already_voted', 'non_voters']}
+                    values={targetedEmail? ['single']: ['all', 'has_voted', 'has_not_voted']}
                     setter={setAudience}
                 />
-                <SelectField label='Email Template' values={['invitation', 'receipt', 'blank']} value={template} setter={setTemplate}/>
+                <SelectField label='Email Template' values={['invite', 'receipt', 'blank']} value={template} setter={setTemplate}/>
                 <LabelledTextField label='Subject' value={subject} setter={setSubject}/>
                 <LabelledTextField label='Custom Message' rows={3} value={customMessage} setter={setCustomMessage}/>
                 <Divider/>
-                <Box display='flex' flexDirection='row' sx={{width: {xs: 'unset', md: '400px'}}}>
+                {/*<Box display='flex' flexDirection='row' sx={{width: {xs: 'unset', md: '400px'}}}>
                     <LabelledTextField label='Test Email(s)' value={testEmails} setter={setTestEmails}/>
-                    {/*56px is to align with text box*/}
+                    {
+                        // 56px is to align with text box
+                    }
                     <Button variant='contained' sx={{height: '56px', mt: 'auto'}}>Send&nbsp;Test</Button>
-                </Box>
+                </Box>*/}
             </Box>
-            {/*TODO: remove this warning*/}
-            <Paper sx={{background: 'var(--ltbrand-red)', mt: 5, p: 1, width: '400px', mx: 'auto'}}>
-                WARNING: The configuration isn't functional yet. Clicking send will send invites to {targetedEmail? targetedEmail : 'everyone'}
-            </Paper>
         </DialogContent>
         <DialogActions>
             <Button
@@ -68,7 +66,12 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
             </Button>
             <Button
                 variant="contained"
-                onClick={onSubmit}>
+                onClick={() => onSubmit(
+                    template,
+                    subject,
+                    customMessage,
+                    audience,
+                )}>
                 {targetedEmail? 'Send Email' : 'Send Emails'}
             </Button>
         </DialogActions>

@@ -46,7 +46,7 @@ export const useSendInvites = (electionID: string | undefined) => {
 
 export const useSendEmails = (electionID: string | undefined) => {
     return useFetch<email_request_data, {}>(
-        `/API/Election/${electionID}/sendEmail`,
+        `/API/Election/${electionID}/sendEmails`,
         'post',
         'Emails Sent!',
     )

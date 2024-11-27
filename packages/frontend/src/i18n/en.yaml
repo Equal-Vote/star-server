@@ -847,11 +847,11 @@ edit_race:
 # Voters
 voters:
   email_form:
-    already_voted: Only those who already voted
-    non_voters: Only those who have not voted
+    has_voted: Only those who have ALREADY voted
+    has_not_voted: Only those who have NOT voted
     all: All voters
     single: Only send to {{voter_id}}
-    invitation: Invitation
+    invite: Invitation
     receipt: Receipt
     blank: Blank
 

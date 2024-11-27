@@ -6,12 +6,13 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
 import PermissionHandler from "../../PermissionHandler";
-import { useApproveRoll, useFlagRoll, useInvalidateRoll, useSendInvite, useUnflagRoll } from "../../../hooks/useAPI";
+import { useApproveRoll, useFlagRoll, useInvalidateRoll, useSendEmails, useSendInvite, useUnflagRoll } from "../../../hooks/useAPI";
 import { getLocalTimeZoneShort, useSubstitutedTranslation } from "../../util";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
 import SendEmailDialog from "./SendEmailDialog";
+import { email_request_data } from "@equal-vote/star-vote-backend/src/Controllers/Election/sendEmailController";
 
 
 type Props = {
@@ -29,7 +30,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
     const flag = useFlagRoll(election.election_id)
     const unflag = useUnflagRoll(election.election_id)
     const invalidate = useInvalidateRoll(election.election_id)
-    const sendInvite = useSendInvite(election.election_id, roll.voter_id)
+    const sendEmails = useSendEmails(election.election_id)
 
     const onApprove = async () => {
         if (!await approve.makeRequest({ electionRollEntry: roll })) { return }
@@ -47,12 +48,23 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
         if (!await invalidate.makeRequest({ electionRollEntry: roll })) { return }
         await fetchRolls()
     }
-    const onSendInvite = async () => {
+    const onSendEmail = async (
+        template: 'invite' | 'receipt' | 'blank',
+        subject: string,
+        body: string,
+        target: 'all' | 'has_voted' | 'has_not_voted' | 'single',
+    ) => {
         setDialogOpen(false);
-        if (!await sendInvite.makeRequest()) { return }
+
+        if (!await sendEmails.makeRequest({
+            target: target,
+            email: { template, subject, body },
+            voter_id: roll.voter_id,
+        })) return; 
 
         await fetchRolls()
     }
+
     return (
         <Container>
             {(approve.isPending || flag.isPending || unflag.isPending || invalidate.isPending) &&
@@ -171,7 +183,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
             <SendEmailDialog
                 open={dialogOpen}
                 onClose={() => setDialogOpen(false)}
-                onSubmit={onSendInvite}
+                onSubmit={onSendEmail}
                 targetedEmail={roll.email}
             />
         </Container>

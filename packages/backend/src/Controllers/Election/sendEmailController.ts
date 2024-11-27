@@ -34,7 +34,7 @@ export type email_request_data = {
     } | {
         template: 'receipt'
     },
-    target: 'all' | 'has_voted' | 'has_not_voted',
+    target: 'all' | 'has_voted' | 'has_not_voted' | 'single',
 }
 
 export type email_request_event = {
@@ -79,7 +79,7 @@ const sendEmailsController = async (req: IElectionRequest, res: Response, next: 
 
     let message_id = ''
 
-    if (email_request.voter_id) {
+    if (email_request.target == 'single') {
         const electionRollResponse = await ElectionRollModel.getByVoterID(electionId, email_request.voter_id, req)
         if (!electionRollResponse) {
             const msg = `Voter not found`;

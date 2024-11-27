@@ -9,7 +9,7 @@ import AddElectionRoll from "./AddElectionRoll";
 import PermissionHandler from "../../PermissionHandler";
 import { Typography } from "@mui/material";
 import EnhancedTable, { HeadKey }  from "./../../EnhancedTable";
-import { useGetRolls, useSendInvites } from "../../../hooks/useAPI";
+import { useGetRolls, useSendEmails, useSendInvites } from "../../../hooks/useAPI";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
@@ -19,7 +19,7 @@ import SendEmailDialog from "./SendEmailDialog";
 const ViewElectionRolls = () => {
     const { election, permissions } = useElection()
     const { data, isPending, error, makeRequest: fetchRolls } = useGetRolls(election.election_id)
-    const sendInvites = useSendInvites(election.election_id)
+    const sendEmails = useSendEmails(election.election_id)
     useEffect(() => { fetchRolls() }, [])
     const [isEditing, setIsEditing] = useState(false)
     const [addRollPage, setAddRollPage] = useState(false)
@@ -47,10 +47,17 @@ const ViewElectionRolls = () => {
         }
     }, [location.search])
 
-    const onSendInvites = () => {
+    const onSendEmails = (
+        template: 'invite' | 'receipt' | 'blank',
+        subject: string,
+        body: string,
+        target: 'all' | 'has_voted' | 'has_not_voted' | 'single',
+    ) => {
         setDialogOpen(false);
-        // NOTE: since we don't have await here, it 
-        sendInvites.makeRequest()
+        sendEmails.makeRequest({
+            target: target,
+            email: { template, subject, body },
+        })
     }
 
     const onUpdate = async () => {
@@ -106,7 +113,7 @@ const ViewElectionRolls = () => {
                 addRollPage &&
                 <AddElectionRoll onClose={onClose} />
             }
-            <SendEmailDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onSubmit={onSendInvites}/>
+            <SendEmailDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onSubmit={onSendEmails}/>
         </Container >
     )
 }
