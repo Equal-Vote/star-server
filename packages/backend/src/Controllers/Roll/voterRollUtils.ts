@@ -21,11 +21,13 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
     // Get voter ID if required and available, otherwise set to null
     let voter_id = null
     if (election.settings.voter_authentication.voter_id && election.settings.voter_access == 'closed') {
-        voter_id = req.cookies?.voter_id 
+        // cookies don't support special charaters
+        // https://help.vtex.com/en/tutorial/why-dont-cookies-support-special-characters--6hs7MQzTri6Yg2kQoSICoQ
+        voter_id = atob(req.cookies?.voter_id); 
     } else if (election.settings.voter_authentication.voter_id && election.settings.voter_access == 'open') {
         voter_id = req.user?.sub
     }
-    
+
     // Get all election roll entries that match any of the voter authentication fields
     // This is an odd way of going about this, rather than getting a roll that matches all three we get all that match any of the fields and
     // check the output for a number of edge cases.
@@ -33,7 +35,6 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
     if ((require_ip_hash || email || voter_id)) {
         electionRollEntries = await ElectionRollModel.getElectionRoll(String(election.election_id), voter_id, email, require_ip_hash, ctx);
     }
-
 
     if (electionRollEntries == null) {
         // No election roll found, create one if voter access is open and election state is open

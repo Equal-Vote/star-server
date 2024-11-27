@@ -15,7 +15,12 @@ const VoterAuth = () => {
   const { election, voterAuth, refreshElection, permissions, updateElection } = useElection()
   const { voter_id } = useParams();
   // TODO: maybe we should reconsider useCookie here? this has the potential of inserting the voter id on a different election
-  const [voterID, setVoterID] = useCookie('voter_id', voter_id ? voter_id : null, 1)
+  // Cookies don't support special charaters so we b64 everything we store in there
+  // https://help.vtex.com/en/tutorial/why-dont-cookies-support-special-characters--6hs7MQzTri6Yg2kQoSICoQ
+  const [base64VoterID, setBase64VoterID] = useCookie('voter_id', voter_id ? btoa(voter_id) : null, 1)
+
+  const setVoterID = (vote_id: string) => setBase64VoterID(btoa(voter_id));
+  const voterID = () => base64VoterID ? atob(base64VoterID) : base64VoterID;
 
   useEffect(() => {
     setVoterID(voter_id)
@@ -79,7 +84,7 @@ const VoterAuth = () => {
                     id="voter-id"
                     name="voterid"
                     label="Voter ID"
-                    value={voterID ? voterID : ''}
+                    value={voterID() ? voterID() : ''}
                     type="password"
                     fullWidth
                     onChange={(e) => {
@@ -94,7 +99,7 @@ const VoterAuth = () => {
                     <Button variant='outlined' onClick={() => submitVoterID()} > Submit </Button>
                   </Box>
                 }
-                {isAuthorized && voterID &&
+                {isAuthorized && voterID() &&
                   <Box sx={{ p: 1, display: 'flex', justifyContent: 'center' }}>
                     <Button variant='outlined' onClick={() => clearVoterID()} > Clear </Button>
                   </Box>
