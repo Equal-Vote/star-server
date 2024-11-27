@@ -19,7 +19,7 @@ const VoterAuth = () => {
   // https://help.vtex.com/en/tutorial/why-dont-cookies-support-special-characters--6hs7MQzTri6Yg2kQoSICoQ
   const [base64VoterID, setBase64VoterID] = useCookie('voter_id', voter_id ? btoa(voter_id) : null, 1)
 
-  const setVoterID = (vote_id: string) => setBase64VoterID(btoa(voter_id));
+  const setVoterID = (vote_id: string) => setBase64VoterID(voter_id ? btoa(voter_id) : voter_id);
   const voterID = () => base64VoterID ? atob(base64VoterID) : base64VoterID;
 
   useEffect(() => {
