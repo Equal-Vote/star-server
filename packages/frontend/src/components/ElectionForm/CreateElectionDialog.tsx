@@ -5,7 +5,7 @@ import { ElectionTitleField } from "./Details/ElectionDetailsForm";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-import { openFeedback, useSubstitutedTranslation } from "../util";
+import { openFeedback, RowButtonWithArrow, useSubstitutedTranslation } from "../util";
 import { useLocalStorage } from "~/hooks/useLocalStorage";
 import { NewElection } from "@equal-vote/star-vote-shared/domain_model/Election";
 import { DateTime } from "luxon";
@@ -147,25 +147,6 @@ const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
             Back
         </StyledButton>
     }
-</>
-
-const StartingOption = ({title, description, onClick}) => <>
-    <Button
-        color='inherit'
-        fullWidth
-        className='startingOption'
-        sx={{justifyContent: 'flex-start', textTransform: 'inherit'}}
-        onClick={onClick} 
-    >
-        <Box sx={{width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left'}}>
-                <Typography variant="body1">{title}</Typography>
-                <Typography color='gray' variant="body2">{description.split('. ').map(sentence => <>{`${sentence}.`}<br/></>)}</Typography>
-            </Box>
-            <ArrowForwardIosIcon className="startingOptionArrow" sx={{transition: 'padding-left .2s'}}/>
-        </Box>
-    </Button>
-    <Divider/>
 </>
 
 export default () => {
@@ -361,7 +342,7 @@ export default () => {
                         </Typography>
                         <Box style={{height: '10px'}}/> {/*hacky padding*/}
                         {(election.settings.voter_access === 'closed'? ['email_list', 'id_list'] : ['demo', 'unlisted']).map((name, i) =>
-                            <StartingOption
+                            <RowButtonWithArrow
                                 title={t(`election_creation.${name}_title`)}
                                 description={t(`election_creation.${name}_description`)}
                                 key={i}

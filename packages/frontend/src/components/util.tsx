@@ -1,4 +1,4 @@
-import {Box, Button, FormControlLabel, Link, TextField} from "@mui/material";
+import {Box, Button, Divider, FormControlLabel, Link, TextField, Typography} from "@mui/material";
 import { useEffect } from "react";
 import { DateTime } from "luxon";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,7 @@ import { Tip } from "./styles";
 import i18n from "~/i18n/i18n";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 import useSnackbar from "./SnackbarContext";
+import { ArrowForwardIos } from "@mui/icons-material";
 
 const rLink = /\[(.*?)\]\((.*?)\)/;
 const rBold = /\*\*(.*?)\*\*/;
@@ -75,6 +76,32 @@ export const useOnScrollAnimator = () => {
         </Box>,
     }
 }
+
+export const RowButtonWithArrow = ({title, description=undefined, onClick}) => <>
+    <Button
+        color='inherit'
+        fullWidth
+        className='startingOption'
+        sx={{justifyContent: 'flex-start', textTransform: 'inherit'}}
+        onClick={onClick} 
+    >
+        <Box sx={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          my: description ? 'inherit' : 2
+        }}>
+            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left'}}>
+                <Typography variant="body1">{title}</Typography>
+                {description && <Typography color='gray' variant="body2">{description.split('. ').map(sentence => <>{`${sentence}.`}<br/></>)}</Typography>}
+            </Box>
+            <ArrowForwardIos className="startingOptionArrow" sx={{transition: 'padding-left .2s'}}/>
+        </Box>
+    </Button>
+    <Divider/>
+</>
 
 // defining in separate file: https://stackoverflow.com/questions/58778631/react-input-loses-focus-on-keypress
 export const LabelledTextField = ({label, value, setter, rows=1}) => 

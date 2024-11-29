@@ -851,9 +851,9 @@ voters:
     has_not_voted: Only those who have NOT voted
     all: All voters
     single: Only send to {{voter_id}}
-    invite: Invitation
-    receipt: Receipt
-    blank: Blank
+    invite: "{{capital_election}} Invitation Template"
+    receipt: "Voter Receipt Template"
+    blank: Empty Template
 
 # Ballots
 
