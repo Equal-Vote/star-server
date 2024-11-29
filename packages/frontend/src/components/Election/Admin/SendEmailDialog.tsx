@@ -37,6 +37,8 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
     }
 
     //<SelectField label='Template' values={['invite', 'receipt', 'blank']} value={template} setter={setTemplate}/>
+    // I experimented with these sizes till it felt right I wish there was a more dynamic solution, while maintaining the horizontal transition
+    const sizes = {xs: '220px', sm: '380px', md: '465px'};
     return <Dialog
         open={open}
         onClose={close}
@@ -45,15 +47,16 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
         <DialogContent>
             <Box display='flex' flexDirection='row'>
                 <Box display='flex' flexDirection='row-reverse' sx={{
-                    width: template !== null ? 0 : '465px', // 100 is copied from auto
+                    width: template !== null ? 0 : sizes,
                     height: 'auto',
                     opacity: template !== null ? 0 : 1, 
                     overflow: 'hidden',
                     transition: 'width .4s, opacity .7s',
                     mb: '20px'
                 }}>
-                    <Box display='flex' flexDirection={'column'} sx={{minWidth: '465px'}}>
-                        <Typography>Which template would you like to start with?</Typography>
+                    {/*minWidth keeps text from wrapping during the transition*/}
+                    <Box display='flex' gap={1} flexDirection={'column'} sx={{width: '100%', minWidth: sizes}}>
+                        <Typography sx={{mb: 1}}>Which template would you like to start with?</Typography>
                         {['invite', 'receipt', 'blank'].map((v, i) => 
                             <RowButtonWithArrow
                                 key={i}
@@ -64,7 +67,7 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
                     </Box>
                 </Box>
                 <Box display='flex' flexDirection='column' gap={3} sx={{
-                    width: template === null ? 0 : '465px', // 465 is copied from auto
+                    width: template === null ? 0 : sizes, // 465 is copied from auto
                     opacity: template === null ? 0 : 1, 
                     overflow: 'hidden',
                     transition: 'width .4s, opacity .7s',
@@ -78,14 +81,14 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
                     />
                     <LabelledTextField label='Subject' value={subject} setter={setSubject}/>
                     <LabelledTextField label='Custom Message' rows={3} value={customMessage} setter={setCustomMessage}/>
-                    <Divider/>
-                    <Box display='flex' flexDirection='row' sx={{width: {xs: 'unset', md: '400px'}}}>
+                    {/*<Divider/>
+                    <Box display='flex' flexDirection='row' sx={{width: sizes}}>
                         <LabelledTextField label='Test Email(s)' value={testEmails} setter={setTestEmails}/>
                         {
                             // 56px is to align with text box
                         }
                         <Button variant='contained' sx={{height: '56px', mt: 'auto'}}>Send&nbsp;Test</Button>
-                    </Box>
+                    </Box>*/}
                 </Box>
             </Box>
         </DialogContent>
