@@ -26,7 +26,7 @@ const getRollsByElectionID = async (req: IElectionRequest, res: Response, next: 
         throw new BadRequest(msg)
     }
 
-    Logger.debug(req, `Got Election: ${req.params.id}`, electionRoll);
+    Logger.debug(req, `Got Election: ${req.params.id}`);
     Logger.info(req, `${className}.returnRolls ${req.params.id}`);
     res.json({ election: req.election, electionRoll: electionRoll });
 }

@@ -855,6 +855,22 @@ voters:
     receipt: "Voter Receipt Template"
     blank: Empty Template
 
+# Email Templates
+emails:
+  voting_begin: Voting will begin on {datetime, datetime}
+  voting_end: '**Voting ends on {datetime, datetime}**'
+  election_description: '{{capital_election}} {{description}}'
+  invite:
+    subject: Invitation to vote in {{title}}
+    body: |
+      You have been invited to vote in the "{{title}}" {{election}}.
+      {{description}}{{voting_begin}}{{voting_end}}
+      Click the button to vote:
+
+      __VOTE_BUTTON__
+
+      This link is unique to you, be careful not to share this email with others
+
 # Ballots
 
 # General Terms

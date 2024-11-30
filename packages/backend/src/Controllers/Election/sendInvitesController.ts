@@ -83,7 +83,6 @@ async function sendBatchEmailInvites(req: any, electionRoll: ElectionRoll[], ele
     Logger.info(req, `${className}.sendInvitations`, { election_id: election.election_id });
     try {
         await (await EventQueue).publishBatch(SendInviteEventQueue, Jobs);
-
     } catch (err: any) {
         const msg = `Could not send invitations`;
         Logger.error(req, `${msg}: ${err.message}`);

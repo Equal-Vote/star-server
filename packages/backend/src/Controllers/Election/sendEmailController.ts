@@ -3,7 +3,7 @@ import Logger from '../../Services/Logging/Logger';
 import { permissions } from '@equal-vote/star-vote-shared/domain_model/permissions';
 import { expectPermission } from "../controllerUtils";
 import { BadRequest, InternalServerError } from "@curveball/http-errors";
-import { Blank, Invites } from "../../Services/Email/EmailTemplates"
+import { makeEmails } from "../../Services/Email/EmailTemplates"
 import { ElectionRoll, ElectionRollAction } from '@equal-vote/star-vote-shared/domain_model/ElectionRoll';
 import { Uid } from "@equal-vote/star-vote-shared/domain_model/Uid";
 import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
@@ -24,16 +24,10 @@ const SendEmailEventQueue = "sendEmailEvent";
 export type email_request_data = {
     voter_id?: string,
     email: {
-        template: 'invite',
-        subject?: string,
-        body?: string,
-    } | {
-        template: 'blank',
+        template: 'invite' | 'blank' | 'receipt',
         subject: string,
         body: string,
-    } | {
-        template: 'receipt'
-    },
+    }
     target: 'all' | 'has_voted' | 'has_not_voted' | 'single',
 }
 
@@ -43,22 +37,16 @@ export type email_request_event = {
     url: string,
     electionRoll: ElectionRoll,
     email: {
-        template: 'invite',
-        subject?: string,
-        body?: string,
-    } | {
-        template: 'blank',
+        template: 'invite' | 'blank' | 'receipt',
         subject: string,
         body: string,
-    } | {
-        template: 'receipt'
     },
     message_id: string,
     sender: string,
 }
 
 const sendEmailsController = async (req: IElectionRequest, res: Response, next: NextFunction) => {
-    Logger.info(req, `${className}.sendInvitations ${req.election.election_id}`);
+    Logger.info(req, `${className}.sendEmails ${req.election.election_id}`);
     expectPermission(req.user_auth.roles, permissions.canSendEmails)
 
     const electionId = req.election.election_id;
@@ -80,7 +68,7 @@ const sendEmailsController = async (req: IElectionRequest, res: Response, next: 
     let message_id = ''
 
     if (email_request.target == 'single') {
-        const electionRollResponse = await ElectionRollModel.getByVoterID(electionId, email_request.voter_id, req)
+        const electionRollResponse = await ElectionRollModel.getByVoterID(electionId, email_request.voter_id ?? '', req)
         if (!electionRollResponse) {
             const msg = `Voter not found`;
             Logger.info(req, msg);
@@ -134,10 +122,9 @@ const sendEmailsController = async (req: IElectionRequest, res: Response, next: 
     })
 
     var failMsg = "Failed to send invitations";
-    Logger.info(req, `${className}.sendInvitations`, { election_id: election.election_id });
+    Logger.info(req, `${className}.sendEmails`, { election_id: election.election_id });
     try {
         await (await EventQueue).publishBatch(SendEmailEventQueue, Jobs);
-
     } catch (err: any) {
         const msg = `Could not send invitations`;
         Logger.error(req, `${msg}: ${err.message}`);
@@ -148,6 +135,7 @@ const sendEmailsController = async (req: IElectionRequest, res: Response, next: 
 }
 
 async function handleSendEmailEvent(job: { id: string; data: email_request_event; }): Promise<void> {
+    Logger.info(undefined, `${className}.sendEmailEvent`);
     const event = job.data;
     const ctx = Logger.createContext(event.requestId);
     //Fetch latest entry
@@ -158,14 +146,7 @@ async function handleSendEmailEvent(job: { id: string; data: email_request_event
         throw new InternalServerError('Could not find voter');
     }
     // await sendEmail(ctx, event.election, electionRoll, event.sender, event.url)
-    let email: Imsg[] = []
-    if (event.email.template === 'blank') {
-        email = Blank(event.election, [electionRoll], event.url, event.email.subject, event.email.body)
-    } else if (event.email.template === 'invite') {
-        email = Invites(event.election, [electionRoll], event.url, event.email.subject, event.email.body)
-    } else {
-        throw new InternalServerError('Receipts not yet supported');
-    }
+    let email: Imsg[] = makeEmails(event.election, [electionRoll], event.url, event.email.subject, event.email.body);
 
     const emailResponse = await EmailService.sendEmails(email)
 

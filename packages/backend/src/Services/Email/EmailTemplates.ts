@@ -3,6 +3,7 @@ import { Election } from "@equal-vote/star-vote-shared/domain_model/Election"
 import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll"
 import { Imsg } from "./IEmail"
 import { DateTime } from 'luxon'
+import sanitizeHtml from 'sanitize-html';
 
 const emailSettings: Partial<Imsg> = {
     asm: process.env.SENDGRID_GROUP_ID ? {
@@ -15,6 +16,9 @@ const emailSettings: Partial<Imsg> = {
     } : undefined
 }
 
+const rLink = /\[(.*?)\]\((.*?)\)/;
+const rBold = /\*\*(.*?)\*\*/;
+
 const formatTime = (time: string | Date, tz: string) => DateTime.fromJSDate(new Date(time)).setZone(tz).toLocaleString(DateTime.DATETIME_FULL);
 
 const makeButton = (text: string, link: string) => 
@@ -22,6 +26,47 @@ const makeButton = (text: string, link: string) =>
   `<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td align="center">
       <a clicktracking="off" href="${link}" target="_blank" style="border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; padding: 12px 25px; text-decoration: none; text-transform: capitalize; background-color: #3498db; border-color: #3498db; color: #ffffff;">${text}</a>
   </td></tr></table>`
+
+
+export function makeEmails(election: Election, voters: ElectionRoll[], url: string, email_subject: string, email_body: string): Imsg[] {
+    const processEmailBody = (body: string, voter_id: string) => {
+        // sanitize
+        body = sanitizeHtml(body);
+        // bold
+        body = body.split(rBold).map((str, i) => {
+            if(i%2 == 0) return str
+            return `<b>${str}</b>`;
+        }).join('')
+        // links
+        let linkParts = body.split(rLink);
+        body = linkParts.map((str, i) => {
+            if(i%3 == 0) return str;
+            if(i%3 == 2) return '';
+            return `<a href=${linkParts[i+1]}>${linkParts[i]}</a>`
+        }).join('')
+        // newline / paragraph breaks
+        body = `<p>${body.replaceAll('\n\n', '</p><p>')}</p>`
+        // buttons
+        body = body.replaceAll('__VOTE_BUTTON__',
+            makeButton('Vote', `${url}/${election.election_id}/${election.settings.voter_authentication.voter_id === true && 'id/' + voter_id}`)
+        );
+        body = body.replaceAll('__ELECTION_HOME_BUTTON__',
+            makeButton('View Election', `${url}/${election.election_id}`)
+        )
+        return body
+    }
+    return voters.map((voter) => <Imsg>{
+        ...emailSettings,
+        to: voter.email, // Change to your recipient
+        from: process.env.FROM_EMAIL_ADDRESS ?? '',
+        subject: email_subject ?? `Invitation to Vote In ${election.title}`,
+        text: `${election.state === 'draft' ? `[⚠️Test ${election.settings.term_type}]` : ''} ${email_body ?? '' }  You have been invited to vote in ${election.title} ${url}/${election.election_id}`,
+        html: emailTemplate(`
+            ${election.state === 'draft' ? `<h3>⚠️This ${election.settings.term_type} is still in test mode. All ballots during test mode will be removed once the election is finalized, and at that time you will need to vote again.⚠️</h3>` : ''}
+            ${processEmailBody(email_body, voter.voter_id)}
+        `)
+    })
+}
 
 export function Invites(election: Election, voters: ElectionRoll[], url: string, email_subject?: string, email_body?: string): Imsg[] {
     return voters.map((voter) => <Imsg>{
@@ -32,7 +77,7 @@ export function Invites(election: Election, voters: ElectionRoll[], url: string,
         text: `${election.state === 'draft' ? `[⚠️Test ${election.settings.term_type}]` : ''} ${email_body ?? '' }  You have been invited to vote in ${election.title} ${url}/${election.election_id}`,
         html: emailTemplate(`
           ${election.state === 'draft' ? `<h3>⚠️This ${election.settings.term_type} is still in test mode. All ballots during test mode will be removed once the election is finalized, and at that time you will need to vote again.⚠️</h3>` : ''}
-          ${email_body ? `<p>${email_body}</p>` : '' }
+          ${email_body ? email_body : '' }
           <p>You have been invited to vote in the \"${election.title}\" ${election.settings.term_type}.</p>
           ${election.description ?
             `<p>Election ${election.description}<p>` : ''

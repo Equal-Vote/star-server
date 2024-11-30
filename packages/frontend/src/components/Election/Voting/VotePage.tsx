@@ -189,8 +189,6 @@ const VotePage = () => {
   }
 
   let pageIsUnderVote = (page) => {
-    let u =  page.candidates.reduce((prev, c) => prev && c.score == 0, true)
-    console.log(u);
     return page.candidates.reduce((prev, c) => prev && (c.score == 0 || c.score == null), true)
   }
 

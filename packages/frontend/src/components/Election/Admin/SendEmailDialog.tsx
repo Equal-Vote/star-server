@@ -1,18 +1,21 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, MenuItem, Paper, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
+import { DateTime } from "luxon";
 import { useState } from "react";
 import useAuthSession from "~/components/AuthSessionContextProvider";
 import useElection from "~/components/ElectionContextProvider";
 import { StyledButton } from "~/components/styles";
 import { LabelledTextField, RowButtonWithArrow } from "~/components/util";
 
+const formatTime = (time: string | Date, tz: string) => DateTime.fromJSDate(new Date(time)).setZone(tz).toLocaleString(DateTime.DATETIME_FULL);
+
 export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
     const authSession = useAuthSession()
     const [audience, setAudience] = useState(targetedEmail? 'single' : 'all')
-    const [template, setTemplate] = useState(null) 
-    const [subject, setSubject] = useState('Update for Election')
-    const [customMessage, setCustomMessage] = useState('')
+    const [templateChosen, setTemplateChosen] = useState(false)
+    const [emailSubject, setEmailSubject] = useState('Update for Election')
+    const [emailBody, setEmailBody] = useState('')
     const [testEmails, setTestEmails] = useState(authSession.getIdField('email')) // TODO: replace this with the official type
-    const {t} = useElection();
+    const {election, t} = useElection();
 
     const SelectField = ({label, value, values, setter, disabled=false}) => 
         <FormControlLabel control={
@@ -32,13 +35,28 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
         />
 
     const close = () => {
-        setTemplate(null)
+        // Brief delay so that the animation isn't seen during the close
+        setTimeout(() => setTemplateChosen(false), 500);
         onClose()
     }
 
-    //<SelectField label='Template' values={['invite', 'receipt', 'blank']} value={template} setter={setTemplate}/>
+    const setTemplate = (template_id) => {
+        setTemplateChosen(true);
+        setEmailSubject(t(`emails.${template_id}.subject`,{
+            skipProcessing: true, // processing must occur in backend
+            title: election.title,
+        }))
+        setEmailBody(t(`emails.${template_id}.body`, {
+            skipProcessing: true, // processing must occur in backend
+            title: election.title,
+            description: election.description ? `\n${t('emails.description', {description: election.description, skipProcessing: true})}\n`: '',
+            voting_begin: election.start_time ? `\n${t('emails.voting_begin', {datetime: election.start_time, skipProcessing: true})}\n` : '',
+            voting_end: election.end_time ? `\n${t('emails.voting_end', {datetime: election.end_time, skipProcessing: true})}\n` : '',
+        }))
+    }
+
     // I experimented with these sizes till it felt right I wish there was a more dynamic solution, while maintaining the horizontal transition
-    const sizes = {xs: '220px', sm: '380px', md: '465px'};
+    const sizes = {xs: '220px', sm: '380px', md: '550px'};
     return <Dialog
         open={open}
         onClose={close}
@@ -47,9 +65,9 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
         <DialogContent>
             <Box display='flex' flexDirection='row'>
                 <Box display='flex' flexDirection='row-reverse' sx={{
-                    width: template !== null ? 0 : sizes,
+                    width: templateChosen ? 0 : sizes,
                     height: 'auto',
-                    opacity: template !== null ? 0 : 1, 
+                    opacity: templateChosen ? 0 : 1, 
                     overflow: 'hidden',
                     transition: 'width .4s, opacity .7s',
                     mb: '20px'
@@ -67,8 +85,8 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
                     </Box>
                 </Box>
                 <Box display='flex' flexDirection='column' gap={3} sx={{
-                    width: template === null ? 0 : sizes, // 465 is copied from auto
-                    opacity: template === null ? 0 : 1, 
+                    width: !templateChosen ? 0 : sizes, // 465 is copied from auto
+                    opacity: !templateChosen ? 0 : 1, 
                     overflow: 'hidden',
                     transition: 'width .4s, opacity .7s',
                 }}>
@@ -79,8 +97,8 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
                         values={targetedEmail? ['single']: ['all', 'has_voted', 'has_not_voted']}
                         setter={setAudience}
                     />
-                    <LabelledTextField label='Subject' value={subject} setter={setSubject}/>
-                    <LabelledTextField label='Custom Message' rows={3} value={customMessage} setter={setCustomMessage}/>
+                    <LabelledTextField label='Email Subject' fullWidth value={emailSubject} setter={setEmailSubject}/>
+                    <LabelledTextField label='Email Body' fullWidth rows={10} value={emailBody} setter={setEmailBody}/>
                     {/*<Divider/>
                     <Box display='flex' flexDirection='row' sx={{width: sizes}}>
                         <LabelledTextField label='Test Email(s)' value={testEmails} setter={setTestEmails}/>
@@ -100,13 +118,16 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
             </Button>
             <Button
                 variant="contained"
-                disabled={template === null}
-                onClick={() => onSubmit(
-                    template,
-                    subject,
-                    customMessage,
-                    audience,
-                )}>
+                disabled={!templateChosen}
+                onClick={() => {
+                    setTemplateChosen(false)
+                    onSubmit(
+                        'invite', // temporary
+                        emailSubject,
+                        emailBody,
+                        audience,
+                    )
+                }}>
                 {targetedEmail? 'Send Email' : 'Send Emails'}
             </Button>
         </DialogActions>

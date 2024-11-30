@@ -104,7 +104,7 @@ export const RowButtonWithArrow = ({title, description=undefined, onClick}) => <
 </>
 
 // defining in separate file: https://stackoverflow.com/questions/58778631/react-input-loses-focus-on-keypress
-export const LabelledTextField = ({label, value, setter, rows=1}) => 
+export const LabelledTextField = ({label, value, setter, fullWidth=false, rows=1}) => 
   <FormControlLabel control={
           <TextField
             value={value}
@@ -119,7 +119,7 @@ export const LabelledTextField = ({label, value, setter, rows=1}) =>
       labelPlacement='top'
       sx={{
           alignItems: 'start',
-          width: {xs: 'unset', md: '400px'}
+          width: {xs: 'unset', md: (fullWidth)? '90%' : '400px'}
       }}
   />
 
@@ -130,7 +130,7 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
       if(typeof value === 'string'){
         if(key == 'datetime' || key == 'datetime2' || key == 'listed_datetime'){
           values[key] = new Date(value)
-        }else{
+        }else if(value.length > 2){
           values[`capital_${key}`] = capitalize(value)
         }
       }
@@ -142,9 +142,9 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
   }
 
   let dt = {
-      year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric',
-      timeZoneName: 'short', timeZone: v['time_zone'] ?? undefined
-    }
+    year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric',
+    timeZoneName: 'short', timeZone: v['time_zone'] ?? undefined
+  }
 
   let values = processValues({...en.keyword, ...en.keyword[electionTermType], ...v, formatParams: {
     datetime: dt,
@@ -208,7 +208,8 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
     </>
   }
 
-  const handleObject = (obj) => {
+  const handleObject = (obj, skipProcessing=false) => {
+    if(skipProcessing) return obj;
     if(typeof obj == 'number') return obj;
     if(typeof obj === 'string') return applySymbols(obj);
     if(Array.isArray(obj)) return obj.map(o => handleObject(o));
@@ -221,7 +222,7 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
   }
 
   return {
-    t: (key, v={}) => handleObject(t(key, {...values, ...processValues(v)})),
+    t: (key, v={}) => handleObject(t(key, {...values, ...processValues(v)}), v['skipProcessing']),
     i18n,
   }
 }
@@ -237,8 +238,6 @@ export const truncName = (name, maxSize) => {
   if (name.length <= maxSize) return name;
   return name.slice(0, maxSize - 3).concat("...");
 };
-
-
 
 export const openFeedback = () => {
   // simulate clicking the feedback button
