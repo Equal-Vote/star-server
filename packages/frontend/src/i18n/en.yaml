@@ -857,8 +857,8 @@ voters:
 
 # Email Templates
 emails:
-  voting_begin: Voting will begin on {datetime, datetime}
-  voting_end: '**Voting ends on {datetime, datetime}**'
+  voting_begin: Voting will begin on {{datetime, datetime}}
+  voting_end: '**Voting ends on {{datetime, datetime}}**'
   election_description: '{{capital_election}} {{description}}'
   invite:
     subject: Invitation to vote in {{title}}
@@ -870,6 +870,9 @@ emails:
       __VOTE_BUTTON__
 
       This link is unique to you, be careful not to share this email with others
+  blank:
+    subject: An update from {{title}}
+    body: __ELECTION_HOME_BUTTON__
 
 # Ballots
 

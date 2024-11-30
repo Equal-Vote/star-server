@@ -6,8 +6,6 @@ import useElection from "~/components/ElectionContextProvider";
 import { StyledButton } from "~/components/styles";
 import { LabelledTextField, RowButtonWithArrow } from "~/components/util";
 
-const formatTime = (time: string | Date, tz: string) => DateTime.fromJSDate(new Date(time)).setZone(tz).toLocaleString(DateTime.DATETIME_FULL);
-
 export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
     const authSession = useAuthSession()
     const [audience, setAudience] = useState(targetedEmail? 'single' : 'all')
@@ -75,7 +73,7 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
                     {/*minWidth keeps text from wrapping during the transition*/}
                     <Box display='flex' gap={1} flexDirection={'column'} sx={{width: '100%', minWidth: sizes}}>
                         <Typography sx={{mb: 1}}>Which template would you like to start with?</Typography>
-                        {['invite', 'receipt', 'blank'].map((v, i) => 
+                        {['invite', /*'receipt', */'blank'].map((v, i) => 
                             <RowButtonWithArrow
                                 key={i}
                                 title={t(`voters.email_form.${v}`, {voter_id: targetedEmail})}
@@ -122,7 +120,6 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
                 onClick={() => {
                     setTemplateChosen(false)
                     onSubmit(
-                        'invite', // temporary
                         emailSubject,
                         emailBody,
                         audience,

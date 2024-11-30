@@ -48,7 +48,6 @@ const ViewElectionRolls = () => {
     }, [location.search])
 
     const onSendEmails = (
-        template: 'invite' | 'receipt' | 'blank',
         subject: string,
         body: string,
         target: 'all' | 'has_voted' | 'has_not_voted' | 'single',
@@ -56,7 +55,7 @@ const ViewElectionRolls = () => {
         setDialogOpen(false);
         sendEmails.makeRequest({
             target: target,
-            email: { template, subject, body },
+            email: { subject, body },
         })
     }
 
@@ -67,7 +66,7 @@ const ViewElectionRolls = () => {
     }
 
     let headKeys:HeadKey[] = (election.settings.invitation === 'email')?
-        ['voter_id', 'email', 'invite_status', 'has_voted']
+        ['voter_id', 'email', /*'invite_status', */'has_voted']
     :
         ['voter_id', 'email', 'has_voted'];
 

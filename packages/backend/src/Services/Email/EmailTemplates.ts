@@ -59,8 +59,8 @@ export function makeEmails(election: Election, voters: ElectionRoll[], url: stri
         ...emailSettings,
         to: voter.email, // Change to your recipient
         from: process.env.FROM_EMAIL_ADDRESS ?? '',
-        subject: email_subject ?? `Invitation to Vote In ${election.title}`,
-        text: `${election.state === 'draft' ? `[⚠️Test ${election.settings.term_type}]` : ''} ${email_body ?? '' }  You have been invited to vote in ${election.title} ${url}/${election.election_id}`,
+        subject: email_subject,
+        text: `${election.state === 'draft' ? `[⚠️Test ${election.settings.term_type}]` : ''} You have received a message from election ${election.title}`,
         html: emailTemplate(`
             ${election.state === 'draft' ? `<h3>⚠️This ${election.settings.term_type} is still in test mode. All ballots during test mode will be removed once the election is finalized, and at that time you will need to vote again.⚠️</h3>` : ''}
             ${processEmailBody(email_body, voter.voter_id)}

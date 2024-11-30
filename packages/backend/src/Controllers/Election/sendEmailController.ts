@@ -24,7 +24,6 @@ const SendEmailEventQueue = "sendEmailEvent";
 export type email_request_data = {
     voter_id?: string,
     email: {
-        template: 'invite' | 'blank' | 'receipt',
         subject: string,
         body: string,
     }
@@ -37,7 +36,6 @@ export type email_request_event = {
     url: string,
     electionRoll: ElectionRoll,
     email: {
-        template: 'invite' | 'blank' | 'receipt',
         subject: string,
         body: string,
     },
@@ -59,10 +57,6 @@ const sendEmailsController = async (req: IElectionRequest, res: Response, next: 
         const msg = `Emails not enabled`;
         Logger.info(req, msg);
         throw new BadRequest(msg)
-    }
-
-    if (email_request.email.template === 'receipt') {
-        throw new InternalServerError('Receipts not yet supported');
     }
 
     let message_id = ''
