@@ -866,6 +866,14 @@ emails:
   voting_begin: Voting will begin on {{datetime, datetime}}
   voting_end: '**Voting ends on {{datetime, datetime}}**'
   election_description: '{{capital_election}} {{description}}'
+  draft_warning: >
+    This election hasn't been finalized yet, so all votes will count as "test votes".
+    All test votes will be cleared once the election is finalized.
+  pre_start_warning: >
+    This election's start time is scheduled for the future on {{datetime, datetime}}. 
+    Voters will not be able to cast ballots until the elction has opened.
+  post_end_warning: >
+    This election is already closed on {{datetime, datetime}} and voters will not be able to cast ballots.
   invite:
     subject: Invitation to vote in {{title}}
     body: |

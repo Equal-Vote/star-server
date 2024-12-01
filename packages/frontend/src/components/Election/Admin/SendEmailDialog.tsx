@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, MenuItem, Paper, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, MenuItem, Paper, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
 import { DateTime } from "luxon";
 import { useState } from "react";
 import useAuthSession from "~/components/AuthSessionContextProvider";
@@ -52,6 +52,17 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
             voting_end: election.end_time ? `\n${t('emails.voting_end', {datetime: election.end_time, skipProcessing: true})}\n` : '',
         }))
     }
+
+    let warning: string = (() => {
+        if(election.state == 'draft')
+            return t('emails.draft_warning')
+        const currentTime = new Date();
+        if(election.start_time && currentTime.getTime() < new Date(election.start_time).getTime())
+            return t('emails.pre_start_warning', {datetime: election.start_time})
+        if(election.end_time && currentTime.getTime() > new Date(election.end_time).getTime())
+            return t('emails.post_end_warning', {datetime: election.end_time})
+        return '';
+    })();
 
     // I experimented with these sizes till it felt right I wish there was a more dynamic solution, while maintaining the horizontal transition
     const sizes = {xs: '220px', sm: '380px', md: '550px'};
@@ -107,6 +118,14 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
                     </Box>*/}
                 </Box>
             </Box>
+            {warning && <Alert 
+                severity='warning'
+                sx={{
+                    margin: 1,
+                    padding: '.2cm',
+                }}>
+                <Typography>{warning}</Typography>
+            </Alert>}
         </DialogContent>
         <DialogActions>
             <Button
@@ -127,6 +146,7 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
                 }}>
                 {targetedEmail? 'Send Email' : 'Send Emails'}
             </Button>
+            
         </DialogActions>
     </Dialog>
 }
