@@ -765,6 +765,12 @@ admin_home:
   finalize_confirm:
     title: Confirm Finalize Election
     message: Are you sure you want to finalize your election? Once finalized you won't be able to edit it.
+
+  finalize_email_confirm:
+    title: Send Email Blast
+    message: You can send emails from the voters tab at anytime. Would you like to notify your voters? 
+    cancel: 'No, not now'
+    submit: 'Yes, take me to the voters tab'
   
   duplicate_confirm:
     title: Confirm Duplicate Election
@@ -900,6 +906,7 @@ keyword:
 
   save: Save
   cancel: Cancel
+  submit: Submit
 
   # This is used in tables and charts
   total: Total 

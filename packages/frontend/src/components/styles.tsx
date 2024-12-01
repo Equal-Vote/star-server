@@ -50,11 +50,11 @@ export const StyledButton = (props) => (
             p: 1,
             m: 0,
             boxShadow: 2,
-            backgroundColor: 'primary.main',
+            //backgroundColor: 'primary.main',
             fontFamily: 'Montserrat, Verdana, sans-serif',
             fontWeight: 'bold',
             fontSize: 18,
-            color: 'primary.contrastText',
+            //color: 'primary.contrastText',
         }}
         {...props}
     >

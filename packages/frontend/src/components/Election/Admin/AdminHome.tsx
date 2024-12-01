@@ -42,6 +42,7 @@ const AdminHome = () => {
     const { error, isPending, makeRequest: postElection } = usePostElection()
     
     const confirm = useConfirm()
+    const emailConfirm = useConfirm()
 
     const hasPermission = (requiredPermission: string) => {
         return (permissions && permissions.includes(requiredPermission))
@@ -55,6 +56,18 @@ const AdminHome = () => {
             await fetchElection()
         } catch (err) {
             console.error(err)
+        }
+
+        const currentTime = new Date();
+        if (
+            election.settings.voter_access === 'closed' &&
+            election.settings.invitation === 'email' &&
+            (!election.start_time || currentTime.getTime() > new Date(election.start_time).getTime()) &&
+            (!election.end_time || currentTime.getTime() < new Date(election.end_time).getTime())
+        ){
+            if(await emailConfirm(t('admin_home.finalize_email_confirm'))){
+                navigate(`/${election.election_id}/admin/voters`)
+            }
         }
     }
 
