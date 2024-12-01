@@ -419,6 +419,7 @@
           "actor": {
             "type": "string"
           },
+          "email_data": {},
           "timestamp": {
             "type": "number"
           }
@@ -446,6 +447,12 @@
           },
           "break_ties_randomly": {
             "type": "boolean"
+          },
+          "contact_email": {
+            "type": "string"
+          },
+          "email_campaign_count": {
+            "type": "number"
           },
           "invitation": {
             "enum": [

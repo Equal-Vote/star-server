@@ -58,7 +58,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
 
         if (!await sendEmails.makeRequest({
             target: target,
-            email: { template, subject, body },
+            email: { subject, body },
             voter_id: roll.voter_id,
         })) return; 
 
