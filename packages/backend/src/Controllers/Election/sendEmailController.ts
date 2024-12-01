@@ -116,7 +116,6 @@ const sendEmailsController = async (req: IElectionRequest, res: Response, next: 
     })
 
     var failMsg = "Failed to send invitations";
-    Logger.info(req, `${className}.sendEmails`, { election_id: election.election_id });
     try {
         await (await EventQueue).publishBatch(SendEmailEventQueue, Jobs);
     } catch (err: any) {
