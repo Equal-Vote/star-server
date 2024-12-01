@@ -48,11 +48,17 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
         if (!await invalidate.makeRequest({ electionRollEntry: roll })) { return }
         await fetchRolls()
     }
-    const onSendEmail = async (
+    const onSendEmail = async ({
+        subject,
+        body,
+        target,
+        testEmails,
+    } : {
         subject: string,
         body: string,
-        target: 'all' | 'has_voted' | 'has_not_voted' | 'single',
-    ) => {
+        target: 'all' | 'has_voted' | 'has_not_voted' | 'single' | 'test'
+        testEmails: string[],
+    }) => {
         setDialogOpen(false);
 
         if (!await sendEmails.makeRequest({

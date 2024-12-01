@@ -27,7 +27,8 @@ export type email_request_data = {
         subject: string,
         body: string,
     }
-    target: 'all' | 'has_voted' | 'has_not_voted' | 'single',
+    target: 'all' | 'has_voted' | 'has_not_voted' | 'single' | 'test',
+    testEmails?: string[],
 }
 
 export type email_request_event = {
@@ -41,11 +42,13 @@ export type email_request_event = {
     },
     message_id: string,
     sender: string,
+    test_email: boolean
 }
 
 const sendEmailsController = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.sendEmails ${req.election.election_id}`);
     expectPermission(req.user_auth.roles, permissions.canSendEmails)
+
 
     const electionId = req.election.election_id;
     const election = req.election
@@ -70,6 +73,18 @@ const sendEmailsController = async (req: IElectionRequest, res: Response, next: 
         }
         electionRoll = [electionRollResponse]
         message_id = `dm_${email_request.voter_id}_${0}` //TODO: retreive count of previous dms
+    } else if(email_request.target == 'test'){
+        // Create dummy election rolls for each test email
+        electionRoll = (email_request.testEmails ?? []).map(email => <ElectionRoll>{
+            voter_id: 'test_voter_id',
+            election_id: req.election.election_id,
+            email: email,
+            submitted: false,
+            state: 'approved',
+            create_date: new Date(),
+            update_date: new Date(),
+            head: true
+        });
     } else {
         electionRoll = await ElectionRollModel.getRollsByElectionID(electionId, req);
         if (!electionRoll) {
@@ -111,6 +126,7 @@ const sendEmailsController = async (req: IElectionRequest, res: Response, next: 
                 sender: req.user.email,
                 email: email_request.email,
                 message_id: message_id,
+                test_email: email_request.target == 'test'
             }
         )
     })
@@ -132,16 +148,21 @@ async function handleSendEmailEvent(job: { id: string; data: email_request_event
     const event = job.data;
     const ctx = Logger.createContext(event.requestId);
     //Fetch latest entry
-    const electionRoll = await ElectionRollModel.getByVoterID(event.election.election_id, event.electionRoll.voter_id, ctx)
+    const electionRoll =
+        event.test_email ? event.electionRoll :
+        await ElectionRollModel.getByVoterID(event.election.election_id, event.electionRoll.voter_id, ctx)
     if (!electionRoll) {
         //this should hopefully never happen
         Logger.error(ctx, `Could not find voter ${event.electionRoll.voter_id}`);
         throw new InternalServerError('Could not find voter');
     }
     // await sendEmail(ctx, event.election, electionRoll, event.sender, event.url)
-    let email: Imsg[] = makeEmails(event.election, [electionRoll], event.url, event.email.subject, event.email.body);
+    // TODO: I think this will always give a single element array, we can probably simplify this and be less generalized
+    let emails: Imsg[] = makeEmails(event.election, [electionRoll], event.url, event.email.subject, event.email.body, event.test_email);
 
-    const emailResponse = await EmailService.sendEmails(email)
+    const emailResponse = await EmailService.sendEmails(emails)
+
+    if(event.test_email) return; // skip the database updates if it's a test email
 
     const historyUpdate: ElectionRollAction = {
         action_type: event.message_id,

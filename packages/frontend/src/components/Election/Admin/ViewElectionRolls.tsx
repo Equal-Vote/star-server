@@ -47,11 +47,15 @@ const ViewElectionRolls = () => {
         }
     }, [location.search])
 
-    const onSendEmails = (
+    const onSendEmails = ({
+        subject,
+        body,
+        target,
+    } : {
         subject: string,
         body: string,
-        target: 'all' | 'has_voted' | 'has_not_voted' | 'single',
-    ) => {
+        target: 'all' | 'has_voted' | 'has_not_voted' | 'single'
+    }) => {
         setDialogOpen(false);
         sendEmails.makeRequest({
             target: target,

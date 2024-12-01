@@ -28,7 +28,7 @@ const makeButton = (text: string, link: string) =>
   </td></tr></table>`
 
 
-export function makeEmails(election: Election, voters: ElectionRoll[], url: string, email_subject: string, email_body: string): Imsg[] {
+export function makeEmails(election: Election, voters: ElectionRoll[], url: string, email_subject: string, email_body: string, test_email: boolean): Imsg[] {
     const processEmailBody = (body: string, voter_id: string) => {
         // sanitize
         body = sanitizeHtml(body);
@@ -59,7 +59,7 @@ export function makeEmails(election: Election, voters: ElectionRoll[], url: stri
         ...emailSettings,
         to: voter.email, // Change to your recipient
         from: process.env.FROM_EMAIL_ADDRESS ?? '',
-        subject: email_subject,
+        subject: `${test_email ? '[Test Email] ' : ''}${email_subject}`,
         text: `${election.state === 'draft' ? `[⚠️Test ${election.settings.term_type}]` : ''} You have received a message from election ${election.title}`,
         html: emailTemplate(`
             ${election.state === 'draft' ? `<h3>⚠️This ${election.settings.term_type} is still in test mode. All ballots during test mode will be removed once the election is finalized, and at that time you will need to vote again.⚠️</h3>` : ''}

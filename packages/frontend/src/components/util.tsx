@@ -119,7 +119,7 @@ export const LabelledTextField = ({label, value, setter, fullWidth=false, rows=1
       labelPlacement='top'
       sx={{
           alignItems: 'start',
-          width: {xs: 'unset', md: (fullWidth)? '90%' : '400px'}
+          width: {xs: (fullWidth)? '90%': 'unset', md: (fullWidth)? '90%' : '400px'}
       }}
   />
 

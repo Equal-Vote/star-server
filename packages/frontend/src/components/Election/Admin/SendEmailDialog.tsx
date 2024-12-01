@@ -5,6 +5,7 @@ import useAuthSession from "~/components/AuthSessionContextProvider";
 import useElection from "~/components/ElectionContextProvider";
 import { StyledButton } from "~/components/styles";
 import { LabelledTextField, RowButtonWithArrow } from "~/components/util";
+import { useSendEmails } from "~/hooks/useAPI";
 
 export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
     const authSession = useAuthSession()
@@ -14,6 +15,7 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
     const [emailBody, setEmailBody] = useState('')
     const [testEmails, setTestEmails] = useState(authSession.getIdField('email')) // TODO: replace this with the official type
     const {election, t} = useElection();
+    const sendEmails = useSendEmails(election.election_id)
 
     const SelectField = ({label, value, values, setter, disabled=false}) => 
         <FormControlLabel control={
@@ -28,7 +30,7 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
             labelPlacement='top'
             sx={{
                 alignItems: 'start',
-                width: {xs: 'unset', md: '400px'}
+                width: {xs: '90%'}
             }}
         />
 
@@ -94,11 +96,26 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
                     </Box>
                 </Box>
                 <Box display='flex' flexDirection='column' gap={3} sx={{
-                    width: !templateChosen ? 0 : sizes, // 465 is copied from auto
+                    width: !templateChosen ? 0 : sizes,
                     opacity: !templateChosen ? 0 : 1, 
                     overflow: 'hidden',
                     transition: 'width .4s, opacity .7s',
                 }}>
+                    {/* 93% set to have right side of button match other text fields*/}
+                    <Box display='flex' sx={{width: {xs: '100%', md: '93%'}, flexDirection:{xs: 'column', md: 'row'}, alignItems: 'center', gap: {xs: 1, md: 0}}}>
+                        <LabelledTextField label='Test Email(s)' fullWidth value={testEmails} setter={setTestEmails}/>
+                        {/* 56px is to align with text box */}
+                        <Button
+                            variant='contained'
+                            sx={{height: '56px', mt: 'auto', maxWidth: '200px'}}
+                            onClick={() => sendEmails.makeRequest({
+                                target: 'test',
+                                email: { subject: emailSubject, body: emailBody },
+                                testEmails: testEmails.split(',')
+                            })}
+                        >Send&nbsp;Test</Button>
+                    </Box>
+                    <Divider/>
                     <SelectField
                         label='Audience'
                         disabled={targetedEmail}
@@ -108,45 +125,40 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
                     />
                     <LabelledTextField label='Email Subject' fullWidth value={emailSubject} setter={setEmailSubject}/>
                     <LabelledTextField label='Email Body' fullWidth rows={10} value={emailBody} setter={setEmailBody}/>
-                    {/*<Divider/>
-                    <Box display='flex' flexDirection='row' sx={{width: sizes}}>
-                        <LabelledTextField label='Test Email(s)' value={testEmails} setter={setTestEmails}/>
-                        {
-                            // 56px is to align with text box
-                        }
-                        <Button variant='contained' sx={{height: '56px', mt: 'auto'}}>Send&nbsp;Test</Button>
-                    </Box>*/}
                 </Box>
             </Box>
-            {warning && <Alert 
-                severity='warning'
-                sx={{
-                    margin: 1,
-                    padding: '.2cm',
-                }}>
-                <Typography>{warning}</Typography>
-            </Alert>}
         </DialogContent>
         <DialogActions>
-            <Button
-                variant="outlined"
-                onClick={close}>
-                {t('ballot.dialog_cancel')}
-            </Button>
-            <Button
-                variant="contained"
-                disabled={!templateChosen}
-                onClick={() => {
-                    setTemplateChosen(false)
-                    onSubmit(
-                        emailSubject,
-                        emailBody,
-                        audience,
-                    )
-                }}>
-                {targetedEmail? 'Send Email' : 'Send Emails'}
-            </Button>
-            
+            <Box display='flex' flexDirection='column' sx={{width: sizes}}>
+                {warning && <Alert 
+                    severity='warning'
+                    sx={{
+                        margin: 1,
+                        padding: '.2cm',
+                    }}>
+                    <Typography>{warning}</Typography>
+                </Alert>}
+                <Box display='flex' flexDirection='row-reverse' gap={2}>
+                    <Button
+                        variant="contained"
+                        disabled={!templateChosen}
+                        onClick={() => {
+                            setTemplateChosen(false)
+                            onSubmit({
+                                subject: emailSubject,
+                                body: emailBody,
+                                target: audience,
+                            })
+                        }}>
+                        {targetedEmail? 'Send Email' : 'Send Emails'}
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        onClick={close}>
+                        {t('ballot.dialog_cancel')}
+                    </Button>
+                </Box>
+            </Box>
         </DialogActions>
     </Dialog>
 }
