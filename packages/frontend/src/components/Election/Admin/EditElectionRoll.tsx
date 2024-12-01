@@ -49,7 +49,6 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
         await fetchRolls()
     }
     const onSendEmail = async (
-        template: 'invite' | 'receipt' | 'blank',
         subject: string,
         body: string,
         target: 'all' | 'has_voted' | 'has_not_voted' | 'single',
