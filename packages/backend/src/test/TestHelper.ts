@@ -241,7 +241,7 @@ export class TestHelper {
             if (cookies.length > 0) {
                 cookies += "; ";
             }
-            cookies += "voter_id=" + voterId;
+            cookies += "voter_id=" + btoa(voterId);
         }
         if (tempId != null) {
             if (cookies.length > 0) {
