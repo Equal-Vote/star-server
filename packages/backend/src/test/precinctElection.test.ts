@@ -50,6 +50,7 @@ describe("Multi Race Precinct Election", () => {
         );
         expect(response.statusCode).toBe(200);
         expect(response.election.races.length).toBe(2)
+        expect(response.precinctFilteredElection.races.length).toBe(2)
         th.testComplete();
     });
     test("Voter 2 fetches election, gets only first race", async () => {
@@ -59,8 +60,10 @@ describe("Multi Race Precinct Election", () => {
             testInputs.user2token
         );
         expect(response.statusCode).toBe(200);
-        expect(response.election.races.length).toBe(1)
+        expect(response.election.races.length).toBe(2)
         expect(response.election.races[0].race_id).toBe('0')
+        expect(response.precinctFilteredElection.races.length).toBe(1)
+        expect(response.precinctFilteredElection.races[0].race_id).toBe('0')
         th.testComplete();
     });
     test("Voter 1 submits valid ballot in precinct 0", async () => {

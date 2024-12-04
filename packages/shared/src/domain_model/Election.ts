@@ -165,10 +165,13 @@ export function electionValidation(obj:Election): string | null {
   return null;
 }
 
+export function removeHiddenFields(obj: Election): void {
+  obj.auth_key = undefined;
+}
+
 export function getPrecinctFilteredElection(obj:Election, electionRoll: ElectionRoll|null):Election {
   return {
     ...obj,
-    auth_key: undefined,
     races: (obj.state === 'open')?
       getApprovedRaces(obj, electionRoll?.precinct)
     :

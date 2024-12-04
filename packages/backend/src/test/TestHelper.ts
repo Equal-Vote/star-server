@@ -13,6 +13,8 @@ type ElectionResponse = {
     statusCode: number;
     err: Object | null;
     election: Election;
+    precinctFilteredElection: Election;
+    voterAuth: VoterAuth;
 };
 
 type BallotResponse = {

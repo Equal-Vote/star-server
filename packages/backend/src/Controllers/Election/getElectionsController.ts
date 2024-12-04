@@ -3,6 +3,7 @@ import Logger from '../../Services/Logging/Logger';
 import { BadRequest } from "@curveball/http-errors";
 import { IElectionRequest, IRequest } from "../../IRequest";
 import { Response, NextFunction } from 'express';
+import { Election, removeHiddenFields } from '@equal-vote/star-vote-shared/domain_model/Election';
 
 
 var ElectionsModel = ServiceLocator.electionsDb();
@@ -23,6 +24,7 @@ const getElections = async (req: IElectionRequest, res: Response, next: NextFunc
             Logger.info(req, msg);
             throw new BadRequest(msg);
         }
+        elections_as_official.forEach((elec: Election) => removeHiddenFields(elec))
     }
 
     /////////// ELECTIONS WE'RE INVITED TO ////////////////

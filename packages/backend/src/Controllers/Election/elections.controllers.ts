@@ -1,4 +1,4 @@
-import { Election, getPrecinctFilteredElection } from '@equal-vote/star-vote-shared/domain_model/Election';
+import { Election, getPrecinctFilteredElection, removeHiddenFields } from '@equal-vote/star-vote-shared/domain_model/Election';
 import ServiceLocator from '../../ServiceLocator';
 import Logger from '../../Services/Logging/Logger';
 import { responseErr } from '../../Util';
@@ -145,7 +145,7 @@ const returnElection = async (req: any, res: any, next: any) => {
         roll = await getOrCreateElectionRoll(req, election, req);
     }
     const voterAuthorization = getVoterAuthorization(roll,missingAuthData)
-
+    removeHiddenFields(election)
     res.json({
         election: election,
         precinctFilteredElection: getPrecinctFilteredElection(election, roll),
