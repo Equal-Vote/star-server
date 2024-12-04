@@ -8,7 +8,11 @@ import { Ballot, NewBallot, AnonymizedBallot } from "@equal-vote/star-vote-share
 import { email_request_data } from "@equal-vote/star-vote-backend/src/Controllers/Election/sendEmailController"
 
 export const useGetElection = (electionID: string | undefined) => {
-    return useFetch<undefined, { election: Election, voterAuth: VoterAuth }>(`/API/Election/${electionID}`, 'get')
+    return useFetch<undefined, {
+        election: Election,
+        precinctFilteredElection: Election,
+        voterAuth: VoterAuth
+    }>(`/API/Election/${electionID}`, 'get')
 }
 
 export const useElectionExists = (electionID: string | undefined) => {

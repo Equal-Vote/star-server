@@ -14,8 +14,8 @@ import { StyledButton } from "~/components/styles";
 import ShareButton from "../ShareButton";
 
 const ViewBallot = ({ ballot, onClose }) => {
-    
-    const { election, refreshElection, permissions, updateElection } = useElection()
+    // ViewBallot doesn't iterate over races but it does referene them by index so we use the filtered version
+    const { precinctFilteredElection: election } = useElection()
     const { ballot_id } = useParams();
     const { t } = useSubstitutedTranslation(election.settings.term_type);
 

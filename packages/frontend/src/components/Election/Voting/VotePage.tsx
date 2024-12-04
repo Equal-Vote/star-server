@@ -86,7 +86,7 @@ function shuffle<T>(array: T[]): T[] {
 
 const VotePage = () => {
   const flags = useFeatureFlags();
-  const { election } = useElection()
+  const { precinctFilteredElection: election } = useElection()
   const authSession = useAuthSession()
   const makePages = ():IPage[] => {
     // generate ballot pages

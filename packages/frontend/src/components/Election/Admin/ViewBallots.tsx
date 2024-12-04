@@ -14,6 +14,8 @@ import DraftWarning from "../DraftWarning";
 import { BallotDataExport } from "../Results/BallotDataExport";
 
 const ViewBallots = () => {
+    // some ballots will have different subsets of the races, but we need the full list anyway
+    // so we use election instead of precinctFilteredElection
     const { election } = useElection()
     const { data, isPending, error, makeRequest: fetchBallots } = useGetBallots(election.election_id)
     const flags = useFeatureFlags();
@@ -23,7 +25,6 @@ const ViewBallots = () => {
     const [selectedBallot, setSelectedBallot] = useState(null)
     const navigate = useNavigate();
     const location = useLocation();
-
 
     const {t} = useSubstitutedTranslation(election.settings.term_type)
 
@@ -45,8 +46,6 @@ const ViewBallots = () => {
         }
     }, [location.search])
     
-
-
     return (
         <Container>
             <DraftWarning />

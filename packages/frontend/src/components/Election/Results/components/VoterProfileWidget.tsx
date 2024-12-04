@@ -12,7 +12,7 @@ import HeadToHeadChart from "./HeadToHeadChart";
 
 // candidates helps define the order
 export default ({topScore, frontRunners, ranked=false} : {topScore: number, frontRunners: [Candidate,Candidate], ranked?: boolean}) => {
-    const {t, election} = useElection();
+    const {t} = useElection();
     const {ballotsForRace} = useAnonymizedBallots();
     const {race} = useRace();
     let candidates = race.candidates;

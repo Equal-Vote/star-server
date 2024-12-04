@@ -367,7 +367,7 @@ function PRResultsViewer() {
 }
 
 export default function Results({ race, results }: {race: Race, results: ElectionResults}) {
-  const { t, election, voterAuth, refreshElection, permissions, updateElection } = useElection();
+  const { t, election } = useElection();
   let showTitleAsTie = ['random', 'five_star'].includes(results.tieBreakType);
   // added a null check for sandbox support
   let removeTieBreakFromTitle = (election?.settings.break_ties_randomly ?? false) && results.tieBreakType == 'random';

@@ -11,6 +11,7 @@ import { useSubstitutedTranslation } from './util';
 
 export interface IElectionContext {
     election: Election;
+    precinctFilteredElection: Election;
     voterAuth: VoterAuth;
     refreshElection: Function;
     updateElection: Function;
@@ -21,6 +22,7 @@ export interface IElectionContext {
 
 export const ElectionContext = createContext<IElectionContext>({
     election: null,
+    precinctFilteredElection: null,
     voterAuth: null,
     refreshElection: () => false,
     updateElection: () => false,
@@ -49,6 +51,7 @@ export const ElectionContextProvider = ({ id, children }) => {
     return (<ElectionContext.Provider
         value={{
             election: data?.election,
+            precinctFilteredElection: data?.precinctFilteredElection,
             voterAuth: data?.voterAuth,
             refreshElection: fetchData,
             updateElection: applyElectionUpdate,

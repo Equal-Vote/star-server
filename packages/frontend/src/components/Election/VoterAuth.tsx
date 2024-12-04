@@ -12,7 +12,7 @@ import useElection from "../ElectionContextProvider";
 
 const VoterAuth = () => {
   const authSession = useAuthSession()
-  const { election, voterAuth, refreshElection, permissions, updateElection } = useElection()
+  const { election, voterAuth, refreshElection } = useElection()
   const { voter_id } = useParams();
   // TODO: maybe we should reconsider useCookie here? this has the potential of inserting the voter id on a different election
   // Cookies don't support special charaters so we b64 everything we store in there

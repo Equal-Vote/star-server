@@ -13,7 +13,6 @@ import SupportBlurb from '../SupportBlurb';
 
 const ViewElectionResults = () => {
     const { election } = useElection();
-    
     const { data, isPending, error, makeRequest: getResults } = useGetResults(election.election_id)
     useEffect(() => { getResults() }, [])
     const {t} = useSubstitutedTranslation(election.settings.term_type);
@@ -37,7 +36,7 @@ const ViewElectionResults = () => {
                     {data?.results.map((results, race_index) => (
                         <Results 
                             key={`results-${race_index}`}
-                            race={data.election.races[race_index]}
+                            race={election.races[race_index]}
                             results={results}
                         />
                     ))}

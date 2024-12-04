@@ -12,7 +12,7 @@ import SupportBlurb from './SupportBlurb';
 import { Support } from '@mui/icons-material';
 
 const ElectionHome = () => {
-  const { election, voterAuth, refreshElection, permissions, updateElection } = useElection();
+  const { election, voterAuth } = useElection();
 
   const {t} = useSubstitutedTranslation(election.settings.term_type, {time_zone: election.settings.time_zone});
 

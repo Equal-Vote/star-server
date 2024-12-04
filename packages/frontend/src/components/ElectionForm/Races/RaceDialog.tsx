@@ -6,13 +6,8 @@ import useElection from '../../ElectionContextProvider';
 
 
 export default function RaceDialog({ onSaveRace, open, handleClose, children, editedRace }) {
-
-
     const { election } = useElection()
-    const handleSave = () => {
-
-        onSaveRace()
-    }
+    const handleSave = () => onSaveRace()
 
     const onClose = (event, reason) => {
         if (reason && reason == "backdropClick")
