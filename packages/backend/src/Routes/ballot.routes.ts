@@ -9,10 +9,9 @@ import {
 import {
     getElectionByID,
     electionSpecificAuth,
-    electionPostAuthMiddleware
+    electionPostAuthMiddleware,
 } from '../Controllers/Election';
 
-import { returnElection } from '../Controllers/Election';
 import { Router } from 'express';
 import asyncHandler  from 'express-async-handler';
 export const ballotRouter = Router();

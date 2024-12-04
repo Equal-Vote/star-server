@@ -110,6 +110,7 @@ export function checkForMissingAuthenticationData(req: IRequest, election: Elect
     if ((election.settings.voter_authentication.voter_id && election.settings.voter_access == 'closed') && !(req.cookies?.voter_id)) {
         return 'Voter ID Required'
     }
+    // Arend's Note: I don't think 'User ID Required' is used anymore, might be a remnant of when we were thinking of custom authentication flows, but we don't have a clear story for that at the moment.
     if ((election.settings.voter_authentication.voter_id && election.settings.voter_access == 'open') && !(req.user)) {
         return 'User ID Required'
     }

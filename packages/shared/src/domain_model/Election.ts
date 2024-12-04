@@ -165,28 +165,25 @@ export function electionValidation(obj:Election): string | null {
   return null;
 }
 
-export function removeHiddenFields(obj:Election, electionRoll: ElectionRoll|null):void {
-  obj.auth_key = undefined;
-  if (obj.state==='open'){
-    // If election is open remove races that don't include precinct
-    obj.races = getApprovedRaces(obj, electionRoll?.precinct)
-
+export function getPrecinctFilteredElection(obj:Election, electionRoll: ElectionRoll|null):Election {
+  return {
+    ...obj,
+    auth_key: undefined,
+    races: (obj.state === 'open')?
+      getApprovedRaces(obj, electionRoll?.precinct)
+    :
+      obj.races
   }
 }
+
 // Where should this belong..
 export function getApprovedRaces(election:Election, voterPrecinct:string|null|undefined): Race[] {
-  let approvedRaces:Race[] = [];
-
-  election.races.forEach((race:Race) => {
-    if (!race.precincts) {
-      // If precincts aren't defined, open to all voters
-      approvedRaces.push(race)
-      return
-    }
-    if (voterPrecinct && race.precincts.includes(voterPrecinct)){
-      // If race precinct list contains voter's precinct
-      approvedRaces.push(race)
-    }
+  return election.races.filter((race:Race) => {
+    // If precincts aren't defined, open to all voters
+    if(!race.precincts) return true;
+    // If race precinct list contains voter's precinct
+    if(voterPrecinct && race.precincts.includes(voterPrecinct)) return true;
+    // If race has precincts, but voter precinct doesn't match
+    return false;
   })
-  return approvedRaces
 }

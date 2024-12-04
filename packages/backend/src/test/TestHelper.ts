@@ -107,12 +107,16 @@ export class TestHelper {
                 statusCode: res.statusCode,
                 err: res.body,
                 election: res.body.election,
+                precinctFilteredElection: res.body.precinctFilteredElection,
+                voterAuth: res.body.voterAuth,
             };
         }
         return {
             statusCode: res.statusCode,
             err: null,
             election: res.body.election,
+            precinctFilteredElection: res.body.precinctFilteredElection,
+            voterAuth: res.body.voterAuth,
         };
     }
 
