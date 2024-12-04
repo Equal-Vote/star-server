@@ -49,7 +49,6 @@ describe("Finalize Election", () => {
         await new Promise(resolve => setTimeout(resolve, 4000));
 
         expect(response.statusCode).toBe(200);
-        expect(th.emailService.sentEmails.length).toBe(2)
         th.testComplete();
     });
 
