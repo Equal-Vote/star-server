@@ -45,11 +45,6 @@ const finalizeElection = async (req: IElectionRequest, res: Response, next: Next
         throw new BadRequest(failMsg)
     }
 
-    if (updatedElection.settings.voter_access === 'closed' && updatedElection.settings.invitation === 'email') {
-        if (electionRoll) {
-            await sendBatchEmailInvites(req, electionRoll, updatedElection)
-        }
-    }
     res.json({ election: updatedElection })
 }
 
