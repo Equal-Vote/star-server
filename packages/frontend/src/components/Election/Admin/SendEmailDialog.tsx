@@ -73,15 +73,14 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
         onClose={close}
     >
         <DialogTitle>Prepare Email Blast</DialogTitle>
-        <DialogContent>
-            <Box display='flex' flexDirection='row'>
+        <DialogContent sx={{overflow: 'hidden'}}>
+            <Box display='flex' flexDirection='row' sx={{overflow: 'hidden'}}>
                 <Box display='flex' flexDirection='row-reverse' sx={{
                     width: templateChosen ? 0 : sizes,
                     height: 'auto',
                     opacity: templateChosen ? 0 : 1, 
                     overflow: 'hidden',
                     transition: 'width .4s, opacity .7s',
-                    mb: '20px'
                 }}>
                     {/*minWidth keeps text from wrapping during the transition*/}
                     <Box display='flex' gap={1} flexDirection={'column'} sx={{width: '100%', minWidth: sizes}}>
@@ -95,36 +94,41 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
                         )}
                     </Box>
                 </Box>
-                <Box display='flex' flexDirection='column' gap={3} sx={{
+                {/* using nested boxes so that the width transition doesn't impact to size of the elements*/}
+                <Box sx={{
                     width: !templateChosen ? 0 : sizes,
                     opacity: !templateChosen ? 0 : 1, 
                     overflow: 'hidden',
                     transition: 'width .4s, opacity .7s',
                 }}>
-                    {/* 93% set to have right side of button match other text fields*/}
-                    <Box display='flex' sx={{width: {xs: '100%', md: '93%'}, flexDirection:{xs: 'column', md: 'row'}, alignItems: 'center', gap: {xs: 1, md: 0}}}>
-                        <LabelledTextField label='Test Email(s)' fullWidth value={testEmails} setter={setTestEmails}/>
-                        {/* 56px is to align with text box */}
-                        <Button
-                            variant='contained'
-                            sx={{height: '56px', mt: 'auto', maxWidth: '200px'}}
-                            onClick={() => sendEmails.makeRequest({
-                                target: 'test',
-                                email: { subject: emailSubject, body: emailBody },
-                                testEmails: testEmails.split(',')
-                            })}
-                        >Send&nbsp;Test</Button>
+                    <Box display='flex' flexDirection='column' gap={3} sx={{
+                        width: sizes
+                    }}>
+                        {/* 93% set to have right side of button match other text fields*/}
+                        <Box display='flex' sx={{width: {xs: '100%', md: '93%'}, flexDirection:{xs: 'column', md: 'row'}, alignItems: 'center', gap: {xs: 1, md: 0}}}>
+                            <LabelledTextField label='Test Email(s)' fullWidth value={testEmails} setter={setTestEmails}/>
+                            {/* 56px is to align with text box */}
+                            <Button
+                                variant='contained'
+                                sx={{height: '56px', mt: 'auto', maxWidth: '200px'}}
+                                onClick={() => sendEmails.makeRequest({
+                                    target: 'test',
+                                    email: { subject: emailSubject, body: emailBody },
+                                    testEmails: testEmails.split(',')
+                                })}
+                            >Send&nbsp;Test</Button>
+                        </Box>
+                        <Divider/>
+                        <SelectField
+                            label='Audience'
+                            disabled={targetedEmail}
+                            value={audience}
+                            values={targetedEmail? ['single']: ['all', 'has_voted', 'has_not_voted']}
+                            setter={setAudience}
+                        />
+                        <LabelledTextField label='Email Subject' fullWidth value={emailSubject} setter={setEmailSubject}/>
+                        <LabelledTextField label='Email Body' fullWidth rows={10} value={emailBody} setter={setEmailBody}/>
                     </Box>
-                    <Divider/>
-                    <SelectField
-                        label='Audience'
-                        disabled={targetedEmail}
-                        value={audience}
-                        values={targetedEmail? ['single']: ['all', 'has_voted', 'has_not_voted']}
-                        setter={setAudience}
-                    />
-                    <LabelledTextField label='Email Subject' fullWidth value={emailSubject} setter={setEmailSubject}/>
-                    <LabelledTextField label='Email Body' fullWidth rows={10} value={emailBody} setter={setEmailBody}/>
                 </Box>
             </Box>
         </DialogContent>
