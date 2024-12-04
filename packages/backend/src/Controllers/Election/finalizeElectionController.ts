@@ -4,7 +4,6 @@ import { permissions } from '@equal-vote/star-vote-shared/domain_model/permissio
 import { expectPermission } from "../controllerUtils";
 import { BadRequest } from "@curveball/http-errors";
 import { ElectionRoll } from '@equal-vote/star-vote-shared/domain_model/ElectionRoll';
-import { sendBatchEmailInvites } from './sendInvitesController';
 import { IElectionRequest } from "../../IRequest";
 import { Response, NextFunction } from 'express';
 import { innerDeleteAllBallotsForElectionID } from '../Ballot';
