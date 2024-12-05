@@ -432,7 +432,14 @@ results:
   method_context: 'Voting Method: {{voting_method}}'
   learn_link_text: How {{voting_method}} works
   head_to_head_title: Head-to-Head Matchups !tip(head_to_head)
+
   voter_profile_title: Average Supporter Profile !tip(voter_profile)
+  voter_profile_count: '{{count}} voters gave {{name}} their maximum support'
+  voter_profile_count_one: '{{count}} voter gave {{name}} their maximum support'
+  voter_profile_preferred_frontrunner: "{{name}} supporters' preferred frontrunner:"
+  voter_profile_average_scores: "{{name}} supporters' average scores:"
+  voter_profile_average_ranks: "{{name}} supporters' average rankings:"
+
   candidate_selector: '{{capital_candidate}}'
 
   win_count: '{{count}} Wins'

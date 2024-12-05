@@ -11,11 +11,11 @@ import ResultsBarChart from "./ResultsBarChart";
 import HeadToHeadChart from "./HeadToHeadChart";
 
 // candidates helps define the order
-export default ({topScore, frontRunners, ranked=false} : {topScore: number, frontRunners: [Candidate,Candidate], ranked?: boolean}) => {
+export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {topScore: number, frontRunners: [Candidate,Candidate], ranked?: boolean, candidates?: Candidate[]}) => {
     const {t} = useElection();
     const {ballotsForRace} = useAnonymizedBallots();
     const {race} = useRace();
-    let candidates = race.candidates;
+    candidates ??= race.candidates;
     const [refCandidateId, setRefCandidateId] = useState(candidates[0].candidate_id);
 
     const avgBallot: {[key: string]:{name, score}} = {};
@@ -74,18 +74,19 @@ export default ({topScore, frontRunners, ranked=false} : {topScore: number, fron
         >
             {candidates.map((c, i) => <MenuItem key={i} value={c.candidate_id}>{c.candidate_name}</MenuItem>)}
         </Select>
-        {/*<Typography>their maximum support</Typography>*/}
         <Divider variant='middle' sx={{width: '100%', m:3}}/>
-        <Typography variant='h6'>{refCandidateName} supporters' preferred frontrunner:</Typography>
-        <HeadToHeadChart 
+        <Typography variant='h6'>{t('results.voter_profile_count', {count: totalTopScored, name: refCandidateName})}</Typography>
+        <Divider variant='middle' sx={{width: '100%', m:3}}/>
+        <Typography variant='h6'>{t('results.voter_profile_preferred_frontrunner', {name: refCandidateName})}</Typography>
+        {totalTopScored == 0 ? 'n/a' : <HeadToHeadChart 
             leftName={frontRunners[0].candidate_name}
             rightName={frontRunners[1].candidate_name}
             leftVotes={leftVotes}
             rightVotes={rightVotes}
             total={total}
-        />
+        />}
         <Divider variant='middle' sx={{width: '100%', m:3}}/>
-        <Typography variant='h6'>{refCandidateName} supporters' average rankings:</Typography>
-        <ResultsBarChart data={data} xKey='score' percentage={false} sortFunc={false}/>
+        <Typography variant='h6'>{t(`results.voter_profile_average_${ranked? 'ranks' : 'scores'}`, {name: refCandidateName})}</Typography>
+        {totalTopScored == 0 ? 'n/a' : <ResultsBarChart data={data} xKey='score' percentage={false} sortFunc={false}/>}
     </Widget>
 }
