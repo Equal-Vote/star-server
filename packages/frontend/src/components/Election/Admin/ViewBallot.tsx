@@ -15,7 +15,7 @@ import ShareButton from "../ShareButton";
 
 const ViewBallot = ({ ballot, onClose }) => {
     // ViewBallot doesn't iterate over races but it does referene them by index so we use the filtered version
-    const { precinctFilteredElection: election } = useElection()
+    const { election } = useElection()
     const { ballot_id } = useParams();
     const { t } = useSubstitutedTranslation(election.settings.term_type);
 
@@ -104,7 +104,7 @@ const ViewBallot = ({ ballot, onClose }) => {
                                             <TableRow key={s} >
                                                 <TableCell component="th" scope="row">
                                                     <Typography variant="h6" component="h6">
-                                                        {election.races[v].candidates[s].candidate_name}
+                                                        {election.races.find(r => r.race_id == vote.race_id).candidates[s].candidate_name}
                                                     </Typography>
                                                 </TableCell>
                                                 <TableCell >
