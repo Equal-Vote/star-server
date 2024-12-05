@@ -357,9 +357,14 @@ function PRResultsViewer() {
     })
     .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
 
+  let remainingVoters = (results.summaryData.nValidVotes*(1 - ((page-1)/results.summaryData.weightedScoresByRound.length)))
+  remainingVoters = Math.round(remainingVoters*10)/10;
   return <>
     <WidgetContainer>
       <Widget title={t('results.star_pr.chart_title')}>
+        <Typography>
+          Total scores for the {remainingVoters} remaining unrepresented voters
+        </Typography>
         <ResultsBarChart
           data={
             results.summaryData.weightedScoresByRound[page-1].map((totalScore, i) => ({
@@ -368,6 +373,9 @@ function PRResultsViewer() {
             }))
           }
           sortFunc = {false}
+          maxBarSize = {results.summaryData.weightedScoresByRound[0].reduce(
+            (prev, totalScore) => Math.max(prev, totalScore), 0
+          )}
         />
         <Pagination count={results.summaryData.weightedScoresByRound.length} page={page} onChange={handleChange} />
       </Widget>

@@ -13,6 +13,7 @@ export default ({
   majorityLegend = undefined,
   majorityOffset = false,
   height = undefined,
+  maxBarSize = undefined, // graph will be scaled to fit a bar of size barS
 }) => {
   let rawData = data;
 
@@ -75,6 +76,15 @@ export default ({
     colors.unshift(colors.pop());
   }
 
+  // Bar Max Size
+  if(maxBarSize){
+    let d = {name: ''}
+    d[xKey] = maxBarSize;
+    data = [d, ...data];
+    // this is hack, I may need to add more colors later
+    colors = ['#00000000', ...colors, ...colors, ...colors, ...colors, ...colors];
+  }
+
   // Truncate entries
   const maxCandidates = 10;
   if (rawData.length > maxCandidates) {
@@ -103,7 +113,9 @@ export default ({
   );
 
   return (
-    <ResponsiveContainer width="90%" height={50 * data.length} >
+    <ResponsiveContainer width="90%" height={50 * data.length} style={maxBarSize ?
+      {marginTop: '-50px'}: {}
+    }>
       <ComposedChart data={data} barCategoryGap={5} layout="vertical">
         <XAxis hide axisLine={false} type="number" />
         <YAxis
