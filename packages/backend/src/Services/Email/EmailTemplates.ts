@@ -21,10 +21,11 @@ const rBold = /\*\*(.*?)\*\*/;
 
 const formatTime = (time: string | Date, tz: string) => DateTime.fromJSDate(new Date(time)).setZone(tz).toLocaleString(DateTime.DATETIME_FULL);
 
-const makeButton = (text: string, link: string) => 
+const makeButton = (text: string, link: string) =>
   // https://stackoverflow.com/questions/2857765/whats-the-best-way-to-center-your-html-email-content-in-the-browser-window-or
+  // adding ? at the end of link to ensure that trailing spaces are respected
   `<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td align="center">
-      <a clicktracking="off" href="${link}" target="_blank" style="border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; padding: 12px 25px; text-decoration: none; text-transform: capitalize; background-color: #3498db; border-color: #3498db; color: #ffffff;">${text}</a>
+      <a clicktracking="off" href="${link}?" target="_blank" style="border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; padding: 12px 25px; text-decoration: none; text-transform: capitalize; background-color: #3498db; border-color: #3498db; color: #ffffff;">${text}</a>
   </td></tr></table>`
 
 
