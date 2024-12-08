@@ -33,22 +33,33 @@ export type email_request_data = {
 
 export type email_request_event = {
     requestId: Uid,
-    election: Election,
+    election_id: string | undefined,
+    election: Election | undefined,
     url: string,
-    electionRoll: ElectionRoll,
+    voter_id: string,
     email: {
         subject: string,
         body: string,
     },
     message_id: string,
     sender: string,
-    test_email: boolean
+    test_email: string // empty string implies it's a real email
+}
+
+const makeTestRoll = (election_id: string, email: string) => <ElectionRoll>{
+    voter_id: 'test_voter_id',
+    election_id: election_id,
+    email: email,
+    submitted: false,
+    state: 'approved',
+    create_date: new Date(),
+    update_date: new Date(),
+    head: true
 }
 
 const sendEmailsController = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.sendEmails ${req.election.election_id}`);
     expectPermission(req.user_auth.roles, permissions.canSendEmails)
-
 
     const electionId = req.election.election_id;
     const election = req.election
@@ -75,16 +86,7 @@ const sendEmailsController = async (req: IElectionRequest, res: Response, next: 
         message_id = `dm_${email_request.voter_id}_${0}` //TODO: retreive count of previous dms
     } else if(email_request.target == 'test'){
         // Create dummy election rolls for each test email
-        electionRoll = (email_request.testEmails ?? []).map(email => <ElectionRoll>{
-            voter_id: 'test_voter_id',
-            election_id: req.election.election_id,
-            email: email,
-            submitted: false,
-            state: 'approved',
-            create_date: new Date(),
-            update_date: new Date(),
-            head: true
-        });
+        electionRoll = (email_request.testEmails ?? []).map(email => makeTestRoll(req.election.election_id, email));
     } else {
         electionRoll = await ElectionRollModel.getRollsByElectionID(electionId, req);
         if (!electionRoll) {
@@ -120,13 +122,14 @@ const sendEmailsController = async (req: IElectionRequest, res: Response, next: 
         Jobs.push(
             {
                 requestId: reqId,
-                election: election,
+                election_id: req.election.election_id,
+                election: undefined,
                 url: url,
-                electionRoll: roll,
+                voter_id: roll.voter_id,
                 sender: req.user.email,
                 email: email_request.email,
                 message_id: message_id,
-                test_email: email_request.target == 'test'
+                test_email: email_request.target == 'test' ? (roll.email ?? '') : ''
             }
         )
     })
@@ -147,18 +150,30 @@ async function handleSendEmailEvent(job: { id: string; data: email_request_event
     Logger.info(undefined, `${className}.sendEmailEvent`);
     const event = job.data;
     const ctx = Logger.createContext(event.requestId);
+
+    let election: Election | null;
+    if(event.election === undefined){
+        election = await ElectionModel.getElectionByID(event.election_id ?? '', ctx)
+    }else{
+        election = event.election;
+    }
+
+    if(election == null){
+        throw new InternalServerError(`Could not find election: ${event.election_id}`);
+    }
+
     //Fetch latest entry
     const electionRoll =
-        event.test_email ? event.electionRoll :
-        await ElectionRollModel.getByVoterID(event.election.election_id, event.electionRoll.voter_id, ctx)
+        event.test_email!='' ? makeTestRoll(election.election_id, event.test_email) :
+        await ElectionRollModel.getByVoterID(election.election_id, event.voter_id, ctx)
     if (!electionRoll) {
         //this should hopefully never happen
-        Logger.error(ctx, `Could not find voter ${event.electionRoll.voter_id}`);
+        Logger.error(ctx, `Could not find voter ${event.voter_id}`);
         throw new InternalServerError('Could not find voter');
     }
     // await sendEmail(ctx, event.election, electionRoll, event.sender, event.url)
     // TODO: I think this will always give a single element array, we can probably simplify this and be less generalized
-    let emails: Imsg[] = makeEmails(event.election, [electionRoll], event.url, event.email.subject, event.email.body, event.test_email);
+    let emails: Imsg[] = makeEmails(election, [electionRoll], event.url, event.email.subject, event.email.body, event.test_email != '');
 
     const emailResponse = await EmailService.sendEmails(emails)
 
