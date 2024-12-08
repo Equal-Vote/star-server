@@ -49,7 +49,7 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
         setEmailBody(t(`emails.${template_id}.body`, {
             skipProcessing: true, // processing must occur in backend
             title: election.title,
-            description: election.description ? `\n${t('emails.description', {description: election.description, skipProcessing: true})}\n`: '',
+            description: election.description ? `\n${t('emails.election_description', {description: election.description, skipProcessing: true})}\n`: '',
             voting_begin: election.start_time ? `\n${t('emails.voting_begin', {datetime: election.start_time, skipProcessing: true})}\n` : '',
             voting_end: election.end_time ? `\n${t('emails.voting_end', {datetime: election.end_time, skipProcessing: true})}\n` : '',
         }))

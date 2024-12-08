@@ -359,7 +359,7 @@ function PRResultsViewer() {
 
   let remainingVoters = (results.summaryData.nValidVotes*(1 - ((page-1)/results.summaryData.weightedScoresByRound.length)))
   remainingVoters = Math.round(remainingVoters*10)/10;
-  return <>
+  return <ResultsViewer methodKey='star_pr'>
     <WidgetContainer>
       <Widget title={t('results.star_pr.chart_title')}>
         <Typography>
@@ -393,7 +393,7 @@ function PRResultsViewer() {
         </WidgetContainer>
       </DetailExpander>
     </DetailExpander>
-  </>
+  </ResultsViewer>
 }
 
 export default function Results({ race, results }: {race: Race, results: ElectionResults}) {

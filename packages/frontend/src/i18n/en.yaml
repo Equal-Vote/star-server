@@ -281,7 +281,7 @@ ballot_submitted:
   title: '{{capital_ballot}} Submitted'
   description: Thank you for voting!
   results: Results
-  donate: Donate
+  donate: Donate to Equal Vote
   end_time: '{{capital_election}} ends {{date}} at {{time}}'
 
 # Landing Page -> New Election Dialog
@@ -404,7 +404,7 @@ about:
     onboarding and to be involved in discussions
   donate_title: Donate
   donate_description: Help us to continue supporting the website
-  donate_button: Donate
+  donate_button: Donate to Equal Vote
   donate_link: https://www.equal.vote/donate
 
 # Results page
@@ -935,7 +935,7 @@ methods:
   star_pr:
     full_name: Proportional STAR Voting
     short_name: STAR PR
-    learn_link: https://www.equal.vote/pr
+    learn_link: https://www.starvoting.org/star-pr
   approval:
     full_name: Approval Voting
     short_name: Approval Voting
