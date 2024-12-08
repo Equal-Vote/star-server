@@ -281,7 +281,7 @@ ballot_submitted:
   title: '{{capital_ballot}} Submitted'
   description: Thank you for voting!
   results: Results
-  donate: Donate to Equal Vote
+  donate: Donate to Equal Vote to support open source voting software
   end_time: '{{capital_election}} ends {{date}} at {{time}}'
 
 # Landing Page -> New Election Dialog

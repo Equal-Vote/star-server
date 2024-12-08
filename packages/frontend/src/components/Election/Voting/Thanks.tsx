@@ -7,6 +7,7 @@ import { StyledButton } from "../../styles";
 import useElection from '../../ElectionContextProvider';
 import { useSubstitutedTranslation } from '~/components/util';
 import DraftWarning from '../DraftWarning';
+import { Link } from '@mui/material';
 
 const Thanks = () => {
     
@@ -20,7 +21,7 @@ const Thanks = () => {
                 flexDirection='column'
                 justifyContent="center"
                 alignItems="center"
-                maxWidth={500}
+                maxWidth={600}
                 mx='auto'
                 mb='100px'>
                 <Typography align='center' variant="h3" component="h3">
@@ -59,15 +60,9 @@ const Thanks = () => {
                             <ShareButton url={`${window.location.origin}/${election.election_id}`}/>
                         </Box>
                     }
-                    <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1} }}>
-                        <StyledButton
-                            type='button'
-                            variant='contained'
-                            fullwidth
-                            href={'https://www.equal.vote/donate'} >
-                            {t('ballot_submitted.donate')}
-                        </StyledButton>
-                    </Box>
+                </Box>
+                <Box sx={{ margin: 'auto', p: 1, px:{xs: 5, sm: 1} }}>
+                    <a href='https://www.equal.vote/donate'>{t('ballot_submitted.donate')}</a>
                 </Box>
             </Box>
         }
