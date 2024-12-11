@@ -21,6 +21,7 @@ import VoterProfileWidget from "./components/VoterProfileWidget";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import VoterIntentWidget from "./components/VoterIntentWidget";
 import SupportBlurb from "../SupportBlurb";
+import ColumnDistributionWidget from "./components/ColumnDistributionWidget";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
@@ -59,6 +60,7 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
             </Widget>
             <HeadToHeadWidget candidates={sortedCandidates}/>
             <VoterProfileWidget candidates={sortedCandidates} topScore={5} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
+            <ColumnDistributionWidget/>
           </WidgetContainer>
         </DetailExpander>
       </DetailExpander>
@@ -215,6 +217,9 @@ function IRVResultsViewer() {
           <HeadToHeadWidget ranked candidates={sortedCandidates}/>
           <VoterProfileWidget candidates={sortedCandidates} topScore={1} ranked frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
         </WidgetContainer>
+        <WidgetContainer>
+          <ColumnDistributionWidget ranked/>
+        </WidgetContainer>
       </DetailExpander>
     </DetailExpander>
   </ResultsViewer>
@@ -305,6 +310,9 @@ function ApprovalResultsViewer() {
           <HeadToHeadWidget candidates={sortedCandidates}/>
           <VoterProfileWidget candidates={sortedCandidates} topScore={1} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
         </WidgetContainer>
+        <WidgetContainer>
+          <ColumnDistributionWidget/>
+        </WidgetContainer>
       </DetailExpander>
     </DetailExpander>
   </ResultsViewer>
@@ -390,6 +398,9 @@ function PRResultsViewer() {
         <WidgetContainer>
           <HeadToHeadWidget candidates={sortedCandidates}/>
           <VoterProfileWidget candidates={sortedCandidates} topScore={5} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
+        </WidgetContainer>
+        <WidgetContainer>
+          <ColumnDistributionWidget/>
         </WidgetContainer>
       </DetailExpander>
     </DetailExpander>

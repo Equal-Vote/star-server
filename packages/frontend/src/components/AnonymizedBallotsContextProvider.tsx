@@ -33,6 +33,7 @@ export const AnonymizedBallotsContextProvider = ({ id, children }) => {
                         b.votes
                         .filter(v => v.race_id == race.race_id)
                         .map(v => v.scores)
+                        .filter(scores => scores.some(s => s.score != null && s.score != undefined))
                     )
                     .flat() ?? []
             }

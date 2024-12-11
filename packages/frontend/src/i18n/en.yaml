@@ -440,6 +440,14 @@ results:
   voter_profile_average_scores: "{{name}} supporters' average scores:"
   voter_profile_average_ranks: "{{name}} supporters' average rankings:"
 
+  column_distribution_title_ranked: Distribution of Ranks 
+  column_distribution_title_scored: Distribution of Scores
+  column_distribution_num_title_ranked: Number of ranks given !tip(columns_given)
+  column_distribution_num_title_scored: Number of scores given !tip(columns_given)
+  column_distribution_which_title: Which scores were used? !tip(columns_used)
+  column_distribution_num_avg_ranked: Voters gave {{count}} ranks on average
+  column_distribution_num_avg_scored: Voters gave {{count}} scores on average
+
   candidate_selector: '{{capital_candidate}}'
 
   win_count: '{{count}} Wins'
@@ -593,6 +601,14 @@ election_state:
 
 # Info bubbles
 tips:
+  columns_given: 
+    title: Number of scores or ranks given
+    description: Percentage over voters who gave each number of scores/ranks
+
+  columns_used:
+    title: Which scores were used
+    description: Percentage of voters who used each of the scores at least once
+
   voter_profile:
     title: Average Voter Profile
     description: Shows how supporters of each candidate ranked/scored/approved other candidates
