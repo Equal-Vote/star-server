@@ -218,7 +218,7 @@ function IRVResultsViewer() {
           <VoterProfileWidget candidates={sortedCandidates} topScore={1} ranked frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
         </WidgetContainer>
         <WidgetContainer>
-          <ColumnDistributionWidget ranked/>
+          <ColumnDistributionWidget/>
         </WidgetContainer>
       </DetailExpander>
     </DetailExpander>
@@ -408,10 +408,22 @@ function PRResultsViewer() {
 }
 
 export default function Results({ race, results }: {race: Race, results: ElectionResults}) {
-  const { t, election } = useElection();
+  const { election } = useElection();
   let showTitleAsTie = ['random', 'five_star'].includes(results.tieBreakType);
   // added a null check for sandbox support
   let removeTieBreakFromTitle = (election?.settings.break_ties_randomly ?? false) && results.tieBreakType == 'random';
+
+  const {t} = useSubstitutedTranslation(election?.settings?.term_type ?? 'election', {
+    methodKey: {
+      'STAR': 'star',
+      'Approval': 'approval',
+      'Plurality': 'choose_one',
+      'IRV': 'rcv',
+      'STV': 'stv',
+      'STAR_PR': 'star_pr',
+      'RankedRobin': 'ranked_robin',
+    }[results.votingMethod]
+  });
 
   return (
     <RaceContextProvider race={race} results={results} t={t}>

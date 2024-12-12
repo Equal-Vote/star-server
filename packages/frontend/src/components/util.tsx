@@ -146,7 +146,7 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
     timeZoneName: 'short', timeZone: v['time_zone'] ?? undefined
   }
 
-  let values = processValues({...en.keyword, ...en.keyword[electionTermType], ...v, formatParams: {
+  let values = processValues({...en.keyword, ...en.keyword[electionTermType], ...en.keyword[v[ 'methodKey' ] ?? 'star'], ...v, formatParams: {
     datetime: dt,
     datetime2: dt,
     listed_datetime: {

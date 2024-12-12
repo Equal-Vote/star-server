@@ -440,13 +440,10 @@ results:
   voter_profile_average_scores: "{{name}} supporters' average scores:"
   voter_profile_average_ranks: "{{name}} supporters' average rankings:"
 
-  column_distribution_title_ranked: Distribution of Ranks 
-  column_distribution_title_scored: Distribution of Scores
-  column_distribution_num_title_ranked: Number of ranks given !tip(columns_given)
-  column_distribution_num_title_scored: Number of scores given !tip(columns_given)
-  column_distribution_which_title: Which scores were used? !tip(columns_used)
-  column_distribution_num_avg_ranked: Voters gave {{count}} ranks on average
-  column_distribution_num_avg_scored: Voters gave {{count}} scores on average
+  column_distribution_title: Distribution of {{capital_preferences}}
+  column_distribution_num_avg: Voters gave {{count}} {{preferences}} on average
+  column_distribution_num_title: Number of {{preferences}} given !tip(columns_given)
+  column_distribution_which_title: Which {{preferences}} were used? !tip(columns_used)
 
   candidate_selector: '{{capital_candidate}}'
 
@@ -915,6 +912,23 @@ emails:
 
 # General Terms
 keyword:
+  # Method Terms
+  star:
+    preferences: scores
+  star_pr:
+    preferences: scores
+  approval:
+    preferences: approvals
+  rcv:
+    preferences: ranks
+  stv:
+    preferences: ranks
+  ranked_robin:
+    preferences: ranks
+  choose_one:
+    preferences: preferences
+
+  # Election vs Poll Terms
   election: 
     election: election
     elections: elections
@@ -923,6 +937,7 @@ keyword:
     race: race
     ballot: ballot
     vote: vote
+
   poll:
     election: poll
     elections: polls
@@ -932,6 +947,7 @@ keyword:
     ballot: response
     vote: response
 
+  # General Terms
   yes: Yes
   no: No
 
