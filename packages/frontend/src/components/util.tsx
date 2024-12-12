@@ -184,7 +184,7 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
       if(typeof txt !== 'string') return txt;
       return txt.split(rTip).map((str, i) => {
           if(i%2 == 0) return str;
-          return <Tip key={`tip_${keyPrefix}_${i}`} name={str} electionTermType={electionTermType as TermType}/>
+          return <Tip key={`tip_${keyPrefix}_${i}`} name={str}/>
       })
     }
 

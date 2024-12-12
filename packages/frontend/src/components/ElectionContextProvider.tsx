@@ -27,7 +27,7 @@ export const ElectionContext = createContext<IElectionContext>({
     refreshElection: () => false,
     updateElection: () => false,
     permissions: [],
-    t: () => {}
+    t: () => undefined
 })
 
 export const ElectionContextProvider = ({ id, children }) => {

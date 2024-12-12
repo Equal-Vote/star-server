@@ -22,6 +22,7 @@ import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import VoterIntentWidget from "./components/VoterIntentWidget";
 import SupportBlurb from "../SupportBlurb";
 import ColumnDistributionWidget from "./components/ColumnDistributionWidget";
+import NameRecognitionWidget from "./components/NameRecognitionWidget";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
@@ -61,6 +62,7 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
             <HeadToHeadWidget candidates={sortedCandidates}/>
             <VoterProfileWidget candidates={sortedCandidates} topScore={5} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
             <ColumnDistributionWidget/>
+            <NameRecognitionWidget/>
           </WidgetContainer>
         </DetailExpander>
       </DetailExpander>
@@ -212,13 +214,11 @@ function IRVResultsViewer() {
       <DetailExpander level={1}>
         <WidgetContainer>
           <VoterIntentWidget eliminationOrderById={eliminationOrderById} winnerId={sortedCandidates[0].candidate_id}/>
+          <ColumnDistributionWidget/>
         </WidgetContainer>
         <WidgetContainer>
           <HeadToHeadWidget ranked candidates={sortedCandidates}/>
           <VoterProfileWidget candidates={sortedCandidates} topScore={1} ranked frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
-        </WidgetContainer>
-        <WidgetContainer>
-          <ColumnDistributionWidget/>
         </WidgetContainer>
       </DetailExpander>
     </DetailExpander>

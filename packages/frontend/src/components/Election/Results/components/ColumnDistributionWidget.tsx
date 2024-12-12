@@ -9,9 +9,6 @@ export default () => {
     const {ballotsForRace} = useAnonymizedBallots();
     const {t, race} = useRace();
 
-    // How many columns were used?
-    // Which columns were used?
-
     let numColumns = [];
     let whichColumns = [];
     let totalColumns = 0;
@@ -44,7 +41,7 @@ export default () => {
         <Typography variant='h6'>{t(`results.column_distribution_num_title`)}</Typography>
         <ResultsBarChart data={numColumns} xKey='count' percentage={true} sortFunc={false}/>
         <Divider/>
-        {race.voting_method == 'STAR' && <>
+        {(race.voting_method == 'STAR' || race.voting_method == 'STAR_PR') && <>
             <Typography variant='h6'>{t('results.column_distribution_which_title')}</Typography>
             <ResultsBarChart data={whichColumns} xKey='count' percentage={true} sortFunc={false} percentDenominator={b.length}/>
         </>}

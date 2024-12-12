@@ -5,14 +5,23 @@ import { useState } from "react";
 import en from './en.yaml';
 import { useSubstitutedTranslation } from "./util";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
+import useRace from "./RaceContextProvider";
+import useElection from "./ElectionContextProvider";
 
 // this doesn't work yet, I filed a github issue
 // https://github.com/Modyfi/vite-plugin-yaml/issues/27
 type TipName = keyof typeof en.tips;
 
 
-export const Tip = (props: {name: TipName, electionTermType: TermType | undefined}) => {
-    const {t} = useSubstitutedTranslation(props.electionTermType ?? 'election');
+export const Tip = (props: {name: TipName}) => {
+    // TODO: maybe I can insert useElection and useRace within useSubstitutedTranslation?
+    const {t: ts} = useSubstitutedTranslation('election');
+    const {t: te} = useElection();
+    const {t: tr} = useRace();
+    let t = (tr() !== undefined) ? tr : (
+        (te() !== undefined) ? te : ts
+    );
+
     const [clicked, setClicked] = useState(false);
     const [hovered, setHovered] = useState(false);
     return <ClickAwayListener onClickAway={() => setClicked(false)}>

@@ -295,7 +295,7 @@ election_creation:
   title_question: What's the title for your {{election}}? !tip(election_title) # TERM will be replaced with election or poll
 
   restricted_title: Restricted?
-  restricted_question: Would you like your {{election}} to be restricted to a pre-defined voter list?
+  restricted_question: Would you like your {{election}} to be restricted to a pre-defined voter list? !tip(restricted)
 
   template_title: Choose Voters
   template_prompt: (You can change this later, if needed.)
@@ -444,6 +444,13 @@ results:
   column_distribution_num_avg: Voters gave {{count}} {{preferences}} on average
   column_distribution_num_title: Number of {{preferences}} given !tip(columns_given)
   column_distribution_which_title: Which {{preferences}} were used? !tip(columns_used)
+
+  name_recognition_title: Name Recognition
+  name_recognition_sub_title: Percent of voters who listed a non-blank score for each candidate
+  name_recognition_blank_warning: > 
+    Choosing not to score a candidate is identical to giving that candidate a zero.
+    However the voter's decision still gives us sense for the candidates they're
+    most familiar with.
 
   candidate_selector: '{{capital_candidate}}'
 
@@ -599,8 +606,8 @@ election_state:
 # Info bubbles
 tips:
   columns_given: 
-    title: Number of scores or ranks given
-    description: Percentage over voters who gave each number of scores/ranks
+    title: Number of {{preferences}} given
+    description: Percentage over voters who gave each number of {{preferences}}
 
   columns_used:
     title: Which scores were used
