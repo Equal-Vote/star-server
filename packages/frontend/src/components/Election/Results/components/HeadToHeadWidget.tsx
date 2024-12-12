@@ -13,7 +13,8 @@ import ResultsKey from "./ResultsKey";
 interface IMatchup {
     name: string
     leftVotes: number
-    rightVotes: number
+    rightVotes: number,
+    equalPreferences: {name: string, count: number}[]
 }
 
 // candidates helps define the order
@@ -31,9 +32,20 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
         matchups[c.candidate_id] = {
             name: c.candidate_name,
             leftVotes: 0,
-            rightVotes: 0
+            rightVotes: 0,
+            equalPreferences: [] 
         }
     });
+
+    const incIndex = (arr, index) => {
+        while(index >= arr.length ){
+            arr.push({
+                name: arr.length,
+                count: 0
+            });
+        }
+        arr[index].count++;
+    }
 
     const defValue =  (ranked)? Infinity : 0;
     let b = ballotsForRace()
@@ -47,6 +59,8 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
             if(ranked) value = -value; 
             if(refValue > value) matchups[score.candidate_id].leftVotes++;
             if(refValue < value) matchups[score.candidate_id].rightVotes++;
+            // hacky infinitiy check
+            if(Math.abs(value) < 1000 && refValue == value) incIndex(matchups[score.candidate_id].equalPreferences, value)
         })
     })
 
@@ -75,6 +89,18 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
                     leftName={refCandidateName} rightName={m.name}
                     leftVotes={m.leftVotes} rightVotes={m.rightVotes}
                     total={numBallots}
+                    equalContent={
+                        (race.voting_method == 'IRV' || race.voting_method == 'STV')?
+                        {
+                            title: 'No Preferences',
+                            description: `These voters didn't rank either candidate`
+                        }
+                        :
+                        {
+                            title: 'Distribution of Equal Preferences',
+                            description: m.equalPreferences
+                        }
+                    }
                 />
             })}
         </Box>

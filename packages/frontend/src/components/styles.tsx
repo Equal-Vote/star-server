@@ -13,7 +13,7 @@ import useElection from "./ElectionContextProvider";
 type TipName = keyof typeof en.tips;
 
 
-export const Tip = (props: {name: TipName}) => {
+export const Tip = (props: {name?: TipName, children?: any, content?: any}) => {
     // TODO: maybe I can insert useElection and useRace within useSubstitutedTranslation?
     const {t: ts} = useSubstitutedTranslation('election');
     const {t: te} = useElection();
@@ -27,9 +27,9 @@ export const Tip = (props: {name: TipName}) => {
     return <ClickAwayListener onClickAway={() => setClicked(false)}>
         <Tooltip
             title={<>
-                <strong>{t(`tips.${props.name as string}.title`)}</strong>
+                <strong>{props.name ? t(`tips.${props.name as string}.title`) : props.content.title}</strong>
                 <br/>
-                {t(`tips.${props.name as string}.description`)}
+                {props.name ? t(`tips.${props.name as string}.description`) : props.content.description}
             </>}
             onOpen={() => setHovered(true)}
             onClose={() => setHovered(false)}
@@ -45,9 +45,12 @@ export const Tip = (props: {name: TipName}) => {
                 }
             }}
         >
+            {props.children ?
+                props.children
+            : 
             <IconButton size='small' sx={{marginBottom: 1}} onClick={() => setClicked(true)}>
                 <InfoOutlinedIcon fontSize='inherit'/>
-            </IconButton>
+            </IconButton>}
         </Tooltip>
     </ClickAwayListener>
 }

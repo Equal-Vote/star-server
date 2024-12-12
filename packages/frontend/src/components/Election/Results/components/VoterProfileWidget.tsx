@@ -26,6 +26,18 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
         }
     });
 
+    const equalPreferences = [];
+
+    const incIndex = (arr, index) => {
+        while(index >= arr.length ){
+            arr.push({
+                name: arr.length,
+                count: 0
+            });
+        }
+        arr[index].count++;
+    }
+
     let refCandidateName = candidates.find(c => c.candidate_id == refCandidateId).candidate_name;
 
     let totalTopScored = 0;
@@ -58,6 +70,7 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
 
         if(fScores[0] > fScores[1]) leftVotes++;
         if(fScores[0] < fScores[1]) rightVotes++;
+        if(fScores[0] == fScores[1]) incIndex(equalPreferences, fScores[0])
         total++;
     });
 
@@ -84,6 +97,10 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
             leftVotes={leftVotes}
             rightVotes={rightVotes}
             total={total}
+            equalContent={{
+                title: 'Distribution of Equal Preferences',
+                description: equalPreferences
+            }}
         />}
         <Divider variant='middle' sx={{width: '100%', m:3}}/>
         <Typography variant='h6'>{t(`results.voter_profile_average_${ranked? 'ranks' : 'scores'}`, {name: refCandidateName})}</Typography>
