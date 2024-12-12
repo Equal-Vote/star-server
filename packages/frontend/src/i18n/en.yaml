@@ -446,11 +446,33 @@ results:
   column_distribution_which_title: Which {{preferences}} were used? !tip(columns_used)
 
   name_recognition_title: Name Recognition
-  name_recognition_sub_title: Percent of voters who listed a non-blank score for each candidate
+  name_recognition_sub_title: How many voters gave a non-blank score for the candidate
   name_recognition_blank_warning: > 
     Choosing not to score a candidate is identical to giving that candidate a zero.
     However the voter's decision still gives us sense for the candidates they're
     most familiar with.
+
+  score_range_title: Range of Scores
+  score_range_sub_title: Difference between maximum and minimum score on ballots
+  score_range_warning: > 
+    In order to have a maximum impact on the scoring round of STAR Voting, voters need to 
+    follow the instructions on the ballot and indicate at at least one zero (or blank),
+    and at least one five. This would result in a range of 5 for the voters scores.
+
+
+    That said their ballot will still make a full impact during the automatic runoff where 
+    the voter's full vote goes to whichever candidate they ranked higher.
+
+
+    Voters who didn't use the full range, either didn't understand the instructions or chose
+    to use a smaller range on purpose. This could be as a protest vote expressing that no candidates deserve 5 stars,
+    or it could be the opposite choosing to express that they have a postive opinion of everyone.
+
+
+    Note that not the consequences for not following the instructions are relatively minor, whereas failing to follow
+    the instructions in RCV could get your ballot thrown out (like giving multiple candidates your first choice). Voters
+    are also far more likely to use the full range in political elections where voters have a strong opinion.
+
 
   candidate_selector: '{{capital_candidate}}'
 

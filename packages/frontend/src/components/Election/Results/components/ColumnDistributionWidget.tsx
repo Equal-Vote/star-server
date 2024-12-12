@@ -3,11 +3,15 @@ import Widget from "./Widget";
 import useRace from "~/components/RaceContextProvider";
 import { Divider, Typography } from "@mui/material";
 import ResultsBarChart from "./ResultsBarChart";
+import useFeatureFlags from "~/components/FeatureFlagContextProvider";
 
 // candidates helps define the order
 export default () => {
     const {ballotsForRace} = useAnonymizedBallots();
     const {t, race} = useRace();
+
+    const flags = useFeatureFlags();
+    if(!flags.isSet('ALL_STATS')) return <></>
 
     let numColumns = [];
     let whichColumns = [];

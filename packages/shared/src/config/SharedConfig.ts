@@ -22,4 +22,5 @@ export const sharedConfig = {
     FF_VOTER_FLAGGING: 'false',
     FF_ELECTION_TESTIMONIALS: 'false',
     FF_PRECINCTS: 'false',
+    FF_ALL_STATS: 'false',
 };

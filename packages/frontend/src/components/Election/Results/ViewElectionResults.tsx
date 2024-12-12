@@ -33,38 +33,30 @@ const ViewElectionResults = () => {
                 </Typography>
                 {isPending && <div> {t('results.loading_election')} </div>}
 
-                    {data?.results.map((results, race_index) => (
-                        <Results 
-                            key={`results-${race_index}`}
-                            race={election.races[race_index]}
-                            results={results}
-                        />
-                    ))}
-                    <hr/>
-                    <Box sx={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2}}>
-                            <Box sx={{ width: '100%', maxWidth: 750, display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
-                        {(election.settings.public_results === true) &&
-                            <Box sx={{ width: '100%',  p: 1, px:{xs: 5, sm: 1} }}>
-                                <BallotDataExport election={election}/>
-                            </Box>
-                            }
-                        
-                        {election.settings.voter_access !== 'closed' &&
-                            <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1}  }}>
-                                <ShareButton url={`${window.location.origin}/${election.election_id}`}/>
-                            </Box>
-                        }
-                        <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1} }}>
-                            <StyledButton
-                                type='button'
-                                variant='contained'
-                                fullwidth
-                                href={'https://www.equal.vote/donate'} >
-                                {t('ballot_submitted.donate')}
-                            </StyledButton>
+                {data?.results.map((results, race_index) => (
+                    <Results 
+                        key={`results-${race_index}`}
+                        race={election.races[race_index]}
+                        results={results}
+                    />
+                ))}
+                <hr/>
+                <Box sx={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2}}>
+                    <Box sx={{ width: '100%', maxWidth: 750, display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
+                    {(election.settings.public_results === true) &&
+                        <Box sx={{ width: '100%',  p: 1, px:{xs: 5, sm: 1} }}>
+                            <BallotDataExport election={election}/>
                         </Box>
+                        }
+                    
+                    {election.settings.voter_access !== 'closed' &&
+                        <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1}  }}>
+                            <ShareButton url={`${window.location.origin}/${election.election_id}`}/>
+                        </Box>
+                    }
                     </Box>
                 </Box>
+                <a href='https://www.equal.vote/donate'>{t('ballot_submitted.donate')}</a>
             </Paper>
         </Box>
         <SupportBlurb/>

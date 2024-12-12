@@ -3,13 +3,16 @@ import Widget from "./Widget";
 import useRace from "~/components/RaceContextProvider";
 import { Divider, Typography } from "@mui/material";
 import ResultsBarChart from "./ResultsBarChart";
+import useFeatureFlags from "~/components/FeatureFlagContextProvider";
 
 // candidates helps define the order
 export default () => {
     const {ballotsForRace} = useAnonymizedBallots();
     const {t, race} = useRace();
 
-    console.log(race.candidates)
+    const flags = useFeatureFlags();
+    if(!flags.isSet('ALL_STATS')) return <></>
+
     let numActive = Object.fromEntries(race.candidates.map(c => [c.candidate_id, {
         name: c.candidate_name,
         count: 0,
@@ -25,7 +28,7 @@ export default () => {
 
     return <Widget title={t(`results.name_recognition_title`)}>
         <Typography variant='h6'>{t(`results.name_recognition_sub_title`)}</Typography>
-        <ResultsBarChart data={Object.values(numActive).sort((a, b) => -(a.count-b.count))} xKey='count' percentage={true} percentDenominator={b.length}/>
+        <ResultsBarChart data={Object.values(numActive)} xKey='count' percentage={true} percentDenominator={b.length}/>
         <Typography>{t(`results.name_recognition_blank_warning`)}</Typography>
     </Widget>
 }

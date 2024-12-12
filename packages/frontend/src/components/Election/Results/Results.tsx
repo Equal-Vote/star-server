@@ -23,6 +23,7 @@ import VoterIntentWidget from "./components/VoterIntentWidget";
 import SupportBlurb from "../SupportBlurb";
 import ColumnDistributionWidget from "./components/ColumnDistributionWidget";
 import NameRecognitionWidget from "./components/NameRecognitionWidget";
+import ScoreRangeWidget from "./components/ScoreRangeWidget";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
@@ -63,6 +64,7 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
             <VoterProfileWidget candidates={sortedCandidates} topScore={5} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
             <ColumnDistributionWidget/>
             <NameRecognitionWidget/>
+            <ScoreRangeWidget/>
           </WidgetContainer>
         </DetailExpander>
       </DetailExpander>
@@ -401,6 +403,8 @@ function PRResultsViewer() {
         </WidgetContainer>
         <WidgetContainer>
           <ColumnDistributionWidget/>
+          <NameRecognitionWidget/>
+          <ScoreRangeWidget/>
         </WidgetContainer>
       </DetailExpander>
     </DetailExpander>
