@@ -4,7 +4,7 @@ export const sharedConfig = {
         'ee948c52-f79e-4449-acb1-1296debc0884': 10,
         'h33qt8': 1000, // Brianna Johns, Gathering for Open Science Hardware
         '7tcryp': 3000, // DSA-LA 2025 Local Officer Election
-        'j87vqp': 3000, // DSA-LA 2025 Local Officer Election #2
+        'j87vqp': 5000, // DSA-LA 2025 Local Officer Election #2
     },
     ACCOUNT_CUSTOM_REGISTRATION_OVERRIDES: [
         '84724136-bb4d-41be-8202-3373a1a1c934', // Arend's Keycloak sub
