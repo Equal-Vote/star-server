@@ -17,8 +17,8 @@ export const ElectionTitleField = ({termType, value, onUpdateValue, errors, setE
             inputProps={{ pattern: "[a-z]{3,15}" }}
             error={errors.title !== ''}
             required
-            id="election-name"
-            name="name"
+            id="election-title"
+            name="election-title"
             // TODO: This bolding method only works for the text fields, if we like it we should figure out a way to add it to other fields as well
             // inputProps={getStyle('title')}
             label={showLabel? t('election_details.title') : ""}
@@ -71,7 +71,7 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
             <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <TextField
                     id="election-description"
-                    name="description"
+                    name="election-description"
                     label={t('election_details.description')}
                     multiline
                     fullWidth
@@ -125,10 +125,11 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                 <>
                     <Grid item xs={4} sx={{ m: 0, p: 1 }} justifyContent='center'>
                         <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">{t('election_details.time_zone')}</InputLabel>
+                            <InputLabel id="time-zone-label">{t('election_details.time_zone')}</InputLabel>
                             <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
+                                labelId="time-zone-label"
+                                id="time-zone-select"
+                                name='edit-time-zone'
                                 value={timeZone}
                                 label={t('election_details.time_zone')}
                                 onChange={(e) => {
@@ -152,6 +153,8 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                             {/* datetime-local is formatted according to the OS locale, I don't think there's a way to override it*/}
                             <Input
                                 type='datetime-local'
+                                name='edit-start-time'
+                                data-testid='start-time'
                                 error={errors.startTime !== ''}
                                 value={dateToLocalLuxonDate(editedElection.start_time, timeZone)}
                                 onChange={(e) => {
@@ -176,6 +179,8 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                             {/* datetime-local is formatted according to the OS locale, I don't think there's a way to override it*/}
                             <Input
                                 type='datetime-local'
+                                name='edit-end-time'
+                                data-testid='end-time'
                                 error={errors.endTime !== ''}
                                 value={dateToLocalLuxonDate(editedElection.end_time, timeZone)}
                                 onChange={(e) => {

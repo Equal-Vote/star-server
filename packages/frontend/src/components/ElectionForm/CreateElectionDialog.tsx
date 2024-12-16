@@ -263,7 +263,7 @@ export default () => {
                             setErrors={setErrors}
                             showLabel={false}
                         />
-                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={election.title != '' && errors.title == ''}/>
+                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={/^[^\s][a-zA-Z0-9\s]{3,49}$/.test(election.title) && errors.title == ''}/>
                     </StepContent>
                 </Step>
                 <Step>
