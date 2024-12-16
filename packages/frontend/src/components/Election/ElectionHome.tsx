@@ -75,8 +75,24 @@ const ElectionHome = () => {
             {
               voterAuth.has_voted == false && voterAuth.authorized_voter && !voterAuth.required &&
 
+                <Box display='flex' flexDirection='column' alignItems='center' gap={5} sx={{ p: 1}}>
+                  <Button role='button' name='vote' fullWidth variant='contained' href={`/${String(election?.election_id)}/vote`} >
+                    <Typography align='center' variant="h3" component="h3" fontWeight='bold' sx={{ p: 2 }}>
+                      {t('election_home.vote')}
+                    </Typography>
+                  </Button>
+                  {election.settings.public_results === true &&
+                  <Button variant='text' href={`/${String(election?.election_id)}/results`} >
+                      {t('election_home.or_view_results')}
+                  </Button>
+                  }
+                </Box>
+              }
+            </>}
+
+            {election.state === 'draft' && <>
               <Box display='flex' flexDirection='column' alignItems='center' gap={5} sx={{ p: 1}}>
-                <Button fullWidth variant='contained' href={`/${String(election?.election_id)}/vote`} >
+                <Button role='button' name='vote' fullWidth variant='contained' href={`/${String(election?.election_id)}/vote`} >
                   <Typography align='center' variant="h3" component="h3" fontWeight='bold' sx={{ p: 2 }}>
                     {t('election_home.vote')}
                   </Typography>
@@ -87,23 +103,7 @@ const ElectionHome = () => {
                 </Button>
                 }
               </Box>
-            }
-          </>}
-
-          {election.state === 'draft' && <>
-            <Box display='flex' flexDirection='column' alignItems='center' gap={5} sx={{ p: 1}}>
-              <Button fullWidth variant='contained' href={`/${String(election?.election_id)}/vote`} >
-                <Typography align='center' variant="h3" component="h3" fontWeight='bold' sx={{ p: 2 }}>
-                  {t('election_home.vote')}
-                </Typography>
-              </Button>
-              {election.settings.public_results === true &&
-              <Button variant='text' href={`/${String(election?.election_id)}/results`} >
-                  {t('election_home.or_view_results')}
-              </Button>
-              }
-            </Box>
-          </>}
+            </>}
 
           {election.state === 'closed' && election.end_time &&
             <Box sx={{ flexGrow: 1 }}>

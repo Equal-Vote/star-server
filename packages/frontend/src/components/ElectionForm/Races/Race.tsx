@@ -54,7 +54,9 @@ export default function Race({ race, race_index }) {
                 <Box sx={{ flexShrink: 1, p: 1 }}>
                     <Tooltip title='Edit'>
                         <IconButton
-                            aria-label="edit"
+                            aria-label={`edit-${race.title}`}
+                            role='button'
+                            name={`edit-${race.title}`}
                             onClick={handleOpen}>
                             {election.state === 'draft' ? <EditIcon /> : <VisibilityIcon />}
                         </IconButton>

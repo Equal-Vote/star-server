@@ -28,6 +28,8 @@ export default function AddRace() {
         }}>
             <StyledButton
                 type='button'
+                name='add-race'
+                aria-label='add-race'
                 variant="contained"
                 fullWidth={false}
                 sx={{ borderRadius: 28, backgroundColor: 'brand.green' }}
@@ -35,7 +37,7 @@ export default function AddRace() {
                 disabled={election.state!=='draft'}>
                 Add
             </StyledButton>
-            <RaceDialog onSaveRace={onAdd} open={open} handleClose={handleClose} editedRace={editedRace}>
+            {open && <RaceDialog onSaveRace={onAdd} open={open} handleClose={handleClose} editedRace={editedRace}>
                 <RaceForm
                     race_index={election.races.length}
                     editedRace={editedRace}
@@ -43,7 +45,7 @@ export default function AddRace() {
                     setErrors={setErrors}
                     applyRaceUpdate={applyRaceUpdate}
                 />
-            </RaceDialog>
+            </RaceDialog>}
         </Box>
     )
 }

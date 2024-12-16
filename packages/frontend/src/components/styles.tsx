@@ -57,6 +57,7 @@ export const Tip = (props: {name?: TipName, children?: any, content?: any}) => {
 
 export const StyledButton = (props) => (
     <Button
+        role='button'
         fullWidth
         sx={{
             p: 1,
