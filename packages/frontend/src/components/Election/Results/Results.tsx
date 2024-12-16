@@ -24,6 +24,7 @@ import SupportBlurb from "../SupportBlurb";
 import ColumnDistributionWidget from "./components/ColumnDistributionWidget";
 import NameRecognitionWidget from "./components/NameRecognitionWidget";
 import ScoreRangeWidget from "./components/ScoreRangeWidget";
+import useFeatureFlags from "~/components/FeatureFlagContextProvider";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
@@ -336,6 +337,7 @@ function ResultsViewer({ methodKey, children }:{methodKey: string, children:any}
 }
 
 function PRResultsViewer() {
+  const flags = useFeatureFlags();
   let {results, t, race} = useRace();
   results = results as allocatedScoreResults;
   const [page, setPage] = useState(1);
@@ -399,6 +401,17 @@ function PRResultsViewer() {
       <Widget title={t('results.star_pr.table_title')}>
         <ResultsTable className='starPRTable' data={tabulationRows}/>
       </Widget>
+      {flags.isSet('ALL_STATS') &&
+        <Widget title={t('results.star.detailed_steps_title')}>
+          <div className='detailedSteps'>
+            <ol style={{textAlign: 'left'}}>
+                {results.logs.map((log, i) => (<li key={i}>
+                    {typeof log === 'string' ? log : t(log['key'], log)}
+                </li>))}
+            </ol>
+          </div>
+        </Widget>
+      }
       </WidgetContainer>
       <DetailExpander level={1}>
         <WidgetContainer>

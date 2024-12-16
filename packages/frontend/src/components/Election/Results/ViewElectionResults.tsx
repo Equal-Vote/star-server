@@ -32,6 +32,9 @@ const ViewElectionResults = () => {
                     {t('results.election_title', {title: election.title})}
                 </Typography>
                 {isPending && <div> {t('results.loading_election')} </div>}
+                {!isPending && !data && <>
+                    The election admins have not released the results yet. Feel free to swing back later 😊.
+                </>}
 
                 {data?.results.map((results, race_index) => (
                     <Results 

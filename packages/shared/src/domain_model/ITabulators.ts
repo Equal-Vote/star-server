@@ -101,6 +101,7 @@ export interface allocatedScoreResults extends Omit<genericResults, 'tied'> {
     votingMethod: 'STAR_PR',
     tied: candidate[][],
     summaryData: allocatedScoreSummaryData,
+    logs: tabulatorLog[]
 }
 
 export interface approvalResults extends genericResults {

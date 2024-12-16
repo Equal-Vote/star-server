@@ -410,7 +410,7 @@ about:
 # Results page
 results:
   preliminary_title: PRELIMINARY RESULTS
-  official_title: OFFICIAL_RESULTS
+  official_title: OFFICIAL RESULTS
   election_title: |
     {{capital_election}} Name:
     {{title}}
