@@ -48,7 +48,7 @@ export default class ElectionsDB implements IElectionStore {
     }
 
     updateElection(election: Election, ctx: ILoggingContext, reason: string): Promise<Election> {
-        Logger.debug(ctx, `${tableName}.updateElection`, election);
+        Logger.debug(ctx, `${tableName}.updateElection`);
         election.update_date = Date.now().toString()
         election.head = true
         // Transaction to insert updated election and set old version's head to false
