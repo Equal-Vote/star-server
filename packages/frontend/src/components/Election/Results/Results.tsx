@@ -1,5 +1,5 @@
 import { Box, Pagination } from "@mui/material";
-import React from "react";
+import React, { useRef } from "react";
 import { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { commaListFormatter, useSubstitutedTranslation } from '../../util';
@@ -353,14 +353,14 @@ function PRResultsViewer() {
     t('results.star_pr.round_column', {n: i+1})
   )))
 
+  const winIndex = (aa) => {
+    let i = results.elected.findIndex(e => e.index == aa.index);
+    if(i == -1) return results.elected.length;
+    return i;
+  }
   const sortedCandidates = race.candidates
     .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
     .sort((a, b) => {
-      const winIndex = (aa) => {
-        let i = results.elected.findIndex(e => e.index == aa.index);
-        if(i == -1) return results.elected.length;
-        return i;
-      }
       const finalScore = (aa) => results.summaryData.weightedScoresByRound.slice(-1)[0][aa.index]
       if(winIndex(a) != winIndex(b)) return winIndex(a) - winIndex(b);
       return -(finalScore(a) - finalScore(b));
@@ -380,9 +380,13 @@ function PRResultsViewer() {
             results.summaryData.weightedScoresByRound[page-1].map((totalScore, i) => ({
               name: results.summaryData.candidates[i].name,
               votes: Math.round(totalScore*10)/10,
+              label: winIndex(results.summaryData.candidates[i]) < page-1 ? '(elected)' : undefined,
+              star: winIndex(results.summaryData.candidates[i]) < page,
+              // a bit hacky using candidate_name but oh well
+              sortIndex: sortedCandidates.findIndex((c) => c.candidate_name == results.summaryData.candidates[i].name)
             }))
           }
-          sortFunc = {false}
+          sortFunc = {(a, b) => a.sortIndex - b.sortIndex}
           maxBarSize = {results.summaryData.weightedScoresByRound[0].reduce(
             (prev, totalScore) => Math.max(prev, totalScore), 0
           )}

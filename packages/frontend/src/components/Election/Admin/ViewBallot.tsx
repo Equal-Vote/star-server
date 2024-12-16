@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
+import { Box, Divider, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
 import PermissionHandler from "../../PermissionHandler";
 import { useParams } from "react-router";
 import { useGetBallot } from "../../../hooks/useAPI";
@@ -34,33 +34,30 @@ const ViewBallot = ({ ballot, onClose }) => {
             {isPending && <div> Loading Data... </div>}
             {myballot &&
                 <>
-                <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
-                    {['draft', 'open', 'closed'].includes(election.state) && election.settings.public_results === true &&
-                        <Box sx={{ width: '100%',  p: 1, px:{xs: 5, sm: 1} }}>
-                            <StyledButton
-                                type='button'
-                                variant='contained'
-                                fullwidth
-                                href={`/${election.election_id}/results`} >
-                                {t('ballot_submitted.results')}
-                            </StyledButton>
-                        </Box>
-                    }
-                    {election.settings.voter_access !== 'closed' &&
-                        <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1}  }}>
-                            <ShareButton url={`${window.location.origin}/${election.election_id}`}/>
-                        </Box>
-                    }
-                    <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1} }}>
-                        <StyledButton
-                            type='button'
-                            variant='contained'
-                            fullwidth
-                            href={'https://www.equal.vote/donate'} >
-                            {t('ballot_submitted.donate')}
-                        </StyledButton>
+                <Box display='flex' flexDirection='column' alignItems='center' sx={{maxWidth: '800px', margin: 'auto'}}>
+                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
+                        {['draft', 'open', 'closed'].includes(election.state) && election.settings.public_results === true &&
+                            <Box sx={{ width: '100%',  p: 1, px:{xs: 5, sm: 1} }}>
+                                <StyledButton
+                                    type='button'
+                                    variant='contained'
+                                    fullwidth
+                                    href={`/${election.election_id}/results`} >
+                                    {t('ballot_submitted.results')}
+                                </StyledButton>
+                            </Box>
+                        }
+                        {election.settings.voter_access !== 'closed' &&
+                            <Box sx={{ width: '100%', p: 1, px:{xs: 5, sm: 1}  }}>
+                                <ShareButton url={`${window.location.origin}/${election.election_id}`}/>
+                            </Box>
+                        }
                     </Box>
+
+                    <a href='https://www.equal.vote/donate'>{t('ballot_submitted.donate')}</a>
                 </Box>
+
+                <Divider sx={{my: 4}}/>
 
                 <Grid container direction="column" >
                     <Grid item sm={12}>

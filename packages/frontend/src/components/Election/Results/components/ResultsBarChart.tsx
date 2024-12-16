@@ -18,14 +18,14 @@ export default ({
   let rawData = data;
 
   // Truncate names & add percent
-  let maxValue = Math.max(...data.map(d => d[xKey]))
+  let maxValue = maxBarSize ?? Math.max(...data.map(d => d[xKey]))
   percentDenominator ??= data.reduce((sum, d) => sum + d[xKey], 0);
   percentDenominator = Math.max(1, percentDenominator);
   data = rawData.map((d, i) => {
     let percentValue = Math.round((100 * d[xKey]) / percentDenominator);
     let s = {
       ...d,
-      name: (star && i == 0 ? "⭐" : "") + truncName(d["name"], 40),
+      name: (((star && i == 0) || d['star']) ? "⭐" : "") + truncName(d["name"], 40),
       // hack to get smaller values to allign different than larger ones
       left: percentage
         ? ((percentValue == 0 && d[xKey] > 0) ? '<1%' : `${Math.round((100 * d[xKey]) / percentDenominator)}%`)
@@ -36,6 +36,9 @@ export default ({
     if ((d[xKey] / maxValue) < 0.3 || (majorityLegend && i == 0)) {
       s["right"] = s["left"];
       s["left"] = "";
+
+      // this won't work for all cases, but I know it will work in the specific case I'm doing
+      if(s['label']) s['right'] = s['label']
     }
 
     return s;
