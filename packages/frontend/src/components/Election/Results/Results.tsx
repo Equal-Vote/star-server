@@ -398,12 +398,11 @@ function PRResultsViewer() {
     </WidgetContainer>
     <DetailExpander>
       <WidgetContainer>
-      <Widget title={t('results.star_pr.table_title')} wide>
-        <ResultsTable className='starPRTable' data={tabulationRows}/>
-      </Widget>
+        <Widget title={t('results.star_pr.table_title')} wide>
+          <ResultsTable className='starPRTable' data={tabulationRows}/>
+        </Widget>
       </WidgetContainer>
       <WidgetContainer>
-      {flags.isSet('ALL_STATS') &&
         <Widget title={t('results.star.detailed_steps_title')} wide>
           <div className='detailedSteps'>
             <ol style={{textAlign: 'left'}}>
@@ -413,7 +412,6 @@ function PRResultsViewer() {
             </ol>
           </div>
         </Widget>
-      }
       </WidgetContainer>
       <DetailExpander level={1}>
         <WidgetContainer>

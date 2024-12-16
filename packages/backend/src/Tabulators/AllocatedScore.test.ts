@@ -23,6 +23,48 @@ describe("Allocated Score Tests", () => {
         expect(results.summaryData.weightedScoresByRound[0]).toStrictEqual([25, 24, 24, 23]);  
         expect(results.summaryData.weightedScoresByRound[1]).toStrictEqual([0, 0, 16, 23]);  
     })
+    test("Single vote fractional surplus", () => {
+        // Two winners, two main parties
+        // Allison wins first round with highest score
+        // quota = 4.5
+        // Round 1: Allison's 5 star supporters are weighted to 0, her 4 star supported is weighted to 0.5
+        // Carmen's score is reduced some causing Doug to win second 
+        // Round 2: Doug wins
+        const candidates = ['Allison', 'Bill', 'Carmen', 'Doug']
+        const votes = [
+            [5, 5, 0, 0], // Round 1 Weight Change: 1 -> 0
+            [5, 5, 0, 0], // Round 1 Weight Change: 1 -> 0
+            [5, 5, 0, 0], // Round 1 Weight Change: 1 -> 0
+            [5, 5, 0, 0], // Round 1 Weight Change: 1 -> 0
+            [4, 0, 4, 0], // Round 1 Weight Change: 1 -> 0.5
+            [0, 0, 0, 3],
+            [0, 0, 4, 5],
+            [0, 0, 4, 5],
+            [0, 0, 4, 5],
+        ]
+        const results = AllocatedScore(candidates, votes, 2, [], false, false)
+        expect(results.elected.length).toBe(2);
+        expect(results.elected[0].name).toBe('Allison');
+        expect(results.elected[1].name).toBe('Doug');
+        expect(results.summaryData.weightedScoresByRound[0]).toStrictEqual([24, 20, 16, 18]);  
+        expect(results.summaryData.weightedScoresByRound[1]).toStrictEqual([0, 0, 14, 18]);  
+        expect(results.summaryData.splitPoints[0]).toStrictEqual(0.8);  
+    })
+    test("Voters < Winners", () => {
+        const candidates = ['Allison', 'Bill', 'Carmen', 'Doug']
+        const votes = [
+            [5, 5, 0, 0], 
+            [5, 4, 3, 0], 
+        ]
+        const results = AllocatedScore(candidates, votes, 3, [], false, false)
+        expect(results.elected.length).toBe(3);
+        expect(results.elected[0].name).toBe('Allison');
+        expect(results.elected[1].name).toBe('Bill');
+        expect(results.elected[2].name).toBe('Carmen');
+        expect(results.summaryData.weightedScoresByRound[0]).toStrictEqual([10, 9, 3, 0]);  
+        expect(results.summaryData.weightedScoresByRound[1]).toStrictEqual([0, 6, 2, 0]);  
+        expect(results.summaryData.weightedScoresByRound[2]).toStrictEqual([0, 0, 2, 0]);  
+    })
     test("Fractional surplus", () => {
         // Two winners, two main parties, Allison wins first round with highest score, Allison has 8 highest level supporters, more than the quota of 6 voters
         // Voters who gave Allison their highest score have their ballot weight reduced to (1-6/8) = 0.25
