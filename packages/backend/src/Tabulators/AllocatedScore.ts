@@ -157,7 +157,9 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
         // quota = spent_above + weight_on_split*new_weight
         let new_weight = (quota.sub(spent_above)).div(weight_on_split);
         results.logs.push(`(${rounded(quota)} - ${rounded(spent_above)}) / ${rounded(weight_on_split)} = ${rounded(new_weight)}`)
-        results.logs.push(`The ${rounded(weight_on_split)} voters who gave ${summaryData.candidates[w].name} ${rounded(split_point.mul(maxScore))} stars are partially represented and will be reweighted by ${rounded(new_weight)} for future rounds.`)
+        results.logs.push(
+            `The ${rounded(weight_on_split)} voters who gave ${summaryData.candidates[w].name} ${rounded(split_point.mul(maxScore))} stars are partially represented. `+
+            `${percent(new_weight)} of their vote will go toward ${summaryData.candidates[w].name} and ${percent(new Fraction(1).sub(new_weight))} will be preserved for future rounds.`)
 
         summaryData.weight_on_splits.push(weight_on_split.valueOf());
         ballot_weights = updateBallotWeights(
@@ -182,7 +184,11 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
 }
 
 function rounded(n: typeof Fraction){
-    return Math.round(n*100)/100
+    return Math.round(n.valueOf()*100)/100
+}
+
+function percent(n: typeof Fraction){
+    return `${Math.round(n.valueOf()*100)}%`
 }
 
 function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: number[]): allocatedScoreSummaryData {
@@ -368,7 +374,7 @@ function normalizeArray(scores: ballot[], maxScore: number) {
 }
 
 function findSplitPoint(cand_df_sorted: winner_scores[], quota: typeof Fraction) {
-    var under_quota = [];
+    var under_quota : any[] = [];
     var under_quota_scores: typeof Fraction[] = [];
     var cumsum = new Fraction(0);
     cand_df_sorted.forEach((c, i) => {
