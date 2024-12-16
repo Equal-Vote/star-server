@@ -433,6 +433,11 @@ export default function Results({ race, results }: {race: Race, results: Electio
     }[results.votingMethod]
   });
 
+  const winnersText = commaListFormatter
+    .format(results.elected.map(c => c.name.replace(' ', '__REPLACE_ME__')))
+    .split('__REPLACE_ME__')
+    .map(s => ([s, <>&nbsp;</>]))
+
   return (
     <RaceContextProvider race={race} results={results} t={t}>
       <hr/>
@@ -440,7 +445,7 @@ export default function Results({ race, results }: {race: Race, results: Electio
           {race.title}
       </Typography>
       <div className="flexContainer" style={{textAlign: 'center'}}>
-        <Box sx={{pageBreakAfter:'avoid', pageBreakInside:'avoid'}}>
+        <Box sx={{pageBreakAfter:'avoid', pageBreakInside:'avoid', mx: 10}}>
         {results.summaryData.nValidVotes == 0 && <h2>{t('results.waiting_for_results')}</h2>}
         {results.summaryData.nValidVotes == 1 && <p>{t('results.single_vote')}</p> }
         {results.summaryData.nValidVotes > 1 && <>
@@ -452,7 +457,7 @@ export default function Results({ race, results }: {race: Race, results: Electio
             </Typography>}
             </>
           :
-            <Typography variant="h5" sx={{fontWeight: 'bold'}}>{t('results.win_title', {names: commaListFormatter.format(results.elected.map(c => c.name))})}</Typography>
+            <Typography variant='h5'>⭐ {winnersText}{t('results.win_title_postfix', {count: results.elected.length})} ⭐</Typography>
           }
           <Typography variant="h6">{t('results.vote_count', {n: results.summaryData.nValidVotes})}</Typography>
         </>}
