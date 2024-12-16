@@ -144,7 +144,7 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
         summaryData.spentAboves.push(spent_above.valueOf());
 
         if (spent_above.valueOf() > 0) {
-            results.logs.push(`The ${rounded(spent_above)} voters who gave ${summaryData.candidates[w].name} more than ${rounded(split_point.mul(maxScore))} stars are fully represented and will be weighted to 0 for future rounds.`)
+            results.logs.push(`The ${rounded(spent_above)} voters who gave ${summaryData.candidates[w].name} more than ${rounded(split_point.mul(maxScore))} stars are fully represented and will be removed from future rounds.`)
             cand_df.forEach((c, i) => {
                 if (c.weighted_score.compare(split_point) > 0) {
                     cand_df[i].ballot_weight = new Fraction(0);
