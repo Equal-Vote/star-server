@@ -373,7 +373,7 @@ function PRResultsViewer() {
   remainingVoters = Math.round(remainingVoters*10)/10;
   return <ResultsViewer methodKey='star_pr'>
     <WidgetContainer>
-      <Widget title={t('results.star_pr.chart_title')}>
+      <Widget title={t('results.star_pr.chart_title')} wide>
         <Typography>
           Total scores for the {remainingVoters} remaining unrepresented voters
         </Typography>
