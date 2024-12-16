@@ -398,11 +398,13 @@ function PRResultsViewer() {
     </WidgetContainer>
     <DetailExpander>
       <WidgetContainer>
-      <Widget title={t('results.star_pr.table_title')}>
+      <Widget title={t('results.star_pr.table_title')} wide>
         <ResultsTable className='starPRTable' data={tabulationRows}/>
       </Widget>
+      </WidgetContainer>
+      <WidgetContainer>
       {flags.isSet('ALL_STATS') &&
-        <Widget title={t('results.star.detailed_steps_title')}>
+        <Widget title={t('results.star.detailed_steps_title')} wide>
           <div className='detailedSteps'>
             <ol style={{textAlign: 'left'}}>
                 {results.logs.map((log, i) => (<li key={i}>
