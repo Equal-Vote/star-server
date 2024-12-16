@@ -159,7 +159,7 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
         results.logs.push(`(${rounded(quota)} - ${rounded(spent_above)}) / ${rounded(weight_on_split)} = ${rounded(new_weight)}`)
         results.logs.push(
             `The ${rounded(weight_on_split)} voters who gave ${summaryData.candidates[w].name} ${rounded(split_point.mul(maxScore))} stars are partially represented. `+
-            `${percent(new_weight)} of their vote will go toward ${summaryData.candidates[w].name} and ${percent(new Fraction(1).sub(new_weight))} will be preserved for future rounds.`)
+            `${percent(new_weight)} of their remaining vote will go toward ${summaryData.candidates[w].name} and ${percent(new Fraction(1).sub(new_weight))} will be preserved for future rounds.`)
 
         summaryData.weight_on_splits.push(weight_on_split.valueOf());
         ballot_weights = updateBallotWeights(
@@ -374,17 +374,17 @@ function normalizeArray(scores: ballot[], maxScore: number) {
 }
 
 function findSplitPoint(cand_df_sorted: winner_scores[], quota: typeof Fraction) {
-    var under_quota : any[] = [];
-    var under_quota_scores: typeof Fraction[] = [];
-    var cumsum = new Fraction(0);
-    cand_df_sorted.forEach((c, i) => {
+    let cumsum : typeof Fraction = new Fraction(0);
+    for(const c of cand_df_sorted ){
         cumsum = cumsum.add(c.ballot_weight);
-        if (cumsum < quota || i == 0) {
-            under_quota.push(c);
-            under_quota_scores.push(c.weighted_score);
+
+        // Since cand_df_sorted is sorted by weighted score we know that this will be the smallest
+        if(cumsum.compare(quota) >= 0){
+            return c.weighted_score;
         }
-    });
-    return findMinFrac(under_quota_scores);
+    }
+
+    return cand_df_sorted.slice(-1)[0].weighted_score
 }
 
 function sortMatrix(matrix: number[][], order: number[]) {
@@ -398,14 +398,4 @@ function sortMatrix(matrix: number[][], order: number[]) {
         });
     });
     return newMatrix
-}
-
-function findMinFrac(fracs: typeof Fraction[]) {
-    let minFrac = fracs[0]
-    fracs.forEach(frac => {
-        if (frac.compare(minFrac) < 0) {
-            minFrac = frac
-        }
-    })
-    return minFrac
 }
