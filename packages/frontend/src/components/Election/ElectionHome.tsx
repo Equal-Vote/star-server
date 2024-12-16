@@ -109,8 +109,7 @@ const ElectionHome = () => {
             <Box sx={{ flexGrow: 1 }}>
               <Typography align='center' variant="h6" component="h6">
                   {t('election_home.ended_time',{
-                      date: new Date(election.end_time).toLocaleDateString(),
-                      time: new Date(election.end_time).toLocaleTimeString()
+                      datetime: election.end_time
                   })}
               </Typography>
             </Box>
