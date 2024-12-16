@@ -50,6 +50,21 @@ describe("Allocated Score Tests", () => {
         expect(results.summaryData.weightedScoresByRound[1]).toStrictEqual([0, 0, 14, 18]);  
         expect(results.summaryData.splitPoints[0]).toStrictEqual(0.8);  
     })
+    test("Voters < Winners", () => {
+        const candidates = ['Allison', 'Bill', 'Carmen', 'Doug']
+        const votes = [
+            [5, 5, 0, 0], 
+            [5, 4, 3, 0], 
+        ]
+        const results = AllocatedScore(candidates, votes, 3, [], false, false)
+        expect(results.elected.length).toBe(3);
+        expect(results.elected[0].name).toBe('Allison');
+        expect(results.elected[1].name).toBe('Bill');
+        expect(results.elected[2].name).toBe('Carmen');
+        expect(results.summaryData.weightedScoresByRound[0]).toStrictEqual([10, 9, 3, 0]);  
+        expect(results.summaryData.weightedScoresByRound[1]).toStrictEqual([0, 6, 2, 0]);  
+        expect(results.summaryData.weightedScoresByRound[2]).toStrictEqual([0, 0, 2, 0]);  
+    })
     test("Fractional surplus", () => {
         // Two winners, two main parties, Allison wins first round with highest score, Allison has 8 highest level supporters, more than the quota of 6 voters
         // Voters who gave Allison their highest score have their ballot weight reduced to (1-6/8) = 0.25

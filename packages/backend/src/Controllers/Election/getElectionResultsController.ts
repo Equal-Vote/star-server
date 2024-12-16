@@ -36,8 +36,7 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
         const cvr: number[][] = []
         ballots.forEach((ballot: Ballot) => {
             const vote = ballot.votes.find((vote) => vote.race_id === race_id)
-            let maxScoreGiven = vote?.scores.reduce((prev, s) => Math.max(prev, s.score ?? 0), 0) ?? 0;
-            if (vote && maxScoreGiven > 0) {
+            if (vote) {
                 cvr.push(vote.scores.map((score: Score) => (
                     score.score
                 )))
