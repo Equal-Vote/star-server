@@ -162,7 +162,7 @@ methods:
 
 # Confirmation (after you've submitted a ballot)
 ballot_submitted:
-  title: '{{capital_ballot}} Enviado'
+  title: '{{capital_ballot}} Enviada'
   description: Obrigado por votar!
   results: Resultados
   donate: Doe para Equal Vote para apoiar software de votação de código aberto
