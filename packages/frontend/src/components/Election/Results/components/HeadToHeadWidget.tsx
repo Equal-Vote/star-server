@@ -38,6 +38,7 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
     });
 
     const incIndex = (arr, index) => {
+        if(index < 0) return; // Quick Hack to keep the page from crashing
         while(index >= arr.length ){
             arr.push({
                 name: arr.length,

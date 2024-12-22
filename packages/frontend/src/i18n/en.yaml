@@ -176,6 +176,7 @@ number:
   rank_ordinal_few: "{{count}}rd"
   rank_ordinal_other: "{{count}}th"
 
+# Results Example: bettervoting.com/tcvc7r/results
 results:
   preliminary_title: PRELIMINARY RESULTS
   official_title: OFFICIAL RESULTS
@@ -512,7 +513,7 @@ landing_page:
 #### PRIORITY 3 : Extended Results ####
 #######################################
 
-# Results page
+# Results page (ex. bettervoting.com/tcvc7r/results)
 results_ext:
   head_to_head_title: Head-to-Head Matchups !tip(head_to_head)
 
@@ -606,7 +607,7 @@ tabulation_logs:
 
     # Automatic runoff
     automatic_runoff_start: >
-      Advance to automatic runoff round between {{capital_candidate_a}} and {{candidate_b}}
+      Advance to automatic runoff round between {{candidate_a}} and {{candidate_b}}
     automatic_runoff_win: >
       {{winner}} is preferred over {{loser}} by {{winner_votes}} votes to {{loser_votes}}, and {{equal_votes}} voters have an [equal preference](https://www.starvoting.org/equal_preference).
     automatic_runoff_tie: >

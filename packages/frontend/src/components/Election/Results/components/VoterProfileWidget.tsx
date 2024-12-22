@@ -29,6 +29,7 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
     const equalPreferences = [];
 
     const incIndex = (arr, index) => {
+        if(index < 0) return; // Quick Hack to keep the page from crashing
         while(index >= arr.length ){
             arr.push({
                 name: arr.length,
