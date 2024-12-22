@@ -1,3 +1,339 @@
+#######################################################
+#### PRIORITY 0 : Core Voting Path + Basic Results ####
+#######################################################
+
+# Initial Landing page for voter (ex. https://bettervoting.com/j87vqp/)
+election_home:
+  start_time: '{{capital_election}} begins on {{datetime, datetime}}'
+  end_time: '{{capital_election}} ends on {{datetime, datetime}}'
+  ended_time: '{{capital_election}} ended on {{datetime, datetime}}'
+  vote: Vote
+  or_view_results: or view results
+  ballot_submitted: '{{capital_ballot}} Submitted'
+  view_results: View Results
+  drafted: This election is still being drafted
+  archived: This election has been archived
+
+# Ballot (ex. https://bettervoting.com/j87vqp/vote)
+ballot:
+  this_election_uses: This {{election}} will use {{voting_method}} to elect {{spelled_count}} $t(winner.winner).
+  instructions_checkbox: I have read the instructions
+  learn_more: Learn more about {{voting_method}}
+  previous: Previous
+  next: Next
+  submit_ballot: Submit
+  submitting: Submitting...
+
+  dialog_submit_title: Submit {{capital_ballot}}?
+  dialog_send_receipt: Send Ballot Receipt Email?
+  dialog_email_placeholder: Receipt Email
+  dialog_cancel: Cancel
+  dialog_submit: Submit
+  warnings:
+    skipped_rank: Do not skip rankings. Rank candidates in order to clearly show preferences. Candidates left blank are ranked last.
+    duplicate_rank: Do not rank multiple candidates equally. (Ranking candidates equally can void your ballot.)
+
+  methods:
+    approval:
+      instruction_bullets:
+        - Fill in the bubble next to your favorite
+        - You can select as many {{candidates}} as you like
+      footer_single_winner: The {{candidate}} with the most votes wins
+      footer_multi_winner: The {{n}} {{candidates}} with the most votes wins
+      left_title: ''
+      right_title: ''
+      heading_prefix: ''
+    star_pr:
+      instruction_bullets:
+       - Give your favorite(s) five stars.
+       - Give your last choice(s) zero stars or leave blank.
+       - Score other {{candidates}} as desired.
+       - Equal scores indicate equal preference.
+      footer_single_winner: ''
+      footer_multi_winner: >
+        Winners in Proportional STAR Voting are selected in rounds. Each round elects the {{candidate}} with the highest total score,
+        then designates that {{candidate}}'s strongest supporters as represented. Subsequent rounds include all voters who are not yet
+        fully represented.
+      # These show above the star columns 
+      left_title: 'Worst'
+      right_title: 'Best'
+    star:
+      instruction_bullets:
+       - Give your favorite(s) five stars.
+       - Give your last choice(s) zero stars or leave blank.
+       - Score other {{candidates}} as desired.
+       - Equal scores indicate equal preference.
+      footer_single_winner: |
+        The two highest scoring {{candidates}} are finalists.
+        Your full vote goes to the finalist you prefer.
+      footer_multi_winner: >
+        This election uses STAR Voting and will elect {{n}} winners.
+        In STAR Voting the two highest scoring {{candidates}} are finalists and the finalist preferred by more voters wins.
+      # These show above the star columns 
+      left_title: 'Worst'
+      right_title: 'Best'
+    rcv: 
+      instruction_bullets:
+        - Rank the {{candidates}} in order of preference. (1st, 2nd, 3rd, etc.)
+        - Ranking {{candidates}} equally is not allowed.
+        - '{{capital_candidates}} left blank are ranked last'
+      footer_single_winner: > 
+        How RCV is counted: Ballots are counted in elimination rounds. In each round, your vote goes to the candidate you ranked highest, 
+        if possible. If no candidate has a majority of remaining votes the candidate with the fewest votes is eliminated. 
+        If your vote is unable to transfer, it will not be counted in later rounds. If a candidate has a majority of remaining votes 
+        in a round, they are elected.
+      left_title: ''
+      right_title: ''
+    ranked_robin:
+      instruction_bullets:
+        - Rank the {{candidates}} in order of preference.
+        - Equal ranks are allowed
+        - '{{capital_candidates}} left blank are ranked last'
+      footer_single_winner: |
+        {{capital_candidates}} are compared in one-on-one match-ups.
+        A {{candidate}} wins a match-up if they are ranked higher than the opponent by more voters
+      left_title: ''
+      right_title: ''
+    choose_one:
+      instruction_bullets:
+        - Fill in the bubble next to your favorite
+      footer_single_winner: The {{candidate}} with the most votes wins
+      footer_multi_winner: The {{n}} {{candidates}} with the most votes win
+      left_title: ''
+      right_title: ''
+
+# Displayed at the bottom of voter pages (ex. https://bettervoting.com/j87vqp/)
+support_blurb: For support on this {{election}} please contact [{{email}}](mailto)
+
+# Share Button dropdown (ex. https://bettervoting.com/pres24/thanks)
+share:
+  button: Share {{capital_election}}
+  facebook: Facebook
+  X: X
+  reddit: Reddit
+  copy_link: Copy Link
+  link_copied: Link Copied!
+
+# Number translations (used for {{spelled_count}})
+spelled_numbers:
+  1: one
+  2: two
+  3: three
+  4: four
+  5: five
+  6: six
+  7: seven
+  8: eight
+  9: nine
+  10: ten
+
+# Winner pluralization
+winner:
+  winner_one: winner
+  winner_other: winners
+
+methods: 
+  star:
+    full_name: STAR Voting
+    short_name: STAR Voting
+    learn_link: https://www.youtube.com/watch?v=fKg0fRL88zc
+  star_pr:
+    full_name: Proportional STAR Voting
+    short_name: STAR PR
+    learn_link: https://www.starvoting.org/star-pr
+  approval:
+    full_name: Approval Voting
+    short_name: Approval Voting
+    learn_link: https://www.youtube.com/watch?v=db6Syys2fmE
+  rcv:
+    full_name: Ranked Choice Voting
+    short_name: RCV
+    learn_link: https://www.youtube.com/watch?v=oHRPMJmzBBw
+  stv:
+    full_name: Single Transferable Vote
+    short_name: STV
+    learn_link: https://www.youtube.com/watch?v=ItywbxafCk4
+  ranked_robin:
+    full_name: Ranked Robin
+    short_name: Ranked Robin
+    learn_link: https://www.equal.vote/ranked_robin
+  choose_one:
+    full_name: Choose One Plurality
+    short_name: Choose One
+
+# Confirmation (after you've submitted a ballot)
+ballot_submitted:
+  title: '{{capital_ballot}} Submitted'
+  description: Thank you for voting!
+  results: Results
+  donate: Donate to Equal Vote to support open source voting software
+  end_time: '{{capital_election}} ends {{date}} at {{time}}'
+
+# Localisation for numbers
+number:
+  rank_ordinal_one: "{{count}}st"
+  rank_ordinal_two: "{{count}}nd"
+  rank_ordinal_few: "{{count}}rd"
+  rank_ordinal_other: "{{count}}th"
+
+results:
+  preliminary_title: PRELIMINARY RESULTS
+  official_title: OFFICIAL RESULTS
+  election_title: |
+    {{capital_election}} Name:
+    {{title}}
+  race_title: '{{capital_race}} {{n}}: {{title}}'
+  single_candidate_result: '{{name}} is the only {{candidate}}, and wins by default'
+  loading_election: Loading {{capital_election}}...
+  details: Race Details
+  additional_info: Stats for Nerds
+  waiting_for_results: |
+    Still waiting for results
+    No votes have been cast
+  single_vote: |
+    There's only one vote so far.
+    Full results will be displayed once there's more votes.
+  tie_title: 'Tied!'
+  tiebreak_subtitle: '{{names}} won after tie breaker'
+  win_title_postfix_one: 'Wins!'
+  win_title_postfix: 'Win!'
+  vote_count: '{{n}} voters'
+  method_context: 'Voting Method: {{voting_method}}'
+  learn_link_text: How {{voting_method}} works
+
+  choose_one:
+    bar_title: Votes for each {{capital_candidate}}
+    table_title: Table
+    table_columns:
+      - '{{capital_candidate}}'
+      - Votes
+      - '% All Votes'
+
+  approval:
+    bar_title: Candidate Approval
+    table_title: Table
+    table_columns:
+      - '{{capital_candidate}}'
+      - Votes
+      - '% All Votes'
+
+  ranked_robin:
+    bar_title: Head-to-head wins
+    table_title: Table
+    table_columns:
+      - '{{capital_candidate}}'
+      - '# Wins'
+      - Win Rate
+
+  rcv:
+    first_choice_title: First Choice Preferences
+    final_round_title: Final Runoff
+    table_title: Ranked Choice Tabulation Rounds
+    runoff_majority: majority of remaining active votes
+    exhausted: Exhausted
+    tabulation_candidate_column: '{{capital_candidate}}'
+    round_column: Round {{n}}
+
+  star:
+    score_title: Scoring Round
+    score_description:
+      - Add the stars from all the ballots.
+      - The two highest scoring {{candidates}} are the finalists.
+    runoff_title: Automatic Runoff Round
+    runoff_description:
+      - Each vote goes to the voter's preferred finalist.
+      - Finalist with most votes wins.
+    runoff_majority: majority of voters with preference
+    score_table_title: Scores Table
+    score_table_columns:
+      - '{{capital_candidate}}'
+      - Score
+    runoff_table_title: Runoff Table
+    runoff_table_columns:
+      - '{{capital_candidate}}'
+      - Runoff Votes
+      - '% Runoff Votes'
+      - '% Between Finalists'
+
+    detailed_steps_title: Tabulation Steps
+    tiebreaker_note_title: A note on Tiebreakers
+    tiebreaker_note_text: 
+      - Ties are broken using the [Offical Tiebreaker Protocol](https://starvoting.org/ties) whenever possible.
+      - Ties are 10 times less likely to occur with STAR Voting than with Choose-One Voting and generally resolve as the number of voters increases.
+    equal_preferences_title: Distribution of Equal Preferences
+    equal_preferences: Equal Preferences
+    score_higher_than_runoff_title: Why is the top scoring candidate different from the winner?
+    score_higher_than_runoff_text: |
+      The top-scoring candidate often matches the runoff winner, but not always. 
+      In the runoff, only the most preferred votes count, which can shift the outcome. 
+      For example, a 5 vs. 4-star vote has less impact in scoring but counts fully in the runoff, 
+      while a 5 vs. 0-star vote makes a big difference in scoring but is equal in the runoff. 
+      The runoff winner comes out on top because more voters prefer them over the runner-up.
+    # Alternate Text:
+    # The top-scoring candidate usually matches the winner in the runoff, but not always. 
+    # The runoff round counts only the votes for the candidate a voter most prefers, which can lead to different weightings than in the scoring round. 
+    # For example, a slight preference (like 5 vs. 4 stars) has a small impact in scoring but counts as one full vote in the runoff. 
+    # Conversely, a strong preference (like 5 vs. 0 stars) makes a big difference in scoring but carries the same weight in the runoff. 
+    # Ultimately, the runoff winner becomes the final winner because they are preferred by more voters over the runner-up.
+
+  star_pr:
+    chart_title: Round Results
+    table_title: Results Table
+    table_columns:
+      - '{{capital_candidate}}'
+    round_column: Round {{n}}
+
+keyword:
+  # Method Terms
+  star:
+    preferences: scores
+  star_pr:
+    preferences: scores
+  approval:
+    preferences: approvals
+  rcv:
+    preferences: ranks
+  stv:
+    preferences: ranks
+  ranked_robin:
+    preferences: ranks
+  choose_one:
+    preferences: preferences
+
+  # Election vs Poll Terms
+  election: 
+    election: election
+    elections: elections
+    candidate: candidate
+    candidates: candidates
+    race: race
+    ballot: ballot
+    vote: vote
+
+  poll:
+    election: poll
+    elections: polls
+    candidate: option
+    candidates: options
+    race: question
+    ballot: response
+    vote: response
+
+  # General Terms
+  yes: Yes
+  no: No
+
+  save: Save
+  cancel: Cancel
+  submit: Submit
+
+  # This is used in tables and charts
+  total: Total 
+
+###################################
+#### PRIORITY 1 : Nav + Footer ####
+###################################
+
 # Nav Bar
 nav:
   about: About 
@@ -13,6 +349,45 @@ nav:
   sign_in: Sign In
   better_voting: Learn More
   beta_warning: This app is still being developed and bugs may exist. Please use the feedback button to help us improve.
+
+# Footer (bottom of all pages)
+footer:
+  project_title: BetterVoting
+  project_description: >
+    BetterVoting is here to help make your dream election acessible
+    to vote in and easy to officiate. Our mission is to support and
+    empower the adoption and use of better voting methods like STAR Voting,
+    for polling, surveys, and real elections at any scale and for any scenario.
+
+
+    [starvoting.org](https://www.starvoting.org)
+
+    [equal.vote](http://www.equal.vote)
+
+    [elections@equal.vote](mailto)
+  # TODO: I'll add this section to project description once we have those features in place
+  # All of our voting methods can be used for single winner, multi-winner, or 
+  # proportional representation elections with either paper or digital ballots.
+  about_us_title: About Us
+  about_us_description: >
+    BetterVoting is a project of the Equal Vote Coalition, a nonpartisan 501c3 nonprofit. 
+    Our mission is to fight for true equality in the vote itself.
+
+
+    [Donations](https://www.equal.vote/donate) are the best way to support our work. All proceeds from
+    BetterVoting go directly to helping fund and support the adoption and use of STAR Voting.
+
+
+    Equal Vote Coalition
+
+    PO Box 51245, Eugene, OR, USA 97405
+
+    https://www.equal.vote
+  social_action: 'Like and follow on social media:'
+
+###################################
+#### PRIORITY 2 : Landing Page ####
+###################################
 
 # Landing Page
 landing_page: 
@@ -133,306 +508,15 @@ landing_page:
         
         Email [elections@equal.vote](mailto)
 
-# Footer (bottom of all pages)
-footer:
-  project_title: BetterVoting
-  project_description: >
-    BetterVoting is here to help make your dream election acessible
-    to vote in and easy to officiate. Our mission is to support and
-    empower the adoption and use of better voting methods like STAR Voting,
-    for polling, surveys, and real elections at any scale and for any scenario.
-
-
-    [starvoting.org](https://www.starvoting.org)
-
-    [equal.vote](http://www.equal.vote)
-
-    [elections@equal.vote](mailto)
-  # TODO: I'll add this section to project description once we have those features in place
-  # All of our voting methods can be used for single winner, multi-winner, or 
-  # proportional representation elections with either paper or digital ballots.
-  about_us_title: About Us
-  about_us_description: >
-    BetterVoting is a project of the Equal Vote Coalition, a nonpartisan 501c3 nonprofit. 
-    Our mission is to fight for true equality in the vote itself.
-
-
-    [Donations](https://www.equal.vote/donate) are the best way to support our work. All proceeds from
-    BetterVoting go directly to helping fund and support the adoption and use of STAR Voting.
-
-
-    Equal Vote Coalition
-
-    PO Box 51245, Eugene, OR, USA 97405
-
-    https://www.equal.vote
-  social_action: 'Like and follow on social media:'
-
-draft_warning:
-  title: Test Mode
-  description: >
-    DO NOT SHARE PUBLICLY! This {{election}} is still being drafted.
-    All ballots will be counted as test votes and
-    shall be reset prior to the final {{election}}.
-
-support_blurb: For support on this {{election}} please contact [{{email}}](mailto)
-
-election_home:
-  start_time: '{{capital_election}} begins on {{datetime, datetime}}'
-  end_time: '{{capital_election}} ends on {{datetime, datetime}}'
-  ended_time: '{{capital_election}} ended on {{datetime, datetime}}'
-  vote: Vote
-  or_view_results: or view results
-  ballot_submitted: '{{capital_ballot}} Submitted'
-  view_results: View Results
-  drafted: This election is still being drafted
-  archived: This election has been archived
-
-# Ballot
-ballot:
-  this_election_uses: This {{election}} will use {{voting_method}} to elect {{spelled_count}} $t(winner.winner).
-  instructions_checkbox: I have read the instructions
-  learn_more: Learn more about {{voting_method}}
-  previous: Previous
-  next: Next
-  submit_ballot: Submit
-  submitting: Submitting...
-
-  dialog_submit_title: Submit {{capital_ballot}}?
-  dialog_send_receipt: Send Ballot Receipt Email?
-  dialog_email_placeholder: Receipt Email
-  dialog_cancel: Cancel
-  dialog_submit: Submit
-  warnings:
-    skipped_rank: Do not skip rankings. Rank candidates in order to clearly show preferences. Candidates left blank are ranked last.
-    duplicate_rank: Do not rank multiple candidates equally. (Ranking candidates equally can void your ballot.)
-
-  methods:
-    approval:
-      instruction_bullets:
-        - Fill in the bubble next to your favorite
-        - You can select as many {{candidates}} as you like
-      footer_single_winner: The {{candidate}} with the most votes wins
-      footer_multi_winner: The {{n}} {{candidates}} with the most votes wins
-      left_title: ''
-      right_title: ''
-      heading_prefix: ''
-    star_pr:
-      instruction_bullets:
-       - Give your favorite(s) five stars.
-       - Give your last choice(s) zero stars or leave blank.
-       - Score other {{candidates}} as desired.
-       - Equal scores indicate equal preference.
-      footer_single_winner: ''
-      footer_multi_winner: >
-        Winners in Proportional STAR Voting are selected in rounds. Each round elects the {{candidate}} with the highest total score,
-        then designates that {{candidate}}'s strongest supporters as represented. Subsequent rounds include all voters who are not yet
-        fully represented.
-      # These show above the star columns 
-      left_title: 'Worst'
-      right_title: 'Best'
-    star:
-      instruction_bullets:
-       - Give your favorite(s) five stars.
-       - Give your last choice(s) zero stars or leave blank.
-       - Score other {{candidates}} as desired.
-       - Equal scores indicate equal preference.
-      footer_single_winner: |
-        The two highest scoring {{candidates}} are finalists.
-        Your full vote goes to the finalist you prefer.
-      footer_multi_winner: >
-        This election uses STAR Voting and will elect {{n}} winners.
-        In STAR Voting the two highest scoring {{candidates}} are finalists and the finalist preferred by more voters wins.
-      # These show above the star columns 
-      left_title: 'Worst'
-      right_title: 'Best'
-    rcv: 
-      instruction_bullets:
-        - Rank the {{candidates}} in order of preference. (1st, 2nd, 3rd, etc.)
-        - Ranking {{candidates}} equally is not allowed.
-        - '{{capital_candidates}} left blank are ranked last'
-      footer_single_winner: > 
-        How RCV is counted: Ballots are counted in elimination rounds. In each round, your vote goes to the candidate you ranked highest, 
-        if possible. If no candidate has a majority of remaining votes the candidate with the fewest votes is eliminated. 
-        If your vote is unable to transfer, it will not be counted in later rounds. If a candidate has a majority of remaining votes 
-        in a round, they are elected.
-      left_title: ''
-      right_title: ''
-    ranked_robin:
-      instruction_bullets:
-        - Rank the {{candidates}} in order of preference.
-        - Equal ranks are allowed
-        - '{{capital_candidates}} left blank are ranked last'
-      footer_single_winner: |
-        {{capital_candidates}} are compared in one-on-one match-ups.
-        A {{candidate}} wins a match-up if they are ranked higher than the opponent by more voters
-      left_title: ''
-      right_title: ''
-    choose_one:
-      instruction_bullets:
-        - Fill in the bubble next to your favorite
-      footer_single_winner: The {{candidate}} with the most votes wins
-      footer_multi_winner: The {{n}} {{candidates}} with the most votes win
-      left_title: ''
-      right_title: ''
-    
-# Confirmation (after you've submitted a ballot)
-ballot_submitted:
-  title: '{{capital_ballot}} Submitted'
-  description: Thank you for voting!
-  results: Results
-  donate: Donate to Equal Vote to support open source voting software
-  end_time: '{{capital_election}} ends {{date}} at {{time}}'
-
-# Landing Page -> New Election Dialog
-election_creation:
-  dialog_title: Create an Election or Poll
-
-  term_title: Poll or Election?
-  term_question: Which term best describes your situation?
-
-  title_title: Title?
-  title_question: What's the title for your {{election}}? !tip(election_title) # TERM will be replaced with election or poll
-
-  restricted_title: Restricted?
-  restricted_question: Would you like your {{election}} to be restricted to a pre-defined voter list? !tip(restricted)
-
-  template_title: Choose Voters
-  template_prompt: (You can change this later, if needed.)
-
-  demo_title: Allows multiple votes per device
-  demo_description: Great for demonstrations where multiple people are using the same device
-
-  public_title: Public {{capital_election}}
-  public_description: one person, one vote. {{capital_election}} will be open to anyone via the "Browse Polls" page, as well as anyone who has been given a direct link
-
-  unlisted_title: one person, one vote 
-  unlisted_description: '{{capital_election}} will be open to anyone who has been given the ballot link'
-
-  email_list_title: Email List
-  email_list_description: Provide a list of emails for your voters. Personal links will be sent to each of these voters once the election starts
-
-  id_list_title: ID List
-  id_list_description: Provide a list of IDs for your voters. Voters will authenticate themselves using their ID before voting
-
-# Landing Page -> Return to Classic Dialog
-return_to_classic:
-  button: Return to the original star.vote
-  description: We'd love to know how the new version can be improved.
-  feedback: Leave Feedback?
-  continue: Continue to star.vote
-
-# Share Button dropdown
-share:
-  button: Share {{capital_election}}
-  facebook: Facebook
-  X: X
-  reddit: Reddit
-  copy_link: Copy Link
-  link_copied: Link Copied!
-
-# About
-about:
-  title: About bettervoting.com
-  description: >
-    BetterVoting.com is still under construction. It is the successor to the star.vote website.
-
-
-    It gives you an easy way to create secure elections with voting methods
-    that don't spoil the vote.
-
-
-    The tool is open source and will eventually support a variety of
-    single winner methods such as STAR, Approval, and Ranked Robin, as
-    well as multi-winner proportional methods such as STAR-PR.
-
-
-    It's also flexible to fit your voting scenario, whether it's a massive
-    public poll, a high stakes board election, or just a casual poll
-    picking a restaurant
-    bettervoting.com can fit your needs and provide a secure, auditable election
-  team_title: The Team
-  leads_title: Our Leads
-  leads:
-    - 'Mike Franze [@mikefranze](https://github.com/mikefranze): Software Development Project Lead'
-    - 'Arend Peter Castelein [@ArendPeter](https://github.com/ArendPeter): Equal Vote Production Lead'
-    - 'Evans Tucker [@evanstucker](https://github.com/evanstucker-hates-2fa): Infrastructure Lead'
-    - 'Sara Wolk [@SaraWolk](https://github.com/SaraWolk): Equal Vote Director'
-  contributors_title: All Contributors
-  # The image Id can be found by copying the image address of their github profile
-  contributors:
-    - github_user_name: mikefranze
-      github_image_id: 41272412
-    - github_user_name: ArendPeter
-      github_image_id: 9289903
-    - github_user_name: ScottPlusPlus
-      github_image_id: 40651157
-    - github_user_name: SaraWolk
-      github_image_id: 75465271
-    - github_user_name: evanstucker-hates-2fa
-      github_image_id: 20584445
-    - github_user_name: masiarek
-      github_image_id: 857777
-    - github_user_name: arterro
-      github_image_id: 91045842
-    - github_user_name: Elitemoni
-      github_image_id: 13269513
-    - github_user_name: JonBlauvelt
-      github_image_id: 8998273
-    - github_user_name: AntonSax
-      github_image_id: 9059836
-    - github_user_name: mjpauly
-      github_image_id: 16432322
-    - github_user_name: Jeetch8
-      github_image_id: 68128367
-    - github_user_name: RahalBhupathi
-      github_image_id: 113255492
-    - github_user_name: flynnwastaken
-      github_image_id: 32378726
-    - github_user_name: DubemObi
-      github_image_id: 109088909
-    - github_user_name: csamuele
-      github_image_id: 25678380
-
-  contribute_title: Contribute
-  contribute_description: >
-    Our source code is available on [Github](https://github.com/Equal-Vote/star-server),
-    Pull Requests and bug reports are greatly appreciated
-
-
-    [Join our community](https://www.starvoting.org/join) for 
-    onboarding and to be involved in discussions
-  donate_title: Donate
-  donate_description: Help us to continue supporting the website
-  donate_button: Donate to Equal Vote
-  donate_link: https://www.equal.vote/donate
+#######################################
+#### PRIORITY 3 : Extended Results ####
+#######################################
 
 # Results page
-results:
-  preliminary_title: PRELIMINARY RESULTS
-  official_title: OFFICIAL RESULTS
-  election_title: |
-    {{capital_election}} Name:
-    {{title}}
-  race_title: '{{capital_race}} {{n}}: {{title}}'
-  single_candidate_result: '{{name}} is the only {{candidate}}, and wins by default'
-  loading_election: Loading {{capital_election}}...
-  details: Race Details
-  additional_info: Stats for Nerds
-  waiting_for_results: |
-    Still waiting for results
-    No votes have been cast
-  single_vote: |
-    There's only one vote so far.
-    Full results will be displayed once there's more votes.
-  tie_title: 'Tied!'
-  tiebreak_subtitle: '{{names}} won after tie breaker'
-  win_title_postfix_one: 'Wins!'
-  win_title_postfix: 'Win!'
-  vote_count: '{{n}} voters'
-  method_context: 'Voting Method: {{voting_method}}'
-  learn_link_text: How {{voting_method}} works
+results_ext:
   head_to_head_title: Head-to-Head Matchups !tip(head_to_head)
+
+  candidate_selector: '{{capital_candidate}}'
 
   voter_profile_title: Average Supporter Profile !tip(voter_profile)
   voter_profile_count: '{{count}} voters gave {{name}} their maximum support'
@@ -474,96 +558,6 @@ results:
     the instructions in RCV could get your ballot thrown out (like giving multiple candidates your first choice). Voters
     are also far more likely to use the full range in political elections where voters have a strong opinion.
 
-
-  candidate_selector: '{{capital_candidate}}'
-
-  win_count: '{{count}} Wins'
-  win_count_one: '{{count}} Win'
-
-  tie_count: '{{count}} Ties'
-  tie_count_one: '{{count}} Tie'
-
-  loss_count: '{{count}} Losses'
-  loss_count_one: '{{count}} Loss'
-
-  choose_one:
-    bar_title: Votes for each {{capital_candidate}}
-    table_title: Table
-    table_columns:
-      - '{{capital_candidate}}'
-      - Votes
-      - '% All Votes'
-  approval:
-    bar_title: Candidate Approval
-    table_title: Table
-    table_columns:
-      - '{{capital_candidate}}'
-      - Votes
-      - '% All Votes'
-  ranked_robin:
-    bar_title: Head-to-head wins
-    table_title: Table
-    table_columns:
-      - '{{capital_candidate}}'
-      - '# Wins'
-      - Win Rate
-  rcv:
-    first_choice_title: First Choice Preferences
-    final_round_title: Final Runoff
-    table_title: Ranked Choice Tabulation Rounds
-    runoff_majority: majority of remaining active votes
-    exhausted: Exhausted
-    tabulation_candidate_column: '{{capital_candidate}}'
-    round_column: Round {{n}}
-  star:
-    score_title: Scoring Round
-    score_description:
-      - Add the stars from all the ballots.
-      - The two highest scoring {{candidates}} are the finalists.
-    runoff_title: Automatic Runoff Round
-    runoff_description:
-      - Each vote goes to the voter's preferred finalist.
-      - Finalist with most votes wins.
-    runoff_majority: majority of voters with preference
-    score_table_title: Scores Table
-    score_table_columns:
-      - '{{capital_candidate}}'
-      - Score
-    runoff_table_title: Runoff Table
-    runoff_table_columns:
-      - '{{capital_candidate}}'
-      - Runoff Votes
-      - '% Runoff Votes'
-      - '% Between Finalists'
-    detailed_steps_title: Tabulation Steps
-    tiebreaker_note_title: A note on Tiebreakers
-    tiebreaker_note_text: 
-      - Ties are broken using the [Offical Tiebreaker Protocol](https://starvoting.org/ties) whenever possible.
-      - Ties are 10 times less likely to occur with STAR Voting than with Choose-One Voting and generally resolve as the number of voters increases.
-    equal_preferences_title: Distribution of Equal Preferences
-    equal_preferences: Equal Preferences
-    score_higher_than_runoff_title: Why is the top scoring candidate different from the winner?
-    score_higher_than_runoff_text: |
-      The top-scoring candidate often matches the runoff winner, but not always. 
-      In the runoff, only the most preferred votes count, which can shift the outcome. 
-      For example, a 5 vs. 4-star vote has less impact in scoring but counts fully in the runoff, 
-      while a 5 vs. 0-star vote makes a big difference in scoring but is equal in the runoff. 
-      The runoff winner comes out on top because more voters prefer them over the runner-up.
-    # Alternate Text:
-    # The top-scoring candidate usually matches the winner in the runoff, but not always. 
-    # The runoff round counts only the votes for the candidate a voter most prefers, which can lead to different weightings than in the scoring round. 
-    # For example, a slight preference (like 5 vs. 4 stars) has a small impact in scoring but counts as one full vote in the runoff. 
-    # Conversely, a strong preference (like 5 vs. 0 stars) makes a big difference in scoring but carries the same weight in the runoff. 
-    # Ultimately, the runoff winner becomes the final winner because they are preferred by more voters over the runner-up.
-
-  star_pr:
-    chart_title: Round Results
-    table_title: Results Table
-    table_columns:
-      - '{{capital_candidate}}'
-    round_column: Round {{n}}
-
-# Tabulation Logs
 tabulation_logs:
   # Note: tabulation_logs keys are generated by the backend and they may be stored in the database in the future, so be extra careful when changing the keys
   star:
@@ -618,13 +612,9 @@ tabulation_logs:
     automatic_runoff_tie: >
       {{names}} are tied with {{tied_votes}} voters prefering each, and {{equal_votes}} voters having an [equal preference](https://www.starvoting.org/equal_preference).
 
-# Election States
-election_state:
-  draft: draft
-  finalized: finalized
-  open: open
-  closed: closed
-  archived: archived
+#######################################
+#### PRIORITY 4 : Info Bubbles ####
+#######################################
 
 # Info bubbles
 tips:
@@ -746,6 +736,139 @@ tips:
   ranked_robin:
     title: $t(methods.ranked_robin.full_name)
     description: The candidate preferred over all others wins. (Also known as Condorcet.)
+
+#######################################
+#### PRIORITY 99 : Everything Else ####
+#######################################
+
+draft_warning:
+  title: Test Mode
+  description: >
+    DO NOT SHARE PUBLICLY! This {{election}} is still being drafted.
+    All ballots will be counted as test votes and
+    shall be reset prior to the final {{election}}.
+
+# Landing Page -> New Election Dialog
+election_creation:
+  dialog_title: Create an Election or Poll
+
+  term_title: Poll or Election?
+  term_question: Which term best describes your situation?
+
+  title_title: Title?
+  title_question: What's the title for your {{election}}? !tip(election_title) # TERM will be replaced with election or poll
+
+  restricted_title: Restricted?
+  restricted_question: Would you like your {{election}} to be restricted to a pre-defined voter list? !tip(restricted)
+
+  template_title: Choose Voters
+  template_prompt: (You can change this later, if needed.)
+
+  demo_title: Allows multiple votes per device
+  demo_description: Great for demonstrations where multiple people are using the same device
+
+  public_title: Public {{capital_election}}
+  public_description: one person, one vote. {{capital_election}} will be open to anyone via the "Browse Polls" page, as well as anyone who has been given a direct link
+
+  unlisted_title: one person, one vote 
+  unlisted_description: '{{capital_election}} will be open to anyone who has been given the ballot link'
+
+  email_list_title: Email List
+  email_list_description: Provide a list of emails for your voters. Personal links will be sent to each of these voters once the election starts
+
+  id_list_title: ID List
+  id_list_description: Provide a list of IDs for your voters. Voters will authenticate themselves using their ID before voting
+
+# Landing Page -> Return to Classic Dialog
+return_to_classic:
+  button: Return to the original star.vote
+  description: We'd love to know how the new version can be improved.
+  feedback: Leave Feedback?
+  continue: Continue to star.vote
+
+# About
+about:
+  title: About bettervoting.com
+  description: >
+    BetterVoting.com is still under construction. It is the successor to the star.vote website.
+
+
+    It gives you an easy way to create secure elections with voting methods
+    that don't spoil the vote.
+
+
+    The tool is open source and will eventually support a variety of
+    single winner methods such as STAR, Approval, and Ranked Robin, as
+    well as multi-winner proportional methods such as STAR-PR.
+
+
+    It's also flexible to fit your voting scenario, whether it's a massive
+    public poll, a high stakes board election, or just a casual poll
+    picking a restaurant
+    bettervoting.com can fit your needs and provide a secure, auditable election
+  team_title: The Team
+  leads_title: Our Leads
+  leads:
+    - 'Mike Franze [@mikefranze](https://github.com/mikefranze): Software Development Project Lead'
+    - 'Arend Peter Castelein [@ArendPeter](https://github.com/ArendPeter): Equal Vote Production Lead'
+    - 'Evans Tucker [@evanstucker](https://github.com/evanstucker-hates-2fa): Infrastructure Lead'
+    - 'Sara Wolk [@SaraWolk](https://github.com/SaraWolk): Equal Vote Director'
+  contributors_title: All Contributors
+  # The image Id can be found by copying the image address of their github profile
+  contributors:
+    - github_user_name: mikefranze
+      github_image_id: 41272412
+    - github_user_name: ArendPeter
+      github_image_id: 9289903
+    - github_user_name: ScottPlusPlus
+      github_image_id: 40651157
+    - github_user_name: SaraWolk
+      github_image_id: 75465271
+    - github_user_name: evanstucker-hates-2fa
+      github_image_id: 20584445
+    - github_user_name: masiarek
+      github_image_id: 857777
+    - github_user_name: arterro
+      github_image_id: 91045842
+    - github_user_name: Elitemoni
+      github_image_id: 13269513
+    - github_user_name: JonBlauvelt
+      github_image_id: 8998273
+    - github_user_name: AntonSax
+      github_image_id: 9059836
+    - github_user_name: mjpauly
+      github_image_id: 16432322
+    - github_user_name: Jeetch8
+      github_image_id: 68128367
+    - github_user_name: RahalBhupathi
+      github_image_id: 113255492
+    - github_user_name: flynnwastaken
+      github_image_id: 32378726
+    - github_user_name: DubemObi
+      github_image_id: 109088909
+    - github_user_name: csamuele
+      github_image_id: 25678380
+
+  contribute_title: Contribute
+  contribute_description: >
+    Our source code is available on [Github](https://github.com/Equal-Vote/star-server),
+    Pull Requests and bug reports are greatly appreciated
+
+
+    [Join our community](https://www.starvoting.org/join) for 
+    onboarding and to be involved in discussions
+  donate_title: Donate
+  donate_description: Help us to continue supporting the website
+  donate_button: Donate to Equal Vote
+  donate_link: https://www.equal.vote/donate
+
+# Election States
+election_state:
+  draft: draft
+  finalized: finalized
+  open: open
+  closed: closed
+  archived: archived
 
 # Admin Home
 admin_home:
@@ -938,85 +1061,9 @@ emails:
     subject: An update from {{title}}
     body: __ELECTION_HOME_BUTTON__
 
-# Ballots
-
-# General Terms
-keyword:
-  # Method Terms
-  star:
-    preferences: scores
-  star_pr:
-    preferences: scores
-  approval:
-    preferences: approvals
-  rcv:
-    preferences: ranks
-  stv:
-    preferences: ranks
-  ranked_robin:
-    preferences: ranks
-  choose_one:
-    preferences: preferences
-
-  # Election vs Poll Terms
-  election: 
-    election: election
-    elections: elections
-    candidate: candidate
-    candidates: candidates
-    race: race
-    ballot: ballot
-    vote: vote
-
-  poll:
-    election: poll
-    elections: polls
-    candidate: option
-    candidates: options
-    race: question
-    ballot: response
-    vote: response
-
-  # General Terms
-  yes: Yes
-  no: No
-
-  save: Save
-  cancel: Cancel
-  submit: Submit
-
-  # This is used in tables and charts
-  total: Total 
-
-# Shared context on methods
-methods: 
-  star:
-    full_name: STAR Voting
-    short_name: STAR Voting
-    learn_link: https://www.youtube.com/watch?v=fKg0fRL88zc
-  star_pr:
-    full_name: Proportional STAR Voting
-    short_name: STAR PR
-    learn_link: https://www.starvoting.org/star-pr
-  approval:
-    full_name: Approval Voting
-    short_name: Approval Voting
-    learn_link: https://www.youtube.com/watch?v=db6Syys2fmE
-  rcv:
-    full_name: Ranked Choice Voting
-    short_name: RCV
-    learn_link: https://www.youtube.com/watch?v=oHRPMJmzBBw
-  stv:
-    full_name: Single Transferable Vote
-    short_name: STV
-    learn_link: https://www.youtube.com/watch?v=ItywbxafCk4
-  ranked_robin:
-    full_name: Ranked Robin
-    short_name: Ranked Robin
-    learn_link: https://www.equal.vote/ranked_robin
-  choose_one:
-    full_name: Choose One Plurality
-    short_name: Choose One
+# Convenience entry for localizing date
+datetime: '{{datetime, datetime}}'
+listed_datetime: '{{listed_datetime, datetime}}'
 
 # Full list of time zones
 time_zones:
@@ -1155,32 +1202,3 @@ time_zones:
     Europe/Kiev: Kiev
     America/Tegucigalpa: Tegucigalpa
     Pacific/Apia: Independent State of Samoa
-
-# Localisation for numbers
-number:
-  rank_ordinal_one: "{{count}}st"
-  rank_ordinal_two: "{{count}}nd"
-  rank_ordinal_few: "{{count}}rd"
-  rank_ordinal_other: "{{count}}th"
-
-# Convenience entry for localizing date
-datetime: '{{datetime, datetime}}'
-listed_datetime: '{{listed_datetime, datetime}}'
-
-# Number translations
-spelled_numbers:
-  1: one
-  2: two
-  3: three
-  4: four
-  5: five
-  6: six
-  7: seven
-  8: eight
-  9: nine
-  10: ten
-
-# Winner pluralization
-winner:
-  winner_one: winner
-  winner_other: winners

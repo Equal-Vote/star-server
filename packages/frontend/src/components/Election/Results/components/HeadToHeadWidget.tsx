@@ -72,10 +72,10 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
         if(m.leftVotes < m.rightVotes) losses++;
     })
 
-    return <Widget title={t('results.head_to_head_title')}>
+    return <Widget title={t('results_ext.head_to_head_title')}>
         <Select
             value={refCandidateId}
-            label={t('results.candidateSelector')}
+            label={t('results_ext.candidate_selector')}
             onChange={(e) => setRefCandidateId(e.target.value as string)}
         >
             {candidates.map((c, i) => <MenuItem value={c.candidate_id}>{c.candidate_name}</MenuItem>)}

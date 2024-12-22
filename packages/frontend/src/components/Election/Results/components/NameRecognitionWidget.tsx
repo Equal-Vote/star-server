@@ -26,9 +26,9 @@ export default () => {
         })
     })
 
-    return <Widget title={t(`results.name_recognition_title`)}>
-        <Typography variant='h6'>{t(`results.name_recognition_sub_title`)}</Typography>
+    return <Widget title={t(`results_ext.name_recognition_title`)}>
+        <Typography variant='h6'>{t(`results_ext.name_recognition_sub_title`)}</Typography>
         <ResultsBarChart data={Object.values(numActive)} xKey='count' percentage={true} percentDenominator={b.length}/>
-        <Typography>{t(`results.name_recognition_blank_warning`)}</Typography>
+        <Typography>{t(`results_ext.name_recognition_blank_warning`)}</Typography>
     </Widget>
 }

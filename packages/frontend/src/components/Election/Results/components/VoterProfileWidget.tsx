@@ -78,19 +78,19 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
     data.forEach(c => c.score = Math.round(100*c.score / totalTopScored)/100);
     data.sort((a,b) => (ranked? 1 : -1)*(a.score-b.score));
 
-    return <Widget title={t('results.voter_profile_title')}>
+    return <Widget title={t('results_ext.voter_profile_title')}>
         {/*<Typography>Average ballot for voters who gave</Typography>*/}
         <Select
             value={refCandidateId}
-            label={t('results.candidateSelector')}
+            label={t('results_ext.candidateSelector')}
             onChange={(e) => setRefCandidateId(e.target.value as string)}
         >
             {candidates.map((c, i) => <MenuItem key={i} value={c.candidate_id}>{c.candidate_name}</MenuItem>)}
         </Select>
         <Divider variant='middle' sx={{width: '100%', m:3}}/>
-        <Typography variant='h6'>{t('results.voter_profile_count', {count: totalTopScored, name: refCandidateName})}</Typography>
+        <Typography variant='h6'>{t('results_ext.voter_profile_count', {count: totalTopScored, name: refCandidateName})}</Typography>
         <Divider variant='middle' sx={{width: '100%', m:3}}/>
-        <Typography variant='h6'>{t('results.voter_profile_preferred_frontrunner', {name: refCandidateName})}</Typography>
+        <Typography variant='h6'>{t('results_ext.voter_profile_preferred_frontrunner', {name: refCandidateName})}</Typography>
         {totalTopScored == 0 ? 'n/a' : <HeadToHeadChart 
             leftName={frontRunners[0].candidate_name}
             rightName={frontRunners[1].candidate_name}
@@ -103,7 +103,7 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
             }}
         />}
         <Divider variant='middle' sx={{width: '100%', m:3}}/>
-        <Typography variant='h6'>{t(`results.voter_profile_average_${ranked? 'ranks' : 'scores'}`, {name: refCandidateName})}</Typography>
+        <Typography variant='h6'>{t(`results_ext.voter_profile_average_${ranked? 'ranks' : 'scores'}`, {name: refCandidateName})}</Typography>
         {totalTopScored == 0 ? 'n/a' : <ResultsBarChart data={data} xKey='score' percentage={false} sortFunc={false}/>}
     </Widget>
 }

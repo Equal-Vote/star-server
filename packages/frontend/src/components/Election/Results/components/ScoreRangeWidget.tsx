@@ -32,9 +32,9 @@ export default () => {
         )
     })
 
-    return <Widget title={t(`results.score_range_title`)}>
-        <Typography variant='h6'>{t(`results.score_range_sub_title`)}</Typography>
+    return <Widget title={t(`results_ext.score_range_title`)}>
+        <Typography variant='h6'>{t(`results_ext.score_range_sub_title`)}</Typography>
         <ResultsBarChart data={numAtDiff.reverse()} xKey='count' percentage={true} sortFunc={false}/>
-        <Typography sx={{'textAlign': 'left'}}>{t(`results.score_range_warning`)}</Typography>
+        <Typography sx={{'textAlign': 'left'}}>{t(`results_ext.score_range_warning`)}</Typography>
     </Widget>
 }
