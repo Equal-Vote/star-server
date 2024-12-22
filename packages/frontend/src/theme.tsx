@@ -163,41 +163,19 @@ const brandPalette: PaletteOptions = {
 }
 
 const brandTypography: TypographyOptions = {
-  // fontFamily: 'Montserrat',
-  fontFamily: 'Verdana, sans-serif',
-  button:{
-    fontFamily: 'Montserrat, Verdana, sans-serif',
-  },
-  h1: {
-    fontFamily: 'Montserrat, Verdana, sans-serif',
-    marginTop: '1rem',
-    marginBottom: '1rem',
-  },
-  h2: {
-    fontFamily: 'Montserrat, Verdana, sans-serif',
-    marginTop: '1rem',
-    marginBottom: '1rem',
-  },
-  h3: {
-    fontFamily: 'Montserrat, Verdana, sans-serif',
-    marginTop: '1rem',
-    marginBottom: '1rem',
-  },
-  h4: {
-    fontFamily: 'Montserrat, Verdana, sans-serif',
-    marginTop: '1rem',
-    marginBottom: '1rem',
-  },
-  h5: {
-    fontFamily: 'Montserrat, Verdana, sans-serif',
-    marginTop: '1rem',
-    marginBottom: '1rem',
-  },
-  h6: {
-    fontFamily: 'Montserrat, Verdana, sans-serif',
-    marginTop: '1rem',
-    marginBottom: '1rem',
-  }
+   // fontFamily: 'Montserrat',
+   fontFamily: 'Montserrat, Verdana, sans-serif',
+   button:{
+     fontFamily: 'Montserrat, Verdana, sans-serif',
+   },
+  ...Object.fromEntries(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map(level => [
+    level,
+    {
+      fontFamily: 'Montserrat, Verdana, sans-serif',
+      marginTop: '1rem',
+      marginBottom: '1rem',
+    }
+  ]))
 }
 
 const themes = {

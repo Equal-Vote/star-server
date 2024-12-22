@@ -39,7 +39,6 @@ export default () => {
                     <FadeUp key={i} delay={`${200+i*300}ms`}>
                         <Paper key={i} className='pricingOption' elevation={8} sx={{
                             width: '100%',
-                            maxWidth: '25rem',
                             display: 'flex',
                             flexDirection: 'column',
                             flexShrink: '0',

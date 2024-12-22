@@ -49,11 +49,8 @@ const LandingPage = () => {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            gap: '20rem',
-            minHeight: '600px',
+            gap: '2rem',
             margin: 'auto',
-            paddingTop: '8rem',
-            paddingBottom: '8rem',
         }}>
             <Box sx={{position:'absolute', top: '95vh', width: '100%', textAlign: 'center'}}>
                 <KeyboardArrowDownRoundedIcon sx={{

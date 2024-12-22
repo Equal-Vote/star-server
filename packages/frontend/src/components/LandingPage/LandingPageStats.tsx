@@ -49,7 +49,7 @@ export default () => {
             margin: 'auto',
             width: '100%',
             maxWidth: '1300px',
-            gap: '10rem',
+            gap: '2rem',
             justifyContent: 'center',
         }}
         ref={containerRef}
