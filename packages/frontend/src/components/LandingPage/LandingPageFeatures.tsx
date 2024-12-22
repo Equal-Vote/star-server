@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material'
 import React from 'react'
 import FeaturedElection from './FeaturedElection'
-import { useOnScrollAnimator, useSubstitutedTranslation } from '../util';
+import { useSubstitutedTranslation } from '../util';
 
 
 interface FeaturePanel{
@@ -14,8 +14,7 @@ export default () => {
 
     const panels = t('landing_page.features.items') as FeaturePanel[];
 
-    const {FadeIn, FadeUp} = useOnScrollAnimator();
-    return  <FadeIn>
+    return (
         <Box sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -36,15 +35,15 @@ export default () => {
                     flexDirection: 'row',
                     flexWrap: 'wrap',
                     justifyContent: 'center',
-                    paddingTop: '5rem',
-                    gap: '3rem',
+                    paddingTop: '2rem',
+                    gap: '2rem',
                 }}>
-                    {panels.map((panel, i) => <Box key={i}><FadeUp delay={`${i*100}ms`}><Box sx={{width: '380px'}}>
+                    {panels.map((panel, i) => <Box key={i}>
                         <Typography variant='h4' sx={{color: 'darkShade.contrastText'}}>{panel.title}</Typography>
                         <Typography component='p' sx={{color: 'darkShade.contrastText'}}>{panel.text}</Typography>
-                    </Box></FadeUp></Box>)}
+                    </Box>)}
                 </Box>
             </Box>
         </Box>
-    </FadeIn>
+    )
 }

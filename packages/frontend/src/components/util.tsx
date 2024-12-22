@@ -1,4 +1,4 @@
-import {Box, Button, Divider, FormControlLabel, Link, TextField, Typography} from "@mui/material";
+import { Box, Button, Divider, FormControlLabel, Link, TextField, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { DateTime } from "luxon";
 import { useTranslation } from "react-i18next";
@@ -13,127 +13,101 @@ const rBold = /\*\*(.*?)\*\*/;
 const rTip = / \!tip\((.*)\)/;
 
 declare namespace Intl {
-    class ListFormat {
-        constructor(locales?: string | string[], options?: {});
-        public format: (items: string[]) => string;
-    }
-    class DateTimeFormat {
-        constructor(tz?: string, options?: {});
-        public format: (item: DateTime) => string;
-    }
+  class ListFormat {
+    constructor(locales?: string | string[], options?: {});
+    public format: (items: string[]) => string;
+  }
+  class DateTimeFormat {
+    constructor(tz?: string, options?: {});
+    public format: (item: DateTime) => string;
+  }
 }
 
 export const commaListFormatter = new Intl.ListFormat(i18n.languages[0], { style: 'long', type: 'conjunction' });
 
 export const capitalize = (str) => str[0].toUpperCase() + str.slice(1);
 
-export const MailTo = ({children}) => {
-  const {t} = useSubstitutedTranslation();
-  const {setSnack} = useSnackbar();
+export const MailTo = ({ children }) => {
+  const { t } = useSubstitutedTranslation();
+  const { setSnack } = useSnackbar();
   // https://adamsilver.io/blog/the-trouble-with-mailto-email-links-and-what-to-do-instead/
-  return <span style={{whiteSpace: 'nowrap'}}>
-    <Link href={`mailto:${children}`} sx={{color: 'var(--brand-green)'}}>{children}</Link>
+  return <span style={{ whiteSpace: 'nowrap' }}>
+    <Link href={`mailto:${children}`} sx={{ color: 'var(--brand-green)' }}>{children}</Link>
     <Button
       variant='contained'
       onClick={() => {
         navigator.clipboard.writeText(children)
         setSnack({
-            message: 'Email Copied!',
-            severity: 'success',
-            open: true,
-            autoHideDuration: 6000,
+          message: 'Email Copied!',
+          severity: 'success',
+          open: true,
+          autoHideDuration: 6000,
         })
       }}
-      sx={{minWidth: 0, ml: 1, px: 1, py: 0, backgroundColor: 'var(--brand-green)'}}
+      sx={{ minWidth: 0, ml: 1, px: 1, py: 0, backgroundColor: 'var(--brand-green)' }}
     >Copy</Button>
   </span>
 }
 
-export const useOnScrollAnimator = () => {
-    //https://www.youtube.com/watch?v=T33NN_pPeNI
-    const observer = new IntersectionObserver((entries) => {
-        entries.filter(entry => entry.isIntersecting).forEach(entry => entry.target.classList.add('show'))
-    })
 
-    useEffect(() => {
-        document.querySelectorAll('.scrollAnimate').forEach(ref => observer.observe(ref))
-    })
-
-    const makeSx=(delay, duration, before={}, after={}) => ({
-          opacity: 0, ...before,
-            '&.show': {opacity: 1, transition: `all ${duration}`, transitionDelay: delay, ...after}
-      })
-
-    return {
-        FadeIn: ({children, delay='0', duration='1s'}) => <Box className='scrollAnimate' sx={makeSx(delay, duration)}>
-            {children}
-        </Box>,
-        FadeUp: ({children, delay='0', duration='1s'}) => <Box className='scrollAnimate' sx={
-          makeSx(delay, duration, {transform: 'translate(0, 40px)'}, {transform: 'translate(0, 0)'})
-        }>
-            {children}
-        </Box>,
-    }
-}
-
-export const RowButtonWithArrow = ({title, description=undefined, onClick}) => <>
-    <Button
-        color='inherit'
-        fullWidth
-        className='startingOption'
-        sx={{justifyContent: 'flex-start', textTransform: 'inherit'}}
-        onClick={onClick} 
-    >
-        <Box sx={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          my: description ? 'inherit' : 2
-        }}>
-            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left'}}>
-                <Typography variant="body1">{title}</Typography>
-                {description && <Typography color='gray' variant="body2">{description.split('. ').map(sentence => <>{`${sentence}.`}<br/></>)}</Typography>}
-            </Box>
-            <ArrowForwardIos className="startingOptionArrow" sx={{transition: 'padding-left .2s'}}/>
-        </Box>
-    </Button>
-    <Divider/>
+export const RowButtonWithArrow = ({ title, description = undefined, onClick }) => <>
+  <Button
+    color='inherit'
+    fullWidth
+    className='startingOption'
+    sx={{ justifyContent: 'flex-start', textTransform: 'inherit' }}
+    onClick={onClick}
+  >
+    <Box sx={{
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      my: description ? 'inherit' : 2
+    }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
+        <Typography variant="body1">{title}</Typography>
+        {description && <Typography color='gray' variant="body2">{description.split('. ').map(sentence => <>{`${sentence}.`}<br /></>)}</Typography>}
+      </Box>
+      <ArrowForwardIos className="startingOptionArrow" sx={{ transition: 'padding-left .2s' }} />
+    </Box>
+  </Button>
+  <Divider />
 </>
 
 // defining in separate file: https://stackoverflow.com/questions/58778631/react-input-loses-focus-on-keypress
-export const LabelledTextField = ({label, value, setter, fullWidth=false, rows=1}) => 
+export const LabelledTextField = ({ label, value, setter, fullWidth = false, rows = 1 }) =>
   <FormControlLabel control={
-          <TextField
-            value={value}
-            onChange={(e) => setter(e.target.value)}
-            sx={{ display: 'block'}}
-            multiline={rows > 1}
-            rows={rows}
-            fullWidth
-          />
-      }
-      label={label}
-      labelPlacement='top'
-      sx={{
-          alignItems: 'start',
-          width: {xs: (fullWidth)? '90%': 'unset', md: (fullWidth)? '90%' : '400px'}
-      }}
+    <TextField
+      value={value}
+      onChange={(e) => setter(e.target.value)}
+      sx={{ display: 'block' }}
+      multiline={rows > 1}
+      rows={rows}
+      fullWidth
+    />
+  }
+    label={label}
+    labelPlacement='top'
+    sx={{
+      alignItems: 'start',
+      width: { xs: (fullWidth) ? '90%' : 'unset', md: (fullWidth) ? '90%' : '400px' }
+    }}
   />
 
 // NOTE: I'm setting a electionTermType default for backwards compatibility with elections that don't have a term set
-export const useSubstitutedTranslation = (electionTermType='election', v={}) => { // election or poll
+export const useSubstitutedTranslation = (electionTermType = 'election', v = {}) => { // election or poll
   const processValues = (values) => {
     Object.entries(values).forEach(([key, value]) => {
-      if(typeof value === 'string'){
-        if(key == 'datetime' || key == 'datetime2' || key == 'listed_datetime'){
+      if (typeof value === 'string') {
+        if (key == 'datetime' || key == 'datetime2' || key == 'listed_datetime') {
           values[key] = new Date(value)
-        }else if(value.length > 2){
+        } else if (value.length > 2) {
           values[`capital_${key}`] = capitalize(value)
         }
       }
-      if(Array.isArray(value)){
+      if (Array.isArray(value)) {
         values[key] = commaListFormatter.format(value);
       }
     })
@@ -150,7 +124,7 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
   let values = processValues({
     ...t('keyword'),
     ...t(`keyword.${electionTermType}`),
-    ...t(`keyword.${v[ 'methodKey' ] ?? 'star'}`),
+    ...t(`keyword.${v['methodKey'] ?? 'star'}`),
     ...v, formatParams: {
       datetime: dt,
       datetime2: dt,
@@ -163,45 +137,45 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
 
   const applySymbols = (txt) => {
     const applyLinks = (txt) => {
-      if(typeof txt !== 'string') return txt;
+      if (typeof txt !== 'string') return txt;
       let parts = txt.split(rLink)
       return parts.map((str, i) => {
-        if(i%3 == 0) return str;
-        if(i%3 == 2) return '';
-        if(parts[i+1].startsWith('mailto')){
+        if (i % 3 == 0) return str;
+        if (i % 3 == 2) return '';
+        if (parts[i + 1].startsWith('mailto')) {
           return <MailTo>{parts[i]}</MailTo>
-        }else{
-          return <a key={`link_${i}`} href={parts[i+1]}>{parts[i]}</a>
+        } else {
+          return <a key={`link_${i}`} href={parts[i + 1]}>{parts[i]}</a>
         }
       })
     }
 
     const applyBold = (txt, keyPrefix) => {
-      if(typeof txt !== 'string') return txt;
+      if (typeof txt !== 'string') return txt;
       return txt.split(rBold).map((str, i) => {
-        if(i%2 == 0) return str
+        if (i % 2 == 0) return str
         return <b key={`b_${keyPrefix}_${i}`}>{str}</b>;
       })
     }
 
     const applyTips = (txt, keyPrefix) => {
-      if(typeof txt !== 'string') return txt;
+      if (typeof txt !== 'string') return txt;
       return txt.split(rTip).map((str, i) => {
-          if(i%2 == 0) return str;
-          return <Tip key={`tip_${keyPrefix}_${i}`} name={str}/>
+        if (i % 2 == 0) return str;
+        return <Tip key={`tip_${keyPrefix}_${i}`} name={str} />
       })
     }
 
     const applyLineBreaks = (txt, keyPrefix) => {
-      if(typeof txt !== 'string') return txt;
+      if (typeof txt !== 'string') return txt;
       let parts = txt.split('\n');
-      return parts.map((part,i) => i == (parts.length-1)? part : [part, <br key={`br_${keyPrefix}_${i}`}/>]).flat();
+      return parts.map((part, i) => i == (parts.length - 1) ? part : [part, <br key={`br_${keyPrefix}_${i}`} />]).flat();
     }
 
     // hack for testing if we've missed any text
     // return '----'; 
 
-    if(!rLink.test(txt) && !rTip.test(txt) && !txt.includes('\n') && !rBold.test(txt)) return txt;
+    if (!rLink.test(txt) && !rTip.test(txt) && !txt.includes('\n') && !rBold.test(txt)) return txt;
 
     return <>
       {applyLinks(txt)
@@ -212,11 +186,11 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
     </>
   }
 
-  const handleObject = (obj, skipProcessing=false) => {
-    if(skipProcessing) return obj;
-    if(typeof obj == 'number') return obj;
-    if(typeof obj === 'string') return applySymbols(obj);
-    if(Array.isArray(obj)) return obj.map(o => handleObject(o));
+  const handleObject = (obj, skipProcessing = false) => {
+    if (skipProcessing) return obj;
+    if (typeof obj == 'number') return obj;
+    if (typeof obj === 'string') return applySymbols(obj);
+    if (Array.isArray(obj)) return obj.map(o => handleObject(o));
 
     let newObj = {};
     Object.entries(obj).forEach(([key, value]) => {
@@ -226,7 +200,7 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
   }
 
   return {
-    t: (key, v={}) => handleObject(t(key, {...values, ...processValues(v)}), v['skipProcessing']),
+    t: (key, v = {}) => handleObject(t(key, { ...values, ...processValues(v) }), v['skipProcessing']),
     i18n,
   }
 }
