@@ -1,7 +1,7 @@
 #######################################################
 #### PRIORITY 0 : Core Voting Path + Basic Results ####
 #######################################################
-​
+
 # Initial Landing page for voter (ex. https://bettervoting.com/j87vqp/)
 election_home:
   start_time: '{{capital_election}} começa em {{datetime, datetime}}'
@@ -13,7 +13,7 @@ election_home:
   view_results: Ver Resultados
   drafted: Esta eleição ainda está em rascunho
   archived: Esta eleição foi arquivada
-​
+
 # Ballot (ex. https://bettervoting.com/j87vqp/vote)
 ballot:
   this_election_uses: Esta {{election}} usará {{voting_method}} para eleger {{spelled_count}} $t(winner.winner).
@@ -23,7 +23,7 @@ ballot:
   next: Próximo
   submit_ballot: Enviar
   submitting: Enviando...
-​
+
   dialog_submit_title: Enviar {{capital_ballot}}?
   dialog_send_receipt: Enviar recibo da cédula por e-mail?
   dialog_email_placeholder: E-mail para recibo
@@ -32,7 +32,7 @@ ballot:
   warnings:
     skipped_rank: Não pule classificações. Classifique os candidatos para mostrar claramente suas preferências. Candidatos deixados em branco são classificados por último.
     duplicate_rank: Não classifique múltiplos candidatos igualmente. (Classificar candidatos igualmente pode invalidar sua cédula.)
-​
+
   methods:
     approval:
       instruction_bullets:
@@ -100,10 +100,10 @@ ballot:
       footer_multi_winner: Os {{n}} {{candidates}} com mais votos vencem
       left_title: ''
       right_title: ''
-​
+
 # Displayed at the bottom of voter pages (ex. https://bettervoting.com/j87vqp/)
 support_blurb: Para suporte nesta {{election}} entre em contato com [{{email}}](mailto)
-​
+
 # Share Button dropdown (ex. https://bettervoting.com/pres24/thanks)
 share:
   button: Compartilhar {{capital_election}}
@@ -112,7 +112,7 @@ share:
   reddit: Reddit
   copy_link: Copiar Link
   link_copied: Link Copiado!
-​
+
 # Number translations (used for {{spelled_count}})
 spelled_numbers:
   1: um
@@ -125,12 +125,12 @@ spelled_numbers:
   8: oito
   9: nove
   10: dez
-​
+
 # Winner pluralization
 winner:
   winner_one: vencedor
   winner_other: vencedores
-​
+
 methods: 
   star:
     full_name: STAR Voting
@@ -159,7 +159,7 @@ methods:
   choose_one:
     full_name: Choose One Plurality
     short_name: Choose One
-​
+
 # Confirmation (after you've submitted a ballot)
 ballot_submitted:
   title: '{{capital_ballot}} Enviado'
@@ -167,14 +167,14 @@ ballot_submitted:
   results: Resultados
   donate: Doe para Equal Vote para apoiar software de votação de código aberto
   end_time: '{{capital_election}} termina {{date}} às {{time}}'
-​
+
 # Localisation for numbers
 number:
   rank_ordinal_one: "{{count}}º"
   rank_ordinal_two: "{{count}}º"
   rank_ordinal_few: "{{count}}º"
   rank_ordinal_other: "{{count}}º"
-​
+
 # Results Example: bettervoting.com/tcvc7r/results
 results:
   preliminary_title: RESULTADOS PRELIMINARES
@@ -200,7 +200,7 @@ results:
   vote_count: '{{n}} eleitores'
   method_context: 'Método de Votação: {{voting_method}}'
   learn_link_text: Como {{voting_method}} funciona
-​
+
   choose_one:
     bar_title: Votos para cada {{capital_candidate}}
     table_title: Tabela
@@ -208,7 +208,7 @@ results:
       - '{{capital_candidate}}'
       - Votos
       - '% de Todos os Votos'
-​
+
   approval:
     bar_title: Aprovação dos Candidatos
     table_title: Tabela
@@ -216,7 +216,7 @@ results:
       - '{{capital_candidate}}'
       - Votos
       - '% de Todos os Votos'
-​
+
   ranked_robin:
     bar_title: Vitórias em Confrontos Diretos
     table_title: Tabela
@@ -224,7 +224,7 @@ results:
       - '{{capital_candidate}}'
       - '# Vitórias'
       - Taxa de Vitórias
-​
+
   rcv:
     first_choice_title: Preferências de Primeira Escolha
     final_round_title: Rodada Final
@@ -233,7 +233,7 @@ results:
     exhausted: Exaustos
     tabulation_candidate_column: '{{capital_candidate}}'
     round_column: Rodada {{n}}
-​
+
   star:
     score_title: Rodada de Pontuação
     score_description:
@@ -254,7 +254,7 @@ results:
       - Votos no Desempate
       - '% dos Votos no Desempate'
       - '% Entre os Finalistas'
-​
+
     detailed_steps_title: Etapas de Tabulação
     tiebreaker_note_title: Uma nota sobre Desempates
     tiebreaker_note_text: 
@@ -275,14 +275,14 @@ results:
     # For example, a slight preference (like 5 vs. 4 stars) has a small impact in scoring but counts as one full vote in the runoff. 
     # Conversely, a strong preference (like 5 vs. 0 stars) makes a big difference in scoring but carries the same weight in the runoff. 
     # Ultimately, the runoff winner becomes the final winner because they are preferred by more voters over the runner-up.
-​
+
   star_pr:
     chart_title: Resultados por Rodada
     table_title: Tabela de Resultados
     table_columns:
       - '{{capital_candidate}}'
     round_column: Rodada {{n}}
-​
+
 keyword:
   # Method Terms
   star:
@@ -299,7 +299,7 @@ keyword:
     preferences: classificações
   choose_one:
     preferences: preferências
-​
+
   # Election vs Poll Terms
   election: 
     election: eleição
@@ -309,7 +309,7 @@ keyword:
     race: disputa
     ballot: cédula
     vote: voto
-​
+
   poll:
     election: enquete
     elections: enquetes
@@ -318,14 +318,14 @@ keyword:
     race: pergunta
     ballot: resposta
     vote: resposta
-​
+
   # General Terms
   yes: Sim
   no: Não
-​
+
   save: Salvar
   cancel: Cancelar
   submit: Enviar
-​
+
   # This is used in tables and charts
   total: Total 
