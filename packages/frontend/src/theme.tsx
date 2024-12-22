@@ -157,15 +157,15 @@ const brandPalette: PaletteOptions = {
 }
 
 const brandTypography: TypographyOptions = {
-  fontFamily: '"Nunito Sans", sans-serif',
-  button: {
-    fontFamily: '"Nunito Sans", sans-serif',
-    textTransform: 'none'
-  },
+   // fontFamily: 'Montserrat',
+   fontFamily: 'Montserrat, Verdana, sans-serif',
+   button:{
+     fontFamily: 'Montserrat, Verdana, sans-serif',
+   },
   ...Object.fromEntries(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map(level => [
     level,
     {
-      fontFamily: '"Nunito Sans", sans-serif',
+      fontFamily: 'Montserrat, Verdana, sans-serif',
       marginTop: '1rem',
       marginBottom: '1rem',
     }

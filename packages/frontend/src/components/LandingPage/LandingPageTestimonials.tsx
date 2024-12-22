@@ -36,8 +36,8 @@ export default () => {
                     backgroundImage: `url(${testimonial.image_url})`,
                     backgroundSize: 'cover',
                     borderRadius: '100%',
-                    width: '10rem',
-                    height: '10rem',
+                    width: '2rem',
+                    height: '2rem',
                     margin: 'auto',
                 }}/>
                 <Typography variant='h5' color={'darkShade.contrastText'} sx={{textAlign: 'center'}}>

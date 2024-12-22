@@ -49,7 +49,7 @@ const LandingPage = () => {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            gap: '1rem',
+            gap: '2rem',
             margin: 'auto',
         }}>
             <Box sx={{position:'absolute', top: '95vh', width: '100%', textAlign: 'center'}}>
