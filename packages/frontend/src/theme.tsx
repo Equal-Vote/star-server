@@ -164,7 +164,7 @@ const brandPalette: PaletteOptions = {
 
 const brandTypography: TypographyOptions = {
    // fontFamily: 'Montserrat',
-   fontFamily: 'Montserrat, Verdana, sans-serif',
+   fontFamily: 'Verdana, sans-serif',
    button:{
      fontFamily: 'Montserrat, Verdana, sans-serif',
    },
