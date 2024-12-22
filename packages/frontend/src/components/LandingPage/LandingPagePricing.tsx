@@ -4,12 +4,12 @@ import { useThemeSelector } from '../../theme'
 import { useOnScrollAnimator, useSubstitutedTranslation } from '../util'
 
 export default () => {
-    
+
     const themeSelector = useThemeSelector()
 
-    const {t} = useSubstitutedTranslation();
+    const { t } = useSubstitutedTranslation();
     const options = t('landing_page.pricing.items')
-    const {FadeIn, FadeUp} = useOnScrollAnimator();
+    const { FadeIn, FadeUp } = useOnScrollAnimator();
 
     return <FadeIn>
         <Box sx={{
@@ -18,27 +18,28 @@ export default () => {
             backgroundColor: 'darkShade.main',
             clip: 'unset',
             width: '100%',
-            p: { xs: 2},
+            p: { xs: 2 },
         }}>
             <Box sx={{
                 width: '100%',
                 maxWidth: '1300px',
                 margin: 'auto',
             }}>
-                <Typography variant='h4'color={'darkShade.contrastText'}  sx={{textAlign: 'center'}}>{t('landing_page.pricing.title')}</Typography>
+                <Typography variant='h4' color={'darkShade.contrastText'} sx={{ textAlign: 'center' }}>{t('landing_page.pricing.title')}</Typography>
             </Box>
             <Box sx={{
                 display: 'flex',
                 flexDirection: 'row',
                 gap: '5rem',
-                p: { xs: 4},
+                p: { xs: 4 },
                 justifyContent: 'center',
                 flexWrap: 'wrap',
             }}>
-                {options.map((option, i) => 
-                    <FadeUp key={i} delay={`${200+i*300}ms`}>
+                {options.map((option, i) =>
+                    <FadeUp key={i} delay={`${200 + i * 300}ms`}>
                         <Paper key={i} className='pricingOption' elevation={8} sx={{
                             width: '100%',
+                            maxWidth: '25rem',
                             display: 'flex',
                             flexDirection: 'column',
                             flexShrink: '0',
