@@ -2,7 +2,6 @@ import {Box, Button, Divider, FormControlLabel, Link, TextField, Typography} fro
 import { useEffect } from "react";
 import { DateTime } from "luxon";
 import { useTranslation } from "react-i18next";
-import en from '../i18n/en.yaml';
 import { Tip } from "./styles";
 import i18n from "~/i18n/i18n";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
@@ -146,16 +145,21 @@ export const useSubstitutedTranslation = (electionTermType='election', v={}) => 
     timeZoneName: 'short', timeZone: v['time_zone'] ?? undefined
   }
 
-  let values = processValues({...en.keyword, ...en.keyword[electionTermType], ...en.keyword[v[ 'methodKey' ] ?? 'star'], ...v, formatParams: {
-    datetime: dt,
-    datetime2: dt,
-    listed_datetime: {
-      year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric',
-      timeZoneName: undefined, timeZone: v['time_zone'] ?? undefined
-    },
-  }})
-
   const { t, i18n } = useTranslation()
+
+  let values = processValues({
+    ...t('keyword'),
+    ...t(`keyword.${electionTermType}`),
+    ...t(`keyword.${v[ 'methodKey' ] ?? 'star'}`),
+    ...v, formatParams: {
+      datetime: dt,
+      datetime2: dt,
+      listed_datetime: {
+        year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric',
+        timeZoneName: undefined, timeZone: v['time_zone'] ?? undefined
+      },
+    }
+  })
 
   const applySymbols = (txt) => {
     const applyLinks = (txt) => {
