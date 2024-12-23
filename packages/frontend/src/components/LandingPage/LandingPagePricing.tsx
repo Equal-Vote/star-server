@@ -5,6 +5,7 @@ import { useSubstitutedTranslation } from '../util'
 
 export default () => {
     const themeSelector = useThemeSelector()
+
     const { t } = useSubstitutedTranslation();
     const options = t('landing_page.pricing.items')
 
