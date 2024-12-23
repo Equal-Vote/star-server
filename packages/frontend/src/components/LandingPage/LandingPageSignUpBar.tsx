@@ -3,16 +3,14 @@ import React from 'react';
 import { StyledButton } from '../styles';
 import useAuthSession from '../AuthSessionContextProvider';
 import { useThemeSelector } from '../../theme';
-import { useOnScrollAnimator, useSubstitutedTranslation } from '../util';
+import { useSubstitutedTranslation } from '../util';
 
 export default () => {
     const authSession = useAuthSession()
     const themeSelector = useThemeSelector()
     const {t} = useSubstitutedTranslation();
 
-    const {FadeIn, FadeUp} = useOnScrollAnimator();
     return (
-    <FadeUp delay='300ms'>
         <Box sx={{
             background: themeSelector.mode === 'darkMode' ? 'brand.gray5' : 'brand.gray1',
             clip: 'unset',
@@ -48,5 +46,5 @@ export default () => {
                 </Button>
             </Box>
         </Box>
-    </FadeUp>
-)}
+    )
+}
