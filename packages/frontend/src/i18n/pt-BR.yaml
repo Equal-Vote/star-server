@@ -239,7 +239,7 @@ results:
     score_description:
       - Some as estrelas de todas as cédulas.
       - Os dois {{candidates}} com maior pontuação são os finalistas.
-    runoff_title: Rodada de Desempate Automático
+    runoff_title: Segundo Turno Automático
     runoff_description:
       - Cada voto vai para o finalista preferido do eleitor.
       - O finalista com mais votos vence.
@@ -248,11 +248,11 @@ results:
     score_table_columns:
       - '{{capital_candidate}}'
       - Pontuação
-    runoff_table_title: Tabela de Desempate
+    runoff_table_title: Tabela de 2° Turno
     runoff_table_columns:
       - '{{capital_candidate}}'
-      - Votos no Desempate
-      - '% dos Votos no Desempate'
+      - Votos no 2° Turno
+      - '% dos Votos no 2° Turno'
       - '% Entre os Finalistas'
 
     detailed_steps_title: Etapas de Tabulação
@@ -264,11 +264,11 @@ results:
     equal_preferences: Preferências Iguais
     score_higher_than_runoff_title: Por que o candidato com maior pontuação é diferente do vencedor?
     score_higher_than_runoff_text: |
-      O candidato com maior pontuação frequentemente coincide com o vencedor no desempate, mas nem sempre.
-      No desempate, apenas os votos mais preferidos contam, o que pode alterar o resultado.
-      Por exemplo, um voto 5 vs. 4 estrelas tem menos impacto na pontuação, mas conta totalmente no desempate,
-      enquanto um voto 5 vs. 0 estrelas faz uma grande diferença na pontuação, mas é igual no desempate.
-      O vencedor do desempate se destaca porque mais eleitores o preferem em relação ao segundo colocado.
+      O candidato com maior pontuação frequentemente coincide com o vencedor no segundo turno, mas nem sempre.
+      No segundo turno, apenas os votos mais preferidos contam, o que pode alterar o resultado.
+      Por exemplo, um voto 5 vs. 4 estrelas tem menos impacto na pontuação, mas conta totalmente no segundo turno,
+      enquanto um voto 5 vs. 0 estrelas faz uma grande diferença na pontuação, mas é igual no segundo turno.
+      O vencedor do segundo turno se destaca porque mais eleitores o preferem em relação ao segundo colocado.
     # Alternate Text:
     # The top-scoring candidate usually matches the winner in the runoff, but not always. 
     # The runoff round counts only the votes for the candidate a voter most prefers, which can lead to different weightings than in the scoring round. 
