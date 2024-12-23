@@ -9,7 +9,7 @@ election_home:
   ended_time: '{{capital_election}} terminou em {{datetime, datetime}}'
   vote: Votar
   or_view_results: ou ver resultados
-  ballot_submitted: '{{capital_ballot}} Enviado'
+  ballot_submitted: '{{capital_ballot}} Enviada'
   view_results: Ver Resultados
   drafted: Esta eleição ainda está em rascunho
   archived: Esta eleição foi arquivada
