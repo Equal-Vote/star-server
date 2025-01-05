@@ -1,5 +1,6 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 import { Candidate } from '@equal-vote/star-vote-shared/domain_model/Candidate';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 interface CandidateLabelProps {
     candidate: Candidate;
     gridArea: string;
@@ -14,7 +15,8 @@ export default function CandidateLabel ({candidate, gridArea}: CandidateLabelPro
               wordwrap: "break-word",
               mx: '10px',
             }}>
-              {candidate.candidate_name}
+              {candidate.candidate_url && <Link href={candidate.candidate_url} target='_blank'>{candidate.candidate_name}<OpenInNewIcon sx={{height: 15}}/></Link>}
+              {!candidate.candidate_url && candidate.candidate_name}
             </Typography>
           </Box>
     );
