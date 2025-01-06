@@ -24,7 +24,6 @@ type Props = {
   }
 const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
     const { t, election, permissions } = useElection()
-    const [updatedRoll, setUpdatedRoll] = useState(roll)
     const flags = useFeatureFlags();
     const [dialogOpen, setDialogOpen] = useState(false);
 

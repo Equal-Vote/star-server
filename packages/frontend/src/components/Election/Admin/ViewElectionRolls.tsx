@@ -119,7 +119,7 @@ const ViewElectionRolls = () => {
                 addRollPage &&
                 <AddElectionRoll onClose={onClose} />
             }
-            <SendEmailDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onSubmit={onSendEmails}/>
+            <SendEmailDialog electionRoll={data?.electionRoll} open={dialogOpen} onClose={() => setDialogOpen(false)} onSubmit={onSendEmails}/>
         </Container >
     )
 }

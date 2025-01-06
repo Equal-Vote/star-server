@@ -7,7 +7,7 @@ import { StyledButton } from "~/components/styles";
 import { LabelledTextField, RowButtonWithArrow } from "~/components/util";
 import { useSendEmails } from "~/hooks/useAPI";
 
-export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
+export default ({open, onClose, onSubmit, targetedEmail=undefined, electionRoll=undefined}) => {
     const authSession = useAuthSession()
     const [audience, setAudience] = useState(targetedEmail? 'single' : 'all')
     const [templateChosen, setTemplateChosen] = useState(false)
@@ -53,6 +53,14 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
             voting_begin: election.start_time ? `\n${t('emails.voting_begin', {datetime: election.start_time, skipProcessing: true})}\n` : '',
             voting_end: election.end_time ? `\n${t('emails.voting_end', {datetime: election.end_time, skipProcessing: true})}\n` : '',
         }))
+    }
+
+    const getVoterCount = () => {
+        if(!electionRoll) return 0;
+        if(audience == 'single') return 1;
+        if(audience == 'all') return electionRoll.length;
+        if(audience == 'has_voted') return electionRoll.filter(roll => roll.submitted).length
+        if(audience == 'has_not_voted') return electionRoll.filter(roll => !roll.submitted).length
     }
 
     let warning: string = (() => {
@@ -154,7 +162,7 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined}) => {
                                 target: audience,
                             })
                         }}>
-                        {targetedEmail? 'Send Email' : 'Send Emails'}
+                        {targetedEmail? 'Send Email' : `Send ${getVoterCount()} Emails`}
                     </Button>
                     <Button
                         variant="outlined"

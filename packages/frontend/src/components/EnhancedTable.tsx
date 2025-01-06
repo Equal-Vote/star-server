@@ -438,7 +438,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
 
 export default function EnhancedTable(props: EnhancedTableProps) {
-  const [order, setOrder] = React.useState<Order>('desc');
+  const [order, setOrder] = React.useState<Order>(props.defaultSortBy == 'email' ? 'asc' : 'desc');
   const [orderBy, setOrderBy] = React.useState<Extract<keyof TableData, string>>(props.defaultSortBy);
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
