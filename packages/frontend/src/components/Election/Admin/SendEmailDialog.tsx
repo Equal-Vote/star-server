@@ -79,6 +79,7 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined, electionRoll=
     return <Dialog
         open={open}
         onClose={close}
+        sx={audience != 'single' ? {background: '#0000bb88'} : {}}
     >
         <DialogTitle>Prepare Email Blast</DialogTitle>
         <DialogContent sx={{overflow: 'hidden'}}>
