@@ -38,7 +38,7 @@ export default () => {
                     paddingTop: '2rem',
                     gap: '2rem',
                 }}>
-                    {panels.map((panel, i) => <Box key={i}>
+                    {panels.map((panel, i) => <Box key={i} sx={{width: '380px'}}>
                         <Typography variant='h4' sx={{color: 'darkShade.contrastText'}}>{panel.title}</Typography>
                         <Typography component='p' sx={{color: 'darkShade.contrastText'}}>{panel.text}</Typography>
                     </Box>)}

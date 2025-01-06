@@ -40,6 +40,7 @@ export default () => {
                         flexDirection: 'column',
                         flexShrink: '0',
                         p: { xs: 2, md: 2 },
+                        maxWidth: '25rem',
                     }}>
                         <Typography variant='h5'>{option.title}</Typography>
                         <Typography variant='h6'><b>{option.price}</b></Typography>

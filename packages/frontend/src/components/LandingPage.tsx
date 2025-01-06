@@ -1,18 +1,15 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import Grid from "@mui/material/Grid";
-import Typography from '@mui/material/Typography';
+import { useContext, useEffect, useRef, useState } from 'react'
 import Box from '@mui/material/Box';
 import LandingPageHero from './LandingPage/LandingPageHero';
-import LandingPageFeatureElections from './LandingPage/LandingPageFeaturedElections';
 import LandingPageFeatures from './LandingPage/LandingPageFeatures';
 import LandingPageSignUpBar from './LandingPage/LandingPageSignUpBar';
 import LandingPageTestimonials from './LandingPage/LandingPageTestimonials';
-import { Button, Paper } from '@mui/material';
+import { Button } from '@mui/material';
 import LandingPagePricing from './LandingPage/LandingPagePricing';
 import useFeatureFlags from './FeatureFlagContextProvider';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import LandingPageStats from './LandingPage/LandingPageStats';
-import ReturnToClassicDialog, { ReturnToClassicContext, ReturnToClassicContextProvider } from './ReturnToClassicDialog';
+import { ReturnToClassicContext } from './ReturnToClassicDialog';
 import { useSubstitutedTranslation } from './util';
 
 
