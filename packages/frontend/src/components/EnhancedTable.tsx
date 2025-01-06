@@ -483,7 +483,8 @@ export default function EnhancedTable(props: EnhancedTableProps) {
   const formatTableData = (headKeys, data) => {
     let fData = data.map(item => {
         let fItem = {};
-        headKeys.forEach( key => {
+        // include voter_id as a hack so that it will be available in the callback
+        ['voter_id', ...headKeys].forEach( key => {
           fItem[key] = key in headCellPool ? headCellPool[key].formatter(item[key], item, t) : item[key];
         });
         fItem['raw'] = item;

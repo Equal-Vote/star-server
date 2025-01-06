@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip } from "@mui/material";
 import PermissionHandler from "../../PermissionHandler";
 import { useApproveRoll, useFlagRoll, useInvalidateRoll, useSendEmails, useSendInvite, useUnflagRoll } from "../../../hooks/useAPI";
 import { getLocalTimeZoneShort, useSubstitutedTranslation } from "../../util";
@@ -13,6 +13,8 @@ import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
 import SendEmailDialog from "./SendEmailDialog";
 import { email_request_data } from "@equal-vote/star-vote-backend/src/Controllers/Election/sendEmailController";
+import { SettingsBackupRestore } from "@mui/icons-material";
+import useSnackbar from "~/components/SnackbarContext";
 
 
 type Props = {
@@ -31,6 +33,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
     const unflag = useUnflagRoll(election.election_id)
     const invalidate = useInvalidateRoll(election.election_id)
     const sendEmails = useSendEmails(election.election_id)
+    const { setSnack } = useSnackbar();
 
     const onApprove = async () => {
         if (!await approve.makeRequest({ electionRollEntry: roll })) { return }
@@ -75,18 +78,12 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
             {(approve.isPending || flag.isPending || unflag.isPending || invalidate.isPending) &&
                 <div> Sending Request... </div>}
             <Grid container direction="column" >
-                <Grid item sm={12}>
-                    <Typography align='left' gutterBottom variant="h6" component="h6">
-                        {`Voter ID: ${roll.voter_id}`}
-                    </Typography>
-                </Grid>
                 {roll.email &&
                     <Grid item sm={12}>
                         <Typography align='left' gutterBottom variant="h6" component="h6">
                             {`Email Address: ${roll.email}`}
                         </Typography>
                     </Grid>
-
                 }
                 <Grid item sm={12}>
                     <Typography align='left' gutterBottom variant="h6" component="h6">
@@ -130,6 +127,19 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
                                 <Button variant='outlined' onClick={() => { setDialogOpen(true) }} > Draft Email </Button>
                             </PermissionHandler>
                         </Grid>
+                        <Box sx={{pb:3, display: 'flex', flexDirection: 'column'}}>
+                            <Button variant='outlined' sx={{maxWidth: '250px'}} onClick={() => {
+                                    navigator.clipboard.writeText(window.location.origin+'/'+election.election_id+'/id/'+roll.voter_id)
+                                    setSnack({
+                                        message: 'Unique URL Copied!',
+                                        severity: 'success',
+                                        open: true,
+                                        autoHideDuration: 6000,
+                                    })
+                                }}
+                            > Copy Unique Voting URL </Button>
+                            <Typography component='p'>(action will be captured in audit log)</Typography>
+                        </Box>
                     </>
                 }
                 {roll.state === 'registered' &&

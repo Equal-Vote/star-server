@@ -70,11 +70,14 @@ const ViewElectionRolls = () => {
     }
 
     let headKeys:HeadKey[] = (election.settings.invitation === 'email')?
-        ['voter_id', 'email', /*'invite_status', */'has_voted']
+        ['email', /*'invite_status', */'has_voted']
     :
-        ['voter_id', 'email', 'has_voted'];
+        ['email', 'has_voted'];
 
     if (flags.isSet('PRECINCTS')) headKeys.push('precinct');
+
+    // HACK to detect if they used email
+    if(data && data.electionRoll && !data.electionRoll[0].email) headKeys.unshift('voter_id')
 
     let electionRollData = React.useMemo(
         () => data?.electionRoll ? [...data.electionRoll] : [],
@@ -101,7 +104,7 @@ const ViewElectionRolls = () => {
                         data={electionRollData}
                         isPending={isPending && data?.electionRoll !== undefined}
                         pendingMessage='Loading Voters...'
-                        defaultSortBy="voter_id"
+                        defaultSortBy={headKeys[0]}
                         title="Voters"
                         handleOnClick={(voter) => onOpen(voter)}
                         emptyContent={<p>This election doesn't have any voters yet</p>}
