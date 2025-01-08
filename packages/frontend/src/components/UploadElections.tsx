@@ -2,6 +2,7 @@ import { VotingMethod } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { Box, Button, Checkbox, FormControlLabel, FormGroup, MenuItem, Paper, Select, Typography } from "@mui/material";
 import { useRef, useState } from "react";
 import { useSubstitutedTranslation } from "./util";
+import EnhancedTable from "./EnhancedTable";
 
 export default () => {
     const [votingMethod, setVotingMethod] = useState('IRV')
@@ -21,7 +22,6 @@ export default () => {
 
     const addCvrs = (files: FileList) => {
         // NOTE: FileList does not support map
-        console.log(files)
         let new_files = [];
         for(let i = 0; i < files.length; i++){
             new_files.push({
@@ -79,7 +79,7 @@ export default () => {
             onDrop={handleOnDrop}
         >
             <Typography variant="h6" component="h6" style={{ marginTop: 0 }}>
-                Add Election CVR
+                Add Election CVRs
             </Typography>
             <Box display='flex' flexDirection='row' alignItems='center'>
                 <Typography variant="h6" component="h6" sx={{ m: 0 }} style={{}} >
@@ -88,6 +88,7 @@ export default () => {
                 <input
                     type='file'
                     onChange={(e) => addCvrs(e.target.files)}
+                    multiple
                     hidden
                     ref={inputRef} />
                 <Button variant='outlined'
@@ -99,11 +100,19 @@ export default () => {
             </Box>
         </Box>
 
-        {cvrs.map((cvr, i) => 
-            <Paper sx={{width: '100%', p: 1}}>
-                <Typography key={i} component="p">{cvr.name}</Typography> 
-            </Paper>
-        )}
+        <EnhancedTable
+            headKeys={['file_name', 'election_id']}
+            data={cvrs.map(cvr => ({
+                file_name: cvr.name,
+                election_id: '(new election)'
+            }))}
+            isPending={false}
+            pendingMessage=''
+            defaultSortBy={'file_name'}
+            title="CVRs to Upload"
+            handleOnClick={() => {}}
+            emptyContent={<p>No files selected</p>}
+        />
 
         <Button variant='contained'>Add (or update) elections</Button>
     </Box>

@@ -21,6 +21,7 @@ import { epochToDateString, getLocalTimeZoneShort, useSubstitutedTranslation } f
 import { Checkbox, FormControl, ListItemText, MenuItem, Select, TextField, Chip } from '@mui/material';
 import { DateTime } from 'luxon';
 import { ElectionState } from '@equal-vote/star-vote-shared/domain_model/Election';
+import Link from "@mui/material/Link";
 
 export type HeadKey = keyof typeof headCellPool;
 
@@ -73,6 +74,22 @@ const headCellPool = {
         label: 'Email',
         filterType: 'search',
         formatter: a => a || '',
+    },
+    file_name: {
+        id: 'file_name',
+        numeric: false,
+        disablePadding: false,
+        label: 'File Name',
+        filterType: 'search',
+        formatter: a => a || '',
+    },
+    election_id: {
+        id: 'election_id',
+        numeric: false,
+        disablePadding: false,
+        label: 'Election ID',
+        filterType: 'search',
+        formatter: a => (a || '').includes('(') ? a : <Link href={`${window.location.origin}/${a}/results`}>{a}</Link>,
     },
     invite_status: {
         id: 'invite_status',
