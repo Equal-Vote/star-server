@@ -77,7 +77,7 @@ const ViewElectionRolls = () => {
     if (flags.isSet('PRECINCTS')) headKeys.push('precinct');
 
     // HACK to detect if they used email
-    if(data && data.electionRoll && (data.electionRoll.length == 0 || !data.electionRoll[0].email)) headKeys.unshift('voter_id')
+    if(data && data.electionRoll && data.electionRoll.length > 0 && !data.electionRoll[0].email) headKeys.unshift('voter_id')
 
     let electionRollData = React.useMemo(
         () => data?.electionRoll ? [...data.electionRoll] : [],
