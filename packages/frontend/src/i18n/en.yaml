@@ -619,6 +619,10 @@ tabulation_logs:
 
 # Info bubbles
 tips:
+  public_archive: 
+    title: Public Election Archive
+    description: This is a list of public elections that have been replicated on BetterVoting for research purposes
+
   columns_given: 
     title: Number of {{preferences}} given
     description: Percentage over voters who gave each number of {{preferences}}
@@ -1065,6 +1069,10 @@ emails:
   blank:
     subject: An update from {{title}}
     body: __ELECTION_HOME_BUTTON__
+
+# Upload Election Tool
+upload_elections:
+  add_to_public_archive: Add to public archive !tip(public_archive)
 
 # Convenience entry for localizing date
 datetime: '{{datetime, datetime}}'

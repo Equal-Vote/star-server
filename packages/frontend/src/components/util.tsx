@@ -27,6 +27,18 @@ export const commaListFormatter = new Intl.ListFormat(i18n.languages[0], { style
 
 export const capitalize = (str) => str[0].toUpperCase() + str.slice(1);
 
+// mapping from method frontend version to backend version
+// TODO: we need make these consistent
+export const methodValueToTextKey = {
+    STAR_PR: 'star_pr',
+    STAR: 'star',
+    RankedRobin: 'ranked_robin',
+    Approval: 'approval',
+    STV: 'stv',
+    Plurality: 'choose_one',
+    IRV: 'rcv',
+};
+
 export const MailTo = ({ children }) => {
   const { t } = useSubstitutedTranslation();
   const { setSnack } = useSnackbar();

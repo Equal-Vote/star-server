@@ -12,7 +12,7 @@ import { Box, FormHelperText, Radio, RadioGroup, Stack, Step, StepButton, StepCo
 import IconButton from '@mui/material/IconButton'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-import { scrollToElement, useSubstitutedTranslation } from '../../util';
+import { methodValueToTextKey, scrollToElement, useSubstitutedTranslation } from '../../util';
 import useElection from '../../ElectionContextProvider';
 import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
@@ -107,16 +107,6 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
             )
         }
     }, [ephemeralCandidates.length, applyRaceUpdate]);
-
-    const methodValueToTextKey = {
-        STAR_PR: 'star_pr',
-        STAR: 'star',
-        RankedRobin: 'ranked_robin',
-        Approval: 'approval',
-        STV: 'stv',
-        Plurality: 'choose_one',
-        IRV: 'rcv',
-    };
 
     const MethodBullet = ({value}) => <>
         <FormControlLabel value={value} control={<Radio />} label={t(`edit_race.methods.${methodValueToTextKey[value]}.title`)} sx={{ mb: 0, pb: 0 }} />

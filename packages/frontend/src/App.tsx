@@ -21,6 +21,7 @@ import ComposeContextProviders from './components/ComposeContextProviders'
 import './i18n/i18n'
 import ReturnToClassicDialog, { ReturnToClassicContextProvider } from './components/ReturnToClassicDialog'
 import { useSubstitutedTranslation } from './components/util'
+import UploadElections from './components/UploadElections'
 
 const App = () => {
   const {t} = useSubstitutedTranslation();
@@ -53,6 +54,7 @@ const App = () => {
               <Route path='/ElectionInvitations' element={<ElectionInvitations />} />
               <Route path='/ElectionsYouManage' element={<ElectionsYouManage />} />
               <Route path='/ElectionsYouVotedIn' element={<ElectionsYouVotedIn />} />
+              <Route path='/UploadElections' element={<UploadElections />} />
               <Route path='/OpenElections' element={<OpenElections />} />
               {/*Keeping old path for legacy reasons, although we can probably remove it once the domain moves from dev.star.vote*/}
               <Route path='/Election/:id/*' element={<Election />} /> 
