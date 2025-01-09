@@ -31,31 +31,13 @@ type CastVoteEvent = {
 
 const castVoteEventQueue = "castVoteEvent";
 
-async function castVoteController(req: IElectionRequest, res: Response, next: NextFunction) {
-    Logger.info(req, "Cast Vote Controller");
-
-    const targetElection = req.election;
-    if (targetElection == null){
-            const errMsg = "Invalid Ballot: invalid election Id";
-            Logger.info(req, errMsg);
-            throw new BadRequest(errMsg);
-        }
- 
-    if (targetElection.state!=='open' && targetElection.state!=='draft'){
-        Logger.info(req, "Ballot Rejected. Election not open.", targetElection);
-        throw new BadRequest("Election is not open");
-    }
-    
-    const user = req.user;
-    
-    const inputBallot: Ballot = req.body.ballot;
-    const receiptEmail: string = req.body.receiptEmail
+async function makeBallotEvent(req: IElectionRequest, targetElection: Election, inputBallot: Ballot, voter_id?: string){
     inputBallot.election_id = targetElection.election_id;
     let roll = null;
 
     // skip voter roll & validation steps while in draft mode
     if(targetElection.state !== 'draft'){ 
-        const missingAuthData = checkForMissingAuthenticationData(req,targetElection, req)
+        const missingAuthData = checkForMissingAuthenticationData(req, targetElection, req, voter_id)
         if (missingAuthData !== null) {
             throw new Unauthorized(missingAuthData);
         }
@@ -106,13 +88,33 @@ async function castVoteController(req: IElectionRequest, res: Response, next: Ne
     }
 
     const reqId = req.contextId ? req.contextId : randomUUID();
-    const userEmail = receiptEmail;
-    const event = {
+    return {
         requestId:reqId,
         inputBallot:inputBallot,
         roll:roll,
-        userEmail:userEmail,
+        userEmail:undefined,
     }
+}
+
+async function uploadBallotsController(req: IElectionRequest, res: Response, next: NextFunction) {
+    // temporarily a copy of cast voter contoller
+    Logger.info(req, "Cast Vote Controller");
+
+    const targetElection = req.election;
+    if (targetElection == null){
+        const errMsg = "Invalid Ballot: invalid election Id";
+        Logger.info(req, errMsg);
+        throw new BadRequest(errMsg);
+    }
+ 
+    if ((targetElection.state!=='open' && targetElection.state!=='draft')){
+        Logger.info(req, "Ballot Rejected. Election not open.", targetElection);
+        throw new BadRequest("Election is not open");
+    }
+
+    let event = await makeBallotEvent(req, targetElection, req.body.ballot)
+
+    event.userEmail = req.body.recieptEmail;
 
     await (await EventQueue).publish(castVoteEventQueue, event);
 
@@ -120,7 +122,36 @@ async function castVoteController(req: IElectionRequest, res: Response, next: Ne
         (io as Server).to('landing_page').emit('updated_stats', await innerGetGlobalElectionStats(req));
     }
 
-    res.status(200).json({ ballot: inputBallot} );
+    res.status(200).json({ ballot: event.inputBallot} );
+    Logger.debug(req, "CastVoteController done, saved event to store");
+};
+
+async function castVoteController(req: IElectionRequest, res: Response, next: NextFunction) {
+    Logger.info(req, "Cast Vote Controller");
+
+    const targetElection = req.election;
+    if (targetElection == null){
+        const errMsg = "Invalid Ballot: invalid election Id";
+        Logger.info(req, errMsg);
+        throw new BadRequest(errMsg);
+    }
+ 
+    if ((targetElection.state!=='open' && targetElection.state!=='draft')){
+        Logger.info(req, "Ballot Rejected. Election not open.", targetElection);
+        throw new BadRequest("Election is not open");
+    }
+
+    let event = await makeBallotEvent(req, targetElection, req.body.ballot)
+
+    event.userEmail = req.body.recieptEmail;
+
+    await (await EventQueue).publish(castVoteEventQueue, event);
+
+    if(io != null){ // necessary for tests
+        (io as Server).to('landing_page').emit('updated_stats', await innerGetGlobalElectionStats(req));
+    }
+
+    res.status(200).json({ ballot: event.inputBallot} );
     Logger.debug(req, "CastVoteController done, saved event to store");
 };
 

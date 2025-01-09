@@ -205,6 +205,45 @@ ballotRouter.get('/Election/:id/ballot/:ballot_id', asyncHandler(getBallotByBall
  *         description: Election not found */
 ballotRouter.post('/Election/:id/vote', asyncHandler(castVoteController))
 
+/** 
+ * @swagger
+ * /Election/{id}/uploadBallots:
+ *   post:
+ *     summary: Upload ballots for an election
+ *     tags: [Ballots]
+ *     security:
+ *      - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The election ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *        application/json:
+ *          schema:
+ *           type: array
+ *           items:
+ *              type: object
+ *              $ref: '#/components/schemas/NewBallot'
+ *     responses:
+ *       200:
+ *         description: All Ballots Uploaded
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: If all ballots were uploaded
+ *       404:
+ *         description: Election not found */
+ballotRouter.post('/Election/:id/uploadBallots', asyncHandler(castVoteController))
+
 //I don't really understand what the point of this is, but it's in the test suite so I'm including it
 ballotRouter.post('/Election/:id/ballot', asyncHandler(returnElection))
 

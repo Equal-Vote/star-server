@@ -25,6 +25,7 @@ export const permissions = {
   canEditElectionState:     [roles.system_admin, roles.owner],
   canViewPreliminaryResults:[roles.system_admin, roles.owner, roles.admin, roles.auditor],
   canSendEmails:            [roles.system_admin, roles.owner, roles.admin],
+  canUpdatePublicArchive:   [roles.system_admin],
 }
 
 export const hasPermission = (roles:roles[],permission:permission) => {

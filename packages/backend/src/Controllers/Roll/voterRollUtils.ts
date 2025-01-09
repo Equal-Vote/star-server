@@ -104,10 +104,11 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
 
 }
 
-export function checkForMissingAuthenticationData(req: IRequest, election: Election, ctx: ILoggingContext): string | null {
+// NOTE: voter_id can be directly passed in for bulk ballot uploads, but usually it will be retrieved from the cookies
+export function checkForMissingAuthenticationData(req: IRequest, election: Election, ctx: ILoggingContext, voter_id?: string): string | null {
     // Checks that user has provided all data needed for authentication
     Logger.info(req, `checkForMissingAuthenticationData`)
-    if ((election.settings.voter_authentication.voter_id && election.settings.voter_access == 'closed') && !(req.cookies?.voter_id)) {
+    if ((election.settings.voter_authentication.voter_id && election.settings.voter_access == 'closed') && !(voter_id ?? req.cookies?.voter_id)) {
         return 'Voter ID Required'
     }
     // Arend's Note: I don't think 'User ID Required' is used anymore, might be a remnant of when we were thinking of custom authentication flows, but we don't have a clear story for that at the moment.

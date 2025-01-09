@@ -32,7 +32,7 @@ const registerVoter = async (req: IElectionRequest, res: Response, next: NextFun
         throw new BadRequest("Election is not open");
     }
 
-    const missingAuthData = checkForMissingAuthenticationData(req, targetElection, req)
+    const missingAuthData = checkForMissingAuthenticationData(req, targetElection)
     if (missingAuthData !== null) {
         throw new Unauthorized(missingAuthData);
     }
