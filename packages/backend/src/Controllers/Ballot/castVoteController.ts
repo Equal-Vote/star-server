@@ -36,6 +36,8 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
     let roll = null;
 
     // skip voter roll & validation steps while in draft mode
+    // TODO: we may be able to shortcut further for elections that don't require authentication
+    //       ^ that could be huge when creating elections from a set of ballots
     if(targetElection.state !== 'draft'){ 
         const missingAuthData = checkForMissingAuthenticationData(req, targetElection, req, voter_id)
         if (missingAuthData !== null) {
@@ -97,8 +99,7 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
 }
 
 async function uploadBallotsController(req: IElectionRequest, res: Response, next: NextFunction) {
-    // temporarily a copy of cast voter contoller
-    Logger.info(req, "Cast Vote Controller");
+    Logger.info(req, "Upload Ballots Controller");
 
     const targetElection = req.election;
     if (targetElection == null){
@@ -107,22 +108,34 @@ async function uploadBallotsController(req: IElectionRequest, res: Response, nex
         throw new BadRequest(errMsg);
     }
  
-    if ((targetElection.state!=='open' && targetElection.state!=='draft')){
-        Logger.info(req, "Ballot Rejected. Election not open.", targetElection);
-        throw new BadRequest("Election is not open");
+    let events = await Promise.all(
+        req.body.ballots.map(({ballot, voter_id} : {ballot: Ballot, voter_id: string}) => 
+            makeBallotEvent(req, targetElection, structuredClone(ballot), voter_id).catch((err) => ({
+                error: err,
+                ballot: ballot
+            }))
+        )
+    );
+
+    let output = events.map((event, i) => ({
+        voter_id: req.body.ballots[i].voter_id,
+        success: !('error' in event),
+        message: ('error' in event)? event.error : 'Success'
+    }))
+
+    try {
+        await (await EventQueue).publishBatch(castVoteEventQueue, events.filter(event => !('error' in event)));
+    }catch(err: any){
+        const msg = `Could not upload ballots`;
+        Logger.error(req, `${msg}: ${err.message}`);
+        throw new InternalServerError(msg)
     }
-
-    let event = await makeBallotEvent(req, targetElection, req.body.ballot)
-
-    event.userEmail = req.body.recieptEmail;
-
-    await (await EventQueue).publish(castVoteEventQueue, event);
 
     if(io != null){ // necessary for tests
         (io as Server).to('landing_page').emit('updated_stats', await innerGetGlobalElectionStats(req));
     }
 
-    res.status(200).json({ ballot: event.inputBallot} );
+    res.status(200).json({ responses: output} );
     Logger.debug(req, "CastVoteController done, saved event to store");
 };
 
@@ -192,5 +205,6 @@ function assertVoterMayVote(voterAuthorization:any, ctx:ILoggingContext ): void{
 
 export {
     castVoteController,
+    uploadBallotsController,
     handleCastVoteEvent
 }

@@ -3,7 +3,8 @@ import {
     deleteAllBallotsForElectionID,
     getBallotByBallotID,
     castVoteController,
-    getAnonymizedBallotsByElectionID
+    getAnonymizedBallotsByElectionID,
+    uploadBallotsController
 
 } from '../Controllers/Ballot';
 import {
@@ -225,24 +226,43 @@ ballotRouter.post('/Election/:id/vote', asyncHandler(castVoteController))
  *       content:
  *        application/json:
  *          schema:
- *           type: array
- *           items:
- *              type: object
- *              $ref: '#/components/schemas/NewBallot'
- *     responses:
+ *            type: object
+ *            properties: 
+ *               ballots:
+ *                  type: array
+ *                  items:
+ *                     type: object
+ *                     properties:
+ *                         ballot:
+ *                             type: object
+ *                             $ref: '#/components/schemas/NewBallot'
+ *                         voter_id:
+ *                             type: string
+ *     respon ses:
  *       200:
- *         description: All Ballots Uploaded
+ *         description: All Ballots Processed
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: If all ballots were uploaded
+ *               properties: 
+ *                  responses:
+ *                     type: array
+ *                     items:                
+ *                        type: object
+ *                        properties:
+ *                            voter_id:
+ *                                type: string
+ *                                description: id of voter
+ *                            success:
+ *                                type: boolean
+ *                                description: If ballot was uploaded
+ *                            message:
+ *                                type: string
+ *                                description: Corresponding message
  *       404:
  *         description: Election not found */
-ballotRouter.post('/Election/:id/uploadBallots', asyncHandler(castVoteController))
+ballotRouter.post('/Election/:id/uploadBallots', asyncHandler(uploadBallotsController))
 
 //I don't really understand what the point of this is, but it's in the test suite so I'm including it
 ballotRouter.post('/Election/:id/ballot', asyncHandler(returnElection))
