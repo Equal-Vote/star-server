@@ -310,8 +310,8 @@ export default () => {
                         }}>
                             <FormControlLabel control={
                                 <TextField
-                                    id="contact_email"
-                                    name={t(`election_settings.contact_email`)}
+                                    id='contact_email'
+                                    name='contact_email'
                                     value={election.settings.contact_email}
                                     onChange={(e) => 
                                         setElection({...election, settings: {

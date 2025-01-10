@@ -232,12 +232,7 @@ ballotRouter.post('/Election/:id/vote', asyncHandler(castVoteController))
  *                  type: array
  *                  items:
  *                     type: object
- *                     properties:
- *                         ballot:
- *                             type: object
- *                             $ref: '#/components/schemas/NewBallot'
- *                         voter_id:
- *                             type: string
+ *                     $ref: '#/components/schemas/NewBallotWithVoterID'
  *     respon ses:
  *       200:
  *         description: All Ballots Processed

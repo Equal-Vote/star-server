@@ -3,13 +3,21 @@ import { Box, Button, Checkbox, FormControlLabel, FormGroup, MenuItem, Paper, Se
 import { useRef, useState } from "react";
 import { useSubstitutedTranslation } from "./util";
 import EnhancedTable from "./EnhancedTable";
+import { rankColumnCSV } from "./cvrParsers";
 
 export default () => {
-    const [votingMethod, setVotingMethod] = useState('IRV')
     const [addToPublicArchive, setAddToPublicArchive] = useState(false)
     const [cvrs, setCvrs] = useState([])
     const {t} = useSubstitutedTranslation();
     const inputRef = useRef(null)
+    const [electionsSubmitted, setElectionsSubmitted] = useState(false);
+
+    const submitElections = () => {
+        setElectionsSubmitted(true)
+
+
+        fetch(cvrs[0].url).then(res => res.text()).then(s => rankColumnCSV(s))
+    }
 
     const handleDragOver = (e) => {
         e.preventDefault()
@@ -42,17 +50,6 @@ export default () => {
         gap={2}
     >
         <Typography variant='h3'>Upload Election(s)</Typography>        
-        <Select
-            name="Voting Method"
-            label="Voting Method"
-            value={votingMethod}
-            onChange={(e) => setVotingMethod(e.target.value as VotingMethod)}
-            disabled
-        >
-            <MenuItem key="IRV" value="IRV">
-                Ranked Choice Voting (IRV)
-            </MenuItem>
-        </Select>
 
         {/* TODO: add a sys admin permission check*/ }
         <FormGroup>
@@ -114,6 +111,6 @@ export default () => {
             emptyContent={<p>No files selected</p>}
         />
 
-        <Button variant='contained'>Add (or update) elections</Button>
+        <Button variant='contained' disalbed={!electionsSubmitted} onClick={submitElections}>Add (or update) elections</Button>
     </Box>
 }
