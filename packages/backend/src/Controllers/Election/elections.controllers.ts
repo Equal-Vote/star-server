@@ -139,7 +139,7 @@ const returnElection = async (req: any, res: any, next: any) => {
     Logger.info(req, `${className}.returnElection ${req.params.id}`)
     var election = req.election;
     
-    const missingAuthData = checkForMissingAuthenticationData(req, election)
+    const missingAuthData = checkForMissingAuthenticationData(req, election, req)
     let roll:ElectionRoll|null = null
     if (missingAuthData === null) {
         roll = await getOrCreateElectionRoll(req, election, req);
