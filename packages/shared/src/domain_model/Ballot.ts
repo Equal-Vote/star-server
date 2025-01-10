@@ -4,6 +4,10 @@ import { Race } from "./Race";
 import { Uid } from "./Uid";
 import { Vote } from "./Vote";
 
+export interface NewBallotWithVoterID {
+    voter_id: string;
+    ballot: NewBallot;
+}
 export interface Ballot {
     ballot_id:  Uid; //ID if ballot
     election_id: Uid; //ID of election ballot is cast in

@@ -15,6 +15,8 @@ import { IElectionRequest } from "../../IRequest";
 import { Response, NextFunction } from 'express';
 import { io } from "../../socketHandler";
 import { Server } from "socket.io";
+import { expectPermission } from "../controllerUtils";
+import { permissions } from "@equal-vote/star-vote-shared/domain_model/permissions";
 
 const ElectionsModel = ServiceLocator.electionsDb();
 const ElectionRollModel = ServiceLocator.electionRollDb();
@@ -100,6 +102,10 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
 
 async function uploadBallotsController(req: IElectionRequest, res: Response, next: NextFunction) {
     Logger.info(req, "Upload Ballots Controller");
+
+    expectPermission(req.user_auth.roles, permissions.canUploadBallots);
+
+    //TODO: if it's a public_archive item, also check canUpdatePublicArchive instead
 
     const targetElection = req.election;
     if (targetElection == null){
