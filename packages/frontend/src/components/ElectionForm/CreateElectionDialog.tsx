@@ -49,7 +49,7 @@ export const CreateElectionContextProvider = ({children}) => {
 
 /////// DIALOG /////
 
-const defaultElection: NewElection = {
+export const defaultElection: NewElection = {
     title: '',
     owner_id: '',
     description: '',

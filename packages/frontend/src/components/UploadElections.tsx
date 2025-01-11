@@ -4,6 +4,12 @@ import { useRef, useState } from "react";
 import { useSubstitutedTranslation } from "./util";
 import EnhancedTable from "./EnhancedTable";
 import { rankColumnCSV } from "./cvrParsers";
+import { v4 as uuidv4 } from 'uuid';
+import Papa from 'papaparse';
+import { usePostElection } from "~/hooks/useAPI";
+import useAuthSession from "./AuthSessionContextProvider";
+import { defaultElection } from "./ElectionForm/CreateElectionDialog";
+import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 
 export default () => {
     const [addToPublicArchive, setAddToPublicArchive] = useState(false)
@@ -11,12 +17,83 @@ export default () => {
     const {t} = useSubstitutedTranslation();
     const inputRef = useRef(null)
     const [electionsSubmitted, setElectionsSubmitted] = useState(false);
+    const { error: postError, isPending, makeRequest: postElection } = usePostElection()
+    const authSession = useAuthSession()
+
 
     const submitElections = () => {
         setElectionsSubmitted(true)
 
+        cvrs.forEach(cvr => {
+            // #1: Parse CSV
+            const post_process = async (parsed_csv) => {
+                // #2 : Infer Election Settings
+                const errorRows = new Set(parsed_csv.errors.map(error => error.row))
+                const rankFields = parsed_csv.meta.fields.filter((field:string) => field.startsWith('rank'));
+                const maxRankings = rankFields.length;
+                let candidateNames = new Set();
+                parsed_csv.data.forEach((row, i) => {
+                    if(errorRows.has(i)) return;
+                    candidateNames = candidateNames.union(new Set(rankFields.map(rankField => row[rankField])))
+                })
+                candidateNames.delete('skipped');
+                candidateNames.delete('overvote');
+                // TODO: infer num winners
 
-        fetch(cvrs[0].url).then(res => res.text()).then(s => rankColumnCSV(s))
+                // #3 : Create (or fetch) Election 
+                const election = await postElection({
+                    Election: {
+                        ...defaultElection,
+                        title: cvr.name.split('.')[0],
+                        state: 'closed',
+                        owner_id: authSession.getIdField('sub'),
+                        settings: {
+                            ...defaultElection.settings,
+                            max_rankings: maxRankings
+                        },
+                        races: [
+                            {
+                                race_id: uuidv4(),
+                                voting_method: 'IRV', 
+                                title: cvr.name.split('.')[0],
+                                candidates: [...candidateNames].map(name => ({ 
+                                    candidate_id: uuidv4(),
+                                    candidate_name: name
+                                })) as Candidate[],
+                                num_winners: 1
+                            }
+                        ]
+                    },
+                })
+
+                if (!election){
+                    parsed_csv.errors.push({
+                        code: "ElectionCreationFailed",
+                        message: postError,
+                        row: -1,
+                        type: "ElectionCreationFailed"
+                    })
+                    return;
+                };
+
+                //// #4 : Convert Rows to Ballots
+                //rankColumnCSV(results, 'election_id')
+                // TODO: store results.errors somewhere
+                
+            }
+            Papa.parse(cvr.url, {
+                header: true,
+                download: true,
+                dynamicTyping: true,
+                complete: post_process
+            })
+            // infer election settings from name, and csv headers
+            // create election (w/ first race)
+            // convert rows to ballots
+            // upload ballots
+            
+            // optional: add more election settings based on ballots (ex. max rankings)
+        })
     }
 
     const handleDragOver = (e) => {
@@ -111,6 +188,6 @@ export default () => {
             emptyContent={<p>No files selected</p>}
         />
 
-        <Button variant='contained' disalbed={!electionsSubmitted} onClick={submitElections}>Add (or update) elections</Button>
+        <Button variant='contained' disabled={electionsSubmitted} onClick={submitElections}>Add (or update) elections</Button>
     </Box>
 }
