@@ -9,6 +9,8 @@ services:
       - star-net
     environment:
       - DATABASE_URL=postgresql://postgres:ChangeMeOrDontTest2020@my-db:5432/postgres
+      - KEYCLOAK_SECRET=${KC_CLIENT_SECRET}
+
   my-db:
     image: postgres
     ports:
@@ -19,15 +21,34 @@ services:
       - POSTGRES_PASSWORD=ChangeMeOrDontTest2020
     restart:
       on-failure
+  kc-db:
+    image: postgres
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_PASSWORD=ChangeMeOrDontTest2020
+    
+    
+    
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0.1
-    command:
-      - start-dev
-      - --import-realm
+  #Docker image corresponds to helm chart version 21.0.3 used in production
+  #https://github.com/bitnami/charts/commit/35d62114207b5d44b81243b05e9fa62e76709d1a
+    image: docker.io/bitnami/keycloak:24.0.3-debian-12-r0
     ports:
       - '8080:8080'
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
+      - WEB_CLIENT_SECRET=${KC_CLIENT_SECRET}
+      - KEYCLOAK_DATABASE_HOST=kc-db
+      - KEYCLOAK_DATABASE_PORT=5432
+      - KEYCLOAK_DATABASE_USER=postgres
+      - KEYCLOAK_DATABASE_PASSWORD=ChangeMeOrDontTest2020
+      - KEYCLOAK_DATABASE_NAME=postgres
+      - KEYCLOAK_EXTRA_ARGS=--import-realm --verbose
+    volumes:
+      - ./realm.json:/opt/bitnami/keycloak/data/import/realm.json
+    depends_on:
+      - kc-db
 networks:
   star-net: {}

@@ -187,10 +187,10 @@ const VotePage = () => {
   if(pages.length == 0){
     return <Container disableGutters={true} maxWidth="sm"><h3>No races created for election</h3></Container>
   }
-
-  let pageIsUnderVote = (page) => {
-    return page.candidates.reduce((prev, c) => prev && (c.score == 0 || c.score == null), true)
-  }
+  const isOnLastPage = currentPage === pages.length - 1
+  const noScores = pages.every(page => page.candidates.every(candidate => candidate.score === null))
+  const thereAreWarnings = pages.some(page => page.warnings)
+  const submitButtonDisabled = !isOnLastPage || (isPending || noScores || thereAreWarnings)
 
   return (
     <Container disableGutters={true} maxWidth="sm">
@@ -249,9 +249,11 @@ const VotePage = () => {
         }
         <Button
           variant='contained'
-          onClick={() => (currentPage === pages.length-1)? setIsOpen(true) : setCurrentPageAndScroll(count => count + 1)}
-          sx={{ maxHeight: '40px', minWidth: '100px', marginLeft: {xs: '10px', md: '40px'}, visibility: 'visible' }}>
-            {t((currentPage === pages.length-1)? 'ballot.submit_ballot' : 'ballot.next')}
+          name='submit-ballot'
+          onClick={() => setIsOpen(true)}
+          disabled={submitButtonDisabled}//disable unless on last page and at least one candidate scored
+          style={{ margin: "auto", minWidth: "150px", marginTop: "40px" }}>
+              <Typography variant="h6">{t('ballot.submit_ballot')}</Typography>
         </Button>
       </Box>
       <SupportBlurb/>
