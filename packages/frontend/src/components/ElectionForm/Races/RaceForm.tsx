@@ -312,11 +312,11 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
                                 onChange={(e) => applyRaceUpdate(race => { race.voting_method = e.target.value })}
                             >
                                 {methodFamily == 'proportional_multi_winner' ?
-                                    flags.isSet('METHOD_STAR_PR') && <MethodBullet value='STAR_PR'/>
+                                    <MethodBullet value='STAR_PR'/>
                                 : <>
                                     <MethodBullet value='STAR'/>
-                                    {flags.isSet('METHOD_RANKED_ROBIN') && <MethodBullet value='RankedRobin'/>}
-                                    {flags.isSet('METHOD_APPROVAL') && <MethodBullet value='Approval'/>}
+                                    <MethodBullet value='RankedRobin'/>
+                                    <MethodBullet value='Approval'/>
                                 </>}
 
                                 <Box
@@ -357,10 +357,10 @@ export default function RaceForm({ race_index, editedRace, errors, setErrors, ap
 
 
                                     {methodFamily == 'proportional_multi_winner' ?
-                                        flags.isSet('METHOD_RANKED_CHOICE') && <MethodBullet value='STV'/>
+                                        <MethodBullet value='STV'/>
                                     : <>
                                         <MethodBullet value='Plurality'/>
-                                        {flags.isSet('METHOD_RANKED_CHOICE') && <MethodBullet value='IRV'/>}
+                                        <MethodBullet value='IRV'/>
                                     </>}
 
                                 </Box>
