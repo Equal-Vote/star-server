@@ -257,6 +257,17 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T, isDate: boolean) 
       return 1;
     }
   }
+  if ('string' === typeof b[orderBy] && 'string' === typeof a[orderBy]) {
+    const alc = a[orderBy].toLowerCase();
+    const blc = b[orderBy].toLowerCase();
+    if (blc < alc) {
+      return -1;
+    }
+    if (blc > alc) {
+      return 1;
+    }
+    return 0;
+  }
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
