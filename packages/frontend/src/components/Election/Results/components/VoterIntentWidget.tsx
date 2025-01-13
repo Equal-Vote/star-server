@@ -96,7 +96,6 @@ export default ({eliminationOrderById, winnerId} : {eliminationOrderById : strin
             if(trailingRanks) return 4;
             return 2;
         }
-        //if(ballotType() == 2) console.log(loggedBallot);
         data[ballotType()-1].votes++;
     })
 
