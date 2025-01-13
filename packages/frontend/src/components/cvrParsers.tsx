@@ -1,4 +1,5 @@
 import { NewBallotWithVoterID } from "@equal-vote/star-vote-shared/domain_model/Ballot";
+import { Election } from "@equal-vote/star-vote-shared/domain_model/Election";
 
 /* 
     Example Input (assuming papa parse)
@@ -19,39 +20,40 @@ import { NewBallotWithVoterID } from "@equal-vote/star-vote-shared/domain_model/
     }
 */
 
-//const parseCSV = (text : string) => {
-//    console.log(CSV.parse(text));
-//}
-
 // ported from https://github.com/fairvotereform/rcv_cruncher/blob/9bb9f8482290033ff7b31d6b091186474e7afff6/src/rcv_cruncher/parsers.py
-export const rankColumnCSV = ({data, meta, errors}, election) : {output: NewBallotWithVoterID[], errors:object[]} => {
-    const fields = meta.fields;
+export const rankColumnCSV = ({data, meta, errors}, election: Election) : {ballots: NewBallotWithVoterID[], errors:object[]} => {
+    const errorRows = new Set(errors.map(error => error.row))
+    const rankFields = meta.fields.filter((field:string) => field.startsWith('rank'));
 
-    let output = data.map((row,i) => {
-
-export interface Ballot {
-    election_id: Uid; //ID of election ballot is cast in
-    status: string; //Status of string (saved, submitted)
-    date_submitted: number; //time ballot was submitted, represented as unix timestamp (Date.now())
-    votes: Vote[];         // One per poll
-}
-export interface Vote {
-    race_id: Uid;        // Must match the pollId of the election
-    scores: Score[];       // One per candidate
-}
+    let ballots = data.map((row,i) => {
+        if(errorRows.has(i)) return;
+        // TODO: this currently doesn't handle overvotes or duplicate ranks
+        // TODO: add try catch for adding errors
+        let invRow = rankFields.reduce((obj, key) => {
+            obj[row[key]] = Number(key.replace('rank', ''));
+            return obj;
+        }, {})
         return {
             voter_id: i,
             ballot: {
-                election_id: election_id,
+                election_id: election.election_id,
                 status: 'submitted',
                 date_submitted: Date.now(),
-                votes: []
+                votes: [
+                    {
+                        race_id: election.races[0].race_id,
+                        scores: election.races[0].candidates.map(c => {
+                            let ranking = invRow[c.candidate_name];
+                            return {
+                                candidate_id: c.candidate_id,
+                                score: ranking ? ranking : null
+                            }
+                        })
+                    }
+                ]
             }
         }
     })
 
-    return {
-        output: [],
-        errors: []
-    };
+    return {ballots, errors};
 }

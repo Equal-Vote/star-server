@@ -36,6 +36,12 @@ export interface BallotAction {
     timestamp:number;
 }
 
+export interface BallotSubmitStatus {
+    voter_id:string;
+    success:boolean;
+    message:string;
+}
+
 export interface NewBallot extends PartialBy<Ballot,'ballot_id'|'create_date'|'update_date'|'head'> {}
 
 export function ballotValidation(election: Election, obj:Ballot): string | null {
@@ -76,7 +82,8 @@ export function ballotValidation(election: Election, obj:Ballot): string | null 
         if (['RankedRobin', 'IRV', 'STV'].includes(race.voting_method)) {
             const numCandidates = race.candidates.length;
             vote.scores.forEach(score => {
-                    if (score && score.score > numCandidates || (maxRankings && score.score > maxRankings) || score.score < 0) {
+                // Arend: Removing check against numCandidates, that's not necessarily true for public RCV elections
+                    if (score && /*score.score > numCandidates ||*/ (maxRankings && score.score > maxRankings) || score.score < 0) {
                         outOfBoundsError +=  `Race: ${race.title}, Score: ${score.score}; `;
                     }
                 })

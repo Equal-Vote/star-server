@@ -46,8 +46,10 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
             throw new Unauthorized(missingAuthData);
         }
 
-        roll = await getOrCreateElectionRoll(req, targetElection, req);
+        // skipping state check since this is allowed when uploading ballots, and it's already explicitly checked for individual ballots
+        roll = await getOrCreateElectionRoll(req, targetElection, req, voter_id, true);
         const voterAuthorization = getVoterAuthorization(roll,missingAuthData)
+
         assertVoterMayVote(voterAuthorization, req);
 
         //TODO: currently we have both a value on the input Ballot, and the route param.

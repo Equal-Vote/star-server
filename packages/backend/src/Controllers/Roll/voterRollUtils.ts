@@ -10,7 +10,7 @@ import { hashString } from "../controllerUtils";
 
 const ElectionRollModel = ServiceLocator.electionRollDb();
 
-export async function getOrCreateElectionRoll(req: IRequest, election: Election, ctx: ILoggingContext): Promise<ElectionRoll | null> {
+export async function getOrCreateElectionRoll(req: IRequest, election: Election, ctx: ILoggingContext, voter_id_override?: string, skipStateCheck?: boolean): Promise<ElectionRoll | null> {
     // Checks for existing election roll for user
     Logger.info(req, `getOrCreateElectionRoll`)
     const ip_hash = hashString(req.ip!)
@@ -23,9 +23,9 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
     if (election.settings.voter_authentication.voter_id && election.settings.voter_access == 'closed') {
         // cookies don't support special charaters
         // https://help.vtex.com/en/tutorial/why-dont-cookies-support-special-characters--6hs7MQzTri6Yg2kQoSICoQ
-        voter_id = atob(req.cookies?.voter_id); 
+        voter_id = voter_id_override ?? atob(req.cookies?.voter_id); 
     } else if (election.settings.voter_authentication.voter_id && election.settings.voter_access == 'open') {
-        voter_id = req.user?.sub
+        voter_id = voter_id_override ?? req.user?.sub
     }
 
     // Get all election roll entries that match any of the voter authentication fields
@@ -38,12 +38,9 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
 
     if (electionRollEntries == null) {
         // No election roll found, create one if voter access is open and election state is open
-        if (election.settings.voter_access !== 'open') {
-            return null
-        }
-        if (election.state !== 'open') {
-            return null
-        }
+        if (election.settings.voter_access !== 'open') return null
+        if (!skipStateCheck && election.state !== 'open') return null
+
         Logger.info(req, "Creating new roll");
         const new_voter_id = election.settings.voter_authentication.voter_id ? voter_id : randomUUID()
         const history = [{
