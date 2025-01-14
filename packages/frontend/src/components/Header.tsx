@@ -1,22 +1,16 @@
-import PropTypes from 'prop-types'
-import { useNavigate } from 'react-router'
-import React, { useContext, useState } from 'react'
+import { useNavigate } from 'react-router';
+import { useContext, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button'
-import { Avatar, Box, IconButton, InputAdornment, InputBase, Link, Menu, MenuItem, Paper, TextField } from '@mui/material'
+import Button from '@mui/material/Button';
+import { Box, IconButton, Link, Menu, MenuItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import Search from '@mui/icons-material/Search';
-import { useCookie } from '../hooks/useCookie'
-import { v4 } from 'uuid'
 import useAuthSession from './AuthSessionContextProvider';
 import { useThemeSelector } from '../theme';
 import useFeatureFlags from './FeatureFlagContextProvider';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import { CreateElectionContext, CreateElectionContextProvider } from './ElectionForm/CreateElectionDialog';
+import { CreateElectionContext } from './ElectionForm/CreateElectionDialog';
 import { openFeedback, useSubstitutedTranslation } from './util';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 
@@ -27,8 +21,6 @@ const Header = () => {
     const flags = useFeatureFlags();
     const themeSelector = useThemeSelector()
     const authSession = useAuthSession()
-    const navigate = useNavigate()
-    const [tempID, setTempID] = useCookie('temp_id', v4())
     const [anchorElNav, setAnchorElNav] = useState(null)
     const [anchorElUser, setAnchorElUser] = useState(null)
     const {t} = useSubstitutedTranslation();
