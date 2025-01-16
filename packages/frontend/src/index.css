@@ -49,6 +49,10 @@
   --dark-bkg-gray: #1F1F1F;
 }
 
+.MuiTypography-root {
+  overflow-wrap: break-word;
+}
+
 .racePageStepper .MuiStepConnector-line {
   opacity: 0;
 }
