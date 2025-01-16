@@ -40,7 +40,6 @@ export const methodValueToTextKey = {
 };
 
 export const MailTo = ({ children }) => {
-  const { t } = useSubstitutedTranslation();
   const { setSnack } = useSnackbar();
   // https://adamsilver.io/blog/the-trouble-with-mailto-email-links-and-what-to-do-instead/
   return <span style={{ whiteSpace: 'nowrap' }}>
@@ -155,7 +154,7 @@ export const useSubstitutedTranslation = (electionTermType = 'election', v = {})
         if (i % 3 == 0) return str;
         if (i % 3 == 2) return '';
         if (parts[i + 1].startsWith('mailto')) {
-          return <MailTo>{parts[i]}</MailTo>
+          return <MailTo key={`link_${i}`}>{parts[i]}</MailTo>
         } else {
           return <a key={`link_${i}`} href={parts[i + 1]}>{parts[i]}</a>
         }

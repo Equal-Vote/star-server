@@ -15,6 +15,8 @@ import { IElectionRequest } from "../../IRequest";
 import { Response, NextFunction } from 'express';
 import { io } from "../../socketHandler";
 import { Server } from "socket.io";
+import { expectPermission } from "../controllerUtils";
+import { permissions } from "@equal-vote/star-vote-shared/domain_model/permissions";
 
 const ElectionsModel = ServiceLocator.electionsDb();
 const ElectionRollModel = ServiceLocator.electionRollDb();
@@ -44,8 +46,10 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
             throw new Unauthorized(missingAuthData);
         }
 
-        roll = await getOrCreateElectionRoll(req, targetElection, req);
+        // skipping state check since this is allowed when uploading ballots, and it's already explicitly checked for individual ballots
+        roll = await getOrCreateElectionRoll(req, targetElection, req, voter_id, true);
         const voterAuthorization = getVoterAuthorization(roll,missingAuthData)
+
         assertVoterMayVote(voterAuthorization, req);
 
         //TODO: currently we have both a value on the input Ballot, and the route param.
@@ -100,6 +104,10 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
 
 async function uploadBallotsController(req: IElectionRequest, res: Response, next: NextFunction) {
     Logger.info(req, "Upload Ballots Controller");
+
+    expectPermission(req.user_auth.roles, permissions.canUploadBallots);
+
+    //TODO: if it's a public_archive item, also check canUpdatePublicArchive instead
 
     const targetElection = req.election;
     if (targetElection == null){
