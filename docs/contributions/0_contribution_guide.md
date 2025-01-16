@@ -5,7 +5,7 @@ nav_order: 2
 has_children: true
 ---
 
-# STAR.VOTE contribution guide
+# BetterVoting contribution guide
 
 We're so excited you're interested in contributing!
 

@@ -5,16 +5,16 @@ nav_order: 1
 parent: Contribution Guide
 ---
 
-# Set up star.vote locally
+# Set up BetterVoting locally
 
 <!-- Most of this setup was shamelessly copied from https://raw.githubusercontent.com/freeCodeCamp/freeCodeCamp/main/docs/how-to-setup-freecodecamp-locally.md-->
 
-Follow these guidelines for setting up star.vote locally on your system. This is highly recommended if you want to contribute regularly.
+Follow these guidelines for setting up BetterVoting locally on your system. This is highly recommended if you want to contribute regularly.
 
-Some of these contribution workflows – like fixing bugs in the codebase – need you to run star.vote locally on your computer.
+Some of these contribution workflows – like fixing bugs in the codebase – need you to run BetterVoting locally on your computer.
 
 > **What's the difference between star.vote and bettervoting.com ?**<br>
-> The current star.vote is an old implementation with a separate codebase. bettervoting.com is a work in progress, and will eventually become the new star.vote. When I mention star.vote in the guide I'm referring to the new star.vote
+> The current star.vote is an old implementation with a separate codebase. bettervoting.com is a work in progress. Eventually the current star.vote will be moved to classic.star.vote and bettervoting.com will be the new default for star.vote. 
 
 ## Prepare your local machine
 
@@ -75,9 +75,9 @@ To learn more React, check out the [React documentation](https://reactjs.org/).
 
 ## Fork the repository on GitHub
 
-[Forking](https://help.github.com/articles/about-forks/) is a step where you get your own copy of star.vote's main repository (a.k.a _repo_) on GitHub.
+[Forking](https://help.github.com/articles/about-forks/) is a step where you get your own copy of BetterVoting's main repository (a.k.a _repo_) on GitHub.
 
-This is essential, as it allows you to work on your own copy of star.vote on GitHub, or to download (clone) your repository to work on locally. Later, you will be able to request changes to be pulled into the main repository from your fork via a pull request (PR).
+This is essential, as it allows you to work on your own copy of BetterVoting on GitHub, or to download (clone) your repository to work on locally. Later, you will be able to request changes to be pulled into the main repository from your fork via a pull request (PR).
 
 > The main repository at `https://github.com/Equal-Vote/star-server` is often referred to as the `upstream` repository.
 >
@@ -85,11 +85,11 @@ This is essential, as it allows you to work on your own copy of star.vote on Git
 
 **Follow these steps to fork the `https://github.com/Equal-Vote/star-server` repository:**
 
-1. Go to the star.vote repository on GitHub: <https://github.com/Equal-Vote/star-server>
+1. Go to the BetterVoting repository on GitHub: <https://github.com/Equal-Vote/star-server>
 
 2. Click the "Fork" Button in the upper right-hand corner of the interface ([More Details Here](https://help.github.com/articles/fork-a-repo/))
 
-3. After the repository has been forked, you will be taken to your copy of the star.vote repository at `https://github.com/YOUR_USER_NAME/star-server` (`YOUR_USER_NAME` would be replaced with your GitHub user name.)
+3. After the repository has been forked, you will be taken to your copy of the BetterVoting repository at `https://github.com/YOUR_USER_NAME/star-server` (`YOUR_USER_NAME` would be replaced with your GitHub user name.)
 
 <details>
    <summary>
@@ -101,7 +101,7 @@ This is essential, as it allows you to work on your own copy of star.vote on Git
 
 ## Clone your fork from GitHub
 
-[Cloning](https://help.github.com/articles/cloning-a-repository/) is where you **download** a copy of a repository from a `remote` location that is either owned by you or by someone else. In your case, this remote location is your `fork` of star.vote's repository that should be available at `https://github.com/YOUR_USER_NAME/star-server`. (`YOUR_USER_NAME` would be replaced with your GitHub user name.)
+[Cloning](https://help.github.com/articles/cloning-a-repository/) is where you **download** a copy of a repository from a `remote` location that is either owned by you or by someone else. In your case, this remote location is your `fork` of BetterVoting's repository that should be available at `https://github.com/YOUR_USER_NAME/star-server`. (`YOUR_USER_NAME` would be replaced with your GitHub user name.)
 
 Run these commands on your local machine:
 
@@ -109,13 +109,13 @@ Run these commands on your local machine:
 
    _i.e.: `/yourprojectsdirectory/`_
 
-2. Clone your fork of star.vote, replacing `YOUR_USER_NAME` with your GitHub Username
+2. Clone your fork of BetterVoting, replacing `YOUR_USER_NAME` with your GitHub Username
 
    ```
    git clone --depth=1 https://github.com/YOUR_USER_NAME/star-server.git
    ```
 
-This will download the entire star.vote repository to your projects directory.
+This will download the entire BetterVoting repository to your projects directory.
 
 Note: `--depth=1` creates a shallow clone of your fork, with only the most recent history/commit.
 
@@ -133,7 +133,7 @@ You need a reference from your local clone to the `upstream` repository in addit
    cd star-server
    ```
 
-2. Add a remote reference to the main star.vote repository:
+2. Add a remote reference to the main BetterVoting repository:
 
    ```
    git remote add upstream https://github.com/Equal-Vote/star-server.git
@@ -154,13 +154,13 @@ You need a reference from your local clone to the `upstream` repository in addit
    upstream        https://github.com/Equal-Vote/star-server (push)
    ```
 
-## Running star.vote locally
+## Running BetterVoting locally
 
-Now that you have a local copy of star.vote, you can follow these instructions to run it locally.
+Now that you have a local copy of BetterVoting, you can follow these instructions to run it locally.
 
 This will allow you to:
 
-- Preview edits to pages as they would appear on star.vote.
+- Preview edits to pages as they would appear on BetterVoting.
 - Work on UI related issues and enhancements.
 - Debug and fix issues with the application servers and client apps.
 
@@ -170,7 +170,7 @@ And as always, feel free to ask questions on the [#_software-dev slack channel](
 
 > If you haven't joined the STAR Voting slack yet, you can follow the instructions [here](https://www.starvoting.us/get_involved) to get added
 
-> You may skip running star.vote locally if you are simply editing files. For instance, performing a `rebase`, or resolving `merge` conflicts.
+> You may skip running BetterVoting locally if you are simply editing files. For instance, performing a `rebase`, or resolving `merge` conflicts.
 >
 > You can always return to this part of the instructions later. You should **only** skip this step if you do not need to run the apps on your machine.
 >
@@ -240,7 +240,7 @@ PROXY_URL=https://bettervoting.com # Use this one if you want to reference the l
 # PROXY_URL=http://localhost:5000 # use this one if you're running your own backend
 ```
 
-#### Step 3: Install dependencies and start the star.vote client application and API server
+#### Step 3: Install dependencies and start the BetterVoting client application and API server
 
 Now we can run the frontend
 
@@ -350,7 +350,7 @@ Follow these steps:
    git fetch upstream
    ```
 
-   Hard reset your main branch with the star.vote main:
+   Hard reset your main branch with the BetterVoting main:
 
    ```
    git reset --hard upstream/main

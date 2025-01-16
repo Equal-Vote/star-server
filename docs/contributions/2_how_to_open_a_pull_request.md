@@ -9,7 +9,7 @@ parent: Contribution Guide
 
 <!-- Most of this setup was shamelessly copied from https://raw.githubusercontent.com/freeCodeCamp/freeCodeCamp/main/docs/how-to-open-a-pull-request.md-->
 
-A pull request (PR) enables you to send changes from your fork on GitHub to star.vote's main repository. Once you are done making changes to the code, you can follow these guidelines to open a PR.
+A pull request (PR) enables you to send changes from your fork on GitHub to BetterVoting's main repository. Once you are done making changes to the code, you can follow these guidelines to open a PR.
 
 > Your PR should be in English. If you're interested in helping with translations, message the [#_software-dev slack channel](https://starvoting.slack.com/archives/C01EBAT283H)
 
