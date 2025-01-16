@@ -18,7 +18,7 @@ These are the 3 repos that are currently in use
 * [argocd](https://github.com/Equal-Vote/argocd) : Configuration for deploying and updating kubernetes
 * [star-server-infra](https://github.com/Equal-Vote/star-server-infra) : Terraform for current Azure stack. This will be deprecated in favor of terraform later
 
-The vision is to represent all our services using Kubernetes (including star.vote but also all Equal Vote Projects), and the Azure resources will be the minimum necessary for supporting Kubernetes
+The vision is to represent all our services using Kubernetes (including BetterVoting but also all Equal Vote Projects), and the Azure resources will be the minimum necessary for supporting Kubernetes
 
 ## Local Software
 
