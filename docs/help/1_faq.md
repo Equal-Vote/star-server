@@ -2,7 +2,7 @@
 layout: default
 title: Frequently Asked Questions
 nav_order: 1
-parent: Star Elections Documentation
+parent: BetterVoting Documentation
 ---
 
 # Frequently Asked Questions

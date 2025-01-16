@@ -2,7 +2,7 @@
 layout: default
 title: How to Register
 nav_order: 0
-parent: Star Elections Documentation
+parent: BetterVoting Documentation
 ---
 
 # How to Register
