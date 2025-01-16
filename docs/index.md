@@ -5,7 +5,7 @@ nav_order: 0
 has_children: true
 ---
 
-# STAR.VOTE Documentation
+# BetterVoting Documentation
 
 Welcome to our documentation!
 
