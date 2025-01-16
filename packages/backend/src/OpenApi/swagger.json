@@ -137,6 +137,25 @@
         ],
         "type": "object"
       },
+      "BallotSubmitStatus": {
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "voter_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message",
+          "success",
+          "voter_id"
+        ],
+        "type": "object"
+      },
       "Candidate": {
         "properties": {
           "bio": {
@@ -729,6 +748,21 @@
         ],
         "type": "object"
       },
+      "NewBallotWithVoterID": {
+        "properties": {
+          "ballot": {
+            "$ref": "#/components/schemas/NewBallot"
+          },
+          "voter_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ballot",
+          "voter_id"
+        ],
+        "type": "object"
+      },
       "NewElection": {
         "properties": {
           "admin_ids": {
@@ -1151,6 +1185,8 @@
                 "canInvalidateElectionRoll",
                 "canSendEmails",
                 "canUnflagElectionRoll",
+                "canUpdatePublicArchive",
+                "canUploadBallots",
                 "canViewBallot",
                 "canViewBallots",
                 "canViewElection",
@@ -1201,6 +1237,12 @@
             },
             "type": "array"
           },
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/tabulatorLog"
+            },
+            "type": "array"
+          },
           "other": {
             "items": {
               "$ref": "#/components/schemas/candidate"
@@ -1235,6 +1277,7 @@
         },
         "required": [
           "elected",
+          "logs",
           "other",
           "roundResults",
           "summaryData",
@@ -2552,6 +2595,94 @@
                     "ballot": {
                       "type": "object",
                       "$ref": "#/components/schemas/Ballot"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Election not found"
+          }
+        }
+      }
+    },
+    "/Election/{id}/uploadBallots": {
+      "post": {
+        "summary": "Upload ballots for an election",
+        "tags": [
+          "Ballots"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The election ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ballots": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "ballot": {
+                          "type": "object",
+                          "$ref": "#/components/schemas/NewBallot"
+                        },
+                        "voter_id": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "respon ses": {
+          "200": {
+            "description": "All Ballots Processed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "responses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "voter_id": {
+                            "type": "string",
+                            "description": "id of voter"
+                          },
+                          "success": {
+                            "type": "boolean",
+                            "description": "If ballot was uploaded"
+                          },
+                          "message": {
+                            "type": "string",
+                            "description": "Corresponding message"
+                          }
+                        }
+                      }
                     }
                   }
                 }

@@ -22,6 +22,7 @@ import './i18n/i18n'
 import ReturnToClassicDialog, { ReturnToClassicContextProvider } from './components/ReturnToClassicDialog'
 import { useSubstitutedTranslation } from './components/util'
 import UploadElections from './components/UploadElections'
+import Redirect from './components/Redirect'
 
 const App = () => {
   const {t} = useSubstitutedTranslation();
@@ -60,6 +61,7 @@ const App = () => {
               <Route path='/Election/:id/*' element={<Election />} /> 
               <Route path='/:id/*' element={<Election />} />
               <Route path='/Sandbox' element={<Sandbox />} />
+              <Route path='/Volunteer' element={<Redirect href={'https://docs.bettervoting.com/contributions/0_contribution_guide.html'}/>} />
             </Routes>
           </Box>
           <Footer />
