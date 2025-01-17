@@ -5,6 +5,7 @@ export const sharedConfig = {
         'h33qt8': 1000, // Brianna Johns, Gathering for Open Science Hardware
         '7tcryp': 3000, // DSA-LA 2025 Local Officer Election
         'j87vqp': 5000, // DSA-LA 2025 Local Officer Election #2
+        'g3mvqw': 5000, // DSA-LA 2025 Subgroup Officer Election
     },
     CLASSIC_DOMAIN: 'https://star.vote',
     FF_ELECTION_ROLES: 'false',
