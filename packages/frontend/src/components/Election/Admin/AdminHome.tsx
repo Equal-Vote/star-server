@@ -260,11 +260,12 @@ const AdminHome = () => {
                 {t('admin_home.finalize_description')}
                 {t(election.start_time? 'admin_home.finalize_voting_begins_later' : 'admin_home.finalize_voting_begins_now')}
             </Typography>
-            {election.settings.invitation &&
+            {/* I don't think this is true anymore */}
+            {/* {election.settings.invitation &&
                 <Typography align='center' variant="body1" sx={{ pl: 2 }}>
                    {t('admin_home.finalize_invitations_will_send')}
                 </Typography>
-            }
+            } */}
             {!hasPermission('canEditElectionState') &&
                 <Typography align='center' variant="body1" sx={{ color: 'error.main', pl: 2 }}>
                     {t('admin_home.permissions_error')}

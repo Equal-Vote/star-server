@@ -18,7 +18,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=ChangeMeOrDontTest2020
     restart:
-      on-failure
+      always
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.1
     command:
@@ -29,5 +29,7 @@ services:
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
+    restart:
+      always
 networks:
   star-net: {}

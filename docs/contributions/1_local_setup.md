@@ -7,8 +7,6 @@ parent: Contribution Guide
 
 # Set up BetterVoting locally
 
-<!-- Most of this setup was shamelessly copied from https://raw.githubusercontent.com/freeCodeCamp/freeCodeCamp/main/docs/how-to-setup-freecodecamp-locally.md-->
-
 Follow these guidelines for setting up BetterVoting locally on your system. This is highly recommended if you want to contribute regularly.
 
 Some of these contribution workflows – like fixing bugs in the codebase – need you to run BetterVoting locally on your computer.
@@ -65,7 +63,7 @@ Here's some videos to quickly get up to speed on the core skills
  * [Javascript Crash Course](https://www.youtube.com/watch?v=FtaQSdrl7YA) : You'll need to understand Javascript before learning typescript. This crash course also does a great job of getting you onboarded to general web development as well as covering the javascript.
  * [Typescript Crash Course](https://www.youtube.com/watch?v=ahCwqrYpIuM) : Typescript adds a couple of features to Javascript. You can probably understand most of our code base with just Javascript knowledge, but it's also good to have the context on Typescript. This video is much shorter, just to give you a broad typescript overview. 
  * [React Crash Course](https://www.youtube.com/watch?v=Rh3tobg7hEo)
- * (Optional) I also found frontendexpert.io very helpful to give an overview of everything, but it does cost money
+ * (Optional) Arend also found frontendexpert.io very helpful to give an overview of everything, but it does cost money
 
 ### Additional Reading
 
@@ -90,14 +88,6 @@ This is essential, as it allows you to work on your own copy of BetterVoting on 
 2. Click the "Fork" Button in the upper right-hand corner of the interface ([More Details Here](https://help.github.com/articles/fork-a-repo/))
 
 3. After the repository has been forked, you will be taken to your copy of the BetterVoting repository at `https://github.com/YOUR_USER_NAME/star-server` (`YOUR_USER_NAME` would be replaced with your GitHub user name.)
-
-<details>
-   <summary>
-      How to fork on GitHub (screenshot)
-   </summary>
-   <br>
-   <img src="https://raw.githubusercontent.com/freeCodeCamp/freeCodeCamp/main/docs/images/github/how-to-fork-freeCodeCamp.gif">
-</details>
 
 ## Clone your fork from GitHub
 
@@ -168,42 +158,28 @@ If you do run into issues, first perform a web search for your issue and see if 
 
 And as always, feel free to ask questions on the [#_software-dev slack channel](https://starvoting.slack.com/archives/C01EBAT283H).
 
-> If you haven't joined the STAR Voting slack yet, you can follow the instructions [here](https://www.starvoting.us/get_involved) to get added
+> If you haven't joined the STAR Voting slack yet, you can [sign up with STAR Voting](https://starvoting.org/join) to received an invite link
 
-> You may skip running BetterVoting locally if you are simply editing files. For instance, performing a `rebase`, or resolving `merge` conflicts.
->
-> You can always return to this part of the instructions later. You should **only** skip this step if you do not need to run the apps on your machine.
->
-> [Skip to making changes](#making-changes-locally).
+### Three ways to run locally
 
-### Run the backend (Optional)
+You can loosly breakdown BetterVoting.com into 3 services: Frontend + Backend + Database
 
-This your own backend is optional, if you only plan to work in the frontend then you can use PROXY_URL to reference the live backend instead of running your own .
+There's also 3 corresponding patterns for developing locally depending on how many of those services you want to replicate.
 
-#### Step 1: Set up the backend environment variable file
+1. **Local Frontend + Production Backend** : You run the frontend locally, and proxy to the production backend. This is the quickest route for people who only need to make visual changes and don't need to make backend tweaks. This will be sufficient for the most volunteers.
 
-Request access for the [dev credentials doc](https://docs.google.com/document/d/1D4CJ9l6lnR39YYPUvw_HbeUVXNR-tAbNF6eT89oxEuk). After obtaining access, copy the "Sample.env (Azure)" section of the to `./backend/.env` (you will have to create this file).
+1. **Local Frontend & Backend + Production Database** : You run the frontend and backend locally, but then configure your backend to use the production database. This is the easiest route for full stack development however it is also high risk, so it's not recommend unless you're comfortable with the database (and even then it's probably not a good idea). 
 
-#### Step 2: Install dependencies and launch backend
+1. **Local Everything** : You replicate all 3 pieces locally. This is the safest option for full stack development, and it eliminates all risk of your changes having an impact production.
 
-You can now start the backend
+The the following three sections will cover how to run frontend, backend, and the database, but you can stop reading once you've finished the section for your respective pattern. 
 
-```bash
-# Run these commands from the root of the project (not in the packages folder)!
-# Installs dependencies for all workspaces
-npm i -ws 
-# Builds shared workspace
-npm run build -w @equal-vote/star-vote-shared
-# Launch the backend workspace 
-npm run dev -w @equal-vote/star-vote-backend # Launches backend
-```
+### Frontend : Setup environment variables & run frontend
 
-Then open a separate terminal for the remaining steps
+#### Step 1: Set up environment variable files
 
-### Run the frontend
+Copy sample environment variables to a .env file. These commands will apply for both frontend and backend.
 
-#### Step 1: Set up the frontend environment variable file
-Copy default environment variables for the frontend by running one of the following commands in the root of the frontend source directory `packages/frontend`.
 <!-- Note: This tabs feature looks cool, we should look into it -->
 
 <!-- tabs:start -->
@@ -211,20 +187,22 @@ Copy default environment variables for the frontend by running one of the follow
 #### **macOS/Linux**
 
 ```
-cp sample.env .env
+cp packages/frontend/sample.env packages/frontend/.env
+cp packages/backend/sample.env packages/backend/.env
 ```
 
 #### **Windows**
 
 ```
-copy sample.env .env
+copy packages/frontend/sample.env packages/frontend/.env
+copy packages/backend/sample.env packages/backend/.env
 ```
 
 <!-- tabs:end -->
 
 #### Step 2: Update PROXY_URL 
 
-Now your .env should have 2 proxy urls, but one of them is commented
+Now your packages/frontend/.env file should have 2 proxy urls, but one of them is commented.
 
 If your running your own backend, then leave the default sample.env
 
@@ -233,21 +211,21 @@ If your running your own backend, then leave the default sample.env
 PROXY_URL=http://localhost:5000 # use this one if you're running your own backend
 ```
 
-If you're referencing the live developer backend instead of running your own, then update the comments as follows
+If you're proxying to the production backend, then update the comments as follows
 
 ```
 PROXY_URL=https://bettervoting.com # Use this one if you want to reference the live backend
 # PROXY_URL=http://localhost:5000 # use this one if you're running your own backend
 ```
 
-#### Step 3: Install dependencies and start the BetterVoting client application and API server
+#### Step 3: Install dependencies and start the BetterVoting frontend application
 
 Now we can run the frontend
 
-Build workspace & install dependencies (you can skip these if you already ran them in the backend steps)
+Build workspace & install dependencies
 
 ```bash
-# Run these commands from the root of the project (not in the packages folder)!
+# Run these commands from the root of the project
 # Installs dependencies for all workspaces
 npm i -ws 
 # Builds shared workspace
@@ -261,52 +239,93 @@ Launch frontend (in a new terminal).
 npm run dev -w @equal-vote/star-vote-frontend
 ```
 
-## Hosting database and Keycloak locally
+There will probably be lots of red in the terminal, but your frontend should be live at localhost:3000
 
-If you want to make changes to database schemas or keycloak settings, or don't have access to dev credentials, you can host the database and keycloak server locally with Docker.
+### Run the backend
 
+This your own backend is optional, if you only plan to work in the frontend then you can use PROXY_URL to reference the live backend instead of running your own .
+
+Open a new terminal, and start the backend as follows
+
+```bash
+# NOTE: The below command assumes that the workspace, and shared package were both built in the previous step
+# Launch the backend workspace 
+npm run dev -w @equal-vote/star-vote-backend
+```
+
+Note: Email elections@star.vote if you need access to the production databases. Otherwise most volunteers will need to continue to the next step and run their own databases.
+
+### Run the database(s)
+
+The database(s) inclue a postgresql database for storing all the election data, and a keycloak service which stores and manages all the user data. Both are defined within docker-compose, and can be started with some docker commands. 
+
+Luckily, all the commands here should only need to be ran once. After that the services should be available for all future dev sessions.  
+
+#### Installing Docker
 Follow the instructions [here](https://docs.docker.com/engine/install/) to install docker, check system requirements for turning on WSL if using Windows. After installed start Docker Desktop.
 
-docker-compose.yml in the project directory contains the configuration launching the server, database, and keycloak. Not much work has been done yet on running all three together, however you can launch the database with
+#### Running docker-compose
+
+Once you have docker setup run the following command to launch your server
 
 ```bash
+# Run postgres database
 docker compose  -f "docker-compose.yml" up -d --build my-db 
-```
-
-Next, update the database variables in your backend .env with 
-
-```bash
-DATABASE_URL=postgresql://postgres:ChangeMeOrDontTest2020@localhost:5432/postgres
-DEV_DATABASE=FALSE
-```
-
-and run the commands
-
-```bash
-cd packages/backend
-npm run build
-npm run migrate:latest
-```
-
-Migrate:latest will initialize the database tables with the latest migrations.
-
-To run keycloak:
-
-```bash
+# Run keycloak service
 docker compose  -f "docker-compose.yml" up -d --build keycloak
 ```
 
-You can then access keycloak at http://localhost:8080/ 
+Note: You shouldn't need to configure .env variables, since sample.env is configured to connect to a docker composed database by default
 
-See the keycloak [deployment](contributions/Infrastructure/10_keycloak_deployment.md) and [configuration](contributions/Infrastructure/11_keycloak_configuration.md) documentation for next steps.
+You can run ``docker ps`` to confirm both services started properly. The output should look as follows
 
+```
+$ docker ps
+CONTAINER ID   IMAGE                              COMMAND                  CREATED         STATUS          PORTS                              NAMES
+6682eb490f13   quay.io/keycloak/keycloak:23.0.1   "/opt/keycloak/bin/k…"   3 seconds ago   Up 2 seconds    0.0.0.0:8080->8080/tcp, 8443/tcp   star-server-keycloak-1
+f443236f9609   postgres                           "docker-entrypoint.s…"   5 days ago      Up 53 seconds   0.0.0.0:5432->5432/tcp             star-server-my-db-1
+```
 
-## Login
+Also the Keycloak UI should be running at http://localhost:8080/
 
-Deploying to localhost still uses the same KeyCloak userbase as production (at least for now). If you want to login to the production keycloak make sure you followed the keycloak step in [the environment variable setup](#step-1-set-up-the-environment-variable-file). That said logging in through localhost does require some extra steps, so be sure to follow these additional steps
+#### Migrating database
 
-1. Click the login button
-2. Login with your standard credentials (i.e. not admin)
+Your database is running, but all the tables still need to be created. The following steps will ensure all the table are properly initialized.
+
+```bash
+npm run build -w @equal-vote/star-vote-backend
+npm run migrate:latest
+```
+
+#### Configuring Keycloak
+
+We need to manually configure keycloak, and set some .env variables so that it can interface with the service properly.
+
+*First we need to set the configuration*
+1. Navigate to localhost:8080 , select Administration Console
+1. Login with user=admin, password=admin
+1. Select the master dropdown in the top-left, select "Create Realm"
+1. Name it "Dev" and click "Create"
+1. Select Realm Settings on the left Nav, then open the Action dropdown in the top-right and select "Partial import"
+1. [Download the Keycloak configuration](https://drive.google.com/file/d/1_S-MpnsxSr8oeA6MrNd3VSOGyKe7Qca_/view?usp=sharing), and select that for your Resource file
+1. ✅ clients, ✅ identity providers, already_exists_policy=Skip, then click import
+
+*Setting KEYCLOAK_SECRET*
+1. Within the Keycloak UI, select clients in the left panel
+1. Select web, then the Credentials tab
+1. Click "Regenerate" next to the Client Secret
+1. Copy the secret and paste it for KEYCLOAK_SECRET within .env
+
+*Setting KEYCLOAK_PUBLIC_KEY*
+1. Navigate to http://localhost:8080/realms/Dev
+1. Copy the public_key portion of the JSON
+1. Paste to your .env under KEYCLOAK_PUBLIC_KEY
+
+Now you should be able to register with a username and password via your frontend at localhost:3000
+
+NOTE: login with google won't work yet
+
+Now your full service should be working! Register and create elections to test it out. 🥳
 
 ## Making changes locally
 
