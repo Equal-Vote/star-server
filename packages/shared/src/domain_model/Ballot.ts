@@ -4,6 +4,10 @@ import { Race } from "./Race";
 import { Uid } from "./Uid";
 import { Vote } from "./Vote";
 
+export interface NewBallotWithVoterID {
+    voter_id: string;
+    ballot: NewBallot;
+}
 export interface Ballot {
     ballot_id:  Uid; //ID if ballot
     election_id: Uid; //ID of election ballot is cast in
@@ -30,6 +34,12 @@ export interface BallotAction {
     action_type:string;
     actor:Uid;
     timestamp:number;
+}
+
+export interface BallotSubmitStatus {
+    voter_id:string;
+    success:boolean;
+    message:string;
 }
 
 export interface NewBallot extends PartialBy<Ballot,'ballot_id'|'create_date'|'update_date'|'head'> {}
@@ -72,7 +82,8 @@ export function ballotValidation(election: Election, obj:Ballot): string | null 
         if (['RankedRobin', 'IRV', 'STV'].includes(race.voting_method)) {
             const numCandidates = race.candidates.length;
             vote.scores.forEach(score => {
-                    if (score && score.score > numCandidates || (maxRankings && score.score > maxRankings) || score.score < 0) {
+                // Arend: Removing check against numCandidates, that's not necessarily true for public RCV elections
+                    if (score && /*score.score > numCandidates ||*/ (maxRankings && score.score > maxRankings) || score.score < 0) {
                         outOfBoundsError +=  `Race: ${race.title}, Score: ${score.score}; `;
                     }
                 })
