@@ -241,7 +241,7 @@ npm run dev -w @equal-vote/star-vote-frontend
 
 There will probably be lots of red in the terminal, but your frontend should be live at localhost:3000
 
-### Run the backend
+### Backend : Run the backend
 
 This your own backend is optional, if you only plan to work in the frontend then you can use PROXY_URL to reference the live backend instead of running your own .
 
@@ -255,7 +255,7 @@ npm run dev -w @equal-vote/star-vote-backend
 
 Note: Email elections@star.vote if you need access to the production databases. Otherwise most volunteers will need to continue to the next step and run their own databases.
 
-### Run the database(s)
+### Database(s) : Run postgresql database and keycloak service
 
 The database(s) inclue a postgresql database for storing all the election data, and a keycloak service which stores and manages all the user data. Both are defined within docker-compose, and can be started with some docker commands. 
 
