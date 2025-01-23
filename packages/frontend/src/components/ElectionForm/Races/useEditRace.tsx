@@ -18,6 +18,7 @@ export const useEditRace = (race, race_index) => {
     const confirm = useConfirm();
     const defaultRace = {
         title: '',
+        description: '',
         race_id: '',
         num_winners: 1,
         voting_method: '',
