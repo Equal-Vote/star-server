@@ -2,10 +2,4 @@
 
 The live site can be found at https://bettervoting.com
 
-star-server is built using the PERN stack (PostgreSQL, Express, React, and Node)
-
-If you'd like to contribute, head over to https://equal-vote.github.io/star-server/contributions/1_local_setup.html for detailed setup instructions
-
-After that feel free to browse through the issues. Pull Requests are welcome :)
-
-test to readme
+Contributions are welcome! Whether you're a Developer, Tester, or Project Manager we could use your help! Follow our [onboarding documentation](https://docs.bettervoting.com/contributions/0_contribution_guide.html) to get plugged in.
