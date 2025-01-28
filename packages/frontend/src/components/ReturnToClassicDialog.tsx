@@ -1,6 +1,7 @@
 import { Box, Button, Dialog, DialogContent, Stack, Step, StepConnector, StepContent, StepLabel, Stepper, TextField, Tooltip, Typography } from "@mui/material";
 import { useState, createContext, useContext } from "react";
 import { openFeedback, useSubstitutedTranslation } from "./util";
+import { sharedConfig } from "@equal-vote/star-vote-shared/config";
 
 export interface IReturnToClassicContext{
     open: boolean,
@@ -62,7 +63,7 @@ export default () => {
                             fontSize: 18,
                         }}
                         onClick={() => {
-                            window.location.href=process.env.REACT_APP_CLASSIC_URL;
+                            window.location.href=sharedConfig.CLASSIC_DOMAIN;
                         }}
                     >
                         {t('return_to_classic.continue')}

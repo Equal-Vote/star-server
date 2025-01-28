@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      port: 3000,
+      port: env.FRONTEND_PORT ?? 3000,
       proxy: {
         "/API": {
           target: `${env.PROXY_URL ?? "http://localhost:5000"}`,
@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     preview: {
-      port: 3000,
+      port: env.FRONTEND_PORT ?? 3000,
       proxy: {
         "/API": {
           target: `${env.PROXY_URL ?? "http://localhost:5000"}`,
