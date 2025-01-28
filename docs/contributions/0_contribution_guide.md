@@ -15,7 +15,7 @@ We're so excited you're interested in contributing! Here's how to get plugged in
 
 1. Get setup for your role : 
 
-<div style="display: grid; column-gap: 10px; row-gap: 40px; grid-template-rows: 1fr 1fr; grid-template-columns: max-content 1fr">
+<div style="display: grid; column-gap: 10px; row-gap: 20px; grid-template-rows: 1fr 1fr; grid-template-columns: max-content 1fr">
     <div><i>For Developers:</i></div>
     <div>
         <a href="1_local_setup.html">Setup BetterVoting locally</a>, so that you can develop and test your changes. Then <a href="https://github.com/Equal-Vote/star-server/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22">grab a good-first-issue</a>!
