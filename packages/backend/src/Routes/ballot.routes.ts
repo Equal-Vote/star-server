@@ -232,12 +232,7 @@ ballotRouter.post('/Election/:id/vote', asyncHandler(castVoteController))
  *                  type: array
  *                  items:
  *                     type: object
- *                     properties:
- *                         ballot:
- *                             type: object
- *                             $ref: '#/components/schemas/NewBallot'
- *                         voter_id:
- *                             type: string
+ *                     $ref: '#/components/schemas/NewBallotWithVoterID'
  *     respon ses:
  *       200:
  *         description: All Ballots Processed
@@ -250,16 +245,7 @@ ballotRouter.post('/Election/:id/vote', asyncHandler(castVoteController))
  *                     type: array
  *                     items:                
  *                        type: object
- *                        properties:
- *                            voter_id:
- *                                type: string
- *                                description: id of voter
- *                            success:
- *                                type: boolean
- *                                description: If ballot was uploaded
- *                            message:
- *                                type: string
- *                                description: Corresponding message
+ *                        $ref: '#/components/schemas/BallotSubmitStatus'
  *       404:
  *         description: Election not found */
 ballotRouter.post('/Election/:id/uploadBallots', asyncHandler(uploadBallotsController))

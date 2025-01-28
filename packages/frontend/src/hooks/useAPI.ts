@@ -4,7 +4,7 @@ import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/Election
 import useFetch from "./useFetch";
 import { VotingMethod } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { ElectionResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
-import { Ballot, NewBallot, AnonymizedBallot } from "@equal-vote/star-vote-shared/domain_model/Ballot";
+import { Ballot, NewBallot, AnonymizedBallot, NewBallotWithVoterID, BallotSubmitStatus } from "@equal-vote/star-vote-shared/domain_model/Ballot";
 import { email_request_data } from "@equal-vote/star-vote-backend/src/Controllers/Election/sendEmailController"
 
 export const useGetElection = (electionID: string | undefined) => {
@@ -129,6 +129,10 @@ export const useGetResults = (election_id: string | undefined) => {
 
 export const usePostBallot = (election_id: string | undefined) => {
     return useFetch<{ ballot: NewBallot, receiptEmail?: string }, {ballot: Ballot}>(`/API/Election/${election_id}/vote`, 'post')
+}
+
+export const useUploadBallots = (election_id: string | undefined) => {
+    return useFetch<{ ballots: NewBallotWithVoterID[] }, {responses: BallotSubmitStatus[]}>(`/API/Election/${election_id}/uploadBallots`, 'post')
 }
 
 export const useGetSandboxResults = () => {
