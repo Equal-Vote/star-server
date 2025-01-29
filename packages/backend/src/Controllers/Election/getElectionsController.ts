@@ -66,18 +66,25 @@ const innerGetGlobalElectionStats = async (req: IRequest) => {
 
     let electionVotes = await ElectionsModel.getBallotCountsForAllElections(req);
 
+    let sourcedFromPrior = await ElectionsModel.getElectionsSourcedFromPrior(req);
+    let priorElections = sourcedFromPrior?.map(e => e.election_id) ?? [];
+
     let stats = {
         elections: Number(process.env.CLASSIC_ELECTION_COUNT ?? 0),
         votes: Number(process.env.CLASSIC_VOTE_COUNT ?? 0),
     };
 
-    electionVotes?.map(m => m['v'])?.forEach((count) => {
-        stats['votes'] = stats['votes'] + Number(count);
-        if(count >= 2){
-            stats['elections'] = stats['elections'] + 1;
+    electionVotes
+        ?.filter(m => !priorElections.includes(m['election_id']))
+        ?.map(m => m['v'])
+        ?.forEach((count) => {
+            stats['votes'] = stats['votes'] + Number(count);
+            if(count >= 2){
+                stats['elections'] = stats['elections'] + 1;
+            }
+            return stats;
         }
-        return stats;
-    });
+    );
 
     return stats;
 }

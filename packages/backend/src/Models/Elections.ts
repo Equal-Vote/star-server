@@ -11,6 +11,7 @@ import { InternalServerError } from '@curveball/http-errors';
 const tableName = 'electionDB';
 
 interface IVoteCount{
+    election_id: string;
     v: number;
 }
 
@@ -142,6 +143,7 @@ export default class ElectionsDB implements IElectionStore {
             .catch(dneCatcher);
     }
 
+    // TODO: this function should probably be in the ballots model
     getBallotCountsForAllElections(ctx: ILoggingContext): Promise<IVoteCount[] | null> {
         Logger.debug(ctx, `${tableName}.getAllElectionsWithBallotCounts`);
 
@@ -151,6 +153,7 @@ export default class ElectionsDB implements IElectionStore {
             .select(
                 (eb) => eb.fn.count('ballot_id').as('v')
             )
+            .select('election_id')
             .where('head', '=', true)
             .groupBy('election_id')
             .orderBy('election_id')
