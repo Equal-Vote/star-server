@@ -9,6 +9,7 @@ import Papa from 'papaparse';
 import useAuthSession from "./AuthSessionContextProvider";
 import { defaultElection } from "./ElectionForm/CreateElectionDialog";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
+import { NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
 
 export default () => {
     const [addToPublicArchive, setAddToPublicArchive] = useState(false)
@@ -52,6 +53,8 @@ export default () => {
                             title: cvr.name.split('.')[0],
                             state: 'closed',
                             owner_id: authSession.getIdField('sub'),
+                            ballot_source: 'prior_election',
+                            public_archive_id: addToPublicArchive? cvr.name.split('.')[0] : undefined,
                             settings: {
                                 ...defaultElection.settings,
                                 max_rankings: maxRankings,
@@ -69,7 +72,7 @@ export default () => {
                                     num_winners: 1
                                 }
                             ]
-                        },
+                        } as NewElection,
                     })
                 })
 

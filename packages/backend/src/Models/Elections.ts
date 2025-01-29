@@ -113,7 +113,6 @@ export default class ElectionsDB implements IElectionStore {
             )
         }
 
-        
         const elections = query.execute().catch(dneCatcher)
 
         return elections
