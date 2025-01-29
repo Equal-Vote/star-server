@@ -3,7 +3,6 @@ import express from 'express';
 import {electionsRouter, ballotRouter, rollRouter} from './Routes';
  
 // var debugRouter = require('./Routes/debug.routes')
-
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import Logger from './Services/Logging/Logger';
@@ -11,7 +10,6 @@ import {IRequest, iRequestMiddleware, reqIdSuffix} from './IRequest';
 import { loggerMiddleware } from './Services/Logging/LoggerMiddleware';
 import { errorCatch } from './errorCatchMiddleware'
 import registerEvents from './Routes/registerEvents';
-import { setupSockets } from './socketHandler';
 import { getMetaTags } from './Util';
 import swaggerUi from 'swagger-ui-express';
 import swagger from './OpenApi/swagger.json';
@@ -19,6 +17,7 @@ import swagger from './OpenApi/swagger.json';
 import { getUserToken, getUser } from './Controllers/User';
 const asyncHandler = require('express-async-handler')
 require('./socketHandler')
+
 
 export default function makeApp() {
     const app = express();

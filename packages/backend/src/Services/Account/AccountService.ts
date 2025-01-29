@@ -57,6 +57,11 @@ export default class AccountService {
             params.refresh_token = req.cookies.refresh_token;
         }
 
+        if(process.env.KEYCLOAK_SECRET == '<insert secret>')
+            throw new InternalServerError('\n\n\nKEYCLOAK_SECRET from the .env is still set to <insert secret>, please complete the "Configuring Keycloak" steps at https://docs.bettervoting.com/contributions/1_local_setup.html\n\n\n')
+        if(process.env.KEYCLOAK_PUBLIC_KEY == '<insert public key>')
+            throw new InternalServerError('\n\n\nKEYCLOAK_SECRET from the .env is still set to <insert secret>, please complete the "Configuring Keycloak" steps at https://docs.bettervoting.com/contributions/1_local_setup.html\n\n\n')
+
         Logger.debug(req, `GET TOKEN ${params.grant_type}`);
         try {
             const response = await axios.post(

@@ -200,23 +200,13 @@ copy packages/backend/sample.env packages/backend/.env
 
 <!-- tabs:end -->
 
-#### Step 2: Update PROXY_URL 
+#### Step 2: Update REACT_APP 
 
-Now your packages/frontend/.env file should have 2 proxy urls, but one of them is commented.
+Now your packages/frontend/.env file should 2 sections for connecting to the backend. One for a production backend, and one for local
 
-If your running your own backend, then leave the default sample.env
+If you're running your own backend, then leave the default sample.env (which has the production backend commented out).
 
-```
-# PROXY_URL=https://bettervoting.com # Use this one if you want to reference the live backend
-PROXY_URL=http://localhost:5000 # use this one if you're running your own backend
-```
-
-If you're proxying to the production backend, then update the comments as follows
-
-```
-PROXY_URL=https://bettervoting.com # Use this one if you want to reference the live backend
-# PROXY_URL=http://localhost:5000 # use this one if you're running your own backend
-```
+If you're proxying to the production backend, then comment out the variables for the local backend, and uncomment the production section.
 
 #### Step 3: Install dependencies and start the BetterVoting frontend application
 
@@ -239,11 +229,13 @@ Launch frontend (in a new terminal).
 npm run dev -w @equal-vote/star-vote-frontend
 ```
 
+**Verification Steps**
+
 There will probably be lots of red in the terminal, but your frontend should be live at localhost:3000
 
 ### Backend : Run the backend
 
-This your own backend is optional, if you only plan to work in the frontend then you can use PROXY_URL to reference the live backend instead of running your own .
+Running your own backend is optional, if you only plan to work in the frontend then you can use PROXY_URL to reference the live backend instead of running your own .
 
 Open a new terminal, and start the backend as follows
 
@@ -254,6 +246,11 @@ npm run dev -w @equal-vote/star-vote-backend
 ```
 
 Note: Email elections@star.vote if you need access to the production databases. Otherwise most volunteers will need to continue to the next step and run their own databases.
+
+**Verification Steps**
+A successful command will have a message starting with "Server started on port" somewhere in the logs. 
+
+Your command will probably have a connection error since your databased isn't running yet, but we'll fix that in the next step
 
 ### Database(s) : Run postgresql database and keycloak service
 
@@ -277,6 +274,8 @@ docker compose  -f "docker-compose.yml" up -d --build keycloak
 
 Note: You shouldn't need to configure .env variables, since sample.env is configured to connect to a docker composed database by default
 
+**Verification Steps**
+
 You can run ``docker ps`` to confirm both services started properly. The output should look as follows
 
 ```
@@ -294,8 +293,12 @@ Your database is running, but all the tables still need to be created. The follo
 
 ```bash
 npm run build -w @equal-vote/star-vote-backend
-npm run migrate:latest
+npm run migrate:latest -w @equal-vote/star-vote-backend
 ```
+
+**Verification Steps**
+
+You should now be able to create elections at localhost:3000 and they'll be stored on your local database
 
 #### Configuring Keycloak
 
@@ -321,6 +324,8 @@ We need to manually configure keycloak, and set some .env variables so that it c
 1. Copy the public_key portion of the JSON
 1. Paste to your .env under KEYCLOAK_PUBLIC_KEY
 
+
+**Verification Steps**
 Now you should be able to register with a username and password via your frontend at localhost:3000
 
 NOTE: login with google won't work yet

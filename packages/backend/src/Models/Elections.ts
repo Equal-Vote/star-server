@@ -6,11 +6,19 @@ import { Kysely, sql } from 'kysely'
 import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { sharedConfig } from '@equal-vote/star-vote-shared/config';
 import { IElectionStore } from './IElectionStore';
+import { InternalServerError } from '@curveball/http-errors';
 
 const tableName = 'electionDB';
 
 interface IVoteCount{
     v: number;
+}
+
+const dneCatcher = (error: any) => {
+    if(error.code == '42P01'){
+        throw new InternalServerError(`${error} \n\n----------------------\n\nTables weren't created. Perhaps you need to run the migrate command? Try running the following...\n\n  npm run build -w @equal-vote/star-vote-backend\n  npm run migrate:latest -w @equal-vote/star-vote-backend\n\n\n`)
+    }
+    throw error;
 }
 
 export default class ElectionsDB implements IElectionStore {
@@ -104,7 +112,9 @@ export default class ElectionsDB implements IElectionStore {
                     .or(sql`credential_ids::jsonb`, '?', email)
             )
         }
-        const elections = query.execute()
+
+        
+        const elections = query.execute().catch(dneCatcher)
 
         return elections
     }
@@ -156,6 +166,7 @@ export default class ElectionsDB implements IElectionStore {
             .where('head', '=', true)
             .selectAll()
             .execute()
+            .catch(dneCatcher)
         if(newElections.length > 0) return true;
 
         // Check Classic DB

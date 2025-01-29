@@ -137,25 +137,6 @@
         ],
         "type": "object"
       },
-      "BallotSubmitStatus": {
-        "properties": {
-          "message": {
-            "type": "string"
-          },
-          "success": {
-            "type": "boolean"
-          },
-          "voter_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "message",
-          "success",
-          "voter_id"
-        ],
-        "type": "object"
-      },
       "Candidate": {
         "properties": {
           "bio": {
@@ -748,21 +729,6 @@
         ],
         "type": "object"
       },
-      "NewBallotWithVoterID": {
-        "properties": {
-          "ballot": {
-            "$ref": "#/components/schemas/NewBallot"
-          },
-          "voter_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "ballot",
-          "voter_id"
-        ],
-        "type": "object"
-      },
       "NewElection": {
         "properties": {
           "admin_ids": {
@@ -1186,7 +1152,6 @@
                 "canSendEmails",
                 "canUnflagElectionRoll",
                 "canUpdatePublicArchive",
-                "canUploadBallots",
                 "canViewBallot",
                 "canViewBallots",
                 "canViewElection",

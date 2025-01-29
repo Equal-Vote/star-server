@@ -91,7 +91,12 @@ function pgConnectionString(): string {
 async function eventQueue(): Promise<IEventQueue> {
     if (_eventQueue == null) {
         const eq = new PGBossEventQueue();
-        await eq.init(pgConnectionObject(), Logger.createContext("appInit"));
+        const conn = pgConnectionObject();
+        try{
+            await eq.init(conn, Logger.createContext("appInit"));
+        }catch(e){
+            throw `${e} \n\n----------------------\n\n Could not connect to postgres database at ${conn.connectionString.replace(/:.*@/,':*****@')}\n\n`
+        }
         _eventQueue = eq;
     }
 

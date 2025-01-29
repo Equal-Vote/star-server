@@ -1,4 +1,11 @@
 import swaggerJsdoc from 'swagger-jsdoc';
+
+try{
+  require('@equal-vote/star-vote-shared/schema.json')
+}catch(e){
+  throw "Could not find shared module. Did you build it?\n Try: npm run build -w @equal-vote/star-vote-shared"
+}
+
 import schema from '@equal-vote/star-vote-shared/schema.json'; // Adjust the import path to your schema file
 import ServiceLocator from '../ServiceLocator';
 

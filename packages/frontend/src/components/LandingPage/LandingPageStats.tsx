@@ -13,7 +13,7 @@ interface FeaturePanel{
 
 // https://stackoverflow.com/questions/25778414/what-port-does-the-socketio-client-listen-to-by-default
 // https://stackoverflow.com/questions/69450485/receiving-error-xhr-poll-error-socket-io-client-react
-const socket = io(process.env.REACT_APP_SOCKET_URL, {
+const socket = io(process.env.REACT_APP_BACKEND_URL, {
     transports: ['websocket']
 });
 

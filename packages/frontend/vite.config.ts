@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
       port: env.FRONTEND_PORT ?? 3000,
       proxy: {
         "/API": {
-          target: `${env.PROXY_URL ?? "http://localhost:5000"}`,
+          target: `${env.REACT_APP_BACKEND_URL ?? "http://localhost:5000"}`,
           changeOrigin: true,
           configure: (proxy, options) => {
           },
@@ -35,7 +35,7 @@ export default defineConfig(({ mode }) => {
       port: env.FRONTEND_PORT ?? 3000,
       proxy: {
         "/API": {
-          target: `${env.PROXY_URL ?? "http://localhost:5000"}`,
+          target: `${env.REACT_APP_BACKEND_URL ?? "http://localhost:5000"}`,
           changeOrigin: true,
           configure: (proxy, options) => {
           },
