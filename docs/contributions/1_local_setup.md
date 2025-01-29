@@ -270,35 +270,6 @@ f443236f9609   postgres                           "docker-entrypoint.s…"   5 d
 
 Also the Keycloak UI should be running at http://localhost:8080/
 
-#### Configuring Keycloak
-
-We need to manually configure keycloak, and set some .env variables so that it can interface with the service properly.
-
-*First we need to set the configuration*
-1. Navigate to localhost:8080 , select Administration Console
-1. Login with user=admin, password=admin
-1. Select the master dropdown in the top-left, select "Create Realm"
-1. Name it "Dev" and click "Create"
-1. Select Realm Settings on the left Nav, then open the Action dropdown in the top-right and select "Partial import"
-1. [Download the Keycloak configuration](https://drive.google.com/file/d/1_S-MpnsxSr8oeA6MrNd3VSOGyKe7Qca_/view?usp=sharing), and select that for your Resource file
-1. ✅ clients, ✅ identity providers, already_exists_policy=Skip, then click import
-
-*Setting KEYCLOAK_SECRET*
-1. Within the Keycloak UI, select clients in the left panel
-1. Select web, then the Credentials tab
-1. Click "Regenerate" next to the Client Secret
-1. Copy the secret and paste it for KEYCLOAK_SECRET within .env
-
-*Setting KEYCLOAK_PUBLIC_KEY*
-1. Navigate to http://localhost:8080/realms/Dev
-1. Copy the public_key portion of the JSON
-1. Paste to your .env under KEYCLOAK_PUBLIC_KEY
-
-**Verification Steps**
-Now you should be able to register with a username and password via your frontend at localhost:3000
-
-NOTE: login with google won't work yet
-
 #### Migrating database
 
 Your database is running, but all the tables still need to be created. The following steps will ensure all the table are properly initialized.
@@ -310,7 +281,41 @@ npm run migrate:latest -w @equal-vote/star-vote-backend
 
 **Verification Steps**
 
-TODO
+You should see a series of migration success messages
+
+```
+migration "2023_07_03_Initial" was executed successfully
+migration "2024_01_27_Create_Date" was executed successfully
+migration "2024_01_29_pkeys_and_heads" was executed successfully
+```
+
+#### Configuring Keycloak
+
+We need to manually configure keycloak, and set some .env variables so that it can interface with the service properly.
+
+*First we need to set the configuration*
+1. [Download the Keycloak configuration](https://drive.google.com/file/d/1_S-MpnsxSr8oeA6MrNd3VSOGyKe7Qca_/view?usp=sharing), and select that for your Resource file
+1. Navigate to localhost:8080 , select Administration Console
+1. Login with user=admin, password=admin
+1. Select the master dropdown in the top-left, select "Create Realm"
+1. Browse to select the configuration you downloaded
+1. Click "Create"
+
+*Setting KEYCLOAK_SECRET*
+1. Within the Keycloak UI, select clients in the left panel
+1. Select web, then the Credentials tab
+1. Click "Regenerate" next to the Client Secret
+1. Copy the secret and paste it for KEYCLOAK_SECRET within packages/backend/.env
+
+*Setting KEYCLOAK_PUBLIC_KEY*
+1. Navigate to http://localhost:8080/realms/Dev
+1. Copy the public_key portion of the JSON
+1. Paste to your packages/backend/.env under KEYCLOAK_PUBLIC_KEY
+
+**Verification Steps**
+It's tricky to verify at the moment, but once you have the backend running you should be able to register with a username and password via your frontend at localhost:3000.
+
+NOTE: login with google won't work yet
 
 ### Backend : Run the backend
 
