@@ -9,6 +9,7 @@ import { Election, removeHiddenFields } from '@equal-vote/star-vote-shared/domai
 var ElectionsModel = ServiceLocator.electionsDb();
 var ElectionRollModel = ServiceLocator.electionRollDb();
 
+// TODO: We should probably split this up as the user will only need one of these filters
 const getElections = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `getElections`);
     // var filter = (req.query.filter == undefined) ? "" : req.query.filter;
@@ -51,14 +52,12 @@ const getElections = async (req: IElectionRequest, res: Response, next: NextFunc
         }
     }
 
-    /////////// OPEN ELECTIONS ////////////////
-    var open_elections = await ElectionsModel.getOpenElections(req);
-
     res.json({
         elections_as_official,
         elections_as_unsubmitted_voter,
         elections_as_submitted_voter,
-        open_elections
+        public_archive_elections: await ElectionsModel.getPublicArchiveElections(req),
+        open_elections: await ElectionsModel.getOpenElections(req)
     });
 }
 

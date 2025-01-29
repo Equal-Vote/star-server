@@ -95,6 +95,19 @@ export default class ElectionsDB implements IElectionStore {
         });
     }
 
+    async getPublicArchiveElections(ctx: ILoggingContext): Promise<Election[] | null> {
+        Logger.debug(ctx, `${tableName}.getPublicArchiveElections`);
+        // Returns all elections where settings.voter_access == open and state == open
+
+        // TODO: The filter is pretty inefficient for now since I don't think there's a way to include on settings.voter_access in the query
+        return await this._postgresClient
+            .selectFrom(tableName)
+            .where('head', '=', true)
+            .where('public_archive_id', '!=', null)
+            .selectAll()
+            .execute()
+    }
+
     getElections(id: string, email: string, ctx: ILoggingContext): Promise<Election[] | null> {
         // When I filter in trello it adds "filter=member:arendpetercastelein,overdue:true" to the URL, I'm following the same pattern here
         Logger.debug(ctx, `${tableName}.getAll ${id}`);
@@ -113,12 +126,22 @@ export default class ElectionsDB implements IElectionStore {
             )
         }
 
-        const elections = query.execute().catch(dneCatcher)
-
-        return elections
+        return query.execute().catch(dneCatcher)
     }
 
-    // TODO: I'm a bit lazy for now just having Object as the type
+    getElectionsSourcedFromPrior(ctx: ILoggingContext): Promise<Election[] | null> {
+        // When I filter in trello it adds "filter=member:arendpetercastelein,overdue:true" to the URL, I'm following the same pattern here
+        Logger.debug(ctx, `${tableName}.getSourcedFromPrior`);
+
+        return this._postgresClient
+            .selectFrom(tableName)
+            .where('ballot_source', '=', 'prior_election')
+            .where('head', '=', true)
+            .selectAll()
+            .execute()
+            .catch(dneCatcher);
+    }
+
     getBallotCountsForAllElections(ctx: ILoggingContext): Promise<IVoteCount[] | null> {
         Logger.debug(ctx, `${tableName}.getAllElectionsWithBallotCounts`);
 

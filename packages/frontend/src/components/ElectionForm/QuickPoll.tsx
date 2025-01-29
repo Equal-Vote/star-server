@@ -23,7 +23,7 @@ const QuickPoll = () => {
 
     const {t} = useSubstitutedTranslation('poll');
 
-        // TODO: we may edit the db entries in the future so that these align
+    // TODO: we may edit the db entries in the future so that these align
     const dbKeys = {
         'star': 'STAR',
         'approval': 'Approval',

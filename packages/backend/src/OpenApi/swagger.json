@@ -224,6 +224,13 @@
           "auth_key": {
             "type": "string"
           },
+          "ballot_source": {
+            "enum": [
+              "live_election",
+              "prior_election"
+            ],
+            "type": "string"
+          },
           "claim_key_hash": {
             "type": "string"
           },
@@ -273,6 +280,9 @@
           "owner_id": {
             "type": "string"
           },
+          "public_archive_id": {
+            "type": "string"
+          },
           "races": {
             "items": {
               "$ref": "#/components/schemas/Race"
@@ -296,9 +306,6 @@
           "state": {
             "$ref": "#/components/schemas/ElectionState"
           },
-          "support_email": {
-            "type": "string"
-          },
           "title": {
             "type": "string"
           },
@@ -315,6 +322,7 @@
           }
         },
         "required": [
+          "ballot_source",
           "create_date",
           "election_id",
           "frontend_url",
@@ -780,6 +788,13 @@
           "auth_key": {
             "type": "string"
           },
+          "ballot_source": {
+            "enum": [
+              "live_election",
+              "prior_election"
+            ],
+            "type": "string"
+          },
           "claim_key_hash": {
             "type": "string"
           },
@@ -829,6 +844,9 @@
           "owner_id": {
             "type": "string"
           },
+          "public_archive_id": {
+            "type": "string"
+          },
           "races": {
             "items": {
               "$ref": "#/components/schemas/Race"
@@ -852,9 +870,6 @@
           "state": {
             "$ref": "#/components/schemas/ElectionState"
           },
-          "support_email": {
-            "type": "string"
-          },
           "title": {
             "type": "string"
           },
@@ -871,6 +886,7 @@
           }
         },
         "required": [
+          "ballot_source",
           "frontend_url",
           "owner_id",
           "races",
@@ -2640,15 +2656,7 @@
                     "type": "array",
                     "items": {
                       "type": "object",
-                      "properties": {
-                        "ballot": {
-                          "type": "object",
-                          "$ref": "#/components/schemas/NewBallot"
-                        },
-                        "voter_id": {
-                          "type": "string"
-                        }
-                      }
+                      "$ref": "#/components/schemas/NewBallotWithVoterID"
                     }
                   }
                 }
@@ -2668,20 +2676,7 @@
                       "type": "array",
                       "items": {
                         "type": "object",
-                        "properties": {
-                          "voter_id": {
-                            "type": "string",
-                            "description": "id of voter"
-                          },
-                          "success": {
-                            "type": "boolean",
-                            "description": "If ballot was uploaded"
-                          },
-                          "message": {
-                            "type": "string",
-                            "description": "Corresponding message"
-                          }
-                        }
+                        "$ref": "#/components/schemas/BallotSubmitStatus"
                       }
                     }
                   }

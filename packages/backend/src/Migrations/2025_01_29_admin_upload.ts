@@ -17,7 +17,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     await db.updateTable('electionDB')
         .set({
             ballot_source: 'live_election',
-            public_archive_id: '',
+            public_archive_id: null,
         })
         .execute()
 }
