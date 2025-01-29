@@ -200,7 +200,7 @@ copy packages/backend/sample.env packages/backend/.env
 
 <!-- tabs:end -->
 
-#### Step 2: Update REACT_APP 
+#### Step 2: Setup Backend Connection
 
 Now your packages/frontend/.env file should 2 sections for connecting to the backend. One for a production backend, and one for local
 
@@ -233,26 +233,9 @@ npm run dev -w @equal-vote/star-vote-frontend
 
 There will probably be lots of red in the terminal, but your frontend should be live at localhost:3000
 
-### Backend : Run the backend
-
-Running your own backend is optional, if you only plan to work in the frontend then you can use PROXY_URL to reference the live backend instead of running your own .
-
-Open a new terminal, and start the backend as follows
-
-```bash
-# NOTE: The below command assumes that the workspace, and shared package were both built in the previous step
-# Launch the backend workspace 
-npm run dev -w @equal-vote/star-vote-backend
-```
-
-Note: Email elections@star.vote if you need access to the production databases. Otherwise most volunteers will need to continue to the next step and run their own databases.
-
-**Verification Steps**
-A successful command will have a message starting with "Server started on port" somewhere in the logs. 
-
-Your command will probably have a connection error since your databased isn't running yet, but we'll fix that in the next step
-
 ### Database(s) : Run postgresql database and keycloak service
+
+Note: Most of you will need to setup the databases, but if you have production credentials in your .env then you can skip this step. Email elections@star.vote if you need access to the production databases.
 
 The database(s) inclue a postgresql database for storing all the election data, and a keycloak service which stores and manages all the user data. Both are defined within docker-compose, and can be started with some docker commands. 
 
@@ -287,19 +270,6 @@ f443236f9609   postgres                           "docker-entrypoint.s…"   5 d
 
 Also the Keycloak UI should be running at http://localhost:8080/
 
-#### Migrating database
-
-Your database is running, but all the tables still need to be created. The following steps will ensure all the table are properly initialized.
-
-```bash
-npm run build -w @equal-vote/star-vote-backend
-npm run migrate:latest -w @equal-vote/star-vote-backend
-```
-
-**Verification Steps**
-
-You should now be able to create elections at localhost:3000 and they'll be stored on your local database
-
 #### Configuring Keycloak
 
 We need to manually configure keycloak, and set some .env variables so that it can interface with the service properly.
@@ -324,13 +294,44 @@ We need to manually configure keycloak, and set some .env variables so that it c
 1. Copy the public_key portion of the JSON
 1. Paste to your .env under KEYCLOAK_PUBLIC_KEY
 
-
 **Verification Steps**
 Now you should be able to register with a username and password via your frontend at localhost:3000
 
 NOTE: login with google won't work yet
 
-Now your full service should be working! Register and create elections to test it out. 🥳
+#### Migrating database
+
+Your database is running, but all the tables still need to be created. The following steps will ensure all the table are properly initialized.
+
+```bash
+npm run build -w @equal-vote/star-vote-backend
+npm run migrate:latest -w @equal-vote/star-vote-backend
+```
+
+**Verification Steps**
+
+TODO
+
+### Backend : Run the backend
+
+Running your own backend is optional, if you only plan to work in the frontend then you can setup your .env to reference the live backend instead of running your own .
+
+Open a new terminal, and start the backend as follows
+
+```bash
+# NOTE: The below command assumes that the workspace, and shared package were both built in the previous step
+# Launch the backend workspace 
+npm run dev -w @equal-vote/star-vote-backend
+```
+
+**Verification Steps**
+
+A successful command will have a message starting with "Server started on port" somewhere in the logs. 
+
+You should be able to create elections using the quick poll.
+
+Congratulations, you got the whole service running locally!! 🥳🥳
+
 
 ## Making changes locally
 
