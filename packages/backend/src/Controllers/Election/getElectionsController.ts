@@ -9,6 +9,7 @@ import { Election, removeHiddenFields } from '@equal-vote/star-vote-shared/domai
 var ElectionsModel = ServiceLocator.electionsDb();
 var ElectionRollModel = ServiceLocator.electionRollDb();
 
+// TODO: We should probably split this up as the user will only need one of these filters
 const getElections = async (req: IElectionRequest, res: Response, next: NextFunction) => {
     Logger.info(req, `getElections`);
     // var filter = (req.query.filter == undefined) ? "" : req.query.filter;
@@ -51,14 +52,12 @@ const getElections = async (req: IElectionRequest, res: Response, next: NextFunc
         }
     }
 
-    /////////// OPEN ELECTIONS ////////////////
-    var open_elections = await ElectionsModel.getOpenElections(req);
-
     res.json({
         elections_as_official,
         elections_as_unsubmitted_voter,
         elections_as_submitted_voter,
-        open_elections
+        public_archive_elections: await ElectionsModel.getPublicArchiveElections(req),
+        open_elections: await ElectionsModel.getOpenElections(req)
     });
 }
 
@@ -67,18 +66,25 @@ const innerGetGlobalElectionStats = async (req: IRequest) => {
 
     let electionVotes = await ElectionsModel.getBallotCountsForAllElections(req);
 
+    let sourcedFromPrior = await ElectionsModel.getElectionsSourcedFromPrior(req);
+    let priorElections = sourcedFromPrior?.map(e => e.election_id) ?? [];
+
     let stats = {
         elections: Number(process.env.CLASSIC_ELECTION_COUNT ?? 0),
         votes: Number(process.env.CLASSIC_VOTE_COUNT ?? 0),
     };
 
-    electionVotes?.map(m => m['v'])?.forEach((count) => {
-        stats['votes'] = stats['votes'] + Number(count);
-        if(count >= 2){
-            stats['elections'] = stats['elections'] + 1;
+    electionVotes
+        ?.filter(m => !priorElections.includes(m['election_id']))
+        ?.map(m => m['v'])
+        ?.forEach((count) => {
+            stats['votes'] = stats['votes'] + Number(count);
+            if(count >= 2){
+                stats['elections'] = stats['elections'] + 1;
+            }
+            return stats;
         }
-        return stats;
-    });
+    );
 
     return stats;
 }

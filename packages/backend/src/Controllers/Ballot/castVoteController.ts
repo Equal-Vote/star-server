@@ -15,6 +15,8 @@ import { IElectionRequest } from "../../IRequest";
 import { Response, NextFunction } from 'express';
 import { io } from "../../socketHandler";
 import { Server } from "socket.io";
+import { expectPermission } from "../controllerUtils";
+import { permissions } from "@equal-vote/star-vote-shared/domain_model/permissions";
 
 const ElectionsModel = ServiceLocator.electionsDb();
 const ElectionRollModel = ServiceLocator.electionRollDb();
@@ -29,9 +31,12 @@ type CastVoteEvent = {
     userEmail?:string,
 }
 
+// NOTE: discord isn't implemented yet, but that's the plan for the future
+type BallotSubmitType = 'submitted_via_browser' | 'submitted_via_admin' | 'submitted_via_discord';
+
 const castVoteEventQueue = "castVoteEvent";
 
-async function makeBallotEvent(req: IElectionRequest, targetElection: Election, inputBallot: Ballot, voter_id?: string){
+async function makeBallotEvent(req: IElectionRequest, targetElection: Election, inputBallot: Ballot, submitType: BallotSubmitType, voter_id?: string){
     inputBallot.election_id = targetElection.election_id;
     let roll = null;
 
@@ -44,8 +49,10 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
             throw new Unauthorized(missingAuthData);
         }
 
-        roll = await getOrCreateElectionRoll(req, targetElection, req);
+        // skipping state check since this is allowed when uploading ballots, and it's already explicitly checked for individual ballots
+        roll = await getOrCreateElectionRoll(req, targetElection, req, voter_id, true);
         const voterAuthorization = getVoterAuthorization(roll,missingAuthData)
+
         assertVoterMayVote(voterAuthorization, req);
 
         //TODO: currently we have both a value on the input Ballot, and the route param.
@@ -70,7 +77,7 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
     //TODO, ensure the user ID is added to the ballot...
     //should server-authenticate the user id based on auth token
     inputBallot.history.push({
-        action_type:"submit",
+        action_type: submitType,
         actor: roll===null ? '' : roll.voter_id ,
         timestamp:inputBallot.date_submitted,
     });
@@ -101,6 +108,10 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
 async function uploadBallotsController(req: IElectionRequest, res: Response, next: NextFunction) {
     Logger.info(req, "Upload Ballots Controller");
 
+    expectPermission(req.user_auth.roles, permissions.canUploadBallots);
+
+    //TODO: if it's a public_archive item, also check canUpdatePublicArchive instead
+
     const targetElection = req.election;
     if (targetElection == null){
         const errMsg = "Invalid Ballot: invalid election Id";
@@ -110,7 +121,7 @@ async function uploadBallotsController(req: IElectionRequest, res: Response, nex
  
     let events = await Promise.all(
         req.body.ballots.map(({ballot, voter_id} : {ballot: Ballot, voter_id: string}) => 
-            makeBallotEvent(req, targetElection, structuredClone(ballot), voter_id).catch((err) => ({
+            makeBallotEvent(req, targetElection, structuredClone(ballot), 'submitted_via_admin', voter_id).catch((err) => ({
                 error: err,
                 ballot: ballot
             }))
@@ -154,7 +165,7 @@ async function castVoteController(req: IElectionRequest, res: Response, next: Ne
         throw new BadRequest("Election is not open");
     }
 
-    let event = await makeBallotEvent(req, targetElection, req.body.ballot)
+    let event = await makeBallotEvent(req, targetElection, req.body.ballot, 'submitted_via_browser')
 
     event.userEmail = req.body.receiptEmail;
 

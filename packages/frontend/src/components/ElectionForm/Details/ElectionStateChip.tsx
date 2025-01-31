@@ -14,7 +14,8 @@ const getStateColor = (state: string) => {
     case 'open':
       return 'blue';
     case 'closed':
-      return 'red';
+      // changed from red, since being closed isn't a bad thing. It just means the voting period is finished
+      return 'orange'; 
     case 'archived':
       return 'gray4';
     // Voted

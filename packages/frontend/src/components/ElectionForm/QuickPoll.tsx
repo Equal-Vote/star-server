@@ -1,15 +1,12 @@
-import React, { useContext, useState } from 'react'
-import Container from '@mui/material/Container';
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import { useNavigate } from "react-router"
+import { useContext, useState } from 'react';
+import { useNavigate } from "react-router";
 import structuredClone from '@ungap/structured-clone';
-import { StyledButton, StyledTextField } from '../styles.js'
+import { StyledButton, StyledTextField } from '../styles.js';
 import { Box, Button, IconButton, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { usePostElection } from '../../hooks/useAPI';
 import { useCookie } from '../../hooks/useCookie';
-import { Election, NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
+import { NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { CreateElectionContext } from './CreateElectionDialog.js';
 import useSnackbar from '../SnackbarContext.js';
 
@@ -26,7 +23,7 @@ const QuickPoll = () => {
 
     const {t} = useSubstitutedTranslation('poll');
 
-        // TODO: we may edit the db entries in the future so that these align
+    // TODO: we may edit the db entries in the future so that these align
     const dbKeys = {
         'star': 'STAR',
         'approval': 'Approval',
@@ -39,6 +36,7 @@ const QuickPoll = () => {
         frontend_url: '',
         owner_id: '0',
         is_public: false,
+        ballot_source: 'live_election',
         races: [
             {   
                 title: '',
@@ -74,7 +72,6 @@ const QuickPoll = () => {
             term_type: 'poll',
         }
     }
-
 
     const [election, setElectionData] = useState<NewElection>(QuickPollTemplate)
     const onSubmitElection = async (election) => {

@@ -18,6 +18,7 @@ const ViewBallots = () => {
     // so we use election instead of precinctFilteredElection
     const { election } = useElection()
     const { data, isPending, error, makeRequest: fetchBallots } = useGetBallots(election.election_id)
+
     const flags = useFeatureFlags();
     useEffect(() => { fetchBallots() }, [])
     const [isViewing, setIsViewing] = useState(false)

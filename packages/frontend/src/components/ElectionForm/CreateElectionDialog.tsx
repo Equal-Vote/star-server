@@ -1,19 +1,14 @@
-import { Box, Button, capitalize, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, IconButton, MenuItem, Radio, RadioGroup, Select, Step, StepConnector, StepContent, StepLabel, Stepper, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, capitalize, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Radio, RadioGroup, Step, StepContent, StepLabel, Stepper, TextField, Typography } from "@mui/material";
 import { StyledButton, Tip } from "../styles";
-import { Dispatch, SetStateAction, createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { ElectionTitleField } from "./Details/ElectionDetailsForm";
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ExpandLess from '@mui/icons-material/ExpandLess'
-import ExpandMore from '@mui/icons-material/ExpandMore'
-import { openFeedback, RowButtonWithArrow, useSubstitutedTranslation } from "../util";
-import { useLocalStorage } from "~/hooks/useLocalStorage";
+import { RowButtonWithArrow, useSubstitutedTranslation } from "../util";
 import { NewElection } from "@equal-vote/star-vote-shared/domain_model/Election";
 import { DateTime } from "luxon";
 import useAuthSession from "../AuthSessionContextProvider";
 import { usePostElection } from "~/hooks/useAPI";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 import { useNavigate } from "react-router";
-import { useTranslation } from "react-i18next";
 import { TimeZone } from "@equal-vote/star-vote-shared/domain_model/Util";
 
 /////// PROVIDER SETUP /////
@@ -49,12 +44,13 @@ export const CreateElectionContextProvider = ({children}) => {
 
 /////// DIALOG /////
 
-const defaultElection: NewElection = {
+export const defaultElection: NewElection = {
     title: '',
     owner_id: '',
     description: '',
     state: 'draft',
     frontend_url: '',
+    ballot_source: 'live_election',
     races: [],
     settings: {
         voter_authentication: {
@@ -310,8 +306,8 @@ export default () => {
                         }}>
                             <FormControlLabel control={
                                 <TextField
-                                    id="contact_email"
-                                    name={t(`election_settings.contact_email`)}
+                                    id='contact_email'
+                                    name='contact_email'
                                     value={election.settings.contact_email}
                                     onChange={(e) => 
                                         setElection({...election, settings: {

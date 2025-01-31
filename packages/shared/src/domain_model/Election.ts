@@ -14,7 +14,6 @@ export interface Election {
     frontend_url:   string; // base URL for the frontend
     start_time?:    Date | string;   // when the election starts 
     end_time?:      Date | string;   // when the election ends
-    support_email?: string; // email available to voters to request support
     owner_id:       Uid;  // user_id of owner of election
     audit_ids?:     Uid[];  // user_id of account with audit access
     admin_ids?:     Uid[];  // user_id of account with admin access
@@ -28,15 +27,13 @@ export interface Election {
     create_date:    Date | string; // Date this object was created
     update_date:    Date | string;  // Date this object was last updated
     head:           boolean;// Head version of this object
+    ballot_source:  'live_election' | 'prior_election';
+    public_archive_id?: string;
 }
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
 export interface NewElection extends PartialBy<Election,'election_id'|'create_date'|'update_date'|'head'> {}
-
-
-
-
 
 export function electionValidation(obj:Election): string | null {
   if (!obj){
@@ -69,11 +66,6 @@ export function electionValidation(obj:Election): string | null {
     const date = new Date(obj.end_time);
     if (isNaN(date.getTime())) {
       return "Invalid End Time Date Format";
-    }
-  }
-  if (obj.support_email) {
-    if (!emailRegex.test(obj.support_email)) {
-      return "Invalid Support Email Format";
     }
   }
   if (typeof obj.owner_id !== 'string'){

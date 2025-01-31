@@ -3,13 +3,140 @@ import { Box, Button, Checkbox, FormControlLabel, FormGroup, MenuItem, Paper, Se
 import { useRef, useState } from "react";
 import { useSubstitutedTranslation } from "./util";
 import EnhancedTable from "./EnhancedTable";
+import { rankColumnCSV } from "./cvrParsers";
+import { v4 as uuidv4 } from 'uuid';
+import Papa from 'papaparse';
+import useAuthSession from "./AuthSessionContextProvider";
+import { defaultElection } from "./ElectionForm/CreateElectionDialog";
+import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
+import { NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
 
 export default () => {
-    const [votingMethod, setVotingMethod] = useState('IRV')
     const [addToPublicArchive, setAddToPublicArchive] = useState(false)
     const [cvrs, setCvrs] = useState([])
     const {t} = useSubstitutedTranslation();
     const inputRef = useRef(null)
+    const [electionsSubmitted, setElectionsSubmitted] = useState(false);
+    const authSession = useAuthSession()
+
+    const submitElections = () => {
+        setElectionsSubmitted(true)
+
+        cvrs.forEach(cvr => {
+            // #1: Parse CSV
+            const post_process = async (parsed_csv) => {
+                // #2 : Infer Election Settings
+                const errorRows = new Set(parsed_csv.errors.map(error => error.row))
+                // NOTE: this assumes rank_column_csv, may not work with other formats
+                const rankFields = parsed_csv.meta.fields.filter((field:string) => field.startsWith('rank'));
+                const maxRankings = rankFields.length;
+                let candidateNames = new Set();
+                parsed_csv.data.forEach((row, i) => {
+                    if(errorRows.has(i)) return;
+                    candidateNames = candidateNames.union(new Set(rankFields.map(rankField => row[rankField])))
+                })
+                candidateNames.delete('skipped');
+                candidateNames.delete('overvote');
+                // TODO: infer num winners
+
+                // #3 : Create (or fetch) Election 
+                // NOTE: I'm not using usePostElection because I need to handle multiple requests
+                const postElectionRes = await fetch('/API/Elections', {
+                    method: 'post',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        Election: {
+                            ...defaultElection,
+                            title: cvr.name.split('.')[0],
+                            state: 'closed',
+                            owner_id: authSession.getIdField('sub'),
+                            ballot_source: 'prior_election',
+                            public_archive_id: addToPublicArchive? cvr.name.split('.')[0] : undefined,
+                            settings: {
+                                ...defaultElection.settings,
+                                max_rankings: maxRankings,
+                                voter_access: 'open'
+                            },
+                            races: [
+                                {
+                                    race_id: uuidv4(),
+                                    voting_method: 'IRV', 
+                                    title: cvr.name.split('.')[0],
+                                    candidates: [...candidateNames].map(name => ({ 
+                                        candidate_id: uuidv4(),
+                                        candidate_name: name
+                                    })) as Candidate[],
+                                    num_winners: 1
+                                }
+                            ]
+                        } as NewElection,
+                    })
+                })
+
+                if (!postElectionRes.ok){
+                    parsed_csv.errors.push({
+                        code: "ElectionCreationFailed",
+                        message: `Error making request: ${postElectionRes.status.toString()}`,
+                        row: -1,
+                        type: "ElectionCreationFailed"
+                    })
+                    return;
+                };
+
+                const {election} = await postElectionRes.json()
+
+                // #4 : Convert Rows to Ballots
+                let {ballots, errors} = rankColumnCSV(parsed_csv, election)
+
+                // #5 : Upload Ballots
+                const batchSize = 100;
+                let batchIndex = -1;
+                let responses = [];
+                // TODO: this batching isn't ideal since it'll be tricky to recovered from a partial failure
+                //       that said this will mainly be relevant when uploading batches for an existing election so I'll leave it for now
+                let filteredBallots = ballots.filter((b, i) => !errorRows.has(i));
+                while((batchIndex+1)*batchSize < ballots.length && batchIndex < 1000 /* a dummy check to avoid infinite loops*/){
+                    batchIndex++;
+                    const uploadRes = await fetch(`/API/Election/${election.election_id}/uploadBallots`, {
+                        method: 'post',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ballots: filteredBallots.slice(batchIndex*batchSize, (batchIndex+1)*batchSize)})
+                    })
+
+                    if (!uploadRes.ok){
+                        errors.push({
+                            code: "UploadBallotsFailed",
+                            message: `Error making request: ${uploadRes.status.toString()}`,
+                            row: -1,
+                            type: "UploadBallotsFailed"
+                        })
+                        console.log(errors);
+                        return;
+                    };
+
+                    let res = await uploadRes.json();
+                    responses = [...responses, ...res.responses];
+                }
+                console.log(responses);
+
+                // TODO: display error list somewhere
+                console.log('SUCCESS!: ', election.election_id);
+            }
+            Papa.parse(cvr.url, {
+                header: true,
+                download: true,
+                dynamicTyping: true,
+                complete: post_process
+            })
+
+        })
+    }
 
     const handleDragOver = (e) => {
         e.preventDefault()
@@ -42,17 +169,6 @@ export default () => {
         gap={2}
     >
         <Typography variant='h3'>Upload Election(s)</Typography>        
-        <Select
-            name="Voting Method"
-            label="Voting Method"
-            value={votingMethod}
-            onChange={(e) => setVotingMethod(e.target.value as VotingMethod)}
-            disabled
-        >
-            <MenuItem key="IRV" value="IRV">
-                Ranked Choice Voting (IRV)
-            </MenuItem>
-        </Select>
 
         {/* TODO: add a sys admin permission check*/ }
         <FormGroup>
@@ -114,6 +230,6 @@ export default () => {
             emptyContent={<p>No files selected</p>}
         />
 
-        <Button variant='contained'>Add (or update) elections</Button>
+        <Button variant='contained' disabled={electionsSubmitted} onClick={submitElections}>Add (or update) elections</Button>
     </Box>
 }
