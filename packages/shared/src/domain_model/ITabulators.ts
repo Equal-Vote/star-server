@@ -33,23 +33,22 @@ type preferenceMatrix = number[][]
 type pairwiseMatrix = number[][]
 
 
-interface genericSummaryData {
+export interface genericSummaryData {
     candidates: candidate[],
     totalScores: totalScore[],
-    // nVotes = nOutOfBoundsVotes + nUnderVotes + nTallyVotes
+    preferenceMatrix: preferenceMatrix,
+    pairwiseMatrix: pairwiseMatrix,
+    // nVotes = nOutOfBoundsVotes + nAbstentions + nTallyVotes
     nOutOfBoundsVotes: number,
-    nUndervotes: number,
+    nAbstentions: number,
     nTallyVotes: number,
 }
 
 export interface starSummaryData extends genericSummaryData {
-    scoreHist: scoreHist,
-    preferenceMatrix: preferenceMatrix,
-    pairwiseMatrix: pairwiseMatrix,
-    noPreferenceStars: number[],
+    fiveStarCounts: fiveStarCount[],
 }
 
-export interface allocatedScoreSummaryData extends starSummaryData {
+export interface allocatedScoreSummaryData extends genericSummaryData {
     splitPoints: number[],
     spentAboves: number[],
     weight_on_splits: number[],
@@ -63,8 +62,6 @@ export interface pluralitySummaryData extends genericSummaryData {
 
 export interface rankedRobinSummaryData extends genericSummaryData {
     rankHist: rankHist,
-    preferenceMatrix: preferenceMatrix,
-    pairwiseMatrix: pairwiseMatrix,
 }
 
 export interface irvSummaryData extends rankedRobinSummaryData {

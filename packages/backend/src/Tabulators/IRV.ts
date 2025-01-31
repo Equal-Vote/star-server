@@ -312,9 +312,9 @@ function getSummaryData(candidates: string[], parsedData: IparsedData, randomTie
         rankHist,
         preferenceMatrix,
         pairwiseMatrix,
-        nValidVotes: parsedData.validVotes.length,
+        nTallyVotes: parsedData.validVotes.length,
         nInvalidVotes: parsedData.invalidVotes.length,
-        nUnderVotes: parsedData.underVotes,
+        nAbstentions: parsedData.underVotes,
     }
 }
 
@@ -335,9 +335,9 @@ function sortData(summaryData: irvSummaryData, order: candidate[]): irvSummaryDa
         rankHist,
         preferenceMatrix,
         pairwiseMatrix,
-        nValidVotes: summaryData.nValidVotes,
+        nTallyVotes: summaryData.nTallyVotes,
         nInvalidVotes: summaryData.nInvalidVotes,
-        nUnderVotes: summaryData.nUnderVotes,
+        nAbstentions: summaryData.nAbstentions,
     }
 }
 

@@ -1,6 +1,6 @@
 import { approvalResults, approvalSummaryData, ballot, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
-import { commaListFormatter, getInitialData, makeBoundsTest, makeUnderVoteTest, runBlocTabulator } from "./Util";
+import { commaListFormatter, getInitialData, makeBoundsTest, makeAbstentionTest, runBlocTabulator } from "./Util";
 
 export function Approval(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true) {
   breakTiesRandomly = true // hard coding this for now
@@ -9,7 +9,7 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
 		votes, candidates, randomTiebreakOrder, 'cardinal',
 		[
 			makeBoundsTest(0, 1),
-			makeUnderVoteTest(0),
+			makeAbstentionTest(0),
 		]
 	)
 
@@ -50,4 +50,3 @@ const singleWinnerApproval = (scoresLeft: totalScore[], summaryData: approvalSum
     tied: tiedCandidates,
   };
 }
-

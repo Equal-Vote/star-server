@@ -94,21 +94,6 @@ function getTransforms(header : any, data : string[][]) {
   return transforms;
 }
 
-function getStarBallotValidity(ballot: ballot) {
-    const minScore = 0
-    const maxScore = 5
-    let isUnderVote = true
-    for (let i = 0; i < ballot.length; i++) {
-        if (ballot[i] < minScore || ballot[i] > maxScore) {
-            return { isValid: false, isUnderVote: false }
-        }
-        if (ballot[i] > minScore) {
-            isUnderVote = false
-        }
-    }
-    return { isValid: true, isUnderVote: isUnderVote }
-}
-
 export const makeBoundsTest = (minValue:number, maxValue:number) => {
 	return [
 		'nOutOfBoundsVotes',
@@ -116,10 +101,10 @@ export const makeBoundsTest = (minValue:number, maxValue:number) => {
 	] as const;
 }
 
-export const makeUnderVoteTest = (underVoteValue:number = 0) => {
+export const makeAbstentionTest = (underVoteValue:number|null = 0) => {
 	return [
-		'nUndervotes',
-		(ballot: number[]) => ballot.filter(b => b === underVoteValue).length == ballot.length
+		'nAbstentions',
+		(ballot: number[]) => ballot.filter(b => b === null ? b === underVoteValue : (b??0) === underVoteValue).length == ballot.length
 	] as const;
 }
 
@@ -162,7 +147,7 @@ export const getInitialData = <SummaryType,>(
 	allVotes: ballot[],
   candidates: string[],
   randomTiebreakOrder: number[],
-  methodType: 'cardinal' | 'orindal',
+  methodType: 'cardinal' | 'ordinal',
   statTests: StatTestPair[],
 ): [ballot[], SummaryType] => {
 	// Filter Ballots
@@ -247,33 +232,3 @@ export const runBlocTabulator = <ResultsType extends genericResults, SummaryType
 
   return results
 }
-
-
-//{
-//    // Initialize arrays
-//    const scores: ballot[] = [];
-//    const validVotes: voter[] = [];
-//    let underVotes: number = 0;
-//    const invalidVotes: voter[]  = [];
-//    // Parse each row of data into voter, undervote, and score arrays
-//    data.forEach((row, n) => {
-//        const voter: voter = { csvRow: n + 1 };
-//        const ballotValidity = validityCheck(row)
-//        if (!ballotValidity.isValid) {
-//            invalidVotes.push(voter)
-//        }
-//        else if (ballotValidity.isUnderVote) {
-//            underVotes += 1
-//        }
-//        else {
-//            scores.push(row)
-//            validVotes.push(voter);
-//        }
-//    });
-//    return {
-//        scores,
-//        invalidVotes,
-//        underVotes,
-//        validVotes
-//    };
-//}

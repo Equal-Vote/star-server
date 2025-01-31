@@ -39,8 +39,8 @@ describe("Ranked Robin Tests", () => {
         expect(results.summaryData.totalScores[3].index).toBe(3);  
         expect(results.summaryData.totalScores[3].score).toBe(0); 
 
-        expect(results.summaryData.nUnderVotes).toBe(1)
-        expect(results.summaryData.nValidVotes).toBe(9)
+        expect(results.summaryData.nAbstentions).toBe(1)
+        expect(results.summaryData.nTallyVotes).toBe(9)
         expect(results.summaryData.nOutOfBoundsVotes).toBe(2)
     })    
     test("Muilti winner test", () => {
@@ -62,8 +62,8 @@ describe("Ranked Robin Tests", () => {
         expect(results.elected[0].name).toBe('Alice');
         expect(results.elected[1].name).toBe('Bob');
 
-        expect(results.summaryData.nUnderVotes).toBe(0)
-        expect(results.summaryData.nValidVotes).toBe(9)
+        expect(results.summaryData.nAbstentions).toBe(0)
+        expect(results.summaryData.nTallyVotes).toBe(9)
         expect(results.summaryData.nOutOfBoundsVotes).toBe(0)
     })
     test("Ties", () => {
@@ -99,8 +99,8 @@ describe("Ranked Robin Tests", () => {
         expect(results.summaryData.totalScores[3].index).toBe(3);  
         expect(results.summaryData.totalScores[3].score).toBe(0); 
 
-        expect(results.summaryData.nUnderVotes).toBe(0)
-        expect(results.summaryData.nValidVotes).toBe(6)
+        expect(results.summaryData.nAbstentions).toBe(0)
+        expect(results.summaryData.nTallyVotes).toBe(6)
         expect(results.summaryData.nOutOfBoundsVotes).toBe(0)
     })
     test("Ties, tiebreak order defined", () => {

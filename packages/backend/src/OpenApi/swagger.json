@@ -1317,10 +1317,10 @@
           "nInvalidVotes": {
             "type": "number"
           },
-          "nUnderVotes": {
+          "nAbstentions": {
             "type": "number"
           },
-          "nValidVotes": {
+          "nTallyVotes": {
             "type": "number"
           },
           "noPreferenceStars": {
@@ -1393,8 +1393,8 @@
         "required": [
           "candidates",
           "nInvalidVotes",
-          "nUnderVotes",
-          "nValidVotes",
+          "nAbstentions",
+          "nTallyVotes",
           "noPreferenceStars",
           "pairwiseMatrix",
           "preferenceMatrix",
@@ -1469,10 +1469,10 @@
           "nInvalidVotes": {
             "type": "number"
           },
-          "nUnderVotes": {
+          "nAbstentions": {
             "type": "number"
           },
-          "nValidVotes": {
+          "nTallyVotes": {
             "type": "number"
           },
           "totalScores": {
@@ -1485,8 +1485,8 @@
         "required": [
           "candidates",
           "nInvalidVotes",
-          "nUnderVotes",
-          "nValidVotes",
+          "nAbstentions",
+          "nTallyVotes",
           "totalScores"
         ],
         "type": "object"
@@ -1634,10 +1634,10 @@
           "nInvalidVotes": {
             "type": "number"
           },
-          "nUnderVotes": {
+          "nAbstentions": {
             "type": "number"
           },
-          "nValidVotes": {
+          "nTallyVotes": {
             "type": "number"
           },
           "totalScores": {
@@ -1650,8 +1650,8 @@
         "required": [
           "candidates",
           "nInvalidVotes",
-          "nUnderVotes",
-          "nValidVotes",
+          "nAbstentions",
+          "nTallyVotes",
           "totalScores"
         ],
         "type": "object"
@@ -1780,10 +1780,10 @@
           "nInvalidVotes": {
             "type": "number"
           },
-          "nUnderVotes": {
+          "nAbstentions": {
             "type": "number"
           },
-          "nValidVotes": {
+          "nTallyVotes": {
             "type": "number"
           },
           "pairwiseMatrix": {
@@ -1823,8 +1823,8 @@
         "required": [
           "candidates",
           "nInvalidVotes",
-          "nUnderVotes",
-          "nValidVotes",
+          "nAbstentions",
+          "nTallyVotes",
           "pairwiseMatrix",
           "preferenceMatrix",
           "rankHist",
@@ -1909,10 +1909,10 @@
           "nInvalidVotes": {
             "type": "number"
           },
-          "nUnderVotes": {
+          "nAbstentions": {
             "type": "number"
           },
-          "nValidVotes": {
+          "nTallyVotes": {
             "type": "number"
           },
           "totalScores": {
@@ -1925,8 +1925,8 @@
         "required": [
           "candidates",
           "nInvalidVotes",
-          "nUnderVotes",
-          "nValidVotes",
+          "nAbstentions",
+          "nTallyVotes",
           "totalScores"
         ],
         "type": "object"
@@ -2011,10 +2011,10 @@
           "nInvalidVotes": {
             "type": "number"
           },
-          "nUnderVotes": {
+          "nAbstentions": {
             "type": "number"
           },
-          "nValidVotes": {
+          "nTallyVotes": {
             "type": "number"
           },
           "pairwiseMatrix": {
@@ -2054,8 +2054,8 @@
         "required": [
           "candidates",
           "nInvalidVotes",
-          "nUnderVotes",
-          "nValidVotes",
+          "nAbstentions",
+          "nTallyVotes",
           "pairwiseMatrix",
           "preferenceMatrix",
           "rankHist",
@@ -2208,10 +2208,10 @@
           "nInvalidVotes": {
             "type": "number"
           },
-          "nUnderVotes": {
+          "nAbstentions": {
             "type": "number"
           },
-          "nValidVotes": {
+          "nTallyVotes": {
             "type": "number"
           },
           "noPreferenceStars": {
@@ -2257,8 +2257,8 @@
         "required": [
           "candidates",
           "nInvalidVotes",
-          "nUnderVotes",
-          "nValidVotes",
+          "nAbstentions",
+          "nTallyVotes",
           "noPreferenceStars",
           "pairwiseMatrix",
           "preferenceMatrix",

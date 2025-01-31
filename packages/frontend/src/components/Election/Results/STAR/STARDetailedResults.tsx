@@ -40,7 +40,7 @@ export default () => {
     runoffData.push({
       name: t('results.star.equal_preferences'),
       votes: 0,
-      runoffVotes: results.summaryData.nValidVotes - finalistVotes,
+      runoffVotes: results.summaryData.nTallyVotes - finalistVotes,
       index: -1,
     })
 
@@ -58,10 +58,10 @@ export default () => {
             ...runoffData.map((c, i) => [
               c.name,
               c.runoffVotes,
-              `${Math.round(c.runoffVotes * 1000 / results.summaryData.nValidVotes) / 10}%`,
+              `${Math.round(c.runoffVotes * 1000 / results.summaryData.nTallyVotes) / 10}%`,
               i == 2 ? '' : `${Math.round(c.runoffVotes * 1000 / finalistVotes) / 10}%`,
             ]),
-            [t('keyword.total'), results.summaryData.nValidVotes, '100%', '100%'] 
+            [t('keyword.total'), results.summaryData.nTallyVotes, '100%', '100%'] 
             ]}/>
         </Widget>
       </WidgetContainer>

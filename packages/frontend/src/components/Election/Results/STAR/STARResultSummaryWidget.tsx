@@ -53,7 +53,7 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
     let runoffData = [...pieData]
     runoffData.push({
       name: t('results.star.equal_preferences'),
-      votes: results.summaryData.nValidVotes - winnerVotes - runnerUpVotes,
+      votes: results.summaryData.nTallyVotes - winnerVotes - runnerUpVotes,
     })
 
     return (
@@ -71,7 +71,7 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
                         return b.votes - a.votes;
                     }}
                     percentage={false} 
-                    percentDenominator={results.summaryData.nValidVotes*5} 
+                    percentDenominator={results.summaryData.nTallyVotes*5} 
                     majorityOffset
                 />
             </Widget>
