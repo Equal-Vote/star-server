@@ -35,7 +35,8 @@ describe("Plurality Tests", () => {
         
         expect(results.summaryData.nUnderVotes).toBe(1)
         expect(results.summaryData.nValidVotes).toBe(10)
-        expect(results.summaryData.nInvalidVotes).toBe(3)
+        expect(results.summaryData.nOutOfBoundsVotes).toBe(2)
+        expect(results.summaryData.nOvervotes).toBe(1)
     })
 
     test("Multi Winner Test", () => {
@@ -69,7 +70,8 @@ describe("Plurality Tests", () => {
         
         expect(results.summaryData.nUnderVotes).toBe(0)
         expect(results.summaryData.nValidVotes).toBe(10)
-        expect(results.summaryData.nInvalidVotes).toBe(0)
+        expect(results.summaryData.nOutOfBoundsVotes).toBe(0)
+        expect(results.summaryData.nOvervotes).toBe(0)
     })
 
     test("Ties Test", () => {
@@ -104,7 +106,8 @@ describe("Plurality Tests", () => {
         
         expect(results.summaryData.nUnderVotes).toBe(0)
         expect(results.summaryData.nValidVotes).toBe(11)
-        expect(results.summaryData.nInvalidVotes).toBe(0)
+        expect(results.summaryData.nOutOfBoundsVotes).toBe(0)
+        expect(results.summaryData.nOvervotes).toBe(0)
     })
 
     test("Ties Test, tiebreak order defined", () => {
@@ -139,6 +142,7 @@ describe("Plurality Tests", () => {
         
         expect(results.summaryData.nUnderVotes).toBe(0)
         expect(results.summaryData.nValidVotes).toBe(11)
-        expect(results.summaryData.nInvalidVotes).toBe(0)
+        expect(results.summaryData.nOutOfBoundsVotes).toBe(0)
+        expect(results.summaryData.nOvervotes).toBe(0)
     })
 })

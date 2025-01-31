@@ -109,7 +109,6 @@ function getSummaryData(candidates: string[], parsedData: IparsedData, randomTie
     preferenceMatrix[i] = Array(nCandidates).fill(0);
     pairwiseMatrix[i] = Array(nCandidates).fill(0);
   }
-  let nBulletVotes = 0
 
   // Iterate through ballots and populate data structures
   parsedData.scores.forEach((vote) => {
@@ -127,9 +126,6 @@ function getSummaryData(candidates: string[], parsedData: IparsedData, randomTie
       if (vote[i] > 0) {
         nSupported += 1
       }
-    }
-    if (nSupported === 1) {
-      nBulletVotes += 1
     }
   })
 
@@ -154,7 +150,6 @@ function getSummaryData(candidates: string[], parsedData: IparsedData, randomTie
     nValidVotes: parsedData.validVotes.length,
     nInvalidVotes: parsedData.invalidVotes.length,
     nUnderVotes: parsedData.underVotes,
-    nBulletVotes: nBulletVotes,
     noPreferenceStars: [], // this will be used later
   }
 }
@@ -179,7 +174,6 @@ function sortData(summaryData: starSummaryData, order: candidate[]): starSummary
     nValidVotes: summaryData.nValidVotes,
     nInvalidVotes: summaryData.nInvalidVotes,
     nUnderVotes: summaryData.nUnderVotes,
-    nBulletVotes: summaryData.nBulletVotes,
     noPreferenceStars: summaryData.noPreferenceStars,
   }
 }

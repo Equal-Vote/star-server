@@ -1,4 +1,5 @@
-import { candidate, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { candidate, genericResults, genericSummaryData, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { ballot, voter } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 declare namespace Intl {
   class ListFormat {
@@ -92,3 +93,187 @@ function getTransforms(header : any, data : string[][]) {
   });
   return transforms;
 }
+
+function getStarBallotValidity(ballot: ballot) {
+    const minScore = 0
+    const maxScore = 5
+    let isUnderVote = true
+    for (let i = 0; i < ballot.length; i++) {
+        if (ballot[i] < minScore || ballot[i] > maxScore) {
+            return { isValid: false, isUnderVote: false }
+        }
+        if (ballot[i] > minScore) {
+            isUnderVote = false
+        }
+    }
+    return { isValid: true, isUnderVote: isUnderVote }
+}
+
+export const makeBoundsTest = (minValue:number, maxValue:number) => {
+	return [
+		'nOutOfBoundsVotes',
+		(ballot: number[]) => ballot.filter(b => b < minValue || maxValue < b).length > 0
+	] as const;
+}
+
+export const makeUnderVoteTest = (underVoteValue:number = 0) => {
+	return [
+		'nUndervotes',
+		(ballot: number[]) => ballot.filter(b => b === underVoteValue).length == ballot.length
+	] as const;
+}
+
+type StatTestPair = Readonly<[string, Function]>;
+
+const filterInitialVotes = (data: ballot[], tests: StatTestPair[]): [ballot[], {[key: string]: number}] => {
+	let tallyVotes: ballot[] = [];
+	let summaryStats: {[key: string]: number} = {};
+
+    tests.forEach(([statName, statTest]) => {
+      summaryStats[statName] = 0;
+    })
+    summaryStats['nTallyVotes'] = 0;
+
+    data.forEach(ballot => {
+      // using a classic loop so that I can return out of it
+      for(let i = 0; i < tests.length; i++){
+        let [statName, statTest] = tests[i]; 
+        if(statTest(ballot)){
+          summaryStats[statName] = (summaryStats[statName] ?? 0)+1;
+          return;
+        }
+      }
+      summaryStats.nTallyVotes++;
+	  tallyVotes.push(ballot)
+    })
+
+    return [tallyVotes, summaryStats];
+}
+
+/*export const totalScoreComparator = (criteria: keyof totalScore, a: totalScore, b: totalScore): number | undefined => {
+  if(a[criteria] === undefined) return undefined;
+  if(b[criteria] === undefined) return undefined;
+  if((a[criteria]) > (b[criteria])) return -1;
+  if((a[criteria]) < (b[criteria])) return 1;
+  return undefined;
+}*/
+
+export const getInitialData = <SummaryType,>(
+	allVotes: ballot[],
+  candidates: string[],
+  randomTiebreakOrder: number[],
+  methodType: 'cardinal' | 'orindal',
+  statTests: StatTestPair[],
+): [ballot[], SummaryType] => {
+	// Filter Ballots
+	const [tallyVotes, summaryStats] = filterInitialVotes(allVotes, statTests);
+
+	// Initialize randomTiebreakOrder structure
+	if (randomTiebreakOrder.length < candidates.length) {
+		randomTiebreakOrder = candidates.map((c,index) => index)
+	}
+
+  // Matrix for voter preferences
+  const preferenceMatrix: number[][] = candidates.map((_,i) => 
+    candidates.map((_,j) =>
+      // count the number of votes with i > j
+      tallyVotes.reduce((n, vote) => n + (methodType == 'cardinal'?
+        // Cardinal systems: vote goes to the candinate with the higher number
+        (vote[i] > vote[j])? 1 : 0
+      :
+        // Orindal systems: vote goes to the candinate with the smaller rank
+        (vote[i] < vote[j])? 1 : 0
+      ), 0)
+    )
+  )
+
+  // Matrix for voter preferences
+  const pairwiseMatrix: number[][] = candidates.map((_,i) => 
+    // count if more voters prefer i to j
+    candidates.map((_,j) => (preferenceMatrix[i][j] > preferenceMatrix[j][i])? 1 : 0)
+  )
+
+  // Totaled score measures for each candidate
+  const totalScores: totalScore[] = candidates.map((_,candidateIndex) => ({
+    index: candidateIndex,
+    score: tallyVotes.reduce(
+      (score, vote) => score + vote[candidateIndex],
+      0
+    ),
+  }));
+
+	// Sort totalScores
+  const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
+  sortTotalScores(totalScores, candidatesWithIndexes);
+
+  return [
+		tallyVotes, 
+		{
+			candidates: candidates.map((candidate, index) => 
+				({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] })
+			),
+			totalScores,
+			preferenceMatrix,
+			pairwiseMatrix,
+			...summaryStats,
+		} as SummaryType
+	]
+}
+
+export const runBlocTabulator = <ResultsType extends genericResults, SummaryType extends genericSummaryData,>(
+	results: ResultsType,
+	nWinners: number,
+	singleWinnerCallback: (scoresLeft: totalScore[], summaryData: SummaryType) => roundResults
+) => {
+  let scoresLeft = [...results.summaryData.totalScores];
+
+  for(let w = 0; w < nWinners; w++){
+    let roundResults = singleWinnerCallback(scoresLeft, results.summaryData as SummaryType);
+
+    results.elected.push(...roundResults.winners);
+    results.roundResults.push(roundResults);
+
+    // remove winner for next round
+    scoresLeft = scoresLeft.filter(totalScore => totalScore.index != roundResults.winners[0].index)
+
+    // only save the tie breaker info if we're in the final round
+    if(w == nWinners-1){
+      results.tied = roundResults.tied; 
+      results.tieBreakType = roundResults.tieBreakType; // only save the tie breaker info if we're in the final round
+    }
+  }
+
+  results.other = scoresLeft.map(s => results.summaryData.candidates[s.index]); // remaining candidates in sortedScores
+
+  return results
+}
+
+
+//{
+//    // Initialize arrays
+//    const scores: ballot[] = [];
+//    const validVotes: voter[] = [];
+//    let underVotes: number = 0;
+//    const invalidVotes: voter[]  = [];
+//    // Parse each row of data into voter, undervote, and score arrays
+//    data.forEach((row, n) => {
+//        const voter: voter = { csvRow: n + 1 };
+//        const ballotValidity = validityCheck(row)
+//        if (!ballotValidity.isValid) {
+//            invalidVotes.push(voter)
+//        }
+//        else if (ballotValidity.isUnderVote) {
+//            underVotes += 1
+//        }
+//        else {
+//            scores.push(row)
+//            validVotes.push(voter);
+//        }
+//    });
+//    return {
+//        scores,
+//        invalidVotes,
+//        underVotes,
+//        validVotes
+//    };
+//}

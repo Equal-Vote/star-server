@@ -269,8 +269,6 @@ function getSummaryData(candidates: string[], parsedData: IparsedData, randomTie
         preferenceMatrix[i] = Array(nCandidates).fill(0);
         pairwiseMatrix[i] = Array(nCandidates).fill(0);
     }
-    let nBulletVotes = 0
-
     // Iterate through ballots and populate data structures
     parsedData.scores.forEach((vote) => {
         let nSupported = 0
@@ -296,9 +294,6 @@ function getSummaryData(candidates: string[], parsedData: IparsedData, randomTie
                 nSupported += 1
             }
         }
-        if (nSupported === 1) {
-            nBulletVotes += 1
-        }
     })
 
     for (let i = 0; i < nCandidates; i++) {
@@ -320,7 +315,6 @@ function getSummaryData(candidates: string[], parsedData: IparsedData, randomTie
         nValidVotes: parsedData.validVotes.length,
         nInvalidVotes: parsedData.invalidVotes.length,
         nUnderVotes: parsedData.underVotes,
-        nBulletVotes: nBulletVotes
     }
 }
 
@@ -344,7 +338,6 @@ function sortData(summaryData: irvSummaryData, order: candidate[]): irvSummaryDa
         nValidVotes: summaryData.nValidVotes,
         nInvalidVotes: summaryData.nInvalidVotes,
         nUnderVotes: summaryData.nUnderVotes,
-        nBulletVotes: summaryData.nBulletVotes,
     }
 }
 

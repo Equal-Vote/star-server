@@ -176,8 +176,7 @@ describe("Allocated Score Tests", () => {
         ]
         const results = AllocatedScore(candidates, votes, 1, [], false, false)
         expect(results.summaryData.nValidVotes).toBe(6);
-        expect(results.summaryData.nInvalidVotes).toBe(2);
+        expect(results.summaryData.nOutOfBoundsVotes).toBe(2);
         expect(results.summaryData.nUnderVotes).toBe(2);
-        expect(results.summaryData.nBulletVotes).toBe(3);
     })
 })

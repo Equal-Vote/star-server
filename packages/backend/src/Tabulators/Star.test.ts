@@ -117,9 +117,8 @@ describe("STAR Tests", () => {
         ]
         const results = Star(candidates, votes, 1, [])
         expect(results.summaryData.nValidVotes).toBe(6);
-        expect(results.summaryData.nInvalidVotes).toBe(2);
+        expect(results.summaryData.nOutOfBoundsVotes).toBe(2);
         expect(results.summaryData.nUnderVotes).toBe(2);
-        expect(results.summaryData.nBulletVotes).toBe(3);
     })
 })
 
@@ -133,7 +132,6 @@ function buildTestSummaryData(candidates: string[], scores: number[], pairwiseMa
         nValidVotes: 0,
         nInvalidVotes: 0,
         nUnderVotes: 0,
-        nBulletVotes: 0
     } as starSummaryData
 }
 

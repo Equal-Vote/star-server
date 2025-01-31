@@ -13,6 +13,7 @@ export interface candidate {
 export interface voter {
     csvRow: number
 }
+
 export interface totalScore {
     index: number,
     score: number,
@@ -35,10 +36,10 @@ type pairwiseMatrix = number[][]
 interface genericSummaryData {
     candidates: candidate[],
     totalScores: totalScore[],
-    nValidVotes: number,
-    nInvalidVotes: number,
-    nUnderVotes: number,
-    nBulletVotes?: number
+    // nVotes = nOutOfBoundsVotes + nUnderVotes + nTallyVotes
+    nOutOfBoundsVotes: number,
+    nUndervotes: number,
+    nTallyVotes: number,
 }
 
 export interface starSummaryData extends genericSummaryData {
@@ -56,7 +57,9 @@ export interface allocatedScoreSummaryData extends starSummaryData {
 }
 export interface approvalSummaryData extends genericSummaryData { }
 
-export interface pluralitySummaryData extends genericSummaryData {}
+export interface pluralitySummaryData extends genericSummaryData {
+    nOvervotes: number
+}
 
 export interface rankedRobinSummaryData extends genericSummaryData {
     rankHist: rankHist,
@@ -64,7 +67,11 @@ export interface rankedRobinSummaryData extends genericSummaryData {
     pairwiseMatrix: pairwiseMatrix,
 }
 
-export interface irvSummaryData extends rankedRobinSummaryData { }
+export interface irvSummaryData extends rankedRobinSummaryData {
+    nExhaustedViaOverVote: number,
+    nExhaustedViaSkippedRank: number,
+    nExhaustedViaDuplicateRank: number,
+}
 
 export type tabulatorLog = string | tabulatorLogObject;
 
@@ -82,7 +89,7 @@ export interface roundResults {
     logs: tabulatorLog[],
 }
 
-interface genericResults {
+export interface genericResults {
     votingMethod: votingMethod,
     elected: candidate[],
     tied: candidate[],

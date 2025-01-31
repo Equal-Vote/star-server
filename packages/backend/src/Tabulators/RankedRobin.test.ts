@@ -41,7 +41,7 @@ describe("Ranked Robin Tests", () => {
 
         expect(results.summaryData.nUnderVotes).toBe(1)
         expect(results.summaryData.nValidVotes).toBe(9)
-        expect(results.summaryData.nInvalidVotes).toBe(2)
+        expect(results.summaryData.nOutOfBoundsVotes).toBe(2)
     })    
     test("Muilti winner test", () => {
         const candidates = ['Alice', 'Bob', 'Carol', 'Dave']
@@ -64,7 +64,7 @@ describe("Ranked Robin Tests", () => {
 
         expect(results.summaryData.nUnderVotes).toBe(0)
         expect(results.summaryData.nValidVotes).toBe(9)
-        expect(results.summaryData.nInvalidVotes).toBe(0)
+        expect(results.summaryData.nOutOfBoundsVotes).toBe(0)
     })
     test("Ties", () => {
         // Tiebreak order not defined, select lower index
@@ -101,7 +101,7 @@ describe("Ranked Robin Tests", () => {
 
         expect(results.summaryData.nUnderVotes).toBe(0)
         expect(results.summaryData.nValidVotes).toBe(6)
-        expect(results.summaryData.nInvalidVotes).toBe(0)
+        expect(results.summaryData.nOutOfBoundsVotes).toBe(0)
     })
     test("Ties, tiebreak order defined", () => {
         // Tiebreak order defined, select lower

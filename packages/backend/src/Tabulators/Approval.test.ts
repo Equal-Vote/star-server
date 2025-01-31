@@ -31,7 +31,7 @@ describe("Approval Tests", () => {
         
         expect(results.summaryData.nUnderVotes).toBe(1)
         expect(results.summaryData.nValidVotes).toBe(7)
-        expect(results.summaryData.nInvalidVotes).toBe(2)
+        expect(results.summaryData.nOutOfBoundsVotes).toBe(2)
     })
 
     test("Multi Winner Test", () => {
@@ -62,7 +62,7 @@ describe("Approval Tests", () => {
         
         expect(results.summaryData.nUnderVotes).toBe(0)
         expect(results.summaryData.nValidVotes).toBe(7)
-        expect(results.summaryData.nInvalidVotes).toBe(0)
+        expect(results.summaryData.nOutOfBoundsVotes).toBe(0)
     })
 
     // NOTE: I'm proposing we always have tie breaker order in place, so we wouldn't need to worry about this
@@ -94,8 +94,9 @@ describe("Approval Tests", () => {
     //    
     //    expect(results.summaryData.nUnderVotes).toBe(0)
     //    expect(results.summaryData.nValidVotes).toBe(7)
-    //    expect(results.summaryData.nInvalidVotes).toBe(0)
+    //    expect(results.summaryData.nOutOfBoundsVotes).toBe(0)
     //})
+
     test("Ties Test, tiebreak order defined", () => {
         // Tie for second
         // Tiebreak order defined, select lower
@@ -124,6 +125,6 @@ describe("Approval Tests", () => {
         
         expect(results.summaryData.nUnderVotes).toBe(0)
         expect(results.summaryData.nValidVotes).toBe(7)
-        expect(results.summaryData.nInvalidVotes).toBe(0)
+        expect(results.summaryData.nOutOfBoundsVotes).toBe(0)
     })
 })
