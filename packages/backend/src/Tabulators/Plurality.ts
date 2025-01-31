@@ -1,8 +1,9 @@
-import { approvalSummaryData, ballot, pluralityResults, pluralitySummaryData, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { approvalSummaryData, ballot, candidate, pluralityResults, pluralitySummaryData, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { commaListFormatter, getInitialData, makeBoundsTest, makeAbstentionTest, runBlocTabulator } from "./Util";
+import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
-export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true) {
+export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings) {
   breakTiesRandomly = true // hard coding this for now
 
   const [_, summaryData] = getInitialData<pluralitySummaryData>(
@@ -29,7 +30,10 @@ export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, r
   );
 }
 
-const singleWinnerPlurality = (scoresLeft: totalScore[], summaryData: pluralitySummaryData): roundResults => {
+const singleWinnerPlurality = (remainingCandidates: candidate[], summaryData: pluralitySummaryData): roundResults => {
+  let scoresLeft = remainingCandidates.map(c => summaryData.totalScores.find(s => s.index == c.index)) as totalScore[];
+  scoresLeft.sort((a:totalScore, b:totalScore) => -(a.score-b.score));
+
   const candidates = summaryData.candidates;
 
   let topScore = scoresLeft[0];

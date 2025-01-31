@@ -1,7 +1,8 @@
 import { ballot, candidate, fiveStarCount, starResults, roundResults, starSummaryData, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { getInitialData, makeAbstentionTest, makeBoundsTest, runBlocTabulator } from "./Util";
-export function Star(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = []) {
+import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
+export function Star(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], electionSettings?:ElectionSettings) {
   const [tallyVotes, initialSummaryData] = getInitialData<Omit<starSummaryData, 'fiveStarCounts'>>(
 		votes, candidates, randomTiebreakOrder, 'cardinal',
 		[
@@ -33,13 +34,9 @@ export function Star(candidates: string[], votes: ballot[], nWinners = 1, random
   )
 }
 
-export function singleWinnerStar(scoresLeft: totalScore[], summaryData: starSummaryData): roundResults {
-  const candidates = summaryData.candidates;
-
+export function singleWinnerStar(remainingCandidates: candidate[], summaryData: starSummaryData): roundResults {
   // I can't have this in the root since the tests don't necessarily sort the five star counts
   summaryData.fiveStarCounts.sort((a, b) => b.counts - a.counts)
-
-  const remainingCandidates = scoresLeft.map(t => candidates[t.index]);
 
   // Initialize output results data structure
   const roundResults: roundResults = {
@@ -51,7 +48,7 @@ export function singleWinnerStar(scoresLeft: totalScore[], summaryData: starSumm
   }
 
   // If only one candidate remains, mark as winner
-  if (scoresLeft.length === 1) {
+  if (remainingCandidates.length === 1) {
     roundResults.winners.push(...remainingCandidates)
     return roundResults
   }

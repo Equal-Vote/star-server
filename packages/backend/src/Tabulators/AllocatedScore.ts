@@ -4,6 +4,7 @@ import { IparsedData } from './ParseData'
 const Fraction = require('fraction.js');
 import { sortByTieBreakOrder } from "./Star";
 import { commaListFormatter } from "./Util";
+import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
 const ParseData = require("./ParseData");
 declare namespace Intl {
@@ -24,7 +25,7 @@ interface winner_scores {
 
 type ballotFrac = typeof Fraction[]
 
-export function AllocatedScore(candidates: string[], votes: ballot[], nWinners = 3, randomTiebreakOrder: number[] = [], breakTiesRandomly = true, enablefiveStarTiebreaker = true) {
+export function AllocatedScore(candidates: string[], votes: ballot[], nWinners = 3, randomTiebreakOrder: number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings, enablefiveStarTiebreaker = true) {
     // Determines STAR-PR winners for given election using Allocated Score
     // Parameters: 
     // candidates: Array of candidate names

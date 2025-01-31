@@ -1,10 +1,9 @@
-import { approvalResults, approvalSummaryData, ballot, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { approvalResults, approvalSummaryData, ballot, candidate, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { commaListFormatter, getInitialData, makeBoundsTest, makeAbstentionTest, runBlocTabulator } from "./Util";
+import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
-export function Approval(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true) {
-  breakTiesRandomly = true // hard coding this for now
-
+export function Approval(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings) {
   const [_, summaryData] = getInitialData<approvalSummaryData>(
 		votes, candidates, randomTiebreakOrder, 'cardinal',
 		[
@@ -28,8 +27,11 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
 	)
 }
 
-const singleWinnerApproval = (scoresLeft: totalScore[], summaryData: approvalSummaryData): roundResults => {
+const singleWinnerApproval = (remainingCandidates: candidate[], summaryData: approvalSummaryData): roundResults => {
   const candidates = summaryData.candidates;
+
+  let scoresLeft = remainingCandidates.map(c => summaryData.totalScores.find(s => s.index == c.index)) as totalScore[];
+  scoresLeft.sort((a:totalScore, b:totalScore) => -(a.score-b.score));
 
   let topScore = scoresLeft[0];
   let tiedCandidates = scoresLeft

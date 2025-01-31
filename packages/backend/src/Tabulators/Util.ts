@@ -1,3 +1,4 @@
+import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import { candidate, genericResults, genericSummaryData, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 import { ballot, voter } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
@@ -135,14 +136,6 @@ const filterInitialVotes = (data: ballot[], tests: StatTestPair[]): [ballot[], {
     return [tallyVotes, summaryStats];
 }
 
-/*export const totalScoreComparator = (criteria: keyof totalScore, a: totalScore, b: totalScore): number | undefined => {
-  if(a[criteria] === undefined) return undefined;
-  if(b[criteria] === undefined) return undefined;
-  if((a[criteria]) > (b[criteria])) return -1;
-  if((a[criteria]) < (b[criteria])) return 1;
-  return undefined;
-}*/
-
 export const getInitialData = <SummaryType,>(
 	allVotes: ballot[],
   candidates: string[],
@@ -159,15 +152,16 @@ export const getInitialData = <SummaryType,>(
 	}
 
   // Matrix for voter preferences
+  const remapZero = (n:number) => n == 0 ? Infinity : n;
   const preferenceMatrix: number[][] = candidates.map((_,i) => 
     candidates.map((_,j) =>
       // count the number of votes with i > j
       tallyVotes.reduce((n, vote) => n + (methodType == 'cardinal'?
-        // Cardinal systems: vote goes to the candinate with the higher number
+        // Cardinal systems: vote goes to the candinate with the higher number and 0 is infinity
         (vote[i] > vote[j])? 1 : 0
       :
         // Orindal systems: vote goes to the candinate with the smaller rank
-        (vote[i] < vote[j])? 1 : 0
+        (remapZero(vote[i]) < remapZero(vote[j]))? 1 : 0
       ), 0)
     )
   )
@@ -182,7 +176,8 @@ export const getInitialData = <SummaryType,>(
   const totalScores: totalScore[] = candidates.map((_,candidateIndex) => ({
     index: candidateIndex,
     score: tallyVotes.reduce(
-      (score, vote) => score + vote[candidateIndex],
+      // for ordinal methods we'll only add the first choice rankings, this gives a headstart for RCV, but it's not much use to RR
+      (score, vote) => score + (methodType == 'ordinal' ? (vote[candidateIndex] == 1 ? 1 : 0) : vote[candidateIndex]),
       0
     ),
   }));
@@ -208,18 +203,18 @@ export const getInitialData = <SummaryType,>(
 export const runBlocTabulator = <ResultsType extends genericResults, SummaryType extends genericSummaryData,>(
 	results: ResultsType,
 	nWinners: number,
-	singleWinnerCallback: (scoresLeft: totalScore[], summaryData: SummaryType) => roundResults
+	singleWinnerCallback: (remainingCandidates: candidate[], summaryData: SummaryType) => roundResults
 ) => {
-  let scoresLeft = [...results.summaryData.totalScores];
+  let remainingCandidates = [...results.summaryData.candidates];
 
   for(let w = 0; w < nWinners; w++){
-    let roundResults = singleWinnerCallback(scoresLeft, results.summaryData as SummaryType);
+    let roundResults = singleWinnerCallback(remainingCandidates, results.summaryData as SummaryType);
 
     results.elected.push(...roundResults.winners);
     results.roundResults.push(roundResults);
 
     // remove winner for next round
-    scoresLeft = scoresLeft.filter(totalScore => totalScore.index != roundResults.winners[0].index)
+    remainingCandidates = remainingCandidates.filter(candidate => candidate.index != roundResults.winners[0].index)
 
     // only save the tie breaker info if we're in the final round
     if(w == nWinners-1){
@@ -228,7 +223,7 @@ export const runBlocTabulator = <ResultsType extends genericResults, SummaryType
     }
   }
 
-  results.other = scoresLeft.map(s => results.summaryData.candidates[s.index]); // remaining candidates in sortedScores
+  results.other = remainingCandidates.map(c => results.summaryData.candidates[c.index]); // remaining candidates in sortedScores
 
   return results
 }
