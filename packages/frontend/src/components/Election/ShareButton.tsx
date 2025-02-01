@@ -79,7 +79,7 @@ export default function ShareButton({ url }) {
             <StyledButton
                 type='button'
                 variant='contained'
-                fullwidth
+                fullWidth
                 onClick={handleOpenNavMenu}>
                 {t('share.button')}
             </StyledButton>

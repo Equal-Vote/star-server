@@ -134,7 +134,7 @@ const AdminHome = () => {
             <StyledButton
                 variant='contained'
                 disabled={!hasPermission('canEditElectionRoles')}
-                fullwidth
+                fullWidth
                 component={Link} to={`/${election.election_id}/admin/roles`}
             >
                 {t('admin_home.roles.button')}
@@ -149,7 +149,7 @@ const AdminHome = () => {
             <StyledButton
                 type='button'
                 variant='contained'
-                fullwidth
+                fullWidth
                 component={Link} to={`/${election.election_id}`}
             >
                 {t('admin_home.test_ballot.button')}
@@ -164,7 +164,7 @@ const AdminHome = () => {
                 type='button'
                 variant='contained'
                 disabled={!hasPermission('canEditElectionState')}
-                fullwidth
+                fullWidth
                 onClick={() => duplicateElection()}
             >
                 {t('admin_home.duplicate.button')}
@@ -194,7 +194,7 @@ const AdminHome = () => {
                     type='button'
                     variant='contained'
                     disabled={!hasPermission('canEditElectionState')}
-                    fullwidth
+                    fullWidth
                     onClick={togglePublicResults}
                 >
                     {text.description}
@@ -212,7 +212,7 @@ const AdminHome = () => {
                 type='button'
                 variant='contained'
                 disabled={!hasPermission('canEditElectionState')}
-                fullwidth
+                fullWidth
                 onClick={() => archiveElection()}
             >
                 {t('admin_home.archive.button')}
@@ -277,7 +277,7 @@ const AdminHome = () => {
                 type='button'
                 variant='contained'
                 disabled={election.title.length === 0 || election.races.length === 0 || !hasPermission('canEditElectionState')}
-                fullwidth
+                fullWidth
                 onClick={() => finalizeElection()}
                 sx={{mt: 2}}
             >
@@ -310,7 +310,7 @@ const AdminHome = () => {
                         type='button'
                         variant='contained'
                         disabled={!(hasPermission('canViewPreliminaryResults') || election.settings.public_results === true)}
-                        fullwidth
+                        fullWidth
                         component={Link} to={`/${election.election_id}/results`}
                     >
                         {t('admin_home.view_results.button')}

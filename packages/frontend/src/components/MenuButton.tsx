@@ -17,7 +17,7 @@ export function MenuButton({ children, label }: MenuButtonProps) {
                 aria-haspopup="true"
                 type='button'
                 variant='contained'
-                fullwidth
+                fullWidth
                 onClick={(event) => setAnchorEl(event.currentTarget)}
                 endIcon={
                     <ExpandMoreIcon

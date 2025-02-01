@@ -41,7 +41,7 @@ const ViewBallot = ({ ballot, onClose }) => {
                                 <StyledButton
                                     type='button'
                                     variant='contained'
-                                    fullwidth
+                                    fullWidth
                                     href={`/${election.election_id}/results`} >
                                     {t('ballot_submitted.results')}
                                 </StyledButton>
