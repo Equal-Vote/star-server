@@ -25,6 +25,8 @@ import ColumnDistributionWidget from "./components/ColumnDistributionWidget";
 import NameRecognitionWidget from "./components/NameRecognitionWidget";
 import ScoreRangeWidget from "./components/ScoreRangeWidget";
 import useFeatureFlags from "~/components/FeatureFlagContextProvider";
+import STAREqualPreferences from "./STAR/STAREqualPreferences";
+import STAREqualPreferencesWidget from "./STAR/STAREqualPreferencesWidget";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
@@ -54,7 +56,7 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
             <Widget title={t('results.star.detailed_steps_title')}>
               <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
             </Widget>
-            <STAREqualPreferences frontRunners={sortedCandidates.slice(0, 2)}/>
+            <STAREqualPreferencesWidget frontRunners={sortedCandidates.slice(0, 2)}/>
             <HeadToHeadWidget candidates={sortedCandidates}/>
             <VoterProfileWidget candidates={sortedCandidates} topScore={5} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
             <ColumnDistributionWidget/>
