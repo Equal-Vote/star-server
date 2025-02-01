@@ -7,7 +7,8 @@ export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, r
   breakTiesRandomly = true // hard coding this for now
 
   const [_, summaryData] = getInitialData<pluralitySummaryData>(
-		votes, candidates, randomTiebreakOrder, 'ordinal',
+    // ordinal would be more correct, but for computing totalScores plurlaity uses cardinal rules
+		votes, candidates, randomTiebreakOrder, 'cardinal', 
 		[
 			makeBoundsTest(0, 1),
 			makeAbstentionTest(0),

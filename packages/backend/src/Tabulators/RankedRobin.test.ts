@@ -35,13 +35,13 @@ describe("Ranked Robin Tests", () => {
         expect(results.summaryData.pairwiseMatrix[3]).toStrictEqual([0,0,0,0]);  
         
         expect(results.summaryData.totalScores[0].index).toBe(0);  
-        expect(results.summaryData.totalScores[0].score).toBe(5);  
+        expect(results.summaryData.totalScores[0].score).toBe(3);  
         expect(results.summaryData.totalScores[1].index).toBe(1);  
-        expect(results.summaryData.totalScores[1].score).toBe(4);  
+        expect(results.summaryData.totalScores[1].score).toBe(2);  
         expect(results.summaryData.totalScores[2].index).toBe(2);  
         expect(results.summaryData.totalScores[2].score).toBe(1);  
         expect(results.summaryData.totalScores[3].index).toBe(3);  
-        expect(results.summaryData.totalScores[3].score).toBe(1); 
+        expect(results.summaryData.totalScores[3].score).toBe(0); 
     })    
     test("Muilti winner test", () => {
         const candidates = ['Alice', 'Bob', 'Carol', 'Dave']
@@ -95,11 +95,11 @@ describe("Ranked Robin Tests", () => {
         expect(results.summaryData.pairwiseMatrix[3]).toStrictEqual([0,0,0,0]);  
         
         expect(results.summaryData.totalScores[0].index).toBe(0);  
-        expect(results.summaryData.totalScores[0].score).toBe(3);  
+        expect(results.summaryData.totalScores[0].score).toBe(2);  
         expect(results.summaryData.totalScores[1].index).toBe(1);  
-        expect(results.summaryData.totalScores[1].score).toBe(3);  
+        expect(results.summaryData.totalScores[1].score).toBe(2);  
         expect(results.summaryData.totalScores[2].index).toBe(2);  
-        expect(results.summaryData.totalScores[2].score).toBe(0);  
+        expect(results.summaryData.totalScores[2].score).toBe(1);  
         expect(results.summaryData.totalScores[3].index).toBe(3);  
         expect(results.summaryData.totalScores[3].score).toBe(0); 
 

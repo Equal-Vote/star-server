@@ -387,7 +387,6 @@ describe("STAR Score Round Tests", () => {
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
         const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
-        console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Super');
         expect(roundResults.runner_up[0].name).toBe('Bill');

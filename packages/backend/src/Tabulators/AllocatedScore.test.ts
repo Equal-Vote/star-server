@@ -16,7 +16,7 @@ describe("Allocated Score Tests", () => {
             [0, 0, 4, 5],
             [0, 0, 4, 5],
             [0, 0, 4, 5]]
-        const results = AllocatedScore(candidates, votes, 2, [], false, false)
+        const results = AllocatedScore(candidates, votes, 2, [], false)
         expect(results.elected.length).toBe(2);
         expect(results.elected[0].name).toBe('Allison');
         expect(results.elected[1].name).toBe('Doug');
@@ -42,7 +42,7 @@ describe("Allocated Score Tests", () => {
             [0, 0, 4, 5],
             [0, 0, 4, 5],
         ]
-        const results = AllocatedScore(candidates, votes, 2, [], false, false)
+        const results = AllocatedScore(candidates, votes, 2, [], false)
         expect(results.elected.length).toBe(2);
         expect(results.elected[0].name).toBe('Allison');
         expect(results.elected[1].name).toBe('Doug');
@@ -56,7 +56,7 @@ describe("Allocated Score Tests", () => {
             [5, 5, 0, 0], 
             [5, 4, 3, 0], 
         ]
-        const results = AllocatedScore(candidates, votes, 3, [], false, false)
+        const results = AllocatedScore(candidates, votes, 3, [], false)
         expect(results.elected.length).toBe(3);
         expect(results.elected[0].name).toBe('Allison');
         expect(results.elected[1].name).toBe('Bill');
@@ -82,7 +82,7 @@ describe("Allocated Score Tests", () => {
             [0, 0, 4, 5],
             [0, 0, 4, 5],
             [0, 0, 4, 5]]
-        const results = AllocatedScore(candidates, votes, 2, [], false, false)
+        const results = AllocatedScore(candidates, votes, 2, [], false)
         expect(results.elected.length).toBe(2);
         expect(results.elected[0].name).toBe('Allison');
         expect(results.elected[1].name).toBe('Doug');
@@ -108,7 +108,7 @@ describe("Allocated Score Tests", () => {
             [0, 0, 4, 5],
             [0, 0, 4, 5],
             [0, 0, 4, 5]]
-        const results = AllocatedScore(candidates, votes, 2, [], false, false)
+        const results = AllocatedScore(candidates, votes, 2, [], false)
         expect(results.elected.length).toBe(2);
         expect(results.elected[0].name).toBe('Allison');
         expect(results.elected[1].name).toBe('Doug');
@@ -131,7 +131,7 @@ describe("Allocated Score Tests", () => {
             [0, 0, 4, 5],
             [0, 0, 4, 5],
             [0, 0, 4, 5]]
-        const results = AllocatedScore(candidates, votes, 2, [], true, false)
+        const results = AllocatedScore(candidates, votes, 2, [], true)
         expect(results.elected.length).toBe(2);
         expect(results.tied[0].length).toBe(2); // two candidates tied in forst round
         expect(results.elected[0].name).toBe('Allison') // random tiebreaker, second place lower index 1
@@ -153,7 +153,7 @@ describe("Allocated Score Tests", () => {
             [0, 0, 4, 5],
             [0, 0, 4, 5],
             [0, 0, 4, 5]]
-        const results = AllocatedScore(candidates, votes, 2, [4,3,2,1], true, false)
+        const results = AllocatedScore(candidates, votes, 2, [4,3,2,1], true)
         expect(results.elected.length).toBe(2);
         expect(results.tied[0].length).toBe(2); // two candidates tied in forst round
         expect(results.elected[0].name).toBe('Bill') // random tiebreaker, second place lower index 1
@@ -174,7 +174,7 @@ describe("Allocated Score Tests", () => {
             [0, 5, 0],
             [0, 0, 5],
         ]
-        const results = AllocatedScore(candidates, votes, 1, [], false, false)
+        const results = AllocatedScore(candidates, votes, 1, [], false)
         expect(results.summaryData.nTallyVotes).toBe(6);
         expect(results.summaryData.nOutOfBoundsVotes).toBe(2);
         expect(results.summaryData.nAbstentions).toBe(2);
