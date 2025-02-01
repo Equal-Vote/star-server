@@ -13,14 +13,18 @@ import useFeatureFlags from './FeatureFlagContextProvider';
 import { CreateElectionContext } from './ElectionForm/CreateElectionDialog';
 import { openFeedback, useSubstitutedTranslation } from './util';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import { v4 } from 'uuid'
 
 import { ReturnToClassicContext } from './ReturnToClassicDialog';
+import { useCookie } from '~/hooks/useCookie';
 
 const headerTextColor = 'primary.contrastText'
 const Header = () => {
     const flags = useFeatureFlags();
     const themeSelector = useThemeSelector()
     const authSession = useAuthSession()
+    // this is important for setting the default value
+    useCookie('temp_id', v4())
     const [anchorElNav, setAnchorElNav] = useState(null)
     const [anchorElUser, setAnchorElUser] = useState(null)
     const {t} = useSubstitutedTranslation();
