@@ -1311,23 +1311,14 @@
             },
             "type": "array"
           },
-          "nBulletVotes": {
-            "type": "number"
-          },
-          "nInvalidVotes": {
-            "type": "number"
-          },
           "nAbstentions": {
+            "type": "number"
+          },
+          "nOutOfBoundsVotes": {
             "type": "number"
           },
           "nTallyVotes": {
             "type": "number"
-          },
-          "noPreferenceStars": {
-            "items": {
-              "type": "number"
-            },
-            "type": "array"
           },
           "pairwiseMatrix": {
             "items": {
@@ -1339,15 +1330,6 @@
             "type": "array"
           },
           "preferenceMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "scoreHist": {
             "items": {
               "items": {
                 "type": "number"
@@ -1392,13 +1374,11 @@
         },
         "required": [
           "candidates",
-          "nInvalidVotes",
           "nAbstentions",
+          "nOutOfBoundsVotes",
           "nTallyVotes",
-          "noPreferenceStars",
           "pairwiseMatrix",
           "preferenceMatrix",
-          "scoreHist",
           "spentAboves",
           "splitPoints",
           "totalScores",
@@ -1463,17 +1443,32 @@
             },
             "type": "array"
           },
-          "nBulletVotes": {
-            "type": "number"
-          },
-          "nInvalidVotes": {
-            "type": "number"
-          },
           "nAbstentions": {
+            "type": "number"
+          },
+          "nOutOfBoundsVotes": {
             "type": "number"
           },
           "nTallyVotes": {
             "type": "number"
+          },
+          "pairwiseMatrix": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "preferenceMatrix": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
           },
           "totalScores": {
             "items": {
@@ -1484,9 +1479,11 @@
         },
         "required": [
           "candidates",
-          "nInvalidVotes",
           "nAbstentions",
+          "nOutOfBoundsVotes",
           "nTallyVotes",
+          "pairwiseMatrix",
+          "preferenceMatrix",
           "totalScores"
         ],
         "type": "object"
@@ -1628,17 +1625,32 @@
             },
             "type": "array"
           },
-          "nBulletVotes": {
-            "type": "number"
-          },
-          "nInvalidVotes": {
-            "type": "number"
-          },
           "nAbstentions": {
+            "type": "number"
+          },
+          "nOutOfBoundsVotes": {
             "type": "number"
           },
           "nTallyVotes": {
             "type": "number"
+          },
+          "pairwiseMatrix": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "preferenceMatrix": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
           },
           "totalScores": {
             "items": {
@@ -1649,9 +1661,11 @@
         },
         "required": [
           "candidates",
-          "nInvalidVotes",
           "nAbstentions",
+          "nOutOfBoundsVotes",
           "nTallyVotes",
+          "pairwiseMatrix",
+          "preferenceMatrix",
           "totalScores"
         ],
         "type": "object"
@@ -1676,15 +1690,18 @@
             },
             "type": "array"
           },
+          "nExhaustedViaDuplicateRank": {
+            "type": "number"
+          },
+          "nExhaustedViaOvervote": {
+            "type": "number"
+          },
+          "nExhaustedViaSkippedRank": {
+            "type": "number"
+          },
           "other": {
             "items": {
               "$ref": "#/components/schemas/candidate"
-            },
-            "type": "array"
-          },
-          "overVoteCounts": {
-            "items": {
-              "type": "number"
             },
             "type": "array"
           },
@@ -1727,8 +1744,10 @@
           "elected",
           "exhaustedVoteCounts",
           "logs",
+          "nExhaustedViaDuplicateRank",
+          "nExhaustedViaOvervote",
+          "nExhaustedViaSkippedRank",
           "other",
-          "overVoteCounts",
           "roundResults",
           "summaryData",
           "tieBreakType",
@@ -1774,13 +1793,10 @@
             },
             "type": "array"
           },
-          "nBulletVotes": {
-            "type": "number"
-          },
-          "nInvalidVotes": {
-            "type": "number"
-          },
           "nAbstentions": {
+            "type": "number"
+          },
+          "nOutOfBoundsVotes": {
             "type": "number"
           },
           "nTallyVotes": {
@@ -1822,8 +1838,8 @@
         },
         "required": [
           "candidates",
-          "nInvalidVotes",
           "nAbstentions",
+          "nOutOfBoundsVotes",
           "nTallyVotes",
           "pairwiseMatrix",
           "preferenceMatrix",
@@ -1903,17 +1919,35 @@
             },
             "type": "array"
           },
-          "nBulletVotes": {
-            "type": "number"
-          },
-          "nInvalidVotes": {
-            "type": "number"
-          },
           "nAbstentions": {
+            "type": "number"
+          },
+          "nOutOfBoundsVotes": {
+            "type": "number"
+          },
+          "nOvervotes": {
             "type": "number"
           },
           "nTallyVotes": {
             "type": "number"
+          },
+          "pairwiseMatrix": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "preferenceMatrix": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
           },
           "totalScores": {
             "items": {
@@ -1924,9 +1958,12 @@
         },
         "required": [
           "candidates",
-          "nInvalidVotes",
           "nAbstentions",
+          "nOutOfBoundsVotes",
+          "nOvervotes",
           "nTallyVotes",
+          "pairwiseMatrix",
+          "preferenceMatrix",
           "totalScores"
         ],
         "type": "object"
@@ -2005,13 +2042,10 @@
             },
             "type": "array"
           },
-          "nBulletVotes": {
-            "type": "number"
-          },
-          "nInvalidVotes": {
-            "type": "number"
-          },
           "nAbstentions": {
+            "type": "number"
+          },
+          "nOutOfBoundsVotes": {
             "type": "number"
           },
           "nTallyVotes": {
@@ -2053,8 +2087,8 @@
         },
         "required": [
           "candidates",
-          "nInvalidVotes",
           "nAbstentions",
+          "nOutOfBoundsVotes",
           "nTallyVotes",
           "pairwiseMatrix",
           "preferenceMatrix",
@@ -2202,23 +2236,20 @@
             },
             "type": "array"
           },
-          "nBulletVotes": {
-            "type": "number"
-          },
-          "nInvalidVotes": {
-            "type": "number"
+          "fiveStarCounts": {
+            "items": {
+              "$ref": "#/components/schemas/fiveStarCount"
+            },
+            "type": "array"
           },
           "nAbstentions": {
             "type": "number"
           },
-          "nTallyVotes": {
+          "nOutOfBoundsVotes": {
             "type": "number"
           },
-          "noPreferenceStars": {
-            "items": {
-              "type": "number"
-            },
-            "type": "array"
+          "nTallyVotes": {
+            "type": "number"
           },
           "pairwiseMatrix": {
             "items": {
@@ -2238,15 +2269,6 @@
             },
             "type": "array"
           },
-          "scoreHist": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
           "totalScores": {
             "items": {
               "$ref": "#/components/schemas/totalScore"
@@ -2256,13 +2278,12 @@
         },
         "required": [
           "candidates",
-          "nInvalidVotes",
+          "fiveStarCounts",
           "nAbstentions",
+          "nOutOfBoundsVotes",
           "nTallyVotes",
-          "noPreferenceStars",
           "pairwiseMatrix",
           "preferenceMatrix",
-          "scoreHist",
           "totalScores"
         ],
         "type": "object"
