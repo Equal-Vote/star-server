@@ -1,21 +1,11 @@
 import { ballot, candidate, fiveStarCount, allocatedScoreResults, allocatedScoreSummaryData, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
-import { IparsedData } from './ParseData'
 const Fraction = require('fraction.js');
 import { sortByTieBreakOrder } from "./Star";
-import { commaListFormatter } from "./Util";
+import { getInitialData, makeAbstentionTest, makeBoundsTest } from "./Util";
+import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
-const ParseData = require("./ParseData");
-declare namespace Intl {
-    class ListFormat {
-        constructor(locales?: string | string[], options?: {});
-        public format: (items: string[]) => string;
-    }
-}
-
-const minScore = 0;
 const maxScore = 5;
-
 interface winner_scores {
     index: number
     ballot_weight: typeof Fraction,
@@ -24,23 +14,23 @@ interface winner_scores {
 
 type ballotFrac = typeof Fraction[]
 
-export function AllocatedScore(candidates: string[], votes: ballot[], nWinners = 3, randomTiebreakOrder: number[] = [], breakTiesRandomly = true, enablefiveStarTiebreaker = true) {
-    // Determines STAR-PR winners for given election using Allocated Score
-    // Parameters: 
-    // candidates: Array of candidate names
-    // votes: Array of votes, size nVoters x Candidates
-    // nWiners: Number of winners in election, defaulted to 3
-    // randomTiebreakOrder: Array to determine tiebreak order. If empty or not same length as candidates, set to candidate indexes
-    // breakTiesRandomly: In the event of a true tie, should a winner be selected at random, defaulted to true
-    // enablefiveStarTiebreaker: In the event of a true tie in the runoff round, should the five-star tiebreaker be used (select candidate with the most 5 star votes), defaulted to true
-    // Parse the votes for valid, invalid, and undervotes, and identifies bullet votes
-    const parsedData: IparsedData = ParseData(votes)
+export function AllocatedScore(candidates: string[], votes: ballot[], nWinners = 3, randomTiebreakOrder: number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings) {
+    const [tallyVotes, initialSummaryData] =
+    getInitialData<Omit<allocatedScoreSummaryData,'splitPoints' | 'spentAboves' | 'weight_on_splits' | 'weightedScoresByRound'>>(
+		votes, candidates, randomTiebreakOrder, 'cardinal',
+		[
+			makeBoundsTest(0, 5),
+			makeAbstentionTest(0), // TODO: IMO it should only be an abstention if it's null
+		]
+	)
 
-    // Compress valid votes into data needed to run election including
-    // total scores
-    // score histograms
-    // preference and pairwise matrices
-    const summaryData = getSummaryData(candidates, parsedData, randomTiebreakOrder)
+    const summaryData = {
+        ...initialSummaryData,
+        splitPoints: [],
+        spentAboves: [],
+        weight_on_splits: [],
+        weightedScoresByRound: []
+    } as allocatedScoreSummaryData;
 
     // Initialize output data structure
     const results: allocatedScoreResults = {
@@ -58,7 +48,7 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
     // Keep running elections rounds even if all seats have been filled to determine candidate order
 
     // Normalize scores array
-    var scoresNorm = normalizeArray(parsedData.scores, maxScore);
+    var scoresNorm = normalizeArray(tallyVotes, maxScore);
 
     // Find number of voters and quota size
     const V = scoresNorm.length;
@@ -190,114 +180,6 @@ function percent(n: typeof Fraction){
     return `${Math.round(n.valueOf()*100)}%`
 }
 
-function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: number[]): allocatedScoreSummaryData {
-    const nCandidates = candidates.length
-    if (randomTiebreakOrder.length < nCandidates) {
-        randomTiebreakOrder = candidates.map((c,index) => index)
-      }
-    // Initialize summary data structures
-    // Total scores for each candidate, includes candidate indexes for easier sorting
-    const totalScores: totalScore[] = Array(nCandidates)
-    for (let i = 0; i < nCandidates; i++) {
-        totalScores[i] = { index: i, score: 0 };
-    }
-
-    // Score histograms for data analysis and five-star tiebreakers
-    const scoreHist: number[][] = Array(nCandidates);
-    for (let i = 0; i < nCandidates; i++) {
-        scoreHist[i] = Array(6).fill(0);
-    }
-
-    // Matrix for voter preferences
-    const preferenceMatrix: number[][] = Array(nCandidates);
-    const pairwiseMatrix: number[][] = Array(nCandidates);
-    for (let i = 0; i < nCandidates; i++) {
-        preferenceMatrix[i] = Array(nCandidates).fill(0);
-        pairwiseMatrix[i] = Array(nCandidates).fill(0);
-    }
-    let nBulletVotes = 0
-
-    // Iterate through ballots and populate data structures
-    parsedData.scores.forEach((vote) => {
-        let nSupported = 0
-        for (let i = 0; i < nCandidates; i++) {
-            totalScores[i].score += vote[i]
-            scoreHist[i][vote[i]] += 1
-            for (let j = 0; j < nCandidates; j++) {
-                if (i !== j) {
-                    if (vote[i] > vote[j]) {
-                        preferenceMatrix[i][j] += 1
-                    }
-                }
-            }
-            if (vote[i] > 0) {
-                nSupported += 1
-            }
-        }
-        if (nSupported === 1) {
-            nBulletVotes += 1
-        }
-    })
-
-    for (let i = 0; i < nCandidates; i++) {
-        for (let j = 0; j < nCandidates; j++) {
-            if (preferenceMatrix[i][j] > preferenceMatrix[j][i]) {
-                pairwiseMatrix[i][j] = 1
-            }
-            else if (preferenceMatrix[i][j] < preferenceMatrix[j][i]) {
-                pairwiseMatrix[j][i] = 1
-            }
-
-        }
-    }
-    const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
-    return {
-        candidates: candidatesWithIndexes,
-        totalScores,
-        scoreHist,
-        preferenceMatrix,
-        pairwiseMatrix,
-        nValidVotes: parsedData.validVotes.length,
-        nInvalidVotes: parsedData.invalidVotes.length,
-        nUnderVotes: parsedData.underVotes,
-        nBulletVotes: nBulletVotes,
-        splitPoints: [],
-        spentAboves: [],
-        weight_on_splits: [],
-        weightedScoresByRound: [],
-        noPreferenceStars: [],
-    }
-}
-
-function sortData(summaryData: allocatedScoreSummaryData, order: candidate[]): allocatedScoreSummaryData {
-    // sorts summary data to be in specified order
-    const indexOrder = order.map(c => c.index)
-    const candidates = indexOrder.map(ind => (summaryData.candidates[ind]))
-    candidates.forEach((c, i) => {
-        c.index = i
-    })
-    const totalScores = indexOrder.map((ind, i) => ({ index: i, score: summaryData.totalScores[ind].score }))
-    const scoreHist = indexOrder.map((ind) => summaryData.scoreHist[ind])
-    const preferenceMatrix = sortMatrix(summaryData.preferenceMatrix, indexOrder)
-    const pairwiseMatrix = sortMatrix(summaryData.pairwiseMatrix, indexOrder)
-    return {
-        candidates,
-        totalScores,
-        scoreHist,
-        preferenceMatrix,
-        pairwiseMatrix,
-        nValidVotes: summaryData.nValidVotes,
-        nInvalidVotes: summaryData.nInvalidVotes,
-        nUnderVotes: summaryData.nUnderVotes,
-        nBulletVotes: summaryData.nBulletVotes,
-        splitPoints: summaryData.splitPoints,
-        spentAboves: summaryData.spentAboves,
-        weight_on_splits: summaryData.weight_on_splits,
-        weightedScoresByRound: summaryData.weightedScoresByRound,
-        noPreferenceStars: [],
-    }
-}
-
 function updateBallotWeights(
     cand_df: winner_scores[],
     ballot_weights: typeof Fraction[],
@@ -384,17 +266,4 @@ function findSplitPoint(cand_df_sorted: winner_scores[], quota: typeof Fraction)
     }
 
     return cand_df_sorted.slice(-1)[0].weighted_score
-}
-
-function sortMatrix(matrix: number[][], order: number[]) {
-    var newMatrix: number[][] = Array(order.length);
-    for (let i = 0; i < order.length; i++) {
-        newMatrix[i] = Array(order.length).fill(0);
-    }
-    order.forEach((i, iInd) => {
-        order.forEach((j, jInd) => {
-            newMatrix[iInd][jInd] = matrix[i][j];
-        });
-    });
-    return newMatrix
 }

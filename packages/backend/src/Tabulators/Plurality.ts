@@ -1,95 +1,58 @@
-import { approvalResults, approvalSummaryData, ballot, candidate, pluralityResults, pluralitySummaryData, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { approvalSummaryData, ballot, candidate, pluralityResults, pluralitySummaryData, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
-import { IparsedData } from './ParseData'
-const ParseData = require("./ParseData");
+import { commaListFormatter, getInitialData, makeBoundsTest, makeAbstentionTest, runBlocTabulator } from "./Util";
+import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
-export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true) {
-  const parsedData = ParseData(votes, getPluralityBallotValidity)
-  const summaryData = getSummaryData(candidates, parsedData, randomTiebreakOrder)
-  const results: pluralityResults = {
-    votingMethod: 'Plurality',
-    elected: [],
-    tied: [],
-    other: [],
-    roundResults: [],
-    summaryData: summaryData,
-    tieBreakType: 'none',
-  }
-  const sortedScores = summaryData.totalScores.sort((a: totalScore, b: totalScore) => {
-    if (a.score > b.score) return -1
-    if (a.score < b.score) return 1
-    if (summaryData.candidates[a.index].tieBreakOrder < summaryData.candidates[b.index].tieBreakOrder) return -1
-    return 1
-  })
-  var remainingCandidates = [...summaryData.candidates]
-  while (remainingCandidates.length>0) {
-    const topScore = sortedScores[results.elected.length + results.tied.length + results.other.length]
-    let scoreWinners = [summaryData.candidates[topScore.index]]
-    for (let i = sortedScores.length-remainingCandidates.length+1; i < sortedScores.length; i++) {
-      if (sortedScores[i].score === topScore.score) {
-        scoreWinners.push(summaryData.candidates[sortedScores[i].index])
-      }
-    }
-    if (breakTiesRandomly && scoreWinners.length>1) {
-      scoreWinners = [scoreWinners[0]]
-    }
-    if ((results.elected.length + results.tied.length + scoreWinners.length)<=nWinners) {
-      results.elected.push(...scoreWinners)
-    }
-    else if (results.tied.length===0 && results.elected.length<nWinners){
-      results.tied.push(...scoreWinners)
-    }
-    else {
-      results.other.push(...scoreWinners)
-    }
-    remainingCandidates = remainingCandidates.filter(c => !scoreWinners.includes(c))
-  }
-  
-  return results;
+export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings) {
+  breakTiesRandomly = true // hard coding this for now
+
+  const [_, summaryData] = getInitialData<pluralitySummaryData>(
+    // ordinal would be more correct, but for computing totalScores plurlaity uses cardinal rules
+		votes, candidates, randomTiebreakOrder, 'cardinal', 
+		[
+			makeBoundsTest(0, 1),
+			makeAbstentionTest(0),
+      ['nOvervotes', (ballot: number[]) => ballot.filter(v => v==1).length > 1]
+		]
+	);
+
+  return runBlocTabulator<pluralityResults, pluralitySummaryData>(
+		{
+      votingMethod: 'Plurality',
+      elected: [],
+      tied: [],
+      other: [],
+      roundResults: [],
+      summaryData: summaryData,
+      tieBreakType: 'none',
+    } as pluralityResults,
+		nWinners,
+		singleWinnerPlurality
+  );
 }
 
-function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: number[]): pluralitySummaryData{
-  // Initialize summary data structures
-  const nCandidates = candidates.length
-  if (randomTiebreakOrder.length < nCandidates) {
-      randomTiebreakOrder = candidates.map((c,index) => index)
-    }
-  const totalScores = Array(nCandidates)
-  for (let i = 0; i < nCandidates; i++) {
-    totalScores[i] = { index: i, score: 0 };
-  }
-  // Iterate through ballots, 
-  parsedData.scores.forEach((vote) => {
-    for (let i = 0; i < nCandidates; i++) {
-      totalScores[i].score += vote[i]
-    }
-  })
-  const candidatesWithIndexes = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
+const singleWinnerPlurality = (remainingCandidates: candidate[], summaryData: pluralitySummaryData): roundResults => {
+  let scoresLeft = remainingCandidates.map(c => summaryData.totalScores.find(s => s.index == c.index)) as totalScore[];
+  scoresLeft.sort((a:totalScore, b:totalScore) => -(a.score-b.score));
+
+  const candidates = summaryData.candidates;
+
+  let topScore = scoresLeft[0];
+  let tiedCandidates = scoresLeft
+    .filter(s => s.score == topScore.score)
+    .map(s => candidates[s.index]);
+  let winner = candidates[topScore.index];
+
   return {
-    candidates: candidatesWithIndexes,
-    totalScores,
-    nValidVotes: parsedData.validVotes.length,
-    nInvalidVotes: parsedData.invalidVotes.length,
-    nUnderVotes: parsedData.underVotes,
-  }
-}
-
-function getPluralityBallotValidity(ballot: ballot) {
-  const minScore = 0
-  const maxScore = 1
-  let isUnderVote = true
-  let nSupported = 0
-  for (let i = 0; i < ballot.length; i++) {
-    if (ballot[i] < minScore || ballot[i] > maxScore) {
-      return { isValid: false, isUnderVote: false }
-    }
-    if (ballot[i] > minScore) {
-      isUnderVote = false
-    }
-    nSupported += ballot[i]
-  }
-  if (nSupported>1){
-    return { isValid: false, isUnderVote: isUnderVote }
-  }
-  return { isValid: true, isUnderVote: isUnderVote }
+    winners: [winner],
+    runner_up: [],
+    logs: (tiedCandidates.length == 1)? [
+      `${winner.name} has the most votes and wins the round`
+    ] : [
+      `${commaListFormatter.format(tiedCandidates.map(c => c.name))} all tied with the most votes`,
+      `${winner.name} wins the round after a random tiebreaker`
+    ],
+    tieBreakType: (tiedCandidates.length == 1)? 'none' : 'random',
+    tied: tiedCandidates,
+  };
 }

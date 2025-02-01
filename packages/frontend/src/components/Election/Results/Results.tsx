@@ -25,6 +25,8 @@ import ColumnDistributionWidget from "./components/ColumnDistributionWidget";
 import NameRecognitionWidget from "./components/NameRecognitionWidget";
 import ScoreRangeWidget from "./components/ScoreRangeWidget";
 import useFeatureFlags from "~/components/FeatureFlagContextProvider";
+import STAREqualPreferences from "./STAR/STAREqualPreferences";
+import STAREqualPreferencesWidget from "./STAR/STAREqualPreferencesWidget";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
@@ -33,10 +35,6 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
   const roundIndexes = Array.from({length: rounds}, () => i++);
   results = results as starResults;
 
-  let noPrefStarData = results.summaryData.noPreferenceStars.map((count, i) => ({
-    name: `${i}⭐`,
-    count: count,
-  }));
 
   const sortedCandidates = race.candidates
     .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
@@ -58,9 +56,7 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
             <Widget title={t('results.star.detailed_steps_title')}>
               <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
             </Widget>
-            <Widget title={t('results.star.equal_preferences_title')}>
-              <ResultsBarChart data={noPrefStarData.reverse()} xKey='count' percentage={true} sortFunc={false}/>
-            </Widget>
+            <STAREqualPreferencesWidget frontRunners={sortedCandidates.slice(0, 2)}/>
             <HeadToHeadWidget candidates={sortedCandidates}/>
             <VoterProfileWidget candidates={sortedCandidates} topScore={5} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
             <ColumnDistributionWidget/>
@@ -256,7 +252,7 @@ function PluralityResultsViewer() {
             ...results.summaryData.totalScores.map((totalScore, i) => [
               results.summaryData.candidates[totalScore.index].name,
               totalScore.score,
-              `${Math.round(totalScore.score * 1000 / results.summaryData.nValidVotes) / 10}%`,
+              `${Math.round(totalScore.score * 1000 / results.summaryData.nTallyVotes) / 10}%`,
             ])
           ]}/>
         </Widget>
@@ -289,7 +285,7 @@ function ApprovalResultsViewer() {
           }
           star
           percentage
-          percentDenominator={results.summaryData.nValidVotes} 
+          percentDenominator={results.summaryData.nTallyVotes} 
         />
       </Widget>
     </WidgetContainer>
@@ -302,7 +298,7 @@ function ApprovalResultsViewer() {
             ...results.summaryData.totalScores.map((totalScore, i) => [
               results.summaryData.candidates[totalScore.index].name,
               totalScore.score,
-              `${Math.round(totalScore.score * 1000 / results.summaryData.nValidVotes) / 10}%`,
+              `${Math.round(totalScore.score * 1000 / results.summaryData.nTallyVotes) / 10}%`,
             ])
           ]}/>
         </Widget>
@@ -369,7 +365,7 @@ function PRResultsViewer() {
     })
     .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
 
-  let remainingVoters = (results.summaryData.nValidVotes*(1 - ((page-1)/results.summaryData.weightedScoresByRound.length)))
+  let remainingVoters = (results.summaryData.nTallyVotes*(1 - ((page-1)/results.summaryData.weightedScoresByRound.length)))
   remainingVoters = Math.round(remainingVoters*10)/10;
   return <ResultsViewer methodKey='star_pr'>
     <WidgetContainer>
@@ -459,9 +455,9 @@ export default function Results({ race, results }: {race: Race, results: Electio
       </Typography>
       <div className="flexContainer" style={{textAlign: 'center'}}>
         <Box sx={{pageBreakAfter:'avoid', pageBreakInside:'avoid', mx: 10}}>
-        {results.summaryData.nValidVotes == 0 && <h2>{t('results.waiting_for_results')}</h2>}
-        {results.summaryData.nValidVotes == 1 && <p>{t('results.single_vote')}</p> }
-        {results.summaryData.nValidVotes > 1 && <>
+        {results.summaryData.nTallyVotes == 0 && <h2>{t('results.waiting_for_results')}</h2>}
+        {results.summaryData.nTallyVotes == 1 && <p>{t('results.single_vote')}</p> }
+        {results.summaryData.nTallyVotes > 1 && <>
           {showTitleAsTie?
             <>
             <Typography variant="h5" sx={{fontWeight: 'bold'}}>{t('results.tie_title')}</Typography>
@@ -472,10 +468,10 @@ export default function Results({ race, results }: {race: Race, results: Electio
           :
             <Typography variant='h5'>⭐ {winnersText}{t('results.win_title_postfix', {count: results.elected.length})} ⭐</Typography>
           }
-          <Typography variant="h6">{t('results.vote_count', {n: results.summaryData.nValidVotes})}</Typography>
+          <Typography variant="h6">{t('results.vote_count', {n: results.summaryData.nTallyVotes})}</Typography>
         </>}
         </Box>
-        {results.summaryData.nValidVotes > 1 &&
+        {results.summaryData.nTallyVotes > 1 &&
           <>
           {results.votingMethod === "STAR" && <STARResultsViewer filterRandomFromLogs={removeTieBreakFromTitle}/>}
           {results.votingMethod === "Approval" && <ApprovalResultsViewer/>}
