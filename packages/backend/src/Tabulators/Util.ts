@@ -175,11 +175,10 @@ export const getInitialData = <SummaryType,>(
   // Totaled score measures for each candidate
   const totalScores: totalScore[] = candidates.map((_,candidateIndex) => ({
     index: candidateIndex,
-    score: tallyVotes.reduce(
-      // for ordinal methods we'll only add the first choice rankings, this gives a headstart for RCV, but it's not much use to RR
-      (score, vote) => score + (methodType == 'ordinal' ? (vote[candidateIndex] == 1 ? 1 : 0) : vote[candidateIndex]),
-      0
-    ),
+    score: methodType == 'ordinal' ?
+      pairwiseMatrix[candidateIndex].filter(entry => entry === 1).length
+    :
+      tallyVotes.reduce((score, vote) => score + vote[candidateIndex], 0),
   }));
 
 	// Sort totalScores

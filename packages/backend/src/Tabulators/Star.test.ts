@@ -154,7 +154,7 @@ describe("STAR Score Round Tests", () => {
         const fiveStarCounts = [3, 2, 1, 0]
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
-        const roundResults = singleWinnerStar(summaryData.totalScores, summaryData)
+        const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -171,7 +171,7 @@ describe("STAR Score Round Tests", () => {
         const fiveStarCounts = [3, 2, 1, 0]
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
-        const roundResults = singleWinnerStar(summaryData.totalScores, summaryData)
+        const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Bill');
         expect(roundResults.runner_up[0].name).toBe('Allison');
@@ -188,7 +188,7 @@ describe("STAR Score Round Tests", () => {
         const fiveStarCounts = [3, 2, 1, 0]
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
-        const roundResults = singleWinnerStar(summaryData.totalScores, summaryData)
+        const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -208,7 +208,7 @@ describe("STAR Score Round Tests", () => {
         const fiveStarCounts = [3, 2, 1, 0]
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
-        const roundResults = singleWinnerStar(summaryData.totalScores, summaryData)
+        const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -227,7 +227,7 @@ describe("STAR Score Round Tests", () => {
         const fiveStarCounts = [3, 2, 1, 0]
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
-        const roundResults = singleWinnerStar(summaryData.totalScores, summaryData)
+        const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -244,7 +244,7 @@ describe("STAR Score Round Tests", () => {
         const fiveStarCounts = [3, 2, 1, 0]
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
-        const roundResults = singleWinnerStar(summaryData.totalScores, summaryData)
+        const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -263,7 +263,7 @@ describe("STAR Score Round Tests", () => {
         const fiveStarCounts = [3, 3, 1, 0]
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
-        const roundResults = singleWinnerStar(summaryData.totalScores, summaryData)
+        const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -282,7 +282,7 @@ describe("STAR Score Round Tests", () => {
         const fiveStarCounts = [3, 2, 2, 0]
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
-        const roundResults = singleWinnerStar(summaryData.totalScores, summaryData)
+        const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -301,7 +301,7 @@ describe("STAR Score Round Tests", () => {
         const fiveStarCounts = [3, 3, 3, 2]
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
-        const roundResults = singleWinnerStar(summaryData.totalScores, summaryData)
+        const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -320,7 +320,7 @@ describe("STAR Score Round Tests", () => {
         const fiveStarCounts = [4, 3, 3, 2]
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
-        const roundResults = singleWinnerStar(summaryData.totalScores, summaryData)
+        const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -339,7 +339,7 @@ describe("STAR Score Round Tests", () => {
         const fiveStarCounts = [4, 3, 2, 2]
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
-        const roundResults = singleWinnerStar(summaryData.totalScores, summaryData)
+        const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         expect(roundResults.runner_up[0].name).toBe('Bill');
@@ -356,7 +356,7 @@ describe("STAR Score Round Tests", () => {
         const fiveStarCounts = [4, 3, 3, 3]
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
-        const roundResults = singleWinnerStar(summaryData.totalScores, summaryData)
+        const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Allison');
         //runner up doesn't matter here, but need test that random selection occurred
@@ -386,7 +386,7 @@ describe("STAR Score Round Tests", () => {
         const fiveStarCounts = [10, 1, 5, 1, 1]
         const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
 
-        const roundResults = singleWinnerStar(summaryData.totalScores, summaryData)
+        const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
         console.log(roundResults.logs)
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Super');

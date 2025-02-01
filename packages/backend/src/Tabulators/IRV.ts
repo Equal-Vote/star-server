@@ -1,9 +1,7 @@
-import { ballot, candidate, irvResults, irvRoundResults, irvSummaryData, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { ballot, candidate, irvResults, irvRoundResults, irvSummaryData } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
-import { IparsedData } from './ParseData'
-// import Fraction from "fraction.js";
-const ParseData = require("./ParseData");
-
+import { getInitialData, makeAbstentionTest, makeBoundsTest } from "./Util";
+import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
 const Fraction = require('fraction.js');
 
@@ -13,28 +11,23 @@ type weightedVote = {
     overvote: boolean
 }
 
-export function IRV(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder: number[] = [], breakTiesRandomly = true) {
-    return IRV_STV(candidates, votes, nWinners, randomTiebreakOrder, breakTiesRandomly, false)
+export function IRV(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder: number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings) {
+    return IRV_STV(candidates, votes, nWinners, randomTiebreakOrder, breakTiesRandomly, electionSettings, false)
 }
 
-export function STV(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder: number[] = [], breakTiesRandomly = true) {
-    return IRV_STV(candidates, votes, nWinners, randomTiebreakOrder, breakTiesRandomly, true)
+export function STV(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder: number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings) {
+    return IRV_STV(candidates, votes, nWinners, randomTiebreakOrder, breakTiesRandomly, electionSettings, true)
 }
 
-export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder: number[] = [], breakTiesRandomly = true, proportional = true) {
-    // Determines Instant Runoff winners for given election, results are either block or proportional
-    // Parameters: 
-    // candidates: Array of candidate names
-    // votes: Array of votes, size nVoters x Candidates, zeros indicate no rank
-    // nWiners: Number of winners in election, defaulted to 1 (only supports 1 at the moment)
-    // randomTiebreakOrder: Array to determine tiebreak order, uses strings to allow comparing UUIDs. If empty or not same length as candidates, set to candidate indexes
-    // breakTiesRandomly: In the event of a true tie, should a winner be selected at random, defaulted to true
-    // proportional: Determines if results are block IRV or proportional STV
+export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder: number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings, proportional = true) {
 
-    // Parse the votes for valid, invalid, and undervotes, and identifies bullet votes
-    const parsedData = ParseData(votes, getIRVBallotValidity)
-
-    const summaryData = getSummaryData(candidates, parsedData, randomTiebreakOrder)
+    const [tallyVotes, summaryData] = getInitialData<Omit<irvSummaryData, 'nExhaustedViaOverVote' | 'nExhaustedViaSkippedRank' | 'nExhaustedViaDuplicateRank'>>(
+		votes, candidates, randomTiebreakOrder, 'ordinal',
+		[
+			makeBoundsTest(0, electionSettings?.max_rankings ?? Infinity), 
+			makeAbstentionTest(0),
+		]
+	);
 
     // Initialize output data structure
     const results: irvResults = {
@@ -47,17 +40,15 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
         logs: [],
         voteCounts: [],
         exhaustedVoteCounts: [],
-        overVoteCounts: [],
         tieBreakType: 'none',
+        nExhaustedViaOvervote: 0,
+        nExhaustedViaSkippedRank: 0,
+        nExhaustedViaDuplicateRank: 0,
     }
 
-    
-
     let remainingCandidates = [...summaryData.candidates]
-    let activeVotes: ballot[] = parsedData.scores
+    let activeVotes: ballot[] = tallyVotes;
     let exhaustedVotes: weightedVote[] = []
-    let exhaustedVoteCount = 0
-    let overVoteCount = 0
 
     let weightedVotes: weightedVote[] = activeVotes.map(vote => ({ weight: Fraction(1), vote: vote, overvote: false }))
 
@@ -107,7 +98,6 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
 
         results.voteCounts.push(roundVoteCounts.map(c => c.voteCount.valueOf()))
         results.exhaustedVoteCounts.push(exhaustedVotes.length)
-        results.overVoteCounts.push(exhaustedVotes.filter(ev => ev.overvote).length)
 
         // get max number of votes
         let remainingCandidatesIndexes = remainingCandidates.map(c => c.index)
@@ -225,131 +215,93 @@ function distributeVotes(remainingCandidates: candidate[], candidateVotes: weigh
             candidateVotes[topRemainingRankIndex].push(ballot)
         }
     }
-
-
 }
 
-function getIRVBallotValidity(ballot: ballot) {
-    const minScore = 0
-    const maxScore = ballot.length
-    let isUnderVote = true
-    for (let i = 0; i < ballot.length; i++) {
-        if (ballot[i] < minScore || ballot[i] > maxScore) {
-            return { isValid: false, isUnderVote: false }
-        }
-        if (ballot[i] > minScore) {
-            isUnderVote = false
-        }
-    }
-    return { isValid: true, isUnderVote: isUnderVote }
-}
-
-function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: number[]): irvSummaryData {
-    const nCandidates = candidates.length
-    if (randomTiebreakOrder.length < nCandidates) {
-        randomTiebreakOrder = candidates.map((c, index) => index)
-    }
-    // Initialize summary data structures
-    // Total scores for each candidate, includes candidate indexes for easier sorting
-    const totalScores: totalScore[] = Array(nCandidates)
-    for (let i = 0; i < nCandidates; i++) {
-        totalScores[i] = { index: i, score: 0 };
-    }
-
-    // Score histograms for data analysis
-    const rankHist: number[][] = Array(nCandidates);
-    for (let i = 0; i < nCandidates; i++) {
-        rankHist[i] = Array(nCandidates).fill(0);
-    }
-
-    // Matrix for voter preferences
-    const preferenceMatrix: number[][] = Array(nCandidates);
-    const pairwiseMatrix: number[][] = Array(nCandidates);
-    for (let i = 0; i < nCandidates; i++) {
-        preferenceMatrix[i] = Array(nCandidates).fill(0);
-        pairwiseMatrix[i] = Array(nCandidates).fill(0);
-    }
-    // Iterate through ballots and populate data structures
-    parsedData.scores.forEach((vote) => {
-        let nSupported = 0
-        for (let i = 0; i < nCandidates; i++) {
-            let iRank = vote[i]
-            if (iRank === 0) {
-                iRank = nCandidates
-            }
-            rankHist[i][iRank - 1] += 1
-            for (let j = 0; j < nCandidates; j++) {
-
-                let jRank = vote[j]
-                if (jRank === 0) {
-                    jRank = nCandidates
-                }
-                if (i !== j) {
-                    if (iRank < jRank) {
-                        preferenceMatrix[i][j] += 1
-                    }
-                }
-            }
-            if (vote[i] > 0) {
-                nSupported += 1
-            }
-        }
-    })
-
-    for (let i = 0; i < nCandidates; i++) {
-        for (let j = 0; j < nCandidates; j++) {
-            if (preferenceMatrix[i][j] > preferenceMatrix[j][i]) {
-                pairwiseMatrix[i][j] = 1
-                totalScores[i].score += 1
-            }
-        }
-    }
-
-    const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
-    return {
-        candidates: candidatesWithIndexes,
-        totalScores,
-        rankHist,
-        preferenceMatrix,
-        pairwiseMatrix,
-        nTallyVotes: parsedData.validVotes.length,
-        nInvalidVotes: parsedData.invalidVotes.length,
-        nAbstentions: parsedData.underVotes,
-    }
-}
-
-function sortData(summaryData: irvSummaryData, order: candidate[]): irvSummaryData {
-    // sorts summary data to be in specified order
-    const indexOrder = order.map(c => c.index)
-    const candidates = indexOrder.map(ind => (summaryData.candidates[ind]))
-    candidates.forEach((c, i) => {
-        c.index = i
-    })
-    const totalScores = indexOrder.map((ind, i) => ({ index: i, score: summaryData.totalScores[ind].score }))
-    const rankHist = indexOrder.map((ind) => summaryData.rankHist[ind])
-    const preferenceMatrix = sortMatrix(summaryData.preferenceMatrix, indexOrder)
-    const pairwiseMatrix = sortMatrix(summaryData.pairwiseMatrix, indexOrder)
-    return {
-        candidates,
-        totalScores,
-        rankHist,
-        preferenceMatrix,
-        pairwiseMatrix,
-        nTallyVotes: summaryData.nTallyVotes,
-        nInvalidVotes: summaryData.nInvalidVotes,
-        nAbstentions: summaryData.nAbstentions,
-    }
-}
-
-function sortMatrix(matrix: number[][], order: number[]) {
-    var newMatrix = Array(order.length);
-    for (let i = 0; i < order.length; i++) {
-        newMatrix[i] = Array(order.length).fill(0);
-    }
-    order.forEach((i, iInd) => {
-        order.forEach((j, jInd) => {
-            newMatrix[iInd][jInd] = matrix[i][j];
-        });
-    });
-    return newMatrix
-}
+//function getIRVBallotValidity(ballot: ballot) {
+//    const minScore = 0
+//    const maxScore = ballot.length
+//    let isUnderVote = true
+//    for (let i = 0; i < ballot.length; i++) {
+//        if (ballot[i] < minScore || ballot[i] > maxScore) {
+//            return { isValid: false, isUnderVote: false }
+//        }
+//        if (ballot[i] > minScore) {
+//            isUnderVote = false
+//        }
+//    }
+//    return { isValid: true, isUnderVote: isUnderVote }
+//}
+//
+//function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: number[]): irvSummaryData {
+//    const nCandidates = candidates.length
+//    if (randomTiebreakOrder.length < nCandidates) {
+//        randomTiebreakOrder = candidates.map((c, index) => index)
+//    }
+//    // Initialize summary data structures
+//    // Total scores for each candidate, includes candidate indexes for easier sorting
+//    const totalScores: totalScore[] = Array(nCandidates)
+//    for (let i = 0; i < nCandidates; i++) {
+//        totalScores[i] = { index: i, score: 0 };
+//    }
+//
+//    // Score histograms for data analysis
+//    const rankHist: number[][] = Array(nCandidates);
+//    for (let i = 0; i < nCandidates; i++) {
+//        rankHist[i] = Array(nCandidates).fill(0);
+//    }
+//
+//    // Matrix for voter preferences
+//    const preferenceMatrix: number[][] = Array(nCandidates);
+//    const pairwiseMatrix: number[][] = Array(nCandidates);
+//    for (let i = 0; i < nCandidates; i++) {
+//        preferenceMatrix[i] = Array(nCandidates).fill(0);
+//        pairwiseMatrix[i] = Array(nCandidates).fill(0);
+//    }
+//    // Iterate through ballots and populate data structures
+//    parsedData.scores.forEach((vote) => {
+//        let nSupported = 0
+//        for (let i = 0; i < nCandidates; i++) {
+//            let iRank = vote[i]
+//            if (iRank === 0) {
+//                iRank = nCandidates
+//            }
+//            rankHist[i][iRank - 1] += 1
+//            for (let j = 0; j < nCandidates; j++) {
+//
+//                let jRank = vote[j]
+//                if (jRank === 0) {
+//                    jRank = nCandidates
+//                }
+//                if (i !== j) {
+//                    if (iRank < jRank) {
+//                        preferenceMatrix[i][j] += 1
+//                    }
+//                }
+//            }
+//            if (vote[i] > 0) {
+//                nSupported += 1
+//            }
+//        }
+//    })
+//
+//    for (let i = 0; i < nCandidates; i++) {
+//        for (let j = 0; j < nCandidates; j++) {
+//            if (preferenceMatrix[i][j] > preferenceMatrix[j][i]) {
+//                pairwiseMatrix[i][j] = 1
+//                totalScores[i].score += 1
+//            }
+//        }
+//    }
+//
+//    const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
+//    return {
+//        candidates: candidatesWithIndexes,
+//        totalScores,
+//        rankHist,
+//        preferenceMatrix,
+//        pairwiseMatrix,
+//        nTallyVotes: parsedData.validVotes.length,
+//        nInvalidVotes: parsedData.invalidVotes.length,
+//        nAbstentions: parsedData.underVotes,
+//    }
+//}

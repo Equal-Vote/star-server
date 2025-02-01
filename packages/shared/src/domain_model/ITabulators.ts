@@ -64,11 +64,7 @@ export interface rankedRobinSummaryData extends genericSummaryData {
     rankHist: rankHist,
 }
 
-export interface irvSummaryData extends rankedRobinSummaryData {
-    nExhaustedViaOverVote: number,
-    nExhaustedViaSkippedRank: number,
-    nExhaustedViaDuplicateRank: number,
-}
+export interface irvSummaryData extends rankedRobinSummaryData {}
 
 export type tabulatorLog = string | tabulatorLogObject;
 
@@ -136,7 +132,9 @@ export interface irvResults extends Omit<genericResults, 'roundResults'> {
     logs: string[],
     voteCounts: number[][],
     exhaustedVoteCounts: number[],
-    overVoteCounts: number[]
+    nExhaustedViaOvervote: number,
+    nExhaustedViaSkippedRank: number,
+    nExhaustedViaDuplicateRank: number,
 }
 
 export type ElectionResults =
