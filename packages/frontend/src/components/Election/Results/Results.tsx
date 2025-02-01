@@ -25,7 +25,6 @@ import ColumnDistributionWidget from "./components/ColumnDistributionWidget";
 import NameRecognitionWidget from "./components/NameRecognitionWidget";
 import ScoreRangeWidget from "./components/ScoreRangeWidget";
 import useFeatureFlags from "~/components/FeatureFlagContextProvider";
-import STAREqualPreferences from "./STAR/STAREqualPreferences";
 import STAREqualPreferencesWidget from "./STAR/STAREqualPreferencesWidget";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
