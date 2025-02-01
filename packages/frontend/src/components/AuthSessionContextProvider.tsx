@@ -109,7 +109,7 @@ export function AuthSessionContextProvider({ children }) {
 
         const url_params = new URLSearchParams(window.location.search);
         const auth_code = url_params.get('code');
-        if (auth_code == null && refreshToken !== null) {
+        if (auth_code == null && refreshToken === null) {
             console.info("No code or refresh token available, can't refresh");
             return;
         }
