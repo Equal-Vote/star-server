@@ -6,7 +6,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         live_election: Ballots submitted by voters during election
         prior_election: Election admin uploaded ballots from a previous election
         */
-        .addColumn('ballot_source', 'varchar', (col) => col.notNull())
+        .addColumn('ballot_source', 'varchar', (col) => col.notNull().defaultTo('live_election'))
         // unique identifier for mapping public archive elections to their real elections
         // ex. Genola_11022021_CityCouncil
         .addColumn('public_archive_id', 'varchar' )
