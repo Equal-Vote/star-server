@@ -23,6 +23,7 @@ import ReturnToClassicDialog, { ReturnToClassicContextProvider } from './compone
 import { useSubstitutedTranslation } from './components/util'
 import UploadElections from './components/UploadElections'
 import Redirect from './components/Redirect'
+import PublicArchive from './components/Elections/PublicArchive'
 
 const App = () => {
   const {t} = useSubstitutedTranslation();
@@ -57,6 +58,7 @@ const App = () => {
               <Route path='/ElectionsYouVotedIn' element={<ElectionsYouVotedIn />} />
               <Route path='/UploadElections' element={<UploadElections />} />
               <Route path='/OpenElections' element={<OpenElections />} />
+              <Route path='/PublicArchive' element={<PublicArchive />} />
               {/*Keeping old path for legacy reasons, although we can probably remove it once the domain moves from dev.star.vote*/}
               <Route path='/Election/:id/*' element={<Election />} /> 
               <Route path='/:id/*' element={<Election />} />

@@ -16,4 +16,5 @@ export const sharedConfig = {
     FF_PRECINCTS: 'false',
     FF_THEMES: 'false',
     FF_ALL_STATS: 'false',
+    FF_ARCHIVE_LINK: 'false',
 };

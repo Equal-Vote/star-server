@@ -31,8 +31,11 @@ const getElections = async (req: IElectionRequest, res: Response, next: NextFunc
     /////////// ELECTIONS WE'RE INVITED TO ////////////////
     var elections_as_unsubmitted_voter = null;
     if (email !== '') {
+        // NOTE: This could be very large if the user had uploaded prior elections. In that case the user would have a roll entry for every vote uploaded
         let myRolls = await ElectionRollModel.getByEmailAndUnsubmitted(email, req)
-        let election_ids = myRolls?.map(election => election.election_id)
+        let election_ids = myRolls?.map(election => election.election_id) ?? [];
+        election_ids = election_ids.filter((eid, i) => election_ids.indexOf(eid) == i); // filter unique
+
         if (election_ids && election_ids.length > 0) {
             elections_as_unsubmitted_voter = await ElectionsModel.getElectionByIDs(election_ids,req)
             // we only want the election to show up in the invited list if it's private
@@ -46,7 +49,8 @@ const getElections = async (req: IElectionRequest, res: Response, next: NextFunc
     var elections_as_submitted_voter = null;
     if (email !== '') {
         let myRolls = await ElectionRollModel.getByEmailAndSubmitted(email, req)
-        let election_ids = myRolls?.map(election => election.election_id)
+        let election_ids = myRolls?.map(election => election.election_id) ?? [];
+        election_ids = election_ids.filter((eid, i) => election_ids.indexOf(eid) == i); // filter unique
         if (election_ids && election_ids.length > 0) {
             elections_as_submitted_voter = await ElectionsModel.getElectionByIDs(election_ids,req)
         }

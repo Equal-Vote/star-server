@@ -24,7 +24,8 @@ export const useGetElections = () => {
         elections_as_official: Election[] | null,
         elections_as_unsubmitted_voter: Election[] | null,
         elections_as_submitted_voter: Election[] | null,
-        open_elections: Election[] | null
+        open_elections: Election[] | null,
+        public_archive_elections: Election[] | null
     }>('/API/Elections', 'get')
 }
 

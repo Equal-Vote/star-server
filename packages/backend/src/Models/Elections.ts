@@ -104,7 +104,7 @@ export default class ElectionsDB implements IElectionStore {
         return await this._postgresClient
             .selectFrom(tableName)
             .where('head', '=', true)
-            .where('public_archive_id', '!=', null)
+            .where('public_archive_id', 'is not', null)
             .selectAll()
             .execute()
     }

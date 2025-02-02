@@ -6,29 +6,25 @@ import { Box, Container, Link, Paper, Typography } from '@mui/material';
 import useFeatureFlags from '../FeatureFlagContextProvider';
 
 export default () => {
-    const flags = useFeatureFlags();
     const navigate = useNavigate();
 
     const { data, isPending, error, makeRequest: fetchElections } = useGetElections();
 
     useEffect(() => {fetchElections()}, []);
 
-    let openElectionsData = useMemo(
-        () => data?.open_elections ? [...data.open_elections] : [],
+    let publicArchiveData = useMemo(
+        () =>  [...data?.public_archive_elections ?? [] ],
         [data]
     );
 
     return <Container>
-        {flags.isSet('ARCHIVE_LINK') && <Typography component='p' sx={{textAlign: 'center'}}>
-            For browsing the archive of elections for public office, <Link href="/PublicArchive">checkout the public archive!</Link>
-        </Typography>}
         <EnhancedTable
-            title='Open Online Elections'
-            headKeys={[ 'title', 'update_date', 'start_time', 'end_time', 'description']}
-            data={openElectionsData}
+            title='Elections for Public Office'
+            headKeys={[ 'title', 'update_date', 'description']}
+            data={publicArchiveData}
             isPending={isPending}
             pendingMessage='Loading Elections...'
-            handleOnClick={(election) => navigate(`/${String(election.raw.election_id)}`)}
+            handleOnClick={(election) => navigate(`/${String(election.raw.election_id)}/results`)}
             defaultSortBy='update_date'
             emptyContent='No Election Invitations'
         />

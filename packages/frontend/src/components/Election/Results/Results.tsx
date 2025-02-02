@@ -20,7 +20,6 @@ import useRace, { RaceContextProvider } from "~/components/RaceContextProvider";
 import VoterProfileWidget from "./components/VoterProfileWidget";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import VoterIntentWidget from "./components/VoterIntentWidget";
-import SupportBlurb from "../SupportBlurb";
 import ColumnDistributionWidget from "./components/ColumnDistributionWidget";
 import NameRecognitionWidget from "./components/NameRecognitionWidget";
 import ScoreRangeWidget from "./components/ScoreRangeWidget";
