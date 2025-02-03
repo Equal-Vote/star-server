@@ -18,11 +18,11 @@ const editElection = async (req: IElectionRequest, res: Response, next: NextFunc
     expectPermission(req.user_auth.roles, permissions.canViewBallots)
     const validationErr = electionValidation(inputElection);
     if (validationErr) {
-        Logger.info(req, "Invalid Election: " + validationErr);
+        Logger.info(req, `Invalid Election: '${inputElection.election_id}'` + validationErr);
         throw new BadRequest("Invalid Election: " + validationErr);
     }
 
-    if (inputElection.state !== 'draft') {
+    if (inputElection.state !== 'draft' && inputElection.public_archive_id === null) {
         Logger.info(req, `Election is not editable, state=${inputElection.state}`);
         throw new BadRequest("Election is not editable")
     }

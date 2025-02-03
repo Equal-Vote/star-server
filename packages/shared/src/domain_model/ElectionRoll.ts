@@ -60,7 +60,7 @@ export function electionRollValidation(obj:ElectionRoll): string | null {
         return "Invalid Election Roll ID";
     }
     if (typeof obj.election_id !== 'string'){
-        return "Invalid Election ID";
+        return `(roll) Invalid Election ID ${obj.election_id}`;
     }
     if (obj.email && !emailRegex.test(obj.email)){
         return "Invalid Email";

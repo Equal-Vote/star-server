@@ -1,6 +1,6 @@
 import { VotingMethod } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { Box, Button, Checkbox, FormControlLabel, FormGroup, MenuItem, Paper, Select, Typography } from "@mui/material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSubstitutedTranslation } from "./util";
 import EnhancedTable from "./EnhancedTable";
 import { rankColumnCSV } from "./cvrParsers";
@@ -9,15 +9,20 @@ import Papa from 'papaparse';
 import useAuthSession from "./AuthSessionContextProvider";
 import { defaultElection } from "./ElectionForm/CreateElectionDialog";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
-import { NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
+import { Election, NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
+import { useGetElections } from "~/hooks/useAPI";
 
 export default () => {
-    const [addToPublicArchive, setAddToPublicArchive] = useState(false)
+    const [addToPublicArchive, setAddToPublicArchive] = useState(true)
+    const { data: electionData, isPending, error, makeRequest: fetchElections } = useGetElections();
     const [cvrs, setCvrs] = useState([])
+    const archiveElectionIds = useRef({})
     const {t} = useSubstitutedTranslation();
     const inputRef = useRef(null)
     const [electionsSubmitted, setElectionsSubmitted] = useState(false);
     const authSession = useAuthSession()
+
+    useEffect(() => {fetchElections()}, []);
 
     const submitElections = () => {
         setElectionsSubmitted(true)
@@ -39,59 +44,93 @@ export default () => {
                 candidateNames.delete('overvote');
                 // TODO: infer num winners
 
-                // #3 : Create (or fetch) Election 
+                // #3 : Create (or update) Election 
+
+                let newElection: NewElection = {
+                    ...defaultElection,
+                    title: cvr.name.split('.')[0],
+                    state: 'closed',
+                    owner_id: authSession.getIdField('sub'),
+                    ballot_source: 'prior_election',
+                    public_archive_id: addToPublicArchive? cvr.name.split('.')[0] : undefined,
+                    settings: {
+                        ...defaultElection.settings,
+                        max_rankings: maxRankings,
+                        voter_access: 'open'
+                    },
+                    races: [
+                        {
+                            race_id: uuidv4(),
+                            voting_method: 'IRV', 
+                            title: cvr.name.split('.')[0],
+                            candidates: [...candidateNames].map(name => ({ 
+                                candidate_id: uuidv4(),
+                                candidate_name: name
+                            })) as Candidate[],
+                            num_winners: 1
+                        }
+                    ]
+                };
+
+                let updateExistingElection = archiveElectionIds.current[cvr.name] && addToPublicArchive;
+
+                let updatedElection: Election = undefined;
+                if(updateExistingElection){
+                    let prevElection = electionData.public_archive_elections.find((e) => e.election_id == archiveElectionIds.current[cvr.name]);
+                    updatedElection = {
+                        ...newElection,
+                        election_id: prevElection.election_id,
+                        create_date: prevElection.create_date,
+                        update_date: prevElection.update_date,
+                        head: prevElection.head,
+                    }
+                }
+
                 // NOTE: I'm not using usePostElection because I need to handle multiple requests
-                const postElectionRes = await fetch('/API/Elections', {
+                const endpoint = updateExistingElection ? 
+                    `/API/Election/${archiveElectionIds.current[cvr.name]}/edit`
+                :
+                    '/API/Elections';
+
+                const postElectionRes = await fetch(endpoint, {
                     method: 'post',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        Election: {
-                            ...defaultElection,
-                            title: cvr.name.split('.')[0],
-                            state: 'closed',
-                            owner_id: authSession.getIdField('sub'),
-                            ballot_source: 'prior_election',
-                            public_archive_id: addToPublicArchive? cvr.name.split('.')[0] : undefined,
-                            settings: {
-                                ...defaultElection.settings,
-                                max_rankings: maxRankings,
-                                voter_access: 'open'
-                            },
-                            races: [
-                                {
-                                    race_id: uuidv4(),
-                                    voting_method: 'IRV', 
-                                    title: cvr.name.split('.')[0],
-                                    candidates: [...candidateNames].map(name => ({ 
-                                        candidate_id: uuidv4(),
-                                        candidate_name: name
-                                    })) as Candidate[],
-                                    num_winners: 1
-                                }
-                            ]
-                        } as NewElection,
+                        Election: updateExistingElection? updatedElection : newElection
                     })
                 })
 
                 if (!postElectionRes.ok){
+                    const code = updateExistingElection ? 'ElectionUpdateFailed' : 'ElectionCreateFailed';
                     parsed_csv.errors.push({
-                        code: "ElectionCreationFailed",
+                        code: code,
                         message: `Error making request: ${postElectionRes.status.toString()}`,
                         row: -1,
-                        type: "ElectionCreationFailed"
+                        type: code,
                     })
                     return;
                 };
 
-                const {election} = await postElectionRes.json()
+                let {election} = await postElectionRes.json()
 
-                // #4 : Convert Rows to Ballots
+                // #4 : Clear previous ballots (if needed)
+                if(updateExistingElection){
+                    await fetch(`/API/Election/${election.election_id}/ballots`, {
+                        method: 'delete',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                }
+
+                // #5 : Convert Rows to Ballots
                 let {ballots, errors} = rankColumnCSV(parsed_csv, election)
 
-                // #5 : Upload Ballots
+                // #6 : Upload Ballots
                 const batchSize = 100;
                 let batchIndex = -1;
                 let responses = [];
@@ -148,13 +187,17 @@ export default () => {
     }
 
     const addCvrs = (files: FileList) => {
-        // NOTE: FileList does not support map
+        // NOTE: FileList does not support Array.map
         let new_files = [];
         for(let i = 0; i < files.length; i++){
             new_files.push({
                 name: files[i].name,
                 url: URL.createObjectURL(files[i])
             });
+
+            let tag = files[i].name.split('.')[0];
+            let election = electionData.public_archive_elections.find(e => e.public_archive_id == tag)
+            archiveElectionIds.current[ files[i].name ] = election?.election_id ?? undefined;
         }
 
         setCvrs([...cvrs, ...new_files])
@@ -218,9 +261,9 @@ export default () => {
 
         <EnhancedTable
             headKeys={['file_name', 'election_id']}
-            data={cvrs.map(cvr => ({
-                file_name: cvr.name,
-                election_id: '(new election)'
+            data={Object.entries(archiveElectionIds.current).map(([k, v]) => ({
+                file_name: k,
+                election_id: (v && addToPublicArchive)? v : '(new election)'
             }))}
             isPending={false}
             pendingMessage=''

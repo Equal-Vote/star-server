@@ -13,9 +13,11 @@ const innerDeleteAllBallotsForElectionID = async (req: IElectionRequest) => {
 
     Logger.debug(req, "deleteAllBallotsForElectionID : " + electionId);
 
-    if (req.election.state !== 'draft') {
-        Logger.info(req, `Election is not in draft mode, state=${req.election.state}`);
-        throw new BadRequest("Ballots can only be reset while in draft mode")
+    let apiAvailable = req.election.state === 'draft' || req.election.public_archive_id !== null;
+
+    if (!apiAvailable) {
+        Logger.info(req, `Election status, state=${req.election.state}, public_archive_id=${req.election.public_archive_id}`);
+        throw new BadRequest("Ballots can only be reset while in draft mode or if it's a public_archive election")
     }
 
     expectPermission(req.user_auth.roles, permissions.canDeleteAllBallots)

@@ -18,8 +18,6 @@ import { Router } from 'express';
 import asyncHandler  from 'express-async-handler';
 export const ballotRouter = Router();
 
-
-
 /** 
  * @swagger
  * /Election/{id}/ballots:
@@ -100,16 +98,6 @@ ballotRouter.get('/Election/:id/anonymizedBallots', asyncHandler(getAnonymizedBa
  *           type: string
  *         required: true
  *         description: The election ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               public_results:
- *                type: boolean
- *                description: If the election results are public
  * 
  *     responses:
  *       200:

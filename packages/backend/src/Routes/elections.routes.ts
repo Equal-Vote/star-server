@@ -1,7 +1,6 @@
 import { Router } from 'express';
 const electionsRouter = Router();
 
-import express from 'express';
 import {    
     returnElection,
     getElectionByID,
