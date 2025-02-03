@@ -13,6 +13,7 @@ export interface candidate {
 export interface voter {
     csvRow: number
 }
+
 export interface totalScore {
     index: number,
     score: number,
@@ -32,23 +33,22 @@ type preferenceMatrix = number[][]
 type pairwiseMatrix = number[][]
 
 
-interface genericSummaryData {
+export interface genericSummaryData {
     candidates: candidate[],
     totalScores: totalScore[],
-    nValidVotes: number,
-    nInvalidVotes: number,
-    nUnderVotes: number,
-    nBulletVotes?: number
+    preferenceMatrix: preferenceMatrix,
+    pairwiseMatrix: pairwiseMatrix,
+    // nVotes = nOutOfBoundsVotes + nAbstentions + nTallyVotes
+    nOutOfBoundsVotes: number,
+    nAbstentions: number,
+    nTallyVotes: number,
 }
 
 export interface starSummaryData extends genericSummaryData {
-    scoreHist: scoreHist,
-    preferenceMatrix: preferenceMatrix,
-    pairwiseMatrix: pairwiseMatrix,
-    noPreferenceStars: number[],
+    fiveStarCounts: fiveStarCount[],
 }
 
-export interface allocatedScoreSummaryData extends starSummaryData {
+export interface allocatedScoreSummaryData extends genericSummaryData {
     splitPoints: number[],
     spentAboves: number[],
     weight_on_splits: number[],
@@ -56,15 +56,15 @@ export interface allocatedScoreSummaryData extends starSummaryData {
 }
 export interface approvalSummaryData extends genericSummaryData { }
 
-export interface pluralitySummaryData extends genericSummaryData {}
+export interface pluralitySummaryData extends genericSummaryData {
+    nOvervotes: number
+}
 
 export interface rankedRobinSummaryData extends genericSummaryData {
     rankHist: rankHist,
-    preferenceMatrix: preferenceMatrix,
-    pairwiseMatrix: pairwiseMatrix,
 }
 
-export interface irvSummaryData extends rankedRobinSummaryData { }
+export interface irvSummaryData extends rankedRobinSummaryData {}
 
 export type tabulatorLog = string | tabulatorLogObject;
 
@@ -82,7 +82,7 @@ export interface roundResults {
     logs: tabulatorLog[],
 }
 
-interface genericResults {
+export interface genericResults {
     votingMethod: votingMethod,
     elected: candidate[],
     tied: candidate[],
@@ -132,7 +132,9 @@ export interface irvResults extends Omit<genericResults, 'roundResults'> {
     logs: string[],
     voteCounts: number[][],
     exhaustedVoteCounts: number[],
-    overVoteCounts: number[]
+    nExhaustedViaOvervote: number,
+    nExhaustedViaSkippedRank: number,
+    nExhaustedViaDuplicateRank: number,
 }
 
 export type ElectionResults =

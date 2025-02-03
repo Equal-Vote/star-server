@@ -1,190 +1,43 @@
 import { ballot, candidate, fiveStarCount, starResults, roundResults, starSummaryData, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
-import { IparsedData } from './ParseData'
-const ParseData = require("./ParseData");
-declare namespace Intl {
-  class ListFormat {
-    constructor(locales?: string | string[], options?: {});
-    public format: (items: string[]) => string;
-  }
-}
-// converts list of strings to string with correct grammar ([a,b,c] => 'a, b, and c')
-const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
+import { getInitialData, makeAbstentionTest, makeBoundsTest, runBlocTabulator } from "./Util";
+import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
+export function Star(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], electionSettings?:ElectionSettings) {
+  const [tallyVotes, initialSummaryData] = getInitialData<Omit<starSummaryData, 'fiveStarCounts'>>(
+		votes, candidates, randomTiebreakOrder, 'cardinal',
+		[
+			makeBoundsTest(0, 5),
+			makeAbstentionTest(0), // TODO: IMO it should only be an abstention if it's null
+		]
+	)
 
-export function Star(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = []) {
-  // Determines STAR winners for given election
-  // Parameters: 
-  // candidates: Array of candidate names
-  // votes: Array of votes, size nVoters x Candidates
-  // nWiners: Number of winners in election, defaulted to 1
-  // randomTiebreakOrder: Array to determine tiebreak order. If empty or not same length as candidates, set to candidate indexes
+  let summaryData = {
+    ...initialSummaryData,
+    fiveStarCounts: initialSummaryData.candidates.map(candidate => ({
+      candidate,
+      counts: tallyVotes.filter(ballot => ballot[candidate.index] == 5).length
+    } as fiveStarCount))
+  } as starSummaryData;
 
-  // Parse the votes for valid, invalid, and undervotes, and identifies bullet votes
-  const parsedData = ParseData(votes)
-
-  // Compress valid votes into data needed to run election including
-  // total scores
-  // score histograms
-  // preference and pairwise matrices
-  const summaryData = getSummaryData(candidates, parsedData,randomTiebreakOrder)
-
-  // Initialize output data structure
-  const results: starResults = {
-    votingMethod: 'STAR',
-    elected: [],
-    tied: [],
-    other: [],
-    roundResults: [],
-    summaryData: summaryData,
-    tieBreakType: 'none',
-  }
-  var remainingCandidates = [...summaryData.candidates]
-  // Run election rounds until there are no remaining candidates
-  // Keep running elections rounds even if all seats have been filled to determine candidate order
-  while (remainingCandidates.length > 0) {
-    const roundResults = runStarRound(summaryData, remainingCandidates)
-    if ((results.elected.length + results.tied.length + roundResults.winners.length) <= nWinners) {
-      // There are enough seats available to elect all winners of current round
-      results.elected.push(...roundResults.winners)
-      results.roundResults.push(roundResults)
-    }
-    else if (results.tied.length === 0 && results.elected.length < nWinners) {
-      // If there are vacant seats but too many winners to fill them, mark those candidates as tied
-      results.tied.push(...roundResults.winners)
-      results.roundResults.push(roundResults)
-    }
-    else {
-      // All seats have been filled or ties identified, remaining candiates added to other group
-      results.other.push(...roundResults.winners)
-
-    }
-    remainingCandidates = remainingCandidates.filter(c => !roundResults.winners.includes(c))
-  }
-
-  // NOTE: the proper way to handle no preferenceStars is to have a matrix of number[] in the summaryData. 
-  //       BUT that's super overkill for the moment since we just need 6 values and we're not running multi-winner elections yet
-  //       Also there's a chance we'll move advanced stats like this to an analytics api as some point
-  //       So TLDR I think the current approach is good enough for now
-  results.summaryData.noPreferenceStars = 
-    getNoPreferenceStars(parsedData, results.roundResults[0].winners[0].index, results.roundResults[0].winners.length > 1?
-      results.roundResults[0].winners[1].index :
-      results.roundResults[0].runner_up[0].index
-    );
-
-  // Sort data in order of candidate placements
-  results.summaryData = sortData(summaryData, results.elected.concat(results.tied).concat(results.other))
-  return results
+  return runBlocTabulator<starResults, starSummaryData>(
+    {
+      votingMethod: 'STAR',
+      elected: [],
+      tied: [],
+      other: [],
+      roundResults: [],
+      summaryData: summaryData,
+      tieBreakType: 'none',
+    } as starResults,
+    nWinners,
+    singleWinnerStar
+  )
 }
 
-function getNoPreferenceStars(parsedData: IparsedData, cIndexI: number, cIndexJ: number): number[]{
-  return parsedData.scores.reduce((stars, vote) => {
-    if((vote[cIndexI] ?? 0) != (vote[cIndexJ] ?? 0)) return stars;
-    stars[vote[cIndexI] ?? 0]++;
-    return stars;
-  }, new Array(6).fill(0));
-}
+export function singleWinnerStar(remainingCandidates: candidate[], summaryData: starSummaryData): roundResults {
+  // I can't have this in the root since the tests don't necessarily sort the five star counts
+  summaryData.fiveStarCounts.sort((a, b) => b.counts - a.counts)
 
-function getSummaryData(candidates: string[], parsedData: IparsedData, randomTiebreakOrder: number[]): starSummaryData {
-  const nCandidates = candidates.length
-  if (randomTiebreakOrder.length < nCandidates) {
-    randomTiebreakOrder = candidates.map((c,index) => index)
-  }
-  // Initialize summary data structures
-  // Total scores for each candidate, includes candidate indexes for easier sorting
-  const totalScores: totalScore[] = Array(nCandidates)
-  for (let i = 0; i < nCandidates; i++) {
-    totalScores[i] = { index: i, score: 0 };
-  }
-
-  // Score histograms for data analysis and five-star tiebreakers
-  const scoreHist: number[][] = Array(nCandidates);
-  for (let i = 0; i < nCandidates; i++) {
-    scoreHist[i] = Array(6).fill(0);
-  }
-
-  // Matrix for voter preferences
-  const preferenceMatrix: number[][] = Array(nCandidates);
-  const pairwiseMatrix: number[][] = Array(nCandidates);
-  for (let i = 0; i < nCandidates; i++) {
-    preferenceMatrix[i] = Array(nCandidates).fill(0);
-    pairwiseMatrix[i] = Array(nCandidates).fill(0);
-  }
-  let nBulletVotes = 0
-
-  // Iterate through ballots and populate data structures
-  parsedData.scores.forEach((vote) => {
-    let nSupported = 0
-    for (let i = 0; i < nCandidates; i++) {
-      totalScores[i].score += vote[i]
-      scoreHist[i][vote[i]] += 1
-      for (let j = 0; j < nCandidates; j++) {
-        if (i !== j) {
-          if (vote[i] > vote[j]) {
-            preferenceMatrix[i][j] += 1
-          }
-        }
-      }
-      if (vote[i] > 0) {
-        nSupported += 1
-      }
-    }
-    if (nSupported === 1) {
-      nBulletVotes += 1
-    }
-  })
-
-  for (let i = 0; i < nCandidates; i++) {
-    for (let j = 0; j < nCandidates; j++) {
-      if (preferenceMatrix[i][j] > preferenceMatrix[j][i]) {
-        pairwiseMatrix[i][j] = 1
-      }
-      else if (preferenceMatrix[i][j] < preferenceMatrix[j][i]) {
-        pairwiseMatrix[j][i] = 1
-      }
-
-    }
-  }
-  const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder:  randomTiebreakOrder[index]}))
-  return {
-    candidates: candidatesWithIndexes,
-    totalScores,
-    scoreHist,
-    preferenceMatrix,
-    pairwiseMatrix,
-    nValidVotes: parsedData.validVotes.length,
-    nInvalidVotes: parsedData.invalidVotes.length,
-    nUnderVotes: parsedData.underVotes,
-    nBulletVotes: nBulletVotes,
-    noPreferenceStars: [], // this will be used later
-  }
-}
-
-function sortData(summaryData: starSummaryData, order: candidate[]): starSummaryData {
-  // sorts summary data to be in specified order
-  const indexOrder = order.map(c => c.index)
-  const candidates = indexOrder.map(ind => (summaryData.candidates[ind]))
-  candidates.forEach((c, i) => {
-    c.index = i
-  })
-  const totalScores = indexOrder.map((ind, i) => ({ index: i, score: summaryData.totalScores[ind].score }))
-  const scoreHist = indexOrder.map((ind) => summaryData.scoreHist[ind])
-  const preferenceMatrix = sortMatrix(summaryData.preferenceMatrix, indexOrder)
-  const pairwiseMatrix = sortMatrix(summaryData.pairwiseMatrix, indexOrder)
-  return {
-    candidates,
-    totalScores,
-    scoreHist,
-    preferenceMatrix,
-    pairwiseMatrix,
-    nValidVotes: summaryData.nValidVotes,
-    nInvalidVotes: summaryData.nInvalidVotes,
-    nUnderVotes: summaryData.nUnderVotes,
-    nBulletVotes: summaryData.nBulletVotes,
-    noPreferenceStars: summaryData.noPreferenceStars,
-  }
-}
-
-export function runStarRound(summaryData: starSummaryData, remainingCandidates: candidate[]): roundResults {
   // Initialize output results data structure
   const roundResults: roundResults = {
     winners: [],
@@ -278,7 +131,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
         count: losses,
       })
 
-      let fiveStarCounts = getFiveStarCounts(summaryData, tiedCandidates)
+      let fiveStarCounts = summaryData.fiveStarCounts;
       if (nCandidatesNeeded === 2 && fiveStarCounts[1].counts > fiveStarCounts[2].counts) {
         // Two candidates needed and first two have more five star counts than the rest, advance them both to runoff
         fiveStarCounts.slice(0, 2).map((fiveStarCount) => 
@@ -344,7 +197,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
   const leftVotes = summaryData.preferenceMatrix[finalists[0].index][finalists[1].index]
   // votes with preference to 1 over 0
   const rightVotes = summaryData.preferenceMatrix[finalists[1].index][finalists[0].index]
-  const noPrefVotes = summaryData.nValidVotes - leftVotes - rightVotes;
+  const noPrefVotes = summaryData.nTallyVotes - leftVotes - rightVotes;
 
   roundResults.logs.push({
       key: 'tabulation_logs.star.automatic_runoff_start',
@@ -417,7 +270,7 @@ export function runStarRound(summaryData: starSummaryData, remainingCandidates: 
   })
 
   // Five-star tiebreaker is enabled, look for candidate with most 5 star votes
-  const fiveStarCounts = getFiveStarCounts(summaryData, finalists)
+  const fiveStarCounts = summaryData.fiveStarCounts;
   if (fiveStarCounts[0].counts != fiveStarCounts[1].counts){
     const winnerIndex = (fiveStarCounts[0].counts > fiveStarCounts[1].counts)? 0 : 1;
     const loserIndex = 1 - winnerIndex;
@@ -477,7 +330,6 @@ function getScoreWinners(summaryData: starSummaryData, eligibleCandidates: candi
   return scoreWinners
 }
 
-
 function runRunoffTiebreaker(summaryData: starSummaryData, runoffCandidates: candidate[]) {
   // Search for candidate with highest score between two runoff candidates
   if (summaryData.totalScores[runoffCandidates[0].index].score > summaryData.totalScores[runoffCandidates[1].index].score) {
@@ -494,34 +346,6 @@ export function sortByTieBreakOrder(candidates: candidate[]) {
     if (a.tieBreakOrder < b.tieBreakOrder) return -1
     else return 1
   })
-}
-
-function sortMatrix(matrix: number[][], order: number[]) {
-  var newMatrix: number[][] = Array(order.length);
-  for (let i = 0; i < order.length; i++) {
-    newMatrix[i] = Array(order.length).fill(0);
-  }
-  order.forEach((i, iInd) => {
-    order.forEach((j, jInd) => {
-      newMatrix[iInd][jInd] = matrix[i][j];
-    });
-  });
-  return newMatrix
-}
-
-function getFiveStarCounts(summaryData: starSummaryData, tiedCandidates: candidate[]) {
-  // Returns five star counts of tied candidates, sorted from most to least
-  const fiveStarCounts: fiveStarCount[] = []
-  tiedCandidates.forEach((candidate) => {
-    fiveStarCounts.push(
-      {
-        candidate: candidate,
-        counts: summaryData.scoreHist[candidate.index][5]
-      }
-    )
-  })
-  fiveStarCounts.sort((a, b) => b.counts - a.counts)
-  return fiveStarCounts
 }
 
 function getFiveStarLosers(fiveStarCounts: fiveStarCount[]) {
@@ -548,7 +372,6 @@ function getHeadToHeadLosers(summaryData: starSummaryData, tiedCandidates: candi
       // Candidate a is tied for most losses
       headToHeadLosers.push(a)
     }
-
   })
   return {
     headToHeadLosers,
