@@ -4,6 +4,7 @@
 
 # Initial Landing page for voter (ex. https://bettervoting.com/j87vqp/)
 election_home:
+  # start_time example: https://bettervoting.com/tcpwth
   start_time: '{{capital_election}} begins on {{datetime, datetime}}'
   end_time: '{{capital_election}} ends on {{datetime, datetime}}'
   ended_time: '{{capital_election}} ended on {{datetime, datetime}}'
