@@ -4,6 +4,8 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import en from './en.yaml';
 import ptBR from './pt-BR.yaml';
+import pl from './pl.yaml';
+import es from './es.yaml';
 
 i18n
   // detect user language
@@ -29,7 +31,13 @@ i18n
       },
       'pt-BR': {
         translation: ptBR
-      }
+      },
+      'es': {
+        translation: es
+      },
+      'pl': {
+        translation: pl
+      },
     }
   });
 
