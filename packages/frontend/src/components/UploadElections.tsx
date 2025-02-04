@@ -16,7 +16,7 @@ export default () => {
     const [addToPublicArchive, setAddToPublicArchive] = useState(true)
     const { data: electionData, isPending, error, makeRequest: fetchElections } = useGetElections();
     const [cvrs, setCvrs] = useState([])
-    const archiveElectionIds = useRef({})
+    const [elections, setElections] = useState({})
     const {t} = useSubstitutedTranslation();
     const inputRef = useRef(null)
     const [electionsSubmitted, setElectionsSubmitted] = useState(false);
@@ -24,12 +24,24 @@ export default () => {
 
     useEffect(() => {fetchElections()}, []);
 
+    const updateElection = (key, getter) => {
+        elections[key] = getter(elections[key])
+        setElections({...elections})
+    }
+
     const submitElections = () => {
         setElectionsSubmitted(true)
 
         cvrs.forEach(cvr => {
             // #1: Parse CSV
             const post_process = async (parsed_csv) => {
+                const start_time = performance.now();
+                updateElection(cvr.name, (e) => ({
+                    ...e,
+                    upload_status: 'In Progress',
+                    message: `processing...`
+                }))
+
                 // #2 : Infer Election Settings
                 const errorRows = new Set(parsed_csv.errors.map(error => error.row))
                 // NOTE: this assumes rank_column_csv, may not work with other formats
@@ -45,7 +57,6 @@ export default () => {
                 // TODO: infer num winners
 
                 // #3 : Create (or update) Election 
-
                 let newElection: NewElection = {
                     ...defaultElection,
                     title: cvr.name.split('.')[0],
@@ -72,11 +83,11 @@ export default () => {
                     ]
                 };
 
-                let updateExistingElection = archiveElectionIds.current[cvr.name] && addToPublicArchive;
+                let updateExistingElection = elections[cvr.name].election_id && addToPublicArchive;
 
                 let updatedElection: Election = undefined;
                 if(updateExistingElection){
-                    let prevElection = electionData.public_archive_elections.find((e) => e.election_id == archiveElectionIds.current[cvr.name]);
+                    let prevElection = electionData.public_archive_elections.find((e) => e.election_id == elections[cvr.name].election_id);
                     updatedElection = {
                         ...newElection,
                         election_id: prevElection.election_id,
@@ -88,7 +99,7 @@ export default () => {
 
                 // NOTE: I'm not using usePostElection because I need to handle multiple requests
                 const endpoint = updateExistingElection ? 
-                    `/API/Election/${archiveElectionIds.current[cvr.name]}/edit`
+                    `/API/Election/${elections[cvr.name].election_id}/edit`
                 :
                     '/API/Elections';
 
@@ -131,41 +142,60 @@ export default () => {
                 let {ballots, errors} = rankColumnCSV(parsed_csv, election)
 
                 // #6 : Upload Ballots
-                const batchSize = 100;
-                let batchIndex = -1;
+                let batchSize = 100;
+                let nextIndex = 0;
                 let responses = [];
                 // TODO: this batching isn't ideal since it'll be tricky to recovered from a partial failure
                 //       that said this will mainly be relevant when uploading batches for an existing election so I'll leave it for now
                 let filteredBallots = ballots.filter((b, i) => !errorRows.has(i));
-                while((batchIndex+1)*batchSize < ballots.length && batchIndex < 1000 /* a dummy check to avoid infinite loops*/){
-                    batchIndex++;
-                    const uploadRes = await fetch(`/API/Election/${election.election_id}/uploadBallots`, {
-                        method: 'post',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ballots: filteredBallots.slice(batchIndex*batchSize, (batchIndex+1)*batchSize)})
-                    })
+                while(nextIndex+1 < ballots.length && nextIndex < 100000 /* a dummy check to avoid infinite loops*/){
+                    updateElection(cvr.name, (e) => ({
+                        ...e,
+                        message: `uploading ${nextIndex}/${parsed_csv.data.length}...`
+                    }))
 
-                    if (!uploadRes.ok){
-                        errors.push({
-                            code: "UploadBallotsFailed",
-                            message: `Error making request: ${uploadRes.status.toString()}`,
-                            row: -1,
-                            type: "UploadBallotsFailed"
+                    let uploadRes;
+                    do{
+                        uploadRes = await fetch(`/API/Election/${election.election_id}/uploadBallots`, {
+                            method: 'post',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ballots: filteredBallots.slice(nextIndex, nextIndex+batchSize)})
                         })
-                        console.log(errors);
-                        return;
-                    };
+
+                        if (!uploadRes.ok){
+                            errors.push({
+                                code: "UploadBallotsFailed",
+                                message: `Error making request: ${uploadRes.status.toString()}`,
+                                row: -1,
+                                type: "UploadBallotsFailed"
+                            })
+                            batchSize = Math.round(batchSize / 2);
+                            if(batchSize < 10){
+                                console.log(cvr.name, errors);
+                                updateElection(cvr.name, e => ({
+                                    ...e,
+                                    upload_status: "Error",
+                                    message: "(see console)"
+                                }))
+                                return;
+                            }
+                        }
+                    }while(!uploadRes.ok);
+                    nextIndex += batchSize;
 
                     let res = await uploadRes.json();
                     responses = [...responses, ...res.responses];
                 }
-                console.log(responses);
 
-                // TODO: display error list somewhere
-                console.log('SUCCESS!: ', election.election_id);
+                updateElection(cvr.name, (e) => ({
+                    ...e,
+                    election_id: election.election_id,
+                    upload_status: 'Done',
+                    message: `${Math.round((performance.now()-start_time))/1000}s`
+                }))
             }
             Papa.parse(cvr.url, {
                 header: true,
@@ -173,7 +203,6 @@ export default () => {
                 dynamicTyping: true,
                 complete: post_process
             })
-
         })
     }
 
@@ -197,7 +226,12 @@ export default () => {
 
             let tag = files[i].name.split('.')[0];
             let election = electionData.public_archive_elections.find(e => e.public_archive_id == tag)
-            archiveElectionIds.current[ files[i].name ] = election?.election_id ?? undefined;
+            updateElection(files[i].name, () => ({
+                file_name: files[i].name,
+                election_id: election?.election_id,
+                upload_status: 'Pending',
+                message: '...',
+            }))
         }
 
         setCvrs([...cvrs, ...new_files])
@@ -208,7 +242,7 @@ export default () => {
         justifyContent="center"
         alignItems="center"
         flexDirection='column'
-        sx={{ width: '100%', maxWidth: 800, margin: 'auto', mb: 1 }}
+        sx={{ width: '100%', maxWidth: 1000, margin: 'auto', mb: 1 }}
         gap={2}
     >
         <Typography variant='h3'>Upload Election(s)</Typography>        
@@ -260,11 +294,8 @@ export default () => {
         </Box>
 
         <EnhancedTable
-            headKeys={['file_name', 'election_id']}
-            data={Object.entries(archiveElectionIds.current).map(([k, v]) => ({
-                file_name: k,
-                election_id: (v && addToPublicArchive)? v : '(new election)'
-            }))}
+            headKeys={['file_name', 'election_id', 'upload_status', 'message']}
+            data={Object.values(elections)}
             isPending={false}
             pendingMessage=''
             defaultSortBy={'file_name'}

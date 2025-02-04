@@ -67,6 +67,14 @@ const headCellPool = {
         filterType: 'search',
         formatter: a => a,
     },
+    message: {
+        id: 'message',
+        numeric: false,
+        disablePadding: false,
+        label: 'Message',
+        filterType: 'search',
+        formatter: a => a,
+    },
     email: {
         id: 'email',
         numeric: false,
@@ -89,7 +97,7 @@ const headCellPool = {
         disablePadding: false,
         label: 'Election ID',
         filterType: 'search',
-        formatter: a => (a || '').includes('(') ? a : <Link href={`${window.location.origin}/${a}/results`}>{a}</Link>,
+        formatter: a => a ? <Link href={`${window.location.origin}/${a}/results`}>{a}</Link> : '(new election)',
     },
     invite_status: {
         id: 'invite_status',
@@ -107,6 +115,20 @@ const headCellPool = {
           if (roll.email_data.inviteResponse.length == 0 || roll.email_data.inviteResponse[0].statusCode >= 400) return 'Failed'
           return 'Sent'
         }
+    },
+    upload_status: {
+        id: 'upload_status',
+        numeric: false,
+        disablePadding: false,
+        label: 'Upload Status',
+        filterType: 'groups',
+        filterGroups: {
+            'Pending': true,
+            'In Progress': true,
+            'Error': true,
+            'Done': true,
+        },
+        formatter: a => a
     },
     has_voted: {
         id: 'has_voted',

@@ -30,6 +30,15 @@ const getStateColor = (state: string) => {
       return 'purple';
     case 'Failed':
       return 'red';
+    // Upload Status
+    case 'Pending':
+      return 'blue';
+    case 'In Progress':
+      return 'purple';
+    case 'Done':
+      return 'green';
+    case 'Error':
+      return 'red';
     default:
       return 'gray4';
   }
@@ -45,7 +54,6 @@ export const makeChipStyle = (state: string) => {
     // marginX: 2,
   }
 }
-
 
 export default function ElectionStateChip({ state }: { state: ElectionState }) {
   const {t} = useSubstitutedTranslation();
