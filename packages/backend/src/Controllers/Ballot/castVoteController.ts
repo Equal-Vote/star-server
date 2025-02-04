@@ -135,7 +135,19 @@ async function uploadBallotsController(req: IElectionRequest, res: Response, nex
     }))
 
     try {
-        await (await EventQueue).publishBatch(castVoteEventQueue, events.filter(event => !('error' in event)));
+        // if it's a prior election bypass the queue system
+        // we're less concerned about race conditions for a prior election
+        if(targetElection.ballot_source == 'prior_election'){
+            await await Promise.all(
+                events.filter(event => !('error' in event)).map(event => 
+                    // we only need to submit the ballot
+                    // we don't need to update the roll since all the voter_auth fields are set to false
+                    BallotModel.submitBallot(event.inputBallot, req, `Admin submits a ballot for prior election`)
+                )
+            )
+        }else{
+            await (await EventQueue).publishBatch(castVoteEventQueue, events.filter(event => !('error' in event)));
+        }
     }catch(err: any){
         const msg = `Could not upload ballots`;
         Logger.error(req, `${msg}: ${err.message}`);
