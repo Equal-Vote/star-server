@@ -12,13 +12,12 @@ var ElectionsModel = ServiceLocator.electionsDb();
 
 
 const editElection = async (req: IElectionRequest, res: Response, next: NextFunction) => {
-
     const inputElection = req.body.Election;
-    Logger.info(req, `editElection: ${req.election.election_id}`)
+    Logger.info(req, `editElection: ${inputElection?.election_id}`) 
     expectPermission(req.user_auth.roles, permissions.canViewBallots)
     const validationErr = electionValidation(inputElection);
     if (validationErr) {
-        Logger.info(req, `Invalid Election: '${inputElection.election_id}'` + validationErr);
+        Logger.info(req, `Invalid Election: '${inputElection?.election_id}'` + validationErr);
         throw new BadRequest("Invalid Election: " + validationErr);
     }
 

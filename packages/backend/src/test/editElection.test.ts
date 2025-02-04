@@ -47,15 +47,15 @@ describe("Edit Election", () => {
         })
     })
 
-    // disable test
-    //describe("Election not provided/incorrect format", () => {
-    //    test("responds with 400 status", async () => {
-    //        const ID = await setupInitialElection()
-    //        const response = await th.postRequest(`/API/Election/${ID}/edit`, { VoterIDList: [] }, testInputs.user1token );
-    //        expect(response.statusCode).toBe(400);
-    //        th.testComplete();
-    //    })
-    //})
+    describe("Election not provided/incorrect format", () => {
+        test("responds with 400 status", async () => {
+            console.log("BAD TEST START")
+            const ID = await setupInitialElection()
+            const response = await th.postRequest(`/API/Election/${ID}/edit`, { VoterIDList: [] }, testInputs.user1token );
+            expect(response.statusCode).toBe(400);
+            th.testComplete();
+        })
+    })
 
     describe("User is not owner", () => {
         test("responds with 401 status", async () => {
