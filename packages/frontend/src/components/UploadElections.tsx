@@ -11,6 +11,7 @@ import { defaultElection } from "./ElectionForm/CreateElectionDialog";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import { Election, NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { useGetElections } from "~/hooks/useAPI";
+import { OrderedNewBallot, RaceCandidateOrder } from "@equal-vote/star-vote-shared/domain_model/Ballot";
 
 export default () => {
     const [addToPublicArchive, setAddToPublicArchive] = useState(true)
@@ -140,14 +141,27 @@ export default () => {
 
                 // #5 : Convert Rows to Ballots
                 let {ballots, errors} = rankColumnCSV(parsed_csv, election)
+                let raceOrder: RaceCandidateOrder[] = ballots[0].votes.map(v => ({
+                    race_id: v.race_id,
+                    candidate_id_order: v.scores.map(s => s.candidate_id)
+                }))
+                let orderedBallots: OrderedNewBallot[] = ballots
+                    .filter((b, i) => !errorRows.has(i))
+                    .map(b => {
+                        let subBallot: any = {...b};
+                        delete subBallot.votes;
+                        return {
+                            ...subBallot,
+                            orderedVotes: b.votes.map(v => v.scores.map(s => s.score))
+                        }
+                    });
 
                 // #6 : Upload Ballots
-                let batchSize = 100;
+                let batchSize = 700;
                 let nextIndex = 0;
                 let responses = [];
                 // TODO: this batching isn't ideal since it'll be tricky to recovered from a partial failure
                 //       that said this will mainly be relevant when uploading batches for an existing election so I'll leave it for now
-                let filteredBallots = ballots.filter((b, i) => !errorRows.has(i));
                 while(nextIndex+1 < ballots.length && nextIndex < 100000 /* a dummy check to avoid infinite loops*/){
                     updateElection(cvr.name, (e) => ({
                         ...e,
@@ -162,7 +176,13 @@ export default () => {
                                 'Accept': 'application/json',
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify({ballots: filteredBallots.slice(nextIndex, nextIndex+batchSize)})
+                            body: JSON.stringify({
+                                race_order: raceOrder,
+                                ballots: orderedBallots.slice(nextIndex, nextIndex+batchSize).map((b, i) => ({
+                                    voter_id: i,
+                                    ballot: b
+                                }))
+                            })
                         })
 
                         if (!uploadRes.ok){
@@ -172,9 +192,9 @@ export default () => {
                                 row: -1,
                                 type: "UploadBallotsFailed"
                             })
-                            batchSize = Math.round(batchSize / 2);
+                            batchSize = Math.round(batchSize * 0.75);
                             if(batchSize < 10){
-                                console.log(cvr.name, errors);
+                                console.log('ERRORS for', cvr.name, errors);
                                 updateElection(cvr.name, e => ({
                                     ...e,
                                     upload_status: "Error",

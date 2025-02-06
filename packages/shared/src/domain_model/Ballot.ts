@@ -1,12 +1,13 @@
 import { Election, PartialBy, getApprovedRaces } from "./Election";
 import { ElectionRoll } from "./ElectionRoll";
 import { Race } from "./Race";
+import { Score } from "./Score";
 import { Uid } from "./Uid";
-import { Vote } from "./Vote";
+import { OrderedVote, Vote } from "./Vote";
 
 export interface NewBallotWithVoterID {
     voter_id: string;
-    ballot: NewBallot;
+    ballot: OrderedNewBallot;
 }
 export interface Ballot {
     ballot_id:  Uid; //ID if ballot
@@ -22,6 +23,19 @@ export interface Ballot {
     update_date:    Date | string;  // Date this object was last updated
     head:           boolean;// Head version of this object
 }
+
+export interface RaceCandidateOrder {
+    race_id: Uid;
+    candidate_id_order: Uid[];
+}
+
+export interface NewBallot extends PartialBy<Ballot,'ballot_id'|'create_date'|'update_date'|'head'> {}
+
+export interface OrderedNewBallot extends PartialBy<NewBallot,'votes'> {
+    orderedVotes: OrderedVote[]
+}
+
+
 
 export interface AnonymizedBallot {
     ballot_id:  Uid;    //ID of ballot
@@ -42,9 +56,8 @@ export interface BallotSubmitStatus {
     message:string;
 }
 
-export interface NewBallot extends PartialBy<Ballot,'ballot_id'|'create_date'|'update_date'|'head'> {}
 
-export function ballotValidation(election: Election, obj:Ballot): string | null {
+export function ballotValidation(election: Election, obj:NewBallot): string | null {
     if (!obj){
         return "Ballot is null";
     }

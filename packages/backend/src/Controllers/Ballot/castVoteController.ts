@@ -1,6 +1,6 @@
 import { Election, electionValidation } from "@equal-vote/star-vote-shared/domain_model/Election";
 import { ElectionRoll, ElectionRollState } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
-import { Ballot, Ballot as BallotType, ballotValidation } from '@equal-vote/star-vote-shared/domain_model/Ballot';
+import { Ballot, Ballot as BallotType, ballotValidation, NewBallot, OrderedNewBallot, RaceCandidateOrder } from '@equal-vote/star-vote-shared/domain_model/Ballot';
 import { IRequest } from "../../IRequest";
 import ServiceLocator from "../../ServiceLocator";
 import Logger from "../../Services/Logging/Logger";
@@ -17,6 +17,8 @@ import { io } from "../../socketHandler";
 import { Server } from "socket.io";
 import { expectPermission } from "../controllerUtils";
 import { permissions } from "@equal-vote/star-vote-shared/domain_model/permissions";
+import { OrderedVote } from "@equal-vote/star-vote-shared/domain_model/Vote";
+import { Score } from "@equal-vote/star-vote-shared/domain_model/Score";
 
 const ElectionsModel = ServiceLocator.electionsDb();
 const ElectionRollModel = ServiceLocator.electionRollDb();
@@ -36,7 +38,7 @@ type BallotSubmitType = 'submitted_via_browser' | 'submitted_via_admin' | 'submi
 
 const castVoteEventQueue = "castVoteEvent";
 
-async function makeBallotEvent(req: IElectionRequest, targetElection: Election, inputBallot: Ballot, submitType: BallotSubmitType, voter_id?: string){
+async function makeBallotEvent(req: IElectionRequest, targetElection: Election, inputBallot: NewBallot, submitType: BallotSubmitType, voter_id?: string){
     inputBallot.election_id = targetElection.election_id;
     let roll = null;
 
@@ -105,6 +107,29 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
     }
 }
 
+const mapOrderedNewBallot = (ballot: OrderedNewBallot, raceOrder: RaceCandidateOrder[]): NewBallot => {
+    let subBallot: any = {...ballot};
+    delete subBallot.orderedVotes;
+    console.log(ballot.orderedVotes, raceOrder);
+    if(ballot.orderedVotes.length != raceOrder.length){
+        throw new BadRequest(`Ballot contains different number of races than race_order: ${ballot.orderedVotes.length} != ${raceOrder.length}`)
+    }
+    return {
+        ...subBallot,
+        votes: ballot.orderedVotes.map((vote: OrderedVote, i) => {
+            if(vote.length != raceOrder[i].candidate_id_order.length){
+                throw new BadRequest(`Race ${i} contains different number of races than race_order: ${vote.length} != ${raceOrder[i].candidate_id_order.length}`)
+            }
+            return {
+                race_id: raceOrder[i].race_id,
+                scores: vote.map((s, j) => ({
+                    candidate_id: raceOrder[i].candidate_id_order[j],
+                    score: s
+                } as Score))
+            }
+        })
+    }
+}
 async function uploadBallotsController(req: IElectionRequest, res: Response, next: NextFunction) {
     Logger.info(req, "Upload Ballots Controller");
 
@@ -120,8 +145,16 @@ async function uploadBallotsController(req: IElectionRequest, res: Response, nex
     }
  
     let events = await Promise.all(
-        req.body.ballots.map(({ballot, voter_id} : {ballot: Ballot, voter_id: string}) => 
-            makeBallotEvent(req, targetElection, structuredClone(ballot), 'submitted_via_admin', voter_id).catch((err) => ({
+        req.body.ballots.map(({ballot, voter_id} : {ballot: OrderedNewBallot, voter_id: string}) => 
+            makeBallotEvent(
+                req,
+                targetElection,
+                structuredClone(
+                    mapOrderedNewBallot(ballot, req.body.race_order as RaceCandidateOrder[])
+                ),
+                'submitted_via_admin',
+                voter_id
+            ).catch((err) => ({
                 error: err,
                 ballot: ballot
             }))
@@ -138,12 +171,12 @@ async function uploadBallotsController(req: IElectionRequest, res: Response, nex
         // if it's a prior election bypass the queue system
         // we're less concerned about race conditions for a prior election
         if(targetElection.ballot_source == 'prior_election'){
-            await await Promise.all(
-                events.filter(event => !('error' in event)).map(event => 
-                    // we only need to submit the ballot
-                    // we don't need to update the roll since all the voter_auth fields are set to false
-                    BallotModel.submitBallot(event.inputBallot, req, `Admin submits a ballot for prior election`)
-                )
+            // we only need to submit the ballot
+            // we don't need to update the roll since all the voter_auth fields are set to false
+            await BallotModel.bulkSubmitBallots(
+                events.filter(event => !('error' in event)).map(event => event.inputBallot),
+                req,
+                `Admin submits a ballot for prior election`
             )
         }else{
             await (await EventQueue).publishBatch(castVoteEventQueue, events.filter(event => !('error' in event)));

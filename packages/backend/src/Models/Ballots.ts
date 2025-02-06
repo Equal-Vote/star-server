@@ -30,21 +30,36 @@ export default class BallotsDB implements IBallotStore {
     }
 
     submitBallot(ballot: Ballot, ctx: ILoggingContext, reason: string): Promise<Ballot> {
-        Logger.debug(ctx, `${tableName}.submit`, ballot);
-        ballot.update_date = Date.now().toString()// Use now() because it doesn't change with time zone 
-        ballot.head = true
-        ballot.create_date = new Date().toISOString()
-
-        return this._postgresClient
-            .insertInto(tableName)
-            .values(ballot)
-            .returningAll()
-            .executeTakeFirstOrThrow()
-            .then((ballot) => {
-                Logger.state(ctx, `Ballot submitted`, { ballot: ballot, reason: reason });
-                return ballot;
-            });
+        Logger.debug(ctx, `${tableName}.submit`) // removed ballot to make logging less noisy
+        return this.makeSubmitBallotsQuery(ballot, ctx, reason) as Promise<Ballot>
     }
+
+    bulkSubmitBallots(ballots: Ballot[], ctx: ILoggingContext, reason: string): Promise<Ballot[]> {
+        Logger.debug(ctx, `${tableName}.bulkSubmit`) // removed ballot to make logging less noisy
+        return this.makeSubmitBallotsQuery(ballots, ctx, reason) as Promise<Ballot[]>
+    }
+
+    private makeSubmitBallotsQuery(inputBallots: Ballot | Ballot[], ctx: ILoggingContext, reason: string): Promise<Ballot[] | Ballot> {
+        let ballots = Array.isArray(inputBallots)? inputBallots : [inputBallots];
+
+        ballots.forEach(b => {
+            b.update_date = Date.now().toString()// Use now() because it doesn't change with time zone 
+            b.head = true
+            b.create_date = new Date().toISOString()
+        })
+
+        let query = this._postgresClient
+            .insertInto(tableName)
+            .values(ballots)
+            .returningAll()
+
+        if(ballots.length == 1){
+            return query.executeTakeFirstOrThrow()
+        }else{
+            return query.execute()
+        }
+    }
+
 
     getBallotByID(ballot_id: string, ctx: ILoggingContext): Promise<Ballot | null> {
         Logger.debug(ctx, `${tableName}.getBallotByID ${ballot_id}`);
