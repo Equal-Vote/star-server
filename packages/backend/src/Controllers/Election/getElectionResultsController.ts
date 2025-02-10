@@ -8,7 +8,7 @@ import { permissions } from '@equal-vote/star-vote-shared/domain_model/permissio
 import { VotingMethods } from '../../Tabulators/VotingMethodSelecter';
 import { IElectionRequest } from "../../IRequest";
 import { Response, NextFunction } from 'express';
-import { ElectionResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { ballot, ElectionResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 var seedrandom = require('seedrandom');
 
 const BallotModel = ServiceLocator.ballotsDb();
@@ -33,17 +33,24 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
     for (let race_index = 0; race_index < election.races.length; race_index++) {
         const candidateNames = election.races[race_index].candidates.map((Candidate: any) => (Candidate.candidate_name))
         const race_id = election.races[race_index].race_id
-        const cvr: number[][] = []
+        const cvr: ballot[] = []
+        const num_winners = election.races[race_index].num_winners
+        const voting_method = election.races[race_index].voting_method
         ballots.forEach((ballot: Ballot) => {
             const vote = ballot.votes.find((vote) => vote.race_id === race_id)
             if (vote) {
-                cvr.push(vote.scores.map((score: Score) => (
+                let row: ballot = vote.scores.map((score: Score) => (
                     score.score
-                )))
+                ))
+                // Feels hacky to add overrank information as an additional column
+                // but the other alternatives required updating the voting method inputs 
+                // and that would need refactors to all methods
+                if(voting_method == 'IRV' || voting_method == 'STV'){
+                    row = [...row, vote.overvote_rank ?? null];
+                }
+                cvr.push(row)
             }
         })
-        const num_winners = election.races[race_index].num_winners
-        const voting_method = election.races[race_index].voting_method
 
         if (!VotingMethods[voting_method]) {
             throw new Error(`Invalid Voting Method: ${voting_method}`)
