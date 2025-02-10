@@ -759,7 +759,7 @@
       "NewBallotWithVoterID": {
         "properties": {
           "ballot": {
-            "$ref": "#/components/schemas/NewBallot"
+            "$ref": "#/components/schemas/OrderedNewBallot"
           },
           "voter_id": {
             "type": "string"
@@ -917,6 +917,90 @@
       "Omit<T,K>_1": {
         "type": "object"
       },
+      "OrderedNewBallot": {
+        "properties": {
+          "ballot_id": {
+            "type": "string"
+          },
+          "create_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "date_submitted": {
+            "type": "number"
+          },
+          "election_id": {
+            "type": "string"
+          },
+          "head": {
+            "type": "boolean"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/BallotAction"
+            },
+            "type": "array"
+          },
+          "ip_hash": {
+            "type": "string"
+          },
+          "orderedVotes": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "precinct": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "update_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "votes": {
+            "items": {
+              "$ref": "#/components/schemas/Vote"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "date_submitted",
+          "election_id",
+          "orderedVotes",
+          "status"
+        ],
+        "type": "object"
+      },
+      "OrderedVote": {
+        "items": {
+          "type": "number"
+        },
+        "type": "array"
+      },
       "Partial<Pick<T,K>>": {
         "type": "object"
       },
@@ -980,6 +1064,24 @@
           "race_id",
           "title",
           "voting_method"
+        ],
+        "type": "object"
+      },
+      "RaceCandidateOrder": {
+        "properties": {
+          "candidate_id_order": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "race_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "candidate_id_order",
+          "race_id"
         ],
         "type": "object"
       },
@@ -1523,14 +1625,14 @@
       },
       "ballot": {
         "items": {
-          "type": "number"
+          "$ref": "#/components/schemas/score"
         },
         "type": "array"
       },
       "ballots": {
         "items": {
           "items": {
-            "type": "number"
+            "$ref": "#/components/schemas/score"
           },
           "type": "array"
         },
@@ -1847,6 +1949,12 @@
           "totalScores"
         ],
         "type": "object"
+      },
+      "nonNullBallot": {
+        "items": {
+          "type": "number"
+        },
+        "type": "array"
       },
       "pairwiseMatrix": {
         "items": {
@@ -2169,7 +2277,10 @@
         "type": "object"
       },
       "score": {
-        "type": "number"
+        "type": [
+          "null",
+          "number"
+        ]
       },
       "scoreHist": {
         "items": {
@@ -2446,22 +2557,6 @@
             "description": "The election ID"
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "public_results": {
-                    "type": "boolean",
-                    "description": "If the election results are public"
-                  }
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "All ballots deleted",
@@ -2673,6 +2768,13 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "race_order": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/RaceCandidateOrder"
+                    }
+                  },
                   "ballots": {
                     "type": "array",
                     "items": {
@@ -2685,7 +2787,7 @@
             }
           }
         },
-        "respon ses": {
+        "responses": {
           "200": {
             "description": "All Ballots Processed",
             "content": {

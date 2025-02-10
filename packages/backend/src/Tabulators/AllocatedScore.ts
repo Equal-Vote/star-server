@@ -1,4 +1,4 @@
-import { ballot, candidate, fiveStarCount, allocatedScoreResults, allocatedScoreSummaryData, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { ballot, candidate, fiveStarCount, allocatedScoreResults, allocatedScoreSummaryData, totalScore, nonNullBallot } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 const Fraction = require('fraction.js');
 import { sortByTieBreakOrder } from "./Star";
@@ -242,7 +242,7 @@ function indexOfMax(arr: typeof Fraction[], candidates: candidate[], breakTiesRa
     return { maxIndex, ties };
 }
 
-function normalizeArray(scores: ballot[], maxScore: number) {
+function normalizeArray(scores: nonNullBallot[], maxScore: number) {
     // Normalize scores array
     var scoresNorm: ballotFrac[] = Array(scores.length);
     scores.forEach((row, r) => {

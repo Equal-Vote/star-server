@@ -1,4 +1,4 @@
-import { ballot, candidate, irvResults, irvRoundResults, irvSummaryData } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { ballot, candidate, irvResults, irvRoundResults, irvSummaryData, nonNullBallot } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { getInitialData, makeAbstentionTest, makeBoundsTest } from "./Util";
 import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
@@ -7,7 +7,7 @@ const Fraction = require('fraction.js');
 
 type weightedVote = {
     weight: typeof Fraction,
-    vote: ballot,
+    vote: nonNullBallot,
     overvote: boolean
 }
 
@@ -47,7 +47,7 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
     }
 
     let remainingCandidates = [...summaryData.candidates]
-    let activeVotes: ballot[] = tallyVotes;
+    let activeVotes: nonNullBallot[] = tallyVotes;
     let exhaustedVotes: weightedVote[] = []
 
     let weightedVotes: weightedVote[] = activeVotes.map(vote => ({ weight: Fraction(1), vote: vote, overvote: false }))
@@ -183,11 +183,10 @@ function distributeVotes(remainingCandidates: candidate[], candidateVotes: weigh
             if (ballot.vote[candidate.index] == null) return;
 
             // candidate has rank
-
             if (topRemainingRank == 0) {
                 // set initial top rank
                 topRemainingRankIndex = candidate.index
-                topRemainingRank = ballot.vote[candidate.index]
+                topRemainingRank = ballot.vote[candidate.index] as number;
                 isOverVote = false
             }
             else if (ballot.vote[candidate.index] < ballot.vote[topRemainingRankIndex]) {
