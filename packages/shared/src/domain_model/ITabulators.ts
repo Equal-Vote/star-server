@@ -1,4 +1,4 @@
-export type score = number
+export type score = number | null
 
 export type ballot = score[]
 

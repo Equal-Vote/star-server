@@ -14,7 +14,7 @@ describe("Ranked Robin Tests", () => {
             [2, 1, 3, 4],
             [2, 3, 1, 4],
             [2, 3, 4, 1],
-            [0, 0, 0, 0],
+            [null, null, null, null],
             [2, 3, 4, -1],
         ]
 
