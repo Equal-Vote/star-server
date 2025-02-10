@@ -54,7 +54,7 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
         const tieBreakOrders = election.races[race_index].candidates.map((Candidate) => (rng() as number))
         results[race_index] = {
             votingMethod: voting_method,
-            ...VotingMethods[voting_method](candidateNames, cvr, num_winners, tieBreakOrders)
+            ...VotingMethods[voting_method](candidateNames, cvr, num_winners, tieBreakOrders, election.settings)
         }
     }
     

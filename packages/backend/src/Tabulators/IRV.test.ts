@@ -88,7 +88,6 @@ describe("IRV Tests", () => {
         expect(results.voteCounts.length).toBe(2);  //Two rounds
         expect(results.voteCounts[0]).toStrictEqual([4,3,4]);  
         expect(results.voteCounts[1]).toStrictEqual([5,0,4]);  
-        expect(results.overVoteCounts).toStrictEqual([1,2]);   
         expect(results.exhaustedVoteCounts).toStrictEqual([1,3]); 
     })
 })
