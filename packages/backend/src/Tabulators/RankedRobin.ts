@@ -10,7 +10,7 @@ export function RankedRobin(candidates: string[], votes: ballot[], nWinners = 1,
 		votes, candidates, randomTiebreakOrder, 'ordinal',
 		[
 			makeBoundsTest(0, electionSettings?.max_rankings ?? Infinity), 
-			makeAbstentionTest(0),
+			makeAbstentionTest(null),
 		]
 	);
 

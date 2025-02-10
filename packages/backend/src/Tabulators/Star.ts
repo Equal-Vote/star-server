@@ -7,7 +7,7 @@ export function Star(candidates: string[], votes: ballot[], nWinners = 1, random
 		votes, candidates, randomTiebreakOrder, 'cardinal',
 		[
 			makeBoundsTest(0, 5),
-			makeAbstentionTest(0), // TODO: IMO it should only be an abstention if it's null
+			makeAbstentionTest(null),
 		]
 	)
 

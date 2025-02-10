@@ -8,7 +8,7 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
 		votes, candidates, randomTiebreakOrder, 'cardinal',
 		[
 			makeBoundsTest(0, 1),
-			makeAbstentionTest(0),
+			makeAbstentionTest(null),
 		]
 	)
 

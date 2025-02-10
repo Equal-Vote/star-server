@@ -105,7 +105,7 @@ export const makeBoundsTest = (minValue:number, maxValue:number) => {
 export const makeAbstentionTest = (underVoteValue:number|null = 0) => {
 	return [
 		'nAbstentions',
-		(ballot: number[]) => ballot.filter(b => b === null ? b === underVoteValue : (b??0) === underVoteValue).length == ballot.length
+		(ballot: number[]) => ballot.filter(b => (underVoteValue === null ? b : (b??0)) === underVoteValue).length == ballot.length
 	] as const;
 }
 
@@ -130,7 +130,7 @@ const filterInitialVotes = (data: ballot[], tests: StatTestPair[]): [ballot[], {
         }
       }
       summaryStats.nTallyVotes++;
-	  tallyVotes.push(ballot)
+      tallyVotes.push(ballot)
     })
 
     return [tallyVotes, summaryStats];

@@ -11,7 +11,7 @@ export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, r
 		votes, candidates, randomTiebreakOrder, 'cardinal', 
 		[
 			makeBoundsTest(0, 1),
-			makeAbstentionTest(0),
+			makeAbstentionTest(null),
       ['nOvervotes', (ballot: number[]) => ballot.filter(v => v==1).length > 1]
 		]
 	);

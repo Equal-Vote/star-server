@@ -20,7 +20,7 @@ export function AllocatedScore(candidates: string[], votes: ballot[], nWinners =
 		votes, candidates, randomTiebreakOrder, 'cardinal',
 		[
 			makeBoundsTest(0, 5),
-			makeAbstentionTest(0), // TODO: IMO it should only be an abstention if it's null
+			makeAbstentionTest(null), 
 		]
 	)
 
