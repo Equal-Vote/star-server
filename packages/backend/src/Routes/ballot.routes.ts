@@ -5,7 +5,6 @@ import {
     castVoteController,
     getAnonymizedBallotsByElectionID,
     uploadBallotsController
-
 } from '../Controllers/Ballot';
 import {
     getElectionByID,
@@ -216,12 +215,17 @@ ballotRouter.post('/Election/:id/vote', asyncHandler(castVoteController))
  *          schema:
  *            type: object
  *            properties: 
+ *               race_order:
+ *                  type: array
+ *                  items:
+ *                     type: object
+ *                     $ref: '#/components/schemas/RaceCandidateOrder'
  *               ballots:
  *                  type: array
  *                  items:
  *                     type: object
  *                     $ref: '#/components/schemas/NewBallotWithVoterID'
- *     respon ses:
+ *     responses:
  *       200:
  *         description: All Ballots Processed
  *         content:

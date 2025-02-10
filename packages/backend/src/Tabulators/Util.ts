@@ -1,5 +1,5 @@
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
-import { candidate, genericResults, genericSummaryData, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { candidate, genericResults, genericSummaryData, nonNullBallot, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 import { ballot, voter } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 declare namespace Intl {
@@ -111,8 +111,8 @@ export const makeAbstentionTest = (underVoteValue:number|null = 0) => {
 
 type StatTestPair = Readonly<[string, Function]>;
 
-const filterInitialVotes = (data: ballot[], tests: StatTestPair[]): [ballot[], {[key: string]: number}] => {
-	let tallyVotes: ballot[] = [];
+const filterInitialVotes = (data: ballot[], tests: StatTestPair[]): [nonNullBallot[], {[key: string]: number}] => {
+	let tallyVotes: nonNullBallot[] = [];
 	let summaryStats: {[key: string]: number} = {};
 
     tests.forEach(([statName, statTest]) => {
@@ -130,7 +130,7 @@ const filterInitialVotes = (data: ballot[], tests: StatTestPair[]): [ballot[], {
         }
       }
       summaryStats.nTallyVotes++;
-      tallyVotes.push(ballot)
+      tallyVotes.push(ballot.map(s => s??0))
     })
 
     return [tallyVotes, summaryStats];
@@ -142,7 +142,7 @@ export const getInitialData = <SummaryType,>(
   randomTiebreakOrder: number[],
   methodType: 'cardinal' | 'ordinal',
   statTests: StatTestPair[],
-): [ballot[], SummaryType] => {
+): [nonNullBallot[], SummaryType] => {
 	// Filter Ballots
 	const [tallyVotes, summaryStats] = filterInitialVotes(allVotes, statTests);
 
@@ -181,9 +181,9 @@ export const getInitialData = <SummaryType,>(
       tallyVotes.reduce((score, vote) => score + vote[candidateIndex], 0),
   }));
 
-	// Sort totalScores
-  const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
-  sortTotalScores(totalScores, candidatesWithIndexes);
+	// Sort totalScores (don't sort totalScores, lots of spots use the values for direct reference)
+  //const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
+  //sortTotalScores(totalScores, candidatesWithIndexes);
 
   return [
 		tallyVotes, 

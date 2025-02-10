@@ -24,9 +24,9 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
         .map((c, i) => ({
             name: c.name,
             index: i,
-            votes: results.summaryData.totalScores[i].score,
+            votes: results.summaryData.totalScores.find(sc => sc.index == i).score,
             // vvvv HACK to get the bars to fill the whole width, this is useful if we want to test the graph padding
-            votesBig: results.summaryData.totalScores[i].score*10000 
+            votesBig: results.summaryData.totalScores.find(sc => sc.index == i).score*10000 
         }))
         .filter((_, i) => !prevWinners.includes(i));
 
@@ -100,7 +100,7 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
                         <PieChartIcon sx={{transform: 'scale(.7)'}}/>
                     </ToggleButton>
                 </ToggleButtonGroup>
-                <STARExtraContext results={results} />
+                <STARExtraContext results={results} roundIndex={roundIndex}/>
             </Widget>
         </WidgetContainer>
         </Box>

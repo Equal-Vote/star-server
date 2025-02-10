@@ -1,4 +1,3 @@
-import { Ballot as BallotType, ballotValidation } from '@equal-vote/star-vote-shared/domain_model/Ballot';
 import { reqIdSuffix } from "../../IRequest";
 import Logger from "../../Services/Logging/Logger";
 import ServiceLocator from "../../ServiceLocator";

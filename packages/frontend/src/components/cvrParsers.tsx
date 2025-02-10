@@ -1,4 +1,4 @@
-import { NewBallotWithVoterID } from "@equal-vote/star-vote-shared/domain_model/Ballot";
+import { NewBallot, NewBallotWithVoterID } from "@equal-vote/star-vote-shared/domain_model/Ballot";
 import { Election } from "@equal-vote/star-vote-shared/domain_model/Election";
 
 /* 
@@ -21,7 +21,7 @@ import { Election } from "@equal-vote/star-vote-shared/domain_model/Election";
 */
 
 // ported from https://github.com/fairvotereform/rcv_cruncher/blob/9bb9f8482290033ff7b31d6b091186474e7afff6/src/rcv_cruncher/parsers.py
-export const rankColumnCSV = ({data, meta, errors}, election: Election) : {ballots: NewBallotWithVoterID[], errors:object[]} => {
+export const rankColumnCSV = ({data, meta, errors}, election: Election) : {ballots: NewBallot[], errors:object[]} => {
     const errorRows = new Set(errors.map(error => error.row))
     const rankFields = meta.fields.filter((field:string) => field.startsWith('rank'));
 
@@ -34,24 +34,21 @@ export const rankColumnCSV = ({data, meta, errors}, election: Election) : {ballo
             return obj;
         }, {})
         return {
-            voter_id: i,
-            ballot: {
-                election_id: election.election_id,
-                status: 'submitted',
-                date_submitted: Date.now(),
-                votes: [
-                    {
-                        race_id: election.races[0].race_id,
-                        scores: election.races[0].candidates.map(c => {
-                            let ranking = invRow[c.candidate_name];
-                            return {
-                                candidate_id: c.candidate_id,
-                                score: ranking ? ranking : null
-                            }
-                        })
-                    }
-                ]
-            }
+            election_id: election.election_id,
+            status: 'submitted',
+            date_submitted: Date.now(),
+            votes: [
+                {
+                    race_id: election.races[0].race_id,
+                    scores: election.races[0].candidates.map(c => {
+                        let ranking = invRow[c.candidate_name];
+                        return {
+                            candidate_id: c.candidate_id,
+                            score: ranking ? ranking : null
+                        }
+                    })
+                }
+            ]
         }
     })
 

@@ -12,6 +12,12 @@ export default class BallotsDB implements IBallotStore {
         this.ballots.push(copy);
         return Promise.resolve(JSON.parse(JSON.stringify(copy)));
     }
+
+    // place holder bulkSubmitBallots for now
+    bulkSubmitBallots(ballots: Ballot[], ctx:ILoggingContext, reason:string): Promise<Ballot[]>{
+        return Promise.resolve(JSON.parse(JSON.stringify([] as Ballot[])));
+    }
+
     getBallotsByElectionID(election_id: string, ctx:ILoggingContext): Promise<Ballot[] | null> {
         const ballots = this.ballots.filter(
             (ballot) => ballot.election_id === election_id

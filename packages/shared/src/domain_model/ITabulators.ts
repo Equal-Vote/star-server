@@ -1,6 +1,8 @@
-export type score = number
+export type score = number | null
 
 export type ballot = score[]
+
+export type nonNullBallot = number[]
 
 export type ballots = ballot[]
 
