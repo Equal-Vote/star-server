@@ -181,9 +181,9 @@ export const getInitialData = <SummaryType,>(
       tallyVotes.reduce((score, vote) => score + vote[candidateIndex], 0),
   }));
 
-	// Sort totalScores
-  const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
-  sortTotalScores(totalScores, candidatesWithIndexes);
+	// Sort totalScores (don't sort totalScores, lots of spots use the values for direct reference)
+  //const candidatesWithIndexes: candidate[] = candidates.map((candidate, index) => ({ index: index, name: candidate, tieBreakOrder: randomTiebreakOrder[index] }))
+  //sortTotalScores(totalScores, candidatesWithIndexes);
 
   return [
 		tallyVotes, 
