@@ -24,14 +24,14 @@ describe("Plurality Tests", () => {
         const results = Plurality(candidates, votes)
         expect(results.elected.length).toBe(1);
         expect(results.elected[0].name).toBe('Dave');
-        expect(results.summaryData.totalScores[0].score).toBe(5)
-        expect(results.summaryData.totalScores[0].index).toBe(3)
-        expect(results.summaryData.totalScores[1].score).toBe(3)
-        expect(results.summaryData.totalScores[1].index).toBe(2)
-        expect(results.summaryData.totalScores[2].score).toBe(2)
-        expect(results.summaryData.totalScores[2].index).toBe(1)
-        expect(results.summaryData.totalScores[3].score).toBe(0)
-        expect(results.summaryData.totalScores[3].index).toBe(0)
+        expect(results.summaryData.totalScores[0].score).toBe(0)
+        expect(results.summaryData.totalScores[0].index).toBe(0)
+        expect(results.summaryData.totalScores[1].score).toBe(2)
+        expect(results.summaryData.totalScores[1].index).toBe(1)
+        expect(results.summaryData.totalScores[2].score).toBe(3)
+        expect(results.summaryData.totalScores[2].index).toBe(2)
+        expect(results.summaryData.totalScores[3].score).toBe(5)
+        expect(results.summaryData.totalScores[3].index).toBe(3)
         
         expect(results.summaryData.nAbstentions).toBe(1)
         expect(results.summaryData.nTallyVotes).toBe(10)
@@ -59,14 +59,14 @@ describe("Plurality Tests", () => {
         expect(results.elected.length).toBe(2);
         expect(results.elected[0].name).toBe('Dave');
         expect(results.elected[1].name).toBe('Carol');
-        expect(results.summaryData.totalScores[0].score).toBe(5)
-        expect(results.summaryData.totalScores[0].index).toBe(3)
-        expect(results.summaryData.totalScores[1].score).toBe(3)
-        expect(results.summaryData.totalScores[1].index).toBe(2)
-        expect(results.summaryData.totalScores[2].score).toBe(2)
-        expect(results.summaryData.totalScores[2].index).toBe(1)
-        expect(results.summaryData.totalScores[3].score).toBe(0)
-        expect(results.summaryData.totalScores[3].index).toBe(0)
+        expect(results.summaryData.totalScores[0].score).toBe(0)
+        expect(results.summaryData.totalScores[0].index).toBe(0)
+        expect(results.summaryData.totalScores[1].score).toBe(2)
+        expect(results.summaryData.totalScores[1].index).toBe(1)
+        expect(results.summaryData.totalScores[2].score).toBe(3)
+        expect(results.summaryData.totalScores[2].index).toBe(2)
+        expect(results.summaryData.totalScores[3].score).toBe(5)
+        expect(results.summaryData.totalScores[3].index).toBe(3)
         
         expect(results.summaryData.nAbstentions).toBe(0)
         expect(results.summaryData.nTallyVotes).toBe(10)
@@ -95,14 +95,14 @@ describe("Plurality Tests", () => {
         const results = Plurality(candidates, votes)
         expect(results.elected.length).toBe(1);
         expect(results.elected[0].name).toBe('Dave');
-        expect(results.summaryData.totalScores[0].score).toBe(5)
-        expect(results.summaryData.totalScores[0].index).toBe(3)
+        expect(results.summaryData.totalScores[0].score).toBe(0)
+        expect(results.summaryData.totalScores[0].index).toBe(0)
         expect(results.summaryData.totalScores[1].score).toBe(3)
         expect(results.summaryData.totalScores[1].index).toBe(1) // random tiebreaker, second place lower index 1
         expect(results.summaryData.totalScores[2].score).toBe(3)
         expect(results.summaryData.totalScores[2].index).toBe(2) // random tiebreaker, third place higher index 2
-        expect(results.summaryData.totalScores[3].score).toBe(0)
-        expect(results.summaryData.totalScores[3].index).toBe(0)
+        expect(results.summaryData.totalScores[3].score).toBe(5)
+        expect(results.summaryData.totalScores[3].index).toBe(3)
         
         expect(results.summaryData.nAbstentions).toBe(0)
         expect(results.summaryData.nTallyVotes).toBe(11)
@@ -131,14 +131,14 @@ describe("Plurality Tests", () => {
         const results = Plurality(candidates, votes, 1,[4,3,2,1])
         expect(results.elected.length).toBe(1);
         expect(results.elected[0].name).toBe('Dave');
-        expect(results.summaryData.totalScores[0].score).toBe(5)
-        expect(results.summaryData.totalScores[0].index).toBe(3)
+        expect(results.summaryData.totalScores[0].score).toBe(0)
+        expect(results.summaryData.totalScores[0].index).toBe(0)
         expect(results.summaryData.totalScores[1].score).toBe(3)
-        expect(results.summaryData.totalScores[1].index).toBe(2) // random tiebreaker, second place lower in tiebreak order
+        expect(results.summaryData.totalScores[1].index).toBe(1) // random tiebreaker, second place lower in tiebreak order
         expect(results.summaryData.totalScores[2].score).toBe(3)
-        expect(results.summaryData.totalScores[2].index).toBe(1) // random tiebreaker, third place higher in tiebreak order
-        expect(results.summaryData.totalScores[3].score).toBe(0)
-        expect(results.summaryData.totalScores[3].index).toBe(0)
+        expect(results.summaryData.totalScores[2].index).toBe(2) // random tiebreaker, third place higher in tiebreak order
+        expect(results.summaryData.totalScores[3].score).toBe(5)
+        expect(results.summaryData.totalScores[3].index).toBe(3)
         
         expect(results.summaryData.nAbstentions).toBe(0)
         expect(results.summaryData.nTallyVotes).toBe(11)
