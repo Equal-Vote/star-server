@@ -1252,6 +1252,9 @@
       },
       "Vote": {
         "properties": {
+          "overvote_rank": {
+            "type": "number"
+          },
           "race_id": {
             "type": "string"
           },
@@ -1626,15 +1629,6 @@
       "ballot": {
         "items": {
           "$ref": "#/components/schemas/score"
-        },
-        "type": "array"
-      },
-      "ballots": {
-        "items": {
-          "items": {
-            "$ref": "#/components/schemas/score"
-          },
-          "type": "array"
         },
         "type": "array"
       },

@@ -152,7 +152,7 @@ export default () => {
                         delete subBallot.votes;
                         return {
                             ...subBallot,
-                            orderedVotes: b.votes.map(v => v.scores.map(s => s.score))
+                            orderedVotes: b.votes.map(v => [...v.scores.map(s => s.score), v.overvote_rank])
                         }
                     });
 

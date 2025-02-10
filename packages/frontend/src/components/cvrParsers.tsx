@@ -30,7 +30,8 @@ export const rankColumnCSV = ({data, meta, errors}, election: Election) : {ballo
         // TODO: this currently doesn't handle overvotes or duplicate ranks
         // TODO: add try catch for adding errors
         let invRow = rankFields.reduce((obj, key) => {
-            obj[row[key]] = Number(key.replace('rank', ''));
+            // adding ?? so that overvote will represent the first overvote
+            obj[row[key]] ??= Number(key.replace('rank', ''));
             return obj;
         }, {})
         return {
@@ -46,7 +47,8 @@ export const rankColumnCSV = ({data, meta, errors}, election: Election) : {ballo
                             candidate_id: c.candidate_id,
                             score: ranking ? ranking : null
                         }
-                    })
+                    }),
+                    overvote_rank: invRow['overvote'] ?? null
                 }
             ]
         }

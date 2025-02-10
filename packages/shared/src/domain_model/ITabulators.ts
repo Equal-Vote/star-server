@@ -4,8 +4,6 @@ export type ballot = score[]
 
 export type nonNullBallot = number[]
 
-export type ballots = ballot[]
-
 export interface candidate {
     index: number,
     name: string,

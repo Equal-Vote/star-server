@@ -110,22 +110,22 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
 const mapOrderedNewBallot = (ballot: OrderedNewBallot, raceOrder: RaceCandidateOrder[]): NewBallot => {
     let subBallot: any = {...ballot};
     delete subBallot.orderedVotes;
-    console.log(ballot.orderedVotes, raceOrder);
     if(ballot.orderedVotes.length != raceOrder.length){
         throw new BadRequest(`Ballot contains different number of races than race_order: ${ballot.orderedVotes.length} != ${raceOrder.length}`)
     }
     return {
         ...subBallot,
         votes: ballot.orderedVotes.map((vote: OrderedVote, i) => {
-            if(vote.length != raceOrder[i].candidate_id_order.length){
+            if(vote.length != raceOrder[i].candidate_id_order.length+1){
                 throw new BadRequest(`Race ${i} contains different number of races than race_order: ${vote.length} != ${raceOrder[i].candidate_id_order.length}`)
             }
             return {
                 race_id: raceOrder[i].race_id,
-                scores: vote.map((s, j) => ({
+                scores: vote.slice(0, -1).map((s, j) => ({
                     candidate_id: raceOrder[i].candidate_id_order[j],
                     score: s
-                } as Score))
+                } as Score)),
+                overvote_rank: vote.at(-1),
             }
         })
     }
