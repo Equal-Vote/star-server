@@ -53,10 +53,10 @@ export default class BallotsDB implements IBallotStore {
             .values(ballots)
             .returningAll()
 
-        if(ballots.length == 1){
-            return query.executeTakeFirstOrThrow()
-        }else{
+        if(Array.isArray(inputBallots)){
             return query.execute()
+        }else{
+            return query.executeTakeFirstOrThrow()
         }
     }
 
