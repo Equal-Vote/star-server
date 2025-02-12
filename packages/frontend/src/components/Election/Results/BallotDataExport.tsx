@@ -60,8 +60,9 @@ export const BallotDataExport = ({ election }: Props) => {
     return (
             <>
                 <a onClick={fetchBallots}>
-                    <MenuButton label={"Download"} >
-                        {ballots && <>
+                    {/*The MenuButton is redundant between the 2 but it's necessary to resolve the 'Menu Component doesn't accept fragment as child' warning*/}
+                    {ballots && 
+                        <MenuButton label={"Download"} >
                             <MenuItem key="csv"  id={"download-csv"} onClick={downloadCSV}>
                                 <BorderAll sx={{ marginRight: 1 }} />
                                 Download CSV
@@ -70,11 +71,13 @@ export const BallotDataExport = ({ election }: Props) => {
                                 <DataObject sx={{ marginRight: 1 }} />
                                 Download JSON
                             </MenuItem>
-                        </>}
-                        {!ballots && 
+                        </MenuButton>
+                    }
+                    {!ballots && 
+                        <MenuButton label={"Download"} >
                             <MenuItem disabled>Loading Ballots...</MenuItem>
-                        }
-                    </MenuButton>
+                        </MenuButton>
+                    }
                 </a>
                 
                 {csvData.length > 0 && (

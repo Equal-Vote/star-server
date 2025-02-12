@@ -443,7 +443,8 @@ export default function Results({ race, results }: {race: Race, results: Electio
   const winnersText = commaListFormatter
     .format(results.elected.map(c => c.name.replace(' ', '__REPLACE_ME__')))
     .split('__REPLACE_ME__')
-    .map(s => ([s, <>&nbsp;</>]))
+    .map((s,i) => ([<React.Fragment key={i*2}>{s}</React.Fragment>, <React.Fragment key={i*2+1}>&nbsp;</React.Fragment>]))
+    .flat()
 
   return (
     <RaceContextProvider race={race} results={results} t={t}>
