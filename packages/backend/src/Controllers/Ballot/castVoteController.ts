@@ -119,7 +119,8 @@ const mapOrderedNewBallot = (ballot: OrderedNewBallot, raceOrder: RaceCandidateO
     return {
         ...subBallot,
         votes: ballot.orderedVotes.map((vote: OrderedVote, i) => {
-            if(vote.length != raceOrder[i].candidate_id_order.length+1){
+            // +2 accounts for overvote_rank and has_duplicate_rank
+            if(vote.length != raceOrder[i].candidate_id_order.length+2){
                 throw new BadRequest(`Race ${i} contains different number of races than race_order: ${vote.length} != ${raceOrder[i].candidate_id_order.length}`)
             }
             return {
@@ -128,7 +129,8 @@ const mapOrderedNewBallot = (ballot: OrderedNewBallot, raceOrder: RaceCandidateO
                     candidate_id: raceOrder[i].candidate_id_order[j],
                     score: s
                 } as Score)),
-                overvote_rank: vote.at(-1),
+                overvote_rank: vote.at(-2),
+                has_duplicate_rank: vote.at(-1) == 1,
             }
         })
     }

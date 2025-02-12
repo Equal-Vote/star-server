@@ -45,10 +45,11 @@ export default () => {
     b.forEach((vote, j) => {
         if(vote.overvote_rank != null && vote.overvote_rank > 0){
             totalOvervotes++;
+        // I'm giving duplicate rank precedence since duplicate rank ballots get cast to skipped rank ballots under our format
+        }else if(vote.has_duplicate_rank){ 
+            totalDuplicateRanks++;
         }else if(detectSkippedRank(vote, j)){
             totalSkippedVotes++;
-        }else if(false/*TODO: duplicate rank check*/){
-            totalDuplicateRanks++;
         }
     })
 
@@ -83,18 +84,6 @@ export default () => {
             <Box>
                 <Typography><b>{Math.round(100*voidedVotes / totalVotes)}%</b> of voters had their votes voided due to a voter error</Typography>
                 <ResultsBarChart data={voidedErrorData} xKey='value' percentage/>
-            </Box>
-
-            <Box>
-                <Typography>via duplicate: {results.nExhaustedViaDuplicateRank}</Typography>
-                <Typography>total overvote: {totalOvervotes}</Typography>
-                <Typography>via overvote: {results.nExhaustedViaOvervote}</Typography>
-                <Typography>total skipped ranks: {totalSkippedVotes}</Typography>
-                <Typography>via skipped rank: {results.nExhaustedViaSkippedRank}</Typography>
-                <Typography>abstentions: {results.summaryData.nAbstentions}</Typography>
-                {/* I don't include out of bounds votes since it's not possible in most cases*/}
-                {/*<Typography>{results.summaryData.nOutOfBoundsVotes}</Typography>*/}
-                <Typography>tallyVotes: {results.summaryData.nTallyVotes} {b.length}</Typography>
             </Box>
         </Box>
     </Widget>

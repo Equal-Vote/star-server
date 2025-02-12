@@ -5,6 +5,7 @@ export interface Vote {
     race_id: Uid;        // Must match the pollId of the election
     scores: Score[];       // One per candidate
     overvote_rank?: number;
+    has_duplicate_rank?: boolean;
 }
 
 // this format is used in bulk uploads where the race/candidate order is mapped in a separate structure

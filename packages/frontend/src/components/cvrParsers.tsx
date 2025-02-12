@@ -34,6 +34,7 @@ export const rankColumnCSV = ({data, meta, errors}, election: Election) : {ballo
             obj[row[key]] ??= Number(key.replace('rank', ''));
             return obj;
         }, {})
+        let nonSkippedFields = rankFields.map(key => row[key]).filter(item => item != 'skipped')
         return {
             election_id: election.election_id,
             status: 'submitted',
@@ -49,7 +50,8 @@ export const rankColumnCSV = ({data, meta, errors}, election: Election) : {ballo
                             score: ranking ? ranking : null
                         }
                     }),
-                    overvote_rank: invRow['overvote'] ?? null
+                    overvote_rank: invRow['overvote'] ?? null,
+                    has_duplicate_rank: nonSkippedFields.length != new Set(nonSkippedFields).size
                 }
             ]
         }

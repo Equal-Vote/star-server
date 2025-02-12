@@ -1252,6 +1252,9 @@
       },
       "Vote": {
         "properties": {
+          "has_duplicate_rank": {
+            "type": "boolean"
+          },
           "overvote_rank": {
             "type": "number"
           },
