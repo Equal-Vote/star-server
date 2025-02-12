@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Bar, Cell, ComposedChart, LabelList, Legend, Line, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { CHART_COLORS, truncName } from "~/components/util";
 
@@ -15,6 +16,7 @@ export default ({
   height = undefined,
   maxBarSize = undefined, // graph will be scaled to fit a bar of size barS
 }) => {
+  const [rawNumbers, setRawNumbers] = useState(false);
   let rawData = data;
 
   // Truncate names & add percent
@@ -27,7 +29,7 @@ export default ({
       ...d,
       name: (((star && i == 0) || d['star']) ? "⭐" : "") + truncName(d["name"], 40),
       // hack to get smaller values to allign different than larger ones
-      left: percentage
+      left: (percentage && !rawNumbers)
         ? ((percentValue == 0 && d[xKey] > 0) ? '<1%' : `${Math.round((100 * d[xKey]) / percentDenominator)}%`)
         : Math.round(d[xKey]*100)/100,
       right: "",
@@ -116,6 +118,7 @@ export default ({
   );
 
   return (
+    <div style={{width:'100%'}} onMouseEnter={() => setRawNumbers(true)} onMouseLeave={() => setRawNumbers(false)}>
     <ResponsiveContainer width="90%" height={50 * data.length} style={maxBarSize ?
       {marginTop: '-50px'}: {}
     }>
@@ -161,5 +164,6 @@ export default ({
         {majorityLegend && <Legend />}
       </ComposedChart>
     </ResponsiveContainer>
+    </div>
   );
 };

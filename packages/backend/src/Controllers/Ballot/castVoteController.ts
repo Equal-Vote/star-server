@@ -75,7 +75,10 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
     if (inputBallot.history == null){
         inputBallot.history = [];
     }
-    inputBallot.ballot_id = randomUUID();
+    // preserve the ballot id if it's already provided from prior election
+    if(!inputBallot.ballot_id || targetElection.ballot_source != 'prior_election'){
+        inputBallot.ballot_id = randomUUID();
+    }
     //TODO, ensure the user ID is added to the ballot...
     //should server-authenticate the user id based on auth token
     inputBallot.history.push({

@@ -38,6 +38,7 @@ export const rankColumnCSV = ({data, meta, errors}, election: Election) : {ballo
             election_id: election.election_id,
             status: 'submitted',
             date_submitted: Date.now(),
+            ballot_id: row['Index'],
             votes: [
                 {
                     race_id: election.races[0].race_id,

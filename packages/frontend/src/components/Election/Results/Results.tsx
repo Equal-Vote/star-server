@@ -25,6 +25,7 @@ import NameRecognitionWidget from "./components/NameRecognitionWidget";
 import ScoreRangeWidget from "./components/ScoreRangeWidget";
 import useFeatureFlags from "~/components/FeatureFlagContextProvider";
 import STAREqualPreferencesWidget from "./STAR/STAREqualPreferencesWidget";
+import VoterErrorStatsWidget from "./components/VoterErrorStatsWidget";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
@@ -207,6 +208,7 @@ function IRVResultsViewer() {
         <Widget title={t('results.rcv.table_title')}>
           <ResultsTable className='rcvTable' data={tabulationRows}/>
         </Widget>
+        <VoterErrorStatsWidget/>
       </WidgetContainer>
       <DetailExpander level={1}>
         <WidgetContainer>
