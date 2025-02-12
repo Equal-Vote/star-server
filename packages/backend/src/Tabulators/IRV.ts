@@ -152,6 +152,7 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
             distributeVotes(remainingCandidates, candidateVotes, exhaustedVotes, eliminatedCandidateVotes, results)
             roundResults.eliminated.push(summaryData.candidates[lastPlaceCandidateIndex])
         }
+
         results.roundResults.push(roundResults)
     }
 
@@ -169,7 +170,9 @@ function addWeightedVotes(weightedVotes: weightedVote[]) {
 
 
 function distributeVotes(remainingCandidates: candidate[], candidateVotes: weightedVote[][], exhaustedVotes: weightedVote[], votesToDistribute: weightedVote[], results: irvResults) {
-    votesToDistribute.forEach(ballot => {
+    // we'll remove as votes get exhausted, hence the backwards iteration
+    for(let i = votesToDistribute.length-1; i >= 0; i--){
+        let ballot = votesToDistribute[i];
         // it's important to include the overvote_index at the end so that it over take presedent over other markings
         let overvoteIndex = ballot.vote.length-1;
         let topRemainingRankIndex = [...remainingCandidates.map(c => c.index), overvoteIndex].reduce((topRankIndex, candidateIndex) => {
@@ -191,12 +194,14 @@ function distributeVotes(remainingCandidates: candidate[], candidateVotes: weigh
         if (topRemainingRank === 0 || exhaustedViaOvervote || exhaustedViaSkippedRankings) {
             if(exhaustedViaSkippedRankings) results.nExhaustedViaSkippedRank++;
             if(exhaustedViaOvervote) results.nExhaustedViaOvervote++;
+
             // ballot is exhausted
             exhaustedVotes.push(ballot)
+            votesToDistribute.splice(i,1);
         }
         else {
             // give vote to top rank candidate
             candidateVotes[topRemainingRankIndex].push(ballot)
         }
-    });
+    }
 }

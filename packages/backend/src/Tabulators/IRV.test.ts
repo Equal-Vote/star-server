@@ -93,5 +93,40 @@ describe("IRV Tests", () => {
         expect(results.voteCounts[0]).toStrictEqual([4,3,4]);  
         expect(results.voteCounts[1]).toStrictEqual([5,0,4]);  
         expect(results.exhaustedVoteCounts).toStrictEqual([1,3]); 
+        expect(results.nExhaustedViaOvervote).toBe(2); 
+    })
+    test("Lots of overvotes Ballots", () => {
+        // Exhaust ballot if no remaining candidates
+        const candidates = ['Alice', 'Bob', 'Carol', 'Dean']
+
+        const votes = [
+            // 0 added to end for overvote rank
+            [1, 2, 3, 4, 0],
+            [1, 2, 3, 4, 0],
+            [1, 2, 3, 4, 0],
+            [1, 2, 3, 4, 0],
+            [1, 2, 3, 4, 0],
+            [1, 2, 3, 4, 0],
+            [4, 3, 2, 1, 0],
+            [4, 3, 2, 1, 0],
+            [4, 3, 2, 1, 0],
+            [4, 3, 2, 1, 0],
+            [4, 3, 2, 1, 0],
+            [4, 3, 2, 1, 0],
+            [2, 1, 3, 4, 0],
+            [2, 1, 3, 4, 0],
+            [2, 1, 3, 4, 0],
+            [2, 1, 1, 4, 1],//first round overvote & exhausted
+            [2, 2, 1, 4, 2],//second round overvote & exhausted
+            [3, 2, 1, 3, 3],//third round overvote
+        ]
+        const results = IRV(candidates, votes)
+        expect(results.elected[0].name).toBe('Alice');
+        expect(results.voteCounts.length).toBe(3);  
+        expect(results.voteCounts[0]).toStrictEqual([6,3,2,6]);  
+        expect(results.voteCounts[1]).toStrictEqual([6,4,0,6]);  
+        expect(results.voteCounts[2]).toStrictEqual([9,0,0,6]);  
+        expect(results.exhaustedVoteCounts).toStrictEqual([1,2,3]); 
+        expect(results.nExhaustedViaOvervote).toBe(3); 
     })
 })
