@@ -331,7 +331,8 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
 type filterTypes = 'search' | 'groups' | null
 
 function filterData<T>(array: readonly T[], headCells: HeadCell[], filters: any[]) {
-
+  // when tweaking the headKeys the filters and headCells can sometimes be temporarily mismatched
+  if(headCells.length != filters.length) return array; 
   return array.filter(row => {
     return headCells.every((col, colInd) => {
       if (!col.filterType) return true
@@ -496,17 +497,21 @@ export default function EnhancedTable(props: EnhancedTableProps) {
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const headCells: HeadCell[] = props.headKeys.map(key => headCellPool[key] as HeadCell);
   const {t} = useSubstitutedTranslation();
-  const [filters, setFilters] = React.useState(headCells.map(col => {
-    if (!col.filterType) {
-      return null
-    }
-    else if (col.filterType === 'groups') {
-      return (col as HeadCell).filterGroups
-    }
-    else if (col.filterType === 'search') {
-      return ''
-    }
-  }))
+  const [filters, setFilters] = React.useState([])
+
+  if(filters.length != headCells.length){
+    setFilters(headCells.map(col => {
+      if (!col.filterType) {
+        return null
+      }
+      else if (col.filterType === 'groups') {
+        return (col as HeadCell).filterGroups
+      }
+      else if (col.filterType === 'search') {
+        return ''
+      }
+    }))
+  }
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
