@@ -152,7 +152,7 @@ export default () => {
                         delete subBallot.votes;
                         return {
                             ...subBallot,
-                            orderedVotes: b.votes.map(v => [...v.scores.map(s => s.score), v.overvote_rank, v.has_duplicate_rank ? 1 : 0])
+                            orderedVotes: b.votes.map(v => [...v.scores.map(s => s.score), v.overvote_rank, v.has_duplicate_rank? 1 : 0])
                         }
                     });
 
@@ -162,7 +162,7 @@ export default () => {
                 let responses = [];
                 // TODO: this batching isn't ideal since it'll be tricky to recovered from a partial failure
                 //       that said this will mainly be relevant when uploading batches for an existing election so I'll leave it for now
-                while(nextIndex+1 < ballots.length && nextIndex < 100000 /* a dummy check to avoid infinite loops*/){
+                while(nextIndex+1 < ballots.length && nextIndex < 2000000 /* a dummy check to avoid infinite loops*/){
                     updateElection(cvr.name, (e) => ({
                         ...e,
                         message: `uploading ${nextIndex}/${parsed_csv.data.length}...`
