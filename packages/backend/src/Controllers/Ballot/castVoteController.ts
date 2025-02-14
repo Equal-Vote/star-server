@@ -125,7 +125,7 @@ const mapOrderedNewBallot = (ballot: OrderedNewBallot, raceOrder: RaceCandidateO
             }
             return {
                 race_id: raceOrder[i].race_id,
-                scores: vote.slice(0, -1).map((s, j) => ({
+                scores: vote.slice(0, -2).map((s, j) => ({
                     candidate_id: raceOrder[i].candidate_id_order[j],
                     score: s
                 } as Score)),
