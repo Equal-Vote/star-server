@@ -24,7 +24,6 @@ export default ({
   percentDenominator ??= data.reduce((sum, d) => sum + d[xKey], 0);
   percentDenominator = Math.max(1, percentDenominator);
   data = rawData.map((d, i) => {
-    let percentValue = Math.round((100 * d[xKey]) / percentDenominator);
     let s = {
       ...d,
       name: (((star && i == 0) || d['star']) ? "⭐" : "") + truncName(d["name"], 40),
