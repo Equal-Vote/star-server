@@ -190,7 +190,7 @@ function distributeVotes(remainingCandidates: candidate[], candidateVotes: weigh
         }, 0)
 
         // TODO: get "2" from election settings
-        let exhaustedViaSkippedRankings = (topRemainingRank - prevTopRank) > (electionSettings.exhaust_on_N_repeated_skipped_marks ?? 2);
+        let exhaustedViaSkippedRankings = (topRemainingRank - prevTopRank) > (electionSettings?.exhaust_on_N_repeated_skipped_marks ?? 2);
         let exhaustedViaOvervote = !exhaustedViaSkippedRankings && topRemainingRankIndex == overvoteIndex;
         if (topRemainingRank === 0 || exhaustedViaOvervote || exhaustedViaSkippedRankings) {
             if(exhaustedViaSkippedRankings) results.nExhaustedViaSkippedRank++;
