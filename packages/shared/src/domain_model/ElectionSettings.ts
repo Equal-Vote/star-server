@@ -37,6 +37,7 @@ export interface ElectionSettings {
     max_rankings?: number; // maximum rank limit for ranked choice voting
     email_campaign_count?: number;
     contact_email?: string; // Public contact email for voters to reach out to
+    exhaust_on_N_repeated_skipped_marks?: number; // number of skipped ranks before exhausting
 }
 function authenticationValidation(obj:authentication): string | null {
   if (!obj){

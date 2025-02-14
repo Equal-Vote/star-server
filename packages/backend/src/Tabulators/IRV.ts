@@ -2,6 +2,7 @@ import { ballot, candidate, irvResults, irvRoundResults, irvSummaryData, nonNull
 
 import { getInitialData, makeAbstentionTest, makeBoundsTest } from "./Util";
 import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
+import { Election } from "@equal-vote/star-vote-shared/domain_model/Election";
 
 const Fraction = require('fraction.js');
 
@@ -58,7 +59,7 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
     }
 
     // Initial vote distribution, moves weighted votes into the appropriate candidate pools 
-    distributeVotes(remainingCandidates, candidateVotes, exhaustedVotes, weightedVotes, results)
+    distributeVotes(remainingCandidates, candidateVotes, exhaustedVotes, weightedVotes, results, electionSettings)
 
     // Set quota based on number of winners and if its proportional
     let quota = 0
@@ -122,7 +123,7 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
                 winningCandidateVotes.forEach(vote => {
                     vote.weight = vote.weight.mul(fractionalSurplus).floor(5)
                 })
-                distributeVotes(remainingCandidates, candidateVotes, exhaustedVotes, winningCandidateVotes, results)
+                distributeVotes(remainingCandidates, candidateVotes, exhaustedVotes, winningCandidateVotes, results, electionSettings)
             }
             else {
                 // Reset candidate pool and remove elected candidates
@@ -132,7 +133,7 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
                 for (var i = 0; i < candidateVotes.length; i++) {
                     candidateVotes[i] = [];
                 }
-                distributeVotes(remainingCandidates, candidateVotes, exhaustedVotes, weightedVotes, results)
+                distributeVotes(remainingCandidates, candidateVotes, exhaustedVotes, weightedVotes, results, electionSettings)
             }
 
         }
@@ -149,7 +150,7 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
             remainingCandidates = remainingCandidates.filter(c => c.index !== lastPlaceCandidateIndex)
             let eliminatedCandidateVotes = candidateVotes[lastPlaceCandidateIndex]
             candidateVotes[lastPlaceCandidateIndex] = []
-            distributeVotes(remainingCandidates, candidateVotes, exhaustedVotes, eliminatedCandidateVotes, results)
+            distributeVotes(remainingCandidates, candidateVotes, exhaustedVotes, eliminatedCandidateVotes, results, electionSettings)
             roundResults.eliminated.push(summaryData.candidates[lastPlaceCandidateIndex])
         }
 
@@ -169,7 +170,7 @@ function addWeightedVotes(weightedVotes: weightedVote[]) {
 
 
 
-function distributeVotes(remainingCandidates: candidate[], candidateVotes: weightedVote[][], exhaustedVotes: weightedVote[], votesToDistribute: weightedVote[], results: irvResults) {
+function distributeVotes(remainingCandidates: candidate[], candidateVotes: weightedVote[][], exhaustedVotes: weightedVote[], votesToDistribute: weightedVote[], results: irvResults, electionSettings: ElectionSettings) {
     // we'll remove as votes get exhausted, hence the backwards iteration
     for(let i = votesToDistribute.length-1; i >= 0; i--){
         let ballot = votesToDistribute[i];
@@ -189,7 +190,7 @@ function distributeVotes(remainingCandidates: candidate[], candidateVotes: weigh
         }, 0)
 
         // TODO: get "2" from election settings
-        let exhaustedViaSkippedRankings = (topRemainingRank - prevTopRank) > 2
+        let exhaustedViaSkippedRankings = (topRemainingRank - prevTopRank) > (electionSettings.exhaust_on_N_repeated_skipped_marks ?? 2);
         let exhaustedViaOvervote = !exhaustedViaSkippedRankings && topRemainingRankIndex == overvoteIndex;
         if (topRemainingRank === 0 || exhaustedViaOvervote || exhaustedViaSkippedRankings) {
             if(exhaustedViaSkippedRankings) results.nExhaustedViaSkippedRank++;
