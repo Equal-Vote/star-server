@@ -39,6 +39,11 @@ export const methodValueToTextKey = {
     IRV: 'rcv',
 };
 
+export const formatPercent = (f: Number): string => {
+  if(0 < f && f < .01) return '<1%';
+  return `${Math.round(100*f)}%`
+}
+
 export const MailTo = ({ children }) => {
   const { setSnack } = useSnackbar();
   // https://adamsilver.io/blog/the-trouble-with-mailto-email-links-and-what-to-do-instead/

@@ -6,6 +6,7 @@ import Widget from "./Widget";
 import { Box, Typography } from "@mui/material";
 import RectPieChart from "./RectPieChart";
 import ResultsBarChart from "./ResultsBarChart";
+import { formatPercent } from "~/components/util";
 
 export default () => {
     const {t} = useElection();
@@ -72,17 +73,17 @@ export default () => {
     return <Widget title={'Voter Errors'} >
         <Box width='100%' display='flex' flexDirection='column' gap={4}>
             <Box>
-                <Typography><b>{Math.round(100*results.summaryData.nAbstentions / totalVotes)}%</b> of voters abstained from this race</Typography>
+                <Typography><b>{formatPercent(results.summaryData.nAbstentions / totalVotes)}</b> of voters abstained from this race</Typography>
                 <ResultsBarChart data={abstentionData} xKey='value' percentage/>
             </Box>
             {/* Voter Errors */}
             <Box>
-                <Typography><b>{Math.round(100*errorVotes / totalVotes)}%</b> of voters filled out their ballot incorrectly</Typography>
+                <Typography><b>{formatPercent(errorVotes / totalVotes)}</b> of voters filled out their ballot incorrectly</Typography>
                 <ResultsBarChart data={voterErrorData} xKey='value' percentage/>
             </Box>
             {/* Voided Ballots */}
             <Box>
-                <Typography><b>{Math.round(100*voidedVotes / totalVotes)}%</b> of voters had their votes voided due to a voter error</Typography>
+                <Typography><b>{formatPercent(voidedVotes / totalVotes)}</b> of voters had their votes voided due to a voter error</Typography>
                 <ResultsBarChart data={voidedErrorData} xKey='value' percentage/>
             </Box>
         </Box>

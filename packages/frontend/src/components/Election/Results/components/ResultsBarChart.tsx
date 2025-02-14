@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Bar, Cell, ComposedChart, LabelList, Legend, Line, ResponsiveContainer, XAxis, YAxis } from "recharts";
-import { CHART_COLORS, truncName } from "~/components/util";
+import { CHART_COLORS, formatPercent, truncName } from "~/components/util";
 
 export default ({
   data,
@@ -30,7 +30,7 @@ export default ({
       name: (((star && i == 0) || d['star']) ? "⭐" : "") + truncName(d["name"], 40),
       // hack to get smaller values to allign different than larger ones
       left: (percentage && !rawNumbers)
-        ? ((percentValue == 0 && d[xKey] > 0) ? '<1%' : `${Math.round((100 * d[xKey]) / percentDenominator)}%`)
+        ? formatPercent(d[xKey] / percentDenominator)
         : Math.round(d[xKey]*100)/100,
       right: "",
     };
