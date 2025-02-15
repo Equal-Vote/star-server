@@ -170,7 +170,7 @@ function addWeightedVotes(weightedVotes: weightedVote[]) {
 
 
 
-function distributeVotes(remainingCandidates: candidate[], candidateVotes: weightedVote[][], exhaustedVotes: weightedVote[], votesToDistribute: weightedVote[], results: irvResults, electionSettings: ElectionSettings) {
+function distributeVotes(remainingCandidates: candidate[], candidateVotes: weightedVote[][], exhaustedVotes: weightedVote[], votesToDistribute: weightedVote[], results: irvResults, electionSettings?: ElectionSettings) {
     // we'll remove as votes get exhausted, hence the backwards iteration
     for(let i = votesToDistribute.length-1; i >= 0; i--){
         let ballot = votesToDistribute[i];

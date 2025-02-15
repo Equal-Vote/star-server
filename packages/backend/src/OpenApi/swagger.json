@@ -481,6 +481,9 @@
           "email_campaign_count": {
             "type": "number"
           },
+          "exhaust_on_N_repeated_skipped_marks": {
+            "type": "number"
+          },
           "invitation": {
             "enum": [
               "address",

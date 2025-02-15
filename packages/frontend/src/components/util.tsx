@@ -40,7 +40,7 @@ export const methodValueToTextKey = {
     IRV: 'rcv',
 };
 
-export const formatPercent = (f: Number): string => {
+export const formatPercent = (f: number): string => {
   if(0 < f && f < .01) return '<1%';
   return `${Math.round(100*f)}%`
 }
