@@ -9,7 +9,7 @@ import ResultsBarChart from "./ResultsBarChart";
 import { formatPercent } from "~/components/util";
 
 export default () => {
-    const {t} = useElection();
+    const {t, election} = useElection();
     const {ballots, ballotsForRaceWithMeta} = useAnonymizedBallots();
     let {results, race} = useRace();
     results = results as irvResults
@@ -76,15 +76,23 @@ export default () => {
                 <Typography><b>{formatPercent(results.summaryData.nAbstentions / totalVotes)}</b> of voters abstained from this race</Typography>
                 <ResultsBarChart data={abstentionData} xKey='value' percentage/>
             </Box>
-            {/* Voter Errors */}
+
             <Box>
                 <Typography><b>{formatPercent(errorVotes / totalVotes)}</b> of voters filled out their ballot incorrectly</Typography>
                 <ResultsBarChart data={voterErrorData} xKey='value' percentage/>
             </Box>
-            {/* Voided Ballots */}
+
             <Box>
                 <Typography><b>{formatPercent(voidedVotes / totalVotes)}</b> of voters had their votes voided due to a voter error</Typography>
                 <ResultsBarChart data={voidedErrorData} xKey='value' percentage/>
+            </Box>
+
+            <Box>
+                {election.settings.exhaust_on_N_repeated_skipped_marks ? 
+                <Typography>This jurisdiction voided ballots if they had {election.settings.exhaust_on_N_repeated_skipped_marks} or more repeated skipped ranks</Typography>
+                :
+                <Typography>This jurisdiction did not void ballots regardless of the number of skipped ranks</Typography>
+                }
             </Box>
         </Box>
     </Widget>

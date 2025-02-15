@@ -1,4 +1,3 @@
-import { VotingMethod } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { Box, Button, Checkbox, FormControlLabel, FormGroup, MenuItem, Paper, Select, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useSubstitutedTranslation } from "./util";
@@ -12,6 +11,7 @@ import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import { Election, NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { useGetElections } from "~/hooks/useAPI";
 import { OrderedNewBallot, RaceCandidateOrder } from "@equal-vote/star-vote-shared/domain_model/Ballot";
+import { inferElectionSettings } from "./ElectionSettingInference";
 
 export default () => {
     const [addToPublicArchive, setAddToPublicArchive] = useState(true)
@@ -55,9 +55,20 @@ export default () => {
                 })
                 candidateNames.delete('skipped');
                 candidateNames.delete('overvote');
-                // TODO: infer num winners
 
                 // #3 : Create (or update) Election 
+                let inferences = undefined;
+                try{
+                    inferences = inferElectionSettings(cvr.name);
+                }catch(exception){
+                    console.log('ERRORS for', cvr.name, [`Setting inference failed: ${exception}`]);
+                    updateElection(cvr.name, e => ({
+                        ...e,
+                        upload_status: "Error",
+                        message: "(see console)"
+                    }))
+                    return
+                }
                 let newElection: NewElection = {
                     ...defaultElection,
                     title: cvr.name.split('.')[0],
@@ -68,7 +79,8 @@ export default () => {
                     settings: {
                         ...defaultElection.settings,
                         max_rankings: maxRankings,
-                        voter_access: 'open'
+                        voter_access: 'open',
+                        ...inferences?.settings ?? {},
                     },
                     races: [
                         {
@@ -79,7 +91,8 @@ export default () => {
                                 candidate_id: uuidv4(),
                                 candidate_name: name
                             })) as Candidate[],
-                            num_winners: 1
+                            num_winners: 1,
+                            ...inferences?.races ?? {},
                         }
                     ]
                 };

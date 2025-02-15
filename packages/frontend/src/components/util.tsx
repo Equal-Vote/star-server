@@ -12,6 +12,7 @@ const rLink = /\[(.*?)\]\((.*?)\)/;
 const rBold = /\*\*(.*?)\*\*/;
 const rTip = / \!tip\((.*)\)/;
 
+export type StringObject = {[key: string]: string};
 declare namespace Intl {
   class ListFormat {
     constructor(locales?: string | string[], options?: {});

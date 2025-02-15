@@ -1,0 +1,67 @@
+
+# This file is used to infer election settings when elections are uploaded to public archive
+states:
+  Alaska: []
+  California:
+    - Albany
+    - SanFrancisco
+    - Oakland
+    - SanLeandro
+  Maine: []
+  NewYork:
+    - NewYorkCity
+  Utah:
+    - Genola
+    - Moab
+  Vermont:
+    - Burlington
+
+# Rules will be checked sequentially, and the settings from the first passing rule will be used
+# variables: state, year, city
+rules:
+  # Alaska  
+  - rule: state=Alaska
+    races:
+      voting_method: IRV
+    settings:
+      exhaust_on_N_repeated_skipped_marks: 2
+    
+  # NewYork
+  - rule: state=NewYork
+    races:
+      voting_method: IRV
+    settings:
+      exhaust_on_N_repeated_skipped_marks: 2
+
+  # Vermont
+  - rule: state=Vermont
+    races:
+      voting_method: IRV
+    settings:
+      # TODO: we need to verify this setting
+      exhaust_on_N_repeated_skipped_marks: null
+
+  # Utah
+  - rule: jurisdiction=Moab
+    races:
+      voting_method: IRV
+      num_winners: 2
+    settings:
+      # TODO: we need to verify this setting
+      exhaust_on_N_repeated_skipped_marks: null
+
+  # California
+  - rule: state=California, year>=2020  
+    races:
+      voting_method: IRV
+    settings:
+      exhaust_on_N_repeated_skipped_marks: null
+    meta: 
+      ballot_design: Grid
+  - rule: state=California
+    races:
+      voting_method: IRV
+    settings:
+      exhaust_on_N_repeated_skipped_marks: null
+    meta:
+      ballot_design: Sequioa
