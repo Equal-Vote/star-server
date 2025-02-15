@@ -49,7 +49,6 @@ describe("Edit Election", () => {
 
     describe("Election not provided/incorrect format", () => {
         test("responds with 400 status", async () => {
-            console.log("BAD TEST START")
             const ID = await setupInitialElection()
             const response = await th.postRequest(`/API/Election/${ID}/edit`, { VoterIDList: [] }, testInputs.user1token );
             expect(response.statusCode).toBe(400);

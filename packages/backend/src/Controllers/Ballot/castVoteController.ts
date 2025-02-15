@@ -45,7 +45,7 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
     // skip voter roll & validation steps while in draft mode
     // TODO: we may be able to shortcut further for elections that don't require authentication
     //       ^ that could be huge when creating elections from a set of ballots
-    if(targetElection.state !== 'draft'){ 
+    if(targetElection.state !== 'draft' && req.election.ballot_source !== 'prior_election'){ 
         const missingAuthData = checkForMissingAuthenticationData(req, targetElection, req, voter_id)
         if (missingAuthData !== null) {
             throw new Unauthorized(missingAuthData);
@@ -75,7 +75,10 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
     if (inputBallot.history == null){
         inputBallot.history = [];
     }
-    inputBallot.ballot_id = randomUUID();
+    // preserve the ballot id if it's already provided from prior election
+    if(!inputBallot.ballot_id || targetElection.ballot_source != 'prior_election'){
+        inputBallot.ballot_id = randomUUID();
+    }
     //TODO, ensure the user ID is added to the ballot...
     //should server-authenticate the user id based on auth token
     inputBallot.history.push({
@@ -84,7 +87,6 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
         timestamp:inputBallot.date_submitted,
     });
 
-    Logger.debug(req, "Submit Ballot:", inputBallot);
     if (roll != null){
         roll.ballot_id = String(inputBallot.ballot_id);
         roll.submitted = true;
@@ -98,11 +100,13 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
         });
     }
 
-    const reqId = req.contextId ? req.contextId : randomUUID();
+
+    if(req.election.ballot_source !== 'prior_election') Logger.debug(req, "Submit Ballot:", inputBallot);
+
     return {
-        requestId:reqId,
-        inputBallot:inputBallot,
-        roll:roll,
+        requestId:req.contextId ? req.contextId : randomUUID(),
+        inputBallot,
+        roll,
         userEmail:undefined,
     }
 }
@@ -110,22 +114,24 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
 const mapOrderedNewBallot = (ballot: OrderedNewBallot, raceOrder: RaceCandidateOrder[]): NewBallot => {
     let subBallot: any = {...ballot};
     delete subBallot.orderedVotes;
-    console.log(ballot.orderedVotes, raceOrder);
     if(ballot.orderedVotes.length != raceOrder.length){
         throw new BadRequest(`Ballot contains different number of races than race_order: ${ballot.orderedVotes.length} != ${raceOrder.length}`)
     }
     return {
         ...subBallot,
         votes: ballot.orderedVotes.map((vote: OrderedVote, i) => {
-            if(vote.length != raceOrder[i].candidate_id_order.length){
-                throw new BadRequest(`Race ${i} contains different number of races than race_order: ${vote.length} != ${raceOrder[i].candidate_id_order.length}`)
+            // +2 accounts for overvote_rank and has_duplicate_rank
+            if(vote.length != raceOrder[i].candidate_id_order.length+2){
+                throw new BadRequest(`Race ${i} contains different number of candidates than race_order: ${vote.length} != ${raceOrder[i].candidate_id_order.length+2}`)
             }
             return {
                 race_id: raceOrder[i].race_id,
-                scores: vote.map((s, j) => ({
+                scores: vote.slice(0, -2).map((s, j) => ({
                     candidate_id: raceOrder[i].candidate_id_order[j],
                     score: s
-                } as Score))
+                } as Score)),
+                overvote_rank: vote.at(-2),
+                has_duplicate_rank: vote.at(-1) == 1,
             }
         })
     }

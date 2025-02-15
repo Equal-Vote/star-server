@@ -12,6 +12,7 @@ const rLink = /\[(.*?)\]\((.*?)\)/;
 const rBold = /\*\*(.*?)\*\*/;
 const rTip = / \!tip\((.*)\)/;
 
+export type StringObject = {[key: string]: string};
 declare namespace Intl {
   class ListFormat {
     constructor(locales?: string | string[], options?: {});
@@ -38,6 +39,11 @@ export const methodValueToTextKey = {
     Plurality: 'choose_one',
     IRV: 'rcv',
 };
+
+export const formatPercent = (f: number): string => {
+  if(0 < f && f < .01) return '<1%';
+  return `${Math.round(100*f)}%`
+}
 
 export const MailTo = ({ children }) => {
   const { setSnack } = useSnackbar();

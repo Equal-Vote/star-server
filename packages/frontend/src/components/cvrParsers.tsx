@@ -30,13 +30,16 @@ export const rankColumnCSV = ({data, meta, errors}, election: Election) : {ballo
         // TODO: this currently doesn't handle overvotes or duplicate ranks
         // TODO: add try catch for adding errors
         let invRow = rankFields.reduce((obj, key) => {
-            obj[row[key]] = Number(key.replace('rank', ''));
+            // adding ?? so that overvote will represent the first overvote
+            obj[row[key]] ??= Number(key.replace('rank', ''));
             return obj;
         }, {})
+        let nonSkippedFields = rankFields.map(key => row[key]).filter(item => item != 'skipped')
         return {
             election_id: election.election_id,
             status: 'submitted',
             date_submitted: Date.now(),
+            ballot_id: row['Index'],
             votes: [
                 {
                     race_id: election.races[0].race_id,
@@ -46,7 +49,9 @@ export const rankColumnCSV = ({data, meta, errors}, election: Election) : {ballo
                             candidate_id: c.candidate_id,
                             score: ranking ? ranking : null
                         }
-                    })
+                    }),
+                    overvote_rank: invRow['overvote'] ?? null,
+                    has_duplicate_rank: nonSkippedFields.length != new Set(nonSkippedFields).size
                 }
             ]
         }

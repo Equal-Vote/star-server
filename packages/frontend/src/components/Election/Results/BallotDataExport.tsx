@@ -20,21 +20,30 @@ export const BallotDataExport = ({ election }: Props) => {
         let header = [
             { label: 'ballot_id', key: 'ballot_id' },
             { label: 'precinct', key: 'precinct' },
-            ...election.races.map((race) =>
-                race.candidates.map((c) => ({
-                    label: `${race.title}!!${c.candidate_name}`,
+            ...election.races.map((race) => [
+                ...race.candidates.map((c) => ({
+                    label: election.races.length == 1 ? c.candidate_name : `${race.title}!!${c.candidate_name}`,
                     key: `${race.race_id}-${c.candidate_id}`,
-                }))
-            ),
+                })),
+                ...((race.voting_method == 'IRV' || race.voting_method == 'STV')? [
+                    {label:'overvote_rank', key: 'overvote_rank'},
+                    {label:'has_duplicate_rank', key: 'has_duplicate_rank'},
+                ]: [])
+            ]),
         ];
         header = header.flat();
         let tempCsvData = ballots.map((ballot) => {
             let row = { ballot_id: ballot.ballot_id, precinct: ballot.precinct };
-            ballot.votes.forEach((vote) =>
+            ballot.votes.forEach((vote) => {
                 vote.scores.forEach((score) => {
                     row[`${vote.race_id}-${score.candidate_id}`] = score.score;
                 })
-            );
+                let race = election.races.find(r => r.race_id == vote.race_id);
+                if(race.voting_method == 'IRV' || race.voting_method == 'STV'){
+                    row['overvote_rank'] = vote.overvote_rank ?? '';
+                    row['has_duplicate_rank'] = vote.has_duplicate_rank ? 'TRUE' : 'FALSE';
+                }
+            });
             return row;
         });
         setCsvData(tempCsvData);
@@ -60,8 +69,9 @@ export const BallotDataExport = ({ election }: Props) => {
     return (
             <>
                 <a onClick={fetchBallots}>
-                    <MenuButton label={"Download"} >
-                        {ballots && <>
+                    {/*The MenuButton is redundant between the 2 but it's necessary to resolve the 'Menu Component doesn't accept fragment as child' warning*/}
+                    {ballots && 
+                        <MenuButton label={"Download"} >
                             <MenuItem key="csv"  id={"download-csv"} onClick={downloadCSV}>
                                 <BorderAll sx={{ marginRight: 1 }} />
                                 Download CSV
@@ -70,11 +80,13 @@ export const BallotDataExport = ({ election }: Props) => {
                                 <DataObject sx={{ marginRight: 1 }} />
                                 Download JSON
                             </MenuItem>
-                        </>}
-                        {!ballots && 
+                        </MenuButton>
+                    }
+                    {!ballots && 
+                        <MenuButton label={"Download"} >
                             <MenuItem disabled>Loading Ballots...</MenuItem>
-                        }
-                    </MenuButton>
+                        </MenuButton>
+                    }
                 </a>
                 
                 {csvData.length > 0 && (
