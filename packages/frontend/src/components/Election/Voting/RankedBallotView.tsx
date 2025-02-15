@@ -109,7 +109,8 @@ export default function RankedBallotView({ onlyGrid = false }) {
       key="rankedBallot"
       methodKey={
         (ballotContext.race.voting_method === 'IRV' ? 'rcv' : '') +
-        (ballotContext.race.voting_method === 'RankedRobin' ? 'ranked_robin' : '')
+        (ballotContext.race.voting_method === 'RankedRobin' ? 'ranked_robin' : '') + 
+        (ballotContext.race.voting_method === 'STV' ? 'stv' : '')
       }
       columnValues={columnValues}
       columns={columns}

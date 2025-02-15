@@ -14,7 +14,7 @@ export default function BallotPageSelector({votingMethod}) {
       {votingMethod == 'STAR' && <StarBallotView/>}
       {votingMethod == 'STAR_PR' && <StarPRBallotView/>}
       {votingMethod == 'Plurality' && <PluralityBallotView/>}
-      {(votingMethod == 'RankedRobin' || votingMethod == 'IRV') && <RankedBallotView/>}
+      {(votingMethod == 'RankedRobin' || votingMethod == 'IRV' || votingMethod == 'STV') && <RankedBallotView/>}
       {votingMethod == 'Approval' && <ApprovalBallotView/>}
     </>
   );

@@ -85,6 +85,14 @@ ballot:
         in a round, they are elected.
       left_title: ''
       right_title: ''
+    stv: 
+      instruction_bullets:
+        - Rank the {{candidates}} in order of preference. (1st, 2nd, 3rd, etc.)
+        - Ranking {{candidates}} equally is not allowed.
+        - '{{capital_candidates}} left blank are ranked last'
+      footer_multi_winner: ''
+      left_title: ''
+      right_title: ''
     ranked_robin:
       instruction_bullets:
         - Rank the {{candidates}} in order of preference.
@@ -235,6 +243,9 @@ results:
     exhausted: Exhausted
     tabulation_candidate_column: '{{capital_candidate}}'
     round_column: Round {{n}}
+
+  stv:
+    table_title: STV Tabulation Rounds
 
   star:
     score_title: Scoring Round

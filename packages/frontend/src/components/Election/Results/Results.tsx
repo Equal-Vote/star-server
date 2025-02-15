@@ -330,7 +330,7 @@ function ResultsViewer({ methodKey, children }:{methodKey: string, children:any}
   );
 }
 
-function PRResultsViewer() {
+function STARPRResultsViewer() {
   const flags = useFeatureFlags();
   let {results, t, race} = useRace();
   results = results as allocatedScoreResults;
@@ -422,6 +422,44 @@ function PRResultsViewer() {
   </ResultsViewer>
 }
 
+function STVResultsViewer() {
+  const flags = useFeatureFlags();
+  let {results, t, race} = useRace();
+  results = results as irvResults;
+
+  const tabulationRows = results.summaryData.candidates.map(({index, name}) => {
+    return [name].concat(
+      (results.voteCounts as Array<Number[]>).map(counts => counts[index] == 0? '' : '' + counts[index])
+    )
+  }).sort((r1, r2) => {
+    let z1 = r1.filter(s => s == '').length;
+    let z2 = r2.filter(s => s == '').length;
+    if(z1 != z2)
+      return z1-z2;
+
+    for(let i = r1.length-1; i >= 1; i--){
+      if(r1[i] == '') continue;
+      if(r2[i] == '') continue;
+      return parseInt(r2[i]) - parseInt(r1[i])
+    }
+
+    return 0;
+  });
+
+  tabulationRows.unshift([t('results.rcv.tabulation_candidate_column')].concat([...Array(results.voteCounts.length).keys()].map(i =>
+    t('results.rcv.round_column', {n: i+1})
+  )))
+  tabulationRows.push([t('results.rcv.exhausted'), ...results.exhaustedVoteCounts.map(i => ''+i)])
+
+  return <ResultsViewer methodKey='stv'>
+    <WidgetContainer>
+      <Widget title={t('results.stv.table_title')}>
+        <ResultsTable className='rcvTable' data={tabulationRows}/>
+      </Widget>
+    </WidgetContainer>
+  </ResultsViewer>
+}
+
 export default function Results({ race, results }: {race: Race, results: ElectionResults}) {
   const { election } = useElection();
   let showTitleAsTie = ['random', 'five_star'].includes(results.tieBreakType);
@@ -476,8 +514,8 @@ export default function Results({ race, results }: {race: Race, results: Electio
           {results.votingMethod === "RankedRobin" && <RankedRobinResultsViewer/>}
           {results.votingMethod === "Plurality" && <PluralityResultsViewer/>}
           {results.votingMethod === "IRV" && <IRVResultsViewer/>}
-          {results.votingMethod === "STV" && <IRVResultsViewer/>}
-          {results.votingMethod === "STAR_PR" && <PRResultsViewer/>}
+          {results.votingMethod === "STV" && <STVResultsViewer/>}
+          {results.votingMethod === "STAR_PR" && <STARPRResultsViewer/>}
         </>}
       </div>
     </RaceContextProvider>
