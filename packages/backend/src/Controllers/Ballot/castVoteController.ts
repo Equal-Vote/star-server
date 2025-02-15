@@ -45,7 +45,7 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
     // skip voter roll & validation steps while in draft mode
     // TODO: we may be able to shortcut further for elections that don't require authentication
     //       ^ that could be huge when creating elections from a set of ballots
-    if(targetElection.state !== 'draft' && req.election.ballot_source === 'live_election'){ 
+    if(targetElection.state !== 'draft' && req.election.ballot_source !== 'prior_election'){ 
         const missingAuthData = checkForMissingAuthenticationData(req, targetElection, req, voter_id)
         if (missingAuthData !== null) {
             throw new Unauthorized(missingAuthData);
@@ -101,7 +101,7 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
     }
 
 
-    if(req.election.ballot_source === 'live_election') Logger.debug(req, "Submit Ballot:", inputBallot);
+    if(req.election.ballot_source !== 'prior_election') Logger.debug(req, "Submit Ballot:", inputBallot);
 
     return {
         requestId:req.contextId ? req.contextId : randomUUID(),
