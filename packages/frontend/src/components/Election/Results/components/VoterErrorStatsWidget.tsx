@@ -14,6 +14,8 @@ export default () => {
     let {results, race} = useRace();
     results = results as irvResults
 
+    if(election.public_archive_id === '') return <></>
+
     const totalVotes = results.summaryData.nAbstentions + results.summaryData.nTallyVotes;
 
     const abstentionData = [
