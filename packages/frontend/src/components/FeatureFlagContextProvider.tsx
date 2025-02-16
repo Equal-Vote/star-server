@@ -34,7 +34,6 @@ const flagDefinitions = {
     'PRECINCTS': 'Allows elections to groups voters by precinct',
     'THEMES': "Let's user pick a theme for their UI (temporarily via the top-right account button)",
     'ALL_STATS': 'Show all work in progress widgets under "Stats for Nerds"',
-    'ARCHIVE_LINK': 'Include link in browse polls featuing the public archive',
     'FORCE_DISABLE_RANDOM_CANDIDATES': '(testing only) Disables random candidate order on ballots',
     'FORCE_DISABLE_INSTRUCTION_CONFIRMATION': '(testing only) Disables confirmation prompt on ballots',
 };

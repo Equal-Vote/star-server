@@ -19,9 +19,9 @@ export default () => {
     );
 
     return <Container>
-        {flags.isSet('ARCHIVE_LINK') && <Typography component='p' sx={{textAlign: 'center'}}>
+        <Typography component='p' sx={{textAlign: 'center'}}>
             For browsing the archive of elections for public office, <Link href="/PublicArchive">checkout the public archive!</Link>
-        </Typography>}
+        </Typography>
         <EnhancedTable
             title='Open Online Elections'
             headKeys={[ 'title', 'update_date', 'start_time', 'end_time', 'description']}
