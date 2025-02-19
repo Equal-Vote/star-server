@@ -64,8 +64,9 @@ export const StyledButton = (props) => (
         sx={{
             p: 1,
             m: 0,
-            boxShadow: 2,
+            boxShadow: 0,
             //backgroundColor: 'primary.main',
+            backgroundColor: '#86C66A',//'#073763',
             fontFamily: 'Montserrat, Verdana, sans-serif',
             fontWeight: 'bold',
             fontSize: 18,
@@ -85,7 +86,7 @@ export const StyledTextField = (props) => (
             m: 0,
             p: 0,
             boxShadow: 0, // this is set manually in index.css. By default MUI creates weird corner artifacts
-            backgroundColor: 'lightShade.main',
+            // backgroundColor: 'lightShade.main',
         }}
         {...props}
     >

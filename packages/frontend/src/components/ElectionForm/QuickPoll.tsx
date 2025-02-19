@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { useNavigate } from "react-router";
 import structuredClone from '@ungap/structured-clone';
 import { StyledButton, StyledTextField } from '../styles.js';
-import { Box, Button, IconButton, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
+import { Box, Button, IconButton, MenuItem, Paper, Select, SelectChangeEvent, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { usePostElection } from '../../hooks/useAPI';
 import { useCookie } from '../../hooks/useCookie';
@@ -182,6 +182,7 @@ const QuickPoll = () => {
     }
 
     return (
+        <Paper elevation={5}>
         <form onSubmit={onSubmit} >
             <Box 
             sx={{
@@ -189,7 +190,7 @@ const QuickPoll = () => {
                 gap: 2,
                 flexDirection: 'column',
                 textAlign: 'center',
-                backgroundColor: 'lightShade.main',
+                //backgroundColor: //'lightShade.main',
                 padding: 3,
                 borderRadius: '20px',
                 minWidth: {xs: '0px', md: '400px'}
@@ -269,9 +270,11 @@ const QuickPoll = () => {
                             width: '90%',
                             p: 1,
                             m: 'auto',
-                            boxShadow: 2,
+                            //boxShadow: 2,
+                            color: '#86C66A',
                             fontWeight: 'bold',
                             fontSize: 16,
+                            borderColor: '#86C66A',
                         }}
                         disabled={isPending}
                     >
@@ -301,6 +304,7 @@ const QuickPoll = () => {
                 
             </Box>
         </form >
+        </Paper>
     )
 }
 

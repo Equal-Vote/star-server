@@ -41,12 +41,9 @@ const App = () => {
         ReturnToClassicContextProvider,
       ]}>
         <CssBaseline />
-        <Box display='flex' flexDirection='column' minHeight={'100vh'} sx={{backgroundColor:'lightShade.main'}} >
+        <Box display='flex' flexDirection='column' minHeight={'100vh'} sx={{backgroundColor:'white'}} >
           <Header />
           <CreateElectionDialog/>
-          <Typography sx={{textAlign:'center', padding: 2, opacity: 0.5}}>
-            {t('nav.beta_warning')}
-          </Typography>
           <ReturnToClassicDialog/>
           <Box
             sx={{

@@ -12,7 +12,7 @@ export default () => {
             alignItems="center"
             sx={{ width: '100%', textAlign: 'center'}}
         >
-            <Paper elevation={3} sx={{width: '100%', maxWidth: '1200px', m: {xs: 0, m: 2}, p: {xs: 1, m: 2}, backgroundColor:'brand.white', marginBottom: 2, '@media print': { boxShadow: 'none'}}}>
+            <Box sx={{width: '100%', maxWidth: '1200px', m: {xs: 0, m: 2}, p: {xs: 1, m: 2}, backgroundColor:'brand.white', marginBottom: 2, '@media print': { boxShadow: 'none'}}}>
                 <Typography variant="h3" component="h3" sx={{marginBottom: 4}}>
                     Style Guide Reference (h3)
                 </Typography>
@@ -43,7 +43,7 @@ export default () => {
                 </div>
                 <hr/>
                 <a href='https://www.equal.vote/donate'>Donate (a tag)</a>
-            </Paper>
+            </Box>
         </Box>
     </>)
 }

@@ -163,19 +163,44 @@ const brandPalette: PaletteOptions = {
 }
 
 const brandTypography: TypographyOptions = {
-   // fontFamily: 'Montserrat',
-   fontFamily: 'Verdana, sans-serif',
-   button:{
-     fontFamily: 'Montserrat, Verdana, sans-serif',
-   },
-  ...Object.fromEntries(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map(level => [
-    level,
-    {
-      fontFamily: 'Montserrat, Verdana, sans-serif',
-      marginTop: '1rem',
-      marginBottom: '1rem',
-    }
-  ]))
+  // fontFamily: 'Montserrat',
+  fontFamily: 'Verdana, sans-serif',
+  button:{
+    fontFamily: 'Montserrat, Verdana, sans-serif',
+  },
+  h1: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
+    marginTop: '1rem',
+    marginBottom: '1rem',
+  },
+  h2: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
+    marginTop: '1rem',
+    marginBottom: '1rem',
+  },
+  h3: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
+    marginTop: '1rem',
+    marginBottom: '1rem',
+    // display: 'inline',
+    // background: 'yellow',
+    margin: 'auto'
+  },
+  h4: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
+    marginTop: '1rem',
+    marginBottom: '1rem',
+  },
+  h5: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
+    marginTop: '1rem',
+    marginBottom: '1rem',
+  },
+  h6: {
+    fontFamily: 'Montserrat, Verdana, sans-serif',
+    marginTop: '1rem',
+    marginBottom: '1rem',
+  },
 }
 
 const themes = {
@@ -209,7 +234,7 @@ const themes = {
         contrastText: '#fff',
       },
       darkShade: {
-        main: '#2B344A',
+        main: '#1F1F1F', //'#86C66A',//'#073763',//'#2B344A',
         contrastText: '#fff',
       },
       brand: brandPalette.brand

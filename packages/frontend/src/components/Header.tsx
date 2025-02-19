@@ -70,7 +70,7 @@ const Header = () => {
     const returnToClassicContext = useContext(ReturnToClassicContext);
 
     return (
-        <AppBar className="navbar" position="sticky" sx={{ backgroundColor: "darkShade.main", '@media print': {display: 'none', boxShadow: 'none'}}}>
+        <AppBar className="navbar" position="sticky" sx={{ backgroundColor: /*"darkShade.main"*/"black", '@media print': {display: 'none', boxShadow: 'none'}}}>
             <Toolbar>
                 {/**** MOBILE HAMBURGER MENU ****/}
                 <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
