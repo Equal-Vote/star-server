@@ -3,32 +3,33 @@ election_home:
   # start_time example: https://bettervoting.com/tcpwth
   start_time: '{{capital_election}} Wybory zaczynają się {{datetime, datetime}}'
   end_time: '{{capital_election}} Wybory kończą się {{datetime, datetime}}'
-  ended_time: '{{capital_election}} ended on {{datetime, datetime}}'
-  vote: Vote
-  or_view_results: or view results
-  ballot_submitted: '{{capital_ballot}} Submitted'
-  view_results: View Results
-  drafted: This election is still being drafted
-  archived: This election has been archived
+  ended_time: '{{capital_election}} zakończyły się {{datetime, datetime}}'
+  vote: Głosuj
+  or_view_results: lub wyświetl wyniki
+  ballot_submitted: '{{capital_ballot}} Karta głosowania wprowadzona'
+  view_results: Wyświetl wyniki 
+  drafted: Te wybory są jeszcze w fazie projektowania
+  archived: Te wybory zostały zarchiwizowane
 
 # Ballot (ex. https://bettervoting.com/j87vqp/vote)
 ballot:
   this_election_uses: This {{election}} will use {{voting_method}} to elect {{spelled_count}} $t(winner.winner).
-  instructions_checkbox: I have read the instructions
-  learn_more: Learn more about {{voting_method}}
-  previous: Previous
-  next: Next
-  submit_ballot: Submit
-  submitting: Submitting...
+  Te {{election}} wykorzystują metodę głosowania {{voting_method}}, aby wybrać {{spelled_count}} $t(winner.winner)
+  instructions_checkbox: Zapoznałem/Zapoznałam się z instrukcjami
+  learn_more: Dowiedz się więcej o {{voting_method}}
+  previous: Wcześniejszy
+  next: Następny
+  submit_ballot: Wyślij
+  submitting: Wysyłam...
 
-  dialog_submit_title: Submit {{capital_ballot}}?
-  dialog_send_receipt: Send Ballot Receipt Email?
-  dialog_email_placeholder: Receipt Email
-  dialog_cancel: Cancel
-  dialog_submit: Submit
+  dialog_submit_title: Wyślij {{capital_ballot}}?
+  dialog_send_receipt: Czy wysłać e-mail z potwierdzeniem głosowania? 
+  dialog_email_placeholder: Potwierdzenie e-mailem
+  dialog_cancel: Anuluj
+  dialog_submit: Wyślij
   warnings:
-    skipped_rank: Do not skip rankings. Rank candidates in order to clearly show preferences. Candidates left blank are ranked last.
-    duplicate_rank: Do not rank multiple candidates equally. (Ranking candidates equally can void your ballot.)
+    skipped_rank: Nie pomijaj rankingów.  Uszereguj kandydatów, wskazując swoje preferencje.  Niewybrani kandydaci będą na końcu.
+    duplicate_rank: Nie przyznawaj równej pozycji kilku kandydatom. (Równe rankingi mogą unieważnić Twój głos.)
 
   methods:
     approval:
@@ -300,7 +301,7 @@ keyword:
 
   # Election vs Poll Terms
   election: 
-    election: election
+    election: wybory
     elections: elections
     candidate: candidate
     candidates: candidates
