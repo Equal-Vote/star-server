@@ -19,8 +19,8 @@ export default () => {
     const totalVotes = results.summaryData.nAbstentions + results.summaryData.nTallyVotes;
 
     const abstentionData = [
-        {name: 'Tallied Votes', value: results.summaryData.nTallyVotes},
-        {name: 'Abstentions', value: results.summaryData.nAbstentions},
+        {name: 'Tallied Votes', votes: results.summaryData.nTallyVotes},
+        {name: 'Abstentions', votes: results.summaryData.nAbstentions},
     ];
 
     let totalSkippedVotes = 0
@@ -58,35 +58,35 @@ export default () => {
 
     let errorVotes = totalOvervotes + totalSkippedVotes + totalDuplicateRanks;
     const voterErrorData = [
-        {name: 'No Error', value: results.summaryData.nTallyVotes - errorVotes},
-        {name: 'Overvoted', value: totalOvervotes },
-        {name: 'Skipped Rank', value: totalSkippedVotes },
-        {name: 'Duplicate Ranks', value: totalDuplicateRanks},
+        {name: 'No Error', votes: results.summaryData.nTallyVotes - errorVotes},
+        {name: 'Overvoted', votes: totalOvervotes },
+        {name: 'Skipped Rank', votes: totalSkippedVotes },
+        {name: 'Duplicate Ranks', votes: totalDuplicateRanks},
     ];
 
     let voidedVotes = results.nExhaustedViaDuplicateRank + results.nExhaustedViaOvervote + results.nExhaustedViaSkippedRank;
     const voidedErrorData = [
-        {name: 'Vote Counted', value: results.summaryData.nTallyVotes - voidedVotes},
-        {name: 'Voided by Overvote', value: results.nExhaustedViaOvervote},
-        {name: 'Voided by Skipped Rank', value: results.nExhaustedViaSkippedRank},
-        {name: 'Voided by Duplicate Rank', value: results.nExhaustedViaDuplicateRank},
+        {name: 'Vote Counted', votes: results.summaryData.nTallyVotes - voidedVotes},
+        {name: 'Voided by Overvote', votes: results.nExhaustedViaOvervote},
+        {name: 'Voided by Skipped Rank', votes: results.nExhaustedViaSkippedRank},
+        {name: 'Voided by Duplicate Rank', votes: results.nExhaustedViaDuplicateRank},
     ];
 
     return <Widget title={'Voter Errors'} >
         <Box width='100%' display='flex' flexDirection='column' gap={4}>
             <Box>
                 <Typography><b>{formatPercent(results.summaryData.nAbstentions / totalVotes)}</b> of voters abstained from this race</Typography>
-                <ResultsBarChart data={abstentionData} xKey='value' percentage/>
+                <ResultsBarChart data={abstentionData} xKey='votes' percentage/>
             </Box>
 
             <Box>
                 <Typography><b>{formatPercent(errorVotes / totalVotes)}</b> of voters filled out their ballot incorrectly</Typography>
-                <ResultsBarChart data={voterErrorData} xKey='value' percentage/>
+                <ResultsBarChart data={voterErrorData} xKey='votes' percentage/>
             </Box>
 
             <Box>
                 <Typography><b>{formatPercent(voidedVotes / totalVotes)}</b> of voters had their votes voided due to a voter error</Typography>
-                <ResultsBarChart data={voidedErrorData} xKey='value' percentage/>
+                <ResultsBarChart data={voidedErrorData} xKey='votes' percentage/>
             </Box>
 
             <Box>
