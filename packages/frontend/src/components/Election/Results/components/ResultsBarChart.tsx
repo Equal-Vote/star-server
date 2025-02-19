@@ -2,22 +2,46 @@ import { useState } from "react";
 import { Bar, Cell, ComposedChart, LabelList, Legend, Line, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { CHART_COLORS, formatPercent, truncName } from "~/components/util";
 
-export default ({
+
+interface ResultsBarChartData {
+  name: string;
+  votes?: number | undefined; 
+  count?: number | undefined; 
+  score?: number | undefined; 
+  [key: string]: any;
+}
+
+interface ResultsBarChartProps {
+  data: ResultsBarChartData[];
+  runoff?: boolean;
+  colorOffset?: number;
+  sortFunc?: ((a: ResultsBarChartData, b: ResultsBarChartData) => number) | false;
+  xKey?: 'votes' | 'count' | 'score';
+  percentage?: boolean;
+  percentDenominator?: number;
+  star?: boolean;
+  majorityLegend?: string;
+  majorityOffset?: boolean;
+  height?: number;
+  maxBarSize?: number;
+}
+
+export default function ResultsBarChart({
   data,
   runoff = false,
   colorOffset = 0,
   sortFunc = undefined,
-  xKey = "votes",
+  xKey = 'votes',
   percentage = false,
   percentDenominator = undefined,
   star = false,
   majorityLegend = undefined,
   majorityOffset = false,
   height = undefined,
-  maxBarSize = undefined, // graph will be scaled to fit a bar of size barS
-}) => {
-  const [rawNumbers, setRawNumbers] = useState(false);
-  let rawData = data;
+  maxBarSize = undefined,
+}: ResultsBarChartProps) {
+const [rawNumbers, setRawNumbers] = useState(false);   
+let rawData = data;
 
   // Truncate names & add percent
   let maxValue = maxBarSize ?? Math.max(...data.map(d => d[xKey]))
@@ -30,7 +54,7 @@ export default ({
       // hack to get smaller values to allign different than larger ones
       left: (percentage && !rawNumbers)
         ? formatPercent(d[xKey] / percentDenominator)
-        : Math.round(d[xKey]*100)/100,
+        : (Math.round(d[xKey]*100)/100).toString(),
       right: "",
     };
 
@@ -115,7 +139,9 @@ export default ({
       15 * (longestCandidateName.length > 20 ? 20 : longestCandidateName.length)
     )
   );
-
+  const useTickMargin = rawData.every(d => d[xKey] === 0);
+  const tickOffset = 40; 
+  const adjustedAxisWidth = useTickMargin ? axisWidth + tickOffset : axisWidth;
   return (
     <div style={{width:'100%'}} onMouseEnter={() => setRawNumbers(true)} onMouseLeave={() => setRawNumbers(false)}>
     <ResponsiveContainer width="90%" height={50 * data.length} style={maxBarSize ?
@@ -129,7 +155,9 @@ export default ({
           axisLine={false}
           tickLine={false}
           tick={{ fontSize: ".9rem", fill: "black", fontWeight: "bold" }}
-          width={axisWidth}
+          width={adjustedAxisWidth}
+          tickMargin={useTickMargin ? tickOffset : undefined}
+          
         />
         <Bar
           dataKey={xKey}
