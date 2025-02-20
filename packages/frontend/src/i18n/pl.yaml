@@ -13,7 +13,6 @@ election_home:
 
 # Ballot (ex. https://bettervoting.com/j87vqp/vote)
 ballot:
-  this_election_uses: This {{election}} will use {{voting_method}} to elect {{spelled_count}} $t(winner.winner).
   Te {{election}} wykorzystują metodę głosowania {{voting_method}}, aby wybrać {{spelled_count}} $t(winner.winner)
   instructions_checkbox: Zapoznałem/Zapoznałam się z instrukcjami
   learn_more: Dowiedz się więcej o {{voting_method}}
