@@ -367,7 +367,7 @@ nav:
 footer:
   project_title: BetterVoting
   project_description: >
-    BetterVoting is here to help make your dream election acessible
+    BetterVoting is here to help make your dream election accessible
     to vote in and easy to officiate. Our mission is to support and
     empower the adoption and use of better voting methods like STAR Voting,
     for polling, surveys, and real elections at any scale and for any scenario.
@@ -463,7 +463,7 @@ landing_page:
     - title: Multi-Winner Methods
       text: Supports methods that yield multiple winners, including both proportional and basic multi-winner methods.
     - title: Multi-Race Elections
-      text: Setup multi-race elections for when there are mutiple issues or positions to vote on.
+      text: Setup multi-race elections for when there are multiple issues or positions to vote on.
     - title: Compare Methods
       text: Allow voters to vote on one issue with multiple methods to compare the voter experience and winners; Just duplicate your race and select different methods. 
     - title: Secure Elections
