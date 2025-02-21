@@ -5,25 +5,25 @@
 # Initial Landing page for voter (ex. https://bettervoting.com/j87vqp/)
 election_home:
   # start_time example: https://bettervoting.com/tcpwth
-  start_time: '{{capital_election}} empieza {{datetime, datetime}}'
-  end_time: '{{capital_election}} termina {{datetime, datetime}}'
-  ended_time: '{{capital_election}} ended on {{datetime, datetime}}'
-  vote: Vote
-  or_view_results: or view results
-  ballot_submitted: '{{capital_ballot}} Submitted'
-  view_results: View Results
-  drafted: This election is still being drafted
-  archived: This election has been archived
+  start_time: '{{capital_election}} empieza el {{datetime, datetime}}'
+  end_time: '{{capital_election}} finaliza el {{datetime, datetime}}'
+  ended_time: '{{capital_election}} finalizó el {{datetime, datetime}}'
+  vote: Votar
+  or_view_results: o ver los resultados
+  ballot_submitted: '{{capital_ballot}} Entregada'
+  view_results: Ver los resultados
+  drafted: Esta elección está en fase de elaboración
+  archived: Esta elección se ha archivado
 
 # Ballot (ex. https://bettervoting.com/j87vqp/vote)
 ballot:
-  this_election_uses: This {{election}} will use {{voting_method}} to elect {{spelled_count}} $t(winner.winner).
-  instructions_checkbox: I have read the instructions
-  learn_more: Learn more about {{voting_method}}
-  previous: Previous
-  next: Next
-  submit_ballot: Submit
-  submitting: Submitting...
+  this_election_uses: Esta {{election}} usará el {{voting_method}} para eligir a {{spelled_count}} $t(winner.winner).
+  instructions_checkbox: He leído las instrucciones
+  learn_more: Aprender más sobre el {{voting_method}}
+  previous: Anterior
+  next: Siguiente
+  submit_ballot: Entregar
+  submitting: Entregando...
 
   dialog_submit_title: Submit {{capital_ballot}}?
   dialog_send_receipt: Send Ballot Receipt Email?
@@ -83,6 +83,14 @@ ballot:
         if possible. If no candidate has a majority of remaining votes the candidate with the fewest votes is eliminated. 
         If your vote is unable to transfer, it will not be counted in later rounds. If a candidate has a majority of remaining votes 
         in a round, they are elected.
+      left_title: ''
+      right_title: ''
+    stv: 
+      instruction_bullets:
+        - Rank the {{candidates}} in order of preference. (1st, 2nd, 3rd, etc.)
+        - Ranking {{candidates}} equally is not allowed.
+        - '{{capital_candidates}} left blank are ranked last'
+      footer_multi_winner: ''
       left_title: ''
       right_title: ''
     ranked_robin:
@@ -235,6 +243,9 @@ results:
     exhausted: Exhausted
     tabulation_candidate_column: '{{capital_candidate}}'
     round_column: Round {{n}}
+
+  stv:
+    table_title: STV Tabulation Rounds
 
   star:
     score_title: Scoring Round
