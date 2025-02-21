@@ -32,10 +32,23 @@ export default class AccountService {
         } else {
             this.privateKey = process.env.KEYCLOAK_SECRET;
         }
-        if (!process.env.KEYCLOAK_PUBLIC_KEY){
-            throw new Error("AccountService missing process.env.KEYCLOAK_PUBLIC_KEY");
+
+        const formatPublicKey = (key: string) => ([
+            '-----BEGIN PUBLIC KEY-----',
+            key,
+            '-----END PUBLIC KEY-----',
+        ].join('\n'))
+
+        if (process.env.KEYCLOAK_PUBLIC_KEY){
+            this.publicKey = formatPublicKey(process.env.KEYCLOAK_PUBLIC_KEY);
         } else {
-            this.publicKey = ['-----BEGIN PUBLIC KEY-----',process.env.KEYCLOAK_PUBLIC_KEY,'-----END PUBLIC KEY-----',].join('\n');;
+            // This technically creates a race condition where publicKey could be accessed before it's set
+            // but the user would have to interact with the website within the first few milliseconds of the server being initialized
+            // and it'll be impossible on production since the KEYCLOAK_PUBLIC_KEY variable will be set
+            this.publicKey = '(pending request)'
+            fetch((process.env.KEYCLOAK_URL as string).split('/protocol')[0])
+                .then(res => res.json())
+                .then(obj => this.publicKey = formatPublicKey(obj.public_key))
         }
     }
 
