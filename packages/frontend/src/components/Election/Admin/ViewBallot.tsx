@@ -74,11 +74,6 @@ const ViewBallot = ({ ballot, onClose }) => {
                     }
                     <Grid item sm={12}>
                         <Typography align='left' variant="h6" component="h6">
-                            {`Date Submitted: ${t('datetime', {datetime: epochToDateString(myballot.date_submitted)})}`}
-                        </Typography>
-                    </Grid>
-                    <Grid item sm={12}>
-                        <Typography align='left' variant="h6" component="h6">
                             {`Status: ${myballot.status}`}
                         </Typography>
                     </Grid>
