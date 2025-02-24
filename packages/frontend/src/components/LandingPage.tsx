@@ -10,10 +10,21 @@ import useFeatureFlags from './FeatureFlagContextProvider';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import LandingPageStats from './LandingPage/LandingPageStats';
 import { ReturnToClassicContext } from './ReturnToClassicDialog';
-import { useSubstitutedTranslation } from './util';
-
+import { openFeedback, useSubstitutedTranslation } from './util';
+import{useLocation} from 'react-router-dom';
 
 const LandingPage = () => {
+
+    const checkUrl = useLocation();
+    useEffect(() =>{
+        if(checkUrl.pathname === "/Feedback")
+        {
+            openFeedback();
+        }
+           
+    }, [checkUrl]);
+
+    
     const flags = useFeatureFlags();
 
     const boxRef = useRef(null);
