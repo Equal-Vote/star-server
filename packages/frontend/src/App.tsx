@@ -52,6 +52,7 @@ const App = () => {
             }}>
             <Routes>
               <Route path='/' element={<LandingPage />} />
+              <Route path='/Feedback' element={<LandingPage />} />   // creating a new route for feedback page while still loading the landing page
               <Route path='/About' element={<About />} />
               <Route path='/ElectionInvitations' element={<ElectionInvitations />} />
               <Route path='/ElectionsYouManage' element={<ElectionsYouManage />} />
