@@ -20,11 +20,13 @@ import useFeatureFlags from '../../FeatureFlagContextProvider';
 import { SortableList } from '~/components/DragAndDrop';
 import useSnackbar from '~/components/SnackbarContext';
 
-export default function RaceForm({ race_index, editedRace, errors, setErrors, applyRaceUpdate }) {
+export default function RaceForm({
+  race_index, editedRace, errors, setErrors, applyRaceUpdate,
+  activeStep, setActiveStep
+}) {
     const {t} = useSubstitutedTranslation();
     const flags = useFeatureFlags();
     const [showsAllMethods, setShowsAllMethods] = useState(false)
-    const [activeStep, setActiveStep] = useState(0)
     const { election } = useElection()
     const PR_METHODS = ['STV', 'STAR_PR'];
     const [methodFamily, setMethodFamily] = useState(

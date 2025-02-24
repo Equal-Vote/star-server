@@ -10,6 +10,19 @@ grand_parent: Contribution Guide
 
 At this point you should have a keycloak endpoint, next we're going to configure it
 
+## Regenerating dev-realm-export.json
+
+Here's how we copy the prod configuration to be used as the development configuration
+
+1. Export production configuration, and save it as dev-realm-export.json
+2. Find replace s/Beta/Dev , s/Prod/Dev
+3. Clear the identityProviders and identityProviderMappers (removes google)
+4. Add "secret": "DefaultKeycloakSecret", under web client
+5. Set verifyEmail to false
+6. Upload to Arend's Software directory on google drive
+
+The remainder of the article is pretty stale
+
 ## Keycloak Overview
 
 ### Realms

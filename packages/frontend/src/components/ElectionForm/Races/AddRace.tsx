@@ -13,6 +13,9 @@ export default function AddRace() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    const [activeStep, setActiveStep] = useState(0);
+    const resetStep = () => setActiveStep(0);
+
     const { editedRace, errors, setErrors, applyRaceUpdate, onAddRace } = useEditRace(null, election.races.length)
 
     const onAdd = async () => {
@@ -35,13 +38,21 @@ export default function AddRace() {
                 disabled={election.state!=='draft'}>
                 Add
             </StyledButton>
-            <RaceDialog onSaveRace={onAdd} open={open} handleClose={handleClose} editedRace={editedRace}>
+            <RaceDialog
+              onSaveRace={onAdd}
+              open={open}
+              handleClose={handleClose}
+              editedRace={editedRace}
+              resetStep={resetStep}
+            >
                 <RaceForm
                     race_index={election.races.length}
                     editedRace={editedRace}
                     errors={errors}
                     setErrors={setErrors}
                     applyRaceUpdate={applyRaceUpdate}
+                    activeStep={activeStep}
+                    setActiveStep={setActiveStep}
                 />
             </RaceDialog>
         </Box>
