@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react';
 
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import { StyledButton } from '../../styles';
 import useElection from '../../ElectionContextProvider';
 
 
-export default function RaceDialog({ onSaveRace, open, handleClose, children, editedRace }) {
+export default function RaceDialog({
+  onSaveRace, open, handleClose, children, editedRace, resetStep
+}) {
     const { election } = useElection()
     const handleSave = () => onSaveRace()
 
@@ -15,6 +17,22 @@ export default function RaceDialog({ onSaveRace, open, handleClose, children, ed
         handleClose();
     }
 
+    useEffect(() => {
+      if (! open) resetStep();
+    }, [open]);
+
+    const dialogContentRef = useRef<HTMLDivElement>(null);
+
+    useEffect( () => {
+      if (open) {
+        setTimeout( () => {
+          if (dialogContentRef.current) {
+            dialogContentRef.current.scrollTop = 0;
+          }
+        }, 100);
+      };
+    }, [open]);
+
     return (
         <Dialog
             open={open}
@@ -22,7 +40,7 @@ export default function RaceDialog({ onSaveRace, open, handleClose, children, ed
             scroll={'paper'}
             keepMounted>
             <DialogTitle> Edit Race </DialogTitle>
-            <DialogContent>
+            <DialogContent ref={dialogContentRef}>
                 {children}
             </DialogContent>
             <DialogActions>
