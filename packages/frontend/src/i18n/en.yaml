@@ -1048,7 +1048,7 @@ edit_race:
     stv:
       # !tip(stv) we don't have a tip written yet
       title: $t(methods.stv.full_name)
-      description: Proportaionl Version of RCV
+      description: Proportional Version of RCV
     choose_one:
       # !tip(choose_one) we don't have a tip written yet
       title: $t(methods.choose_one.full_name)
