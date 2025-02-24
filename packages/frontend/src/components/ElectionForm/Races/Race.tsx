@@ -21,6 +21,9 @@ export default function Race({ race, race_index }) {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    const [activeStep, setActiveStep] = useState(0);
+    const resetStep = () => setActiveStep(0);
+
     const onSave = async () => {
         const success = await onSaveRace()
         if (!success) return
@@ -73,13 +76,21 @@ export default function Race({ race, race_index }) {
                 </Box>
 
             </Box>
-            <RaceDialog onSaveRace={onSave} open={open} handleClose={handleClose} editedRace={editedRace}>
+            <RaceDialog
+              onSaveRace={onSave}
+              open={open}
+              handleClose={handleClose}
+              editedRace={editedRace}
+              resetStep={resetStep}
+            >
                 <RaceForm
                     race_index={race_index}
                     editedRace={editedRace}
                     errors={errors}
                     setErrors={setErrors}
                     applyRaceUpdate={applyRaceUpdate}
+                    activeStep={activeStep}
+                    setActiveStep={setActiveStep}
                 />
             </RaceDialog>
         </Paper >
