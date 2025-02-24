@@ -182,7 +182,10 @@ const QuickPoll = () => {
     }
 
     return (
-        <Paper elevation={5}>
+        <Paper elevation={5} sx={{
+            maxWidth: '613px',
+            margin: 'auto',
+        }}>
         <form onSubmit={onSubmit} >
             <Box 
             sx={{

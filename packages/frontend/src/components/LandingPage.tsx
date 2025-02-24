@@ -10,8 +10,9 @@ import useFeatureFlags from './FeatureFlagContextProvider';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import LandingPageStats from './LandingPage/LandingPageStats';
 import { ReturnToClassicContext } from './ReturnToClassicDialog';
-import { openFeedback, useSubstitutedTranslation } from './util';
 import{useLocation} from 'react-router-dom';
+import { openFeedback, useSubstitutedTranslation } from './util';
+import QuickPoll from './ElectionForm/QuickPoll';
 
 const LandingPage = () => {
 
@@ -74,6 +75,7 @@ const LandingPage = () => {
             {/* temporarily disabling because it was sending continuous requests to the backend for some reason */}
             {/*<LandingPageFeatureElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>*/}
             <LandingPageStats/> 
+            <QuickPoll/>
             <LandingPageFeatures/>
             <LandingPageSignUpBar />
             {flags.isSet('ELECTION_TESTIMONIALS') && <LandingPageTestimonials/>}

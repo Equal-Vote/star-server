@@ -29,11 +29,6 @@ export default ({}) => {
     
     const createElectionContext = useContext(CreateElectionContext);
     
-    const [transitionStep, setTransitionStep] = useState(10000);
-    const [prevMethodIndex, setPrevMethodIndex] = useState(0);
-    const [methodIndex, setMethodIndex] = useState(0);
-    const timeouts = useRef([])
-
     const {t} = useSubstitutedTranslation('election');
 
     const [starScores, setStarScores] = useState(t('landing_page.hero.methods.star.default_scores'));
@@ -49,25 +44,7 @@ export default ({}) => {
         'more_methods'
     ]
 
-    const nextMethod = (offset) => {
-        let n = methodIndex + offset;
-        if(n < 0 || n >= methodKeys.length) return;
-        setPrevMethodIndex(methodIndex);
-        setMethodIndex(n);
-        // I need the gaps to be at least 17 so that we're guaranteed an animation frame 
-        timeouts.current.forEach((t) => clearTimeout(t))
-        setTransitionStep(0);
-        timeouts.current = [
-            setTimeout(() => setTransitionStep(1), 0+30),
-            setTimeout(() => setTransitionStep(2), 150),
-            setTimeout(() => setTransitionStep(3), 150+30),
-            setTimeout(() => setTransitionStep(4), 500),
-            setTimeout(() => setTransitionStep(5), 500+30),
-        ];
-    }
-
     const arrowSX = {transition: 'transform .2s', transform: 'scale(1.5)', '&:hover': {transform: 'scale(1.65)'}};
-    let imgIndex = transitionStep < 2 ? prevMethodIndex : methodIndex;
 
     const makeBallotContext = (scores, onUpdate, voting_method: VotingMethod):IBallotContext  => {
         const candidateNames = t('landing_page.hero.candidates')
@@ -100,48 +77,62 @@ export default ({}) => {
         }
     }
 
-    return (
-        <Box display='flex' flexDirection='row' justifyContent='center' flexWrap='wrap' sx={{
-            margin: 'auto',
-            gap: {s: 6, md: 20}, 
-            maxWidth: '1500px',
-            p: { xs: 2, md: 2 }
-        }}>
-            <Box display='flex' flexDirection='column' sx={{
-                alignItems: 'center',
-                textAlign: 'center',
-            }}>
-                <Typography variant="h4" color={'lightShade.contrastText'}> {t('landing_page.hero.title')} </Typography>
-                <Box width='90%' display='flex' flexDirection='row' justifyContent='space-between' sx={{alignItems: 'center', paddingBottom: 3}}>
-                    <ArrowBackIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == 0? .3 : 1)}} onClick={() => nextMethod(-1)}/>
-                    <Box display='flex' flexDirection='row' className={transitionStep==0? 'heroGrow' : 'heroShrink'} sx={{alignItems: 'center'}}>
-                        <Typography variant="h3" color={'lightShade.contrastText'}>
-                            {t(`landing_page.hero.methods.${methodKeys[methodIndex]}.title`)} 
-                        </Typography>
-                    </Box>
-                    <ArrowForwardIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == methodKeys.length-1? .3 : 1)}} onClick={() => nextMethod(1)}/>
-                </Box>
+    const Carousel = () => {
+        const [transitionStep, setTransitionStep] = useState(1);
+        const [prevMethodIndex, setPrevMethodIndex] = useState(0);
+        const [methodIndex, setMethodIndex] = useState(0);
+        const timeouts = useRef([])
 
+        const ms = 300;
+        const nextMethod = (offset) => {
+            let n = methodIndex + offset;
+            if(n < 0 || n >= methodKeys.length) return;
+            setPrevMethodIndex(methodIndex);
+            setMethodIndex(n);
+            // I need the gaps to be at least 17 so that we're guaranteed an animation frame 
+            timeouts.current.forEach((t) => clearTimeout(t))
+            setTransitionStep(0);
+            timeouts.current = [
+                setTimeout(() => setTransitionStep(1), ms),
+            ];
+        }
+
+        let animIndex = transitionStep == 0 ? prevMethodIndex : methodIndex;
+
+        return <Box width='90%' display='flex' flexDirection='row' justifyContent='space-between' sx={{alignItems: 'center' }}>
+            <ArrowBackIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == 0? .3 : 1)}} onClick={() => nextMethod(-1)}/>
+            <Box className={`${transitionStep == 0 ? 'heroFadeOut' : 'heroFadeIn'}`} 
+                display='flex' gap='50px'
+                sx={{
+                    alignItems: 'center',
+                    margin: 'auto',
+                    flexDirection: {xs: 'column', md: 'row'},
+                    height: {xs: '400px', md: '300px'}
+                }}
+            >
+                <Box sx={{textAlign: {xs: 'center', md: 'left'}}}>
+                    <Typography variant="h3" color={'lightShade.contrastText'}>
+                        {t(`landing_page.hero.methods.${methodKeys[animIndex]}.title`)} 
+                    </Typography>
+                    {animIndex != methodKeys.length-1 && <Typography variant="h5" color={'lightShade.contrastText'}>
+                        {t(`landing_page.hero.methods.${methodKeys[animIndex]}.recommendation`)} 
+                    </Typography>}
+                </Box>
                 <Box
-                    className={transitionStep==2? 'heroGrow' : 'heroShrink'} 
-                    sx={{width: '100%'}}
                 >
-                    {imgIndex != methodKeys.length-1 ? <>
-                        <Box className="heroBallot" sx={{width: {xs: '100%', md:'80%'}, maxWidth: '450px', margin: 'auto'}}>
-                            {imgIndex == 0 && <BallotContext.Provider value={makeBallotContext(starScores, setStarScores, 'STAR')}>
+                    {animIndex != methodKeys.length-1 ? <>
+                        <Box className="heroBallot" sx={{width: {xs: '100%', md:'100%'}, maxWidth: '450px', margin: 'auto'}}>
+                            {animIndex == 0 && <BallotContext.Provider value={makeBallotContext(starScores, setStarScores, 'STAR')}>
                                 <StarBallotView onlyGrid={true}/>
                             </BallotContext.Provider>}
-                            {imgIndex == 1 && <BallotContext.Provider value={makeBallotContext(approvalScores, setApprovalScores, 'Approval')}>
+                            {animIndex == 1 && <BallotContext.Provider value={makeBallotContext(approvalScores, setApprovalScores, 'Approval')}>
                                 <ApprovalBallotView onlyGrid={true}/>
                             </BallotContext.Provider>}
-                            {imgIndex == 2 && <BallotContext.Provider value={makeBallotContext(rrRanks, setRrRanks, 'RankedRobin')}>
+                            {animIndex == 2 && <BallotContext.Provider value={makeBallotContext(rrRanks, setRrRanks, 'RankedRobin')}>
                                 <RankedBallotView onlyGrid={true}/>
                             </BallotContext.Provider>}
                         </Box>
-                        <Typography variant="h5" color={'lightShade.contrastText'}>
-                            {t(`landing_page.hero.methods.${methodKeys[imgIndex]}.recommendation`)} 
-                        </Typography>
-                    </>:<Box sx={{width: '70%', margin: 'auto'}}>
+                    </>:<Box sx={{maxWidth: '450px', margin: 'auto'}}>
                         <Typography color={'lightShade.contrastText'}>
                             {t(`landing_page.hero.methods.more_methods.${
                                 authSession.isLoggedIn()? 'full_editor_description' : 'sign_in_description'
@@ -179,7 +170,20 @@ export default ({}) => {
                     </Box>}
                 </Box>
             </Box>
-            <QuickPoll/>
+            <ArrowForwardIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == methodKeys.length-1? .3 : 1)}} onClick={() => nextMethod(1)}/>
         </Box>
+    }
+
+    return (
+            <Box display='flex' flexDirection='column' sx={{
+                margin: 'auto',
+                maxWidth: '1500px',
+                p: { xs: 2, md: 2 },
+                alignItems: 'center',
+                textAlign: 'center',
+            }}>
+                <Typography variant="h4" color={'lightShade.contrastText'}> {t('landing_page.hero.title')} </Typography>
+                <Carousel/>
+            </Box>
     )
 }

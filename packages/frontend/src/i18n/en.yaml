@@ -406,10 +406,10 @@ footer:
 landing_page: 
   # Hero Section
   hero:
-    title: Create elections and polls with
+    title: Create elections and polls with better voting methods like
     candidates: 
       - Least Favorite
-      - Lesser-Evil
+      - Compromise
       - Favorite
     methods:
       star:

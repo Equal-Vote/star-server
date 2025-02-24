@@ -48,9 +48,12 @@ export default () => {
             flexDirection: {xs: 'column', md:'row'},
             margin: 'auto',
             width: '100%',
-            maxWidth: '1300px',
             gap: '2rem',
             justifyContent: 'center',
+            backgroundColor: 'darkShade.main',
+            clip: 'unset',
+            p: { xs: 2},
+            color: 'darkShade.contrastText'
         }}
         ref={containerRef}
     >

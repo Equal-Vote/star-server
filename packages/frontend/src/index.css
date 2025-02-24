@@ -410,13 +410,14 @@ code {
   padding: 0;
 }
 
-.heroGrow {
-  transform: scale(1.1);
+.heroFadeIn {
+  transition: opacity 0.5s;
+  opacity: 1;
 }
 
-.heroShrink {
-  transform: scale(1);
-  transition: transform .1s ease-out;
+.heroFadeOut {
+  transition: opacity 0.3s;
+  opacity: 0;
 }
 
 .winnerResult{
