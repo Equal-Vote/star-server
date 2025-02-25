@@ -199,7 +199,7 @@ const QuickPoll = () => {
                 minWidth: {xs: '0px', md: '400px'}
             }}>
                 {/*we use comonent here instead of variant since we want the styling to match p*/}
-                <Typography color={'lightShade.contrastText'}>{t('landing_page.quick_poll.title')}</Typography>
+                <Typography variant='h5' color={'lightShade.contrastText'}>{t('landing_page.quick_poll.title')}</Typography>
                 <Select value={methodKey} onChange={(ev: SelectChangeEvent) => setMethodKey(ev.target.value as string)}>
                     <MenuItem value={'star'}>{t(`methods.star.full_name`)}</MenuItem>
                     <MenuItem value={'approval'}>{t(`methods.approval.full_name`)}</MenuItem>
@@ -265,46 +265,35 @@ const QuickPoll = () => {
                     disabled={isPending} >
                     {t('landing_page.quick_poll.create')}
                 </StyledButton>
-                {!authSession.isLoggedIn() ?
-                    <Button
-                        variant="outlined"
-                        onClick={() => authSession.openLogin()}
-                        sx={{
-                            width: '90%',
-                            p: 1,
-                            m: 'auto',
-                            //boxShadow: 2,
-                            color: '#86C66A',
-                            fontWeight: 'bold',
-                            fontSize: 16,
-                            borderColor: '#86C66A',
-                        }}
-                        disabled={isPending}
-                    >
-                        {t('landing_page.quick_poll.sign_in')}
-                    </Button>
-                    :
-                    <Button
-                        variant="outlined"
-                        onClick={(e) => {
+                    
+                <Button
+                    variant="outlined"
+                    onClick={(e) => {
+                        if(authSession.isLoggedIn()){
                             if(validateForm(e)){
-                                createElectionContext.openDialog(election)}
+                                createElectionContext.openDialog(election)
                             }
+                        }else{
+                            authSession.openLogin()
+                        } 
+                    }}
+                    sx={{
+                        width: '90%',
+                        p: 1,
+                        m: 'auto',
+                        fontWeight: 'bold',
+                        fontSize: 16,
+                        color: '#86C66A',
+                        borderColor: '#86C66A',
+                        '&:hover': {
+                            color: 'black',
+                            borderColor: 'black',
                         }
-                        sx={{
-                            width: '90%',
-                            p: 1,
-                            m: 'auto',
-                            boxShadow: 2,
-                            fontWeight: 'bold',
-                            fontSize: 16,
-                        }}
-                        disabled={isPending}
-                    >
-                        {t('landing_page.quick_poll.continue_with_editor')}
-                    </Button>
-                }
-                
+                    }}
+                    disabled={isPending}
+                >
+                    {authSession.isLoggedIn() ? t('landing_page.quick_poll.continue_with_editor') : t('landing_page.quick_poll.sign_in')}
+                </Button>
             </Box>
         </form >
         </Paper>

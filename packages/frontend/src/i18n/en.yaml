@@ -406,7 +406,7 @@ footer:
 landing_page: 
   # Hero Section
   hero:
-    title: Create elections and polls with better voting methods like
+    title: Create elections and polls with better voting methods
     candidates: 
       - Least Favorite
       - Compromise

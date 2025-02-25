@@ -54,14 +54,14 @@ const LandingPage = () => {
                 {t('return_to_classic.button')}
             </Button>
         </Box>
-        <Box sx={{
+        <Box className='gradBackground' sx={{
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
             gap: '2rem',
             margin: 'auto',
-        }}>
-            <Box sx={{position:'absolute', top: '95vh', width: '100%', textAlign: 'center'}}>
+        }}> 
+            {/*<Box sx={{position:'absolute', top: '95vh', width: '100%', textAlign: 'center'}}>
                 <KeyboardArrowDownRoundedIcon sx={{
                     display: {xs:'none', md: 'inline'},
                     opacity: atTop? .75 : 0,
@@ -70,7 +70,7 @@ const LandingPage = () => {
                     animation: 'scrollArrowAnimation 2.5s ease-out 0s infinite',
                     animationDirection: 'alternate'
                 }}/>
-            </Box>
+            </Box>*/}
             <LandingPageHero />
             {/* temporarily disabling because it was sending continuous requests to the backend for some reason */}
             {/*<LandingPageFeatureElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>*/}

@@ -222,7 +222,9 @@ const themes = {
         contrastText: '#000',
       },
       primary: {
-        main: '#2AA2B3',
+        //main: '#2AA2B3',
+        main: '#000',
+        //pop: '#86C66A',
       },
       secondary: {
         main: '#6C757D',

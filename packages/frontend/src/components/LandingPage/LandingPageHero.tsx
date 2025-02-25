@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next'
 import { CreateElectionContext } from '../ElectionForm/CreateElectionDialog'
 import { Button } from '@mui/material'
 import { max } from 'date-fns'
+import { ArrowBack, ArrowForward } from '@mui/icons-material'
 
 export default ({}) => {
     const authSession = useAuthSession();
@@ -43,8 +44,6 @@ export default ({}) => {
         'ranked_robin',
         'more_methods'
     ]
-
-    const arrowSX = {transition: 'transform .2s', transform: 'scale(1.5)', '&:hover': {transform: 'scale(1.65)'}};
 
     const makeBallotContext = (scores, onUpdate, voting_method: VotingMethod):IBallotContext  => {
         const candidateNames = t('landing_page.hero.candidates')
@@ -99,8 +98,24 @@ export default ({}) => {
 
         let animIndex = transitionStep == 0 ? prevMethodIndex : methodIndex;
 
+        const arrowSX = {
+            transition: 'transform .2s',
+            transform: 'scale(1.5)',
+            '&:hover': {transform: 'scale(1.65)'},
+            color: 'white',
+            backgroundColor: '#86C66A',
+            padding: '4px',
+            fontWeight: 'bold',
+            width: 'calc(30px + 8px)',
+            height: 'calc(30px + 8px)',
+            borderRadius: '50%',
+            '&:disabled': {
+                backgroundColor: 'gray'
+            }
+        };
+
         return <Box width='90%' display='flex' flexDirection='row' justifyContent='space-between' sx={{alignItems: 'center' }}>
-            <ArrowBackIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == 0? .3 : 1)}} onClick={() => nextMethod(-1)}/>
+            <ArrowBack sx={{...arrowSX, backgroundColor: (methodIndex == 0? '#EEEEEE' : '#86C66A')}} onClick={() => nextMethod(-1)}/>
             <Box className={`${transitionStep == 0 ? 'heroFadeOut' : 'heroFadeIn'}`} 
                 display='flex' gap='50px'
                 sx={{
@@ -170,20 +185,21 @@ export default ({}) => {
                     </Box>}
                 </Box>
             </Box>
-            <ArrowForwardIosRoundedIcon sx={{...arrowSX, opacity: (methodIndex == methodKeys.length-1? .3 : 1)}} onClick={() => nextMethod(1)}/>
+            <ArrowForward sx={{...arrowSX, opacity: (methodIndex == methodKeys.length-1? .3 : 1)}} onClick={() => nextMethod(1)}/>
         </Box>
     }
 
     return (
-            <Box display='flex' flexDirection='column' sx={{
-                margin: 'auto',
-                maxWidth: '1500px',
-                p: { xs: 2, md: 2 },
-                alignItems: 'center',
-                textAlign: 'center',
-            }}>
-                <Typography variant="h4" color={'lightShade.contrastText'}> {t('landing_page.hero.title')} </Typography>
-                <Carousel/>
-            </Box>
+        <Box display='flex' flexDirection='column' sx={{
+            margin: 'auto',
+            width: '100%',
+            maxWidth: '1200px',
+            p: { xs: 2, md: 2 },
+            alignItems: 'center',
+            textAlign: 'center',
+        }}>
+            <Typography variant="h4" color={'lightShade.contrastText'}> {t('landing_page.hero.title')} </Typography>
+            <Carousel/>
+        </Box>
     )
 }

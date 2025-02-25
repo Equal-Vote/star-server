@@ -420,6 +420,12 @@ code {
   opacity: 0;
 }
 
+.gradBackground {
+  background: white;
+  background: linear-gradient(white, rgba(224,240,243,0.8));
+  /*background-attachment: fixed;*/
+}
+
 .winnerResult{
   border: 1px solid var(--brand-gray-2);
   border-top: 1px solid transparent;
