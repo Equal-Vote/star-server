@@ -4,7 +4,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from '@mui/material/Typography';
 import { Checkbox, FormGroup, FormHelperText, FormLabel, InputLabel, Radio, RadioGroup, Tooltip, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Box, IconButton, TextField } from "@mui/material"
-import { StyledButton } from '../styles';
+import { PrimaryButton } from '../styles';
 import useElection  from '../ElectionContextProvider';
 import structuredClone from '@ungap/structured-clone';
 import EditIcon from '@mui/icons-material/Edit';
@@ -143,7 +143,7 @@ export default function ElectionSettings() {
                     </Grid >
                 </DialogContent>
                 <DialogActions>
-                    <StyledButton
+                    <PrimaryButton
                         type='button'
                         variant="contained"
                         width="100%"
@@ -151,15 +151,15 @@ export default function ElectionSettings() {
                         onClick={handleClose}
                     >
                         {t('keyword.cancel')}
-                    </StyledButton>
-                    <StyledButton
+                    </PrimaryButton>
+                    <PrimaryButton
                         type='button'
                         variant="contained"
                         fullWidth={false}
                         onClick={() => onSave()}
                     >
                         {t('keyword.save')}
-                    </StyledButton>
+                    </PrimaryButton>
                 </DialogActions>
             </Dialog>
         </Paper>

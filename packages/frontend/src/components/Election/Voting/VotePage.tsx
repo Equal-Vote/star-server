@@ -13,7 +13,7 @@ import { usePostBallot } from "../../../hooks/useAPI";
 import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecordOutlined';
 import useElection from "../../ElectionContextProvider";
 import useAuthSession from "../../AuthSessionContextProvider";
-import { StyledButton } from "../../styles";
+import { PrimaryButton } from "../../styles";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import { Race, VotingMethod } from "@equal-vote/star-vote-shared/domain_model/Race";

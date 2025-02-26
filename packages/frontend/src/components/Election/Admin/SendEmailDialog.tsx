@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 import { useState } from "react";
 import useAuthSession from "~/components/AuthSessionContextProvider";
 import useElection from "~/components/ElectionContextProvider";
-import { StyledButton } from "~/components/styles";
+import { PrimaryButton } from "~/components/styles";
 import { LabelledTextField, RowButtonWithArrow } from "~/components/util";
 import { useSendEmails } from "~/hooks/useAPI";
 

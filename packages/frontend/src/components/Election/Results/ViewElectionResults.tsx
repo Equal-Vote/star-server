@@ -6,7 +6,7 @@ import { useSubstitutedTranslation } from '../../util';
 import { useGetResults } from '../../../hooks/useAPI';
 import useElection from '../../ElectionContextProvider';
 import DraftWarning from '../DraftWarning';
-import { StyledButton } from '~/components/styles';
+import { PrimaryButton } from '~/components/styles';
 import ShareButton from '../ShareButton';
 import { BallotDataExport } from './BallotDataExport';
 import SupportBlurb from '../SupportBlurb';

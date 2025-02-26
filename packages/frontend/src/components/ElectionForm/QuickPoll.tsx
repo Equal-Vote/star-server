@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from "react-router";
 import structuredClone from '@ungap/structured-clone';
-import { StyledButton, StyledTextField } from '../styles.js';
+import { PrimaryButton, SecondaryButton, StyledTextField } from '../styles.js';
 import { Box, Button, IconButton, MenuItem, Paper, Select, SelectChangeEvent, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { usePostElection } from '../../hooks/useAPI';
@@ -259,15 +259,14 @@ const QuickPoll = () => {
                         <DeleteIcon />
                     </IconButton>
                 </Box>
-                <StyledButton
+                <PrimaryButton
                     type='submit'
                     variant="contained"
                     disabled={isPending} >
                     {t('landing_page.quick_poll.create')}
-                </StyledButton>
+                </PrimaryButton>
                     
-                <Button
-                    variant="outlined"
+                <SecondaryButton
                     onClick={(e) => {
                         if(authSession.isLoggedIn()){
                             if(validateForm(e)){
@@ -277,23 +276,10 @@ const QuickPoll = () => {
                             authSession.openLogin()
                         } 
                     }}
-                    sx={{
-                        width: '90%',
-                        p: 1,
-                        m: 'auto',
-                        fontWeight: 'bold',
-                        fontSize: 16,
-                        color: '#86C66A',
-                        borderColor: '#86C66A',
-                        '&:hover': {
-                            color: 'black',
-                            borderColor: 'black',
-                        }
-                    }}
                     disabled={isPending}
                 >
                     {authSession.isLoggedIn() ? t('landing_page.quick_poll.continue_with_editor') : t('landing_page.quick_poll.sign_in')}
-                </Button>
+                </SecondaryButton>
             </Box>
         </form >
         </Paper>

@@ -14,7 +14,7 @@ import { X } from "@mui/icons-material";
 import RedditIcon from "@mui/icons-material/Reddit"
 import LinkIcon from "@mui/icons-material/Link"
 import { IconButton, Menu, Tooltip, Typography } from "@mui/material";
-import { StyledButton } from "../styles";
+import { PrimaryButton } from "../styles";
 import useSnackbar from "../SnackbarContext";
 import { useSubstitutedTranslation } from "../util";
 
@@ -76,13 +76,13 @@ export default function ShareButton({ url }) {
 
     return (
         <>
-            <StyledButton
+            <PrimaryButton
                 type='button'
                 variant='contained'
                 fullWidth
                 onClick={handleOpenNavMenu}>
                 {t('share.button')}
-            </StyledButton>
+            </PrimaryButton>
             <Fade timeout={350}>
                 <Paper >
                     <Menu

@@ -1,5 +1,5 @@
 import { Box, capitalize, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Radio, RadioGroup, Step, StepContent, StepLabel, Stepper, TextField, Typography } from "@mui/material";
-import { StyledButton, Tip } from "../styles";
+import { PrimaryButton, Tip } from "../styles";
 import { createContext, useContext, useEffect, useState } from "react";
 import { ElectionTitleField } from "./Details/ElectionDetailsForm";
 import { RowButtonWithArrow, useSubstitutedTranslation } from "../util";
@@ -123,7 +123,7 @@ const templateMappers = {
 
 const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
     {activeStep < 3 && // hard coding this for now
-        <StyledButton
+        <PrimaryButton
             fullWidth={false}
             variant="contained"
             disabled={!canContinue}
@@ -131,17 +131,17 @@ const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
             sx={{ mt: 1, mr: 1 }}
         >
             Continue
-        </StyledButton>
+        </PrimaryButton>
     }
     {activeStep > 0 &&
-        <StyledButton
+        <PrimaryButton
             fullWidth={false}
             variant="text"
             onClick={() => setActiveStep(i => i-1)}
             sx={{ mt: 1, mr: 1 }}
         >
             Back
-        </StyledButton>
+        </PrimaryButton>
     }
 </>
 
@@ -351,14 +351,14 @@ export default () => {
             </Stepper>
         </DialogContent>
         <DialogActions>
-            <StyledButton
+            <PrimaryButton
                 type='button'
                 variant="contained"
                 width="100%"
                 fullWidth={false}
                 onClick={onClose}>
                 Cancel
-            </StyledButton>
+            </PrimaryButton>
         </DialogActions>
     </Dialog>
 }

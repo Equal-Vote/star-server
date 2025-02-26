@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ThemeContextProvider } from './theme'
 import Header from './components/Header'
@@ -19,16 +19,43 @@ import { FeatureFlagContextProvider } from './components/FeatureFlagContextProvi
 import CreateElectionDialog, { CreateElectionContextProvider } from './components/ElectionForm/CreateElectionDialog'
 import ComposeContextProviders from './components/ComposeContextProviders'
 import './i18n/i18n'
-import ReturnToClassicDialog, { ReturnToClassicContextProvider } from './components/ReturnToClassicDialog'
+import ReturnToClassicDialog, { ReturnToClassicContext, ReturnToClassicContextProvider } from './components/ReturnToClassicDialog'
 import { useSubstitutedTranslation } from './components/util'
 import UploadElections from './components/UploadElections'
 import Redirect from './components/Redirect'
 import PublicArchive from './components/Elections/PublicArchive'
 import NameMatchingTester from './components/NameMatchingTester'
 import StyleGuide from './components/StyleGuide'
+import { PrimaryButton } from './components/styles'
 
 const App = () => {
   const {t} = useSubstitutedTranslation();
+
+
+  const launcherFrame = document.getElementById("launcher-frame");
+  const button =
+    (launcherFrame as HTMLIFrameElement).contentWindow.document.getElementsByClassName(
+      "launcher-button"
+    )[0];
+    (button as HTMLElement).style.backgroundColor = '#86C66A';
+  
+  //var css = '.blzvQB.launcher-button:hover{ background-color: #00ff00 }';
+  //var style = document.createElement('style') as HTMLStyleElement;
+  //style.appendChild(document.createTextNode(css));
+  //document.getElementsByTagName('head')[0].appendChild(style);
+  
+  const ReturnToClassicLayer = () => {
+    const returnToClassicContext = useContext(ReturnToClassicContext);
+    return <>
+      <Box sx={{ position: 'fixed', pointerEvents: 'none', display: {xs: 'none', md: 'flex'}, flexDirection: 'column-reverse', alignItems: 'flex-end', width: '100%', height: '100%', paddingBottom: '90px', paddingRight: '30px'}}>
+          {/*Color is copied from the feedback button*/}
+          <PrimaryButton sx={{pointerEvents: 'auto', width: '170px', fontSize: 10}}  onClick={returnToClassicContext.openDialog}>
+              {t('return_to_classic.button')}
+          </PrimaryButton >
+      </Box>
+      <ReturnToClassicDialog/>
+    </>
+  }
   return (
     <Router>
       <ComposeContextProviders providers={[
@@ -42,9 +69,9 @@ const App = () => {
       ]}>
         <CssBaseline />
         <Box display='flex' flexDirection='column' minHeight={'100vh'} sx={{backgroundColor:'white'}} >
+          <ReturnToClassicLayer/>
           <Header />
           <CreateElectionDialog/>
-          <ReturnToClassicDialog/>
           <Box
             sx={{
               width: '100%',

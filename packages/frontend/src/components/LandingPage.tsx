@@ -13,6 +13,8 @@ import { ReturnToClassicContext } from './ReturnToClassicDialog';
 import{useLocation} from 'react-router-dom';
 import { openFeedback, useSubstitutedTranslation } from './util';
 import QuickPoll from './ElectionForm/QuickPoll';
+import { PrimaryButton } from './styles';
+import LandingPageSupport from './LandingPage/LandingPageSupport';
 
 const LandingPage = () => {
 
@@ -43,17 +45,10 @@ const LandingPage = () => {
 
     const {t} = useSubstitutedTranslation('election');
 
-    const returnToClassicContext = useContext(ReturnToClassicContext);
-
     //apparently box doesn't have onScroll
     return (
         <div ref={boxRef}>
-        <Box sx={{ position: 'fixed', pointerEvents: 'none', display: {md: 'flex', xs: 'none'}, flexDirection: 'column-reverse', alignItems: 'flex-end', width: '100%', height: '100%', paddingBottom: '210px', paddingRight: '30px'}}>
-            {/*Color is copied from the feedback button*/}
-            <Button variant='contained' sx={{pointerEvents: 'auto', width: '170px', fontWeight: 'bold', fontSize: 10, backgroundColor: '#006063'}}  onClick={returnToClassicContext.openDialog}>
-                {t('return_to_classic.button')}
-            </Button>
-        </Box>
+       
         <Box className='gradBackground' sx={{
             width: '100%',
             display: 'flex',
@@ -80,6 +75,7 @@ const LandingPage = () => {
             <LandingPageSignUpBar />
             {flags.isSet('ELECTION_TESTIMONIALS') && <LandingPageTestimonials/>}
             <LandingPagePricing />
+            <LandingPageSupport />
         </Box>
         </div>
     )

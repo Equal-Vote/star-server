@@ -10,7 +10,7 @@ import { useParams } from "react-router";
 import { useGetBallot } from "../../../hooks/useAPI";
 import { epochToDateString, getLocalTimeZoneShort, useSubstitutedTranslation } from "../../util";
 import useElection from "../../ElectionContextProvider";
-import { StyledButton } from "~/components/styles";
+import { PrimaryButton } from "~/components/styles";
 import ShareButton from "../ShareButton";
 
 const ViewBallot = ({ ballot, onClose }) => {
@@ -38,13 +38,13 @@ const ViewBallot = ({ ballot, onClose }) => {
                     <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
                         {['draft', 'open', 'closed'].includes(election.state) && election.settings.public_results === true &&
                             <Box sx={{ width: '100%',  p: 1, px:{xs: 5, sm: 1} }}>
-                                <StyledButton
+                                <PrimaryButton
                                     type='button'
                                     variant='contained'
                                     fullWidth
                                     href={`/${election.election_id}/results`} >
                                     {t('ballot_submitted.results')}
-                                </StyledButton>
+                                </PrimaryButton>
                             </Box>
                         }
                         {election.settings.voter_access !== 'closed' &&

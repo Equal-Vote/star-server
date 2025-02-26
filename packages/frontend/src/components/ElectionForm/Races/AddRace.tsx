@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Box } from "@mui/material"
-import { StyledButton } from '../../styles';
+import { PrimaryButton } from '../../styles';
 import useElection from '../../ElectionContextProvider';
 import RaceDialog from './RaceDialog';
 import RaceForm from './RaceForm';
@@ -29,7 +29,7 @@ export default function AddRace() {
             display: 'flex',
             flexDirection: 'row-reverse'
         }}>
-            <StyledButton
+            <PrimaryButton
                 type='button'
                 variant="contained"
                 fullWidth={false}
@@ -37,7 +37,7 @@ export default function AddRace() {
                 onClick={handleOpen}
                 disabled={election.state!=='draft'}>
                 Add
-            </StyledButton>
+            </PrimaryButton>
             <RaceDialog
               onSaveRace={onAdd}
               open={open}

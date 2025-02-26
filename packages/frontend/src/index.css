@@ -420,6 +420,10 @@ code {
   opacity: 0;
 }
 
+.blzvQB.launcher-button {/*freshdesk*/
+  background-color: 'pink' !important;
+}
+
 .gradBackground {
   background: white;
   background: linear-gradient(white, rgba(224,240,243,0.8));

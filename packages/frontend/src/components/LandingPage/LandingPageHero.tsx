@@ -9,7 +9,7 @@ import useFeatureFlags from '../FeatureFlagContextProvider'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
-import { StyledButton, Tip } from '../styles'
+import { PrimaryButton, Tip } from '../styles'
 import { BallotContext, IBallotContext } from '../Election/Voting/VotePage'
 import StarBallotView from '../Election/Voting/StarBallotView'
 import { ElectionContextProvider } from '../ElectionContextProvider'
@@ -99,9 +99,8 @@ export default ({}) => {
         let animIndex = transitionStep == 0 ? prevMethodIndex : methodIndex;
 
         const arrowSX = {
-            transition: 'transform .2s',
+            transition: 'transform .2s, opacity .3s ease-out',
             transform: 'scale(1.5)',
-            '&:hover': {transform: 'scale(1.65)'},
             color: 'white',
             backgroundColor: '#86C66A',
             padding: '4px',
@@ -109,13 +108,14 @@ export default ({}) => {
             width: 'calc(30px + 8px)',
             height: 'calc(30px + 8px)',
             borderRadius: '50%',
+            '&:hover': {transform: 'scale(1.65)'},
             '&:disabled': {
                 backgroundColor: 'gray'
             }
         };
 
         return <Box width='90%' display='flex' flexDirection='row' justifyContent='space-between' sx={{alignItems: 'center' }}>
-            <ArrowBack sx={{...arrowSX, backgroundColor: (methodIndex == 0? '#EEEEEE' : '#86C66A')}} onClick={() => nextMethod(-1)}/>
+            <ArrowBack sx={{...arrowSX, opacity: (methodIndex == 0? 0 : 1)}} onClick={() => nextMethod(-1)}/>
             <Box className={`${transitionStep == 0 ? 'heroFadeOut' : 'heroFadeIn'}`} 
                 display='flex' gap='50px'
                 sx={{
@@ -155,37 +155,27 @@ export default ({}) => {
                         </Typography>
                         <br/>
                         {authSession.isLoggedIn() &&
-                            <Button
-                                variant="outlined"
+                            <PrimaryButton
                                 onClick={() => createElectionContext.openDialog()}
-                                sx={{
-                                    width: '90%',
-                                    p: 1,
-                                    m: 'auto',
-                                    boxShadow: 2,
-                                    fontWeight: 'bold',
-                                    fontSize: 16,
-                                }}
                             >
                                 Use Full Editor
-                            </Button>
+                            </PrimaryButton>
                         }
                         {!authSession.isLoggedIn() &&
-                            <StyledButton
+                            <PrimaryButton
                                 type='submit'
-                                variant="contained"
                                 onClick={() => authSession.openLogin()}
                                 sx={{
                                     width: '75%'
                                 }}
                             >
                                 {t('landing_page.hero.methods.more_methods.sign_in')}
-                            </StyledButton>
+                            </PrimaryButton>
                         }
                     </Box>}
                 </Box>
             </Box>
-            <ArrowForward sx={{...arrowSX, opacity: (methodIndex == methodKeys.length-1? .3 : 1)}} onClick={() => nextMethod(1)}/>
+            <ArrowForward sx={{...arrowSX, opacity: (methodIndex == methodKeys.length-1? 0 : 1)}} onClick={() => nextMethod(1)}/>
         </Box>
     }
 

@@ -10,7 +10,7 @@ import Cropper from 'react-easy-crop';
 import getCroppedImg from './PhotoCropper';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { StyledButton } from '../../styles';
+import { PrimaryButton } from '../../styles';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
 import { DragHandle } from '~/components/DragAndDrop';
 
@@ -296,13 +296,13 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
 
             <DialogActions>
 
-                <StyledButton
+                <PrimaryButton
                     type='button'
                     variant="contained"
                     fullWidth={false}
                     onClick={() => onSave()}>
                     Close
-                </StyledButton>
+                </PrimaryButton>
             </DialogActions>
         </Dialog>
     )

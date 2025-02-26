@@ -26,7 +26,7 @@ export default () => {
                 alignContent: 'center',
                 justifyContent: 'space-between',
             }}>
-                <Typography variant='h6' sx={{textAlign: {xs: 'center', md: 'left'}}}>{t('landing_page.sign_up.text')}</Typography>
+                <Typography variant='h6' sx={{textAlign: {xs: 'center', md: 'left'}}}>Help support the project!</Typography>
                 {/*I just copied styled button but removed the full width*/ }
                 <Button
                     variant="contained"
@@ -42,7 +42,23 @@ export default () => {
                     }}
                     onClick={() => authSession.openLogin()}
                 >
-                    {t('landing_page.sign_up.button')}
+                    Volunteer
+                </Button>
+                <Button
+                    variant="contained"
+                    sx={{
+                        p: 2,
+                        m: 0,
+                        boxShadow: 2,
+                        backgroundColor: 'primary.main',
+                        fontWeight: 'bold',
+                        fontSize: 18,
+                        maxWidth: '200px',
+                        margin: 'auto'
+                    }}
+                    onClick={() => authSession.openLogin()}
+                >
+                    Donate
                 </Button>
             </Box>
         </Box>

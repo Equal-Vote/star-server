@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { StyledButton } from "./styles";
+import { PrimaryButton } from "./styles";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useSubstitutedTranslation } from "./util";
 

@@ -58,9 +58,10 @@ export const Tip = (props: {name?: TipName, children?: any, content?: any}) => {
     </ClickAwayListener>
 }
 
-export const StyledButton = (props) => (
+export const PrimaryButton = (props) => (
     <Button
         fullWidth
+        {...props}
         sx={{
             p: 1,
             m: 0,
@@ -70,16 +71,40 @@ export const StyledButton = (props) => (
             fontFamily: 'Montserrat, Verdana, sans-serif',
             fontWeight: 'bold',
             fontSize: 18,
-            //color: 'primary.contrastText',
+            color: 'primary.contrastText',
             //'&:hover': {
             //    backgroundColor: 'black',
             //}
+            ...props.sx,
         }}
-        {...props}
     >
-    {props.children}
+        {props.children}
     </Button>
 )
+
+export const SecondaryButton = (props) => (
+    <Button
+        variant="outlined"
+        {...props}
+        sx={{
+            width: '90%',
+            p: 1,
+            m: 'auto',
+            fontWeight: 'bold',
+            fontSize: 16,
+            color: '#86C66A',
+            borderColor: '#86C66A',
+            '&:hover': {
+                color: 'black',
+                borderColor: 'black',
+            },
+            ...props.sx,
+        }}
+    >
+        {props.children}
+    </Button>
+)
+
 
 export const StyledTextField = (props) => (
     <TextField

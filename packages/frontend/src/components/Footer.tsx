@@ -13,7 +13,7 @@ export default function Footer() {
   return (
     <Box
       sx={{
-        backgroundColor: themeSelector.mode === 'darkMode' ? 'brand.gray5' : 'brand.gray1',
+        backgroundColor: 'black',
         p: 6,
         width: '100%',
         mt: 'auto',
