@@ -74,6 +74,7 @@ const singleWinnerRankedRobin = (remainingCandidates: candidate[], summaryData: 
 function getWinners(summaryData: rankedRobinSummaryData, eligibleCandidates: candidate[]) {
   // Get HeadToHead wins (this relies on filter maintaining the relative sort from totalScores)
   const sortedHeadToHeadWins: totalScore[] = summaryData.totalScores.filter(t => eligibleCandidates.find(c => c.index == t.index) != undefined)
+  sortedHeadToHeadWins.sort((a:totalScore, b:totalScore) => -(a.score-b.score));
 
   // Return all candidates that tie for top score
   return sortedHeadToHeadWins

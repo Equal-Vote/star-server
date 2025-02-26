@@ -41,7 +41,18 @@ export default function ResultsBarChart({
   maxBarSize = undefined,
 }: ResultsBarChartProps) {
 const [rawNumbers, setRawNumbers] = useState(false);   
-let rawData = data;
+  let rawData = data;
+
+  // Sort entries
+  if (sortFunc != false) {
+    // we're handling undefined and false difference, so that's why this is explicit
+    rawData.sort(
+      sortFunc ??
+        ((a, b) => {
+          return b[xKey] - a[xKey];
+        })
+    );
+  }
 
   // Truncate names & add percent
   let maxValue = maxBarSize ?? Math.max(...data.map(d => d[xKey]))
@@ -69,16 +80,7 @@ let rawData = data;
     return s;
   });
 
-  // Sort entries
-  if (sortFunc != false) {
-    // we're handling undefined and false difference, so that's why this is explicit
-    data.sort(
-      sortFunc ??
-        ((a, b) => {
-          return b[xKey] - a[xKey];
-        })
-    );
-  }
+  
 
   // compute colors
   let colors = [...CHART_COLORS];
