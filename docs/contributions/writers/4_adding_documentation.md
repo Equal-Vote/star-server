@@ -11,7 +11,7 @@ Want to help improve the documentation on docs.bettervoting.com? Here's how!
 
 TLDR, to update text on docs.bettervoting.com you can change the corresponding files under the [star-server/docs directory](https://github.com/Equal-Vote/star-server/tree/main/docs) using the steps described in GitHub 101.
 
-## Markdown Support
+## Markdown
 
 Documentation is written in markdown. It's simliar to html as it allows you to define headers, bold text, hyperlinks, etc, except Markdown is significantly easier to read than HTML. 
 
@@ -42,4 +42,4 @@ These variables indicate the title of the document as well as where it's located
 
 ## Tips
 
-After you've added new documentation pages, it could be good to link to it from info bubbles so that your page will be more discoverable. Follow [the steps at 'updating website text'](/2_updating_website_text#tips-and-info-bubbles) to learn more.
+After you've added new documentation pages, it could be good to link to it from info bubbles so that your page will be more discoverable. Follow [the steps at 'updating website text'](/writers/2_updating_website_text#tips-and-info-bubbles) to learn more.
