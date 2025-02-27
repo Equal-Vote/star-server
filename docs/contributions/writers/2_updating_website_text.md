@@ -11,7 +11,7 @@ Did you find a typo on BetterVoting.com? Or may there's some paragraphs that nee
 
 TLDR, to update text on the website you can file changes to [en.yaml](https://github.com/Equal-Vote/star-server/blob/main/packages/frontend/src/i18n/en.yaml) using the steps described in GitHub 101.
 
-If you're looking for specific text, and it's not in ``en.yaml`` then you may need to [Search the repo](/writers/1_github_101#search-the-repo) to find it.
+If you're looking for specific text, and it's not in ``en.yaml`` then you may need to [Search the repo](1_github_101#search-the-repo) to find it.
 
 This article will go over a few more quirks of the ``en.yaml`` file.
 

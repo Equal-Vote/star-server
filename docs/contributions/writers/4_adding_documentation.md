@@ -42,4 +42,4 @@ These variables indicate the title of the document as well as where it's located
 
 ## Tips
 
-After you've added new documentation pages, it could be good to link to it from info bubbles so that your page will be more discoverable. Follow [the steps at 'updating website text'](/writers/2_updating_website_text#tips-and-info-bubbles) to learn more.
+After you've added new documentation pages, it could be good to link to it from info bubbles so that your page will be more discoverable. Follow [the steps at 'updating website text'](2_updating_website_text#tips-and-info-bubbles) to learn more.
