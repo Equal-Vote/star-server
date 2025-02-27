@@ -28,7 +28,7 @@ That's all you need to know but [here's a yaml tutorial](https://www.youtube.com
 Here's the current first line from ``en.yaml``. 
 
 ```
-start_time: '{{capital_election}} begins on {{datetime, datetime}}'
+start_time: '{% raw %}{{capital_election}} begins on {{datetime, datetime}}{% endraw %}'
 ```
 
 Any text that's wrapped in the ``{% raw %}{{...}}{% endraw %}`` are templated variables. Those variables can reference different things depending on what the software inputs, however they're usually referencing the keyword section lower in the file. You can search ``keyword:`` to find it.
