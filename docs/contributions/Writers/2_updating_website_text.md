@@ -2,7 +2,7 @@
 layout: default
 title: 📰 Updating Website Text
 nav_order: 2
-parent: ✍️ Writers
+parent: ✍ ️Writers
 ---
 
 # Updating Website Text

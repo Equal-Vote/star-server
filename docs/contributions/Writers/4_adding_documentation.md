@@ -2,7 +2,7 @@
 layout: default
 title: 📚 Adding Documentation
 nav_order: 4
-parent: ✍️ Writers
+parent: ✍ ️Writers
 ---
 
 # Adding Documentation
