@@ -2,7 +2,7 @@
 layout: default
 title: 📤 Opening a Pull Request
 nav_order: 2
-parent: Developers
+parent: 💻 Developers
 ---
 
 # How to open a Pull Request (PR)

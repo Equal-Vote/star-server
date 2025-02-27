@@ -2,7 +2,7 @@
 layout: default
 title: 🔑 Deploy Keycloak
 nav_order: 10
-parent: ☁️ Infrastructure
+parent: ☁️ DevOps
 grand_parent: Contribution Guide
 ---
 

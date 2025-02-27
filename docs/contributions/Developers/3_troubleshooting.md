@@ -2,7 +2,7 @@
 layout: default
 title: 🪲 Troubleshooting
 nav_order: 3
-parent: Developers
+parent: 💻 Developers
 ---
 
 # Ahh a bug! What do I do?

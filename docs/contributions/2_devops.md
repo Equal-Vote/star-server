@@ -4,6 +4,7 @@ title: ☁️ DevOps
 nav_order: 2
 parent: Contribution Guide
 has_children: true
+has_children: true
 ---
 
 # DevOps

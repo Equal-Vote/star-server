@@ -2,7 +2,7 @@
 layout: default
 title: 💎️ Azure Onboarding
 nav_order: 1
-parent: ☁️ Infrastructure
+parent: ☁️ DevOps
 grand_parent: Contribution Guide
 ---
 

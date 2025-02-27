@@ -2,7 +2,7 @@
 layout: default
 title: ️♾️ DevOps Local Setup
 nav_order: 2
-parent: ☁️ Infrastructure
+parent: ☁️ DevOps
 grand_parent: Contribution Guide
 ---
 

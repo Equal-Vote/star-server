@@ -2,7 +2,7 @@
 layout: default
 title: 🌱 First time Local Setup
 nav_order: 1
-parent: Developers
+parent: 💻 Developers
 ---
 
 # Set up BetterVoting locally
