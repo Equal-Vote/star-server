@@ -1,12 +1,12 @@
 ---
 layout: default
-title: ☁️ Infrastructure
-nav_order: 4
+title: ☁️ DevOps
+nav_order: 2
 parent: Contribution Guide
 has_children: true
 ---
 
-# Infrastructure
+# DevOps
 
 We're in the process of hosting our service on 💧Azure. Here's a high level overview of all the components
 

@@ -152,7 +152,7 @@ export const useSubstitutedTranslation = (electionTermType = 'election', v = {})
     }
   })
 
-  const applySymbols = (txt) => {
+  const applySymbols = (txt, newWindow) => {
     const applyLinks = (txt) => {
       if (typeof txt !== 'string') return txt;
       let parts = txt.split(rLink)
@@ -162,7 +162,7 @@ export const useSubstitutedTranslation = (electionTermType = 'election', v = {})
         if (parts[i + 1].startsWith('mailto')) {
           return <MailTo key={`link_${i}`}>{parts[i]}</MailTo>
         } else {
-          return <a key={`link_${i}`} href={parts[i + 1]}>{parts[i]}</a>
+          return <a key={`link_${i}`} href={parts[i + 1]} target={newWindow ? '_blank' : '_self'}>{parts[i]}</a>
         }
       })
     }
@@ -203,10 +203,10 @@ export const useSubstitutedTranslation = (electionTermType = 'election', v = {})
     </>
   }
 
-  const handleObject = (obj, skipProcessing = false) => {
+  const handleObject = (obj, skipProcessing=false, newWindow=false) => {
     if (skipProcessing) return obj;
     if (typeof obj == 'number') return obj;
-    if (typeof obj === 'string') return applySymbols(obj);
+    if (typeof obj === 'string') return applySymbols(obj, newWindow);
     if (Array.isArray(obj)) return obj.map(o => handleObject(o));
 
     let newObj = {};
@@ -217,7 +217,7 @@ export const useSubstitutedTranslation = (electionTermType = 'election', v = {})
   }
 
   return {
-    t: (key, v = {}) => handleObject(t(key, { ...values, ...processValues(v) }), v['skipProcessing']),
+    t: (key, v = {}) => handleObject(t(key, { ...values, ...processValues(v) }), v['skipProcessing'], v['newWindow'] ?? false),
     i18n,
   }
 }

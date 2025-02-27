@@ -1,8 +1,8 @@
 ---
 layout: default
 title: 🔡 Adding Translations
-nav_order: 5
-parent: Contribution Guide
+nav_order: 3
+parent: ✍️Text and Translations
 has_children: true
 ---
 
@@ -20,11 +20,7 @@ The translator should also have proof readers to help verify the quality of the 
 
 Translators are encouraged to help recruit people for the proof reading process if they know someone who could be a good fit.
 
-## GitHub Setup
-
-This will require a github account. Once you've made an account [drop an email to arendpeter@equal.vote](mailto:arendpeter@equal.vote?subject=Triage%20Permissions%20Request&body=Hi%20there!%20Please%20add%20triage%20permissions%20for%20INSERT_GITHUB_USER_NAME.) with your github user name so that you can be given the permissions for issue assignment in the future (this will not block any of the steps on this page, so feel free to proceed after emailing).
-
-## Adding translated text
+## Adding (or updating) translated text
 
 All localizations are stored in the [i18n folder on the project](https://github.com/Equal-Vote/star-server/tree/main/packages/frontend/src/i18n). We have one yaml file per language, and an ``i18n.ts`` file for connecting the files to the app.
 
@@ -32,36 +28,24 @@ All localizations are stored in the [i18n folder on the project](https://github.
 
 Follow these steps to add a new translation file
 
-1. Select the ``en.yaml`` file (which has the english translations), and copy the priority 0 section (at time of writing that would be the first 300 lines).
+1. Select the ``en.yaml`` file (which has the english text), and copy the priority 0 section (at time of writing that would be the first 300 lines).
 1. Paste it in your local file editor and apply your translations. In general you only need to translate the text after the colon on any line, the rest is just for the code to identify the text.
-1. Go back to the i18n folder, and select ``Add file`` -> ``Create new file``.
+1. Search for your language code using [wikipedia's language code list](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) for reference.
+1. Go back to the i18n folder, and [add the file](/1_github_101#adding-a-file) using ``<your language code>.yaml`` as the file name or [edit the file](/1_github_101#adding-a-file) if it already exists..
 1. Select ``Fork this repository`` (if prompted).
-1. Use ``<your language code>.yaml`` as the filename. You can check [wikipedia's language code list](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) for reference.
 1. Paste your translated text.
-1. Click a bunch of buttons...
-    1. Click "Commit Changes..."
-    1. Update commit message and description as desired
-    1. Click "Sign off and propose changes"
-    1. Click "Create pull request"
+1. [Create a Pull Request](/1_github_101#creating-a-pull-request)
 1. Once your pull request is created a maintainer will review it shortly (ping [arendpeter@equal.vote](mailto:arendpeter@equal.vote) if it's not reviewed within a few days).
 
 ## Review Process
 
 The reviewer on the pull request will merge as long as there are no technical issues with the file. They will also deploy an update to i18n.ts so that your file will be linked to the code. Once that's complete it will be live on the bettervoting.com 🥳. The maintainer will also add you to the bettervoting.com/about page since you're now officially a BetterVoting contributor!
 
+## Viewing your changes on the site
+
 You can view the site in your language by adding ``?lng=<your language code>`` at the end of the URL. Keep in mind that **the site will remember your selection**, so make sure to add ``?lng=en`` to the end of the URL if you ever want to change it back to English.
 
 One or two other contributors will then proof read your translations as a quality check. The creator of the pull request doesn't necessarily need to be a native speaker, but at least one of the proof readers should be a native speaker. 
-
-## Updating your translations 
-
-Usually there will be a few rounds of feedback before the translations are finalized. Here's how you make edits.
-
-1. Go back to the [i18n folder on github](https://github.com/Equal-Vote/star-server/tree/main/packages/frontend/src/i18n).
-1. Select your newly translated file, and click the edit icon in the top right.
-1. Apply your edits
-1. Click "Commit Changes..." and proceed with the series of buttons just like last time
-1. A maintainer will review from there.
 
 And that's it. Congratulations your language is now officially supported by BetterVoting!
 

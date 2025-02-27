@@ -29,7 +29,7 @@ export const Tip = (props: {name?: TipName, children?: any, content?: any}) => {
             title={<>
                 <strong>{props.name ? t(`tips.${props.name as string}.title`) : props.content.title}</strong>
                 <br/>
-                {props.name ? t(`tips.${props.name as string}.description`) : props.content.description}
+                {props.name ? t(`tips.${props.name as string}.description`,{newWindow: true}) : props.content.description}
             </>}
             onOpen={() => setHovered(true)}
             onClose={() => setHovered(false)}
