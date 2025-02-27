@@ -2,7 +2,7 @@
 layout: default
 title: 🐙 GitHub 101
 nav_order: 1
-parent: ✍️Text and Translations
+parent: ✍Writers
 has_children: true
 ---
 

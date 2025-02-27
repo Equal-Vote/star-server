@@ -2,7 +2,7 @@
 layout: default
 title: 🔡 Adding Translations
 nav_order: 3
-parent: ✍️Text and Translations
+parent: ✍️Writers
 has_children: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: ✍️Text and Translations
+title: ✍️Writers
 nav_order: 3
 parent: Contribution Guide
 has_children: true
