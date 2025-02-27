@@ -3,7 +3,6 @@ layout: default
 title: 🐙 GitHub 101
 nav_order: 1
 parent: ✍Writers
-has_children: true
 ---
 
 # GitHub 101
