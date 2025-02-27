@@ -704,7 +704,7 @@ tips:
     description: >
       Use a proportional representation algorithm to determine a win quota and ensure that factions can win if they have a quotas worth of supporters.
       Best for electing diversified winners that reflect the idealogical makeup of the electorate.
-      [Learn more](https://equal.vote/pr)
+    learn_link: https://equal.vote/pr
 
   no_auth:
     title: No Voting Limit

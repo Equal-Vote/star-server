@@ -318,7 +318,7 @@ function ApprovalResultsViewer() {
 }
 
 function ResultsViewer({ methodKey, children }:{methodKey: string, children:any}) {
-  const {t} = useSubstitutedTranslation();
+  const {t, i18n} = useSubstitutedTranslation();
   const learnLinkKey = `methods.${methodKey}.learn_link`
   const votingMethod = t(`methods.${methodKey}.full_name`)
   return (
@@ -326,7 +326,7 @@ function ResultsViewer({ methodKey, children }:{methodKey: string, children:any}
       {children}
       <Typography component="p" sx={{textAlign: 'right', color: '#808080', fontSize: '.8rem', marginTop: '20px'}}>
         {t('results.method_context', {voting_method: votingMethod})}
-        {t(learnLinkKey) != learnLinkKey && <><br/><a href={t(learnLinkKey)} style={{color: 'inherit'}}>{t('results.learn_link_text', {voting_method: votingMethod})}</a></>}
+        {i18n.exists(learnLinkKey) && <><br/><a href={t(learnLinkKey)} style={{color: 'inherit'}}>{t('results.learn_link_text', {voting_method: votingMethod})}</a></>}
       </Typography>
     </Box>
   );

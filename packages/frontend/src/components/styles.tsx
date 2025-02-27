@@ -7,6 +7,7 @@ import { useSubstitutedTranslation } from "./util";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 import useRace from "./RaceContextProvider";
 import useElection from "./ElectionContextProvider";
+import { Link } from "react-router-dom";
 
 // this doesn't work yet, I filed a github issue
 // https://github.com/Modyfi/vite-plugin-yaml/issues/27
@@ -15,7 +16,7 @@ type TipName = keyof typeof en.tips;
 
 export const Tip = (props: {name?: TipName, children?: any, content?: any}) => {
     // TODO: maybe I can insert useElection and useRace within useSubstitutedTranslation?
-    const {t: ts} = useSubstitutedTranslation('election');
+    const {t: ts, i18n} = useSubstitutedTranslation('election');
     const {t: te} = useElection();
     const {t: tr} = useRace();
     let t = (tr() !== undefined) ? tr : (
@@ -24,12 +25,14 @@ export const Tip = (props: {name?: TipName, children?: any, content?: any}) => {
 
     const [clicked, setClicked] = useState(false);
     const [hovered, setHovered] = useState(false);
+    const learnLinkKey = props.name ? `tips.${props.name as string}.learn_link` : 'asdfasdf';
     return <ClickAwayListener onClickAway={() => setClicked(false)}>
         <Tooltip
             title={<>
                 <strong>{props.name ? t(`tips.${props.name as string}.title`) : props.content.title}</strong>
                 <br/>
-                {props.name ? t(`tips.${props.name as string}.description`,{newWindow: true}) : props.content.description}
+                {props.name ? t(`tips.${props.name as string}.description`) : props.content.description}
+                {i18n.exists(learnLinkKey) && <a href={t(learnLinkKey)} target='_blank'>Learn More</a>}
             </>}
             onOpen={() => setHovered(true)}
             onClose={() => setHovered(false)}

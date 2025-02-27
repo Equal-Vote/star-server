@@ -20,8 +20,13 @@ We're so excited you're interested in contributing! Here's how to get plugged in
     <div>
         <a href="1_local_setup.html">Setup BetterVoting locally</a>, so that you can develop and test your changes. Then <a href="https://github.com/Equal-Vote/star-server/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22">grab a good-first-issue</a>!
     </div>
-    <div><i>For Translators:</i></div>
-    <div><a href="5_adding_translations.html">Follow our translation process</a> to add support for your language in BetterVoting.</div>
+    <div><i>For DevOps Engineers:</i></div>
+    <div>
+        Setup a meeting at starvoting.org/meeting to get plugged in with our DevOps team.
+    </div>
+    <div><i>For Writers:</i></div>
+    <div>Are you interested in updating text on the website, adding translations or adding documention? Then you can start by following the <a href="docs.bettervoting.com/writers/1_github_101.html">GitHub 101 Guide</a>. This will give you all the context you need to start updating the text and translations on the website.
+    </div>
 </div>
 
 If you have any questions or need help with your setup, don't hestitate to [schedule a meeting](https://starvoting.org/meeting) on Arend's calendar.

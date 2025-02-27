@@ -27,7 +27,6 @@ Some github terms to be familiar with:
 
 Some file types to be familiar with:
 
-* **Markdown (.md)**: This file type to helps you format your text. It's simliar to html as it allows you to define headers, bold text, hyperlinks, etc, except Markdown is significantly easier to read than HTML. Checkout [this cheatsheet as a reference when you're editing markdown](https://www.markdownguide.org/basic-syntax/)
 
 ## Navigating Directories
 

@@ -3,7 +3,6 @@ layout: default
 title: 🪟 Updating Website Text
 nav_order: 2
 parent: ✍️Writers
-has_children: true
 ---
 
 # Updating Website Text
@@ -40,13 +39,13 @@ With that knowledge if we refer back to the example, ``{{capital_election}}`` wi
 
 ``$t(methods.ranked_robin.short_name)`` is a much rarer form of templated text. It operates similarly except that it references the yaml structure directly. 
 
-## Tips / Info Bubbles
+## Tips and Info Bubbles
 
 It's a good habit to add lots of info bubbles across the site. This can also be achieved just by making edits to en.yaml.
 
 Adding ``!tip(star)`` to the end of one of your entries, will add an info bubble referencing the STAR tip. 
 
-If you search for ``tips:``. You can see the text 
+If you search for ``tips:``. You can find the text for star below it. Each entry will have a title and a description, along with an optional learn_link. The learn link will be displayed as "learn more" at the end of the tip, and it's a good place to redirect to a more specific article on docs.bettervoting.com, starvoting.org or elsewhere.
 
 ## Markdown
 

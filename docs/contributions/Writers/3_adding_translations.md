@@ -3,7 +3,6 @@ layout: default
 title: 🔡 Adding Translations
 nav_order: 3
 parent: ✍️Writers
-has_children: true
 ---
 
 # Adding Translations
@@ -29,7 +28,7 @@ All localizations are stored in the [i18n folder on the project](https://github.
 Follow these steps to add a new translation file
 
 1. Select the ``en.yaml`` file (which has the english text), and copy the priority 0 section (at time of writing that would be the first 300 lines).
-1. Paste it in your local file editor and apply your translations. In general you only need to translate the text after the colon on any line, the rest is just for the code to identify the text.
+1. Paste it in your local file editor and apply your translations. (It will probably be helpful to review [Updating Website Text](/2_updating_website_text]) to make sure you understand the structure).
 1. Search for your language code using [wikipedia's language code list](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) for reference.
 1. Go back to the i18n folder, and [add the file](/1_github_101#adding-a-file) using ``<your language code>.yaml`` as the file name or [edit the file](/1_github_101#adding-a-file) if it already exists..
 1. Select ``Fork this repository`` (if prompted).
