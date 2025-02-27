@@ -24,8 +24,6 @@ Some github terms to be familiar with:
 * **Repository / Repo** : These are projects in GitHub. They're stored as a file directory. Making changes to files in the repo will be similar to editing text files on your computer. Most of BetterVoting.com is contained in the [star-server repo](https://github.com/equal-vote/star-server). 
 * **Pull Request / PR** : When you propose a change to a Repo this will be represented as a Pull Request. Then a project owner can review your changes and then "merge" your Pull Request so that it gets applied to the main project. In general don't be afraid to send out Pull Requests. Even if you're unsure if the change is correct, it's usually easier for the code owner to review the change in a Pull Request than to review changes adhoc.
 
-Some file types to be familiar with:
-
 
 ## Navigating Directories
 
