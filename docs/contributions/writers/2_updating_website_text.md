@@ -31,11 +31,11 @@ Here's the current first line from ``en.yaml``.
 start_time: '{{capital_election}} begins on {{datetime, datetime}}'
 ```
 
-Any text that's wrapped in the ``{{...}}`` are templated variables. Those variables can reference different things depending on what the software inputs, however they're usually referencing the keyword section lower in the file. You can search ``keyword:`` to find it.
+Any text that's wrapped in the ``{% raw %}{{...}}{% endraw %}`` are templated variables. Those variables can reference different things depending on what the software inputs, however they're usually referencing the keyword section lower in the file. You can search ``keyword:`` to find it.
 
 In particular there's a different set of terminology depending on if the election is configured as a "election" or a "poll". Also if you prefix ``capital_`` at the beginning of the template variable then it'll capitalize the first letter.
 
-With that knowledge if we refer back to the example, ``{{capital_election}}`` will become either "Election" or "Poll" since these are the capitalize versions of the ``election:`` terms under ``keyword:``. ``{{datetime, dateime}}`` will be the date of the election, however since there's no ``datetime:`` field under ``keyword:`` you can assume that the content is just supplied from the codebase.
+With that knowledge if we refer back to the example, ``{% raw %}{{capital_election}}{% endraw %}`` will become either "Election" or "Poll" since these are the capitalize versions of the ``election:`` terms under ``keyword:``. ``{% raw %}{{datetime, dateime}}{% endraw %}`` will be the date of the election, however since there's no ``datetime:`` field under ``keyword:`` you can assume that the content is just supplied from the codebase.
 
 ``$t(methods.ranked_robin.short_name)`` is a much rarer form of templated text. It operates similarly except that it references the yaml structure directly. 
 
