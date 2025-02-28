@@ -60,7 +60,7 @@ export const Tip = (props: {name?: TipName, children?: any, content?: any}) => {
 
 export const PrimaryButton = (props) => (
     <Button
-        fullWidth
+        variant="contained"
         {...props}
         sx={{
             p: 1,

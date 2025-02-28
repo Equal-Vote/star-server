@@ -28,22 +28,11 @@ export default () => {
             }}>
                 <Typography variant='h6' sx={{textAlign: {xs: 'center', md: 'left'}}}>{t('landing_page.sign_up.text')}</Typography>
                 {/*I just copied styled button but removed the full width*/ }
-                <Button
-                    variant="contained"
-                    sx={{
-                        p: 2,
-                        m: 0,
-                        boxShadow: 2,
-                        backgroundColor: 'primary.main',
-                        fontWeight: 'bold',
-                        fontSize: 18,
-                        maxWidth: '200px',
-                        margin: 'auto'
-                    }}
+                <PrimaryButton
                     onClick={() => authSession.openLogin()}
                 >
                     {t('landing_page.sign_up.button')}
-                </Button>
+                </PrimaryButton>
             </Box>
         </Box>
     )

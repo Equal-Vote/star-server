@@ -261,7 +261,6 @@ const QuickPoll = () => {
                 </Box>
                 <PrimaryButton
                     type='submit'
-                    variant="contained"
                     disabled={isPending} >
                     {t('landing_page.quick_poll.create')}
                 </PrimaryButton>

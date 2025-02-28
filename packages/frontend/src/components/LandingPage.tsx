@@ -70,7 +70,7 @@ const LandingPage = () => {
             </Box>
             {/* temporarily disabling because it was sending continuous requests to the backend for some reason */}
             {/*<LandingPageFeatureElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>*/}
-            {/*<LandingPageStats/> */}
+            <LandingPageStats/>
             <QuickPoll/>
             <LandingPageFeatures/>
             <LandingPageSignUpBar />

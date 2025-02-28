@@ -16,6 +16,7 @@ export default () => {
             clip: 'unset',
             width: '100%',
             p: { xs: 2},
+            mb: '2rem', // matching the gap from the root flex box
         }}>
             <Box sx={{
                 width: '100%',
@@ -28,38 +29,16 @@ export default () => {
             }}>
                 <Typography variant='h6' sx={{textAlign: {xs: 'center', md: 'left'}}}>Help support the project!</Typography>
                 {/*I just copied styled button but removed the full width*/ }
-                <Button
-                    variant="contained"
-                    sx={{
-                        p: 2,
-                        m: 0,
-                        boxShadow: 2,
-                        backgroundColor: 'primary.main',
-                        fontWeight: 'bold',
-                        fontSize: 18,
-                        maxWidth: '200px',
-                        margin: 'auto'
-                    }}
+                <PrimaryButton
                     onClick={() => authSession.openLogin()}
                 >
                     Volunteer
-                </Button>
-                <Button
-                    variant="contained"
-                    sx={{
-                        p: 2,
-                        m: 0,
-                        boxShadow: 2,
-                        backgroundColor: 'primary.main',
-                        fontWeight: 'bold',
-                        fontSize: 18,
-                        maxWidth: '200px',
-                        margin: 'auto'
-                    }}
+                </PrimaryButton>
+                <PrimaryButton
                     onClick={() => authSession.openLogin()}
                 >
                     Donate
-                </Button>
+                </PrimaryButton>
             </Box>
         </Box>
     )

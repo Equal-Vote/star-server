@@ -183,6 +183,7 @@ export default ({}) => {
                     <br/>
                     {authSession.isLoggedIn() &&
                         <PrimaryButton
+                            fullWidth
                             onClick={() => createElectionContext.openDialog()}
                         >
                             Use Full Editor
