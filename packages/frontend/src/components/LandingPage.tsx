@@ -4,7 +4,7 @@ import LandingPageHero from './LandingPage/LandingPageHero';
 import LandingPageFeatures from './LandingPage/LandingPageFeatures';
 import LandingPageSignUpBar from './LandingPage/LandingPageSignUpBar';
 import LandingPageTestimonials from './LandingPage/LandingPageTestimonials';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import LandingPagePricing from './LandingPage/LandingPagePricing';
 import useFeatureFlags from './FeatureFlagContextProvider';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
@@ -15,6 +15,7 @@ import { openFeedback, useSubstitutedTranslation } from './util';
 import QuickPoll from './ElectionForm/QuickPoll';
 import { PrimaryButton } from './styles';
 import LandingPageSupport from './LandingPage/LandingPageSupport';
+import LandingPageCarousel from './LandingPage/LandingPageCarousel';
 
 const LandingPage = () => {
 
@@ -56,20 +57,20 @@ const LandingPage = () => {
             gap: '2rem',
             margin: 'auto',
         }}> 
-            {/*<Box sx={{position:'absolute', top: '95vh', width: '100%', textAlign: 'center'}}>
-                <KeyboardArrowDownRoundedIcon sx={{
-                    display: {xs:'none', md: 'inline'},
-                    opacity: atTop? .75 : 0,
-                    transition: 'opacity .5s',
-                    transform: 'scale(1.8)',
-                    animation: 'scrollArrowAnimation 2.5s ease-out 0s infinite',
-                    animationDirection: 'alternate'
-                }}/>
-            </Box>*/}
-            <LandingPageHero />
+            <Box display='flex' flexDirection='column' sx={{
+                margin: 'auto',
+                width: '100%',
+                maxWidth: '1200px',
+                p: { xs: 2, md: 2 },
+                alignItems: 'center',
+                textAlign: 'center',
+            }}>
+                <Typography variant="h4" color={'lightShade.contrastText'}> {t('landing_page.hero.title')} </Typography>
+                <LandingPageCarousel />
+            </Box>
             {/* temporarily disabling because it was sending continuous requests to the backend for some reason */}
             {/*<LandingPageFeatureElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>*/}
-            <LandingPageStats/> 
+            {/*<LandingPageStats/> */}
             <QuickPoll/>
             <LandingPageFeatures/>
             <LandingPageSignUpBar />

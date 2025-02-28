@@ -31,18 +31,13 @@ import { PrimaryButton } from './components/styles'
 const App = () => {
   const {t} = useSubstitutedTranslation();
 
-
-  const launcherFrame = document.getElementById("launcher-frame");
-  const button =
-    (launcherFrame as HTMLIFrameElement).contentWindow.document.getElementsByClassName(
-      "launcher-button"
-    )[0];
-    (button as HTMLElement).style.backgroundColor = '#86C66A';
-  
-  //var css = '.blzvQB.launcher-button:hover{ background-color: #00ff00 }';
-  //var style = document.createElement('style') as HTMLStyleElement;
-  //style.appendChild(document.createTextNode(css));
-  //document.getElementsByTagName('head')[0].appendChild(style);
+  // there's a race condition and this sometimes crashes the page
+  //const launcherFrame = document.getElementById("launcher-frame");
+  //const button =
+  //  (launcherFrame as HTMLIFrameElement).contentWindow.document.getElementsByClassName(
+  //    "launcher-button"
+  //  )[0];
+  //  (button as HTMLElement).style.backgroundColor = '#86C66A';
   
   const ReturnToClassicLayer = () => {
     const returnToClassicContext = useContext(ReturnToClassicContext);
