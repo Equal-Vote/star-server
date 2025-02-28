@@ -29,14 +29,10 @@ export default () => {
             }}>
                 <Typography variant='h6' sx={{textAlign: {xs: 'center', md: 'left'}}}>Help support the project!</Typography>
                 {/*I just copied styled button but removed the full width*/ }
-                <PrimaryButton
-                    onClick={() => authSession.openLogin()}
-                >
+                <PrimaryButton href='/volunteer'>
                     Volunteer
                 </PrimaryButton>
-                <PrimaryButton
-                    onClick={() => authSession.openLogin()}
-                >
+                <PrimaryButton href='https://equal.vote/donate'>
                     Donate
                 </PrimaryButton>
             </Box>

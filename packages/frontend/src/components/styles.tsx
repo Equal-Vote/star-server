@@ -87,7 +87,6 @@ export const SecondaryButton = (props) => (
         variant="outlined"
         {...props}
         sx={{
-            width: '90%',
             p: 1,
             m: 'auto',
             fontWeight: 'bold',
