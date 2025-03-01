@@ -390,5 +390,24 @@ describe("STAR Score Round Tests", () => {
         expect(roundResults.winners.length).toBe(1);
         expect(roundResults.winners[0].name).toBe('Super');
         expect(roundResults.runner_up[0].name).toBe('Bill');
+    })    
+    test("Two way score tie for second, don't advance candidate not in score tie", () => {
+        // Tie for second finalist, last place candidate has lowest score and head to head wins but highest five star count
+        // This is to test a bug that was found that was advancing the five star winners even if they weren't in the score tiebreaker
+
+        const candidates = ['Allison', 'Bill', 'Carmen', 'Doug']
+        const scores = [11, 10, 10, 9]
+        const pairwiseMatrix = [
+            [0, 1, 1, 1], 
+            [0, 0, 0, 1], 
+            [0, 0, 0, 1], 
+            [0, 0, 0, 0]]
+        const fiveStarCounts = [4, 3, 3, 5]
+        const summaryData = buildTestSummaryData(candidates, scores, pairwiseMatrix, fiveStarCounts)
+
+        const roundResults = singleWinnerStar(summaryData.candidates, summaryData)
+        expect(roundResults.winners.length).toBe(1);
+        expect(roundResults.winners[0].name).toBe('Allison');
+        expect(roundResults.runner_up[0].name).toBe('Bill');
     })
 })
