@@ -84,6 +84,7 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
         roundResults.logs.push({
           key: 'tabulation_logs.star.scoring_round_tiebreaker_start',
           names: tiedCandidates.map(c => c.name),
+          score: summaryData.totalScores[tiedCandidates[0].index].score
         });
       }
       // Get candidates with the most head to head losses
