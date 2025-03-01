@@ -35,10 +35,7 @@ export function Star(candidates: string[], votes: ballot[], nWinners = 1, random
 }
 
 export function singleWinnerStar(remainingCandidates: candidate[], summaryData: starSummaryData): roundResults {
-  // I can't have this in the root since the tests don't necessarily sort the five star counts
-  summaryData.fiveStarCounts.sort((a, b) => b.counts - a.counts)
-
-  // Initialize output results data structure
+// Initialize output results data structure
   const roundResults: roundResults = {
     winners: [],
     runner_up: [],
@@ -75,15 +72,9 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
       )
       continue scoreLoop
     }
-
     roundResults.logs.push({
       key: 'tabulation_logs.star.scoring_round_tiebreaker_start',
-      names: eligibleCandidates.map(e => e.name)
-    });
-
-    roundResults.logs.push({
-      key: 'tabulation_logs.star.score_tiebreak_end',
-      names: scoreWinners.map(scoreWinner => scoreWinner.name),
+      names: scoreWinners.map(e => e.name),
       score: summaryData.totalScores[scoreWinners[0].index].score,
     });
     // Multiple candidates have top score, proceed to score tiebreaker
@@ -93,6 +84,7 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
         roundResults.logs.push({
           key: 'tabulation_logs.star.scoring_round_tiebreaker_start',
           names: tiedCandidates.map(c => c.name),
+          score: summaryData.totalScores[tiedCandidates[0].index].score
         });
       }
       // Get candidates with the most head to head losses
@@ -131,7 +123,7 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
         count: losses,
       })
 
-      let fiveStarCounts = summaryData.fiveStarCounts;
+      let fiveStarCounts = getFiveStarCounts(summaryData,tiedCandidates);
       if (nCandidatesNeeded === 2 && fiveStarCounts[1].counts > fiveStarCounts[2].counts) {
         // Two candidates needed and first two have more five star counts than the rest, advance them both to runoff
         fiveStarCounts.slice(0, 2).map((fiveStarCount) => 
@@ -270,7 +262,7 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
   })
 
   // Five-star tiebreaker is enabled, look for candidate with most 5 star votes
-  const fiveStarCounts = summaryData.fiveStarCounts;
+  const fiveStarCounts = getFiveStarCounts(summaryData,finalists);
   if (fiveStarCounts[0].counts != fiveStarCounts[1].counts){
     const winnerIndex = (fiveStarCounts[0].counts > fiveStarCounts[1].counts)? 0 : 1;
     const loserIndex = 1 - winnerIndex;
@@ -377,4 +369,16 @@ function getHeadToHeadLosers(summaryData: starSummaryData, tiedCandidates: candi
     headToHeadLosers,
     losses: maxLosses,
   }
+}
+
+function getFiveStarCounts(summaryData: starSummaryData, tiedCandidates: candidate[]) {
+  // Returns five star counts of tied candidates, sorted from most to least
+  const fiveStarCounts: fiveStarCount[] = []
+  tiedCandidates.forEach((candidate) => {
+    fiveStarCounts.push(
+      summaryData.fiveStarCounts[candidate.index]
+    )
+  })
+  fiveStarCounts.sort((a, b) => b.counts - a.counts)
+  return fiveStarCounts
 }
