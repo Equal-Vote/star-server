@@ -88,7 +88,6 @@ export const SecondaryButton = (props) => (
         {...props}
         sx={{
             p: 1,
-            m: 'auto',
             fontWeight: 'bold',
             fontSize: 16,
             color: '#86C66A',

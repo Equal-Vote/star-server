@@ -259,7 +259,6 @@ interface EnhancedTableProps {
   handleOnClick: Function
   isPending: boolean
   pendingMessage: string,
-  emptyContent: any
 }
 
 const limit = (string = '', limit = 0) => {

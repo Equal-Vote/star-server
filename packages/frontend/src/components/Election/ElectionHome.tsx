@@ -10,6 +10,7 @@ import useElection from '../ElectionContextProvider';
 import DraftWarning from "./DraftWarning";
 import SupportBlurb from './SupportBlurb';
 import { Support } from '@mui/icons-material';
+import { PrimaryButton, SecondaryButton } from '../styles';
 
 const ElectionHome = () => {
   const { election, voterAuth } = useElection();
@@ -55,7 +56,6 @@ const ElectionHome = () => {
 
           <VoterAuth />
 
-
           {election.state === 'finalized' && election.start_time &&
             <Box sx={{ flexGrow: 1 }}>
               <Typography align='center' variant="h6" component="h6">
@@ -65,7 +65,6 @@ const ElectionHome = () => {
           }
 
           {election.state === 'open' && <>
-
             {election.end_time &&
               <Box sx={{ flexGrow: 1 }}>
                 < Typography align='center' variant="h6" component="h6">
@@ -76,31 +75,31 @@ const ElectionHome = () => {
               voterAuth.has_voted == false && voterAuth.authorized_voter && !voterAuth.required &&
 
               <Box display='flex' flexDirection='column' alignItems='center' gap={5} sx={{ p: 1}}>
-                <Button fullWidth variant='contained' href={`/${String(election?.election_id)}/vote`} >
+                <PrimaryButton fullWidth href={`/${String(election?.election_id)}/vote`} >
                   <Typography align='center' variant="h3" component="h3" fontWeight='bold' sx={{ p: 2 }}>
                     {t('election_home.vote')}
                   </Typography>
-                </Button>
+                </PrimaryButton>
                 {election.settings.public_results === true &&
-                <Button variant='text' href={`/${String(election?.election_id)}/results`} >
+                <SecondaryButton href={`/${String(election?.election_id)}/results`} sx={{mx: 'auto', width: '90%', p:3}}>
                     {t('election_home.or_view_results')}
-                </Button>
+                </SecondaryButton>
                 }
               </Box>
             }
           </>}
 
           {election.state === 'draft' && <>
-            <Box display='flex' flexDirection='column' alignItems='center' gap={5} sx={{ p: 1}}>
-              <Button fullWidth variant='contained' href={`/${String(election?.election_id)}/vote`} >
+            <Box display='flex' flexDirection='column' alignItems='center' gap={3} sx={{ p: 1}}>
+              <PrimaryButton fullWidth href={`/${String(election?.election_id)}/vote`} >
                 <Typography align='center' variant="h3" component="h3" fontWeight='bold' sx={{ p: 2 }}>
                   {t('election_home.vote')}
                 </Typography>
-              </Button>
+              </PrimaryButton >
               {election.settings.public_results === true &&
-              <Button variant='text' href={`/${String(election?.election_id)}/results`} >
+              <SecondaryButton href={`/${String(election?.election_id)}/results`} sx={{mx: 'auto', width: '90%', p:3}}>
                   {t('election_home.or_view_results')}
-              </Button>
+              </SecondaryButton >
               }
             </Box>
           </>}
@@ -124,11 +123,9 @@ const ElectionHome = () => {
           {/* Show results button only if public_results enabled and voter has voted or election is closed */}
           {(election.settings.public_results === true &&
             (election.state === 'open' && voterAuth.has_voted) || election.state === 'closed') &&
-            <Box sx={{ p: 1, flexGrow: 0 }}>
-              <Button fullWidth variant='outlined' href={`/${election.election_id}/results`} >
-                {t('election_home.view_results')}
-              </Button>
-            </Box>
+            <SecondaryButton href={`/${String(election?.election_id)}/results`} sx={{mx: 'auto', width: '90%', p:3}}>
+              {t('election_home.view_results')}
+            </SecondaryButton>
           }
           {election.state === 'archived' &&
             <Box sx={{ flexGrow: 1 }}>

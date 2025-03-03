@@ -51,11 +51,11 @@
 
 hr {
   border: none;
-  height: 4px;
+  height: 2px;
   /* Set the hr color */
   /*color: #333;  /* old IE */
   /*background-color: #333;  /* Modern Browsers */
-  background-color: rgba(0, 0, 0, 0.87)
+  background-color: #282828;
 }
 
 .MuiTypography-root {

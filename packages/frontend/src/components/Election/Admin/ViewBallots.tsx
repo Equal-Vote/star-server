@@ -12,6 +12,7 @@ import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import DraftWarning from "../DraftWarning";
 import { BallotDataExport } from "../Results/BallotDataExport";
+import { SecondaryButton } from "~/components/styles";
 
 const ViewBallots = () => {
     // some ballots will have different subsets of the races, but we need the full list anyway
@@ -99,7 +100,7 @@ const ViewBallots = () => {
                                             vote.scores.map((score) => (
                                                 <TableCell >{score.score || ''}</TableCell>
                                             ))))}
-                                        <TableCell ><Button variant='outlined' onClick={() => onOpen(ballot)} > View </Button></TableCell>
+                                        <TableCell ><SecondaryButton onClick={() => onOpen(ballot)} > View </SecondaryButton></TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

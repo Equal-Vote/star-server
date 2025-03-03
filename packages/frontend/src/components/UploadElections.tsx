@@ -12,6 +12,7 @@ import { Election, NewElection } from '@equal-vote/star-vote-shared/domain_model
 import { useGetElections } from "~/hooks/useAPI";
 import { OrderedNewBallot, RaceCandidateOrder } from "@equal-vote/star-vote-shared/domain_model/Ballot";
 import { inferElectionSettings } from "./ElectionSettingInference";
+import { PrimaryButton, SecondaryButton } from "./styles";
 
 export default () => {
     const [addToPublicArchive, setAddToPublicArchive] = useState(true)
@@ -317,12 +318,12 @@ export default () => {
                     multiple
                     hidden
                     ref={inputRef} />
-                <Button variant='outlined'
+                <SecondaryButton variant='outlined'
                     onClick={() => inputRef.current.click()} >
                     <Typography variant="h6" sx={{ m: 0 }}>
                         Select File(s)
                     </Typography>
-                </Button>
+                </SecondaryButton>
             </Box>
         </Box>
 
@@ -337,6 +338,6 @@ export default () => {
             emptyContent={<p>No files selected</p>}
         />
 
-        <Button variant='contained' disabled={electionsSubmitted} onClick={submitElections}>Add (or update) elections</Button>
+        <PrimaryButton variant='contained' disabled={electionsSubmitted} onClick={submitElections}>Add (or update) elections</PrimaryButton>
     </Box>
 }

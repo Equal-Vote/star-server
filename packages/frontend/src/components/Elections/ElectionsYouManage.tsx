@@ -44,6 +44,7 @@ export default () => {
             return [];
         }
     }, [data]);
+    managedElectionsData  = []
             
     return <EnhancedTable
         title='My Elections & Polls'
@@ -53,6 +54,5 @@ export default () => {
         data={managedElectionsData}
         handleOnClick={(row) => navigate(`/${String(row.raw.election_id)}`)}
         defaultSortBy='update_date'
-        emptyContent={<>"You don't have any elections yet"<button>Create Election</button></>}
     />
 }

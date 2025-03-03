@@ -6,7 +6,7 @@ import React, {
     useState,
 } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
-import { PrimaryButton } from './styles';
+import { PrimaryButton, SecondaryButton } from './styles';
 import { useSubstitutedTranslation } from './util';
 // Built from this example buth with MUI dialogs: https://akashhamirwasia.com/blog/building-expressive-confirm-dialog-api-in-react/
 // Uses a context provider to allow any component to access a confirm dialog component using the useConfirm hook
@@ -61,14 +61,14 @@ export function ConfirmDialogProvider({ children }) {
                     <DialogContentText>{state.message}</DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <PrimaryButton
+                    <SecondaryButton
                         type='button'
                         variant="outlined"
                         width="100%"
                         fullWidth={false}
                         onClick={() => fn.current(false)}>
                         {state['cancel'] ?? t('keyword.cancel')}
-                    </PrimaryButton>
+                    </SecondaryButton>
                     <PrimaryButton
                         type='button'
                         variant="contained"

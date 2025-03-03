@@ -27,16 +27,12 @@ export default function AddRace() {
     return (
         <Box sx={{
             display: 'flex',
-            flexDirection: 'row-reverse'
+            flexDirection: 'row'
         }}>
             <PrimaryButton
-                type='button'
-                variant="contained"
-                fullWidth={false}
-                sx={{ borderRadius: 28, backgroundColor: 'brand.green' }}
                 onClick={handleOpen}
                 disabled={election.state!=='draft'}>
-                Add
+                Add Race
             </PrimaryButton>
             <RaceDialog
               onSaveRace={onAdd}

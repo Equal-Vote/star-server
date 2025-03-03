@@ -6,6 +6,7 @@ import BorderAll from '@mui/icons-material/BorderAll';
 import DataObject from '@mui/icons-material/DataObject';
 import { MenuButton } from '~/components/MenuButton';
 import useAnonymizedBallots from '~/components/AnonymizedBallotsContextProvider';
+import { Box } from '@mui/material';
 
 interface Props {
     election: Election;
@@ -71,21 +72,25 @@ export const BallotDataExport = ({ election }: Props) => {
                 <a onClick={fetchBallots}>
                     {/*The MenuButton is redundant between the 2 but it's necessary to resolve the 'Menu Component doesn't accept fragment as child' warning*/}
                     {ballots && 
-                        <MenuButton label={"Download"} >
-                            <MenuItem key="csv"  id={"download-csv"} onClick={downloadCSV}>
-                                <BorderAll sx={{ marginRight: 1 }} />
-                                Download CSV
-                            </MenuItem>
-                            <MenuItem key="json" onClick={downloadJson}>
-                                <DataObject sx={{ marginRight: 1 }} />
-                                Download JSON
-                            </MenuItem>
-                        </MenuButton>
+                        <Box sx={{m:1, maxWidth: '400px'}}>
+                            <MenuButton label={"Download"} >
+                                <MenuItem key="csv"  id={"download-csv"} onClick={downloadCSV}>
+                                    <BorderAll sx={{ marginRight: 1 }} />
+                                    Download CSV
+                                </MenuItem>
+                                <MenuItem key="json" onClick={downloadJson}>
+                                    <DataObject sx={{ marginRight: 1 }} />
+                                    Download JSON
+                                </MenuItem>
+                            </MenuButton>
+                        </Box>
                     }
                     {!ballots && 
-                        <MenuButton label={"Download"} >
-                            <MenuItem disabled>Loading Ballots...</MenuItem>
-                        </MenuButton>
+                        <Box sx={{m:1, maxWidth: '400px'}}>
+                            <MenuButton label={"Download"} >
+                                <MenuItem disabled>Loading Ballots...</MenuItem>
+                            </MenuButton>
+                        </Box>
                     }
                 </a>
                 
