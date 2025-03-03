@@ -10,6 +10,7 @@ import { Box, InputLabel } from "@mui/material";
 import { useGetSandboxResults } from '../hooks/useAPI';
 import { VotingMethod } from '@equal-vote/star-vote-shared/domain_model/Race';
 import { ElectionContextProvider } from './ElectionContextProvider';
+import { PrimaryButton } from './styles';
 
 const Sandbox = () => {
 
@@ -153,7 +154,7 @@ const Sandbox = () => {
                             {errorText}
                         </FormHelperText>
                     </Grid>
-                    <Button variant='outlined' onClick={() => getResults()} > Get Results </Button>
+                    <PrimaryButton onClick={() => getResults()} > Get Results </PrimaryButton>
                     </Grid>
             </Grid>
             <Grid item xs={12} md={6}>

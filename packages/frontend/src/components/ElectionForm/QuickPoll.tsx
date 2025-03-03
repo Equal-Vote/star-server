@@ -1,8 +1,8 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from "react-router";
 import structuredClone from '@ungap/structured-clone';
-import { StyledButton, StyledTextField } from '../styles.js';
-import { Box, Button, IconButton, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
+import { PrimaryButton, SecondaryButton, StyledTextField } from '../styles.js';
+import { Box, Button, IconButton, MenuItem, Paper, Select, SelectChangeEvent, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { usePostElection } from '../../hooks/useAPI';
 import { useCookie } from '../../hooks/useCookie';
@@ -182,6 +182,10 @@ const QuickPoll = () => {
     }
 
     return (
+        <Paper elevation={5} sx={{
+            maxWidth: '613px',
+            margin: 'auto',
+        }}>
         <form onSubmit={onSubmit} >
             <Box 
             sx={{
@@ -189,13 +193,13 @@ const QuickPoll = () => {
                 gap: 2,
                 flexDirection: 'column',
                 textAlign: 'center',
-                backgroundColor: 'lightShade.main',
+                //backgroundColor: //'lightShade.main',
                 padding: 3,
                 borderRadius: '20px',
                 minWidth: {xs: '0px', md: '400px'}
             }}>
                 {/*we use comonent here instead of variant since we want the styling to match p*/}
-                <Typography color={'lightShade.contrastText'}>{t('landing_page.quick_poll.title')}</Typography>
+                <Typography variant='h5' color={'lightShade.contrastText'}>{t('landing_page.quick_poll.title')}</Typography>
                 <Select value={methodKey} onChange={(ev: SelectChangeEvent) => setMethodKey(ev.target.value as string)}>
                     <MenuItem value={'star'}>{t(`methods.star.full_name`)}</MenuItem>
                     <MenuItem value={'approval'}>{t(`methods.approval.full_name`)}</MenuItem>
@@ -255,52 +259,29 @@ const QuickPoll = () => {
                         <DeleteIcon />
                     </IconButton>
                 </Box>
-                <StyledButton
+                <PrimaryButton
                     type='submit'
-                    variant="contained"
                     disabled={isPending} >
                     {t('landing_page.quick_poll.create')}
-                </StyledButton>
-                {!authSession.isLoggedIn() ?
-                    <Button
-                        variant="outlined"
-                        onClick={() => authSession.openLogin()}
-                        sx={{
-                            width: '90%',
-                            p: 1,
-                            m: 'auto',
-                            boxShadow: 2,
-                            fontWeight: 'bold',
-                            fontSize: 16,
-                        }}
-                        disabled={isPending}
-                    >
-                        {t('landing_page.quick_poll.sign_in')}
-                    </Button>
-                    :
-                    <Button
-                        variant="outlined"
-                        onClick={(e) => {
+                </PrimaryButton>
+                    
+                <SecondaryButton
+                    onClick={(e) => {
+                        if(authSession.isLoggedIn()){
                             if(validateForm(e)){
-                                createElectionContext.openDialog(election)}
+                                createElectionContext.openDialog(election)
                             }
-                        }
-                        sx={{
-                            width: '90%',
-                            p: 1,
-                            m: 'auto',
-                            boxShadow: 2,
-                            fontWeight: 'bold',
-                            fontSize: 16,
-                        }}
-                        disabled={isPending}
-                    >
-                        {t('landing_page.quick_poll.continue_with_editor')}
-                    </Button>
-                }
-                
+                        }else{
+                            authSession.openLogin()
+                        } 
+                    }}
+                    disabled={isPending}
+                >
+                    {authSession.isLoggedIn() ? t('landing_page.quick_poll.continue_with_editor') : t('landing_page.quick_poll.sign_in')}
+                </SecondaryButton>
             </Box>
         </form >
+        </Paper>
     )
 }
 

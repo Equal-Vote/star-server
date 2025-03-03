@@ -12,13 +12,14 @@ export default function Races() {
         <Stack spacing={2} sx={{width: '100%'}}>
             <Box display='flex' flexDirection='row' gap={4} alignItems='center'>
                 <Typography gutterBottom variant="h4" component="h4">Races</Typography>
-                <AddRace/>
             </Box>
 
             {election.races?.map((race, race_index) => (
                 <Race race={race} race_index={race_index} />
             ))
             }
+
+            <AddRace/>
         </Stack >
     )
 }

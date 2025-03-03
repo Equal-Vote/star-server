@@ -9,6 +9,7 @@ import { FormHelperText } from "@mui/material"
 import { useCookie } from "../../hooks/useCookie";
 import useAuthSession from "../AuthSessionContextProvider";
 import useElection from "../ElectionContextProvider";
+import { PrimaryButton } from "../styles";
 
 const VoterAuth = () => {
   const authSession = useAuthSession()
@@ -96,12 +97,12 @@ const VoterAuth = () => {
 
                 {(!isAuthorized || missingVoterID) &&
                   <Box sx={{ p: 1, display: 'flex', justifyContent: 'center' }}>
-                    <Button variant='outlined' onClick={() => submitVoterID()} > Submit </Button>
+                    <PrimaryButton onClick={() => submitVoterID()} > Submit </PrimaryButton>
                   </Box>
                 }
                 {isAuthorized && voterID() &&
                   <Box sx={{ p: 1, display: 'flex', justifyContent: 'center' }}>
-                    <Button variant='outlined' onClick={() => clearVoterID()} > Clear </Button>
+                    <PrimaryButton onClick={() => clearVoterID()} > Clear </PrimaryButton>
                   </Box>
                 }
               </Box>

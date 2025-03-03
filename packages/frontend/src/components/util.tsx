@@ -2,7 +2,7 @@ import { Box, Button, Divider, FormControlLabel, Link, TextField, Typography } f
 import { useEffect } from "react";
 import { DateTime } from "luxon";
 import { useTranslation } from "react-i18next";
-import { Tip } from "./styles";
+import { SecondaryButton, Tip } from "./styles";
 import i18n from "~/i18n/i18n";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 import useSnackbar from "./SnackbarContext";
@@ -49,9 +49,8 @@ export const MailTo = ({ children }) => {
   const { setSnack } = useSnackbar();
   // https://adamsilver.io/blog/the-trouble-with-mailto-email-links-and-what-to-do-instead/
   return <span style={{ whiteSpace: 'nowrap' }}>
-    <Link href={`mailto:${children}`} sx={{ color: 'var(--brand-green)' }}>{children}</Link>
-    <Button
-      variant='contained'
+    <Link href={`mailto:${children}`} sx={{ color: 'var(--brand-pop)' }}>{children}</Link>
+    <SecondaryButton
       onClick={() => {
         navigator.clipboard.writeText(children)
         setSnack({
@@ -61,8 +60,8 @@ export const MailTo = ({ children }) => {
           autoHideDuration: 6000,
         })
       }}
-      sx={{ minWidth: 0, ml: 1, px: 1, py: 0, backgroundColor: 'var(--brand-green)' }}
-    >Copy</Button>
+      sx={{ minWidth: 0, ml: 1, px: 1, py: 0}}
+    >Copy</SecondaryButton>
   </span>
 }
 
@@ -243,6 +242,9 @@ export const openFeedback = () => {
     )[0];
   (button as HTMLButtonElement).click();
 };
+
+
+
 
 export function scrollToElement(e) {
   setTimeout(() => {

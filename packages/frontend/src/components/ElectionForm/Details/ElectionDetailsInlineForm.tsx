@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import Grid from "@mui/material/Grid";
 import { Box, IconButton, Paper, Typography } from "@mui/material"
 import ElectionStateChip from './ElectionStateChip';
-import { StyledButton } from '../../styles';
+import { PrimaryButton } from '../../styles';
 import useElection from '../../ElectionContextProvider';
 import { useSubstitutedTranslation } from '../../util';
 import EditIcon from '@mui/icons-material/Edit';
@@ -86,7 +86,7 @@ export default function ElectionDetailsInlineForm() {
                     p: 1
                 }}>
                     <Box sx={{ p: 1 }}>
-                        <StyledButton
+                        <PrimaryButton
                             type='button'
                             variant="contained"
                             width="100%"
@@ -94,16 +94,16 @@ export default function ElectionDetailsInlineForm() {
                             onClick={handleClose}
                             disabled={election.title.length==0}>
                             {t('keyword.cancel')}
-                        </StyledButton>
+                        </PrimaryButton>
                     </Box>
                     <Box sx={{ p: 1 }}>
-                        <StyledButton
+                        <PrimaryButton
                             type='button'
                             variant="contained"
                             fullWidth={false}
                             onClick={() => handleSave()}>
                             {t('keyword.save')}
-                        </StyledButton>
+                        </PrimaryButton>
                     </Box>
                 </Box>
             </>}

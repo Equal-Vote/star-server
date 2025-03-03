@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import Grid from "@mui/material/Grid";
 import { Box, Divider, Paper } from "@mui/material";
 import { Typography } from "@mui/material";
-import { StyledButton } from "../../styles";
+import { PrimaryButton } from "../../styles";
 import { Link, useNavigate } from 'react-router-dom';
 import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import ShareButton from "../ShareButton";
@@ -131,14 +131,13 @@ const AdminHome = () => {
         text={t('admin_home.roles')}
         permission='canEditElectionRoles'
         button={(<>
-            <StyledButton
-                variant='contained'
+            <PrimaryButton
                 disabled={!hasPermission('canEditElectionRoles')}
                 fullWidth
                 component={Link} to={`/${election.election_id}/admin/roles`}
             >
                 {t('admin_home.roles.button')}
-            </StyledButton>
+            </PrimaryButton>
         </>)}
     />
 
@@ -146,29 +145,26 @@ const AdminHome = () => {
         text={t('admin_home.test_ballot')}
         permission='canViewElectionRoll'
         button={(<>
-            <StyledButton
+            <PrimaryButton
                 type='button'
-                variant='contained'
                 fullWidth
                 component={Link} to={`/${election.election_id}`}
             >
                 {t('admin_home.test_ballot.button')}
-            </StyledButton>
+            </PrimaryButton>
         </>)}
     />
 
     const DuplicateElectionSection = () => <Section
         text={t('admin_home.duplicate')}
         button={
-            <StyledButton
-                type='button'
-                variant='contained'
+            <PrimaryButton
                 disabled={!hasPermission('canEditElectionState')}
                 fullWidth
                 onClick={() => duplicateElection()}
             >
                 {t('admin_home.duplicate.button')}
-            </StyledButton>
+            </PrimaryButton>
         }
     />
 
@@ -190,15 +186,13 @@ const AdminHome = () => {
             text={text}
             permission='canEditElectionState'
             button={(<>
-                <StyledButton
-                    type='button'
-                    variant='contained'
+                <PrimaryButton
                     disabled={!hasPermission('canEditElectionState')}
                     fullWidth
                     onClick={togglePublicResults}
                 >
                     {text.description}
-                </StyledButton>
+                </PrimaryButton>
             </>)}
         />
     }
@@ -208,15 +202,13 @@ const AdminHome = () => {
         permission='canEditElectionState'
         includeDivider={false}
         button={(<>
-            <StyledButton
-                type='button'
-                variant='contained'
+            <PrimaryButton
                 disabled={!hasPermission('canEditElectionState')}
                 fullWidth
                 onClick={() => archiveElection()}
             >
                 {t('admin_home.archive.button')}
-            </StyledButton>
+            </PrimaryButton>
         </>)}
     />
 
@@ -273,9 +265,7 @@ const AdminHome = () => {
             }
         </Grid>
         <Grid xs={12} sx={{ p: 1, pt: 0, display: 'flex', alignItems: 'center' }}>
-            <StyledButton
-                type='button'
-                variant='contained'
+            <PrimaryButton
                 disabled={election.title.length === 0 || election.races.length === 0 || !hasPermission('canEditElectionState')}
                 fullWidth
                 onClick={() => finalizeElection()}
@@ -284,7 +274,7 @@ const AdminHome = () => {
                 <Typography align='center' variant="h4" fontWeight={'bold'}>
                    {t('admin_home.finalize_button')}
                 </Typography>
-            </StyledButton>
+            </PrimaryButton>
         </Grid>
     </Box>
     
@@ -306,15 +296,13 @@ const AdminHome = () => {
                     <ShareButton url={`${window.location.origin}/${election.election_id}`} />
                 </Box>
                 <Box sx={{width: '100%', maxWidth: 300}}>
-                    <StyledButton
-                        type='button'
-                        variant='contained'
+                    <PrimaryButton
                         disabled={!(hasPermission('canViewPreliminaryResults') || election.settings.public_results === true)}
                         fullWidth
                         component={Link} to={`/${election.election_id}/results`}
                     >
                         {t('admin_home.view_results.button')}
-                    </StyledButton>
+                    </PrimaryButton>
                 </Box>
             </Box>
         }

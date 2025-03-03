@@ -14,6 +14,7 @@ import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
 import SendEmailDialog from "./SendEmailDialog";
+import { PrimaryButton, SecondaryButton } from "~/components/styles";
 
 
 const ViewElectionRolls = () => {
@@ -93,11 +94,11 @@ const ViewElectionRolls = () => {
                 <>
                     {election.settings.voter_access === 'closed' &&
                         <PermissionHandler permissions={permissions} requiredPermission={'canAddToElectionRoll'}>
-                            <Button variant='outlined' onClick={() => setAddRollPage(true)} > Add Voters </Button>
+                            <SecondaryButton onClick={() => setAddRollPage(true)} > Add Voters </SecondaryButton>
                         </PermissionHandler>
                     }
                     {election.settings.invitation === 'email' &&
-                        < Button variant='outlined' onClick={() => setDialogOpen(true)} sx={{ml: 2}}>Draft Email Blast </Button>
+                        <SecondaryButton onClick={() => setDialogOpen(true)} sx={{ml: 2}}>Draft Email Blast </SecondaryButton>
                     }
                     <EnhancedTable
                         headKeys={headKeys}

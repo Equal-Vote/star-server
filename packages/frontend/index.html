@@ -56,12 +56,32 @@
       window.fwSettings={
       'widget_id':63000001746
       };
-      !function(){if("function"!=typeof window.FreshworksWidget){var n=function(){n.q.push(arguments)};n.q=[],window.FreshworksWidget=n}}() 
+      !function(){
+        if("function"!=typeof window.FreshworksWidget){
+          var n=function(){
+            n.q.push(arguments)
+          };
+          n.q=[],
+          window.FreshworksWidget=n
+
+        }
+      }() 
+
+      // override color
+      function onload(){
+        const frame = document.getElementById("launcher-frame");
+        const button = frame.contentWindow.document.getElementsByClassName(
+          "launcher-button"
+        )[0]
+        button.style.backgroundColor = '#86C66A';
+        button.style.animation = '0s'
+        button.style.transition = '0s'
+      }
     </script>
     <script type='text/javascript' src='https://widget.freshworks.com/widgets/63000001746.js' async defer></script>
     <!-- End Freshdesk Feedback Form-->
   </head>
-  <body>
+  <body onload="onload()">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--

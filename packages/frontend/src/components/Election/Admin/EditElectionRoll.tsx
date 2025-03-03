@@ -15,6 +15,7 @@ import SendEmailDialog from "./SendEmailDialog";
 import { email_request_data } from "@equal-vote/star-vote-backend/src/Controllers/Election/sendEmailController";
 import { SettingsBackupRestore } from "@mui/icons-material";
 import useSnackbar from "~/components/SnackbarContext";
+import { SecondaryButton } from "~/components/styles";
 
 
 type Props = {
@@ -123,11 +124,11 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
                         }
                         <Grid item sm={4} sx={{py:1}}>
                             <PermissionHandler permissions={permissions} requiredPermission={'canSendEmails'}>
-                                <Button variant='outlined' onClick={() => { setDialogOpen(true) }} > Draft Email </Button>
+                                <SecondaryButton onClick={() => { setDialogOpen(true) }} > Draft Email </SecondaryButton>
                             </PermissionHandler>
                         </Grid>
-                        <Box sx={{pb:3, display: 'flex', flexDirection: 'column'}}>
-                            <Button variant='outlined' sx={{maxWidth: '250px'}} onClick={() => {
+                        <Grid item sm={4} sx={{py:1}}>
+                            <SecondaryButton sx={{ml: 0}} onClick={() => {
                                     navigator.clipboard.writeText(window.location.origin+'/'+election.election_id+'/id/'+roll.voter_id)
                                     setSnack({
                                         message: 'Unique URL Copied!',
@@ -136,15 +137,15 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
                                         autoHideDuration: 6000,
                                     })
                                 }}
-                            > Copy Unique Voting URL </Button>
-                            <Typography component='p'>(action will be captured in audit log)</Typography>
-                        </Box>
+                            > Copy Unique Voting URL </SecondaryButton >
+                        </Grid>
+                        <Typography component='p'>(action will be captured in audit log)</Typography>
                     </>
                 }
                 {roll.state === 'registered' &&
                     <Grid item sm={4} sx={{py:1}}>
                         <PermissionHandler permissions={permissions} requiredPermission={'canApproveElectionRoll'}>
-                            <Button variant='outlined' onClick={() => { onApprove() }} > Approve </Button>
+                            <SecondaryButton onClick={() => { onApprove() }} > Approve </SecondaryButton >
                         </PermissionHandler>
                     </Grid>}
                 {flags.isSet('VOTER_FLAGGING') && <>
@@ -152,19 +153,19 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
                         <Grid item sm={4} sx={{py:1}}>
 
                             <PermissionHandler permissions={permissions} requiredPermission={'canFlagElectionRoll'}>
-                                <Button variant='outlined' onClick={() => { onFlag() }} > Flag </Button>
+                                <SecondaryButton onClick={() => { onFlag() }} > Flag </SecondaryButton >
                             </PermissionHandler>
                         </Grid>}
                     {roll.state === 'flagged' &&
                         <Grid item sm={4} sx={{py:1}}>
                             <PermissionHandler permissions={permissions} requiredPermission={'canUnflagElectionRoll'}>
-                                <Button variant='outlined' onClick={() => { onUnflag() }} > Unflag </Button>
+                                <SecondaryButton onClick={() => { onUnflag() }} > Unflag </SecondaryButton >
                             </PermissionHandler>
                         </Grid>}
                     {roll.state === 'flagged' &&
                         <Grid item sm={4} sx={{py:1}}>
                             <PermissionHandler permissions={permissions} requiredPermission={'canInvalidateElectionRoll'}>
-                                <Button variant='outlined' onClick={() => { onInvalidate() }} > Invalidate </Button>
+                                <SecondaryButton onClick={() => { onInvalidate() }} > Invalidate </SecondaryButton>
                             </PermissionHandler>
                         </Grid>}
                 </>}
@@ -191,7 +192,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
                     </TableContainer>
                 }
                 <Grid item sm={4}>
-                    <Button variant='outlined' onClick={() => { onClose() }} > Close </Button>
+                    <SecondaryButton onClick={() => { onClose() }} > Close </SecondaryButton>
                 </Grid>
             </Grid>
             <SendEmailDialog

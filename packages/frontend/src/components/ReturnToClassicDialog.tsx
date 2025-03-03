@@ -2,6 +2,7 @@ import { Box, Button, Dialog, DialogContent, Stack, Step, StepConnector, StepCon
 import { useState, createContext, useContext } from "react";
 import { openFeedback, useSubstitutedTranslation } from "./util";
 import { sharedConfig } from "@equal-vote/star-vote-shared/config";
+import { PrimaryButton, SecondaryButton } from "./styles";
 
 export interface IReturnToClassicContext{
     open: boolean,
@@ -34,40 +35,24 @@ export default () => {
                 <Stack className="classicPopupInner">
                     <Typography align='center' >{t('return_to_classic.description')}</Typography>
                     <br/>
-                    <Button
-                        variant="contained"
-                        sx={{
-                            width: '80%',
-                            m: 'auto',
-                            p: 1,
-                            boxShadow: 2,
-                            fontWeight: 'bold',
-                            fontSize: 18,
-                        }}
+                    <PrimaryButton
                         onClick={() => {
                             openFeedback();
                             returnToClassicContext.closeDialog();
                         }}
                     >
                         {t('return_to_classic.feedback')}
-                    </Button>
-                    <Button
-                        variant="outlined"
+                    </PrimaryButton>
+                    <SecondaryButton
                         sx={{
-                            width: '70%',
-                            m: 'auto',
                             mt: 2,
-                            p: 1,
-                            boxShadow: 2,
-                            fontWeight: 'bold',
-                            fontSize: 18,
                         }}
                         onClick={() => {
                             window.location.href=sharedConfig.CLASSIC_DOMAIN;
                         }}
                     >
                         {t('return_to_classic.continue')}
-                    </Button>
+                    </SecondaryButton>
                 </Stack>
             </DialogContent>
         </Dialog>

@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ShareButton from "../ShareButton";
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
-import { StyledButton } from "../../styles";
+import { PrimaryButton } from "../../styles";
 import useElection from '../../ElectionContextProvider';
 import { useSubstitutedTranslation } from '~/components/util';
 import DraftWarning from '../DraftWarning';
@@ -46,13 +46,12 @@ const Thanks = () => {
                 <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' } }} >
                     {['draft', 'open', 'closed'].includes(election.state) && election.settings.public_results === true &&
                         <Box sx={{ width: '100%',  p: 1, px:{xs: 5, sm: 1} }}>
-                            <StyledButton
+                            <PrimaryButton
                                 type='button'
-                                variant='contained'
                                 fullWidth
                                 href={`/${election.election_id}/results`} >
                                 {t('ballot_submitted.results')}
-                            </StyledButton>
+                            </PrimaryButton>
                         </Box>
                     }
                     {election.settings.voter_access !== 'closed' &&

@@ -7,7 +7,7 @@ import Container from '@mui/material/Container';
 import PermissionHandler from "../../PermissionHandler";
 import { usePutElectionRoles } from "../../../hooks/useAPI";
 import { Election } from "@equal-vote/star-vote-shared/domain_model/Election";
-import { StyledButton } from "../../styles";
+import { PrimaryButton } from "../../styles";
 import useAuthSession from "../../AuthSessionContextProvider";
 import useElection from "../../ElectionContextProvider";
 
@@ -115,14 +115,13 @@ const EditRoles = () => {
 
                     <Grid item sx={{ p: 2 }}>
                         <PermissionHandler permissions={permissions} requiredPermission={'canEditElectionRoles'}>
-                            <StyledButton
+                            <PrimaryButton
                                 type='submit'
-                                variant='contained'
                                 disabled={putRoles.isPending}>
                                 <Typography align='center' variant="body2" fontWeight={'bold'}>
                                     Submit
                                 </Typography>
-                            </StyledButton>
+                            </PrimaryButton>
                         </PermissionHandler>
                     </Grid>
                 </Grid>

@@ -13,6 +13,7 @@ import useElection from "../../ElectionContextProvider";
 import useSnackbar from "../../SnackbarContext";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { sharedConfig } from '@equal-vote/star-vote-shared/config';
+import { PrimaryButton, SecondaryButton } from "~/components/styles";
 
 const AddElectionRoll = ({ onClose }) => {
     const { snack, setSnack } = useSnackbar()
@@ -201,13 +202,12 @@ const AddElectionRoll = ({ onClose }) => {
                     </Grid>
 
                     <Grid item sx={{ m: 1 }}>
-                        <Button
-                            variant='contained'
-                            type='submit'
+                        <PrimaryButton
                             fullWidth
+                            type='submit'
                             disabled={postRoll.isPending} >
                             Submit
-                        </Button>
+                        </PrimaryButton>
                     </Grid>
                     <Grid item sx={{ my: 1 }}>
                         <Divider />
@@ -231,18 +231,17 @@ const AddElectionRoll = ({ onClose }) => {
                                 onChange={handleLoadCsv}
                                 hidden
                                 ref={inputRef} />
-                            <Button
-                                variant='outlined'
+                            <SecondaryButton
                                 fullWidth
                                 onClick={() => inputRef.current.click()} >
                                 <Typography variant="h6" component="h6">
                                     Select File
                                 </Typography>
-                            </Button>
+                            </SecondaryButton>
                         </Box>
                     </Grid>
                     <Grid item sm={4} sx={{ m: 1 }}>
-                        <Button variant='outlined' onClick={() => { onClose() }} > Close </Button>
+                        <SecondaryButton onClick={() => { onClose() }} > Close </SecondaryButton >
                     </Grid>
                 </Grid>
             </Container >

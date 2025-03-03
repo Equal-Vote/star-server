@@ -13,7 +13,8 @@ export default function Footer() {
   return (
     <Box
       sx={{
-        backgroundColor: themeSelector.mode === 'darkMode' ? 'brand.gray5' : 'brand.gray1',
+        backgroundColor: 'black',
+        color: 'white',
         p: 6,
         width: '100%',
         mt: 'auto',
@@ -25,21 +26,21 @@ export default function Footer() {
       <Container maxWidth="lg">
         <Grid container spacing={5}>
           <Grid item xs={12} md={4} >
-            <Typography variant="h6" color="text.primary" gutterBottom sx={{textAlign: {xs: 'center',md: 'left'}}}>
+            <Typography variant="h6" gutterBottom sx={{textAlign: {xs: 'center',md: 'left'}}}>
               {t('footer.project_title')}
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{textAlign: 'left'}}>
+            <Typography variant="body2" sx={{textAlign: 'left'}}>
               {t('footer.project_description')}
             </Typography>
           </Grid>
           <Grid item xs={12} md={4}>
-            <Typography variant="h6" color="text.primary" gutterBottom sx={{
+            <Typography variant="h6" gutterBottom sx={{
               pl: 1, pr: 1,
               textAlign: {xs: 'center', md: 'left'}
             }}>
               {t('footer.about_us_title')}
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{
+            <Typography variant="body2" sx={{
               pl: 1, pr: 1
             }}>
               {t('footer.about_us_description')}
@@ -47,7 +48,7 @@ export default function Footer() {
           </Grid>
           <Grid item xs={12} md={4} >
             <Box component="img" src="https://assets.nationbuilder.com/unifiedprimary/sites/1/meta_images/original/evc_logo.png?1730324377" sx={{width: '100%', padding: 2, background: 'black'}}/>
-            <Typography variant="body2" color="text.primary" gutterBottom sx={{
+            <Typography variant="body2" gutterBottom sx={{
               pl: 1, pr: 1,
               textAlign: {
                 xs: 'center',
@@ -70,7 +71,7 @@ export default function Footer() {
               <Link
                 href="https://www.instagram.com/starvoting/"
                 color="inherit"
-                sx={{ pl: 1, pr: 1, color: 'black' }}
+                sx={{ pl: 1, pr: 1 }}
               >
                 <Instagram />
               </Link>

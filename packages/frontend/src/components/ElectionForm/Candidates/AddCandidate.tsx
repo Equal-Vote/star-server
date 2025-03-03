@@ -10,7 +10,7 @@ import Cropper from 'react-easy-crop';
 import getCroppedImg from './PhotoCropper';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { StyledButton } from '../../styles';
+import { PrimaryButton, SecondaryButton } from '../../styles';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
 import { DragHandle } from '~/components/DragAndDrop';
 
@@ -146,26 +146,21 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
                                                         hidden
                                                         ref={inputRef} />
                                                     {!candidate.photo_filename &&
-                                                        <Button variant='outlined'
+                                                        <SecondaryButton 
                                                             className='selectPhotoButton'
                                                             onClick={() => inputRef.current.click()} >
-                                                            <Typography variant="h6" component="h6" sx={{ m: 0 }}>
-                                                                Select File
-                                                            </Typography>
-                                                        </Button>
+                                                            Select File
+                                                        </SecondaryButton>
                                                     }
                                                 </Box>
                                                 {candidate.photo_filename &&
-                                                    <Button variant='outlined'
+                                                    <SecondaryButton 
                                                         className='selectPhotoButton'
                                                         onClick={() => inputRef.current.click()}
-                                                        sx={{ p: 1 }}
-                                                        style={{ margin: '0 auto 0 auto', width: '150px' }}
+                                                        sx={{ p: 1, margin: '0 auto 0 auto', width: '150px' }}
                                                     >
-                                                        <Typography variant="h6" component="h6" sx={{ m: 0 }}>
-                                                            Select File
-                                                        </Typography>
-                                                    </Button>
+                                                        Select File
+                                                    </SecondaryButton>
                                                 }
 
                                             </Grid>
@@ -188,18 +183,14 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
                                                     aspect={1}
                                                 />
                                             </Box>
-                                            <Button variant='outlined'
-                                                onClick={() => saveImage()} >
-                                                <Typography variant="h6" component="h6">
-                                                    Save
-                                                </Typography>
-                                            </Button>
-                                            <Button variant='outlined'
+                                            <SecondaryButton 
                                                 onClick={() => setCandidatePhotoFile(null)} >
-                                                <Typography variant="h6" component="h6">
-                                                    Cancel
-                                                </Typography>
-                                            </Button>
+                                                Cancel
+                                            </SecondaryButton>
+                                            <PrimaryButton
+                                                onClick={() => saveImage()} >
+                                                Save
+                                            </PrimaryButton>
                                         </Grid>}
                                 </Box>
                             </>}
@@ -295,14 +286,11 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
             </DialogContent>
 
             <DialogActions>
-
-                <StyledButton
+                <SecondaryButton
                     type='button'
-                    variant="contained"
-                    fullWidth={false}
                     onClick={() => onSave()}>
-                    Close
-                </StyledButton>
+                    Apply
+                </SecondaryButton>
             </DialogActions>
         </Dialog>
     )
@@ -399,12 +387,6 @@ const AddCandidate = ({ onAddNewCandidate }) => {
                     }
                 }}
             />
-
-            <Button
-                onClick={() => saveNewCandidate()}
-            >
-                <Typography variant="h6" component="h6"> Add </Typography>
-            </Button>
         </Box>
     )
 }

@@ -13,7 +13,7 @@ import { usePostBallot } from "../../../hooks/useAPI";
 import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecordOutlined';
 import useElection from "../../ElectionContextProvider";
 import useAuthSession from "../../AuthSessionContextProvider";
-import { StyledButton } from "../../styles";
+import { PrimaryButton, SecondaryButton } from "../../styles";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import { Race, VotingMethod } from "@equal-vote/star-vote-shared/domain_model/Race";
@@ -215,13 +215,12 @@ const VotePage = () => {
         <BallotPageSelector votingMethod={pages[currentPage].voting_method} />
       </BallotContext.Provider>
       <Box sx={{ display: 'flex', justifyContent: "space-between", marginTop: '10px' }}>
-        <Button
-          variant='contained'
+        <SecondaryButton
           onClick={() => setCurrentPageAndScroll(count => count - 1)}
           disabled={currentPage === 0}
-          sx={{ maxHeight: '40px', minWidth: '100px', marginRight: {xs: '10px', md: '40px'}, visibility: (currentPage === 0) ? 'hidden' : 'visible' }}>
+          sx={{ visibility: (currentPage === 0) ? 'hidden' : 'visible' }}>
             {t('ballot.previous')}
-        </Button>
+        </SecondaryButton>
         {pages.length > 1 && 
           <Stepper className='racePageStepper' sx={{display: 'flex', flexWrap: 'wrap'}}>
             {pages.map((page, pageIndex) => (
@@ -247,12 +246,11 @@ const VotePage = () => {
             ))}
           </Stepper>
         }
-        <Button
-          variant='contained'
+        <PrimaryButton
           onClick={() => (currentPage === pages.length-1)? setIsOpen(true) : setCurrentPageAndScroll(count => count + 1)}
-          sx={{ maxHeight: '40px', minWidth: '100px', marginLeft: {xs: '10px', md: '40px'}, visibility: 'visible' }}>
+          sx={{ marginLeft: {xs: '10px', md: '40px'}}}>
             {t((currentPage === pages.length-1)? 'ballot.submit_ballot' : 'ballot.next')}
-        </Button>
+        </PrimaryButton>
       </Box>
       <SupportBlurb/>
 
@@ -310,16 +308,14 @@ const VotePage = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            variant="outlined"
+          <SecondaryButton
             onClick={() => setIsOpen(false)}>
             {t('ballot.dialog_cancel')}
-          </Button>
-          <Button
-            variant="contained"
+          </SecondaryButton>
+          <PrimaryButton
             onClick={() => submit()}>
             {t('ballot.dialog_submit')}
-          </Button>
+          </PrimaryButton>
         </DialogActions>
       </Dialog>
     </Container>

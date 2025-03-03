@@ -44,6 +44,7 @@ export default () => {
             return [];
         }
     }, [data]);
+    managedElectionsData  = []
             
     return <EnhancedTable
         title='My Elections & Polls'
