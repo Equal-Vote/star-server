@@ -129,7 +129,7 @@ export default ({}) => {
         transition: 'transform .2s, opacity .3s ease-out',
         transform: 'scale(1.5)',
         color: 'white',
-        backgroundColor: '#86C66A',
+        backgroundColor: 'var(--brand-pop)',
         padding: '4px',
         fontWeight: 'bold',
         width: 'calc(30px + 8px)',

@@ -49,7 +49,7 @@ export const MailTo = ({ children }) => {
   const { setSnack } = useSnackbar();
   // https://adamsilver.io/blog/the-trouble-with-mailto-email-links-and-what-to-do-instead/
   return <span style={{ whiteSpace: 'nowrap' }}>
-    <Link href={`mailto:${children}`} sx={{ color: 'var(--brand-green)' }}>{children}</Link>
+    <Link href={`mailto:${children}`} sx={{ color: 'var(--brand-pop)' }}>{children}</Link>
     <SecondaryButton
       onClick={() => {
         navigator.clipboard.writeText(children)

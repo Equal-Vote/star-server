@@ -224,7 +224,7 @@ const themes = {
       primary: {
         //main: '#2AA2B3',
         main: '#000',
-        //pop: '#86C66A',
+        //pop: 'var(--brand-pop)',
       },
       secondary: {
         main: '#6C757D',
@@ -237,7 +237,7 @@ const themes = {
       },
       // 1F 28 2E 2F 3F
       darkShade: {
-        main: '#282828', //'#86C66A',//'#073763',//'#2B344A',
+        main: '#282828', //'var(--brand-pop)',//'#073763',//'#2B344A',
         contrastText: '#fff',
       },
       brand: brandPalette.brand

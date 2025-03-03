@@ -24,6 +24,8 @@
   --brand-black: #000000;
   --brand-white: #FFFFFF;
 
+  --brand-pop: #86C66A; /* #86C66A*/;
+
   /* https://docs.google.com/presentation/d/1NSAirKzmq4YyUPB56NR3pKiRTn3W9btwnUtHi_zteeU/edit#slide=id.g177cd3ac88b_0_0 */
   --brand-gray-5: #1F1F1F; /* Charcoal used in "How does STAR Voting Work?" graphic */
   --brand-gray-4: #666666; /* Bubbles on ballots */
@@ -94,7 +96,7 @@ styledTextField:hover > div > fieldset{
 }
 
 a {
-  color: var(--brand-green);
+  color: var(--brand-pop);
 }
 
 .recharts-surface {

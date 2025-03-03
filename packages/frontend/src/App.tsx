@@ -37,7 +37,7 @@ const App = () => {
   //  (launcherFrame as HTMLIFrameElement).contentWindow.document.getElementsByClassName(
   //    "launcher-button"
   //  )[0];
-  //  (button as HTMLElement).style.backgroundColor = '#86C66A';
+  //  (button as HTMLElement).style.backgroundColor = 'var(--brand-pop)';
   
   const ReturnToClassicLayer = () => {
     const returnToClassicContext = useContext(ReturnToClassicContext);
