@@ -145,7 +145,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
                 {roll.state === 'registered' &&
                     <Grid item sm={4} sx={{py:1}}>
                         <PermissionHandler permissions={permissions} requiredPermission={'canApproveElectionRoll'}>
-                            <SecondaryButton variant='outlined' onClick={() => { onApprove() }} > Approve </SecondaryButton >
+                            <SecondaryButton onClick={() => { onApprove() }} > Approve </SecondaryButton >
                         </PermissionHandler>
                     </Grid>}
                 {flags.isSet('VOTER_FLAGGING') && <>
@@ -153,19 +153,19 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
                         <Grid item sm={4} sx={{py:1}}>
 
                             <PermissionHandler permissions={permissions} requiredPermission={'canFlagElectionRoll'}>
-                                <SecondaryButton variant='outlined' onClick={() => { onFlag() }} > Flag </SecondaryButton >
+                                <SecondaryButton onClick={() => { onFlag() }} > Flag </SecondaryButton >
                             </PermissionHandler>
                         </Grid>}
                     {roll.state === 'flagged' &&
                         <Grid item sm={4} sx={{py:1}}>
                             <PermissionHandler permissions={permissions} requiredPermission={'canUnflagElectionRoll'}>
-                                <SecondaryButton variant='outlined' onClick={() => { onUnflag() }} > Unflag </SecondaryButton >
+                                <SecondaryButton onClick={() => { onUnflag() }} > Unflag </SecondaryButton >
                             </PermissionHandler>
                         </Grid>}
                     {roll.state === 'flagged' &&
                         <Grid item sm={4} sx={{py:1}}>
                             <PermissionHandler permissions={permissions} requiredPermission={'canInvalidateElectionRoll'}>
-                                <SecondaryButton variant='outlined' onClick={() => { onInvalidate() }} > Invalidate </SecondaryButton>
+                                <SecondaryButton onClick={() => { onInvalidate() }} > Invalidate </SecondaryButton>
                             </PermissionHandler>
                         </Grid>}
                 </>}
@@ -192,7 +192,7 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
                     </TableContainer>
                 }
                 <Grid item sm={4}>
-                    <SecondaryButton variant='outlined' onClick={() => { onClose() }} > Close </SecondaryButton>
+                    <SecondaryButton onClick={() => { onClose() }} > Close </SecondaryButton>
                 </Grid>
             </Grid>
             <SendEmailDialog

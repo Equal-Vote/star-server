@@ -232,7 +232,6 @@ const AddElectionRoll = ({ onClose }) => {
                                 hidden
                                 ref={inputRef} />
                             <SecondaryButton
-                                variant='outlined'
                                 fullWidth
                                 onClick={() => inputRef.current.click()} >
                                 <Typography variant="h6" component="h6">
@@ -242,7 +241,7 @@ const AddElectionRoll = ({ onClose }) => {
                         </Box>
                     </Grid>
                     <Grid item sm={4} sx={{ m: 1 }}>
-                        <SecondaryButton variant='outlined' onClick={() => { onClose() }} > Close </SecondaryButton >
+                        <SecondaryButton onClick={() => { onClose() }} > Close </SecondaryButton >
                     </Grid>
                 </Grid>
             </Container >

@@ -59,6 +59,9 @@ const App = () => {
           <ReturnToClassicLayer/>
           <Header />
           <CreateElectionDialog/>
+          <Typography sx={{textAlign:'center', padding: 2, opacity: 0.5}}>
+            {t('nav.beta_warning')}
+          </Typography>
           <Box
             sx={{
               width: '100%',

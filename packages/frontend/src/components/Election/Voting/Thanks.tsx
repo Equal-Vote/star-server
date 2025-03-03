@@ -48,7 +48,6 @@ const Thanks = () => {
                         <Box sx={{ width: '100%',  p: 1, px:{xs: 5, sm: 1} }}>
                             <PrimaryButton
                                 type='button'
-                                variant='contained'
                                 fullWidth
                                 href={`/${election.election_id}/results`} >
                                 {t('ballot_submitted.results')}

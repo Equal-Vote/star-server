@@ -54,5 +54,6 @@ export default () => {
         data={managedElectionsData}
         handleOnClick={(row) => navigate(`/${String(row.raw.election_id)}`)}
         defaultSortBy='update_date'
+        emptyContent={<>"You don't have any elections yet"<button>Create Election</button></>}
     />
 }

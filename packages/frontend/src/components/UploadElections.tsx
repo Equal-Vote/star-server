@@ -318,7 +318,7 @@ export default () => {
                     multiple
                     hidden
                     ref={inputRef} />
-                <SecondaryButton variant='outlined'
+                <SecondaryButton
                     onClick={() => inputRef.current.click()} >
                     <Typography variant="h6" sx={{ m: 0 }}>
                         Select File(s)
@@ -335,9 +335,8 @@ export default () => {
             defaultSortBy={'file_name'}
             title="CVRs to Upload"
             handleOnClick={() => {}}
-            emptyContent={<p>No files selected</p>}
         />
 
-        <PrimaryButton variant='contained' disabled={electionsSubmitted} onClick={submitElections}>Add (or update) elections</PrimaryButton>
+        <PrimaryButton disabled={electionsSubmitted} onClick={submitElections}>Add (or update) elections</PrimaryButton>
     </Box>
 }
