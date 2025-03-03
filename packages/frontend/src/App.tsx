@@ -31,14 +31,6 @@ import { PrimaryButton } from './components/styles'
 const App = () => {
   const {t} = useSubstitutedTranslation();
 
-  // there's a race condition and this sometimes crashes the page
-  //const launcherFrame = document.getElementById("launcher-frame");
-  //const button =
-  //  (launcherFrame as HTMLIFrameElement).contentWindow.document.getElementsByClassName(
-  //    "launcher-button"
-  //  )[0];
-  //  (button as HTMLElement).style.backgroundColor = 'var(--brand-pop)';
-  
   const ReturnToClassicLayer = () => {
     const returnToClassicContext = useContext(ReturnToClassicContext);
     return <>
