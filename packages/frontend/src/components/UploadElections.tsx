@@ -335,6 +335,7 @@ export default () => {
             defaultSortBy={'file_name'}
             title="CVRs to Upload"
             handleOnClick={() => {}}
+            emptyContent={"You haven't created any elections yet"}
         />
 
         <PrimaryButton disabled={electionsSubmitted} onClick={submitElections}>Add (or update) elections</PrimaryButton>

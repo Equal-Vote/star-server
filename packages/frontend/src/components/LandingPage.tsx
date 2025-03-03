@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import Box from '@mui/material/Box';
-import LandingPageHero from './LandingPage/LandingPageHero';
 import LandingPageFeatures from './LandingPage/LandingPageFeatures';
 import LandingPageSignUpBar from './LandingPage/LandingPageSignUpBar';
 import LandingPageTestimonials from './LandingPage/LandingPageTestimonials';
