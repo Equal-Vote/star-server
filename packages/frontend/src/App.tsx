@@ -24,6 +24,7 @@ import { useSubstitutedTranslation } from './components/util'
 import UploadElections from './components/UploadElections'
 import Redirect from './components/Redirect'
 import PublicArchive from './components/Elections/PublicArchive'
+import NameMatchingTester from './components/NameMatchingTester'
 
 const App = () => {
   const {t} = useSubstitutedTranslation();
@@ -65,6 +66,7 @@ const App = () => {
               <Route path='/:id/*' element={<Election />} />
               <Route path='/Sandbox' element={<Sandbox />} />
               <Route path='/Volunteer' element={<Redirect href={'https://docs.bettervoting.com/contributions/0_contribution_guide.html'}/>} />
+              <Route path='/NameMatchTesting' element={<NameMatchingTester />} />
             </Routes>
           </Box>
           <Footer />
