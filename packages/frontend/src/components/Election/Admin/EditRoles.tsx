@@ -117,7 +117,6 @@ const EditRoles = () => {
                         <PermissionHandler permissions={permissions} requiredPermission={'canEditElectionRoles'}>
                             <PrimaryButton
                                 type='submit'
-                                variant='contained'
                                 disabled={putRoles.isPending}>
                                 <Typography align='center' variant="body2" fontWeight={'bold'}>
                                     Submit
