@@ -428,35 +428,56 @@ function STVResultsViewer() {
   const flags = useFeatureFlags();
   let {results, t, race} = useRace();
   results = results as irvResults;
+  const [page, setPage] = useState(1);
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
 
-  const tabulationRows = results.summaryData.candidates.map(({index, name}) => {
-    return [name].concat(
-      (results.voteCounts as Array<Number[]>).map(counts => counts[index] == 0? '' : '' + counts[index])
-    )
-  }).sort((r1, r2) => {
-    let z1 = r1.filter(s => s == '').length;
-    let z2 = r2.filter(s => s == '').length;
-    if(z1 != z2)
-      return z1-z2;
+  const winIndex = (aa) => {
+    let i = results.elected.findIndex(e => e.index == aa.index);
+    if(i == -1) return results.elected.length;
+    return i;
+  }
 
-    for(let i = r1.length-1; i >= 1; i--){
-      if(r1[i] == '') continue;
-      if(r2[i] == '') continue;
-      return parseInt(r2[i]) - parseInt(r1[i])
-    }
+  const sortedCandidates = race.candidates
+    .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
+    .sort((a, b) => {
+      const finalScore = (aa) => results.voteCounts.slice(-1)[0][aa.index]
+      if(winIndex(a) != winIndex(b)) return winIndex(a) - winIndex(b);
+      return -(finalScore(a) - finalScore(b));
+    })
+    .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
 
-    return 0;
-  });
-
-  tabulationRows.unshift([t('results.rcv.tabulation_candidate_column')].concat([...Array(results.voteCounts.length).keys()].map(i =>
-    t('results.rcv.round_column', {n: i+1})
-  )))
-  tabulationRows.push([t('results.rcv.exhausted'), ...results.exhaustedVoteCounts.map(i => ''+i)])
-
+  console.log(results)
   return <ResultsViewer methodKey='stv'>
     <WidgetContainer>
       <Widget title={t('results.stv.table_title')}>
-        <ResultsTable className='rcvTable' data={tabulationRows}/>
+        <ResultsBarChart
+          data={
+            [
+              ...results.voteCounts[page-1].map((totalScore, i) => ({
+                name: results.summaryData.candidates[i].name,
+                votes: Math.round(totalScore*10)/10,
+                label: winIndex(results.summaryData.candidates[i]) < page-1 ? '(elected)' : undefined,
+                star: winIndex(results.summaryData.candidates[i]) < page,
+                // a bit hacky using candidate_name but oh well
+                sortIndex: sortedCandidates.findIndex((c) => c.candidate_name == results.summaryData.candidates[i].name)
+              })), 
+              {
+                name: 'Exhausted',
+                votes: results.exhaustedVoteCounts[page-1],
+                label: undefined,
+                star: false,
+                sortIndex: 999999
+              }
+            ]
+          }
+          sortFunc = {(a, b) => a.sortIndex - b.sortIndex}
+          maxBarSize = {results.voteCounts[0].reduce(
+            (prev, totalScore) => Math.max(prev, totalScore), 0
+          )}
+        />
+        <Pagination count={results.voteCounts.length} page={page} onChange={handleChange} />
       </Widget>
     </WidgetContainer>
   </ResultsViewer>
