@@ -24,6 +24,8 @@
   --brand-black: #000000;
   --brand-white: #FFFFFF;
 
+  --brand-pop: #86C66A; /* #86C66A*/;
+
   /* https://docs.google.com/presentation/d/1NSAirKzmq4YyUPB56NR3pKiRTn3W9btwnUtHi_zteeU/edit#slide=id.g177cd3ac88b_0_0 */
   --brand-gray-5: #1F1F1F; /* Charcoal used in "How does STAR Voting Work?" graphic */
   --brand-gray-4: #666666; /* Bubbles on ballots */
@@ -47,6 +49,15 @@
   --ballot-bubble-filled-text-gray: #808080;
   --result-row-gray: #DADADA;
   --dark-bkg-gray: #1F1F1F;
+}
+
+hr {
+  border: none;
+  height: 2px;
+  /* Set the hr color */
+  /*color: #333;  /* old IE */
+  /*background-color: #333;  /* Modern Browsers */
+  background-color: #282828;
 }
 
 .MuiTypography-root {
@@ -74,7 +85,7 @@
 }
 
 .styledTextField > div > fieldset{
-  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  /* box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12); */
   /* border-color: rgba(0, 0, 0, .7); */
   border-color: #A9C8CC;
   border-width: 2px;
@@ -85,7 +96,7 @@ styledTextField:hover > div > fieldset{
 }
 
 a {
-  color: var(--brand-green);
+  color: var(--brand-pop);
 }
 
 .recharts-surface {
@@ -401,13 +412,21 @@ code {
   padding: 0;
 }
 
-.heroGrow {
-  transform: scale(1.1);
+.heroFadeIn {
+  transition: opacity 0.5s;
+  opacity: 1;
 }
 
-.heroShrink {
-  transform: scale(1);
-  transition: transform .1s ease-out;
+.heroFadeOut {
+  transition: opacity 0.3s;
+  opacity: 0;
+}
+
+
+.gradBackground {
+  background: white;
+  background: linear-gradient(white, rgba(224,240,243,0.8));
+  /*background-attachment: fixed;*/
 }
 
 .winnerResult{

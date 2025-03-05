@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
-import { StyledButton } from '../../styles';
+import { PrimaryButton, SecondaryButton } from '../../styles';
 import useElection from '../../ElectionContextProvider';
 
 
@@ -44,24 +44,16 @@ export default function RaceDialog({
                 {children}
             </DialogContent>
             <DialogActions>
-                <StyledButton
-                    type='button'
-                    variant="contained"
-                    width="100%"
-                    fullWidth={false}
-                    onClick={handleClose}>
+                <SecondaryButton onClick={handleClose}>
                     Cancel
-                </StyledButton>
-                <StyledButton
-                    type='button'
-                    variant="contained"
-                    fullWidth={false}
+                </SecondaryButton >
+                <PrimaryButton
                     onClick={() => handleSave()}
-                    disabled={election.state!=='draft'}>
+                    disabled={election.state!=='draft'}
+                  >
                     Save
-                </StyledButton>
+                </PrimaryButton>
             </DialogActions>
-
         </Dialog>
     )
 }

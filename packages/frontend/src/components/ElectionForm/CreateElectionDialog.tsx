@@ -1,5 +1,5 @@
 import { Box, capitalize, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Radio, RadioGroup, Step, StepContent, StepLabel, Stepper, TextField, Typography } from "@mui/material";
-import { StyledButton, Tip } from "../styles";
+import { PrimaryButton, SecondaryButton, Tip } from "../styles";
 import { createContext, useContext, useEffect, useState } from "react";
 import { ElectionTitleField } from "./Details/ElectionDetailsForm";
 import { RowButtonWithArrow, useSubstitutedTranslation } from "../util";
@@ -122,8 +122,16 @@ const templateMappers = {
 }
 
 const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
+    {activeStep > 0 &&
+        <SecondaryButton
+            onClick={() => setActiveStep(i => i-1)}
+            sx={{ mt: 1, mr: 1 }}
+        >
+            Back
+        </SecondaryButton>
+    }
     {activeStep < 3 && // hard coding this for now
-        <StyledButton
+        <PrimaryButton
             fullWidth={false}
             variant="contained"
             disabled={!canContinue}
@@ -131,17 +139,7 @@ const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
             sx={{ mt: 1, mr: 1 }}
         >
             Continue
-        </StyledButton>
-    }
-    {activeStep > 0 &&
-        <StyledButton
-            fullWidth={false}
-            variant="text"
-            onClick={() => setActiveStep(i => i-1)}
-            sx={{ mt: 1, mr: 1 }}
-        >
-            Back
-        </StyledButton>
+        </PrimaryButton>
     }
 </>
 
@@ -242,7 +240,7 @@ export default () => {
                                 />
                             )}
                         </RadioGroup>
-                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={election.settings.term_type !== undefined}/>
+                        <StepButtons activeStep={0} setActiveStep={setActiveStep} canContinue={election.settings.term_type !== undefined}/>
                     </StepContent>
                 </Step>
                 <Step>
@@ -259,7 +257,7 @@ export default () => {
                             setErrors={setErrors}
                             showLabel={false}
                         />
-                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={election.title != '' && errors.title == ''}/>
+                        <StepButtons activeStep={1} setActiveStep={setActiveStep} canContinue={election.title != '' && errors.title == ''}/>
                     </StepContent>
                 </Step>
                 <Step>
@@ -326,7 +324,7 @@ export default () => {
                             />
                         </Box>
                         
-                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={election.settings.voter_access !== undefined}/>
+                        <StepButtons activeStep={2} setActiveStep={setActiveStep} canContinue={election.settings.voter_access !== undefined}/>
                     </StepContent>
                 </Step>
                 <Step>
@@ -345,20 +343,20 @@ export default () => {
                             />
                         )}
 
-                        <StepButtons activeStep={activeStep} setActiveStep={setActiveStep} canContinue={false}/>
+                        <StepButtons activeStep={3} setActiveStep={setActiveStep} canContinue={false}/>
                     </StepContent>
                 </Step>
             </Stepper>
         </DialogContent>
         <DialogActions>
-            <StyledButton
+            <PrimaryButton
                 type='button'
                 variant="contained"
                 width="100%"
                 fullWidth={false}
                 onClick={onClose}>
                 Cancel
-            </StyledButton>
+            </PrimaryButton>
         </DialogActions>
     </Dialog>
 }

@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 import { useState } from "react";
 import useAuthSession from "~/components/AuthSessionContextProvider";
 import useElection from "~/components/ElectionContextProvider";
-import { StyledButton } from "~/components/styles";
+import { PrimaryButton, SecondaryButton } from "~/components/styles";
 import { LabelledTextField, RowButtonWithArrow } from "~/components/util";
 import { useSendEmails } from "~/hooks/useAPI";
 
@@ -117,15 +117,14 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined, electionRoll=
                         <Box display='flex' sx={{width: {xs: '100%', md: '93%'}, flexDirection:{xs: 'column', md: 'row'}, alignItems: 'center', gap: {xs: 1, md: 0}}}>
                             <LabelledTextField label='Test Email(s)' fullWidth value={testEmails} setter={setTestEmails}/>
                             {/* 56px is to align with text box */}
-                            <Button
-                                variant='contained'
-                                sx={{height: '56px', mt: 'auto', maxWidth: '200px'}}
+                            <SecondaryButton
+                                sx={{height: '56px', mt: 'auto', mb: 0, maxWidth: '200px'}}
                                 onClick={() => sendEmails.makeRequest({
                                     target: 'test',
                                     email: { subject: emailSubject, body: emailBody },
                                     testEmails: testEmails.split(',')
                                 })}
-                            >Send&nbsp;Test</Button>
+                            >Send&nbsp;Test</SecondaryButton>
                         </Box>
                         <Divider/>
                         <SelectField
@@ -152,8 +151,7 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined, electionRoll=
                     <Typography>{warning}</Typography>
                 </Alert>}
                 <Box display='flex' flexDirection='row-reverse' gap={2}>
-                    <Button
-                        variant="contained"
+                    <PrimaryButton
                         disabled={!templateChosen}
                         onClick={() => {
                             setTemplateChosen(false)
@@ -164,12 +162,11 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined, electionRoll=
                             })
                         }}>
                         {targetedEmail? 'Send Email' : `Send ${getVoterCount()} Emails`}
-                    </Button>
-                    <Button
-                        variant="outlined"
+                    </PrimaryButton>
+                    <SecondaryButton
                         onClick={close}>
                         {t('ballot.dialog_cancel')}
-                    </Button>
+                    </SecondaryButton>
                 </Box>
             </Box>
         </DialogActions>

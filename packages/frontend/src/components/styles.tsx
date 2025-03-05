@@ -58,24 +58,51 @@ export const Tip = (props: {name?: TipName, children?: any, content?: any}) => {
     </ClickAwayListener>
 }
 
-export const StyledButton = (props) => (
+export const PrimaryButton = (props) => (
     <Button
-        fullWidth
+        variant="contained"
+        {...props}
         sx={{
             p: 1,
             m: 0,
-            boxShadow: 2,
+            boxShadow: 0,
             //backgroundColor: 'primary.main',
+            backgroundColor: 'var(--brand-pop)',//'#073763',
             fontFamily: 'Montserrat, Verdana, sans-serif',
             fontWeight: 'bold',
             fontSize: 18,
-            //color: 'primary.contrastText',
+            color: 'primary.contrastText',
+            //'&:hover': {
+            //    backgroundColor: 'black',
+            //}
+            ...props.sx,
         }}
-        {...props}
     >
-    {props.children}
+        {props.children}
     </Button>
 )
+
+export const SecondaryButton = (props) => (
+    <Button
+        variant="outlined"
+        {...props}
+        sx={{
+            p: 1,
+            fontWeight: 'bold',
+            fontSize: 16,
+            color: 'var(--brand-pop)',
+            borderColor: 'var(--brand-pop)',
+            '&:hover': {
+                color: 'black',
+                borderColor: 'black',
+            },
+            ...props.sx,
+        }}
+    >
+        {props.children}
+    </Button>
+)
+
 
 export const StyledTextField = (props) => (
     <TextField
@@ -85,7 +112,7 @@ export const StyledTextField = (props) => (
             m: 0,
             p: 0,
             boxShadow: 0, // this is set manually in index.css. By default MUI creates weird corner artifacts
-            backgroundColor: 'lightShade.main',
+            // backgroundColor: 'lightShade.main',
         }}
         {...props}
     >

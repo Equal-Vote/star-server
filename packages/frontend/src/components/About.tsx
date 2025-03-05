@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { StyledButton } from "./styles";
+import { PrimaryButton } from "./styles";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useSubstitutedTranslation } from "./util";
 
@@ -65,20 +65,9 @@ const About = () => {
           {t('about.donate_description')}
         </Typography>
 
-        <Button
-          variant="contained"
-          sx={{
-            p: 1,
-            m: 2,
-            boxShadow: 2,
-            backgroundColor: "primary.main",
-            fontWeight: "bold",
-            fontSize: 18,
-          }}
-          href={t('about.donate_link')}
-        >
+        <PrimaryButton sx={{m: 3}} href={t('about.donate_link')}>
           {t('about.donate_button')}
-        </Button>
+        </PrimaryButton>
       </Paper>
     </Container>
   );

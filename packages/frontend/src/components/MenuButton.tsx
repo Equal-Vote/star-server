@@ -1,4 +1,4 @@
-import { StyledButton } from '~/components/styles';
+import { PrimaryButton } from '~/components/styles';
 import { useState, useEffect } from 'react';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Menu, { menuClasses } from "@mui/material/Menu";
@@ -12,7 +12,7 @@ export function MenuButton({ children, label }: MenuButtonProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     return (
         <div>
-            <StyledButton
+            <PrimaryButton
                 aria-controls="simple-menu"
                 aria-haspopup="true"
                 type='button'
@@ -30,7 +30,7 @@ export function MenuButton({ children, label }: MenuButtonProps) {
                 }
             >
                 {label}
-            </StyledButton>
+            </PrimaryButton>
             <Menu
                 id="simple-menu"
                 anchorOrigin={{
