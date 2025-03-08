@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from 'react';
-import PaginatedBox from "./PaginatedBox";
+import Pages from "./Pages";
 
 const WinnerResultPages = ({ children, numWinners }) => {
   const [page, setPage] = useState(1);
@@ -14,8 +14,8 @@ const WinnerResultPages = ({ children, numWinners }) => {
   const childArray = React.Children.toArray(children); // Ensure it's an array
 
   return (
-    <PaginatedBox
-      pageCount={numWinners} title={""} page={page} setPage={setPage}
+    < Pages
+      pageCount={numWinners} page={page} setPage={setPage}
     >
       {childArray.map((child, i) => (
         <div
@@ -27,7 +27,7 @@ const WinnerResultPages = ({ children, numWinners }) => {
           {child}
         </div>
       ))}
-    </PaginatedBox>
+    </Pages>
   );
 };
 
