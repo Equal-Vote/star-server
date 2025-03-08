@@ -15,7 +15,7 @@ const WinnerResultPages = ({ children, numWinners }) => {
 
   return (
     < Pages
-      pageCount={numWinners} page={page} setPage={setPage}
+      pageCount={numWinners} page={page} setPage={setPage} title={false}
     >
       {childArray.map((child, i) => (
         <div
