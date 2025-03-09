@@ -50,13 +50,15 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
                 let row: ballot = new Array(number_of_candidates).fill(null)
                 vote.scores.forEach(score => {
                     const candidateIndex = candidateIDs.indexOf(score.candidate_id)
-                    if (candidateIndex > 0) {
+                    if (candidateIndex >= 0) {
                         row[candidateIndex] = score.score
                     }
-                    else if (candidateIndex == -1 && useWriteIns && score.write_in_name) {
+                    else if (useWriteIns && score.write_in_name) {
                         const write_in_name = score.write_in_name // typescript sees score.write_in_name as possibly undefined unless I extract it to another variable for some reason
-                        const writeInCandidateIndex = writeInCandidates.findIndex(candidate => candidate.aliases.includes(write_in_name))
-                        row[writeInCandidateIndex + candidateNames.length] = score.score
+                        const writeInCandidateIndex = writeInCandidates.findIndex(candidate => candidate.aliases.includes(write_in_name) && candidate.approved)
+                        if (writeInCandidateIndex >= 0) {
+                            row[writeInCandidateIndex + candidateNames.length] = score.score
+                        }
                     }
                 })
 
