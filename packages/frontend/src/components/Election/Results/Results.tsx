@@ -6,7 +6,7 @@ import { commaListFormatter, useSubstitutedTranslation } from '../../util';
 import STARResultSummaryWidget from "./STAR/STARResultSummaryWidget";
 import STARDetailedResults from "./STAR/STARDetailedResults";
 import STARResultDetailedStepsWidget from "./STAR/STARResultDetailedStepsWidget";
-import WinnerResultTabs from "./WinnerResultTabs";
+import WinnerResultPages from "./WinnerResultPages";
 import { Race } from "@equal-vote/star-vote-shared/domain_model/Race";
 import { allocatedScoreResults, approvalResults, ElectionResults, irvResults, rankedRobinResults, starResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 import useElection from "../../ElectionContextProvider";
@@ -44,9 +44,9 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
     .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
 
   return <ResultsViewer methodKey='star'>
-    <WinnerResultTabs numWinners={rounds}>
-      {roundIndexes.map((i) => <STARResultSummaryWidget key={i} results={results} roundIndex={i} t={t}/>)}
-    </WinnerResultTabs>
+    <WinnerResultPages numWinners={rounds}>
+      {roundIndexes.map((i) => <STARResultSummaryWidget key={`STAR-widget-${i}`} results={results} roundIndex={i} t={t}/>)}
+    </WinnerResultPages>
     {rounds == 1 &&
       <DetailExpander>
         <STARDetailedResults/>
@@ -367,9 +367,11 @@ function STARPRResultsViewer() {
 
   let remainingVoters = (results.summaryData.nTallyVotes*(1 - ((page-1)/results.summaryData.weightedScoresByRound.length)))
   remainingVoters = Math.round(remainingVoters*10)/10;
+  const title = t('results.star_pr.chart_title')
+  /* console.log("title:", title); */
   return <ResultsViewer methodKey='star_pr'>
     <WidgetContainer>
-      <Widget title={t('results.star_pr.chart_title')} wide>
+      <Widget title={title} wide>
         <Typography>
           Total scores for the {remainingVoters} remaining unrepresented voters
         </Typography>
@@ -506,6 +508,8 @@ export default function Results({ race, results }: {race: Race, results: Electio
     .split('__REPLACE_ME__')
     .map((s,i) => ([<React.Fragment key={i*2}>{s}</React.Fragment>, <React.Fragment key={i*2+1}>&nbsp;</React.Fragment>]))
     .flat()
+
+  /* console.log('votingMethod', results.votingMethod); */
 
   return (
     <RaceContextProvider race={race} results={results} t={t}>
