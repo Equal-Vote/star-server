@@ -340,7 +340,7 @@ export default function RaceForm({
                                     </Typography>
                                 </Box>
                                 <Box sx={{
-                                    height: showsAllMethods? 0 : '163px', // copied the value from auto
+                                    height: showsAllMethods? 0 : 'auto',
                                     opacity: showsAllMethods? 0 : 1,
                                     overflow: 'hidden',
                                     transition: 'height .4s, opacity .7s',
