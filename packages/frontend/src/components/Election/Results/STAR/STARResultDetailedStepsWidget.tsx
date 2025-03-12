@@ -21,6 +21,11 @@ const STARResultDetailedStepsWidget = ({ results, rounds, t, filterRandomFromLog
     // this approach is a bit error prone, but it works for now
     if(filterRandomFromLogs) logs = logs.slice(0, logs.length-2);
     return <div className='detailedSteps'>
+        { showTieBreakerWarning && <Paper elevation={2} sx={{backgroundColor: 'theme.gray4', width: '90%', margin: 'auto', textAlign: 'left', padding: 3}}>
+            <b>{t('results.star.tiebreaker_note_title')}</b>️
+            <hr/>
+            {logs.slice(0, ).map((s,i) => <p key={i}>{s}</p>)}
+        </Paper> }
         {results.roundResults.map((round, r) => (
             <Box key={r}>
                 {rounds > 1 && <Typography variant="h4">{`Winner ${r + 1}`}</Typography>}
@@ -31,11 +36,7 @@ const STARResultDetailedStepsWidget = ({ results, rounds, t, filterRandomFromLog
                 </ol>
             </Box>
         ))}
-        { showTieBreakerWarning && <Paper elevation={2} sx={{backgroundColor: 'theme.gray4', width: '90%', margin: 'auto', textAlign: 'left', padding: 3}}>
-            <b>{t('results.star.tiebreaker_note_title')}</b>️
-            <hr/>
-            {logs.slice(0, ).map((s,i) => <p key={i}>{s}</p>)}
-        </Paper> }
+
     </div>
 }
 
