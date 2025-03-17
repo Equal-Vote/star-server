@@ -189,7 +189,7 @@ const VotePage = () => {
   }
 
   let pageIsUnderVote = (page) => {
-    return page.candidates.reduce((prev, c) => prev && (c.score == 0 || c.score == null), true)
+    return page.candidates.every(c => c.score == null);
   }
 
   return (
