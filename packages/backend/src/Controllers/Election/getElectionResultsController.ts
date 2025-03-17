@@ -43,7 +43,7 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
         const num_winners = race.num_winners
         const voting_method = race.voting_method
         const fullCandidateNames = [...candidateNames,...writeInCandidateNames]
-
+        let numUnprocessedWriteIns = 0
         ballots.forEach((ballot: Ballot) => {
             const vote = ballot.votes.find((vote) => vote.race_id === race_id)
             if (vote) {
@@ -55,8 +55,10 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
                     }
                     else if (useWriteIns && score.write_in_name) {
                         const write_in_name = score.write_in_name // typescript sees score.write_in_name as possibly undefined unless I extract it to another variable for some reason
-                        const writeInCandidateIndex = writeInCandidates.findIndex(candidate => candidate.aliases.includes(write_in_name) && candidate.approved)
-                        if (writeInCandidateIndex >= 0) {
+                        const writeInCandidateIndex = writeInCandidates.findIndex(candidate => candidate.aliases.includes(write_in_name))
+                        if (writeInCandidateIndex < 0) {
+                            numUnprocessedWriteIns += 1
+                        } else if (writeInCandidates[writeInCandidateIndex].approved) {
                             row[writeInCandidateIndex + candidateNames.length] = score.score
                         }
                     }
@@ -81,7 +83,8 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
         const tieBreakOrders = fullCandidateNames.map((Candidate) => (rng() as number))
         results[race_index] = {
             votingMethod: voting_method,
-            ...VotingMethods[voting_method](fullCandidateNames, cvr, num_winners, tieBreakOrders, election.settings)
+            ...VotingMethods[voting_method](fullCandidateNames, cvr, num_winners, tieBreakOrders, election.settings),
+            numUnprocessedWriteIns: useWriteIns ? numUnprocessedWriteIns : undefined
         }
     }
     
