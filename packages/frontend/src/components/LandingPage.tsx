@@ -15,6 +15,7 @@ import QuickPoll from './ElectionForm/QuickPoll';
 import { PrimaryButton } from './styles';
 import LandingPageSupport from './LandingPage/LandingPageSupport';
 import LandingPageCarousel from './LandingPage/LandingPageCarousel';
+import LandingPageFeaturedElections from './LandingPage/LandingPageFeaturedElections';
 
 const LandingPage = () => {
 
@@ -67,8 +68,7 @@ const LandingPage = () => {
                 <Typography variant="h4" color={'lightShade.contrastText'}> {t('landing_page.hero.title')} </Typography>
                 <LandingPageCarousel />
             </Box>
-            {/* temporarily disabling because it was sending continuous requests to the backend for some reason */}
-            {/*<LandingPageFeatureElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>*/}
+            <LandingPageFeaturedElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>
             <LandingPageStats/>
             <QuickPoll/>
             <LandingPageFeatures/>
