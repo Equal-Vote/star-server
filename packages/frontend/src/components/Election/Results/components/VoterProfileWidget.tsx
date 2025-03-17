@@ -99,7 +99,7 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
             rightVotes={rightVotes}
             total={total}
             equalContent={{
-                title: 'Distribution of Equal Preferences',
+                title: 'Distribution of Equal Support',
                 description: equalPreferences
             }}
         />}

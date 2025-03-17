@@ -98,7 +98,7 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
                         }
                         :
                         {
-                            title: 'Distribution of Equal Preferences',
+                            title: 'Distribution of Equal Support',
                             description: m.equalPreferences
                         }
                     }

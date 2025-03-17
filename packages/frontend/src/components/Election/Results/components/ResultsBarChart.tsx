@@ -91,7 +91,7 @@ const [rawNumbers, setRawNumbers] = useState(false);
   // Add majority
   if (majorityLegend || majorityOffset) {
     let sum = data.reduce((prev, d, i) => {
-      if(i == data.length-1) return prev; // don't include exhausted or equal preference votes in the denominator
+      if(i == data.length-1) return prev; // don't include exhausted or equal support votes in the denominator
       return prev + d[xKey];
     }, 0);
     let m = sum / 2;
@@ -137,7 +137,7 @@ const [rawNumbers, setRawNumbers] = useState(false);
   const axisWidth = Math.max(
     50,
     Math.min(
-      150, // 150 since that's the width of Equal Preferences
+      150, // 150 since that's the width of Equal Support
       15 * (longestCandidateName.length > 20 ? 20 : longestCandidateName.length)
     )
   );

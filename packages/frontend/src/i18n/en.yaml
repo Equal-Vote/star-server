@@ -46,10 +46,10 @@ ballot:
       heading_prefix: ''
     star_pr:
       instruction_bullets:
-       - Give your favorite(s) five stars.
-       - Give your last choice(s) zero stars or leave blank.
+       - Give your favorite {{candidate}}(s) five stars.
+       - Give your last choice(s) zero or leave blank.
        - Score other {{candidates}} as desired.
-       - Equal scores indicate equal preference.
+       - Equal scores indicate equal support.
       footer_single_winner: ''
       footer_multi_winner: >
         Winners in Proportional STAR Voting are selected in rounds. Each round elects the {{candidate}} with the highest total score,
@@ -63,7 +63,7 @@ ballot:
        - Give your favorite(s) five stars.
        - Give your last choice(s) zero stars or leave blank.
        - Score other {{candidates}} as desired.
-       - Equal scores indicate equal preference.
+       - Equal scores indicate equal support.
       footer_single_winner: |
         The two highest scoring {{candidates}} are finalists.
         Your full vote goes to the finalist you prefer.
@@ -145,7 +145,7 @@ methods:
   star:
     full_name: STAR Voting
     short_name: STAR Voting
-    learn_link: https://www.youtube.com/watch?v=fKg0fRL88zc
+    learn_link: https://www.starvoting.org/star
   star_pr:
     full_name: Proportional STAR Voting
     short_name: STAR PR
@@ -274,8 +274,8 @@ results:
       - This election required a tie breaker. Ties are significantly less likely to occur with STAR Voting than with Choose-One Voting or Ranked Choice Voting.
       - Generally, ties will not be an issue as the number of voters increase; however, when ties do occur, BetterVoting follows a tiebreaker protocol in order to select the most representative winners.
       - To understand how the tie was broken, we recommend [learning more about Star Voting's Official Tiebreaker Protocol](https://starvoting.org/ties) and then following the steps below to see how they were resolved for this election.
-    equal_preferences_title: Distribution of Equal Preferences
-    equal_preferences: Equal Preferences
+    equal_preferences_title: Distribution of Equal Support
+    equal_preferences: Equal Support
     score_higher_than_runoff_title: Why is the top scoring candidate different from the winner?
     score_higher_than_runoff_text: |
       The top-scoring candidate often matches the runoff winner, but not always. 
@@ -622,9 +622,9 @@ tabulation_logs:
     automatic_runoff_start: >
       Advance to automatic runoff round between {{candidate_a}} and {{candidate_b}}
     automatic_runoff_win: >
-      {{winner}} is preferred over {{loser}} by {{winner_votes}} votes to {{loser_votes}}, and {{equal_votes}} voters have an [equal preference](https://www.starvoting.org/equal_preference).
+      {{winner}} is preferred over {{loser}} by {{winner_votes}} votes to {{loser_votes}}, and {{equal_votes}} voters have an [equal support](https://www.starvoting.org/equal_preference).
     automatic_runoff_tie: >
-      {{names}} are tied with {{tied_votes}} voters prefering each, and {{equal_votes}} voters having an [equal preference](https://www.starvoting.org/equal_preference).
+      {{names}} are tied with {{tied_votes}} voters prefering each, and {{equal_votes}} voters having an [equal support](https://www.starvoting.org/equal_preference).
 
 #######################################
 #### PRIORITY 4 : Info Bubbles ####
