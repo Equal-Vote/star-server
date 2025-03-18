@@ -68,9 +68,9 @@ const LandingPage = () => {
                 <Typography variant="h4" color={'lightShade.contrastText'}> {t('landing_page.hero.title')} </Typography>
                 <LandingPageCarousel />
             </Box>
-            <LandingPageFeaturedElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>
             <LandingPageStats/>
             <QuickPoll/>
+            <LandingPageFeaturedElections electionIds={(process.env.REACT_APP_FEATURED_ELECTIONS ?? '').split(',')}/>
             <LandingPageFeatures/>
             <LandingPageSignUpBar />
             {flags.isSet('ELECTION_TESTIMONIALS') && <LandingPageTestimonials/>}
