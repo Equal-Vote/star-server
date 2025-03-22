@@ -19,6 +19,7 @@ export default () => {
 
     const incIndex = (arr, key) => {
         let index = (arr == numColumns) ? key-1 : key;
+        if(index < 0) return; // Quick Hack to keep the page from crashing
         while(index >= arr.length ){
             arr.push({
                 name: (arr == numColumns)? arr.length + 1 : arr.length,

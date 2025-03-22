@@ -368,7 +368,6 @@ function STARPRResultsViewer() {
   let remainingVoters = (results.summaryData.nTallyVotes*(1 - ((page-1)/results.summaryData.weightedScoresByRound.length)))
   remainingVoters = Math.round(remainingVoters*10)/10;
   const title = t('results.star_pr.chart_title')
-  /* console.log("title:", title); */
   return <ResultsViewer methodKey='star_pr'>
     <WidgetContainer>
       <Widget title={title} wide>
@@ -450,7 +449,6 @@ function STVResultsViewer() {
     })
     .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
 
-  console.log(results)
   return <ResultsViewer methodKey='stv'>
     <WidgetContainer>
       <Widget title={t('results.stv.table_title')}>
@@ -508,8 +506,6 @@ export default function Results({ race, results }: {race: Race, results: Electio
     .split('__REPLACE_ME__')
     .map((s,i) => ([<React.Fragment key={i*2}>{s}</React.Fragment>, <React.Fragment key={i*2+1}>&nbsp;</React.Fragment>]))
     .flat()
-
-  /* console.log('votingMethod', results.votingMethod); */
 
   return (
     <RaceContextProvider race={race} results={results} t={t}>

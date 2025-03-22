@@ -6,11 +6,6 @@ const WinnerResultPages = ({ children, numWinners }) => {
   const [page, setPage] = useState(1);
   const currentTab = page - 1;
 
-  /* if (Array.isArray(children))
-    console.log("Already an array."); // bingo
-  else
-    console.log("`children` wasn't an array."); */
-  
   const childArray = React.Children.toArray(children); // Ensure it's an array
 
   return (
