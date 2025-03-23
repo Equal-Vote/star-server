@@ -75,7 +75,8 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
         let roundResults: irvRoundResults = {
             winners: [],
             eliminated: [],
-            logs: []
+            logs: [],
+            standings: []
         }
 
         let roundVoteCounts = candidateVotes.map((c, i) => ({ index: i, voteCount: addWeightedVotes(c) }))
@@ -154,6 +155,12 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
             roundResults.eliminated.push(summaryData.candidates[lastPlaceCandidateIndex])
         }
 
+        roundResults.standings = sortedVoteCounts.map( ({index, voteCount}) =>
+          ({
+            candidateIndex: index,
+            hareScore: voteCount.valueOf()
+          })
+        );
         results.roundResults.push(roundResults)
     }
 

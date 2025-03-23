@@ -1873,6 +1873,24 @@
             },
             "type": "array"
           },
+          "standings": {
+            "items": {
+              "properties": {
+                "candidateIndex": {
+                  "type": "number"
+                },
+                "hareScore": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "candidateIndex",
+                "hareScore"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
           "winners": {
             "items": {
               "$ref": "#/components/schemas/candidate"
@@ -1883,6 +1901,7 @@
         "required": [
           "eliminated",
           "logs",
+          "standings",
           "winners"
         ],
         "type": "object"

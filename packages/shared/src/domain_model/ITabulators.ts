@@ -122,7 +122,9 @@ export interface rankedRobinResults extends genericResults {
 export interface irvRoundResults {
     winners: candidate[],
     eliminated: candidate[],
-    logs: string[],
+    logs: string[], /* envisioned for possible debugging? */
+    standings: {candidateIndex: number, hareScore: number}[]
+      /* Sorted by increasing Hare score */
 }
 
 export interface irvResults extends Omit<genericResults, 'roundResults'> {
