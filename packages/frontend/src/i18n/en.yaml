@@ -538,6 +538,7 @@ results_ext:
   voter_profile_preferred_frontrunner: "{{name}} supporters' preferred frontrunner:"
   voter_profile_average_scores: "{{name}} supporters' average scores:"
   voter_profile_average_ranks: "{{name}} supporters' average rankings:"
+  voter_profile_error_rates: "{{name}} supporters' error rates:"
 
   column_distribution_title: Distribution of {{capital_preferences}}
   column_distribution_num_avg: Voters gave {{count}} {{preferences}} on average

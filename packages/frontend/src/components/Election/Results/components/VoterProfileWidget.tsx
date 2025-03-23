@@ -5,15 +5,16 @@ import useRace from "~/components/RaceContextProvider";
 import { useState } from "react";
 import { Box, Divider, MenuItem, Select, Typography } from "@mui/material";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { CHART_COLORS } from "~/components/util";
+import { CHART_COLORS, formatPercent } from "~/components/util";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import ResultsBarChart from "./ResultsBarChart";
 import HeadToHeadChart from "./HeadToHeadChart";
+import { getVoterErrorData } from "./VoterErrorStatsWidget";
 
 // candidates helps define the order
 export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {topScore: number, frontRunners: [Candidate,Candidate], ranked?: boolean, candidates?: Candidate[]}) => {
     const {t} = useElection();
-    const {ballotsForRace} = useAnonymizedBallots();
+    const {ballotsForRace, ballotsForRaceWithMeta} = useAnonymizedBallots();
     const {race} = useRace();
     candidates ??= race.candidates;
     const [refCandidateId, setRefCandidateId] = useState(candidates[0].candidate_id);
@@ -79,6 +80,20 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
     data.forEach(c => c.score = Math.round(100*c.score / totalTopScored)/100);
     data.sort((a,b) => (ranked? 1 : -1)*(a.score-b.score));
 
+
+    let voterErrorData = [];
+    if(race.voting_method === 'IRV' || race.voting_method === 'STV'){
+        let bm = ballotsForRaceWithMeta().filter(b => {
+            let refScore = b.scores.find((score) => score.candidate_id == refCandidateId)?.score;
+            let topScore = b.scores.reduce((prev, score) => {
+                if(score.score == 0 || score.score == null) return prev;
+                return Math.min(prev, score.score);
+            }, Infinity);
+            return refScore == topScore;
+        });
+        voterErrorData = getVoterErrorData(bm);
+    }
+
     return <Widget title={t('results_ext.voter_profile_title')}>
         {/*<Typography>Average ballot for voters who gave</Typography>*/}
         <Select
@@ -106,5 +121,11 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
         <Divider variant='middle' sx={{width: '100%', m:3}}/>
         <Typography variant='h6'>{t(`results_ext.voter_profile_average_${ranked? 'ranks' : 'scores'}`, {name: refCandidateName})}</Typography>
         {totalTopScored == 0 ? 'n/a' : <ResultsBarChart data={data} xKey='score' percentage={false} sortFunc={false}/>}
+        {(race.voting_method === 'IRV' || race.voting_method === 'STV') && <>
+            <Divider variant='middle' sx={{width: '100%', m:3}}/>
+            <Typography variant='h6'>{t(`results_ext.voter_profile_error_rates`, {name: refCandidateName})}</Typography>
+            <ResultsBarChart data={voterErrorData} xKey='votes' percentage/>
+            <Typography>Ballots with errors can still be counted in most cases, but it's a useful measure of the voter's understanding</Typography>
+        </>}
     </Widget>
 }
