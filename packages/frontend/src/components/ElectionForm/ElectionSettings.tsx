@@ -3,13 +3,13 @@ import Grid from "@mui/material/Grid";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from '@mui/material/Typography';
-import { Checkbox, FormGroup, FormHelperText, FormLabel, InputLabel, Radio, RadioGroup, Tooltip, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Box, IconButton, TextField } from "@mui/material"
-import { PrimaryButton } from '../styles';
+import { Checkbox, FormGroup, FormHelperText, FormLabel, InputLabel, Radio, RadioGroup, Tooltip, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Box, IconButton, TextField, capitalize } from "@mui/material"
+import { PrimaryButton, Tip } from '../styles';
 import useElection  from '../ElectionContextProvider';
 import structuredClone from '@ungap/structured-clone';
 import EditIcon from '@mui/icons-material/Edit';
 import { useSubstitutedTranslation } from '../util';
-import { ElectionSettings as IElectionSettings, electionSettingsValidation } from '@equal-vote/star-vote-shared/domain_model/ElectionSettings';
+import { ElectionSettings as IElectionSettings, TermType, electionSettingsValidation } from '@equal-vote/star-vote-shared/domain_model/ElectionSettings';
 import useSnackbar from '../SnackbarContext';
 
 export default function ElectionSettings() {
@@ -113,6 +113,30 @@ export default function ElectionSettings() {
                                     }}
                                 />
                                 <br/>
+
+                                <div style={{marginTop: '24px', marginBottom: '16px'}}>
+                                    <Typography>
+                                        {t('election_creation.term_question')}
+                                        <Tip name='polls_vs_elections'/>
+                                    </Typography>
+                                    <RadioGroup row>
+                                        {['poll', 'election'].map( (type, i) => 
+                                            <FormControlLabel
+                                                key={i}
+                                                control={<Radio
+                                                    onChange={((e) => {
+                                                        console.log(type);
+                                                        applySettingsUpdate(settings => settings.term_type = type as TermType )
+                                                    })}
+                                                    checked={editedElectionSettings.term_type === type}
+                                                    value={t(`keyword.${type}.election`)}
+                                                />}
+                                                label={capitalize(t(`keyword.${type}.election`))}
+                                            />
+                                        )}
+                                    </RadioGroup>
+                                </div>
+                                
 
                                 <CheckboxSetting setting='random_candidate_order'/>
                                 <CheckboxSetting setting='ballot_updates' disabled/>
