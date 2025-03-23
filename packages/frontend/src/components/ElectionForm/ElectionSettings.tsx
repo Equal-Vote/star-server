@@ -124,8 +124,7 @@ export default function ElectionSettings() {
                                             <FormControlLabel
                                                 key={i}
                                                 control={<Radio
-                                                    onChange={((e) => {
-                                                        console.log(type);
+                                                    onChange={((e) => {                                                
                                                         applySettingsUpdate(settings => settings.term_type = type as TermType )
                                                     })}
                                                     checked={editedElectionSettings.term_type === type}
