@@ -79,7 +79,7 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
             label={t('results_ext.candidate_selector')}
             onChange={(e) => setRefCandidateId(e.target.value as string)}
         >
-            {candidates.map((c, i) => <MenuItem value={c.candidate_id}>{c.candidate_name}</MenuItem>)}
+            {candidates.map((c, i) => <MenuItem key={i} value={c.candidate_id}>{c.candidate_name}</MenuItem>)}
         </Select>
         <Divider variant='middle' sx={{width: '100%', m: 3}}/>
         <Typography variant='h6'>{refCandidateName} won {wins} matchups, and lost {losses}.</Typography>
@@ -87,6 +87,7 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
             {candidates.filter(c => c.candidate_id != refCandidateId).map((c,i) => {
                 let m = matchups[c.candidate_id];
                 return <HeadToHeadChart
+                    key={i}
                     leftName={refCandidateName} rightName={m.name}
                     leftVotes={m.leftVotes} rightVotes={m.rightVotes}
                     total={numBallots}

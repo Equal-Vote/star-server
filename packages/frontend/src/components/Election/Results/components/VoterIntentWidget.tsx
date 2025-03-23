@@ -11,35 +11,60 @@ import ResultsPieChart from "./ResultsPieChart";
 import ResultsKey from "./ResultsKey";
 import ResultsTable from "./ResultsTable";
 import { Tip } from "~/components/styles";
+import { irvResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 // eliminationOrder is an array of candidateIds
 export default ({eliminationOrderById, winnerId} : {eliminationOrderById : string[], winnerId: string}) => {
     const {t} = useElection();
-    const {race, results} = useRace();
+    let {race, results} = useRace();
     const {ballots, ballotsForRace} = useAnonymizedBallots();
+
+    results = results as irvResults;
+
+    const sortedCandidates = race.candidates
+        .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
+        .sort((a, b) => {
+        // prioritize ranking in later rounds, but use previous rounds as tiebreaker
+        let i = results.voteCounts.length-1;
+        while(i >= 0){
+            let diff = -(results.voteCounts[i][a.index] - results.voteCounts[i][b.index]);
+            if(diff != 0) return diff;
+            i--;
+        }
+        return 0;
+        })
+        .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
+
+
+    let [winner_name, runner_up_name] = sortedCandidates.slice(0, 2).map(c => c.candidate_name);
+
+    const final_round_candidates = results.voteCounts.slice(-1)[0].filter(c => c != 0).length;
+    if(final_round_candidates > 2){
+        runner_up_name = 'a losing candidate'
+    }
 
     let data = [
         { // Type 1: !hasPassedOver && isWinner
-            name: 'Voter supported the winner and all candidates preferred over the winner were counted',
+            name: `Voter was counted toward ${winner_name} and all their preferences above ${winner_name} were counted`,
             votes: 0,
             color: 'var(--ltbrand-green)'
         },
         { // Type 2: !hasPassedOver && !isWinner && !trailingRanks
             // name: All rankings counted but disliked winner. Additional candidates after winner left blank
             // name: 'Your vote was allocated to a losing candidate but all your preferences were counted.',
-            name: "Voter didn't support the winner but all their preferences were still counted.",
+            name: `Voter didn't support ${winner_name} but all their preferences were still counted`,
             votes: 0,
             color: 'var(--ltbrand-lime)'
         },
         { // Type 3:  hasPassedOver
             // name: 'Voter\'s preferred candidates were not counted due to order of elimination.',
-            name: "Vote couldn't transfer to next choice after an elimination because next choice was already eliminated.",
+            name: "Vote couldn't transfer to next choice after an elimination because next choice was already eliminated",
             votes: 0,
             color: 'var(--ltbrand-red)'
         },
         { // Type 4: !hasPassedOver && !isWinner && trailingRanks
             // name: 'Voter\'s next choice wasn\'t counted after their top choice lost in the final round.',
-            name: "Voter was counted toward a losing candidate but voter had more uncounted preferences",
+            name: `Voter was counted toward ${runner_up_name} but voter had more uncounted preferences`,
             votes: 0,
             color: 'var(--brand-orange)'
         },
@@ -125,11 +150,11 @@ export default ({eliminationOrderById, winnerId} : {eliminationOrderById : strin
         <Box sx={{width: '100%'}}>
             <Typography sx={{textAlign: 'left', mb: 1}}><b>Intent respected: Vote transferred as intended</b></Typography>
         </Box>
-        {[0,1].map(i => <Definition i={i}/>)}
+        {[0,1].map(i => <Definition key={i} i={i}/>)}
         <Box sx={{width: '100%', mt: 2}}>
             <Typography sx={{textAlign: 'left', mb: 1}}><b>Intent not respected: Vote didn't transfer as intended</b></Typography>
         </Box>
-        {[2,3].map(i => <Definition i={i}/>)}
+        {[2,3].map(i => <Definition key={i} i={i}/>)}
         <Typography sx={{textAlign: 'left', mt: 2}}>In some cases uncounted rankings could have made a difference if they had been counted.</Typography>
     </Widget>
 }
