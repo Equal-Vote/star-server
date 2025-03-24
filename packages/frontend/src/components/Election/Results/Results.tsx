@@ -32,8 +32,9 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
   let {results, t, race} = useRace();
   const rounds = race.num_winners;
   const roundIndexes = Array.from({length: rounds}, () => i++);
-  results = results as starResults;
+  const flags = useFeatureFlags();
 
+  results = results as starResults;
 
   const sortedCandidates = race.candidates
     .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
@@ -51,27 +52,19 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
       <DetailExpander>
         <STARDetailedResults/>
         <DetailExpander level={1}>
-          <WidgetContainer>
-            <Widget title={t('results.star.detailed_steps_title')}>
-              <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
-            </Widget>
-            <STAREqualPreferencesWidget frontRunners={sortedCandidates.slice(0, 2)}/>
-            <HeadToHeadWidget candidates={sortedCandidates}/>
-            <VoterProfileWidget candidates={sortedCandidates} topScore={5} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
-            <ColumnDistributionWidget/>
-            <NameRecognitionWidget/>
-            <ScoreRangeWidget/>
-          </WidgetContainer>
+          <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
+          <STAREqualPreferencesWidget frontRunners={sortedCandidates.slice(0, 2)}/>
+          <HeadToHeadWidget candidates={sortedCandidates}/>
+          <VoterProfileWidget candidates={sortedCandidates} topScore={5} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
+          {flags.isSet('ALL_STATS') && <ScoreRangeWidget/>}
+          {flags.isSet('ALL_STATS') && <ColumnDistributionWidget/>}
+          {flags.isSet('ALL_STATS') && <NameRecognitionWidget/>}
         </DetailExpander>
       </DetailExpander>
     }
     {rounds > 1 &&
       <DetailExpander>
-          <WidgetContainer>
-            <Widget wide title={t('results.star.detailed_steps_title')}> 
-              <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
-            </Widget>
-          </WidgetContainer>
+        <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
       </DetailExpander>
     }
   </ResultsViewer>
@@ -260,6 +253,7 @@ function PluralityResultsViewer() {
 function ApprovalResultsViewer() {
   let {results, race, t} = useRace();
   results = results as approvalResults;
+  const flags = useFeatureFlags();
 
   const sortedCandidates = race.candidates
     .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
@@ -301,13 +295,9 @@ function ApprovalResultsViewer() {
       </WidgetContainer>
 
       <DetailExpander level={1}>
-        <WidgetContainer>
-          <HeadToHeadWidget candidates={sortedCandidates}/>
-          <VoterProfileWidget candidates={sortedCandidates} topScore={1} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
-        </WidgetContainer>
-        <WidgetContainer>
-          <ColumnDistributionWidget/>
-        </WidgetContainer>
+        <HeadToHeadWidget candidates={sortedCandidates}/>
+        <VoterProfileWidget candidates={sortedCandidates} topScore={1} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
+        {flags.isSet('ALL_STATS') && <ColumnDistributionWidget/>}
       </DetailExpander>
     </DetailExpander>
   </ResultsViewer>
@@ -407,15 +397,11 @@ function STARPRResultsViewer() {
         </Widget>
       </WidgetContainer>
       <DetailExpander level={1}>
-        <WidgetContainer>
-          <HeadToHeadWidget candidates={sortedCandidates}/>
-          <VoterProfileWidget candidates={sortedCandidates} topScore={5} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
-        </WidgetContainer>
-        <WidgetContainer>
-          <ColumnDistributionWidget/>
-          <NameRecognitionWidget/>
-          <ScoreRangeWidget/>
-        </WidgetContainer>
+        <HeadToHeadWidget candidates={sortedCandidates}/>
+        <VoterProfileWidget candidates={sortedCandidates} topScore={5} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
+        {flags.isSet('ALL_STATS') && <ScoreRangeWidget/>}
+        {flags.isSet('ALL_STATS') && <ColumnDistributionWidget/>}
+        {flags.isSet('ALL_STATS') && <NameRecognitionWidget/>}
       </DetailExpander>
     </DetailExpander>
   </ResultsViewer>

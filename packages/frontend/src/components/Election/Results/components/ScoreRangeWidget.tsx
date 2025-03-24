@@ -10,9 +10,6 @@ export default () => {
     const {ballotsForRace} = useAnonymizedBallots();
     const {t, race} = useRace();
 
-    const flags = useFeatureFlags();
-    if(!flags.isSet('ALL_STATS')) return <></>
-
     let numAtDiff = [];
 
     const incIndex = (arr, index) => {

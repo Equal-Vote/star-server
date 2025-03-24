@@ -17,7 +17,7 @@ export default ({frontRunners}: {frontRunners: Candidate[]}) => {
         if(refScores[0].score == refScores[1].score) equalPreferences[refScores[0].score]++;
     })
 
-    return <Widget title={t('results.star.equal_preferences_title')}>
+    return <Widget title={t('results.star.equal_preferences_title')} wide>
         <ResultsBarChart data={equalPreferences.map((count, i) => ({name: `${i}⭐`, count})).reverse()} xKey='count' percentage={true} sortFunc={false}/>
     </Widget>
 }

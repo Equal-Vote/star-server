@@ -13,6 +13,8 @@ import ColumnDistributionWidget from "./ColumnDistributionWidget";
 import ScoreRangeWidget from "./ScoreRangeWidget";
 import NameRecognitionWidget from "./NameRecognitionWidget";
 import useRace from "~/components/RaceContextProvider";
+import STARResultDetailedStepsWidget from "../STAR/STARResultDetailedStepsWidget";
+import STAREqualPreferencesWidget from "../STAR/STAREqualPreferencesWidget";
 
 export default ({ children, level = 0 }) => {
   const [viewDetails, setViewDetails] = useState(false);
@@ -27,6 +29,8 @@ export default ({ children, level = 0 }) => {
   selectorTitleKeys.set(ColumnDistributionWidget, 'results_ext.column_distribution_title');
   selectorTitleKeys.set(ScoreRangeWidget, 'results_ext.score_range_title');
   selectorTitleKeys.set(NameRecognitionWidget, 'results_ext.name_recognition_title');
+  selectorTitleKeys.set(STARResultDetailedStepsWidget, 'results.star.detailed_steps_title');
+  selectorTitleKeys.set(STAREqualPreferencesWidget, 'results.star.equal_preferences_title');
 
   let { t } = useRace();
 
@@ -68,11 +72,15 @@ export default ({ children, level = 0 }) => {
       {viewDetails && ballots && level == 1 && <>
         <Select
           value={selector}
-          label={t('results_ext.candidateSelector')}
+          label={'Stats for Nerds Selector'}
           onChange={(e) => setSelector(e.target.value as number)}
           sx={{mb: 2, width: '300px', textAlign: 'left'}}
         >
-            {children.map((c, i) => <MenuItem key={i} value={i}>{t(selectorTitleKeys.get(c.type), {includeTips: false})}</MenuItem>)}
+            {
+              children
+              .filter(c => selectorTitleKeys.has(c.type))
+              .map((c, i) => <MenuItem key={i} value={i}>{t(selectorTitleKeys.get(c.type), {includeTips: false})}</MenuItem>)
+            }
         </Select>
         {/*<Select
           native

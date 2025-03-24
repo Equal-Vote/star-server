@@ -20,24 +20,25 @@ const STARResultDetailedStepsWidget = ({ results, rounds, t, filterRandomFromLog
     let logs = (t('results.star.tiebreaker_note_text') as Array<String>)
     // this approach is a bit error prone, but it works for now
     if(filterRandomFromLogs) logs = logs.slice(0, logs.length-2);
-    return <div className='detailedSteps'>
-        { showTieBreakerWarning && <Paper elevation={2} sx={{backgroundColor: 'theme.gray4', width: '90%', margin: 'auto', textAlign: 'left', padding: 3}}>
-            <b>{t('results.star.tiebreaker_note_title')}</b>️
-            <hr/>
-            {logs.slice(0, ).map((s,i) => <p key={i}>{s}</p>)}
-        </Paper> }
-        {results.roundResults.map((round, r) => (
-            <Box key={r}>
-                {rounds > 1 && <Typography variant="h4">{`Winner ${r + 1}`}</Typography>}
-                <ol style={{textAlign: 'left'}}>
-                    {round.logs.map((log, i) => (<li key={i}>
-                        {typeof log === 'string' ? log : t(log['key'], log)}
-                    </li>))}
-                </ol>
-            </Box>
-        ))}
-
-    </div>
+    return <Widget title={t('results.star.detailed_steps_title')} wide>
+        <div className='detailedSteps'>
+            { showTieBreakerWarning && <Paper elevation={2} sx={{backgroundColor: 'theme.gray4', width: '90%', margin: 'auto', textAlign: 'left', padding: 3}}>
+                <b>{t('results.star.tiebreaker_note_title')}</b>️
+                <hr/>
+                {logs.slice(0, ).map((s,i) => <p key={i}>{s}</p>)}
+            </Paper> }
+            {results.roundResults.map((round, r) => (
+                <Box key={r}>
+                    {rounds > 1 && <Typography variant="h4">{`Winner ${r + 1}`}</Typography>}
+                    <ol style={{textAlign: 'left'}}>
+                        {round.logs.map((log, i) => (<li key={i}>
+                            {typeof log === 'string' ? log : t(log['key'], log)}
+                        </li>))}
+                    </ol>
+                </Box>
+            ))}
+        </div>
+    </Widget>
 }
 
 export default STARResultDetailedStepsWidget;
