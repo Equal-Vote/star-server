@@ -151,7 +151,7 @@ export const useSubstitutedTranslation = (electionTermType = 'election', v = {})
     }
   })
 
-  const applySymbols = (txt, newWindow) => {
+  const applySymbols = (txt, includeTips, newWindow) => {
     const applyLinks = (txt) => {
       if (typeof txt !== 'string') return txt;
       let parts = txt.split(rLink)
@@ -174,10 +174,11 @@ export const useSubstitutedTranslation = (electionTermType = 'election', v = {})
       })
     }
 
-    const applyTips = (txt, keyPrefix) => {
+    const applyTips = (txt, keyPrefix, includeTips) => {
       if (typeof txt !== 'string') return txt;
       return txt.split(rTip).map((str, i) => {
         if (i % 2 == 0) return str;
+        if (!includeTips) return '';
         return <Tip key={`tip_${keyPrefix}_${i}`} name={str} />
       })
     }
@@ -193,30 +194,32 @@ export const useSubstitutedTranslation = (electionTermType = 'election', v = {})
 
     if (!rLink.test(txt) && !rTip.test(txt) && !txt.includes('\n') && !rBold.test(txt)) return txt;
 
-    return <>
-      {applyLinks(txt)
-        .map((comp, i) => applyTips(comp, i)).flat()
+    let output = applyLinks(txt)
+        .map((comp, i) => applyTips(comp, i, includeTips)).flat()
         .map((comp, i) => applyLineBreaks(comp, i)).flat()
         .map((comp, i) => applyBold(comp, i)).flat()
-      }
-    </>
+    if(output.every(item => typeof item === 'string' )){
+      return output.join('')
+    }else{
+      return <>{output}</>
+    }
   }
 
-  const handleObject = (obj, skipProcessing=false, newWindow=false) => {
+  const handleObject = (obj, includeTips=true, newWindow=false, skipProcessing=false) => {
     if (skipProcessing) return obj;
     if (typeof obj == 'number') return obj;
-    if (typeof obj === 'string') return applySymbols(obj, newWindow);
-    if (Array.isArray(obj)) return obj.map(o => handleObject(o));
+    if (typeof obj === 'string') return applySymbols(obj, includeTips, newWindow);
+    if (Array.isArray(obj)) return obj.map(o => handleObject(o, includeTips, newWindow));
 
     let newObj = {};
     Object.entries(obj).forEach(([key, value]) => {
-      newObj[key] = handleObject(value);
+      newObj[key] = handleObject(value, includeTips, newWindow);
     })
     return newObj;
   }
 
   return {
-    t: (key, v = {}) => handleObject(t(key, { ...values, ...processValues(v) }), v['skipProcessing'], v['newWindow'] ?? false),
+    t: (key, v = {}) => handleObject(t(key, { ...values, ...processValues(v) }), v['includeTips'], v['skipProcessing'], v['newWindow']),
     i18n,
   }
 }

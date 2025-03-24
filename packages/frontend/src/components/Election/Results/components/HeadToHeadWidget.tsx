@@ -73,7 +73,7 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
         if(m.leftVotes < m.rightVotes) losses++;
     })
 
-    return <Widget title={t('results_ext.head_to_head_title')}>
+    return <Widget title={t('results_ext.head_to_head_title')} wide>
         <Select
             value={refCandidateId}
             label={t('results_ext.candidate_selector')}

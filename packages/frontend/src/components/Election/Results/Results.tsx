@@ -205,20 +205,16 @@ function IRVResultsViewer() {
     </WidgetContainer>
     <DetailExpander>
       <WidgetContainer>
-        <Widget title={t('results.rcv.table_title')}>
+        <Widget title={t('results.rcv.table_title')} wide>
           <ResultsTable className='rcvTable' data={tabulationRows}/>
         </Widget>
       </WidgetContainer>
       <DetailExpander level={1}>
-        <WidgetContainer>
-          <VoterIntentWidget eliminationOrderById={eliminationOrderById} winnerId={sortedCandidates[0].candidate_id}/>
-          <VoterErrorStatsWidget/>
-        </WidgetContainer>
-        <WidgetContainer>
-          <HeadToHeadWidget ranked candidates={sortedCandidates}/>
-          <VoterProfileWidget candidates={sortedCandidates} topScore={1} ranked frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
-          <ColumnDistributionWidget/>
-        </WidgetContainer>
+        <HeadToHeadWidget ranked candidates={sortedCandidates}/>
+        <VoterProfileWidget candidates={sortedCandidates} topScore={1} ranked frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
+        <VoterIntentWidget eliminationOrderById={eliminationOrderById} winnerId={sortedCandidates[0].candidate_id}/>
+        <VoterErrorStatsWidget/>
+        <ColumnDistributionWidget/>
       </DetailExpander>
     </DetailExpander>
   </ResultsViewer>

@@ -145,7 +145,7 @@ const [rawNumbers, setRawNumbers] = useState(false);
   const tickOffset = 40; 
   const adjustedAxisWidth = useTickMargin ? axisWidth + tickOffset : axisWidth;
   return (
-    <div style={{width:'100%'}} onMouseEnter={() => setRawNumbers(true)} onMouseLeave={() => setRawNumbers(false)}>
+    <div style={{width:'100%', maxWidth: '600px', marginLeft: 'auto', marginRight: 'auto'}} onMouseEnter={() => setRawNumbers(true)} onMouseLeave={() => setRawNumbers(false)}>
     <ResponsiveContainer width="90%" height={50 * data.length} style={maxBarSize ?
       {marginTop: '-50px'}: {}
     }>

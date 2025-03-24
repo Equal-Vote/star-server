@@ -10,9 +10,6 @@ export default () => {
     const {ballotsForRace} = useAnonymizedBallots();
     const {t, race} = useRace();
 
-    const flags = useFeatureFlags();
-    if(!flags.isSet('ALL_STATS')) return <></>
-
     let numColumns = [];
     let whichColumns = [];
     let totalColumns = 0;
@@ -40,7 +37,7 @@ export default () => {
 
     whichColumns = whichColumns.map(c => ({...c, name: c.name == 'blank'? 'blank' : `${c.name}⭐`}))
 
-    return <Widget title={t(`results_ext.column_distribution_title`)}>
+    return <Widget title={t(`results_ext.column_distribution_title`)} wide>
         <Typography variant='h6'>{t(`results_ext.column_distribution_num_avg`, {count: Math.round(100*totalColumns / b.length)/100})}</Typography>
         <Divider/>
         <Typography variant='h6'>{t(`results_ext.column_distribution_num_title`)}</Typography>

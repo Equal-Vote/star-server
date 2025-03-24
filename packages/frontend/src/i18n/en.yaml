@@ -545,6 +545,10 @@ results_ext:
   column_distribution_num_title: Number of {{preferences}} given !tip(columns_given)
   column_distribution_which_title: Which {{preferences}} were used? !tip(columns_used)
 
+  voter_intent_title: Voter Intent
+
+  voter_error_title: Voter Errors
+
   name_recognition_title: Name Recognition
   name_recognition_sub_title: How many voters gave a non-blank score for the candidate
   name_recognition_blank_warning: > 

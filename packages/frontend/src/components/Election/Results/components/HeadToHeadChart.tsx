@@ -34,12 +34,12 @@ export default (
         }</>
     }
 
-    return <Box sx={{mx: 4}}>
-        <Box display='flex' flexDirection='row' justifyContent='space-between' sx={{mb: 1}} gap={2}>
+    return <Box sx={{mx:4}}>
+        <Box display='flex' flexDirection='row' justifyContent='space-between' sx={{mb: 1, maxWidth: '600px', margin: 'auto'}} gap={2}>
             <Typography sx={{textAlign: 'left', fontWeight: 'bold'}}>{leftName}</Typography>
             <Typography sx={{textAlign: 'right', fontWeight: 'bold'}}>{rightName}</Typography>
         </Box>
-        <Box height='38px' display='flex' flexDirection='row'>
+        <Box height='38px' display='flex' flexDirection='row' sx={{maxWidth: '600px', margin: 'auto'}}>
             {leftValue > 0 &&
                 <Box width={leftPercent} sx={{backgroundColor:CHART_COLORS[0], textAlign: 'left', pt: 1, pl: 1, fontSize: '1rem', overflow: 'visible', zIndex: 1}}>
                     {(leftValue > rightValue)? '⭐ ': ''}{leftPercent}

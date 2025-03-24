@@ -48,9 +48,11 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
     let leftVotes = 0;
     let rightVotes = 0;
     let total = 0;
+    let numBullets = 0;
     b.forEach(scores => {
         let refScore = scores.find((score) => score.candidate_id == refCandidateId)?.score;
         if(refScore != topScore) return;
+        if(scores.filter(score => score.score != 0 && score.score != null).length === 1) numBullets++;
         totalTopScored++;
         let fScores = [0, 0];
 
@@ -94,7 +96,7 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
         voterErrorData = getVoterErrorData(bm);
     }
 
-    return <Widget title={t('results_ext.voter_profile_title')}>
+    return <Widget title={t('results_ext.voter_profile_title')} wide>
         {/*<Typography>Average ballot for voters who gave</Typography>*/}
         <Select
             value={refCandidateId}
@@ -103,9 +105,8 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
         >
             {candidates.map((c, i) => <MenuItem key={i} value={c.candidate_id}>{c.candidate_name}</MenuItem>)}
         </Select>
-        <Divider variant='middle' sx={{width: '100%', m:3}}/>
         <Typography variant='h6'>{t('results_ext.voter_profile_count', {count: totalTopScored, name: refCandidateName})}</Typography>
-        <Divider variant='middle' sx={{width: '100%', m:3}}/>
+        <Divider variant='middle' sx={{width: '100%', m:1}}/>
         <Typography variant='h6'>{t('results_ext.voter_profile_preferred_frontrunner', {name: refCandidateName})}</Typography>
         {totalTopScored == 0 ? 'n/a' : <HeadToHeadChart 
             leftName={frontRunners[0].candidate_name}
@@ -118,11 +119,14 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
                 description: equalPreferences
             }}
         />}
-        <Divider variant='middle' sx={{width: '100%', m:3}}/>
+        <Divider variant='middle' sx={{width: '100%', m:1}}/>
         <Typography variant='h6'>{t(`results_ext.voter_profile_average_${ranked? 'ranks' : 'scores'}`, {name: refCandidateName})}</Typography>
-        {totalTopScored == 0 ? 'n/a' : <ResultsBarChart data={data} xKey='score' percentage={false} sortFunc={false}/>}
+        {totalTopScored == 0 ? 'n/a' : <>
+            <Typography>{`${formatPercent(numBullets/totalTopScored)} of ${refCandidateName} supporters only voted for one candidate`}</Typography>
+            <ResultsBarChart data={data} xKey='score' percentage={false} sortFunc={false}/>
+        </>}
         {(race.voting_method === 'IRV' || race.voting_method === 'STV') && <>
-            <Divider variant='middle' sx={{width: '100%', m:3}}/>
+            <Divider variant='middle' sx={{width: '100%', m:1}}/>
             <Typography variant='h6'>{t(`results_ext.voter_profile_error_rates`, {name: refCandidateName})}</Typography>
             <ResultsBarChart data={voterErrorData} xKey='votes' percentage/>
             <Typography>Ballots with errors can still be counted in most cases, but it's a useful measure of the voter's understanding</Typography>

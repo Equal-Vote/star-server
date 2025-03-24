@@ -43,28 +43,31 @@ export default ({eliminationOrderById, winnerId} : {eliminationOrderById : strin
         runner_up_name = 'a losing candidate'
     }
 
+    let condorcetCandidate = results.summaryData.candidates.find(c => 
+        results.summaryData.pairwiseMatrix[c.index].filter(p => p == 1).length == sortedCandidates.length-1
+    );
+
+// End note: Add asterisk and change to: "*In some elections, the uncounted rankings could have made a difference in the race if they had been counted."
+//     if the Condorcet winner won,  If the Condorcet winner lost change end note to say "In this election, the uncounted rankings could have made a
+//     difference. Looking at the full ballot data, voters preferred x over all other candidates.
     let data = [
         { // Type 1: !hasPassedOver && isWinner
-            name: `Voter was counted toward ${winner_name} and all their preferences above ${winner_name} were counted`,
+            name: `Voter's vote went to ${winner_name}. Rankings for all candidates preferred over ${winner_name} were counted`,
             votes: 0,
             color: 'var(--ltbrand-green)'
         },
         { // Type 2: !hasPassedOver && !isWinner && !trailingRanks
-            // name: All rankings counted but disliked winner. Additional candidates after winner left blank
-            // name: 'Your vote was allocated to a losing candidate but all your preferences were counted.',
             name: `Voter didn't support ${winner_name} but all their preferences were still counted`,
             votes: 0,
             color: 'var(--ltbrand-lime)'
         },
         { // Type 3:  hasPassedOver
-            // name: 'Voter\'s preferred candidates were not counted due to order of elimination.',
             name: "Vote couldn't transfer to next choice after an elimination because next choice was already eliminated",
             votes: 0,
             color: 'var(--ltbrand-red)'
         },
         { // Type 4: !hasPassedOver && !isWinner && trailingRanks
-            // name: 'Voter\'s next choice wasn\'t counted after their top choice lost in the final round.',
-            name: `Voter was counted toward ${runner_up_name} but voter had more uncounted preferences`,
+            name: `Vote was counted towards ${runner_up_name}, but some of their rankings were not counted at all.*`,
             votes: 0,
             color: 'var(--brand-orange)'
         },
@@ -132,29 +135,38 @@ export default ({eliminationOrderById, winnerId} : {eliminationOrderById : strin
                 my: 0,
                 backgroundColor: data[i].color
             }}/>
-            <Box display='flex' justifyContent='space-between' gap={1} flexDirection='column' sx={{width: '100%'}}>
-                <Typography sx={{maxWidth: '400px', textAlign: 'left'}}>{data[i].name}</Typography>
+            <Box display='flex' justifyContent='space-between' gap={1} flexDirection='column'>
+                <Typography sx={{textAlign: 'left'}}>{data[i].name}</Typography>
             </Box>
         </Box>
     </Box>
 
-    return <Widget title='Voter Intent'>
+    return <Widget title={t('results_ext.voter_intent_title')} wide>
         <Typography sx={{textAlign: 'left'}}>
             In Ranked Choice there's a common misconception that "If your favorite doesn't win, your next choice will be counted" but that didn't
-            happen for {Math.round(100*(data[2].votes+data[3].votes)/numBallots)}% of the voters and {Math.round(100*numIgnored / numPref)}%
+            happen for {Math.round(100*(data[2].votes+data[3].votes)/numBallots)}% of the voters. {Math.round(100*numIgnored / numPref)}%
             of voter's rankings were uncounted in this election.
         </Typography>
         <Box width={'250px'}> {/*Limiting the width so that the hover experience is less awkward*/}
             <ResultsPieChart data={[0, 1, 3, 2].map(i => data[i])} noLegend />
         </Box>
-        <Box sx={{width: '100%'}}>
-            <Typography sx={{textAlign: 'left', mb: 1}}><b>Intent respected: Vote transferred as intended</b></Typography>
+        <Box sx={{maxWidth: '650px', mx: 'auto'}}>
+            <Box sx={{width: '100%'}}>
+                <Typography sx={{textAlign: 'left', mb: 1}}><b>Intent respected: Vote transferred as intended</b></Typography>
+            </Box>
+            {[0,1].map(i => <Definition key={i} i={i}/>)}
+            <Box sx={{width: '100%', mt: 2}}>
+                <Typography sx={{textAlign: 'left', mb: 1}}><b>Intent not respected: Vote didn't transfer as intended</b></Typography>
+            </Box>
+            {[2,3].map(i => <Definition key={i} i={i}/>)}
         </Box>
-        {[0,1].map(i => <Definition key={i} i={i}/>)}
-        <Box sx={{width: '100%', mt: 2}}>
-            <Typography sx={{textAlign: 'left', mb: 1}}><b>Intent not respected: Vote didn't transfer as intended</b></Typography>
-        </Box>
-        {[2,3].map(i => <Definition key={i} i={i}/>)}
-        <Typography sx={{textAlign: 'left', mt: 2}}>In some cases uncounted rankings could have made a difference if they had been counted.</Typography>
+        <Typography sx={{textAlign: 'left', mt: 2}}><b>*</b>
+            {(condorcetCandidate === undefined || condorcetCandidate.name === sortedCandidates[0].candidate_name) &&
+            'In some elections, the uncounted rankings could have made a difference in the race if they had been counted.'
+            }
+            {condorcetCandidate !== undefined && condorcetCandidate.name !== sortedCandidates[0].candidate_name &&
+            'In this election, the uncounted rankings could have made a difference. Looking at the full ballot data, voters preferred x over all other candidates.'
+            }
+        </Typography>
     </Widget>
 }
