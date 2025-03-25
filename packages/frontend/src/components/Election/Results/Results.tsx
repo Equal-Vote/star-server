@@ -194,6 +194,8 @@ function IRVResultsViewer() {
     .map(c => c.candidate_id)
     .reverse();
 
+  console.log("roundResults length", results.roundResults.length);
+
   return <ResultsViewer methodKey='rcv'>
     <WidgetContainer>
       <Widget title={t('results.rcv.first_choice_title')}>

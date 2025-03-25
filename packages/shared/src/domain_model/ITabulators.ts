@@ -133,6 +133,7 @@ export interface irvResults extends Omit<genericResults, 'roundResults'> {
     roundResults: irvRoundResults[],
     logs: string[],
     voteCounts: number[][],
+      /* Outer index is round; inner index is candidate. */
     exhaustedVoteCounts: number[],
     nExhaustedViaOvervote: number,
     nExhaustedViaSkippedRank: number,
