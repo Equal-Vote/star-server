@@ -67,7 +67,7 @@ export default ({eliminationOrderById, winnerId} : {eliminationOrderById : strin
             color: 'var(--ltbrand-red)'
         },
         { // Type 4: !hasPassedOver && !isWinner && trailingRanks
-            name: `Vote was counted towards ${runner_up_name}, but some of their rankings were not counted at all.*`,
+            name: `Vote was counted towards ${runner_up_name}, and some of the voter's rankings were not counted at all.*`,
             votes: 0,
             color: 'var(--brand-orange)'
         },
@@ -162,10 +162,10 @@ export default ({eliminationOrderById, winnerId} : {eliminationOrderById : strin
         </Box>
         <Typography sx={{textAlign: 'left', mt: 2}}><b>*</b>
             {(condorcetCandidate === undefined || condorcetCandidate.name === sortedCandidates[0].candidate_name) &&
-            'In some elections, the uncounted rankings could have made a difference in the race if they had been counted.'
+            'In some elections, the uncounted rankings could have made a difference and changed the winner if they had been counted.'
             }
             {condorcetCandidate !== undefined && condorcetCandidate.name !== sortedCandidates[0].candidate_name &&
-            'In this election, the uncounted rankings could have made a difference. Looking at the full ballot data, voters preferred x over all other candidates.'
+            `In this election, the uncounted rankings could have made a difference and changed the winner. Looking at the full ballot data, voters preferred ${condorcetCandidate.name} over all other candidates.`
             }
         </Typography>
     </Widget>
