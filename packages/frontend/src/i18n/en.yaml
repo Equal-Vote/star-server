@@ -532,12 +532,26 @@ landing_page:
 # Results page (ex. bettervoting.com/tcvc7r/results)
 results_ext:
   head_to_head_title: Head-to-Head Matchups !tip(head_to_head)
-  head_to_head_secondary_candidate_name: other {{candidate}}
-  head_to_head_ranked_higher: Ranked {{name}} higher
-  head_to_head_ranked_equal: Ranked both equally
-  head_to_head_ranked_blank: Didn't rank either
-  head_to_head_scored_higher: Scored {{name}} higher
-  head_to_head_scored_equal: Scored both equally
+  head_to_head_other_name: other {{candidate}}
+  head_to_head_key:
+    star:
+      higher: Gave more stars to {{name}}
+      equal: Gave equal stars to both
+    star_pr: # Matches STAR
+      higher: Gave more stars to {{name}}
+      equal: Gave equal stars to both
+    approval:
+      higher: Approved of {{name}} but not {{other_name}}
+      equal: Gave same approval to both
+    ranked_robin:
+      higher: Ranked {{name}} higher
+      equal: Ranked both equally
+    rcv:
+      higher: Ranked {{name}} higher
+      equal: Didn't rank either
+    stv: # Matches RCV
+      higher: Ranked {{name}} higher
+      equal: Didn't rank either
 
   candidate_selector: '{{capital_candidate}}'
 

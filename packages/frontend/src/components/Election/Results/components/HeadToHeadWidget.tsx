@@ -5,7 +5,7 @@ import useRace from "~/components/RaceContextProvider";
 import { useState } from "react";
 import { Box, Divider, MenuItem, Paper, Select, Typography } from "@mui/material";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { CHART_COLORS } from "~/components/util";
+import { CHART_COLORS, methodValueToTextKey } from "~/components/util";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import HeadToHeadChart from "./HeadToHeadChart";
 import ResultsKey from "./ResultsKey";
@@ -73,6 +73,8 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
         if(m.leftVotes < m.rightVotes) losses++;
     })
 
+    let methodKey = methodValueToTextKey[race.voting_method];
+
     return <Widget title={t('results_ext.head_to_head_title')} wide>
         <Select
             value={refCandidateId}
@@ -107,13 +109,9 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
             })}
         </Box>
         <ResultsKey items={[
-            [CHART_COLORS[0], t(`results_ext.head_to_head_${ranked? 'ranked' : 'scored'}_higher`, {name: refCandidateName})],
-            ['var(--brand-gray-1)', (() => {
-                if(race.voting_method == 'IRV' || race.voting_method == 'STV')
-                    return t('results_ext.head_to_head_ranked_blank')
-                return t(`results_ext.head_to_head_${ranked? 'ranked' : 'scored'}_equal`)
-            })()],
-            [CHART_COLORS[1], t(`results_ext.head_to_head_${ranked? 'ranked' : 'scored'}_higher`, {name: t('results_ext.head_to_head_secondary_candidate_name')})]
+            [CHART_COLORS[0], t(`results_ext.head_to_head_key.${methodKey}.higher`, {name: refCandidateName, other_name: t('results_ext.head_to_head_other_name')})],
+            ['var(--brand-gray-1)', t(`results_ext.head_to_head_key.${methodKey}.equal`)],
+            [CHART_COLORS[1], t(`results_ext.head_to_head_key.${methodKey}.higher`, {name: t('results_ext.head_to_head_other_name'), other_name: refCandidateName})],
         ]} />
     </Widget>
 }
