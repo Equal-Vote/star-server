@@ -108,7 +108,7 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
         </Box>
         <ResultsKey items={[
             [CHART_COLORS[0], `${refCandidateName}'s support`],
-            ['var(--brand-gray-1)', `Didn't rank either`],
+            ['var(--brand-gray-1)', ranked ? "Didn't rank either" : "Didn't score either"],
             [CHART_COLORS[1], `Other candidate's support`],
         ]} />
     </Widget>
