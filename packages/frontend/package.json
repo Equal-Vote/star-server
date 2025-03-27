@@ -70,7 +70,7 @@
     "identity-obj-proxy": "^3.0.0",
     "rimraf": "^5.0.5",
     "typescript": "^5.3.3",
-    "vite": "^6.2.2",
+    "vite": "^6.2.3",
     "vite-plugin-checker": "^0.6.4",
     "vite-plugin-env-compatible": "^2.0.1"
   }
