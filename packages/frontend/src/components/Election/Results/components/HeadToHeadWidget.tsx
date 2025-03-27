@@ -107,9 +107,13 @@ export default ({candidates=[], ranked=false} : {candidates?: Candidate[], ranke
             })}
         </Box>
         <ResultsKey items={[
-            [CHART_COLORS[0], `${refCandidateName}'s support`],
-            ['var(--brand-gray-1)', ranked ? "Didn't rank either" : "Didn't score either"],
-            [CHART_COLORS[1], `Other candidate's support`],
+            [CHART_COLORS[0], t(`results_ext.head_to_head_${ranked? 'ranked' : 'scored'}_higher`, {name: refCandidateName})],
+            ['var(--brand-gray-1)', (() => {
+                if(race.voting_method == 'IRV' || race.voting_method == 'STV')
+                    return t('results_ext.head_to_head_ranked_blank')
+                return t(`results_ext.head_to_head_${ranked? 'ranked' : 'scored'}_equal`)
+            })()],
+            [CHART_COLORS[1], t(`results_ext.head_to_head_${ranked? 'ranked' : 'scored'}_higher`, {name: t('results_ext.head_to_head_secondary_candidate_name')})]
         ]} />
     </Widget>
 }
