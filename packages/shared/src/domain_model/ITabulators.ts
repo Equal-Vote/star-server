@@ -123,18 +123,25 @@ export interface irvRoundResults {
     winners: candidate[],
     eliminated: candidate[],
     logs: string[], /* envisioned for possible debugging? */
-    standings: {candidateIndex: number, hareScore: number}[]
-      /* Sorted by increasing Hare score */
+    standings: {candidateIndex: number, hareScore: number}[],
+      /* Sorted by decreasing Hare score */
+    /* Next two are maybe filled in only in front end: */
+    exhaustedVoteCount?: number | undefined,
+    isStartOfSearch?: boolean | undefined,
 }
 
 export interface irvResults extends Omit<genericResults, 'roundResults'> {
     votingMethod: 'IRV' | 'STV',
     summaryData: rankedRobinSummaryData,
     roundResults: irvRoundResults[],
+      /*
+        Some of the round results are in other fields (voteCounts,
+        exhaustedVoteCounts). A lot of code expects them there.
+      */
     logs: string[],
     voteCounts: number[][],
       /* Outer index is round; inner index is candidate. */
-    exhaustedVoteCounts: number[],
+    exhaustedVoteCounts: number[],  /* by round */
     nExhaustedViaOvervote: number,
     nExhaustedViaSkippedRank: number,
     nExhaustedViaDuplicateRank: number,

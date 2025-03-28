@@ -6,6 +6,8 @@ import { Election } from "@equal-vote/star-vote-shared/domain_model/Election";
 
 const Fraction = require('fraction.js');
 
+const DEBUG = false;
+
 type weightedVote = {
     weight: typeof Fraction,
     vote: nonNullBallot,
@@ -72,6 +74,8 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
 
     while (results.elected.length < nWinners) {
 
+        if (DEBUG) console.log("IRV Round");
+
         let roundResults: irvRoundResults = {
             winners: [],
             eliminated: [],
@@ -97,11 +101,17 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
 
         })
 
+        if (DEBUG)
+          console.log("roundVoteCounts", JSON.stringify(roundVoteCounts));
         results.voteCounts.push(roundVoteCounts.map(c => c.voteCount.valueOf()))
         results.exhaustedVoteCounts.push(exhaustedVotes.length)
 
         // get max number of votes
         let remainingCandidatesIndexes = remainingCandidates.map(c => c.index)
+        if (DEBUG) console.log(
+          "remaining candidates indices",
+          JSON.stringify(remainingCandidatesIndexes)
+        );
 
         let maxVotes = sortedVoteCounts[0].voteCount
         let nActiveVotes = candidateVotes.map(c => c.length).reduce((a, b) => a + b, 0)
@@ -115,7 +125,8 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
             let winningCandidateIndex = sortedVoteCounts[0].index
             // add winner, remove from remaining candidates
             results.elected.push(summaryData.candidates[winningCandidateIndex])
-            roundResults.winners.push(summaryData.candidates[winningCandidateIndex])
+            roundResults.winners.push(summaryData.candidates[winningCandidateIndex]);
+            if (DEBUG) console.log("winner index", winningCandidateIndex);
             if (proportional) {
                 remainingCandidates = remainingCandidates.filter(c => !results.elected.includes(c))
                 let fractionalSurplus = new Fraction(maxVotes - quota).div(maxVotes)
@@ -146,20 +157,26 @@ export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, ran
         }
         else {
             // find candidate with least votes and remove from remaining candidates
-            let remainingVoteCounts = sortedVoteCounts.filter(c => remainingCandidatesIndexes.includes(c.index))
+            let remainingVoteCounts = sortedVoteCounts.filter(c => remainingCandidatesIndexes.includes(c.index));
             let lastPlaceCandidateIndex = remainingVoteCounts[remainingVoteCounts.length - 1].index
             remainingCandidates = remainingCandidates.filter(c => c.index !== lastPlaceCandidateIndex)
             let eliminatedCandidateVotes = candidateVotes[lastPlaceCandidateIndex]
             candidateVotes[lastPlaceCandidateIndex] = []
-            distributeVotes(remainingCandidates, candidateVotes, exhaustedVotes, eliminatedCandidateVotes, results, electionSettings)
-            roundResults.eliminated.push(summaryData.candidates[lastPlaceCandidateIndex])
+            distributeVotes(remainingCandidates, candidateVotes, exhaustedVotes, eliminatedCandidateVotes, results, electionSettings);
+            const toEliminate = summaryData.candidates[lastPlaceCandidateIndex];
+            if (DEBUG) console.log("eliminate", JSON.stringify(toEliminate));
+            roundResults.eliminated.push(toEliminate)
         }
 
-        roundResults.standings = sortedVoteCounts.map( ({index, voteCount}) =>
-          ({
-            candidateIndex: index,
-            hareScore: voteCount.valueOf()
-          })
+        let remainingVoteCounts = sortedVoteCounts.filter(
+            c => remainingCandidatesIndexes.includes(c.index)
+        );
+        roundResults.standings = remainingVoteCounts.map(
+            ({index, voteCount}) =>
+            ({
+              candidateIndex: index,
+              hareScore: voteCount.valueOf()
+            })
         );
         results.roundResults.push(roundResults)
     }

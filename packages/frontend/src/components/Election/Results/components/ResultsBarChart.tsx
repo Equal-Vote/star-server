@@ -62,7 +62,7 @@ const [rawNumbers, setRawNumbers] = useState(false);
     let s = {
       ...d,
       name: (((star && i == 0) || d['star']) ? "⭐" : "") + truncName(d["name"], 40),
-      // hack to get smaller values to allign different than larger ones
+      // hack to get smaller values to align different from larger ones
       left: (percentage && !rawNumbers)
         ? formatPercent(d[xKey] / percentDenominator)
         : (Math.round(d[xKey]*100)/100).toString(),

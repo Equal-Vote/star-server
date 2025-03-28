@@ -1867,6 +1867,12 @@
             },
             "type": "array"
           },
+          "exhaustedVoteCount": {
+            "type": "number"
+          },
+          "isStartOfSearch": {
+            "type": "boolean"
+          },
           "logs": {
             "items": {
               "type": "string"

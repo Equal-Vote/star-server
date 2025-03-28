@@ -26,6 +26,8 @@ import ScoreRangeWidget from "./components/ScoreRangeWidget";
 import useFeatureFlags from "~/components/FeatureFlagContextProvider";
 import STAREqualPreferencesWidget from "./STAR/STAREqualPreferencesWidget";
 import VoterErrorStatsWidget from "./components/VoterErrorStatsWidget";
+import Pages from "./Pages";
+import { IRVRound } from "./IRV/round";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
@@ -129,16 +131,16 @@ function IRVResultsViewer() {
   let {results, t, race} = useRace();
   results = results as irvResults;
 
-  const firstRoundData = results.voteCounts[0].map((c,i) => ({name: results.summaryData.candidates[i].name, votes: c}));
-
-  const runoffData = results.voteCounts.slice(-1)[0]
-    .map((c,i) => ({name: results.summaryData.candidates[i].name, votes: c}))
-    .sort((a, b) => b.votes - a.votes)
-    .filter(a => a.votes != 0) // filter out eliminated candidates
-    .concat([{
-      name: t('results.rcv.exhausted'),
-      votes: results.exhaustedVoteCounts.slice(-1)[0]
-    }])
+  const [page, setPage] = useState(1);
+  const {roundResults, exhaustedVoteCounts} = results;
+  if (roundResults.length !== exhaustedVoteCounts.length)
+    console.error(Error("IRV round counts don't match."));
+  const roundCount = roundResults.length;
+  for (let idx = 0; idx < roundCount; idx++) {
+    let cur = roundResults[idx];
+    cur.exhaustedVoteCount = exhaustedVoteCounts[idx];
+    cur.isStartOfSearch = idx > 0 && ! ! roundResults[idx - 1].winners.length;
+  }
 
   const tabulationRows = results.summaryData.candidates.map(({index, name}) => {
     return [name].concat(
@@ -194,17 +196,21 @@ function IRVResultsViewer() {
     .map(c => c.candidate_id)
     .reverse();
 
-  console.log("roundResults length", results.roundResults.length);
-
   return <ResultsViewer methodKey='rcv'>
-    <WidgetContainer>
-      <Widget title={t('results.rcv.first_choice_title')}>
-        <ResultsBarChart data={firstRoundData} percentage majorityOffset/>
-      </Widget>
-      <Widget title={t('results.rcv.final_round_title')}>
-        <ResultsBarChart data={runoffData} runoff star percentage sortFunc={false} majorityLegend={t('results.rcv.runoff_majority')}/>
-      </Widget>
-    </WidgetContainer>
+    < Pages
+      pageCount={roundCount} page={page} setPage={setPage} title={false}
+    >
+      { roundResults.
+        filter((round, idx) => idx + 1 === page).
+        map((round, idx) => (
+        < IRVRound
+          key={`round-${idx}`}
+          round={round}
+          candidatesByIndex={results.summaryData.candidates}
+          t={t}
+        />
+      ))}
+    </Pages>
     <DetailExpander>
       <WidgetContainer>
         <Widget title={t('results.rcv.table_title')}>
