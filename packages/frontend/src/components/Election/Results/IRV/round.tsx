@@ -21,10 +21,13 @@ export function IRVRound (
   let chartData = round.standings.map(
     ({ candidateIndex, hareScore }) =>
     ({ name: candidatesByIndex[candidateIndex].name, votes: hareScore })
-  ).concat([{
-    name: t('results.rcv.exhausted'),
-    votes: round.exhaustedVoteCount
-  }]);
+  );
+  if (! round.isStartOfSearch) {
+    chartData = chartData.concat([{
+      name: t('results.rcv.exhausted'),
+      votes: round.exhaustedVoteCount
+    }]);
+  }
   let haveWinner: boolean = ! ! round.winners.length;
   return < ResultsBarChart
     data={chartData} star={haveWinner} sortFunc={false}

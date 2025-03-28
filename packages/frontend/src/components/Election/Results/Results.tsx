@@ -139,7 +139,7 @@ function IRVResultsViewer() {
   for (let idx = 0; idx < roundCount; idx++) {
     let cur = roundResults[idx];
     cur.exhaustedVoteCount = exhaustedVoteCounts[idx];
-    cur.isStartOfSearch = idx > 0 && ! ! roundResults[idx - 1].winners.length;
+    cur.isStartOfSearch = 0 === idx || ! ! roundResults[idx - 1].winners.length;
   }
 
   const tabulationRows = results.summaryData.candidates.map(({index, name}) => {
