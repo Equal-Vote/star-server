@@ -119,7 +119,7 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
             count: losses,
             n_tied_candidates: tiedCandidates.length
           })
-          finalists.push(...tiedCandidates)
+          finalists.push(c)
         })
         continue outerLoop
       }
