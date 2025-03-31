@@ -6,7 +6,7 @@ export const emailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=
 
 
 export type GenericObject = {[key: string | number]: any};
-// NOTE: there's a couple of weird cases where function is necessary, but we may be able to remove this later
+// NOTE: there's a couple of weird cases where passing the key as a function is necessary, but we may be able to remove this later
 export const getEntry = <ItemType extends GenericObject,>(arr: ItemType[], id: any, key: string | number | Function ='id'): ItemType => {
   let match = arr.find(a => (typeof key === 'function')? key(a) == id : a[key] == id)
   if(match === undefined){

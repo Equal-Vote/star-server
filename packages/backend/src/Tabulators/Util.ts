@@ -225,7 +225,6 @@ export const runBlocTabulator = <ResultsType extends genericResults, SummaryType
 
   results.other = remainingCandidates.map(c => results.summaryData.candidates[c.index]); // remaining candidates in sortedScores
 
-  // it's important to run evaluate at the end since results.summaryData assumes they will be ordered according to index
   if(evaluate){
     // evaulate() converts candidates into an number[] of evaluation scores
     // candidates with higher evaluation scores will be sorted higher
