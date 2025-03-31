@@ -489,7 +489,9 @@ export default function Results({ race, results }: {race: Race, results: Electio
     .split('__REPLACE_ME__')
     .map((s,i) => ([<React.Fragment key={i*2}>{s}</React.Fragment>, <React.Fragment key={i*2+1}>&nbsp;</React.Fragment>]))
     .flat()
-
+  // this is not exact, but it's enough to judge the threshold
+  const winnersLength = results.elected.map(c => c.name).join(' ').length;
+  
   return (
     <RaceContextProvider race={race} results={results} t={t}>
       <hr/>
@@ -510,7 +512,7 @@ export default function Results({ race, results }: {race: Race, results: Electio
             </>
           :
             <Typography variant='h5'>
-            {(winnersText.join(' ').length < 80) ? 
+            {(winnersLength < 80) ? 
               <>⭐{winnersText}{t('results.win_title_postfix', {count: results.elected.length})} ⭐</>
             :
               [t('results.win_long_title_prefix'), ...results.elected.map(elected => ([<br/>, `${elected.name}`])).flat()]

@@ -206,8 +206,8 @@ results:
   tie_title: 'Tied!'
   tiebreak_subtitle: '{{names}} won after tie breaker'
   win_long_title_prefix: '⭐Winners⭐'
-  win_title_postfix_one: 'Wins!'
-  win_title_postfix: 'Win!'
+  win_title_postfix_one: 'wins!'
+  win_title_postfix: 'win!'
   vote_count: '{{n}} voters'
   method_context: 'Voting Method: {{voting_method}}'
   learn_link_text: How {{voting_method}} works
