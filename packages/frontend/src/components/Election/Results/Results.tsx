@@ -490,14 +490,11 @@ export default function Results({ race, results }: {race: Race, results: Electio
     }[results.votingMethod]
   });
 
-  let winnersText = '⭐' +
-    commaListFormatter
-      .format(results.elected.map(c => c.name).map(item => item.replace(' ', '__REPLACE_ME__')))
-      .split('__REPLACE_ME__')
-      .map((s,i) => ([<React.Fragment key={i*2}>{s}</React.Fragment>, <React.Fragment key={i*2+1}>&nbsp;</React.Fragment>]))
-      .flat() +
-    t('results.win_title_postfix', {count: results.elected.length}) +
-    '⭐'
+  const winnersText = commaListFormatter
+    .format(results.elected.map(c => c.name.replace(' ', '__REPLACE_ME__')))
+    .split('__REPLACE_ME__')
+    .map((s,i) => ([<React.Fragment key={i*2}>{s}</React.Fragment>, <React.Fragment key={i*2+1}>&nbsp;</React.Fragment>]))
+    .flat()
 
   return (
     <RaceContextProvider race={race} results={results} t={t}>
@@ -519,8 +516,8 @@ export default function Results({ race, results }: {race: Race, results: Electio
             </>
           :
             <Typography variant='h5'>
-            {(winnersText.length < 80) ? 
-              winnersText
+            {(winnersText.join(' ').length < 80) ? 
+              <>⭐{winnersText}{t('results.win_title_postfix', {count: results.elected.length})} ⭐</>
             :
               [t('results.win_long_title_prefix'), ...results.elected.map(elected => ([<br/>, `${elected.name}`])).flat()]
             }
