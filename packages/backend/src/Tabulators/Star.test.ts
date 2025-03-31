@@ -37,7 +37,11 @@ describe("STAR Tests", () => {
         expect(results.elected[0].name).toBe('Allison');
         expect(results.roundResults[0].runner_up[0].name).toBe('Bill');
         // expect(results.tied.length).toBe(2)
-
+        // Ensure summary data sorts candidates according to the results
+        expect(results.summaryData.candidates[0].name).toBe('Allison')
+        expect(results.summaryData.candidates[1].name).toBe('Bill')
+        expect(results.summaryData.candidates[2].name).toBe('Carmen')
+        expect(results.summaryData.candidates[3].name).toBe('Doug')
     })
     test("Runoff", () => {
         // Simple runoff test, second candidate wins
@@ -60,6 +64,9 @@ describe("STAR Tests", () => {
         const results = Star(candidates, votes, 1, [])
         expect(results.elected[0].name).toBe('Bill');
         expect(results.roundResults[0].runner_up[0].name).toBe('Allison');
+        // Ensure summary data sorts candidates according to the results
+        expect(results.summaryData.candidates[0].name).toBe('Bill')
+        expect(results.summaryData.candidates[1].name).toBe('Allison')
     })
     test("True Tie, use five-star tiebreaker to resolve", () => {
         // Both candidates have same score and runoff votes, five star tiebreaker selected, one candidate wins 
@@ -72,6 +79,8 @@ describe("STAR Tests", () => {
         expect(results.elected[0].name).toBe('Allison');
         expect(results.elected.length).toBe(1);
         expect(results.tied.length).toBe(0);
+        // Ensure summary data sorts candidates according to the results
+        expect(results.summaryData.candidates[0].name).toBe('Allison')
     })
     test("True Tie, use five-star tiebreaker, still tied, select lower index", () => {
         // Both candidates have same score and runoff votes, five star tiebreaker selected, candidates still tied
