@@ -179,7 +179,7 @@ async function handleSendEmailEvent(job: { id: string; data: email_request_event
     try{
         emailResponse = await EmailService.sendEmails(emails)
     }catch(e){
-        throw new InternalServerError("Couldn't send email:", e);
+        throw new InternalServerError(`Couldn't send email: ${e}`);
     }
 
     if(event.test_email) return; // skip the database updates if it's a test email
