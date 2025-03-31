@@ -66,7 +66,7 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
   // In most elections this is a simple process, but for cases where there are ties we advance one candidate at a time
   // and resolve ties as they occur
   const finalists: candidate[] = []
-  scoreLoop: while (finalists.length < 2) {
+  outerLoop: while (finalists.length < 2) {
     const nCandidatesNeeded = 2 - finalists.length
     const eligibleCandidates = remainingCandidates.filter(c => !finalists.includes(c))
     const scoreWinners = getScoreWinners(summaryData, eligibleCandidates) // returns all winners tied for first place
@@ -81,23 +81,19 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
           score: getEntry(summaryData.totalScores, scoreWinner.index, 'index').score
         })
       )
-      continue scoreLoop
+      continue outerLoop
     }
-    roundResults.logs.push({
-      key: 'tabulation_logs.star.scoring_round_tiebreaker_start',
-      names: scoreWinners.map(e => e.name),
-      score: getEntry(summaryData.totalScores, scoreWinners[0].index, 'index').score,
-    });
     // Multiple candidates have top score, proceed to score tiebreaker
+    roundResults.logs.push({
+      // TODO: i18n should infer one vs two automatically from count, not sure why it's not working
+      key: `tabulation_logs.star.scoring_round_tiebreaker_start_${(finalists.length+1) == 1 ? 'one' : 'two'}`,
+      names: scoreWinners.map(c => c.name),
+      score: getEntry(summaryData.totalScores, scoreWinners[0].index, 'index').score,
+      count: finalists.length+1,
+    });
+
     let tiedCandidates = scoreWinners
-    tieLoop: while (tiedCandidates.length > 1) {
-      if(tiedCandidates.length < scoreWinners.length){ // hack to avoid being redundant with the log above
-        roundResults.logs.push({
-          key: 'tabulation_logs.star.scoring_round_tiebreaker_start',
-          names: tiedCandidates.map(c => c.name),
-          score: getEntry(summaryData.totalScores, tiedCandidates[0].index, 'index').score
-        });
-      }
+    pairwiseLoop: while (tiedCandidates.length > 1) {
       // Get candidates with the most head to head losses
       let {headToHeadLosers, losses} = getHeadToHeadLosers(summaryData, tiedCandidates)
       if (headToHeadLosers.length < tiedCandidates.length) {
@@ -111,21 +107,21 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
           })
         )
         tiedCandidates = tiedCandidates.filter(c => !headToHeadLosers.includes(c))
-        continue tieLoop
+        continue pairwiseLoop
       }
       // All tied candidates have the same number of head to head lossess
       if (nCandidatesNeeded === 2 && tiedCandidates.length === 2) {
         // Tie between two candidates, but both can advance to runoff
-        finalists.push(...tiedCandidates)
-        tiedCandidates.forEach(c =>
+        tiedCandidates.forEach(c => {
           roundResults.logs.push({
             key: 'tabulation_logs.star.pairwise_tiebreak_advance_to_runoff',
             names: c.name,
             count: losses,
             n_tied_candidates: tiedCandidates.length
           })
-        )
-        continue scoreLoop
+          finalists.push(...tiedCandidates)
+        })
+        continue outerLoop
       }
       // Proceed to five star tiebreaker
       roundResults.logs.push({
@@ -146,7 +142,7 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
         );
         finalists.push(fiveStarCounts[0].candidate)
         finalists.push(fiveStarCounts[1].candidate)
-        continue scoreLoop
+        continue outerLoop
       }
       if (fiveStarCounts[0].counts > fiveStarCounts[1].counts) {
         // First has more five star counts than the rest, advance them to runoff
@@ -156,7 +152,7 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
           five_star_count: fiveStarCounts[0].counts,
         });
         finalists.push(fiveStarCounts[0].candidate)
-        continue scoreLoop
+        continue outerLoop
       }
 
       // No five star winner, try to find five star losers instead
@@ -171,7 +167,7 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
           })
         )
         tiedCandidates = tiedCandidates.filter(c => !fiveStarLoserCounts.map(f => f.candidate).includes(c))
-        continue tieLoop
+        continue pairwiseLoop
       }
 
       roundResults.logs.push({
@@ -187,12 +183,18 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
         name: randomWinner.name
       })
       finalists.push(randomWinner)
-      continue scoreLoop
+      continue outerLoop
     }
 
-    // NOTE: I'm pretty sure these 2 lines are unreachable
-    //       the above loop will always push to finalists where possible, and then continue to scoreLoop
-    roundResults.logs.push(`${tiedCandidates[0].name} wins score tiebreaker and advances to the runoff round.`)
+
+    // NOTE: we can only get here if the tiedCandidates.length > 1 condition fails
+    //       so we know there's exactly one tied candidate
+    roundResults.logs.push({
+      // TODO: i18n should infer one vs two automatically from count, not sure why it's not working
+      key: `tabulation_logs.star.tiebreak_advance_${finalists.length+1 == 1 ? 'one' : 'two'}`,
+      count: finalists.length+1,
+      name: tiedCandidates[0].name,
+    });
     finalists.push(tiedCandidates[0])
   }
 
