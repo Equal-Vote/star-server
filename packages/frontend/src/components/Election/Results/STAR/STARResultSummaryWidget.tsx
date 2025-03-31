@@ -1,59 +1,42 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Paper, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { useState } from 'react'
+import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { starResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
 
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PieChartIcon from '@mui/icons-material/PieChart';
-import { useTranslation } from 'react-i18next';
 import STARExtraContext from './STARExtraContext';
 import WidgetContainer from '../components/WidgetContainer';
 import Widget from '../components/Widget';
 import ResultsBarChart from '../components/ResultsBarChart';
 import ResultsPieChart from '../components/ResultsPieChart';
+import { getEntry } from '@equal-vote/star-vote-shared/domain_model/Util';
 
 const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResults, roundIndex: number, t: Function }) => {
     const [pie, setPie] = useState(false);
 
-    const prevWinners = results.roundResults
-        .filter((_, i) => i < roundIndex)
-        .map(round => round.winners)
-        .flat(1)
-        .map(winner => winner.index);
+    // slice away candidates that won in prior rounds
+    const candidates = results.summaryData.candidates.slice(roundIndex);
 
-    const histData = results.summaryData.candidates
-        .map((c, i) => ({
+    const histData = candidates
+        .map((c) => ({
             name: c.name,
-            index: i,
-            votes: results.summaryData.totalScores.find(sc => sc.index == i).score,
+            votes: getEntry(results.summaryData.totalScores, c.index, 'index').score,
             // vvvv HACK to get the bars to fill the whole width, this is useful if we want to test the graph padding
-            votesBig: results.summaryData.totalScores.find(sc => sc.index == i).score*10000 
+            votesBig: getEntry(results.summaryData.totalScores, c.index, 'index').score*10000 
         }))
-        .filter((_, i) => !prevWinners.includes(i));
-
-    const winnerIndex = results.roundResults[roundIndex].winners[0].index;
 
     if(results.roundResults[roundIndex].runner_up.length == 0)
         return <Typography>{t('results.single_candidate_result', {name: histData[0].name})}</Typography>
 
-    const runnerUpIndex = results.roundResults[roundIndex].runner_up[0].index;
-    const winnerVotes = results.summaryData.preferenceMatrix[winnerIndex][runnerUpIndex];
-    const runnerUpVotes = results.summaryData.preferenceMatrix[runnerUpIndex][winnerIndex];
-
-    var pieData = [
-        {
-            name: results.summaryData.candidates[winnerIndex].name,
-            votes: winnerVotes
-        },
-        {
-            name: results.summaryData.candidates[runnerUpIndex].name,
-            votes: runnerUpVotes
-        },
-    ];
+    var pieData = candidates.slice(0, 2).map((c, i) => ({
+        name: c.name,
+        votes: results.summaryData.preferenceMatrix[c.index][candidates[1-i].index]
+    }));
 
     let runoffData = [...pieData]
     runoffData.push({
       name: t('results.star.equal_preferences'),
-      votes: results.summaryData.nTallyVotes - winnerVotes - runnerUpVotes,
+      votes: results.summaryData.nTallyVotes - pieData[0].votes - pieData[1].votes,
     })
 
     return (
@@ -63,13 +46,6 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
                 {(t('results.star.score_description') as Array<String>).map( (s, i) => <p key={i}>{s}</p>)}
                 <ResultsBarChart
                     data={histData}
-                    sortFunc={(a, b) => {
-                        if(a.index == winnerIndex) return -1;
-                        if(b.index == winnerIndex) return 1;
-                        if(a.index == runnerUpIndex) return -1;
-                        if(b.index == runnerUpIndex) return 1;
-                        return b.votes - a.votes;
-                    }}
                     percentage={false} 
                     percentDenominator={results.summaryData.nTallyVotes*5} 
                     majorityOffset

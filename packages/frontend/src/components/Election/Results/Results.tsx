@@ -2,7 +2,7 @@ import { Box, Pagination } from "@mui/material";
 import React, { useRef } from "react";
 import { useState } from 'react';
 import Typography from '@mui/material/Typography';
-import { commaListFormatter, useSubstitutedTranslation } from '../../util';
+import { commaListFormatter, tabToCandidate, useSubstitutedTranslation } from '../../util';
 import STARResultSummaryWidget from "./STAR/STARResultSummaryWidget";
 import STARDetailedResults from "./STAR/STARDetailedResults";
 import STARResultDetailedStepsWidget from "./STAR/STARResultDetailedStepsWidget";
@@ -36,13 +36,7 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
 
   results = results as starResults;
 
-  const sortedCandidates = race.candidates
-    .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
-    .sort((a, b) => 
-      -(results.summaryData.totalScores.find(s => s.index == a.index).score -
-        results.summaryData.totalScores.find(s => s.index == b.index).score)
-    )
-    .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
+  const sortedCandidates = results.summaryData.candidates.map(c => tabToCandidate(c, race.candidates));
 
   return <ResultsViewer methodKey='star'>
     <WinnerResultPages numWinners={rounds}>

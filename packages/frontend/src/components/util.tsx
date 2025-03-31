@@ -7,6 +7,7 @@ import i18n from "~/i18n/i18n";
 import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 import useSnackbar from "./SnackbarContext";
 import { ArrowForwardIos } from "@mui/icons-material";
+import { getEntry } from "@equal-vote/star-vote-shared/domain_model/Util";
 
 const rLink = /\[(.*?)\]\((.*?)\)/;
 const rBold = /\*\*(.*?)\*\*/;
@@ -23,6 +24,13 @@ declare namespace Intl {
     public format: (item: DateTime) => string;
   }
 }
+
+// converts the candiate from ITabulator.ts to (capital C) Candidate
+// this will eventually be unnecessary (see #878)
+export const tabToCandidate = (c, raceCandidates) => ({
+  candidate_id: getEntry(raceCandidates, c.name, 'candidate_name').candidate_id,
+  candidate_name: c.name
+})
 
 export const commaListFormatter = new Intl.ListFormat(i18n.languages[0], { style: 'long', type: 'conjunction' });
 
