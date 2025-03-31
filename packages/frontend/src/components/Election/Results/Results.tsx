@@ -358,12 +358,6 @@ function STARPRResultsViewer() {
   return <ResultsViewer methodKey='star_pr'>
     <WidgetContainer>
       <Widget title={title} wide>
-        {/* This experiment was trickier than expected since it was jarring for the candidate names to shift between rounds*/}
-        {/*<Box sx={{minHeight: 70}}>
-          <Typography>
-            {t('results.prior_winners', {names: electedCandidates, count: electedCandidates.length})}
-          </Typography>
-        </Box>*/}
         <Typography>
             Chart shows total scores for the {remainingVoters} remaining unrepresented voters
         </Typography>
@@ -372,7 +366,6 @@ function STARPRResultsViewer() {
             results.summaryData.weightedScoresByRound[page-1]
               .map((totalScore, index) => ([totalScore, index]))
               .sort((a, b) => a[0]-b[0])
-              /*.slice(page)*/
               .map(([totalScore, index]) =>
                 ({
                   name: results.summaryData.candidates[index].name,

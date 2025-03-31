@@ -208,9 +208,6 @@ results:
   win_long_title_prefix: '⭐Winners⭐'
   win_title_postfix_one: 'Wins!'
   win_title_postfix: 'Win!'
-  prior_winners_zero: 'No one has been elected yet.'
-  prior_winners_one: '{{names}} was elected in the prior round.'
-  prior_winners: '{{names}} were elected in prior rounds.'
   vote_count: '{{n}} voters'
   method_context: 'Voting Method: {{voting_method}}'
   learn_link_text: How {{voting_method}} works
