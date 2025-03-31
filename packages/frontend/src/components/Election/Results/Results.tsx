@@ -353,29 +353,43 @@ function STARPRResultsViewer() {
 
   let remainingVoters = (results.summaryData.nTallyVotes*(1 - ((page-1)/results.summaryData.weightedScoresByRound.length)))
   remainingVoters = Math.round(remainingVoters*10)/10;
-  const title = t('results.star_pr.chart_title')
+  const title = t('results.star_pr.chart_title', {n: page})
+  const electedCandidates = sortedCandidates.slice(0, page-1).map(c => c.candidate_name);
   return <ResultsViewer methodKey='star_pr'>
     <WidgetContainer>
       <Widget title={title} wide>
+        {/* This experiment was trickier than expected since it was jarring for the candidate names to shift between rounds*/}
+        {/*<Box sx={{minHeight: 70}}>
+          <Typography>
+            {t('results.prior_winners', {names: electedCandidates, count: electedCandidates.length})}
+          </Typography>
+        </Box>*/}
         <Typography>
-          Total scores for the {remainingVoters} remaining unrepresented voters
+            Chart shows total scores for the {remainingVoters} remaining unrepresented voters
         </Typography>
         <ResultsBarChart
           data={
-            results.summaryData.weightedScoresByRound[page-1].map((totalScore, i) => ({
-              name: results.summaryData.candidates[i].name,
-              votes: Math.round(totalScore*10)/10,
-              label: winIndex(results.summaryData.candidates[i]) < page-1 ? '(elected)' : undefined,
-              star: winIndex(results.summaryData.candidates[i]) < page,
-              // a bit hacky using candidate_name but oh well
-              sortIndex: sortedCandidates.findIndex((c) => c.candidate_name == results.summaryData.candidates[i].name)
-            }))
+            results.summaryData.weightedScoresByRound[page-1]
+              .map((totalScore, index) => ([totalScore, index]))
+              .sort((a, b) => a[0]-b[0])
+              /*.slice(page)*/
+              .map(([totalScore, index]) =>
+                ({
+                  name: results.summaryData.candidates[index].name,
+                  votes: Math.round(totalScore*10)/10,
+                  label: undefined,
+                  star: winIndex(results.summaryData.candidates[index]) < page,
+                  // a bit hacky using candidate_name but oh well
+                  sortIndex: sortedCandidates.findIndex((c) => c.candidate_name == results.summaryData.candidates[index].name)
+                })
+              )
           }
           sortFunc = {(a, b) => a.sortIndex - b.sortIndex}
           maxBarSize = {results.summaryData.weightedScoresByRound[0].reduce(
             (prev, totalScore) => Math.max(prev, totalScore), 0
           )}
         />
+        <Typography>Round Selector</Typography>
         <Pagination count={results.summaryData.weightedScoresByRound.length} page={page} onChange={handleChange} />
       </Widget>
     </WidgetContainer>
@@ -483,11 +497,14 @@ export default function Results({ race, results }: {race: Race, results: Electio
     }[results.votingMethod]
   });
 
-  const winnersText = commaListFormatter
-    .format(results.elected.map(c => c.name.replace(' ', '__REPLACE_ME__')))
-    .split('__REPLACE_ME__')
-    .map((s,i) => ([<React.Fragment key={i*2}>{s}</React.Fragment>, <React.Fragment key={i*2+1}>&nbsp;</React.Fragment>]))
-    .flat()
+  let winnersText = '⭐' +
+    commaListFormatter
+      .format(results.elected.map(c => c.name).map(item => item.replace(' ', '__REPLACE_ME__')))
+      .split('__REPLACE_ME__')
+      .map((s,i) => ([<React.Fragment key={i*2}>{s}</React.Fragment>, <React.Fragment key={i*2+1}>&nbsp;</React.Fragment>]))
+      .flat() +
+    t('results.win_title_postfix', {count: results.elected.length}) +
+    '⭐'
 
   return (
     <RaceContextProvider race={race} results={results} t={t}>
@@ -508,7 +525,13 @@ export default function Results({ race, results }: {race: Race, results: Electio
             </Typography>}
             </>
           :
-            <Typography variant='h5'>⭐ {winnersText}{t('results.win_title_postfix', {count: results.elected.length})} ⭐</Typography>
+            <Typography variant='h5'>
+            {(winnersText.length < 80) ? 
+              winnersText
+            :
+              [t('results.win_long_title_prefix'), ...results.elected.map(elected => ([<br/>, `${elected.name}`])).flat()]
+            }
+            </Typography>
           }
           <Typography variant="h6">{t('results.vote_count', {n: results.summaryData.nTallyVotes})}</Typography>
         </>}

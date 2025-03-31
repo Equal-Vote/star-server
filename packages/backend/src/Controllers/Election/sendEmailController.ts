@@ -175,7 +175,12 @@ async function handleSendEmailEvent(job: { id: string; data: email_request_event
     // TODO: I think this will always give a single element array, we can probably simplify this and be less generalized
     let emails: Imsg[] = makeEmails(election, [electionRoll], event.url, event.email.subject, event.email.body, event.test_email != '');
 
-    const emailResponse = await EmailService.sendEmails(emails)
+    let emailResponse;
+    try{
+        emailResponse = await EmailService.sendEmails(emails)
+    }catch(e){
+        throw new InternalServerError("Couldn't send email:", e);
+    }
 
     if(event.test_email) return; // skip the database updates if it's a test email
 

@@ -1,5 +1,5 @@
 import { Box, Button, Divider, FormControlLabel, Link, TextField, Typography } from "@mui/material";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { DateTime } from "luxon";
 import { useTranslation } from "react-i18next";
 import { SecondaryButton, Tip } from "./styles";
