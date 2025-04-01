@@ -90,6 +90,7 @@ export interface genericResults {
     roundResults: roundResults[],
     summaryData: genericSummaryData,
     tieBreakType: tieBreakType,
+    numUnprocessedWriteIns?: number,
 }
 
 export interface starResults extends genericResults {
