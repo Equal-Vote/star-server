@@ -61,7 +61,7 @@ const [rawNumbers, setRawNumbers] = useState(false);
   data = rawData.map((d, i) => {
     let s = {
       ...d,
-      name: (((star && i == 0) || d['star']) ? "⭐" : "") + truncName(d["name"], 40),
+      name: (((star && i == 0) || d['star']) ? "⭐ " : "") + truncName(d["name"], 40),
       // hack to get smaller values to allign different than larger ones
       left: (percentage && !rawNumbers)
         ? formatPercent(d[xKey] / percentDenominator)
