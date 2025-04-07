@@ -3,21 +3,18 @@
 */
 
 import {
-  irvRoundResults /* , candidate */
+  irvRoundResults
 } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 import ResultsBarChart from "../components/ResultsBarChart";
+import { irvContext } from "./ifc";
 
-export function IRVRound (
-  {
-    round,
-    candidatesByIndex,
-    t, /* International translator */
-  }: {
+export function IRVRoundView (
+  {round, context}: {
     round: irvRoundResults,
-    candidatesByIndex: {name: string}[],
-    t: Function /* (first: string, ...rest: any[]) => string */
+    context: irvContext
   }
 ) {
+  const {candidatesByIndex, t} = context;
   let chartData = round.standings.map(
     ({ candidateIndex, hareScore }) =>
     ({ name: candidatesByIndex[candidateIndex].name, votes: hareScore })
@@ -30,7 +27,7 @@ export function IRVRound (
   }
   let haveWinner: boolean = ! ! round.winners.length;
   return < ResultsBarChart
-    data={chartData} star={haveWinner} sortFunc={false}
+    data={chartData} star={haveWinner} sortFunc={false} percentage
     majorityLegend={t('results.rcv.runoff_majority')}
   />
 }

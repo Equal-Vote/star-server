@@ -27,7 +27,8 @@ import useFeatureFlags from "~/components/FeatureFlagContextProvider";
 import STAREqualPreferencesWidget from "./STAR/STAREqualPreferencesWidget";
 import VoterErrorStatsWidget from "./components/VoterErrorStatsWidget";
 import Pages from "./Pages";
-import { IRVRound } from "./IRV/round";
+import { irvContext, irvWinnerSearch } from "./IRV/ifc";
+import { IRVTopResultsView } from "./IRV/top";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
@@ -131,8 +132,12 @@ function IRVResultsViewer() {
   let {results, t, race} = useRace();
   results = results as irvResults;
 
-  const [page, setPage] = useState(1);
   const {roundResults, exhaustedVoteCounts} = results;
+
+  /* For top view: */
+
+  /* Put all round information in one place. */
+
   if (roundResults.length !== exhaustedVoteCounts.length)
     console.error(Error("IRV round counts don't match."));
   const roundCount = roundResults.length;
@@ -141,6 +146,27 @@ function IRVResultsViewer() {
     cur.exhaustedVoteCount = exhaustedVoteCounts[idx];
     cur.isStartOfSearch = 0 === idx || ! ! roundResults[idx - 1].winners.length;
   }
+
+  /* Group the rounds by searches for a winner. */
+
+  const wins: irvWinnerSearch[] = [];
+  let rx = 0; /* round index */
+  let lim = roundResults.length;
+  while (rx < lim) {
+    const win: irvWinnerSearch = {
+      firstRound: roundResults[rx],
+      lastRound: null
+    };
+    while (! roundResults[rx].winners.length)
+      rx++;
+    win.lastRound = roundResults[rx];
+    wins.push(win);
+    rx++; /* advance past the round that found the winner */
+  }
+
+  /* End of setting up for top view. */
+
+  /* Details for optional expansion. */
 
   const tabulationRows = results.summaryData.candidates.map(({index, name}) => {
     return [name].concat(
@@ -160,7 +186,6 @@ function IRVResultsViewer() {
 
     return 0;
   });
-
   tabulationRows.unshift([t('results.rcv.tabulation_candidate_column')].concat([...Array(results.voteCounts.length).keys()].map(i =>
     t('results.rcv.round_column', {n: i+1})
   )))
@@ -197,20 +222,9 @@ function IRVResultsViewer() {
     .reverse();
 
   return <ResultsViewer methodKey='rcv'>
-    < Pages
-      pageCount={roundCount} page={page} setPage={setPage} title={false}
-    >
-      { roundResults.
-        filter((round, idx) => idx + 1 === page).
-        map((round, idx) => (
-        < IRVRound
-          key={`round-${idx}`}
-          round={round}
-          candidatesByIndex={results.summaryData.candidates}
-          t={t}
-        />
-      ))}
-    </Pages>
+    <IRVTopResultsView wins={wins} context={{
+      candidatesByIndex: results.summaryData.candidates, t
+    }}/>
     <DetailExpander>
       <WidgetContainer>
         <Widget title={t('results.rcv.table_title')}>
