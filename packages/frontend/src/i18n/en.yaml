@@ -829,10 +829,10 @@ election_creation:
 
 # Landing Page -> Return to Classic Dialog
 return_to_classic:
-  button: Return to the original star.vote
+  button: Return to classic star.vote
   description: We'd love to know how the new version can be improved.
   feedback: Leave Feedback?
-  continue: Continue to star.vote
+  continue: Continue to classic.star.vote
 
 # About
 about:
