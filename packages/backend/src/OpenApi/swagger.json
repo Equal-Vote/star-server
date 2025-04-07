@@ -683,6 +683,13 @@
       "Email": {
         "type": "string"
       },
+      "GenericObject": {
+        "additionalProperties": false,
+        "patternProperties": {
+          "^[0-9]+$": {}
+        },
+        "type": "object"
+      },
       "InvitationType": {
         "enum": [
           "address",
