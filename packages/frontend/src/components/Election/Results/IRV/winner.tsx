@@ -12,6 +12,7 @@ import { IRVRoundView } from "./round";
 export function IRVWinnerView ( {win, context}:{
   win: irvWinnerSearch, context: irvContext
 }) {
+  const {t} = context;
 
   if (win.firstRound === win.lastRound) {
     return <Box className="resultWidget"><WidgetContainer>
@@ -22,10 +23,10 @@ export function IRVWinnerView ( {win, context}:{
   }
 
   return <Box className="resultWidget"><WidgetContainer>
-    <Widget title="First round (TODO: i18n)">
+    <Widget title={t('results.rcv.first_choice_title')}>
       <IRVRoundView round={win.firstRound} context={context}/>
     </Widget>
-    <Widget title="Last round (TODO: i18n)">
+    <Widget title={t('results.rcv.final_round_title')}>
       <IRVRoundView round={win.lastRound} context={context}/>
     </Widget>
   </WidgetContainer></Box>
