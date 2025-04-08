@@ -19,8 +19,11 @@ services:
       - POSTGRES_PASSWORD=ChangeMeOrDontTest2020
     restart:
       always
+
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.1
+    volumes:
+      - ./realm.json:/opt/keycloak/data/import/realm.json
     command:
       - start-dev
       - --import-realm
