@@ -2,13 +2,33 @@
 version: "3.9"
 services:
   web:
-    build: .
+    build: . 
     ports:
       - "5000:5000"
     networks:
       - star-net
     environment:
-      - DATABASE_URL=postgresql://postgres:ChangeMeOrDontTest2020@my-db:5432/postgres
+        - REACT_APP_FEATURED_ELECTIONS=''
+        - REACT_APP_MAX_BALLOT_RANKS=10
+        - REACT_APP_DEFAULT_BALLOT_RANKS=6
+        - REACT_APP_BACKEND_URL=http://localhost:5000
+        - REACT_APP_KEYCLOAK_URL=http://localhost:8080/realms/Dev/protocol/openid-connect
+        - DANGEROUSLY_DISABLE_HOST_CHECK=true
+        - FRONTEND_PORT=5000
+        - DATABASE_URL=postgresql://postgres:ChangeMeOrDontTest2020@my-db:5432/postgres
+        - DEV_DATABASE=FALSE
+        - KEYCLOAK_SECRET=DefaultKeycloakSecret
+        - KEYCLOAK_URL=http://keycloak:8080/realms/Dev/protocol/openid-connect
+        - CLASSIC_ELECTION_COUNT=0
+        - CLASSIC_VOTE_COUNT=0
+        - SENDGRID_API_KEY='SG.<insert api key>' 
+        - SENDGRID_GROUP_ID='<insert group id>'
+        - EMAIL_TEST_MODE=if defined will prevent emails from being sent from email service while testing
+        - FROM_EMAIL_ADDRESS=elections@star.vote
+    depends_on: 
+      - my-db
+      - keycloak
+
   my-db:
     image: postgres
     ports:
@@ -29,6 +49,8 @@ services:
       - --import-realm
     ports:
       - '8080:8080'
+    networks:
+      - star-net
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
