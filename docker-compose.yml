@@ -1,15 +1,7 @@
 # I stole this from Scott and haven't tested it yet. -Evans
 version: "3.9"
 services:
-  web:
-    build: .
-    ports:
-      - "5000:5000"
-    networks:
-      - star-net
-    environment:
-      - DATABASE_URL=postgresql://postgres:ChangeMeOrDontTest2020@my-db:5432/postgres
-      - KEYCLOAK_SECRET=${KC_CLIENT_SECRET}
+  
 
   my-db:
     image: postgres
@@ -23,6 +15,8 @@ services:
       on-failure
   kc-db:
     image: postgres
+    networks:
+      - star-net
     expose:
       - 5432
     environment:
@@ -34,6 +28,8 @@ services:
   #Docker image corresponds to helm chart version 21.0.3 used in production
   #https://github.com/bitnami/charts/commit/35d62114207b5d44b81243b05e9fa62e76709d1a
     image: docker.io/bitnami/keycloak:24.0.3-debian-12-r0
+    networks:
+      - star-net
     ports:
       - '8080:8080'
     environment:
@@ -50,5 +46,23 @@ services:
       - ./realm.json:/opt/bitnami/keycloak/data/import/realm.json
     depends_on:
       - kc-db
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    networks:
+      - star-net
+    environment:
+      - DATABASE_URL=postgresql://postgres:ChangeMeOrDontTest2020@my-db:5432/postgres
+      - KEYCLOAK_SECRET=${KC_CLIENT_SECRET}
+      - KEYCLOAK_PUBLIC_KEY=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvanAtuazpfjoGA3IEeYLSJdqH6a/qxWUrfmQn9e6PQORfq6LaEcG65pBVKREepRLwNBm/dmCAIgd9jLxXzGHgR9fT+PG8LmUkZDvUboJecb0QHONyPQMHzc23ulnT+D8H4ezXHyXulWUC9Dsy3g1FdzelILVdYv0WyklXBzrj0uTR1NVEuKUnvljAOZP58oDIyzxOCL6zo1Pz8xikVH61nPaZyemUyBdjmZaH1/8htc14ETot5m91SZGpqR6iZCbznptWGpNh9Qbxes2B+rO0Qj20w4z1wSVb2m7xnZUF2FsRglRg1q+Bm6HmZErL0hXIbyxjhu48zyTC457rgTblQIDAQAB
+      - REACT_APP_KEYCLOAK_URL=http://localhost:8080/realms/Prod/protocol/openid-connect
+      - KEYCLOAK_URL=http://keycloak:8080/realms/Prod/protocol/openid-connect
+
+      - MAIN_URL=localhost:5000
+
+    depends_on:
+      - my-db
+      - keycloak
 networks:
   star-net: {}

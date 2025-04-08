@@ -191,6 +191,9 @@ const VotePage = () => {
   const noScores = pages.every(page => page.candidates.every(candidate => candidate.score === null))
   const thereAreWarnings = pages.some(page => page.warnings)
   const submitButtonDisabled = !isOnLastPage || (isPending || noScores || thereAreWarnings)
+  let pageIsUnderVote = (page) => {
+    return page.candidates.reduce((prev, c) => prev && (c.score == 0 || c.score == null), true)
+  }
 
   return (
     <Container disableGutters={true} maxWidth="sm">

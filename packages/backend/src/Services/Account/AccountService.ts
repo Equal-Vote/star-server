@@ -72,6 +72,9 @@ export default class AccountService {
             Logger.debug(req, "success!");
             return response.data
         } catch (err: any) {
+            Logger.error(req, err);
+            Logger.error(req, this.authConfig.clientId);
+            Logger.error(req, process.env.KEYCLOAK_SECRET);
             Logger.error(req, 'Error while requesting a token', err.response.data);
             throw new InternalServerError("Error requesting token");
         };
