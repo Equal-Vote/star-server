@@ -1,10 +1,13 @@
-FROM node:20-bookworm
+FROM mcr.microsoft.com/playwright:v1.51.1-noble
 # Set working directory inside the container
 WORKDIR /app
-
+# Copy package.json and package-lock.json for dependency installation
+COPY package*.json ./
+COPY ./tests ./tests
+COPY ./playwright.config.ts ./
+# Install the project dependencies
+RUN npm ci
 # Install Playwright browsers (chromium, firefox, webkit)
-RUN npx -y playwright@1.51.1 install --with-deps
-
-RUN npm install
+RUN npx playwright install --with-deps
 # Default command to run tests
 CMD ["npx", "playwright", "test"]
