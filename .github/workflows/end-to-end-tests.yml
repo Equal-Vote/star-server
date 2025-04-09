@@ -56,23 +56,23 @@ jobs:
           echo "fail_count=$count" >> "$GITHUB_OUTPUT"
           echo $count
     
-      - uses: mshick/add-pr-comment@v2
-        if: always()
-        with:
-            message-path: |
-              ./playwright-report/result.txt
-            message-failure: |
-              Workflow failed
+      # - uses: mshick/add-pr-comment@v2
+      #   if: always()
+      #   with:
+      #       message-path: |
+      #         ./playwright-report/result.txt
+      #       message-failure: |
+      #         Workflow failed
 
-      - name: Setup Pages
-        if: steps.tests.outputs.fail_count != '0'
-        uses: actions/configure-pages@v3  
+      # - name: Setup Pages
+      #   if: steps.tests.outputs.fail_count != '0'
+      #   uses: actions/configure-pages@v3  
 
-      - name: Upload Artifact
-        if: steps.tests.outputs.fail_count != '0'
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: "./playwright-report"
+      # - name: Upload Artifact
+      #   if: steps.tests.outputs.fail_count != '0'
+      #   uses: actions/upload-pages-artifact@v1
+      #   with:
+      #     path: "./playwright-report"
     
       - name: Fail the job if there any failed case
         if:  steps.tests.outputs.fail_count != '0' 
