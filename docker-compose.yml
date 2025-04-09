@@ -75,8 +75,12 @@ services:
     build: ./testing
     ipc: host
     tty: true
+    # command: ["tail", "-f", "/dev/null"]
     depends_on:
       - web
-    command: ["tail", "-f", "/dev/null"]
+    volumes:
+      - ./testing:/app
+    
 networks:
   star-net: {}
+
