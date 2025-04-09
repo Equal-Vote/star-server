@@ -56,29 +56,32 @@ jobs:
       #       mcr.microsoft.com/playwright:v1.51.1-noble \
       #       -c "npx playwright test --reporter=html"
 
-      - name: Get the failure count
+      - name: Check for failure
+        id: tests
         run: |
             export status=$(grep -q "passed" ./testing/test-results/.last-run.json && echo passed || echo failed)
             echo "status=$status" >> "$GITHUB_OUTPUT"
             echo $status
     
-      # - uses: mshick/add-pr-comment@v2
-      #   if: always()
-      #   with:
-      #       message-path: |
-      #         ./testing/playwright-report/result.txt
-      #       message-failure: |
-      #         Workflow failed
+      - uses: mshick/add-pr-comment@v2
+        if: always()
+        with:
+            message-path: |
+              ./testing/playwright-report/result.txt
+            message-failure: |
+              Workflow failed
 
       # - name: Setup Pages
       #   if: steps.tests.outputs.status == 'failed'
       #   uses: actions/configure-pages@v3  
 
-      # - name: Upload Artifact
-      #   if: steps.tests.outputs.status == 'failed'
-      #   uses: actions/upload-pages-artifact@v1
-      #   with:
-      #     path: "./testing/playwright-report"
+      - name: Upload Artifact
+        if: steps.tests.outputs.status == 'failed'
+        uses: actions/upload-artifact@v4
+        with:
+          name: "playwright-report"
+          path: "./testing/playwright-report/"
+          retention-days: 30
     
       - name: Fail the job if there any failed case
         if: steps.tests.outputs.status == 'failed'
