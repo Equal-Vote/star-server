@@ -11,3 +11,4 @@ COPY ./tests ./tests
 RUN npx playwright install
 # Default command to run tests
 # CMD ["npx", "playwright", "test"]
+ENTRYPOINT ["bin/bash", "-c"]

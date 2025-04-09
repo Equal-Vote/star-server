@@ -74,7 +74,9 @@ services:
     container_name: playwright
     build: ./testing
     ipc: host
+    tty: true
     depends_on:
       - web
+    command: ["tail", "-f", "/dev/null"]
 networks:
   star-net: {}

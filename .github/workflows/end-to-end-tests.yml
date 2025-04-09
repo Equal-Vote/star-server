@@ -40,9 +40,12 @@ jobs:
 
 
       - name: Start application-specific services using Docker Compose
-        run: docker-compose run --rm playwright
+        run: docker compose up -d --build
         continue-on-error: false
-
+      
+      - name: Attach to playwright container
+        run: docker exec -it playwright sh"
+        continue-on-error: false
 
       - name: Run tests
         run: |
@@ -52,9 +55,9 @@ jobs:
       - name: Get the failure count
         id: tests
         run: |
-          export count=$(cat ./playwright-report/result.txt | grep Failed | cut -d ':' -f 2 | tr -d ' ') 
-          echo "fail_count=$count" >> "$GITHUB_OUTPUT"
-          echo $count
+            export status=$(grep -q "passed" ./test-results/.last-run.json && echo passed || echo failed)
+            echo "status=$status" >> "$GITHUB_OUTPUT"
+            echo $status
     
       # - uses: mshick/add-pr-comment@v2
       #   if: always()
@@ -65,17 +68,17 @@ jobs:
       #         Workflow failed
 
       # - name: Setup Pages
-      #   if: steps.tests.outputs.fail_count != '0'
+      #   if: steps.tests.outputs.status == 'failed'
       #   uses: actions/configure-pages@v3  
 
       # - name: Upload Artifact
-      #   if: steps.tests.outputs.fail_count != '0'
+      #   if: steps.tests.outputs.status == 'failed'
       #   uses: actions/upload-pages-artifact@v1
       #   with:
       #     path: "./playwright-report"
     
       - name: Fail the job if there any failed case
-        if:  steps.tests.outputs.fail_count != '0' 
+        if: steps.tests.outputs.status == 'failed'
         run : |
               exit 1
       
