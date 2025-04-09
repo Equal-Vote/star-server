@@ -3,7 +3,10 @@ name: Docker Compose Action
 on: [push]
 
 jobs:
-  build-and-publish:
+  test:
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
 
     steps:
@@ -31,16 +34,55 @@ jobs:
           docker-compose --version
         continue-on-error: false
 
-      - name: Install dependencies
-        run: npm install
-        continue-on-error: false
+      # - name: Install dependencies
+      #   run: npm install
+      #   continue-on-error: false
 
 
       - name: Start application-specific services using Docker Compose
-        run: docker-compose up -d
+        run: docker-compose run --rm playwright
         continue-on-error: false
 
 
-      # - name: Run tests
-      #   run: npm test
-      #   continue-on-error: false
+      - name: Run tests
+        run: |
+          npx playwright test
+        continue-on-error: false
+
+      - name: Get the failure count
+        id: tests
+        run: |
+          export count=$(cat ./playwright-report/result.txt | grep Failed | cut -d ':' -f 2 | tr -d ' ') 
+          echo "fail_count=$count" >> "$GITHUB_OUTPUT"
+          echo $count
+    
+      - uses: mshick/add-pr-comment@v2
+        if: always()
+        with:
+            message-path: |
+              ./playwright-report/result.txt
+            message-failure: |
+              Workflow failed
+
+      - name: Setup Pages
+        if: steps.tests.outputs.fail_count != '0'
+        uses: actions/configure-pages@v3  
+
+      - name: Upload Artifact
+        if: steps.tests.outputs.fail_count != '0'
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: "./playwright-report"
+    
+      - name: Fail the job if there any failed case
+        if:  steps.tests.outputs.fail_count != '0' 
+        run : |
+              exit 1
+      
+      
+      - name: Stop Docker Compose services
+        if: always()
+        run: docker-compose down --volumes --remove-orphans
+        continue-on-error: false
+      
+      

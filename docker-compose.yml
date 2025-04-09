@@ -71,7 +71,7 @@ services:
     restart:
       always
   playwright:
-    container_name: test-container
+    container_name: playwright
     build: ./testing
     ipc: host
     depends_on:
