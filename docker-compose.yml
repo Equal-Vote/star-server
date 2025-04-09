@@ -2,13 +2,37 @@
 version: "3.9"
 services:
   web:
-    build: .
+    build: . 
     ports:
       - "5000:5000"
     networks:
       - star-net
     environment:
-      - DATABASE_URL=postgresql://postgres:ChangeMeOrDontTest2020@my-db:5432/postgres
+        - REACT_APP_FEATURED_ELECTIONS=''
+        - REACT_APP_MAX_BALLOT_RANKS=10
+        - REACT_APP_DEFAULT_BALLOT_RANKS=6
+        - REACT_APP_BACKEND_URL=http://localhost:5000
+        - REACT_APP_KEYCLOAK_URL=http://localhost:8080/realms/Dev/protocol/openid-connect
+        - DANGEROUSLY_DISABLE_HOST_CHECK=true
+        - FRONTEND_PORT=5000
+        - DATABASE_URL=postgresql://postgres:ChangeMeOrDontTest2020@my-db:5432/postgres
+        - DEV_DATABASE=FALSE
+        - KEYCLOAK_SECRET=DefaultKeycloakSecret
+        - KEYCLOAK_URL=http://keycloak:8080/realms/Dev/protocol/openid-connect
+        - CLASSIC_ELECTION_COUNT=0
+        - CLASSIC_VOTE_COUNT=0
+        - SENDGRID_API_KEY='SG.<insert api key>' 
+        - SENDGRID_GROUP_ID='<insert group id>'
+        - EMAIL_TEST_MODE=if defined will prevent emails from being sent from email service while testing
+        - FROM_EMAIL_ADDRESS=elections@star.vote
+    depends_on: 
+      my-db:
+        condition: service_started
+      keycloak:
+        #If we don't specify this condition, the web service will start before keycloak is ready to accept requests.
+        condition: service_healthy
+        restart: true
+
   my-db:
     image: postgres
     ports:
@@ -29,9 +53,19 @@ services:
       - --import-realm
     ports:
       - '8080:8080'
+    networks:
+      - star-net
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_HEALTH_ENABLED=true
+    healthcheck:
+     #keycloak doesn't do curl -f internally so we have to use a shell command to check the health of the service. Found at https://gist.github.com/sarath-soman/5d9aec06953bbd0990c648605d4dba07
+     #Note that if we update to v25 we will need to update the port to 9000
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080;echo -e \"GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n\" >&3;grep \"HTTP/1.1 200 OK\" <&3"]
+      interval: 15s
+      retries: 5
+      start_period: 60s
     restart:
       always
 networks:

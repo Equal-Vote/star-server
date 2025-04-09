@@ -289,16 +289,6 @@ migration "2024_01_27_Create_Date" was executed successfully
 migration "2024_01_29_pkeys_and_heads" was executed successfully
 ```
 
-#### Configuring Keycloak
-
-We need to manually configure the keycloak realm so that it can interface with the service properly.
-
-1. [Download the Keycloak configuration](https://drive.google.com/file/d/1_S-MpnsxSr8oeA6MrNd3VSOGyKe7Qca_/view?usp=sharing)
-1. Navigate to localhost:8080 , select Administration Console
-1. Login with user=admin, password=admin
-1. Select the master dropdown in the top-left, select "Create Realm"
-1. Browse to select the configuration you downloaded
-1. Click "Create"
 
 **Verification Steps**
 It's tricky to verify at the moment, but once you have the backend running you should be able to register with a username and password via your frontend at localhost:3000.
