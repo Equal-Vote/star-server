@@ -2,6 +2,8 @@
 version: "3.9"
 services:
   web:
+  # When running locally, building the container here might be good so it reflects local changes. But when we run docker compose
+  # we should probably pull from the repository so it doesn't take forever to build the container.
     build: . 
     ports:
       - "5000:5000"
