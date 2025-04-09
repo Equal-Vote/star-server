@@ -18,6 +18,9 @@ jobs:
       #   run: |
       #     docker compose exec test-app pytest
   test:
+    defaults:
+      run:
+        working-directory: ./testing
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
