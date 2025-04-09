@@ -1,5 +1,5 @@
 # I stole this from Scott and haven't tested it yet. -Evans
-version: "3.9"
+# version: "3.9"
 services:
   web:
   # When running locally, building the container here might be good so it reflects local changes. But when we run docker compose
@@ -70,5 +70,11 @@ services:
       start_period: 60s
     restart:
       always
+  playwright:
+    container_name: test-container
+    build: ./testing
+    ipc: host
+    depends_on:
+      - web
 networks:
   star-net: {}
