@@ -70,16 +70,16 @@ services:
       start_period: 60s
     restart:
       always
-  playwright:
-    container_name: playwright
-    build: ./testing
-    ipc: host
-    tty: true
-    # command: ["tail", "-f", "/dev/null"]
-    depends_on:
-      - web
-    volumes:
-      - ./testing:/app
+  # playwright:
+  #   container_name: playwright
+  #   build: ./testing
+  #   ipc: host
+  #   tty: true
+  #   # command: ["tail", "-f", "/dev/null"]
+  #   depends_on:
+  #     - web
+  #   volumes:
+  #     - ./testing:/app
     
 networks:
   star-net: {}
