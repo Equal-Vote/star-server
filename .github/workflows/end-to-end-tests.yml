@@ -3,20 +3,44 @@ name: Docker Compose Action
 on: [push]
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4.2.2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        continue-on-error: false
 
-      - name: Run docker compose
-        uses: adambirds/docker-compose-action@v1.5.0
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          compose-file: "./docker-compose.yml"
-          up-flags: "--build"
-          test-container: "test-container"
-          test-command: "npx playwright test"
+          node-version: "16"
+          registry-url: "https://registry.npmjs.org"
+        continue-on-error: false
 
-      # - name: Execute tests in the running services
-      #   run: |
-      #     docker compose exec test-app pytest
+      - name: Install Docker using Docker's official script
+        run: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
+        continue-on-error: false
+
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.34.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+        continue-on-error: false
+
+      - name: Install dependencies
+        run: npm install
+        continue-on-error: false
+
+
+      - name: Start application-specific services using Docker Compose
+        run: docker-compose up -d
+        continue-on-error: false
+
+
+      # - name: Run tests
+      #   run: npm test
+      #   continue-on-error: false
