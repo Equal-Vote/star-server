@@ -11,9 +11,13 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         continue-on-error: false
-
+      - name: Set up node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+        continue-on-error: false
       - name: Install Docker using Docker's official script
         run: |
           curl -fsSL https://get.docker.com -o get-docker.sh
