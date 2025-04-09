@@ -18,11 +18,11 @@ jobs:
         with:
           node-version: 'lts/*'
         continue-on-error: false
-      - name: Install Docker using Docker's official script
-        run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sudo sh get-docker.sh
-        continue-on-error: false
+      # - name: Install Docker using Docker's official script
+      #   run: |
+      #     curl -fsSL https://get.docker.com -o get-docker.sh
+      #     sudo sh get-docker.sh
+      #   continue-on-error: false
 
       - name: Install Docker Compose
         run: |
@@ -41,20 +41,20 @@ jobs:
       #   continue-on-error: false
 
       - name: Start application-specific services using Docker Compose
-        run: docker compose up --build -d
+        run: docker compose up --build playwright
         continue-on-error: false
       
       # - name: Wait for playwright to exit
       #   run: |
       #     while docker inspect -f '{{.State.Status}}' playwright | grep -q running; do echo "Waiting for playwright to exit..."; sleep 5; done
       #   continue-on-error: false
-      - name: Run Playwright tests
-        id: tests
-        run: |
-          docker pull mcr.microsoft.com/playwright:v1.51.1-noble
-          docker run -v ./testing:/app \
-            mcr.microsoft.com/playwright:v1.51.1-noble \
-            -c "npx playwright test --reporter=html"
+      # - name: Run Playwright tests
+      #   id: tests
+      #   run: |
+      #     docker pull mcr.microsoft.com/playwright:v1.51.1-noble
+      #     docker run -v ./testing:/app \
+      #       mcr.microsoft.com/playwright:v1.51.1-noble \
+      #       -c "npx playwright test --reporter=html"
 
       - name: Get the failure count
         run: |
