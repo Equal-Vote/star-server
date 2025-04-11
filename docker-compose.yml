@@ -49,7 +49,7 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.1
     volumes:
-      - ./realm.json:/opt/keycloak/data/import/realm.json
+      - ./dev-realm.json:/opt/keycloak/data/import/realm.json
     command:
       - start-dev
       - --import-realm
@@ -75,9 +75,10 @@ services:
     build: ./testing
     ipc: host
     tty: true
+    # Uncomment the following line to keep the container running after it starts:
     # command: ["tail", "-f", "/dev/null"]
-    # depends_on:
-    #   - web
+    depends_on:
+      - web
     volumes:
       - ./testing/test-results:/app/test-results
       - ./testing/playwright-report:/app/playwright-report

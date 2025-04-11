@@ -1,10 +1,7 @@
 name: Docker Compose Action
 
 on: [push]
-# permissions:
-#   id-token: write
-#   contents: write
-#   pages: write
+
 jobs:
   test:
     permissions:     
@@ -21,16 +18,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         continue-on-error: false
-      # - name: Set up node
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 'lts/*'
-      #   continue-on-error: false
-      # - name: Install Docker using Docker's official script
-      #   run: |
-      #     curl -fsSL https://get.docker.com -o get-docker.sh
-      #     sudo sh get-docker.sh
-      #   continue-on-error: false
 
       - name: Install Docker Compose
         run: |
@@ -39,30 +26,9 @@ jobs:
           docker-compose --version
         continue-on-error: false
 
-      # - name: Install dependencies
-      #   run: npm install
-      #   continue-on-error: false
-      # - name: Make directory for test results
-      #   run: |
-      #     mkdir -p testing/test-results
-      #     mkdir -p testing/playwright-report
-      #   continue-on-error: false
-
       - name: Start application-specific services using Docker Compose
         run: docker compose up --build playwright
         continue-on-error: false
-      
-      # - name: Wait for playwright to exit
-      #   run: |
-      #     while docker inspect -f '{{.State.Status}}' playwright | grep -q running; do echo "Waiting for playwright to exit..."; sleep 5; done
-      #   continue-on-error: false
-      # - name: Run Playwright tests
-      #   id: tests
-      #   run: |
-      #     docker pull mcr.microsoft.com/playwright:v1.51.1-noble
-      #     docker run -v ./testing:/app \
-      #       mcr.microsoft.com/playwright:v1.51.1-noble \
-      #       -c "npx playwright test --reporter=html"
 
       - name: Check for failure
         id: tests
@@ -70,14 +36,7 @@ jobs:
             export status=$(grep -q "passed" ./testing/test-results/.last-run.json && echo passed || echo failed)
             echo "status=$status" >> "$GITHUB_OUTPUT"
             echo $status
-    
-      - uses: mshick/add-pr-comment@v2
-        if: always()
-        with:
-            message-path: |
-              ./testing/playwright-report/result.txt
-            message-failure: |
-              Workflow failed
+  
 
       - name: Setup Pages
         if: steps.tests.outputs.status == 'failed'
@@ -94,26 +53,17 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
       - name: Fail the job if there any failed case
         if: steps.tests.outputs.status == 'failed'
         run : |
-                echo "Tests failed, but continuing the workflow."
+            echo "Tests failed. Please check the report at ${{ steps.deployment.outputs.page_url }}"
+            exit 1
       
       
       - name: Stop Docker Compose services
         if: always()
         run: docker-compose down --volumes --remove-orphans
         continue-on-error: false
-  # deploy:
-  #   environment:
-  #     name: github-pages
-  #     url: ${{ steps.deployment.outputs.page_url }}
-  #   runs-on: ubuntu-latest
-  #   needs: test
-  #   steps:
-  #     - name: Setup Pages
-  #       uses: actions/configure-pages@v5
-  #     - name: Deploy to GitHub Pages
-  #       id: deployment
-  #       uses: actions/deploy-pages@v3
+
       
