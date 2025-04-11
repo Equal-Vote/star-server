@@ -1,6 +1,10 @@
 name: Docker Compose Action
 
-on: [push]
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   test:
@@ -27,6 +31,9 @@ jobs:
         continue-on-error: false
 
       - name: Start application-specific services using Docker Compose
+        # We're telling it to build playwright specifically without the -d tag so we can see the logs and the next
+        # step won't start until all the tests are done. The docker-compose.yml has the dependencies set up so it
+        # will build all of the components playwright needs to run the tests.
         run: docker compose up --build playwright
         continue-on-error: false
 
@@ -48,6 +55,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: "./testing/playwright-report/"
+          name: playwright-report
           retention-days: 30
     
       - name: Deploy to GitHub Pages
