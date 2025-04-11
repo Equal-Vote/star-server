@@ -51,13 +51,14 @@ jobs:
           retention-days: 30
     
       - name: Deploy to GitHub Pages
+        if: steps.tests.outputs.status == 'failed'
         id: deployment
         uses: actions/deploy-pages@v4
 
       - name: Fail the job if there any failed case
         if: steps.tests.outputs.status == 'failed'
         run : |
-            echo "Tests failed. Please check the report at ${{ steps.deployment.outputs.page_url }}"
+            echo "::error title=End-To-End Tests Failed::Please check the report at ${{ steps.deployment.outputs.page_url }}"
             exit 1
       
       
