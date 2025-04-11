@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
-    "playwright": "^1.48.1",
-    "playwright-core": "^1.48.1",
+    "playwright": "^1.51.1",
+    "playwright-core": "^1.51.1",
     "undici-types": "^6.19.8"
   },
   "devDependencies": {

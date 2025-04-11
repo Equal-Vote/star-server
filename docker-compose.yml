@@ -1,7 +1,9 @@
 # I stole this from Scott and haven't tested it yet. -Evans
-version: "3.9"
+# version: "3.9"
 services:
   web:
+  # When running locally, building the container here might be good so it reflects local changes. But when we run docker compose
+  # we should probably pull from the repository so it doesn't take forever to build the container.
     build: . 
     ports:
       - "5000:5000"
@@ -47,7 +49,7 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.1
     volumes:
-      - ./realm.json:/opt/keycloak/data/import/realm.json
+      - ./dev-realm.json:/opt/keycloak/data/import/realm.json
     command:
       - start-dev
       - --import-realm
@@ -68,5 +70,19 @@ services:
       start_period: 60s
     restart:
       always
+  playwright:
+    container_name: playwright
+    build: ./testing
+    ipc: host
+    tty: true
+    # Uncomment the following line to keep the container running after it starts:
+    # command: ["tail", "-f", "/dev/null"]
+    depends_on:
+      - web
+    volumes:
+      - ./testing/test-results:/app/test-results
+      - ./testing/playwright-report:/app/playwright-report
+    
 networks:
   star-net: {}
+
