@@ -1,7 +1,8 @@
 name: Docker Compose Action
 
 on: [push]
-
+permissions:
+  id-token: write
 jobs:
   test:
     permissions:
@@ -10,6 +11,7 @@ jobs:
       pages: write
       id-token: write
     runs-on: ubuntu-latest
+
 
     steps:
       - name: Checkout repository
