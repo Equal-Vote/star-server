@@ -1,17 +1,21 @@
 name: Docker Compose Action
 
 on: [push]
-permissions:
-  id-token: write
+# permissions:
+#   id-token: write
+#   contents: write
+#   pages: write
 jobs:
   test:
-    permissions:
-      contents: write
+    permissions:     
       pull-requests: write
-      pages: write
       id-token: write
+      contents: write
+      pages: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-
 
     steps:
       - name: Checkout repository
@@ -75,19 +79,21 @@ jobs:
             message-failure: |
               Workflow failed
 
-      # - name: Setup Pages
-      #   if: steps.tests.outputs.status == 'failed'
-      #   uses: actions/configure-pages@v3  
+      - name: Setup Pages
+        if: steps.tests.outputs.status == 'failed'
+        uses: actions/configure-pages@v5
 
       - name: Upload Artifact
-        id: deployment
+        # id: deployment
         if: steps.tests.outputs.status == 'failed'
         uses: actions/upload-pages-artifact@v3
         with:
-          name: "playwright-report"
           path: "./testing/playwright-report/"
           retention-days: 30
     
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
       - name: Fail the job if there any failed case
         if: steps.tests.outputs.status == 'failed'
         run : |
@@ -98,14 +104,16 @@ jobs:
         if: always()
         run: docker-compose down --volumes --remove-orphans
         continue-on-error: false
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v3
+  # deploy:
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+  #   runs-on: ubuntu-latest
+  #   needs: test
+  #   steps:
+  #     - name: Setup Pages
+  #       uses: actions/configure-pages@v5
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v3
       
