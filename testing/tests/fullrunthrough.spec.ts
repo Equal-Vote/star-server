@@ -3,23 +3,6 @@ import { test, expect } from '@playwright/test';
 const API_BASE_URL = 'http://localhost:5000/API';
 let electionId = '';
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
-
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
-
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
-
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
-
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
-});
-
 test('full runthrough', async ({ page }) => {
 	await page.goto('/');
 	await page.getByRole('button', { name: 'New Election' }).click();
@@ -180,4 +163,24 @@ test('full runthrough', async ({ page }) => {
 	await expect(page.getByText('Candidate 1 Wins!')).toBeVisible({
 		timeout: 10000000,
 	});
+});
+
+test('get started linka', async ({ page }) => {
+	await page.goto('https://playwright.dev/');
+
+	// Click the get started link.
+	await page.getByRole('link', { name: 'Get started' }).click();
+
+	// Expects page to have a heading with the name of Installation.
+	await expect(
+		page.getByRole('heading', { name: 'Installation' })
+	).toBeVisible();
+});
+
+test.afterEach(async ({ page }) => {
+	//delete election when finished
+	if (electionId) {
+		await page.request.delete(`${API_BASE_URL}/election/${electionId}`);
+		console.log(`deleted election: ${electionId}`);
+	}
 });

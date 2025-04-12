@@ -50,7 +50,7 @@ export default function AddRace() {
                     activeStep={activeStep}
                     setActiveStep={setActiveStep}
                 />
-            </RaceDialog>}
+            </RaceDialog>
         </Box>
     )
 }
