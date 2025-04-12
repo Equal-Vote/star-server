@@ -117,7 +117,7 @@ export default function GenericBallotGrid({
             {rowBackgrounds}
             {/* Column Warnings */}
             {ballotContext.warningColumns && ballotContext.warningColumns.map((columnValue, columnIndex) =>
-                <Box key={columnIndex}
+                <Box key={columnIndex} aria-label={`warning-skipped-column-${columnValue}`}
                     sx={{
                         gridArea: makeArea(1, 1 + columnValue, 1, numHeaderRows + 1 + ballotContext.candidates.length * 2),
                         height: '100%',

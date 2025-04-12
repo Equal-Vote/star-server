@@ -308,6 +308,7 @@ code {
   -webkit-border-radius: 50%;
   text-align: center;
   justify-content: center;
+  margin: auto;
 }
 
 /* :enabled doesn't work, but :not(:disabled) does */

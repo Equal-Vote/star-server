@@ -41,7 +41,7 @@ export default function RaceForm({
     )
     const confirm = useConfirm();
     const inputRefs = useRef([]);
-    const ephemeralCandidates = useMemo(() => 
+    const ephemeralCandidates:Candidate[] = useMemo(() => 
         [...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }], 
         [editedRace.candidates]
     );   
@@ -83,8 +83,8 @@ export default function RaceForm({
         }
     }, [confirm, editedRace.candidates.length, applyRaceUpdate, setErrors]);
     // Handle tab and shift+tab to move focus between candidates
-    const handleKeyDown = useCallback((event, index) => {
-        
+    const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+        const target = event.target as HTMLInputElement;
         if (event.key === 'Tab' && event.shiftKey) {
             // Move focus to the previous candidate
             event.preventDefault();
@@ -98,7 +98,7 @@ export default function RaceForm({
             if (nextIndex < ephemeralCandidates.length && inputRefs.current[nextIndex]) {
                 inputRefs.current[nextIndex].focus();
             }
-        } else if (event.key === 'Backspace' && event.target.value === '' && index > 0) {
+        } else if (event.key === 'Backspace' && target.value === '' && index > 0) {
             // Move focus to the previous candidate when backspacing on an empty candidate
             event.preventDefault();
             inputRefs.current[index - 1].focus();
@@ -123,6 +123,7 @@ export default function RaceForm({
                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                     <TextField
                         id={`race-title-${String(race_index)}`}
+                        disabled={election.state != 'draft'}
                         name="title"
                         label="Title"
                         type="text"
@@ -149,6 +150,7 @@ export default function RaceForm({
                         id={`race-description-${String(race_index)}`}
                         name="description"
                         label="Description"
+                        disabled={election.state != 'draft'}
                         multiline
                         fullWidth
                         type="text"
@@ -198,7 +200,7 @@ export default function RaceForm({
 
             <Stepper nonLinear activeStep={activeStep} orientation="vertical" sx={{my: 3}}>
                 <Step>
-                    <StepButton onClick={() => setActiveStep(0)}>
+                    <StepButton name='edit-multiwinner' onClick={() => setActiveStep(0)}>
                         {t('edit_race.how_many_winners')}
                         &nbsp;
                         {editedRace.num_winners == 1 ?
@@ -312,6 +314,7 @@ export default function RaceForm({
                                 name="voter-method-radio-buttons-group"
                                 value={editedRace.voting_method}
                                 onChange={(e) => applyRaceUpdate(race => { race.voting_method = e.target.value })}
+                                
                             >
                                 {methodFamily == 'proportional_multi_winner' ?
                                     <MethodBullet value='STAR_PR'/>
@@ -328,11 +331,11 @@ export default function RaceForm({
                                     sx={{ width: '100%', ml: -1 }}>
 
                                     {!showsAllMethods &&
-                                        <IconButton aria-label="Home" onClick={() => { setShowsAllMethods(true) }}>
+                                        <IconButton disabled={election.state != 'draft'} aria-label="Home" onClick={() => { setShowsAllMethods(true) }}>
                                             <ExpandMore />
                                         </IconButton>}
                                     {showsAllMethods &&
-                                        <IconButton aria-label="Home" onClick={() => { setShowsAllMethods(false) }}>
+                                        <IconButton disabled={election.state != 'draft'} aria-label="Home" onClick={() => { setShowsAllMethods(false) }}>
                                             <ExpandLess />
                                         </IconButton>}
                                     <Typography variant="body1" >
@@ -385,7 +388,7 @@ export default function RaceForm({
             <Stack spacing={2}>
                 {
                     <SortableList
-                        items={ephemeralCandidates}
+                        items={election.state === 'draft' ? ephemeralCandidates : editedRace.candidates}
                         identifierKey="candidate_id"
                         onChange={handleChangeCandidates}
                         renderItem={(candidate, index) => (
@@ -396,9 +399,10 @@ export default function RaceForm({
                                     candidate={candidate}
                                     index={index}
                                     onDeleteCandidate={() => onDeleteCandidate(index)}
-                                    disabled={ephemeralCandidates.length - 1 === index}
-                                    inputRef={el => inputRefs.current[index] = el}
-                                    onKeyDown={event => handleKeyDown(event, index)}/>
+                                    disabled={ephemeralCandidates.length - 1 === index || election.state !== 'draft'}
+                                    inputRef={(el:React.MutableRefObject<any[]>) => inputRefs.current[index] = el}
+                                    onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(event, index)}
+                                    electionState={election.state}/>
                             </SortableList.Item>
                         )}
                     />
