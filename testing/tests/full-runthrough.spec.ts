@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const API_BASE_URL = 'http://localhost:5000/API';
+import {  API_BASE_URL } from './helperfunctions';
 let electionId = '';
 
 test('full runthrough', async ({ page }) => {
@@ -159,7 +159,7 @@ test('full runthrough', async ({ page }) => {
 	});
 	await page.getByRole('link', { name: 'Voting Page' }).click();
 	await vote(page);
-	await page.getByRole('button', { name: 'Results' }).click();
+	await page.getByRole('link', { name: 'Results' }).click();
 	await expect(page.getByText('Candidate 1 Wins!')).toBeVisible({
 		timeout: 10000000,
 	});

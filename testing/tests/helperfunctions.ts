@@ -24,4 +24,4 @@ export const createElection = async (
     return urlArray[urlArray.length - 2];
   }
 
-export const API_BASE_URL = 'http://localhost:5000/API';
+export const API_BASE_URL = process.env.BACKEND_URL + '/API';

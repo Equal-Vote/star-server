@@ -10,7 +10,7 @@ test.beforeEach(async ({page}) => {
         data: {
             "Election": {
                 "title": "Playwright Test Election",
-                "owner_id": "892d46a9-59fd-4d13-a8ea-99af2635f6cf",
+                "owner_id": "6eb084c7-c572-40d1-bf53-26a62095285e",
                 "description": "",
                 "state": "draft",
                 "frontend_url": "",

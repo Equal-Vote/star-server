@@ -2,10 +2,12 @@ import {test, expect, Page, } from '@playwright/test';
 import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import path from 'path';
 import { randomUUID } from 'crypto';
+import {  API_BASE_URL } from './helperfunctions';
+import user from '../playwright/auth/user.json';
+const userId = user.cookies.find((cookie) => cookie.name === 'AUTH_SESSION_ID')?.value;
 
 let electionId = '';
 const voterIds = ['1', '2', '3', '4', '5'];
-const API_BASE_URL = 'http://localhost:5000/API';
 const makeVotes = (numVotes: number, minRank:number) => {
     const votes:{ candidateName: string, value: number }[] = [];
     for (let i = 0; i < numVotes; i++) {
@@ -21,7 +23,7 @@ test.describe('Add Voters', () => {
             data: {
                 "Election": {
                     "title": "Playwright Test Election",
-                    "owner_id": "892d46a9-59fd-4d13-a8ea-99af2635f6cf",
+                    "owner_id": "6eb084c7-c572-40d1-bf53-26a62095285e",
                     "description": "",
                     "state": "draft",
                     "frontend_url": "",

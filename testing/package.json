@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
+    "dotenv": "^16.5.0",
     "playwright": "^1.51.1",
     "playwright-core": "^1.51.1",
     "undici-types": "^6.19.8"
