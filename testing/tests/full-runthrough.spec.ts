@@ -144,12 +144,12 @@ test('full runthrough', async ({ page }) => {
 		await page.locator('button[name="Candidate 6_rank-3"]').click();
 		await page.locator('button[name="Candidate 7_rank-2"]').click();
 		await page.locator('button[name="Candidate 8_rank-1"]').click();
-		// await submitButton.click();
+		await page.getByRole('button', { name: 'Submit' }).click();
 		await page.getByLabel('Send Ballot Receipt Email?').click();
 		await page.getByRole('button', { name: 'Submit' }).click();
 	};
 	await vote(page);
-	await page.getByRole('button', { name: 'Results' }).click();
+	await page.getByRole('link', { name: 'Results' }).click();
 	await expect(
 		page.getByText("There's only one vote so far.").first()
 	).toBeVisible({ timeout: 100000000 });
