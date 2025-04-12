@@ -82,6 +82,10 @@ services:
     volumes:
       - ./testing/test-results:/app/test-results
       - ./testing/playwright-report:/app/playwright-report
+    environment:
+      - BACKEND_URL=http://localhost:5000
+      - FRONTEND_URL=http://localhost:5000
+      - OPEN_REPORT=never
     
 networks:
   star-net: {}

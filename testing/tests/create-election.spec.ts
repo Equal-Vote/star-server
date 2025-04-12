@@ -1,5 +1,5 @@
-import { createElection, API_BASE_URL } from './helperfunctions';
-import { test, expect, Page } from '@playwright/test';
+import {  API_BASE_URL } from './helperfunctions';
+import { test, expect } from '@playwright/test';
 
 let electionId = '';
 test.describe('Create Election', () => {
