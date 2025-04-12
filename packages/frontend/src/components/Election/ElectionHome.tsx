@@ -105,7 +105,7 @@ const ElectionHome = () => {
 
           {election.state === 'draft' && <>
             <Box display='flex' flexDirection='column' alignItems='center' gap={3} sx={{ p: 1}}>
-              <PrimaryButton fullWidth href={`/${String(election?.election_id)}/vote`} >
+              <PrimaryButton fullWidth href={`/${String(election?.election_id)}/vote`} name='vote' >
                 <Typography align='center' variant="h3" component="h3" fontWeight='bold' sx={{ p: 2 }}>
                   {t('election_home.vote')}
                 </Typography>
