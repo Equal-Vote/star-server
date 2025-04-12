@@ -340,6 +340,7 @@ export default () => {
                                 description={t(`election_creation.${name}_description`)}
                                 key={i}
                                 onClick={() => onAddElection(templateMappers[name](election))}
+                                name={name}
                             />
                         )}
 
