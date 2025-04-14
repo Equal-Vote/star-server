@@ -55,7 +55,6 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: "./testing/playwright-report/"
-          name: playwright-report
           retention-days: 30
     
       - name: Deploy to GitHub Pages
