@@ -45,9 +45,9 @@ jobs:
             echo $status
   
 
-      - name: Setup Pages
-        if: steps.tests.outputs.status == 'failed'
-        uses: actions/configure-pages@v5
+      # - name: Setup Pages
+      #   if: steps.tests.outputs.status == 'failed'
+      #   uses: actions/configure-pages@v5
 
       - name: Upload Artifact
         id: upload
