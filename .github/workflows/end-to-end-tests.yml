@@ -1,4 +1,4 @@
-name: Docker Compose Action
+name: End-to-end tests
 
 on:
   push:
@@ -13,9 +13,9 @@ jobs:
       id-token: write
       contents: write
       pages: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    # environment:
+    #   name: github-pages
+    #   url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
 
     steps:
@@ -45,27 +45,28 @@ jobs:
             echo $status
   
 
-      - name: Setup Pages
-        if: steps.tests.outputs.status == 'failed'
-        uses: actions/configure-pages@v5
+      # - name: Setup Pages
+      #   if: steps.tests.outputs.status == 'failed'
+      #   uses: actions/configure-pages@v5
 
       - name: Upload Artifact
-        # id: deployment
+        id: upload
         if: steps.tests.outputs.status == 'failed'
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
+          name: PlayWright Report
           path: "./testing/playwright-report/"
           retention-days: 30
-    
-      - name: Deploy to GitHub Pages
-        if: steps.tests.outputs.status == 'failed'
-        id: deployment
-        uses: actions/deploy-pages@v4
+      # Removing this action for now because it overwrites docs
+      # - name: Deploy to GitHub Pages
+      #   if: steps.tests.outputs.status == 'failed'
+      #   id: deployment
+      #   uses: actions/deploy-pages@v4
 
       - name: Fail the job if there any failed case
         if: steps.tests.outputs.status == 'failed'
         run : |
-            echo "::error title=End-To-End Tests Failed::Please check the report at ${{ steps.deployment.outputs.page_url }}"
+            echo "::error title=End-To-End Tests Failed::Please check the report at ${{ steps.upload.outputs.artifact-url }}"
             exit 1
       
       
