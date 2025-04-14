@@ -2,7 +2,7 @@ import {test, expect, Page, } from '@playwright/test';
 import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import path from 'path';
 import { randomUUID } from 'crypto';
-import {  API_BASE_URL } from './helperfunctions';
+import {  API_BASE_URL, getSub } from './helperfunctions';
 import user from '../playwright/auth/user.json';
 const userId = user.cookies.find((cookie) => cookie.name === 'AUTH_SESSION_ID')?.value;
 
@@ -23,7 +23,9 @@ test.describe('Add Voters', () => {
             data: {
                 "Election": {
                     "title": "Playwright Test Election",
-                    "owner_id": "6eb084c7-c572-40d1-bf53-26a62095285e",
+                    //TODO: owner_id probably shouldn't be hardcoded, but would need to add some jwt 
+                    //decoding and connecting to keycloak to fix it
+                    "owner_id": getSub(),
                     "description": "",
                     "state": "draft",
                     "frontend_url": "",
@@ -204,7 +206,8 @@ test.describe('Add Voters', () => {
         await page.getByRole('link', { name: 'Voting Page' }).click();
         await page.getByLabel('Voter ID').fill(voterIds[0]);
         await page.getByRole('button', { name: 'Submit' }).click();
-        await page.getByRole('button', { name: 'Vote' }).click();
+        await page.getByRole('link', { name: 'Vote', exact: true }).click();
+
 
         await page.getByLabel(('I have read the instructions')).click();
         let votes = makeVotes(6, 0);

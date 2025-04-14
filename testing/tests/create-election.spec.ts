@@ -100,7 +100,7 @@ test.describe('Create Election', () => {
         await page.getByLabel('Election', { exact: true }).click();
         await page.getByRole('button', { name: 'Continue' }).click();
         await page.fill('input[name="election-title"]', ' ');
-        await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled();
+        await expect(page.getByRole('button', { name: 'Continue' }).first()).toBeDisabled();
     });
 
     test('create election with too long title', async ({ page }) => {

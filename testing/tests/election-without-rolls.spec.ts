@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { API_BASE_URL } from './helperfunctions';
+import { API_BASE_URL, getSub } from './helperfunctions';
 import { randomUUID } from 'crypto';
 import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
+
 
 let electionId = '';
 test.beforeEach(async ({page}) => {
@@ -10,7 +11,7 @@ test.beforeEach(async ({page}) => {
         data: {
             "Election": {
                 "title": "Playwright Test Election",
-                "owner_id": "6eb084c7-c572-40d1-bf53-26a62095285e",
+                "owner_id": getSub(),
                 "description": "",
                 "state": "draft",
                 "frontend_url": "",
@@ -128,7 +129,7 @@ test('vote in election restricted by account', async ({page}) => {
     await page.getByRole('button', { name: 'Finalize Election' }).click();
     await page.getByRole('button', { name: 'Submit' }).click();
     await page.getByRole('link', { name: 'Voting Page' }).click();
-    await page.getByRole('button', { name: 'Vote' }).click();
+    await page.getByRole('link', { name: 'Vote', exact: true }).click();
     await page.getByLabel('I have read the instructions').check();
     await page.locator('button[name="Candidate 1_rank-0"]').click();
     await page.locator('button[name="Candidate 2_rank-1"]').click();
@@ -146,16 +147,19 @@ test('vote in election restricted by account', async ({page}) => {
     await expect(page.locator('button[name="Candidate 6_rank-4"]')).toHaveClass(/alert/);
     await expect(page.locator('button[name="Candidate 9_rank-4"]')).toHaveClass(/alert/);
     await expect(page.getByText('Do not skip rankings. Rank')).toBeVisible();
-    await expect(page.getByText('Do not rank multiple')).toBeVisible();    await page.locator('button[name="Candidate 9_rank-3"]').click();
+    await expect(page.getByText('Do not rank multiple')).toBeVisible();
+    await page.locator('button[name="Candidate 9_rank-3"]').click();
     await page.locator('button[name="Candidate 6_rank-5"]').click();
     await page.locator('button[name="Candidate 3_rank-6"]').click();
     await page.locator('button[name="Candidate 7_rank-3"]').click();
     await page.locator('button[name="Candidate 7_rank-4"]').click();
-    await page.getByRole('button', { name: 'Submit Ballot' }).click();
+    await page.getByRole('button', { name: 'Submit' }).click();
     await page.getByLabel('Send Ballot Receipt Email?').uncheck();
     await page.getByRole('button', { name: 'Submit' }).click();
+    await expect(page.getByRole('heading', { name: 'Ballot Submitted' })).toBeVisible();
+    await page.waitForTimeout(1000);
     await page.getByRole('link', { name: 'Voting Page' }).click();
-    await page.getByRole('heading', { name: 'Ballot Submitted' }).click();
+    await expect(page.getByRole('heading', { name: 'Ballot Submitted' })).toBeVisible();
     await expect(page.locator('#root')).toContainText('Ballot Submitted');
     await page.getByRole('button', { name: 'Hello, Test' }).click();
     await page.getByRole('menuitem', { name: 'Logout' }).click();
@@ -163,7 +167,7 @@ test('vote in election restricted by account', async ({page}) => {
     await page.locator('button[name="Candidate 1_rank-0"]').click();
     await page.getByRole('button', { name: 'Next' }).click();
     await page.getByLabel('I have read the instructions').check();
-    await page.getByRole('button', { name: 'Submit Ballot' }).click();
+    await page.getByRole('button', { name: 'Submit' }).click();
     await page.getByRole('button', { name: 'Submit' }).click();
     await expect(page.locator('#root')).toContainText('Error making request: 401: Email Validation Required');
     await page.getByLabel('Close').click();
@@ -182,7 +186,7 @@ test('vote in election restricted by account', async ({page}) => {
     await page.locator('button[name="Candidate 6_rank-5"]').click();
     await page.getByRole('button', { name: 'Next' }).click();
     await page.getByLabel('I have read the instructions').check();
-    await page.getByRole('button', { name: 'Submit Ballot' }).click();
+    await page.getByRole('button', { name: 'Submit' }).click();
     await page.getByLabel('Send Ballot Receipt Email?').uncheck();
     await page.getByRole('button', { name: 'Submit' }).click();
     await expect(page.getByRole('heading', { name: 'Thank you for voting!' })).toBeVisible();
