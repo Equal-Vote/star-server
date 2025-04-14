@@ -1,4 +1,6 @@
 import { type Page, expect } from '@playwright/test';
+import user from '../playwright/auth/user.json'
+import { jwtDecode } from "jwt-decode";
 export const createElection = async (
     page:Page, 
     electionOrPoll:'Election' | 'Poll', 
@@ -25,3 +27,16 @@ export const createElection = async (
   }
 
 export const API_BASE_URL = process.env.BACKEND_URL + '/API';
+
+export const getSub = () => {
+  const id_token = user.cookies.find((cookie) => cookie.name === 'id_token')?.value;
+  if (!id_token) {
+    throw new Error('id_token not found in cookies');
+  }
+  const idMap = jwtDecode(id_token);
+  const sub = idMap['sub'];
+  if (!sub) {
+    throw new Error('sub not found in id_token');
+  }
+  return sub;
+}
