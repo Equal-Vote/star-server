@@ -6,7 +6,6 @@
         "type": "shell",
         "command": "npm run build -w @equal-vote/star-vote-shared",
       },
-      // await page.goto('http://localhost:3000/');
       {
         "label": "Start Frontend",
         "type": "shell",

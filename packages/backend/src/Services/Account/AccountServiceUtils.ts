@@ -24,8 +24,6 @@ export default class AccountServiceUtils {
             return jwt.verify(token, key);
         } catch (e: any) {
             Logger.warn(req, "JWT Verify Error: ", e.message);
-            Logger.warn(req, "Token: ", token);
-            Logger.warn(req, "Key: ", key);
             throw new Unauthorized();
         }
     };

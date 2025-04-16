@@ -89,7 +89,7 @@ export default function ElectionSettings() {
                     </IconButton>
                 </Box>
             </Box>
-            {open && <Dialog
+            <Dialog
                 open={open}
                 onClose={handleClose}
             >
@@ -186,7 +186,7 @@ export default function ElectionSettings() {
                         {t('keyword.save')}
                     </PrimaryButton>
                 </DialogActions>
-            </Dialog>}
+            </Dialog>
         </Paper>
     )
 }

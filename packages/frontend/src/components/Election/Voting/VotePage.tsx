@@ -187,10 +187,6 @@ const VotePage = () => {
   if(pages.length == 0){
     return <Container disableGutters={true} maxWidth="sm"><h3>No races created for election</h3></Container>
   }
-  const isOnLastPage = currentPage === pages.length - 1
-  const noScores = pages.every(page => page.candidates.every(candidate => candidate.score === null))
-  const thereAreWarnings = pages.some(page => page.warnings)
-  const submitButtonDisabled = !isOnLastPage || (isPending || noScores || thereAreWarnings)
   let pageIsUnderVote = (page) => {
     return page.candidates.every(c => c.score == null);
   }

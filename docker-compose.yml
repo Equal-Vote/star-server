@@ -54,7 +54,6 @@ services:
     image: quay.io/keycloak/keycloak:24.0.1
     volumes:
       - ./dev-realm.json:/opt/keycloak/data/import/realm.json
-      # - ./keycloak-test-data:/opt/keycloak/data/h2
     command:
       - start-dev
       - --import-realm
@@ -91,7 +90,6 @@ services:
     volumes:
       - ./testing/test-results:/app/test-results
       - ./testing/playwright-report:/app/playwright-report
-      - ./testing/playwright/auth:/app/playwright/auth
     environment:
       - BACKEND_URL=http://web:5000
       - FRONTEND_URL=http://web:5000
