@@ -44,6 +44,7 @@ test.describe('Create Election', () => {
         const urlArray = url.split('/');
         electionId = urlArray[urlArray.length - 2];
         await page.getByRole('link', { name: 'Voters' }).click();
+        await page.waitForURL(`**/${electionId}/admin/voters`)
         await page.getByRole('button', { name: 'Add Voters' }).click();
         await expect(await page.getByLabel('Email')).toBeChecked();
 

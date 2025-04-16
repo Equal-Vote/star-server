@@ -129,6 +129,7 @@ test('vote in election restricted by account', async ({page}) => {
     await page.getByRole('button', { name: 'Finalize Election' }).click();
     await page.getByRole('button', { name: 'Submit' }).click();
     await page.getByRole('link', { name: 'Voting Page' }).click();
+    await page.waitForURL(`**/${electionId}/`)
     await page.getByRole('button', { name: 'Vote', exact: true }).click();
     await page.getByLabel('I have read the instructions').check();
     await page.locator('button[name="Candidate 1_rank-0"]').click();
@@ -159,6 +160,7 @@ test('vote in election restricted by account', async ({page}) => {
     await expect(page.getByRole('heading', { name: 'Ballot Submitted' })).toBeVisible();
     await page.waitForTimeout(1000);
     await page.getByRole('link', { name: 'Voting Page' }).click();
+    await page.waitForURL(`**/${electionId}/`)
     await expect(page.getByRole('heading', { name: 'Ballot Submitted' })).toBeVisible();
     await expect(page.locator('#root')).toContainText('Ballot Submitted');
     await page.getByRole('button', { name: 'Hello, Test' }).click();

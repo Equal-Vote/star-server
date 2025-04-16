@@ -177,10 +177,10 @@ test.describe('Add Voters', () => {
         console.log(`response status: ${responseJson}`);
         await expect(responseJson).toBe(true);
         await page.goto(`/${electionId}/admin/voters`);
-
         await expect(page.getByRole('button', { name: 'Add Voters' })).toBeVisible();
         await expect(page.getByText('1–5 of 5')).toBeVisible();
         await page.getByRole('link', { name: 'Admin Home' }).click();
+        await page.waitForURL(`**/${electionId}/admin`)
         await page.getByRole('button', { name: 'Finalize Election' }).click();
         await page.getByRole('button', { name: 'Submit' }).click();
         await expect(page.getByText('open')).toBeVisible();
@@ -190,7 +190,6 @@ test.describe('Add Voters', () => {
         await expect(page.getByRole('button', { name: 'delete-candidate-number-6' })).toBeDisabled();
         await expect(page.getByRole('button', { name: 'drag-candidate-number-6' })).toBeDisabled();
         await expect(page.locator('#candidate-name-7')).not.toBeVisible();
-    
         await expect(page.getByRole('radiogroup').locator('label').filter({ hasText: 'Single-Winner' })).toBeDisabled();
         await page.getByRole('button', { name: 'Voting Method' }).click();
         await expect(page.getByRole('radio', { name: 'STAR Voting' })).toBeDisabled();
@@ -204,11 +203,10 @@ test.describe('Add Voters', () => {
         await expect(page.getByRole('button', { name: 'Share Election' })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Make results private' })).toBeVisible();
         await page.getByRole('link', { name: 'Voting Page' }).click();
+        await page.waitForURL(`**/${electionId}/`)
         await page.getByLabel('Voter ID').fill(voterIds[0]);
         await page.getByRole('button', { name: 'Submit' }).click();
         await page.getByRole('button', { name: 'Vote', exact: true }).click();
-
-
         await page.getByLabel(('I have read the instructions')).click();
         let votes = makeVotes(6, 0);
         for (const vote of votes) {
@@ -226,6 +224,7 @@ test.describe('Add Voters', () => {
         await page.getByLabel('Send Ballot Receipt Email?').click();
         await page.getByRole('button', { name: 'Submit' }).click();
         await page.getByRole('link', { name: 'Voting Page' }).click();
+        await page.waitForURL(`**/${electionId}/`)
         await page.getByLabel('Voter ID').fill(voterIds[0]);
         await page.getByRole('button', { name: 'Submit' }).click();
         await expect(page.getByRole('button', { name: 'Vote', exact: true })).not.toBeVisible();
@@ -251,7 +250,7 @@ test.describe('Add Voters', () => {
         await page.getByRole('button', { name: 'Submit' }).click();
         await expect(page.getByRole('heading', { name: 'Thank you for voting!' })).toBeVisible();
         await page.getByRole('link', { name: 'Voters' }).click();
-        await page.waitForLoadState('domcontentloaded');
+        await page.waitForURL(`**/${electionId}/admin/voters`)
         await page.getByRole('columnheader', { name: 'Has Voted' }).getByRole('combobox').click();
         await page.getByRole('option', { name: 'Not Voted', exact: true }).getByRole('checkbox').click();
         await page.locator('#menu- > .MuiBackdrop-root').click();

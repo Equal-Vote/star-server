@@ -111,6 +111,8 @@ test('full runthrough', async ({ page }) => {
 	await page.getByRole('button', { name: 'Cast Ballot' }).click();
 	const vote = async (page) => {
 		await page.getByRole('link', { name: 'Vote', exact: true }).click();
+		await page.waitForURL(`**/${electionId}/vote`)
+
 		await expect(page.getByText('Test Mode')).toBeVisible({
 			timeout: 10000000,
 		});
@@ -150,16 +152,20 @@ test('full runthrough', async ({ page }) => {
 	};
 	await vote(page);
 	await page.getByRole('link', { name: 'Results' }).click();
+	await page.waitForURL(`**/${electionId}/results`)
 	await expect(
 		page.getByText("There's only one vote so far.").first()
 	).toBeVisible({ timeout: 100000000 });
 	await page.getByRole('link', { name: 'Ballots' }).click();
+	await page.waitForURL(`**/${electionId}/admin/ballots`)
 	await expect(page.getByText('View Ballots')).toBeVisible({
 		timeout: 10000000,
 	});
 	await page.getByRole('link', { name: 'Voting Page' }).click();
+	await page.waitForURL(`**/${electionId}/`)
 	await vote(page);
 	await page.getByRole('link', { name: 'Results' }).click();
+	await page.waitForURL(`**/${electionId}/results`)
 	await expect(page.getByText('Candidate 1 Wins!')).toBeVisible({
 		timeout: 10000000,
 	});

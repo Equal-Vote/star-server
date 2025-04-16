@@ -80,6 +80,8 @@ services:
     build: ./testing
     ipc: host
     tty: true
+    ports: 
+      - "9323:9223"
     networks:
       - star-net
     # Uncomment the following line to keep the container running after it starts:
@@ -93,7 +95,9 @@ services:
     environment:
       - BACKEND_URL=http://web:5000
       - FRONTEND_URL=http://web:5000
-      - OPEN_REPORT=always
+      - OPEN_REPORT=never
+      - CI=true
+
     
 networks:
   star-net: {}
