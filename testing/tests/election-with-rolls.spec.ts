@@ -3,9 +3,6 @@ import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import path from 'path';
 import { randomUUID } from 'crypto';
 import {  API_BASE_URL, getSub } from './helperfunctions';
-import user from '../playwright/auth/user.json';
-const userId = user.cookies.find((cookie) => cookie.name === 'AUTH_SESSION_ID')?.value;
-
 let electionId = '';
 const voterIds = ['1', '2', '3', '4', '5'];
 const makeVotes = (numVotes: number, minRank:number) => {
@@ -17,15 +14,16 @@ const makeVotes = (numVotes: number, minRank:number) => {
 }
 
 test.describe('Add Voters', () => {
-    test.beforeEach(async ({page}) => {
+    test.beforeEach(async ({page, context}) => {
         const apiContext =  page.request;
+        const sub = await getSub(context);
         const response = await apiContext.post(`${API_BASE_URL}/elections`, {
             data: {
                 "Election": {
                     "title": "Playwright Test Election",
                     //TODO: owner_id probably shouldn't be hardcoded, but would need to add some jwt 
                     //decoding and connecting to keycloak to fix it
-                    "owner_id": getSub(),
+                    "owner_id": sub,
                     "description": "",
                     "state": "draft",
                     "frontend_url": "",
@@ -145,7 +143,7 @@ test.describe('Add Voters', () => {
 
 
     });
-    test('vote in election restricted by ID', async ({page}) => {
+    test('vote in election restricted by ID', async ({page, context}) => {
         await page.goto(`/`);
         const response = await page.request.post(`${API_BASE_URL}/Election/${electionId}/rolls`, {
             data: {

@@ -1,5 +1,4 @@
-import { type Page, expect } from '@playwright/test';
-import user from '../playwright/auth/user.json'
+import { type Page, expect, type BrowserContext } from '@playwright/test';
 import { jwtDecode } from "jwt-decode";
 export const createElection = async (
     page:Page, 
@@ -28,8 +27,9 @@ export const createElection = async (
 
 export const API_BASE_URL = process.env.BACKEND_URL + '/API';
 
-export const getSub = () => {
-  const id_token = user.cookies.find((cookie) => cookie.name === 'id_token')?.value;
+export const getSub = async ( context: BrowserContext ) => {
+  const cookies = await context.cookies();
+  const id_token = cookies.find((cookie) => cookie.name === 'id_token')?.value;
   if (!id_token) {
     throw new Error('id_token not found in cookies');
   }

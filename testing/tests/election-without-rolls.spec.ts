@@ -5,13 +5,14 @@ import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 
 
 let electionId = '';
-test.beforeEach(async ({page}) => {
+test.beforeEach(async ({page, context}) => {
     const apiContext =  page.request;
+    const sub = await getSub(context);
     const response = await apiContext.post(`${API_BASE_URL}/elections`, {
         data: {
             "Election": {
                 "title": "Playwright Test Election",
-                "owner_id": getSub(),
+                "owner_id": sub,
                 "description": "",
                 "state": "draft",
                 "frontend_url": "",
