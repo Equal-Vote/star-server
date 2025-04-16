@@ -99,6 +99,7 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined, electionRoll=
                                 key={i}
                                 title={t(`voters.email_form.${v}`, {voter_id: targetedEmail})}
                                 onClick={() => setTemplate(v)}
+                                name={'email_template'}
                             />
                         )}
                     </Box>

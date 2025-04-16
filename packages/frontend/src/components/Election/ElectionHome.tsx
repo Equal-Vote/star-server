@@ -88,21 +88,6 @@ const ElectionHome = () => {
                 </Box>
               }
             </>}
-              <Box display='flex' flexDirection='column' alignItems='center' gap={5} sx={{ p: 1}}>
-                <PrimaryButton fullWidth href={`/${String(election?.election_id)}/vote`} >
-                  <Typography align='center' variant="h3" component="h3" fontWeight='bold' sx={{ p: 2 }}>
-                    {t('election_home.vote')}
-                  </Typography>
-                </PrimaryButton>
-                {election.settings.public_results === true &&
-                <SecondaryButton href={`/${String(election?.election_id)}/results`} sx={{mx: 'auto', width: '90%', p:3}}>
-                    {t('election_home.or_view_results')}
-                </SecondaryButton>
-                }
-              </Box>
-            }
-          </>}
-
           {election.state === 'draft' && <>
             <Box display='flex' flexDirection='column' alignItems='center' gap={3} sx={{ p: 1}}>
               <PrimaryButton fullWidth href={`/${String(election?.election_id)}/vote`} name='vote' >

@@ -2,21 +2,20 @@
 # version: "3.9"
 services:
   web:
-  # When running locally, building the container here might be good so it reflects local changes. But when we run docker compose
-  # we should probably pull from the repository so it doesn't take forever to build the container.
     build: . 
     ports:
-      - "5000:3000"
+      - "5000:5000"
     networks:
       - star-net
     environment:
-        - REACT_APP_FEATURED_ELECTIONS=''
+
+        - REACT_APP_FEATURED_ELECTIONS=4xtfb4 #We've got the postgres database restoring from a backup that creates an election with this ID
         - REACT_APP_MAX_BALLOT_RANKS=10
         - REACT_APP_DEFAULT_BALLOT_RANKS=6
-        - REACT_APP_BACKEND_URL=http://localhost:3000
-        - REACT_APP_KEYCLOAK_URL=http://localhost:8080/realms/Dev/protocol/openid-connect
+        - REACT_APP_BACKEND_URL=http://web:5000
+        - REACT_APP_KEYCLOAK_URL=http://keycloak:8080/realms/Dev/protocol/openid-connect
         - DANGEROUSLY_DISABLE_HOST_CHECK=true
-        - FRONTEND_PORT=3000
+        - FRONTEND_PORT=5000
         - DATABASE_URL=postgresql://postgres:ChangeMeOrDontTest2020@my-db:5432/postgres
         - DEV_DATABASE=FALSE
         - KEYCLOAK_SECRET=DefaultKeycloakSecret
@@ -39,6 +38,11 @@ services:
     image: postgres
     ports:
       - "5432:5432"
+    volumes:
+    # Any sql file at docker-entrypoint-initdb.d will automatically be run
+    # If you would like to create a new backup run the following command:
+    # docker exec star-server-my-db-1 pg_dump -U postgres postgres > test-data.sql
+      - ./test-data.sql:/docker-entrypoint-initdb.d/test-data.sql
     networks:
       - star-net
     environment:
@@ -50,6 +54,7 @@ services:
     image: quay.io/keycloak/keycloak:24.0.1
     volumes:
       - ./dev-realm.json:/opt/keycloak/data/import/realm.json
+      # - ./keycloak-test-data:/opt/keycloak/data/h2
     command:
       - start-dev
       - --import-realm
@@ -75,6 +80,8 @@ services:
     build: ./testing
     ipc: host
     tty: true
+    networks:
+      - star-net
     # Uncomment the following line to keep the container running after it starts:
     # command: ["tail", "-f", "/dev/null"]
     depends_on:
@@ -82,10 +89,11 @@ services:
     volumes:
       - ./testing/test-results:/app/test-results
       - ./testing/playwright-report:/app/playwright-report
+      - ./testing/playwright/auth:/app/playwright/auth
     environment:
-      - BACKEND_URL=http://localhost:5000
-      - FRONTEND_URL=http://localhost:5000
-      - OPEN_REPORT=never
+      - BACKEND_URL=http://web:5000
+      - FRONTEND_URL=http://web:5000
+      - OPEN_REPORT=always
     
 networks:
   star-net: {}

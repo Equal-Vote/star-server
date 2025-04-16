@@ -29,6 +29,7 @@ export default function RaceForm({
     const [showsAllMethods, setShowsAllMethods] = useState(false)
     const { election } = useElection()
     const PR_METHODS = ['STV', 'STAR_PR'];
+    const isDisabled = election.state !== 'draft';
     const [methodFamily, setMethodFamily] = useState(
         editedRace.num_winners == 1?
             'single_winner'
@@ -110,8 +111,8 @@ export default function RaceForm({
         }
     }, [ephemeralCandidates.length, applyRaceUpdate]);
 
-    const MethodBullet = ({value}) => <>
-        <FormControlLabel value={value} control={<Radio />} label={t(`edit_race.methods.${methodValueToTextKey[value]}.title`)} sx={{ mb: 0, pb: 0 }} />
+    const MethodBullet = ({value, disabled}) => <>
+        <FormControlLabel value={value} disabled={disabled} control={<Radio />} label={t(`edit_race.methods.${methodValueToTextKey[value]}.title`)} sx={{ mb: 0, pb: 0 }} />
         <FormHelperText sx={{ pl: 4, mt: -1 }}>
             {t(`edit_race.methods.${methodValueToTextKey[value]}.description`)}
         </FormHelperText>
@@ -123,7 +124,7 @@ export default function RaceForm({
                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                     <TextField
                         id={`race-title-${String(race_index)}`}
-                        disabled={election.state != 'draft'}
+                        disabled={isDisabled}
                         name="title"
                         label="Title"
                         type="text"
@@ -150,7 +151,7 @@ export default function RaceForm({
                         id={`race-description-${String(race_index)}`}
                         name="description"
                         label="Description"
-                        disabled={election.state != 'draft'}
+                        disabled={isDisabled}
                         multiline
                         fullWidth
                         type="text"
@@ -177,6 +178,7 @@ export default function RaceForm({
                             id={`race-precincts-${String(race_index)}`}
                             name="precincts"
                             label="Precincts"
+                            disabled={isDisabled}
                             fullWidth
                             multiline
                             type="text"
@@ -229,6 +231,7 @@ export default function RaceForm({
                         >
                             <FormControlLabel
                                 value="single_winner"
+                                disabled= {isDisabled}
                                 control={<Radio />}
                                 label={t('edit_race.single_winner')}
                                 sx={{ mb: 0, pb: 0 }}
@@ -241,6 +244,7 @@ export default function RaceForm({
                             />
                             <FormControlLabel
                                 value="bloc_multi_winner"
+                                disabled= {isDisabled}
                                 control={<Radio />}
                                 label={t('edit_race.bloc_multi_winner')}
                                 sx={{ mb: 0, pb: 0 }}
@@ -253,6 +257,7 @@ export default function RaceForm({
                             />
                             <FormControlLabel
                                 value="proportional_multi_winner"
+                                disabled= {isDisabled}
                                 control={<Radio />}
                                 label={t('edit_race.proportional_multi_winner')}
                                 sx={{ mb: 0, pb: 0 }}
@@ -311,17 +316,18 @@ export default function RaceForm({
                         <FormControl component="fieldset" variant="standard">
                             <RadioGroup
                                 aria-labelledby="voting-method-radio-group"
+                                
                                 name="voter-method-radio-buttons-group"
                                 value={editedRace.voting_method}
                                 onChange={(e) => applyRaceUpdate(race => { race.voting_method = e.target.value })}
                                 
                             >
                                 {methodFamily == 'proportional_multi_winner' ?
-                                    <MethodBullet value='STAR_PR'/>
+                                    <MethodBullet value='STAR_PR' disabled={isDisabled}/>
                                 : <>
-                                    <MethodBullet value='STAR'/>
-                                    <MethodBullet value='RankedRobin'/>
-                                    <MethodBullet value='Approval'/>
+                                    <MethodBullet value='STAR' disabled={isDisabled}/>
+                                    <MethodBullet value='RankedRobin' disabled={isDisabled}/>
+                                    <MethodBullet value='Approval' disabled={isDisabled}/>
                                 </>}
 
                                 <Box
@@ -362,10 +368,10 @@ export default function RaceForm({
 
 
                                     {methodFamily == 'proportional_multi_winner' ?
-                                        <MethodBullet value='STV'/>
+                                        <MethodBullet value='STV' disabled={isDisabled}/>
                                     : <>
-                                        <MethodBullet value='Plurality'/>
-                                        <MethodBullet value='IRV'/>
+                                        <MethodBullet value='Plurality' disabled={isDisabled}/>
+                                        <MethodBullet value='IRV' disabled={isDisabled}/>
                                     </>}
 
                                 </Box>

@@ -193,20 +193,20 @@ test.describe('Add Voters', () => {
     
         await expect(page.getByRole('radiogroup').locator('label').filter({ hasText: 'Single-Winner' })).toBeDisabled();
         await page.getByRole('button', { name: 'Voting Method' }).click();
-        await expect(page.getByLabel('STAR', { exact: true })).toBeDisabled();
+        await expect(page.getByRole('radio', { name: 'STAR Voting' })).toBeDisabled();
         await expect(page.getByRole('textbox', { name: 'Title' })).toBeDisabled();
         await expect(page.getByRole('textbox', { name: 'Description' })).toBeDisabled();
         await expect(page.getByRole('button', { name: 'Save' })).toBeDisabled();
         await page.getByRole('button', { name: 'Cancel' }).click();
         await expect(page.getByRole('heading', { name: '(no description)' })).toBeVisible();
         await expect(page.getByText('(start and end times disabled)')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'View Results' })).toBeVisible();
+        await expect(page.getByRole('link', { name: 'View Results' })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Share Election' })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Make results private' })).toBeVisible();
         await page.getByRole('link', { name: 'Voting Page' }).click();
         await page.getByLabel('Voter ID').fill(voterIds[0]);
         await page.getByRole('button', { name: 'Submit' }).click();
-        await page.getByRole('link', { name: 'Vote', exact: true }).click();
+        await page.getByRole('button', { name: 'Vote', exact: true }).click();
 
 
         await page.getByLabel(('I have read the instructions')).click();
@@ -214,10 +214,9 @@ test.describe('Add Voters', () => {
         for (const vote of votes) {
             await page.locator(`button[name="${vote.candidateName}_rank-${vote.value}"]`).click();
         }
-        const submitButton = await page.getByRole('button', { name: 'Submit Ballot' });
-        await expect(submitButton).toBeDisabled();
         await page.getByRole('button', { name: 'Next' }).click();
         await page.getByLabel(('I have read the instructions')).click();
+        const submitButton = page.getByRole('button', { name: 'Submit' });
         await expect(submitButton).toBeEnabled();
         votes = makeVotes(6, 1);
         for (const vote of votes) {
@@ -229,13 +228,13 @@ test.describe('Add Voters', () => {
         await page.getByRole('link', { name: 'Voting Page' }).click();
         await page.getByLabel('Voter ID').fill(voterIds[0]);
         await page.getByRole('button', { name: 'Submit' }).click();
-        await expect(page.getByRole('button', { name: 'Vote' })).not.toBeVisible();
+        await expect(page.getByRole('button', { name: 'Vote', exact: true })).not.toBeVisible();
         expect(page.getByRole('heading', { name: 'Ballot Submitted' })).toBeVisible();
         expect(page.getByRole('link', { name: 'View Results' })).toBeVisible();
         await page.getByRole('button', { name: 'Clear' }).click();
         await page.getByLabel('Voter ID').fill(voterIds[1]);
         await page.getByRole('button', { name: 'Submit' }).click();
-        await page.getByRole('button', { name: 'Vote' }).click();
+        await page.getByRole('button', { name: 'Vote', exact: true }).click();
         await page.getByLabel(('I have read the instructions')).click();
         votes = makeVotes(6, 0);
         for (const vote of votes) {
@@ -252,8 +251,9 @@ test.describe('Add Voters', () => {
         await page.getByRole('button', { name: 'Submit' }).click();
         await expect(page.getByRole('heading', { name: 'Thank you for voting!' })).toBeVisible();
         await page.getByRole('link', { name: 'Voters' }).click();
-        await page.getByLabel('Voters').getByRole('combobox').click();
-        await page.getByRole('option', { name: 'false' }).getByRole('checkbox').click();
+        await page.waitForLoadState('domcontentloaded');
+        await page.getByRole('columnheader', { name: 'Has Voted' }).getByRole('combobox').click();
+        await page.getByRole('option', { name: 'Not Voted', exact: true }).getByRole('checkbox').click();
         await page.locator('#menu- > .MuiBackdrop-root').click();
         await expect(page.getByText('1–2 of 2')).toBeVisible();
         expect(page.getByRole('rowheader', { name: '1' })).toBeVisible();

@@ -129,7 +129,7 @@ test('vote in election restricted by account', async ({page}) => {
     await page.getByRole('button', { name: 'Finalize Election' }).click();
     await page.getByRole('button', { name: 'Submit' }).click();
     await page.getByRole('link', { name: 'Voting Page' }).click();
-    await page.getByRole('link', { name: 'Vote', exact: true }).click();
+    await page.getByRole('button', { name: 'Vote', exact: true }).click();
     await page.getByLabel('I have read the instructions').check();
     await page.locator('button[name="Candidate 1_rank-0"]').click();
     await page.locator('button[name="Candidate 2_rank-1"]').click();
