@@ -65,7 +65,8 @@ export default function ElectionDetailsInlineForm() {
 
                         <Box sx={{}}>
                             <IconButton
-                                aria-label="edit"
+                                aria-label="edit-election-details"
+                                name="edit-election-details"
                                 disabled={election.state!=='draft'}
                                 onClick={handleOpen}>
                                 <EditIcon />

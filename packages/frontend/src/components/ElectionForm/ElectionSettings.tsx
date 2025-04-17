@@ -82,7 +82,8 @@ export default function ElectionSettings() {
                 </Box>
                 <Box sx={{ flexShrink: 1, p: 1 }}>
                     <IconButton
-                        aria-label="edit"
+                        aria-label="edit-settings"
+                        name="edit-settings"
                         onClick={handleOpen}>
                         <EditIcon />
                     </IconButton>
@@ -151,6 +152,7 @@ export default function ElectionSettings() {
 
                                 <TextField
                                     id="rank-limit"
+                                    name="rank-limit"
                                     type="number"
                                     value={editedElectionSettings.max_rankings ? editedElectionSettings.max_rankings : default_rankings}
                                     onChange={(e) => applySettingsUpdate((settings) => { settings.max_rankings = Number(e.target.value) })}

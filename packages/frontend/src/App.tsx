@@ -36,7 +36,7 @@ const App = () => {
     return <>
       <Box sx={{ position: 'fixed', pointerEvents: 'none', display: {xs: 'none', md: 'flex'}, flexDirection: 'column-reverse', alignItems: 'flex-end', width: '100%', height: '100%', paddingBottom: '90px', paddingRight: '30px'}}>
           {/*Color is copied from the feedback button*/}
-          <PrimaryButton sx={{pointerEvents: 'auto', width: '170px', fontSize: 10}}  onClick={returnToClassicContext.openDialog}>
+          <PrimaryButton sx={{pointerEvents: 'auto', width: '170px', fontSize: 10}}  onClick={returnToClassicContext.openDialog} name="Return to Classic" >
               {t('return_to_classic.button')}
           </PrimaryButton >
       </Box>

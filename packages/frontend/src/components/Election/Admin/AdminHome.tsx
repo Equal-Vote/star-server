@@ -147,6 +147,7 @@ const AdminHome = () => {
         button={(<>
             <PrimaryButton
                 type='button'
+                role='button'
                 fullWidth
                 component={Link} to={`/${election.election_id}`}
             >

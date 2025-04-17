@@ -257,7 +257,7 @@ export default () => {
                             setErrors={setErrors}
                             showLabel={false}
                         />
-                        <StepButtons activeStep={1} setActiveStep={setActiveStep} canContinue={election.title != '' && errors.title == ''}/>
+                        <StepButtons activeStep={1} setActiveStep={setActiveStep} canContinue={/^[^\s][a-zA-Z0-9\s]{3,49}$/.test(election.title) && errors.title == ''}/>
                     </StepContent>
                 </Step>
                 <Step>
@@ -340,6 +340,7 @@ export default () => {
                                 description={t(`election_creation.${name}_description`)}
                                 key={i}
                                 onClick={() => onAddElection(templateMappers[name](election))}
+                                name={name}
                             />
                         )}
 

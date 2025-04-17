@@ -295,8 +295,17 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
         </Dialog>
     )
 }
-
-export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandidate, disabled, inputRef, onKeyDown}) => {
+interface CandidateFormProps {
+    onEditCandidate: (newCandidate: Candidate) => void,
+    candidate: Candidate,
+    index: number,
+    onDeleteCandidate: () => void,
+    disabled: boolean,
+    inputRef: (el: React.MutableRefObject<any[]>) => React.MutableRefObject<any[]>,
+    onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void,
+    electionState: string
+}
+export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandidate, disabled, inputRef, onKeyDown, electionState}: CandidateFormProps) => {
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -304,18 +313,18 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
     const flags = useFeatureFlags();
     const onSave = () => { handleClose() }
     return (
-        <Paper elevation={4} sx={{ width: '100%' }}>
+        <Paper elevation={4} sx={{ width: '100%' }} aria-label={`candidate-form-${index + 1}`}>
             <Box
                 sx={{ display: 'flex', justifyContent: 'space-between', bgcolor: 'background.paper', borderRadius: 10 }}
                 alignItems={'center'}
             >
-                <DragHandle style={{marginLeft: 5}} disabled={disabled}/>
+                <DragHandle style={{marginLeft: 5}} disabled={disabled} ariaLabel={`drag-candidate-number-${index + 1}`}/>
 
                 <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', pl: 2 }}>
                     <TextField
-                        id={'candidate-name'}
-                        name="new-candidate-name"
-                        // label={"Candidate Name"}
+                        id={`candidate-name-${index + 1}`}
+                        name={`candidate-name-${index + 1}`}
+                        data-testid={`candidate-name-${index + 1}`}
                         type="text"
                         value={candidate.candidate_name}
                         fullWidth
@@ -324,6 +333,7 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
                         onChange={(e) => onEditCandidate({ ...candidate, candidate_name: e.target.value })}
                         inputRef={inputRef}
                         onKeyDown={onKeyDown}
+                        disabled={electionState !== 'draft'}
                     />
                 </Box>                    
 
@@ -336,7 +346,8 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
                     </IconButton>
     }
                 <IconButton
-                    aria-label="delete"
+                    aria-label={`delete-candidate-number-${index + 1}`}
+                    name={`delete-${candidate.candidate_name}`}
                     color="error"
                     onClick={onDeleteCandidate}
                     disabled={disabled}>
@@ -348,7 +359,7 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
     )
 }
 
-const AddCandidate = ({ onAddNewCandidate }) => {
+const AddCandidate = ({ onAddNewCandidate, index }) => {
 
     const handleEnter = (e) => {
         saveNewCandidate()
