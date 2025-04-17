@@ -204,7 +204,7 @@ test.describe('Add Voters', () => {
         await page.waitForURL(`**/${electionId}/`)
         await page.getByLabel('Voter ID').fill(voterIds[0]);
         await page.getByRole('button', { name: 'Submit' }).click();
-        await page.getByRole('button', { name: 'Vote', exact: true }).click();
+        await page.getByRole('link', { name: 'Vote', exact: true }).click();
         await page.getByLabel(('I have read the instructions')).click();
         let votes = makeVotes(6, 0);
         for (const vote of votes) {
@@ -225,13 +225,13 @@ test.describe('Add Voters', () => {
         await page.waitForURL(`**/${electionId}/`)
         await page.getByLabel('Voter ID').fill(voterIds[0]);
         await page.getByRole('button', { name: 'Submit' }).click();
-        await expect(page.getByRole('button', { name: 'Vote', exact: true })).not.toBeVisible();
+        await expect(page.getByRole('link', { name: 'Vote', exact: true })).not.toBeVisible();
         expect(page.getByRole('heading', { name: 'Ballot Submitted' })).toBeVisible();
         expect(page.getByRole('link', { name: 'View Results' })).toBeVisible();
         await page.getByRole('button', { name: 'Clear' }).click();
         await page.getByLabel('Voter ID').fill(voterIds[1]);
         await page.getByRole('button', { name: 'Submit' }).click();
-        await page.getByRole('button', { name: 'Vote', exact: true }).click();
+        await page.getByRole('link', { name: 'Vote', exact: true }).click();
         await page.getByLabel(('I have read the instructions')).click();
         votes = makeVotes(6, 0);
         for (const vote of votes) {
