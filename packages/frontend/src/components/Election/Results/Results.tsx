@@ -2,7 +2,7 @@ import { Box, Pagination } from "@mui/material";
 import React, { useRef } from "react";
 import { useState } from 'react';
 import Typography from '@mui/material/Typography';
-import { commaListFormatter, tabToCandidate, useSubstitutedTranslation } from '../../util';
+import { commaListFormatter, formatPercent, tabToCandidate, useSubstitutedTranslation } from '../../util';
 import STARResultSummaryWidget from "./STAR/STARResultSummaryWidget";
 import STARDetailedResults from "./STAR/STARDetailedResults";
 import STARResultDetailedStepsWidget from "./STAR/STARResultDetailedStepsWidget";
@@ -88,7 +88,7 @@ function RankedRobinResultsViewer() {
           }
           percentage
           percentDenominator={results.summaryData.candidates.length-1}
-          star
+          stars={1}
         />
       </Widget>
     </WidgetContainer>
@@ -187,7 +187,7 @@ function IRVResultsViewer() {
         <ResultsBarChart data={firstRoundData} percentage majorityOffset/>
       </Widget>
       <Widget title={t('results.rcv.final_round_title')}>
-        <ResultsBarChart data={runoffData} runoff star percentage sortFunc={false} majorityLegend={t('results.rcv.runoff_majority')}/>
+        <ResultsBarChart data={runoffData} runoff stars={1} percentage sortFunc={false} majorityLegend={t('results.rcv.runoff_majority')}/>
       </Widget>
     </WidgetContainer>
     <DetailExpander>
@@ -221,7 +221,7 @@ function PluralityResultsViewer() {
               votes: totalScore.score,
             }))
           }
-          star
+          stars={1}
           percentage
         />
       </Widget>
@@ -267,7 +267,7 @@ function ApprovalResultsViewer() {
               votes: totalScore.score,
             }))
           }
-          star
+          stars={race.num_winners}
           percentage
           percentDenominator={results.summaryData.nTallyVotes} 
         />
@@ -277,12 +277,12 @@ function ApprovalResultsViewer() {
     <DetailExpander>
       <WidgetContainer>
         <Widget title={t('results.approval.table_title')}>
-          <ResultsTable className='approvalTable' data={[
+          <ResultsTable winningRows={race.num_winners} data={[
             t('results.approval.table_columns'),
-            ...results.summaryData.totalScores.map((totalScore, i) => [
-              results.summaryData.candidates[totalScore.index].name,
-              totalScore.score,
-              `${Math.round(totalScore.score * 1000 / results.summaryData.nTallyVotes) / 10}%`,
+            ...results.summaryData.candidates.map(c => [
+              c.name,
+              results.summaryData.totalScores.find(score => score.index == c.index)?.score ?? 0,
+              formatPercent(results.summaryData.totalScores.find(score => score.index == c.index)?.score / results.summaryData.nTallyVotes)
             ])
           ]}/>
         </Widget>

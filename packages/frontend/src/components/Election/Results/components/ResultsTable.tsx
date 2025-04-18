@@ -1,7 +1,9 @@
 import { TableContainer } from "@mui/material";
 
-export default ({ className, data, minCellWidth = "120px" }) => {
+export default ({ className='', data, minCellWidth = "120px", winningRows=1}) => {
   let c = `resultTable ${className}`;
+
+  let winningStyle = {backgroundColor: 'var(--brand-gold)'}
 
   return (
     <TableContainer
@@ -24,7 +26,7 @@ export default ({ className, data, minCellWidth = "120px" }) => {
         </thead>
         <tbody>
           {data.slice(1).map((row, i) => (
-            <tr className={c} key={i}>
+            <tr className={c} key={i} style={i < winningRows ? winningStyle : {}}>
               {row.map((value, j) => (
                 <td
                   key={j}

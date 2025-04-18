@@ -19,7 +19,7 @@ interface ResultsBarChartProps {
   xKey?: 'votes' | 'count' | 'score';
   percentage?: boolean;
   percentDenominator?: number;
-  star?: boolean;
+  stars?: number;
   majorityLegend?: string;
   majorityOffset?: boolean;
   height?: number;
@@ -34,7 +34,7 @@ export default function ResultsBarChart({
   xKey = 'votes',
   percentage = false,
   percentDenominator = undefined,
-  star = false,
+  stars = 0,
   majorityLegend = undefined,
   majorityOffset = false,
   height = undefined,
@@ -61,7 +61,7 @@ const [rawNumbers, setRawNumbers] = useState(false);
   data = rawData.map((d, i) => {
     let s = {
       ...d,
-      name: (((star && i == 0) || d['star']) ? "⭐ " : "") + truncName(d["name"], 40),
+      name: ((i < stars || d['star']) ? "⭐ " : "") + truncName(d["name"], 40),
       // hack to get smaller values to allign different than larger ones
       left: (percentage && !rawNumbers)
         ? formatPercent(d[xKey] / percentDenominator)
