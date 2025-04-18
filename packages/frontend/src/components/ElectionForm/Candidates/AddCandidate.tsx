@@ -91,7 +91,7 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
                     <Grid item xs={12} sx={{ display: "flex", alignItems: "center", m: 0, p: 1 }}>
                         <TextField
                             id={'candidate-name'}
-                            name="new-candidate-name"
+                            inputProps={{ "aria-label": "New Candidate Name" }}
                             label={"Candidate Name"}
                             type="text"
                             value={candidate.candidate_name}
@@ -129,9 +129,9 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
                                                     onDrop={handleOnDrop}
                                                 >
                                                     {candidate.photo_filename &&
-                                                        <img src={candidate.photo_filename} style={{ position: 'absolute', width: 200, height: 200 }} />
+                                                        <img aria-labelledby='candidate-photo-caption' src={candidate.photo_filename} style={{ position: 'absolute', width: 200, height: 200 }} />
                                                     }
-                                                    <Typography variant="h6" component="h6" style={{ marginTop: 0 }}>
+                                                    <Typography id='candidate-photo-caption' variant="h6" component="h6" style={{ marginTop: 0 }}>
                                                         Candidate Photo
                                                     </Typography>
                                                     <Typography variant="h6" component="h6" sx={{ m: 0 }} style={candidate.photo_filename ? { marginTop: '50px' } : {}} >
@@ -198,7 +198,6 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
                                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                                     <TextField
                                         id="long-name"
-                                        name="long name"
                                         label="Full Name"
                                         type="text"
                                         fullWidth
@@ -214,7 +213,6 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
                                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                                     <TextField
                                         id="bio"
-                                        name="bio"
                                         label="Bio"
                                         type="text"
                                         rows={3}
@@ -232,7 +230,6 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
                                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                                     <TextField
                                         id="candidate url"
-                                        name="candidate url"
                                         label="Candidate URL"
                                         type="url"
                                         fullWidth
@@ -248,7 +245,6 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
                                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                                     <TextField
                                         id="Party"
-                                        name="Party"
                                         label="Party"
                                         type="text"
                                         fullWidth
@@ -264,7 +260,6 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
                                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                                     <TextField
                                         id="party url"
-                                        name="party url"
                                         label="Party URL"
                                         type="url"
                                         fullWidth
@@ -313,18 +308,18 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
     const flags = useFeatureFlags();
     const onSave = () => { handleClose() }
     return (
-        <Paper elevation={4} sx={{ width: '100%' }} aria-label={`candidate-form-${index + 1}`}>
+        <Paper elevation={4} sx={{ width: '100%' }} aria-label={`Candidate ${index + 1} Form`}>
             <Box
                 sx={{ display: 'flex', justifyContent: 'space-between', bgcolor: 'background.paper', borderRadius: 10 }}
                 alignItems={'center'}
             >
-                <DragHandle style={{marginLeft: 5}} disabled={disabled} ariaLabel={`drag-candidate-number-${index + 1}`}/>
+                <DragHandle style={{marginLeft: 5}} disabled={disabled} ariaLabel={`Drag Candidate Number ${index + 1}`}/>
 
                 <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', pl: 2 }}>
                     <TextField
                         id={`candidate-name-${index + 1}`}
-                        name={`candidate-name-${index + 1}`}
-                        data-testid={`candidate-name-${index + 1}`}
+                        inputProps={{ "aria-label": `Candidate ${index + 1} Name` }}
+                        // data-testid={`candidate-name-${index + 1}`}
                         type="text"
                         value={candidate.candidate_name}
                         fullWidth
@@ -339,15 +334,14 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
 
                 {flags.isSet('CANDIDATE_DETAILS') &&
                     <IconButton
-                        aria-label="edit"
+                        aria-label={`Edit Candidate ${index + 1} Details`}
                         onClick={handleOpen}
                         disabled={disabled}>
                         <EditIcon />
                     </IconButton>
     }
                 <IconButton
-                    aria-label={`delete-candidate-number-${index + 1}`}
-                    name={`delete-${candidate.candidate_name}`}
+                    aria-label={`Delete Candidate Number ${index + 1}`}
                     color="error"
                     onClick={onDeleteCandidate}
                     disabled={disabled}>
@@ -382,7 +376,6 @@ const AddCandidate = ({ onAddNewCandidate, index }) => {
         >
             <TextField
                 id={'candidate-name'}
-                name="new-candidate-name"
                 label={"Add Candidate"}
                 type="text"
                 value={newCandidateName}

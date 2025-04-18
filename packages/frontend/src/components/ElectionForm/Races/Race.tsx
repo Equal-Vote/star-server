@@ -47,7 +47,7 @@ export default function Race({ race, race_index }) {
                 <Box sx={{ flexShrink: 1, p: 1 }}>
                     <Tooltip title='Duplicate'>
                         <IconButton
-                            aria-label="copy"
+                            aria-label='Duplicate'
                             onClick={onCopy}
                             disabled={election.state !== 'draft'}>
                             <ContentCopy />
@@ -57,9 +57,7 @@ export default function Race({ race, race_index }) {
                 <Box sx={{ flexShrink: 1, p: 1 }}>
                     <Tooltip title='Edit'>
                         <IconButton
-                            aria-label={`edit-${race.title}`}
-                            role='button'
-                            name={`edit-${race.title}`}
+                            aria-label={`Edit Race: ${race.title}`}
                             onClick={handleOpen}>
                             {election.state === 'draft' ? <EditIcon /> : <VisibilityIcon />}
                         </IconButton>
@@ -68,7 +66,7 @@ export default function Race({ race, race_index }) {
                 <Box sx={{ flexShrink: 1, p: 1 }}>
                     <Tooltip title='Delete'>
                         <IconButton
-                            aria-label="delete"
+                            aria-label={`Delete Race: ${race.title}`}
                             color="error"
                             onClick={onDeleteRace}
                             disabled={election.state !== 'draft'}>

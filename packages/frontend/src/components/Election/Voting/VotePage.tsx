@@ -273,7 +273,7 @@ const VotePage = () => {
             />
           <TextField
                     id="receipt-email"
-                    name="receiptEmail"
+                    inputProps={{ "aria-label": "Receipt Email" }}
                     label={t('ballot.dialog_email_placeholder')}
                     fullWidth
                     type="text"

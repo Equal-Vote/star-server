@@ -61,7 +61,6 @@ const EditRoles = () => {
                     <Grid item sx={{ p: 2 }}>
                         <TextField
                             id="admin-list"
-                            name="admin-list"
                             label="Admin List"
                             InputLabelProps={{
                                 shrink: true
@@ -79,7 +78,6 @@ const EditRoles = () => {
                     <Grid item sx={{ p: 2 }}>
                         <TextField
                             id="auditor-list"
-                            name="id-list"
                             label="Auditor List"
                             InputLabelProps={{
                                 shrink: true

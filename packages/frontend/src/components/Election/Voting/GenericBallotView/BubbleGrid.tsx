@@ -25,7 +25,11 @@ const NoStyleButton = styled(Button)({
 const BubbleGrid: React.FC<BubbleGridProps> = ({ ballotContext, columnValues, columns, numHeaderRows, onClick, makeArea, fontSX }) => {
   const { candidates, instructionsRead, alertBubbles } = ballotContext;
   // Step 1: Create a triplet of candidateIndex, columnIndex, and columnValue for each candidate
-
+  const rankScoreVote = ballotContext.race.voting_method === 'Approval' || ballotContext.race.voting_method === 'Plurality'
+    ? 'Vote'
+    : ballotContext.race.voting_method === 'STAR' || ballotContext.race.voting_method === 'STAR_PR'
+    ? 'Score'
+    : 'Rank';
   const candidateColumnPairsNested = useMemo(() => {
     return candidates.map((candidate, candidateIndex) =>
       columnValues.map((columnValue, columnIndex) =>
@@ -58,7 +62,7 @@ const BubbleGrid: React.FC<BubbleGridProps> = ({ ballotContext, columnValues, co
         <button
           key={`${candidateIndex}-${columnIndex}`}
           role='button'
-          name={`${candidate_name}_rank-${columnValue}`}
+          aria-label={`${rankScoreVote} ${candidate_name} ${rankScoreVote != 'Vote' ? columnValue : ''}`}
           className={className(candidateIndex, columnValue)}
           onClick={() => onClick(candidateIndex, columnValue)}
           style={{

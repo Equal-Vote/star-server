@@ -83,7 +83,6 @@ const VoterAuth = () => {
                 <Box sx={{ p: 1, flexGrow: 1 }}>
                   <TextField
                     id="voter-id"
-                    name="voterid"
                     label="Voter ID"
                     value={voterID() ? voterID() : ''}
                     type="password"

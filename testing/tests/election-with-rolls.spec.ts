@@ -182,13 +182,14 @@ test.describe('Add Voters', () => {
         await page.getByRole('button', { name: 'Finalize Election' }).click();
         await page.getByRole('button', { name: 'Submit' }).click();
         await expect(page.getByText('open')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'edit-election-details' })).toBeDisabled();
+        await expect(page.getByRole('button', { name: 'Edit Election Details' })).toBeDisabled();
         await expect(page.getByRole('button', { name: 'Add' })).toBeDisabled();
-        await page.getByLabel('edit-Race 1').click();
-        await expect(page.getByRole('button', { name: 'delete-candidate-number-6' })).toBeDisabled();
-        await expect(page.getByRole('button', { name: 'drag-candidate-number-6' })).toBeDisabled();
-        await expect(page.locator('#candidate-name-7')).not.toBeVisible();
-        await expect(page.getByRole('radiogroup').locator('label').filter({ hasText: 'Single-Winner' })).toBeDisabled();
+        await page.getByRole('button', { name: 'Edit Race: Race 1' }).click();
+        await expect(page.getByRole('button', { name: 'Delete Candidate Number 6' })).toBeDisabled();
+        await expect(page.getByRole('button', { name: 'Drag Candidate Number 6' })).toBeDisabled();
+
+        await expect(page.getByRole('textbox', {name: "Candidate 7 Name"})).not.toBeVisible();
+        await expect(page.getByRole('radio', { name: 'Single-Winner' })).toBeDisabled();
         await page.getByRole('button', { name: 'Voting Method' }).click();
         await expect(page.getByRole('radio', { name: 'STAR Voting' })).toBeDisabled();
         await expect(page.getByRole('textbox', { name: 'Title' })).toBeDisabled();
@@ -204,11 +205,11 @@ test.describe('Add Voters', () => {
         await page.waitForURL(`**/${electionId}/`)
         await page.getByLabel('Voter ID').fill(voterIds[0]);
         await page.getByRole('button', { name: 'Submit' }).click();
-        await page.getByRole('button', { name: 'Vote', exact: true }).click();
+        await page.getByRole('link', { name: 'Vote', exact: true }).click();
         await page.getByLabel(('I have read the instructions')).click();
         let votes = makeVotes(6, 0);
         for (const vote of votes) {
-            await page.locator(`button[name="${vote.candidateName}_rank-${vote.value}"]`).click();
+            await page.getByRole('button', { name: `Score ${vote.candidateName} ${vote.value}` }).click();
         }
         await page.getByRole('button', { name: 'Next' }).click();
         await page.getByLabel(('I have read the instructions')).click();
@@ -216,7 +217,7 @@ test.describe('Add Voters', () => {
         await expect(submitButton).toBeEnabled();
         votes = makeVotes(6, 1);
         for (const vote of votes) {
-            await page.locator(`button[name="${vote.candidateName}_rank-${vote.value}"]`).click();
+            await page.getByRole('button', { name: `Rank ${vote.candidateName} ${vote.value}` }).click();
         }
         await submitButton.click();
         await page.getByLabel('Send Ballot Receipt Email?').click();
@@ -225,23 +226,23 @@ test.describe('Add Voters', () => {
         await page.waitForURL(`**/${electionId}/`)
         await page.getByLabel('Voter ID').fill(voterIds[0]);
         await page.getByRole('button', { name: 'Submit' }).click();
-        await expect(page.getByRole('button', { name: 'Vote', exact: true })).not.toBeVisible();
+        await expect(page.getByRole('link', { name: 'Vote', exact: true })).not.toBeVisible();
         expect(page.getByRole('heading', { name: 'Ballot Submitted' })).toBeVisible();
         expect(page.getByRole('link', { name: 'View Results' })).toBeVisible();
         await page.getByRole('button', { name: 'Clear' }).click();
         await page.getByLabel('Voter ID').fill(voterIds[1]);
         await page.getByRole('button', { name: 'Submit' }).click();
-        await page.getByRole('button', { name: 'Vote', exact: true }).click();
+        await page.getByRole('link', { name: 'Vote', exact: true }).click();
         await page.getByLabel(('I have read the instructions')).click();
         votes = makeVotes(6, 0);
         for (const vote of votes) {
-            await page.locator(`button[name="${vote.candidateName}_rank-${vote.value}"]`).click();
+            await page.getByRole('button', { name: `Score ${vote.candidateName} ${vote.value}` }).click();
         }
         await page.getByRole('button', { name: 'Next' }).click();
         await page.getByLabel(('I have read the instructions')).click();
         votes = makeVotes(6, 1);
         for (const vote of votes) {
-            await page.locator(`button[name="${vote.candidateName}_rank-${vote.value}"]`).click();
+            await page.getByRole('button', { name: `Rank ${vote.candidateName} ${vote.value}` }).click();
         }
         await submitButton.click();
         await page.getByLabel('Send Ballot Receipt Email?').click();

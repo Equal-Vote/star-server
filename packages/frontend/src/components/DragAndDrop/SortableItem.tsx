@@ -63,7 +63,6 @@ interface DragHandleProps {
     style?: CSSProperties;
     disabled?: boolean;
     ariaLabel?: string;
-    testId?: string;
 }
 export function DragHandle({ style, disabled, ariaLabel }: DragHandleProps) {
   const { attributes, listeners, ref } = useContext(SortableItemContext);

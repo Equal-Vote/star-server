@@ -45,11 +45,12 @@ const About = () => {
           sx={{ maxWidth: 800 }}
         >
           {t('about.contributors').map(({github_user_name, github_image_id}) => (
-            <a href={`https://github.com/${github_user_name}`}>
+            <a href={`https://github.com/${github_user_name}`} aria-label={`${github_user_name} github profile`} key={github_user_name}>
               <Box
                 component="img"
                 src={`https://avatars.githubusercontent.com/u/${github_image_id}?v=4`}
                 sx={{ borderRadius: "100%", width: 80, heigth: 80 }}
+                alt={`${github_user_name} profile picture`}
               />
             </a>
           ))}
