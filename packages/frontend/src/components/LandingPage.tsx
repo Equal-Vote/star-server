@@ -49,7 +49,7 @@ const LandingPage = () => {
     //apparently box doesn't have onScroll
     return (
         <div ref={boxRef}>
-       
+
         <Box className='gradBackground' sx={{
             width: '100%',
             display: 'flex',

@@ -228,7 +228,7 @@ export const useSubstitutedTranslation = (electionTermType = 'election', v = {})
   }
 
   return {
-    t: (key, v = {}) => handleObject(t(key, { ...values, ...processValues(v) }), v['includeTips'], v['skipProcessing'], v['newWindow']),
+    t: (key, v = {}) => handleObject(t(key, { ...values, ...processValues(v) }), v['includeTips'], v['newWindow'], v['skipProcessing']),
     i18n,
   }
 }
