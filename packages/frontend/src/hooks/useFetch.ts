@@ -9,15 +9,15 @@ import useSnackbar from "../components/SnackbarContext";
 // MyRequestHoot type = 
 // {
 //  data: ApiResponse | null, null by default until successful response
-//  isPending: Boolean, true if waiting for request 
+//  isPending: boolean, true if waiting for request 
 //  error: any | null, null by default until request error 
 //  makeRequest: (MyRequest) => Promise<ApiResponse|false>, if request errors response with false
 // }
 const useFetch = <Message, Response>(url: string, method: 'get' | 'post' | 'put' | 'delete', successMessage: string | null = null) => {
     const [isPending, setIsPending] = useState(false)
-    const [error, setError] = useState<any>(null)
+    const [error, setError] = useState<string>(null)
     const [data, setData] = useState<Response | null>(null)
-    const { snack, setSnack } = useSnackbar()
+    const { setSnack } = useSnackbar()
 
     const makeRequest = async (data?: Message) => {
         const options = {
@@ -32,7 +32,7 @@ const useFetch = <Message, Response>(url: string, method: 'get' | 'post' | 'put'
         try {
             const res = await fetch(url, options)
             if (!res.ok) {
-                var contentType = res.headers.get('content-type')
+                const contentType = res.headers.get('content-type')
 
                 if (contentType && contentType.indexOf('application/json') !== -1) {
                     const data = await res.json();

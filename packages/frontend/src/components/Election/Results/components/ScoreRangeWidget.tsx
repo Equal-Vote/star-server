@@ -1,16 +1,15 @@
 import useAnonymizedBallots from "~/components/AnonymizedBallotsContextProvider";
 import Widget from "./Widget";
 import useRace from "~/components/RaceContextProvider";
-import { Divider, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import ResultsBarChart from "./ResultsBarChart";
-import useFeatureFlags from "~/components/FeatureFlagContextProvider";
 
 // candidates helps define the order
-export default () => {
+const ScoreRangeWidget = () => {
     const {ballotsForRace} = useAnonymizedBallots();
-    const {t, race} = useRace();
+    const {t} = useRace();
 
-    let numAtDiff = [];
+    const numAtDiff = [];
 
     const incIndex = (arr, index) => {
         if(index < 0) return; // Quick Hack to keep the page from crashing
@@ -36,3 +35,5 @@ export default () => {
         <Typography sx={{'textAlign': 'left'}}>{t(`results_ext.score_range_warning`)}</Typography>
     </Widget>
 }
+
+export default ScoreRangeWidget;

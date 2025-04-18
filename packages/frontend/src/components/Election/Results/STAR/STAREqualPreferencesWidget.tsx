@@ -5,15 +5,15 @@ import useAnonymizedBallots from "~/components/AnonymizedBallotsContextProvider"
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import { getEntry } from "@equal-vote/star-vote-shared/domain_model/Util";
 
-export default ({frontRunners}: {frontRunners: Candidate[]}) => {
+const STAREqualPreferencesWidget = ({frontRunners}: {frontRunners: Candidate[]}) => {
     const {t} = useElection();
     const {ballotsForRace} = useAnonymizedBallots();
 
     const equalPreferences = new Array(6).fill(0);
     
-    let b = ballotsForRace()
+    const b = ballotsForRace()
     b.forEach(scores => {
-        let topScores = ([0, 1]).map(i => getEntry(scores, frontRunners[i].candidate_id, 'candidate_id').score);
+        const topScores = ([0, 1]).map(i => getEntry(scores, frontRunners[i].candidate_id, 'candidate_id').score);
         if(topScores[0] == topScores[1]) equalPreferences[topScores[0]]++;
     })
 
@@ -21,3 +21,5 @@ export default ({frontRunners}: {frontRunners: Candidate[]}) => {
         <ResultsBarChart data={equalPreferences.map((count, i) => ({name: `${i}⭐`, count})).reverse()} xKey='count' percentage={true} sortFunc={false}/>
     </Widget>
 }
+
+export default STAREqualPreferencesWidget;

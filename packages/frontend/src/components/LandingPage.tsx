@@ -1,18 +1,15 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import Box from '@mui/material/Box';
 import LandingPageFeatures from './LandingPage/LandingPageFeatures';
 import LandingPageSignUpBar from './LandingPage/LandingPageSignUpBar';
 import LandingPageTestimonials from './LandingPage/LandingPageTestimonials';
-import { Button, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import LandingPagePricing from './LandingPage/LandingPagePricing';
 import useFeatureFlags from './FeatureFlagContextProvider';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import LandingPageStats from './LandingPage/LandingPageStats';
-import { ReturnToClassicContext } from './ReturnToClassicDialog';
 import{useLocation} from 'react-router-dom';
 import { openFeedback, useSubstitutedTranslation } from './util';
 import QuickPoll from './ElectionForm/QuickPoll';
-import { PrimaryButton } from './styles';
 import LandingPageSupport from './LandingPage/LandingPageSupport';
 import LandingPageCarousel from './LandingPage/LandingPageCarousel';
 import LandingPageFeaturedElections from './LandingPage/LandingPageFeaturedElections';
@@ -33,16 +30,18 @@ const LandingPage = () => {
 
     const boxRef = useRef(null);
 
-    const [atTop, setAtTop] = useState(true);
+    //It looks like atTop wasn't being used anywhere, so I'm just removing this chunk for now
 
-    useEffect(() => {
-        const handleScroll = (e) => {
-            setAtTop(window.scrollY == 0);
-        };
+    // const [atTop, setAtTop] = useState(true);
 
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+    // useEffect(() => {
+    //     const handleScroll = () => {
+    //         setAtTop(window.scrollY == 0);
+    //     };
+
+    //     window.addEventListener("scroll", handleScroll);
+    //     return () => window.removeEventListener("scroll", handleScroll);
+    // }, []);
 
     const {t} = useSubstitutedTranslation('election');
 

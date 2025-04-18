@@ -1,9 +1,9 @@
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Box, MenuItem, Select, Typography } from "@mui/material";
 import _uniqueId from "lodash/uniqueId";
-import { useEffect, useRef, useState } from "react";
+import React, { ReactNode, useRef, useState } from "react";
 import useAnonymizedBallots from "~/components/AnonymizedBallotsContextProvider";
-import { scrollToElement, useSubstitutedTranslation } from "~/components/util";
+import { scrollToElement } from "~/components/util";
 import WidgetContainer from "./WidgetContainer";
 import HeadToHeadWidget from "./HeadToHeadWidget";
 import VoterProfileWidget from "./VoterProfileWidget";
@@ -16,7 +16,13 @@ import useRace from "~/components/RaceContextProvider";
 import STARResultDetailedStepsWidget from "../STAR/STARResultDetailedStepsWidget";
 import STAREqualPreferencesWidget from "../STAR/STAREqualPreferencesWidget";
 
-export default ({ children, level = 0 }) => {
+
+interface DetailExpanderProps {
+  children: ReactNode[] | ReactNode;
+  level?: number;
+}
+
+const DetailExpander = ({ children, level = 0 }: DetailExpanderProps) => {
   const [viewDetails, setViewDetails] = useState(false);
   const expanderId = useRef(_uniqueId("detailExpander")).current;
   const {ballots, fetchBallots} = useAnonymizedBallots();
@@ -32,9 +38,9 @@ export default ({ children, level = 0 }) => {
   selectorTitleKeys.set(STARResultDetailedStepsWidget, 'results.star.detailed_steps_title');
   selectorTitleKeys.set(STAREqualPreferencesWidget, 'results.star.equal_preferences_title');
 
-  let { t } = useRace();
+  const { t } = useRace();
 
-  let title = [
+  const title = [
     t("results.details"),
     t("results.additional_info"),
   ][level];
@@ -77,9 +83,9 @@ export default ({ children, level = 0 }) => {
           sx={{mb: 2, width: '300px', textAlign: 'left'}}
         >
             {
-              children
-              .filter(c => selectorTitleKeys.has(c.type))
-              .map((c, i) => <MenuItem key={i} value={i}>{t(selectorTitleKeys.get(c.type), {includeTips: false})}</MenuItem>)
+              React.Children.toArray(children)
+              .filter(c => React.isValidElement(c) && selectorTitleKeys.has((c as React.ReactElement).type))
+              .map((c, i) => React.isValidElement(c) && <MenuItem key={i} value={i}>{t(selectorTitleKeys.get(c.type), {includeTips: false})}</MenuItem>)
             }
         </Select>
         {/*<Select
@@ -104,3 +110,5 @@ export default ({ children, level = 0 }) => {
     </>
   );
 }
+
+export default DetailExpander;

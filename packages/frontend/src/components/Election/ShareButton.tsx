@@ -1,25 +1,20 @@
-import React, { useState } from "react"
-import ShareIcon from '@mui/icons-material/Share';
-import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
 import ListItemIcon from "@mui/material/ListItemIcon"
 import ListItemText from "@mui/material/ListItemText"
-import { makeStyles } from "@mui/material/styles"
-import Button from "@mui/material/Button"
-import Popper from "@mui/material/Popper"
 import Fade from "@mui/material/Fade"
 import Paper from "@mui/material/Paper"
 import FacebookIcon from "@mui/icons-material/Facebook"
 import { X } from "@mui/icons-material";
 import RedditIcon from "@mui/icons-material/Reddit"
 import LinkIcon from "@mui/icons-material/Link"
-import { IconButton, Menu, Tooltip, Typography } from "@mui/material";
-import { PrimaryButton, SecondaryButton } from "../styles";
+import { Menu } from "@mui/material";
+import { SecondaryButton } from "../styles";
 import useSnackbar from "../SnackbarContext";
 import { useSubstitutedTranslation } from "../util";
+import { useState } from "react"
 
-export default function ShareButton({ url }) {
-    const { snack, setSnack } = useSnackbar()
+export default function ShareButton({ url }: { url: string }) {
+    const { setSnack } = useSnackbar()
     const [anchorElNav, setAnchorElNav] = useState(null)
 
     const {t} = useSubstitutedTranslation();

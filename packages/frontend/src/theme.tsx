@@ -262,8 +262,10 @@ type ThemeContextType = {
 }
 
 export const ThemeContext = createContext<ThemeContextType>({ mode: 'base', modes: Object.keys(themes) as mode[], selectColorMode: () => { }, theme: themes.turquoise })
-
-export const ThemeContextProvider = ({ children }) => {
+interface ThemeContextProviderProps {
+  children: React.ReactNode
+}
+export const ThemeContextProvider = ({ children }:ThemeContextProviderProps) => {
   const flags = useFeatureFlags();
   // https://mui.com/material-ui/customization/dark-mode/#system-preference
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');

@@ -1,13 +1,21 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import { PrimaryButton, SecondaryButton } from '../../styles';
 import useElection from '../../ElectionContextProvider';
 
 
+interface RaceDialogProps {
+    onSaveRace: () => void;
+    open: boolean;
+    handleClose: () => void;
+    children: React.ReactNode;
+    resetStep: () => void;
+}
+
 export default function RaceDialog({
-  onSaveRace, open, handleClose, children, editedRace, resetStep
-}) {
+  onSaveRace, open, handleClose, children, resetStep
+}: RaceDialogProps) {
     const { election } = useElection()
     const handleSave = () => onSaveRace()
 

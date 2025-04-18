@@ -178,7 +178,7 @@ export default class ElectionsDB implements IElectionStore {
         return election
     }
 
-    async electionExistsByID(election_id: Uid, ctx: ILoggingContext): Promise<Boolean | string> {
+    async electionExistsByID(election_id: Uid, ctx: ILoggingContext): Promise<boolean | string> {
         Logger.debug(ctx, `${tableName}.electionExistsByID ${election_id}`);
 
         // Q: Why are you calling these in serial when it could be parallel?

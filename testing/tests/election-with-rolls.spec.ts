@@ -246,7 +246,11 @@ test.describe('Add Voters', () => {
         }
         await submitButton.click();
         await page.getByLabel('Send Ballot Receipt Email?').click();
+        //waiting for response from server before checking ballots so we don't navigate to that page too soon
+        const reponsePromise = page.waitForResponse((response) => response.url().includes(`${electionId}/vote`) && response.status() === 200);
         await page.getByRole('button', { name: 'Submit' }).click();
+        const voteResponse = await reponsePromise;
+        console.log(`Vote response status: ${voteResponse.status()}`);
         await expect(page.getByRole('heading', { name: 'Thank you for voting!' })).toBeVisible();
         await page.getByRole('link', { name: 'Voters' }).click();
         await page.waitForURL(`**/${electionId}/admin/voters`)

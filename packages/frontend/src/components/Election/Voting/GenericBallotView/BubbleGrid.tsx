@@ -1,8 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
-import { Box, BoxProps, Button, Typography } from '@mui/material';
-import { Candidate } from '@equal-vote/star-vote-shared/domain_model/Candidate';
+import {  Typography } from '@mui/material';
 import { IBallotContext } from '../VotePage';
-import styled from '@emotion/styled';
 
 
 interface BubbleGridProps {
@@ -15,11 +13,6 @@ interface BubbleGridProps {
   fontSX: object;
 }
 
-const NoStyleButton = styled(Button)({
-  all: 'unset',
-  display: 'inline-block',
-  cursor: 'pointer',
-});
 
 
 const BubbleGrid: React.FC<BubbleGridProps> = ({ ballotContext, columnValues, columns, numHeaderRows, onClick, makeArea, fontSX }) => {

@@ -1,5 +1,3 @@
-import React, { useEffect } from 'react'
-import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { Paper } from "@mui/material";
@@ -9,7 +7,6 @@ import { useSubstitutedTranslation } from '../util';
 import useElection from '../ElectionContextProvider';
 import DraftWarning from "./DraftWarning";
 import SupportBlurb from './SupportBlurb';
-import { Support } from '@mui/icons-material';
 import { PrimaryButton, SecondaryButton } from '../styles';
 
 const ElectionHome = () => {

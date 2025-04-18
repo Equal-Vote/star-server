@@ -1,9 +1,8 @@
-import { useRef, useState, useCallback, useEffect } from 'react'
+import { useRef, useState, useCallback } from 'react'
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate"
 import React from 'react'
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import { Box, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper } from '@mui/material';
 import Cropper from 'react-easy-crop';
@@ -14,13 +13,15 @@ import { PrimaryButton, SecondaryButton } from '../../styles';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
 import { DragHandle } from '~/components/DragAndDrop';
 
-type CandidateProps = {
-    onEditCandidate: Function,
+interface CandidateDialogProps {
+    onEditCandidate: (newCandidate: Candidate) => void,
     candidate: Candidate,
-    index: number
+    onSave: () => void,
+    open: boolean,
+    handleClose: () => void
 }
 
-const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, handleClose }) => {
+const CandidateDialog = ({ onEditCandidate, candidate, onSave, open, handleClose }: CandidateDialogProps) => {
     const flags = useFeatureFlags();
 
     const onApplyEditCandidate = (updateFunc) => {
@@ -52,8 +53,8 @@ const CandidateDialog = ({ onEditCandidate, candidate, index, onSave, open, hand
     const postImage = async (image) => {
         const url = '/API/images'
 
-        var fileOfBlob = new File([image], 'image.jpg', { type: "image/jpeg" });
-        var formData = new FormData()
+        const fileOfBlob = new File([image], 'image.jpg', { type: "image/jpeg" });
+        const formData = new FormData()
         formData.append('file', fileOfBlob)
         const options = {
             method: 'post',
@@ -296,7 +297,7 @@ interface CandidateFormProps {
     index: number,
     onDeleteCandidate: () => void,
     disabled: boolean,
-    inputRef: (el: React.MutableRefObject<any[]>) => React.MutableRefObject<any[]>,
+    inputRef: (el: React.MutableRefObject<HTMLInputElement[]>) => React.MutableRefObject<HTMLInputElement[]>,
     onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void,
     electionState: string
 }
@@ -348,12 +349,12 @@ export const CandidateForm = ({ onEditCandidate, candidate, index, onDeleteCandi
                     <DeleteIcon />
                 </IconButton>
             </Box>
-            <CandidateDialog onEditCandidate={onEditCandidate} candidate={candidate} index={index} onSave={onSave} open={open} handleClose={handleClose} />
+            <CandidateDialog onEditCandidate={onEditCandidate} candidate={candidate} onSave={onSave} open={open} handleClose={handleClose} />
         </Paper >
     )
 }
 
-const AddCandidate = ({ onAddNewCandidate, index }) => {
+const AddCandidate = ({ onAddNewCandidate }: { onAddNewCandidate: (candidateName: string) => void }) => {
 
     const handleEnter = (e) => {
         saveNewCandidate()

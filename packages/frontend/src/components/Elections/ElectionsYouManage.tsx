@@ -1,15 +1,15 @@
-import React, { useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Election } from "@equal-vote/star-vote-shared/domain_model/Election"
 import useAuthSession from '../AuthSessionContextProvider';
 import { useGetElections } from '../../hooks/useAPI';
 import { useNavigate } from 'react-router';
 import EnhancedTable from '../EnhancedTable';
 
-export default () => {
+const ElectionsYouManage = () => {
     const navigate = useNavigate();
     const authSession = useAuthSession()
 
-    const { data, isPending, error, makeRequest: fetchElections } = useGetElections()
+    const { data, isPending, makeRequest: fetchElections } = useGetElections()
 
     useEffect(() => {
         fetchElections()
@@ -18,7 +18,7 @@ export default () => {
     const userEmail = authSession.getIdField('email')
     const id = authSession.getIdField('sub')
     const getRoles = (election: Election) => {
-        let roles = []
+        const roles = []
         if (election.owner_id === id) {
             roles.push('Owner')
         }
@@ -34,7 +34,7 @@ export default () => {
         return roles.join(', ')
     }
 
-    let managedElectionsData = useMemo(() => {
+    const managedElectionsData = useMemo(() => {
         if(data?.elections_as_official){
             return data.elections_as_official.map(election => ({
                ...election,
@@ -53,6 +53,8 @@ export default () => {
         data={managedElectionsData}
         handleOnClick={(row) => navigate(`/${String(row.raw.election_id)}`)}
         defaultSortBy='update_date'
-        emptyContent={<>"You don't have any elections yet"<button>Create Election</button></>}
+        emptyContent={<>You don&apos;t have any elections yet<button>Create Election</button></>}
     />
 }
+
+export default ElectionsYouManage

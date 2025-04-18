@@ -1,11 +1,10 @@
-import React, { useContext, useEffect } from 'react'
-import { createContext, Dispatch, SetStateAction } from 'react'
+import { ReactNode, useContext, useEffect } from 'react'
+import { createContext } from 'react'
 import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { useEditElection, useGetElection } from '../hooks/useAPI';
 import { Election as IElection } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { VoterAuth } from '@equal-vote/star-vote-shared/domain_model/VoterAuth';
 import structuredClone from '@ungap/structured-clone';
-import { Share } from '@mui/icons-material';
 import { useSubstitutedTranslation } from './util';
 
 
@@ -13,10 +12,17 @@ export interface IElectionContext {
     election: Election;
     precinctFilteredElection: Election;
     voterAuth: VoterAuth;
-    refreshElection: Function;
-    updateElection: Function;
+    refreshElection: (data?: undefined) => Promise<false | {
+        election: Election;
+        precinctFilteredElection: Election;
+        voterAuth: VoterAuth;
+    }>;
+    updateElection: (updateFunc: (election: IElection) => void) => Promise<false | {
+        election: Election;
+    }>;
     permissions: string[];
-    t: Function
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    t: (key?: string, v?: object) => any;
 }
 
 
@@ -24,21 +30,21 @@ export const ElectionContext = createContext<IElectionContext>({
     election: null,
     precinctFilteredElection: null,
     voterAuth: null,
-    refreshElection: () => false,
-    updateElection: () => false,
+    refreshElection: () => Promise.resolve(false),
+    updateElection: () => Promise.resolve(false),
     permissions: [],
     t: () => undefined
 })
 
-export const ElectionContextProvider = ({ id, children }) => {
-    const { data, isPending, error, makeRequest: fetchData } = useGetElection(id)
+export const ElectionContextProvider = ({ id, children }: { id: string, children: ReactNode}) => {
+    const { data, makeRequest: fetchData } = useGetElection(id)
     const { makeRequest: editElection } = useEditElection(id)
 
     useEffect(() => {
         if(id != undefined) fetchData()
     }, [id])
 
-    const applyElectionUpdate = async (updateFunc: (election: IElection) => any) => {
+    const applyElectionUpdate = async (updateFunc: (election: IElection) => void) => {
         if (!data.election) return
         const electionCopy: IElection = structuredClone(data.election)
         updateFunc(electionCopy)

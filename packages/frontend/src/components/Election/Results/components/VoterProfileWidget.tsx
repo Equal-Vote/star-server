@@ -3,16 +3,15 @@ import useElection from "~/components/ElectionContextProvider";
 import Widget from "./Widget";
 import useRace from "~/components/RaceContextProvider";
 import { useState } from "react";
-import { Box, Divider, MenuItem, Select, Typography } from "@mui/material";
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { CHART_COLORS, formatPercent } from "~/components/util";
+import {  Divider, MenuItem, Select, Typography } from "@mui/material";
+import { formatPercent } from "~/components/util";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import ResultsBarChart from "./ResultsBarChart";
 import HeadToHeadChart from "./HeadToHeadChart";
 import { getVoterErrorData } from "./VoterErrorStatsWidget";
 
 // candidates helps define the order
-export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {topScore: number, frontRunners: [Candidate,Candidate], ranked?: boolean, candidates?: Candidate[]}) => {
+const VoterProfileWidget = ({topScore, frontRunners, ranked=false, candidates=undefined} : {topScore: number, frontRunners: [Candidate,Candidate], ranked?: boolean, candidates?: Candidate[]}) => {
     const {t} = useElection();
     const {ballotsForRace, ballotsForRaceWithMeta} = useAnonymizedBallots();
     const {race} = useRace();
@@ -20,7 +19,7 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
     const [refCandidateId, setRefCandidateId] = useState(candidates[0].candidate_id);
 
     const avgBallot: {[key: string]:{name, score}} = {};
-    candidates.forEach((c, i) => {
+    candidates.forEach((c) => {
         avgBallot[c.candidate_id] = {
             name: c.candidate_name,
             score: 0,
@@ -40,17 +39,17 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
         arr[index].count++;
     }
 
-    let refCandidateName = candidates.find(c => c.candidate_id == refCandidateId).candidate_name;
+    const refCandidateName = candidates.find(c => c.candidate_id == refCandidateId).candidate_name;
 
     let totalTopScored = 0;
 
-    let b = ballotsForRace()
+    const b = ballotsForRace()
     let leftVotes = 0;
     let rightVotes = 0;
     let total = 0;
     let numBullets = 0;
     b.forEach(scores => {
-        let refScore = scores.find((score) => score.candidate_id == refCandidateId)?.score;
+        const refScore = scores.find((score) => score.candidate_id == refCandidateId)?.score;
         if(refScore != topScore) return;
         if(scores.filter(score => score.score != 0 && score.score != null).length === 1) numBullets++;
         totalTopScored++;
@@ -63,7 +62,7 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
             defValue = 0;
         }
         scores.forEach(s => {
-            let score = s.score ?? defValue;
+            const score = s.score ?? defValue;
             avgBallot[s.candidate_id].score += score;
             frontRunners.forEach((f, i) => {
                 if(s.candidate_id == f.candidate_id) fScores[i] = score;
@@ -78,16 +77,16 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
         total++;
     });
 
-    let data = Object.values(avgBallot);
+    const data = Object.values(avgBallot);
     data.forEach(c => c.score = Math.round(100*c.score / totalTopScored)/100);
     data.sort((a,b) => (ranked? 1 : -1)*(a.score-b.score));
 
 
     let voterErrorData = [];
     if(race.voting_method === 'IRV' || race.voting_method === 'STV'){
-        let bm = ballotsForRaceWithMeta().filter(b => {
-            let refScore = b.scores.find((score) => score.candidate_id == refCandidateId)?.score;
-            let topScore = b.scores.reduce((prev, score) => {
+        const bm = ballotsForRaceWithMeta().filter(b => {
+            const refScore = b.scores.find((score) => score.candidate_id == refCandidateId)?.score;
+            const topScore = b.scores.reduce((prev, score) => {
                 if(score.score == 0 || score.score == null) return prev;
                 return Math.min(prev, score.score);
             }, Infinity);
@@ -129,7 +128,9 @@ export default ({topScore, frontRunners, ranked=false, candidates=undefined} : {
             <Divider variant='middle' sx={{width: '100%', m:1}}/>
             <Typography variant='h6'>{t(`results_ext.voter_profile_error_rates`, {name: refCandidateName})}</Typography>
             <ResultsBarChart data={voterErrorData} xKey='votes' percentage/>
-            <Typography>Ballots with errors can still be counted in most cases, but it's a useful measure of the voter's understanding</Typography>
+            <Typography>Ballots with errors can still be counted in most cases, but it&apos;s a useful measure of the voter&apos;s understanding</Typography>
         </>}
     </Widget>
 }
+
+export default VoterProfileWidget;

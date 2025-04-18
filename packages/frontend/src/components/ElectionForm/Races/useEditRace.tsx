@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useState } from "react"
 
 import { scrollToElement } from '../../util';
@@ -11,9 +11,15 @@ import { Candidate } from '@equal-vote/star-vote-shared/domain_model/Candidate';
 import { useDeleteAllBallots } from '~/hooks/useAPI';
 import useSnackbar from '~/components/SnackbarContext';
 
-export const useEditRace = (race, race_index) => {
-    const { election, refreshElection, permissions, updateElection } = useElection()
-    const { snack, setSnack } = useSnackbar()
+export interface RaceErrors {
+    raceTitle?: string,
+    raceDescription?: string,
+    raceNumWinners?: string,
+    candidates?: string
+}
+export const useEditRace = (race: iRace | null, race_index: number) => {
+    const { election, refreshElection, updateElection } = useElection()
+    const { setSnack } = useSnackbar()
     const { makeRequest: deleteAllBallots } = useDeleteAllBallots(election.election_id);
     const confirm = useConfirm();
     const defaultRace = {
@@ -21,7 +27,7 @@ export const useEditRace = (race, race_index) => {
         description: '',
         race_id: '',
         num_winners: 1,
-        voting_method: '',
+        voting_method: 'STAR',
         candidates: [
             { 
                 candidate_id: uuidv4(),
@@ -29,7 +35,7 @@ export const useEditRace = (race, race_index) => {
             },
         ] as Candidate[],
         precincts: undefined,
-    }
+    } as iRace
     const [editedRace, setEditedRace] = useState(race !== null ? race : defaultRace)
 
     const [errors, setErrors] = useState({
@@ -37,7 +43,7 @@ export const useEditRace = (race, race_index) => {
         raceDescription: '',
         raceNumWinners: '',
         candidates: ''
-    })
+    } as RaceErrors)
 
     useEffect(() => {
         setEditedRace(race !== null ? race : defaultRace)
@@ -49,7 +55,7 @@ export const useEditRace = (race, race_index) => {
         })
     }, [race, race_index])
 
-    const applyRaceUpdate = (updateFunc: (race: iRace) => any) => {
+    const applyRaceUpdate = (updateFunc: (race: iRace) => void) => {
         const raceCopy: iRace = structuredClone(editedRace)
         updateFunc(raceCopy)
         setEditedRace(raceCopy)
@@ -57,7 +63,7 @@ export const useEditRace = (race, race_index) => {
 
     const validatePage = () => {
         let isValid = true
-        let newErrors: any = {}
+        const newErrors: RaceErrors = {}
 
         if (!editedRace.title) {
             newErrors.raceTitle = 'Race title required';
@@ -93,15 +99,15 @@ export const useEditRace = (race, race_index) => {
             isValid = false;
         }
 
-        if (editedRace.voting_method == '') {
-            setSnack({
-                message: 'Must select a voting method',
-                severity: 'warning',
-                open: true,
-                autoHideDuration: 6000,
-            })
-            isValid = false;
-        }
+        // if (editedRace.voting_method == '') {
+        //     setSnack({
+        //         message: 'Must select a voting method',
+        //         severity: 'warning',
+        //         open: true,
+        //         autoHideDuration: 6000,
+        //     })
+        //     isValid = false;
+        // }
         const numCandidates = editedRace.candidates.filter(candidate => candidate.candidate_name !== '').length
         if (editedRace.num_winners > numCandidates) {
             newErrors.raceNumWinners = 'Cannot have more winners than candidates';
