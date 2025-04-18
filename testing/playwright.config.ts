@@ -20,7 +20,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: 1, //process.env.CI ? 1 : 4,
+  workers: 2, //process.env.CI ? 1 : 4,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ['html', { open: process.env.OPEN_REPORT }],
@@ -30,9 +30,9 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: process.env.FRONTEND_URL,
-    launchOptions: {
-      slowMo: 100
-    },
+    // launchOptions: {
+    //   slowMo: 100
+    // },
     actionTimeout: 30 * 1000, // Timeout for each action (like click, type, etc.)
     navigationTimeout: 30 * 1000, // Timeout for page navigation
 

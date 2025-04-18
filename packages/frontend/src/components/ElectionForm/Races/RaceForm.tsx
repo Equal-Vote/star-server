@@ -202,7 +202,7 @@ export default function RaceForm({
 
             <Stepper nonLinear activeStep={activeStep} orientation="vertical" sx={{my: 3}}>
                 <Step>
-                    <StepButton name='edit-multiwinner' onClick={() => setActiveStep(0)}>
+                    <StepButton aria-label='Method Family' onClick={() => setActiveStep(0)}>
                         {t('edit_race.how_many_winners')}
                         &nbsp;
                         {editedRace.num_winners == 1 ?
@@ -276,16 +276,16 @@ export default function RaceForm({
                             transition: 'height .4s, opacity .7s',
                             maxWidth: '300px'
                         }}>
-                            <Typography gutterBottom component="p" sx={{marginTop: 2}}>
+                            <Typography id="num-winners-label" gutterBottom component="p" sx={{marginTop: 2}}>
                                 <b>{t('edit_race.number_of_winners')}</b>
                             </Typography>
                             <TextField
                                 id={`num-winners-${String(race_index)}`}
-                                name="Number Of Winners"
                                 type="number"
                                 InputProps={{
                                     inputProps: { 
-                                        min: 2 
+                                        min: 2,
+                                        "aria-labelledby": "num-winners-label",
                                     }
                                 }}
                                 fullWidth
@@ -337,14 +337,14 @@ export default function RaceForm({
                                     sx={{ width: '100%', ml: -1 }}>
 
                                     {!showsAllMethods &&
-                                        <IconButton disabled={election.state != 'draft'} aria-label="Home" onClick={() => { setShowsAllMethods(true) }}>
+                                        <IconButton aria-labelledby='more-options' disabled={election.state != 'draft'} onClick={() => { setShowsAllMethods(true) }}>
                                             <ExpandMore />
                                         </IconButton>}
                                     {showsAllMethods &&
-                                        <IconButton disabled={election.state != 'draft'} aria-label="Home" onClick={() => { setShowsAllMethods(false) }}>
+                                        <IconButton aria-label='more-options'disabled={election.state != 'draft'} onClick={() => { setShowsAllMethods(false) }}>
                                             <ExpandLess />
                                         </IconButton>}
-                                    <Typography variant="body1" >
+                                    <Typography variant="body1" id={'more-options'} >
                                         More Options
                                     </Typography>
                                 </Box>

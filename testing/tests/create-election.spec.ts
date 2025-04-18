@@ -8,7 +8,8 @@ test.describe('Create Election', () => {
         await page.getByRole('button', { name: 'New Election' }).click();
         await page.getByLabel('Poll', { exact: true }).click();
         await page.getByRole('button', { name: 'Continue' }).click();
-        await page.fill('input[name="election-title"]', 'Playwright Test Poll');
+        await page.getByRole('textbox', { name: 'Title'}).fill('Playwright Test Poll');
+         await page.getByRole('textbox', { name: 'Title'}).fill('Playwright Test Poll');
         //wait until there is only one continue button
         while ((await page.getByRole('button', { name: 'Continue' }).evaluateAll((el) => el)).length > 1) {
         continue
@@ -30,7 +31,7 @@ test.describe('Create Election', () => {
         await page.getByRole('button', { name: 'New Election' }).click();
         await page.getByLabel('Election', { exact: true }).click();
         await page.getByRole('button', { name: 'Continue' }).click();
-        await page.fill('input[name="election-title"]', 'Playwright Test Election');
+         await page.getByRole('textbox', { name: 'Title'}).fill('Playwright Test Poll');
         //wait until there is only one continue button
         while ((await page.getByRole('button', { name: 'Continue' }).evaluateAll((el) => el)).length > 1) {
         continue
@@ -38,7 +39,7 @@ test.describe('Create Election', () => {
         await page.getByRole('button', { name: 'Continue' }).click();
         await page.getByLabel('Yes').click();
         await page.getByRole('button', { name: 'Continue' }).click();
-        await page.getByRole('button', { name: 'Email List Provide a list of' }).click();
+        await page.getByRole('button', { name: 'Email List' }).click();
         await expect(page.getByText('draft')).toBeVisible();
         const url = await page.url();
         const urlArray = url.split('/');
@@ -56,7 +57,7 @@ test.describe('Create Election', () => {
         await page.getByRole('button', { name: 'New Election' }).click();
         await page.getByLabel('Election', { exact: true }).click();
         await page.getByRole('button', { name: 'Continue' }).click();
-        await page.fill('input[name="election-title"]', 'Playwright Test Election');
+         await page.getByRole('textbox', { name: 'Title'}).fill('Playwright Test Poll');
         //wait until there is only one continue button
         while ((await page.getByRole('button', { name: 'Continue' }).evaluateAll((el) => el)).length > 1) {
         continue
@@ -79,7 +80,7 @@ test.describe('Create Election', () => {
         await page.getByRole('button', { name: 'New Election' }).click();
         await page.getByLabel('Election', { exact: true }).click();
         await page.getByRole('button', { name: 'Continue' }).click();
-        await page.fill('input[name="election-title"]', 'Playwright Test Election');
+         await page.getByRole('textbox', { name: 'Title'}).fill('Playwright Test Poll');
         //wait until there is only one continue button
         while ((await page.getByRole('button', { name: 'Continue' }).evaluateAll((el) => el)).length > 1) {
         continue
@@ -100,7 +101,7 @@ test.describe('Create Election', () => {
         await page.getByRole('button', { name: 'New Election' }).click();
         await page.getByLabel('Election', { exact: true }).click();
         await page.getByRole('button', { name: 'Continue' }).click();
-        await page.fill('input[name="election-title"]', ' ');
+        await page.getByRole('textbox', { name: 'Title'}).fill(' ');
         await expect(page.getByRole('button', { name: 'Continue' }).first()).toBeDisabled();
     });
 
@@ -109,7 +110,7 @@ test.describe('Create Election', () => {
         await page.getByRole('button', { name: 'New Election' }).click();
         await page.getByLabel('Election', { exact: true }).click();
         await page.getByRole('button', { name: 'Continue' }).click();
-        await page.fill('input[name="election-title"]', 'a'.repeat(51));
+        await page.getByRole('textbox', { name: 'Title'}).fill('a'.repeat(51));
         await expect(page.getByRole('button', { name: 'Continue' }).first()).toBeDisabled();
     });
 

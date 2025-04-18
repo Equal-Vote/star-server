@@ -133,28 +133,29 @@ test('vote in election restricted by account', async ({page}) => {
     await page.waitForURL(`**/${electionId}/`)
     await page.getByRole('link', { name: 'Vote', exact: true }).click();
     await page.getByLabel('I have read the instructions').check();
-    await page.locator('button[name="Candidate 1_rank-0"]').click();
-    await page.locator('button[name="Candidate 2_rank-1"]').click();
-    await page.locator('button[name="Candidate 3_rank-2"]').click();
-    await page.locator('button[name="Candidate 4_rank-3"]').click();
-    await page.locator('button[name="Candidate 5_rank-4"]').click();
-    await page.locator('button[name="Candidate 6_rank-5"]').click();
+    await page.getByRole('button', { name: 'Score Candidate 1 0' }).click();
+    await page.getByRole('button', { name: 'Score Candidate 2 1' }).click();
+    await page.getByRole('button', { name: 'Score Candidate 3 2' }).click();
+    await page.getByRole('button', { name: 'Score Candidate 4 3' }).click();
+    await page.getByRole('button', { name: 'Score Candidate 5 4' }).click();
+    await page.getByRole('button', { name: 'Score Candidate 6 5' }).click();
     await page.getByRole('button', { name: 'Next' }).click();
     await page.getByLabel('I have read the instructions').check();
-    await page.locator('button[name="Candidate 10_rank-1"]').click();
-    await page.locator('button[name="Candidate 8_rank-2"]').click();
-    await page.locator('button[name="Candidate 9_rank-4"]').click();
-    await page.locator('button[name="Candidate 6_rank-4"]').click();
-    await expect(page.getByLabel('warning-skipped-column-')).toBeVisible();
-    await expect(page.locator('button[name="Candidate 6_rank-4"]')).toHaveClass(/alert/);
-    await expect(page.locator('button[name="Candidate 9_rank-4"]')).toHaveClass(/alert/);
+    await page.getByRole('button', { name: 'Rank Candidate 10 1' }).click();
+    await page.getByRole('button', { name: 'Rank Candidate 8 2' }).click();
+    await page.getByRole('button', { name: 'Rank Candidate 9 4' }).click();
+    await page.getByRole('button', { name: 'Rank Candidate 6 4' }).click();
+
+    await expect(page.getByLabel('Warning: Skipped Column')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Rank Candidate 6 4' })).toHaveClass(/alert/);
+    await expect(page.getByRole('button', { name: 'Rank Candidate 9 4' })).toHaveClass(/alert/);
     await expect(page.getByText('Do not skip rankings. Rank')).toBeVisible();
     await expect(page.getByText('Do not rank multiple')).toBeVisible();
-    await page.locator('button[name="Candidate 9_rank-3"]').click();
-    await page.locator('button[name="Candidate 6_rank-5"]').click();
-    await page.locator('button[name="Candidate 3_rank-6"]').click();
-    await page.locator('button[name="Candidate 7_rank-3"]').click();
-    await page.locator('button[name="Candidate 7_rank-4"]').click();
+
+    await page.getByRole('button', { name: 'Rank Candidate 9 3' }).click();
+    await page.getByRole('button', { name: 'Rank Candidate 6 5' }).click();
+    await page.getByRole('button', { name: 'Rank Candidate 3 6' }).click();
+    await page.getByRole('button', { name: 'Rank Candidate 7 4' }).click();
     await page.getByRole('button', { name: 'Submit' }).click();
     await page.getByLabel('Send Ballot Receipt Email?').uncheck();
     await page.getByRole('button', { name: 'Submit' }).click();
@@ -167,7 +168,7 @@ test('vote in election restricted by account', async ({page}) => {
     await page.getByRole('button', { name: 'Hello, Test' }).click();
     await page.getByRole('menuitem', { name: 'Logout' }).click();
     await page.getByLabel('I have read the instructions').check();
-    await page.locator('button[name="Candidate 1_rank-0"]').click();
+    await page.getByRole('button', { name: 'Score Candidate 1 0' }).click();
     await page.getByRole('button', { name: 'Next' }).click();
     await page.getByLabel('I have read the instructions').check();
     await page.getByRole('button', { name: 'Submit' }).click();
@@ -181,12 +182,13 @@ test('vote in election restricted by account', async ({page}) => {
     await page.getByLabel('Password', { exact: true }).fill('test');
     await page.getByRole('button', { name: 'Sign In' }).click();
     await page.getByLabel('I have read the instructions').check();
-    await page.locator('button[name="Candidate 1_rank-0"]').click();
-    await page.locator('button[name="Candidate 2_rank-1"]').click();
-    await page.locator('button[name="Candidate 3_rank-2"]').click();
-    await page.locator('button[name="Candidate 4_rank-3"]').click();
-    await page.locator('button[name="Candidate 5_rank-4"]').click();
-    await page.locator('button[name="Candidate 6_rank-5"]').click();
+
+    await page.getByRole('button', { name: 'Score Candidate 1 0' }).click();
+    await page.getByRole('button', { name: 'Score Candidate 2 1' }).click();
+    await page.getByRole('button', { name: 'Score Candidate 3 2' }).click();
+    await page.getByRole('button', { name: 'Score Candidate 4 3' }).click();
+    await page.getByRole('button', { name: 'Score Candidate 5 4' }).click();
+    await page.getByRole('button', { name: 'Score Candidate 6 5' }).click();
     await page.getByRole('button', { name: 'Next' }).click();
     await page.getByLabel('I have read the instructions').check();
     await page.getByRole('button', { name: 'Submit' }).click();

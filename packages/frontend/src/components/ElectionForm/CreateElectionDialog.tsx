@@ -338,9 +338,9 @@ export default () => {
                             <RowButtonWithArrow
                                 title={t(`election_creation.${name}_title`)}
                                 description={t(`election_creation.${name}_description`)}
-                                key={i}
+                                key={name}
                                 onClick={() => onAddElection(templateMappers[name](election))}
-                                name={name}
+                                ariaLabel={t(`election_creation.${name}_title`)}
                             />
                         )}
 

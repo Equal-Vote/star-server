@@ -14,11 +14,10 @@ export const ElectionTitleField = ({termType, value, onUpdateValue, errors, setE
     const {t} = useSubstitutedTranslation(termType);
     return <>
         <TextField
-            inputProps={{ pattern: "[a-z]{3,15}" }}
+            inputProps={{ pattern: "[a-z]{3,15}", "aria-label": "Title" }}
             error={errors.title !== ''}
             required
             id="election-title"
-            name="election-title"
             // TODO: This bolding method only works for the text fields, if we like it we should figure out a way to add it to other fields as well
             // inputProps={getStyle('title')}
             label={showLabel? t('election_details.title') : ""}
@@ -71,7 +70,7 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
             <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                 <TextField
                     id="election-description"
-                    name="election-description"
+                    inputProps={{ "aria-label": "Election Description" }}
                     label={t('election_details.description')}
                     multiline
                     fullWidth
@@ -129,7 +128,6 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                             <Select
                                 labelId="time-zone-label"
                                 id="time-zone-select"
-                                name='edit-time-zone'
                                 value={timeZone}
                                 label={t('election_details.time_zone')}
                                 onChange={(e) => {
@@ -153,8 +151,8 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                             {/* datetime-local is formatted according to the OS locale, I don't think there's a way to override it*/}
                             <Input
                                 type='datetime-local'
-                                name='edit-start-time'
-                                data-testid='start-time'
+                                inputProps={{ "aria-label": "Start Time" }}
+                                // data-testid='start-time'
                                 error={errors.startTime !== ''}
                                 value={dateToLocalLuxonDate(editedElection.start_time, timeZone)}
                                 onChange={(e) => {
@@ -179,8 +177,7 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                             {/* datetime-local is formatted according to the OS locale, I don't think there's a way to override it*/}
                             <Input
                                 type='datetime-local'
-                                name='edit-end-time'
-                                data-testid='end-time'
+                                inputProps={{ "aria-label": "End Time" }}
                                 error={errors.endTime !== ''}
                                 value={dateToLocalLuxonDate(editedElection.end_time, timeZone)}
                                 onChange={(e) => {

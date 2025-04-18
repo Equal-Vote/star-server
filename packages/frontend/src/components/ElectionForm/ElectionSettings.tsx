@@ -82,8 +82,7 @@ export default function ElectionSettings() {
                 </Box>
                 <Box sx={{ flexShrink: 1, p: 1 }}>
                     <IconButton
-                        aria-label="edit-settings"
-                        name="edit-settings"
+                        aria-label="Edit Settings"
                         onClick={handleOpen}>
                         <EditIcon />
                     </IconButton>
@@ -152,12 +151,11 @@ export default function ElectionSettings() {
 
                                 <TextField
                                     id="rank-limit"
-                                    name="rank-limit"
                                     type="number"
                                     value={editedElectionSettings.max_rankings ? editedElectionSettings.max_rankings : default_rankings}
                                     onChange={(e) => applySettingsUpdate((settings) => { settings.max_rankings = Number(e.target.value) })}
                                     variant='standard'
-                                    InputProps={{ inputProps: { min: min_rankings, max: max_rankings } }}
+                                    InputProps={{ inputProps: { min: min_rankings, max: max_rankings, "aria-label": "Rank Limit" } }}
                                     sx={{ pl: 4, mt: -1, display: 'block'}}
                                     disabled={!editedElectionSettings.max_rankings}
                                 />

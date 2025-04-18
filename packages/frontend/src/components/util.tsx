@@ -74,14 +74,14 @@ export const MailTo = ({ children }) => {
 }
 
 
-export const RowButtonWithArrow = ({ title, description = undefined, onClick, name }) => <>
+export const RowButtonWithArrow = ({ title, description = undefined, onClick, ariaLabel }) => <>
   <Button
     color='inherit'
     fullWidth
     className='startingOption'
     sx={{ justifyContent: 'flex-start', textTransform: 'inherit' }}
     onClick={onClick}
-    name={name}
+    aria-label={ariaLabel}
   >
     <Box sx={{
       width: '100%',
