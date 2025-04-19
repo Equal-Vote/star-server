@@ -11,7 +11,8 @@ import ResultsBarChart from '../components/ResultsBarChart';
 import ResultsPieChart from '../components/ResultsPieChart';
 import { getEntry } from '@equal-vote/star-vote-shared/domain_model/Util';
 
-const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResults, roundIndex: number, t: Function }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResults, roundIndex: number, t: (key: string, v?: object) => any }) => {
     const [pie, setPie] = useState(false);
 
     // slice away candidates that won in prior rounds
@@ -28,12 +29,12 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
     if(results.roundResults[roundIndex].runner_up.length == 0)
         return <Typography>{t('results.single_candidate_result', {name: histData[0].name})}</Typography>
 
-    var pieData = candidates.slice(0, 2).map((c, i) => ({
+    const pieData = candidates.slice(0, 2).map((c, i) => ({
         name: c.name,
         votes: results.summaryData.preferenceMatrix[c.index][candidates[1-i].index]
     }));
 
-    let runoffData = [...pieData]
+    const runoffData = [...pieData]
     runoffData.push({
       name: t('results.star.equal_preferences'),
       votes: results.summaryData.nTallyVotes - pieData[0].votes - pieData[1].votes,
@@ -43,7 +44,7 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
         <Box className="resultWidget">
         <WidgetContainer>
             <Widget title={t('results.star.score_title')}>
-                {(t('results.star.score_description') as Array<String>).map( (s, i) => <p key={i}>{s}</p>)}
+                {(t('results.star.score_description') as Array<string>).map( (s, i) => <p key={i}>{s}</p>)}
                 <ResultsBarChart
                     data={histData}
                     percentage={false} 
@@ -52,7 +53,7 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
                 />
             </Widget>
             <Widget title={t('results.star.runoff_title')}>
-                {(t('results.star.runoff_description') as Array<String>).map( (s, i) => <p key={i}>{s}</p>)}
+                {(t('results.star.runoff_description') as Array<string>).map( (s, i) => <p key={i}>{s}</p>)}
                 {pie ? 
                     <ResultsPieChart data={pieData} star runoff/>
                 :

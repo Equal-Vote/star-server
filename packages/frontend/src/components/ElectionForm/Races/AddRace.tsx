@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Box } from "@mui/material"
 import { PrimaryButton } from '../../styles';
 import useElection from '../../ElectionContextProvider';
@@ -38,7 +38,6 @@ export default function AddRace() {
               onSaveRace={onAdd}
               open={open}
               handleClose={handleClose}
-              editedRace={editedRace}
               resetStep={resetStep}
             >
                 <RaceForm

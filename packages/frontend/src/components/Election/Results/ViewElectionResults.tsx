@@ -1,19 +1,18 @@
 import { useEffect } from 'react';
 import Results from './Results';
 import Box from '@mui/material/Box';
-import { Paper, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useSubstitutedTranslation } from '../../util';
 import { useGetResults } from '../../../hooks/useAPI';
 import useElection from '../../ElectionContextProvider';
 import DraftWarning from '../DraftWarning';
-import { PrimaryButton } from '~/components/styles';
 import ShareButton from '../ShareButton';
 import { BallotDataExport } from './BallotDataExport';
 import SupportBlurb from '../SupportBlurb';
 
 const ViewElectionResults = () => {
     const { election } = useElection();
-    const { data, isPending, error, makeRequest: getResults } = useGetResults(election.election_id)
+    const { data, isPending, makeRequest: getResults } = useGetResults(election.election_id)
     useEffect(() => { getResults() }, [])
     const {t} = useSubstitutedTranslation(election.settings.term_type);
     return (

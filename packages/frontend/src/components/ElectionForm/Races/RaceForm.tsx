@@ -1,29 +1,39 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { Dispatch, useCallback, useMemo, useRef } from 'react'
 import { useState } from "react"
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate"
-import AddCandidate, { CandidateForm } from "../Candidates/AddCandidate"
-import EditIcon from '@mui/icons-material/Edit';
+import { CandidateForm } from "../Candidates/AddCandidate"
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from '@mui/material/Typography';
-import { Box, FormHelperText, Radio, RadioGroup, Stack, Step, StepButton, StepConnector, StepContent, StepLabel, Stepper } from "@mui/material"
+import { Box, FormHelperText, Radio, RadioGroup, Stack, Step, StepButton, StepContent, Stepper } from "@mui/material"
 import IconButton from '@mui/material/IconButton'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-import { methodValueToTextKey, scrollToElement, useSubstitutedTranslation } from '../../util';
+import { methodValueToTextKey, useSubstitutedTranslation } from '../../util';
 import useElection from '../../ElectionContextProvider';
 import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
 import { SortableList } from '~/components/DragAndDrop';
-import useSnackbar from '~/components/SnackbarContext';
+import { NewRace } from './Race';
+import { RaceErrors } from './useEditRace';
+
+interface RaceFormProps {
+    race_index: number;
+    editedRace: NewRace;
+    errors: RaceErrors;
+    setErrors: Dispatch<React.SetStateAction<RaceErrors>>;
+    applyRaceUpdate: (update: (race: NewRace) => void) => void;
+    activeStep: number;
+    setActiveStep: (step: number) => void;
+}
 
 export default function RaceForm({
   race_index, editedRace, errors, setErrors, applyRaceUpdate,
   activeStep, setActiveStep
-}) {
+}: RaceFormProps) {
     const {t} = useSubstitutedTranslation();
     const flags = useFeatureFlags();
     const [showsAllMethods, setShowsAllMethods] = useState(false)
@@ -56,9 +66,10 @@ export default function RaceForm({
             }
         });
 
-        setErrors(prev => ({ ...prev, candidates: '', raceNumWinners: '' }));
+        setErrors((prev: RaceErrors) => ({ ...prev, candidates: '', raceNumWinners: '' }));
     }, [applyRaceUpdate, setErrors]);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleChangeCandidates = useCallback((newCandidateList: any[]) => {
         //remove the last candidate if it is empty
         if (newCandidateList.length > 1 && newCandidateList[newCandidateList.length - 1].candidate_name === '') {
@@ -111,7 +122,7 @@ export default function RaceForm({
         }
     }, [ephemeralCandidates.length, applyRaceUpdate]);
 
-    const MethodBullet = ({value, disabled}) => <>
+    const MethodBullet = ({value, disabled}: {value: string, disabled: boolean}) => <>
         <FormControlLabel value={value} disabled={disabled} control={<Radio />} label={t(`edit_race.methods.${methodValueToTextKey[value]}.title`)} sx={{ mb: 0, pb: 0 }} />
         <FormHelperText sx={{ pl: 4, mt: -1 }}>
             {t(`edit_race.methods.${methodValueToTextKey[value]}.description`)}
@@ -319,7 +330,7 @@ export default function RaceForm({
                                 
                                 name="voter-method-radio-buttons-group"
                                 value={editedRace.voting_method}
-                                onChange={(e) => applyRaceUpdate(race => { race.voting_method = e.target.value })}
+                                onChange={(e) => applyRaceUpdate(race => { race.voting_method = e.target.value as NewRace['voting_method'] })}
                                 
                             >
                                 {methodFamily == 'proportional_multi_winner' ?
@@ -406,7 +417,7 @@ export default function RaceForm({
                                     index={index}
                                     onDeleteCandidate={() => onDeleteCandidate(index)}
                                     disabled={ephemeralCandidates.length - 1 === index || election.state !== 'draft'}
-                                    inputRef={(el:React.MutableRefObject<any[]>) => inputRefs.current[index] = el}
+                                    inputRef={(el:React.MutableRefObject<HTMLInputElement[]>) => inputRefs.current[index] = el}
                                     onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(event, index)}
                                     electionState={election.state}/>
                             </SortableList.Item>

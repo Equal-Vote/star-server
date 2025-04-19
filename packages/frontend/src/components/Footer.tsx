@@ -1,14 +1,11 @@
-import * as React from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
-import { Facebook, Instagram, X, GitHub, ContentCopy } from '@mui/icons-material';
-import { Box, IconButton, Tooltip, useTheme } from '@mui/material';
-import { useThemeSelector } from '../theme';
-import { useSubstitutedTranslation } from './util';
+import { Facebook, Instagram, X, GitHub } from '@mui/icons-material';
+import { Box, Tooltip } from '@mui/material';
+import { useSubstitutedTranslation, MailTo } from './util';
 export default function Footer() {
-	const themeSelector = useThemeSelector();
 	const { t } = useSubstitutedTranslation();
 	return (
 		<Box
@@ -65,15 +62,9 @@ export default function Footer() {
               </Link>
             </Tooltip>
             <br />
-              <Link
-                href="mailto:elections@bettervoting.com"
-                sx={{
-                  color: 'var(--brand-pop)',
-                  textDecoration: 'underline'
-                }}
-              >
-                elections@bettervoting.com
-              </Link>
+              <MailTo>
+				elections@bettervoting.com
+			  </MailTo>
 					</Grid>
 					<Grid item xs={12} md={4}>
 						<Typography

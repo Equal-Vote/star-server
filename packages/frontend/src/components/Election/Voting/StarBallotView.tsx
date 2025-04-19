@@ -1,25 +1,12 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import GenericBallotView from "./GenericBallotView/GenericBallotView";
-import Typography from '@mui/material/Typography';
 import { BallotContext } from "./VotePage";
 
-function scoresAreUnderVote({scores}){
-  let five_selected = false
-  let zero_selected = false
-  let all_null = true
-  for(let i = 0; i < scores.length; i++){
-    if(scores[i] != null) all_null = false
-    if(scores[i] == null || scores[i] == 0) zero_selected = true
-    if(scores[i] == 5) five_selected = true
-  }
-  return !(all_null || (five_selected && zero_selected))
-}
 
 // Renders a complete RCV ballot for a single race
-export default function StarBallotView({onlyGrid=false}) {
+export default function StarBallotView({onlyGrid=false}:{onlyGrid?: boolean}) {
   const ballotContext = useContext(BallotContext);
 
-  let warning = null;
 
   // disabling warnings until we have a better solution, see slack convo
   // https://starvoting.slack.com/archives/C01EBAT283H/p1677023113477139
@@ -33,14 +20,13 @@ export default function StarBallotView({onlyGrid=false}) {
   return (
     <GenericBallotView
       methodKey="star"
-      columns={[0, 1, 2, 3, 4, 5]}
+      columns={['0', '1', '2', '3', '4', '5']}
       onClick={(i, j) => {
         const newScores = ballotContext.candidates.map(c => c.score);
         newScores[i] = newScores[i] === j ? null : j;
         ballotContext.onUpdate(newScores);
       }}
       starHeadings={true}
-      warning={warning}
       onlyGrid={onlyGrid}
     />
   );

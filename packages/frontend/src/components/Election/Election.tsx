@@ -1,15 +1,15 @@
 import { useParams } from "react-router";
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import ElectionHome from "./ElectionHome";
 import VotePage from './Voting/VotePage'
 import Admin from './Admin/Admin'
 import ViewElectionResults from './Results/ViewElectionResults'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import Sidebar from "./Sidebar";
-import { Box, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import Thanks from "./Voting/Thanks";
 import ViewBallot from "./Admin/ViewBallot";
-import useElection, { ElectionContextProvider } from "../ElectionContextProvider";
+import { ElectionContextProvider } from "../ElectionContextProvider";
 import { useElectionExists } from "../../hooks/useAPI";
 import { sharedConfig } from "@equal-vote/star-vote-shared/config";
 import { AnonymizedBallotsContextProvider } from "../AnonymizedBallotsContextProvider";

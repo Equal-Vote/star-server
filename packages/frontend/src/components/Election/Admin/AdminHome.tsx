@@ -1,10 +1,8 @@
-import React, { useContext } from 'react'
 import Grid from "@mui/material/Grid";
-import { Box, Divider, Paper } from "@mui/material";
+import { Box, Divider } from "@mui/material";
 import { Typography } from "@mui/material";
 import { PrimaryButton } from "../../styles";
 import { Link, useNavigate } from 'react-router-dom';
-import { Election } from '@equal-vote/star-vote-shared/domain_model/Election';
 import ShareButton from "../ShareButton";
 import { useArchiveEleciton, useFinalizeElection, usePostElection, useSetPublicResults } from "../../../hooks/useAPI";
 import { useSubstitutedTranslation } from '../../util';
@@ -20,7 +18,7 @@ import ElectionAuthForm from '~/components/ElectionForm/Details/ElectionAuthForm
 
 type SectionProps = {
     text: {[key: string]: string}
-    button: any
+    button: JSX.Element
     permission?: string
     includeDivider?: boolean
 }
@@ -39,7 +37,7 @@ const AdminHome = () => {
     const { makeRequest: archive } = useArchiveEleciton(election.election_id)
 
     const navigate = useNavigate()
-    const { error, isPending, makeRequest: postElection } = usePostElection()
+    const { makeRequest: postElection } = usePostElection()
     
     const confirm = useConfirm()
     const emailConfirm = useConfirm()
@@ -169,17 +167,17 @@ const AdminHome = () => {
         }
     />
 
-    const ResultsSection = () => <Section
-        text={t('admin_home.view_results')}
-        permission='canViewPreliminaryResults'
-        button={(<>
+    // const ResultsSection = () => <Section
+    //     text={t('admin_home.view_results')}
+    //     permission='canViewPreliminaryResults'
+    //     button={(<>
             
-        </>)}
-    />
+    //     </>)}
+    // />
 
     const TogglePublicResultsSection = () => {
-        let m = t('admin_home.public_results');
-        let text = {
+        const m = t('admin_home.public_results');
+        const text = {
             ...m,
             description: election.settings.public_results === true ? m.make_private : m.make_public
         };

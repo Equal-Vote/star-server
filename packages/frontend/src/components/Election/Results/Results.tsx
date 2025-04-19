@@ -1,5 +1,5 @@
 import { Box, Pagination } from "@mui/material";
-import React, { useRef } from "react";
+import React, { ReactNode } from "react";
 import { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { commaListFormatter, formatPercent, tabToCandidate, useSubstitutedTranslation } from '../../util';
@@ -29,7 +29,8 @@ import VoterErrorStatsWidget from "./components/VoterErrorStatsWidget";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
-  let {results, t, race} = useRace();
+  let {results} = useRace();
+  const { t, race} = useRace();
   const rounds = race.num_winners;
   const roundIndexes = Array.from({length: rounds}, () => i++);
   const flags = useFeatureFlags();
@@ -65,10 +66,11 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
 }
 
 function RankedRobinResultsViewer() {
-  let {results, race, t} = useRace();
+  let {results} = useRace();
+  const {race, t} = useRace();
   results = results as rankedRobinResults;
 
-  let sortedCandidates = race.candidates
+  const sortedCandidates = race.candidates
     .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
     .sort((a, b) => 
       -(results.summaryData.totalScores.find(s => s.index == a.index).score -
@@ -81,7 +83,7 @@ function RankedRobinResultsViewer() {
       <Widget title={t('results.ranked_robin.bar_title')}>
         <ResultsBarChart
           data={
-            results.summaryData.totalScores.map((totalScore, i) => ({
+            results.summaryData.totalScores.map((totalScore) => ({
               name: results.summaryData.candidates[totalScore.index].name,
               votes: totalScore.score,
             }))
@@ -98,7 +100,7 @@ function RankedRobinResultsViewer() {
         <Widget title={t('results.ranked_robin.table_title')}>
           <ResultsTable className='rankedRobinTable' data={[
             t('results.ranked_robin.table_columns'),
-            ...results.summaryData.totalScores.map((totalScore, i) => [
+            ...results.summaryData.totalScores.map((totalScore) => [
               results.summaryData.candidates[totalScore.index].name,
               totalScore.score,
               `${Math.round(totalScore.score * 1000 / (results.summaryData.candidates.length-1)) / 10}%`,
@@ -113,7 +115,8 @@ function RankedRobinResultsViewer() {
 }
 
 function IRVResultsViewer() {
-  let {results, t, race} = useRace();
+  let {results} = useRace();
+  const { t, race} = useRace();
   results = results as irvResults;
 
   const firstRoundData = results.voteCounts[0].map((c,i) => ({name: results.summaryData.candidates[i].name, votes: c}));
@@ -129,11 +132,11 @@ function IRVResultsViewer() {
 
   const tabulationRows = results.summaryData.candidates.map(({index, name}) => {
     return [name].concat(
-      (results.voteCounts as Array<Number[]>).map(counts => counts[index] == 0? '' : '' + counts[index])
+      (results.voteCounts as Array<number[]>).map(counts => counts[index] == 0? '' : '' + counts[index])
     )
   }).sort((r1, r2) => {
-    let z1 = r1.filter(s => s == '').length;
-    let z2 = r2.filter(s => s == '').length;
+    const z1 = r1.filter(s => s == '').length;
+    const z2 = r2.filter(s => s == '').length;
     if(z1 != z2)
       return z1-z2;
 
@@ -157,7 +160,7 @@ function IRVResultsViewer() {
       // prioritize ranking in later rounds, but use previous rounds as tiebreaker
       let i = results.voteCounts.length-1;
       while(i >= 0){
-        let diff = -(results.voteCounts[i][a.index] - results.voteCounts[i][b.index]);
+        const diff = -(results.voteCounts[i][a.index] - results.voteCounts[i][b.index]);
         if(diff != 0) return diff;
         i--;
       }
@@ -172,7 +175,7 @@ function IRVResultsViewer() {
       // prioritize ranking in later rounds, but use previous rounds as tiebreaker
       let i = results.voteCounts.length-1;
       while(i >= 0){
-        let diff = -(results.voteCounts[i][a.index] - results.voteCounts[i][b.index]);
+        const diff = -(results.voteCounts[i][a.index] - results.voteCounts[i][b.index]);
         if(diff != 0) return diff;
         i--;
       }
@@ -208,7 +211,8 @@ function IRVResultsViewer() {
 }
 
 function PluralityResultsViewer() {
-  let {results, t} = useRace();
+  let { results } = useRace();
+  const { t } = useRace();
   results = results as irvResults;
 
   return <ResultsViewer methodKey='choose_one'>
@@ -216,7 +220,7 @@ function PluralityResultsViewer() {
       <Widget title={t('results.choose_one.bar_title')}>
         <ResultsBarChart
           data={
-            results.summaryData.totalScores.map((totalScore, i) => ({
+            results.summaryData.totalScores.map((totalScore ) => ({
               name: results.summaryData.candidates[totalScore.index].name,
               votes: totalScore.score,
             }))
@@ -232,7 +236,7 @@ function PluralityResultsViewer() {
         <Widget title={t('results.choose_one.table_title')}>
           <ResultsTable className='chooseOneTable' data={[
             t('results.choose_one.table_columns'),
-            ...results.summaryData.totalScores.map((totalScore, i) => [
+            ...results.summaryData.totalScores.map((totalScore ) => [
               results.summaryData.candidates[totalScore.index].name,
               totalScore.score,
               `${Math.round(totalScore.score * 1000 / results.summaryData.nTallyVotes) / 10}%`,
@@ -245,7 +249,8 @@ function PluralityResultsViewer() {
 }
 
 function ApprovalResultsViewer() {
-  let {results, race, t} = useRace();
+  let {results} = useRace();
+  const { race, t} = useRace();
   results = results as approvalResults;
   const flags = useFeatureFlags();
 
@@ -262,7 +267,7 @@ function ApprovalResultsViewer() {
       <Widget title={t('results.approval.bar_title')}>
         <ResultsBarChart
           data={
-            results.summaryData.totalScores.map((totalScore, i) => ({
+            results.summaryData.totalScores.map((totalScore) => ({
               name: results.summaryData.candidates[totalScore.index].name,
               votes: totalScore.score,
             }))
@@ -297,7 +302,7 @@ function ApprovalResultsViewer() {
   </ResultsViewer>
 }
 
-function ResultsViewer({ methodKey, children }:{methodKey: string, children:any}) {
+function ResultsViewer({ methodKey, children }:{methodKey: string, children:ReactNode}) {
   const {t, i18n} = useSubstitutedTranslation();
   const learnLinkKey = `methods.${methodKey}.learn_link`
   const votingMethod = t(`methods.${methodKey}.full_name`)
@@ -314,7 +319,8 @@ function ResultsViewer({ methodKey, children }:{methodKey: string, children:any}
 
 function STARPRResultsViewer() {
   const flags = useFeatureFlags();
-  let {results, t, race} = useRace();
+  let {results} = useRace();
+  const {t, race} = useRace();
   results = results as allocatedScoreResults;
   const [page, setPage] = useState(1);
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -332,7 +338,7 @@ function STARPRResultsViewer() {
   )))
 
   const winIndex = (aa) => {
-    let i = results.elected.findIndex(e => e.index == aa.index);
+    const i = results.elected.findIndex(e => e.index == aa.index);
     if(i == -1) return results.elected.length;
     return i;
   }
@@ -348,7 +354,6 @@ function STARPRResultsViewer() {
   let remainingVoters = (results.summaryData.nTallyVotes*(1 - ((page-1)/results.summaryData.weightedScoresByRound.length)))
   remainingVoters = Math.round(remainingVoters*10)/10;
   const title = t('results.star_pr.chart_title', {n: page})
-  const electedCandidates = sortedCandidates.slice(0, page-1).map(c => c.candidate_name);
   return <ResultsViewer methodKey='star_pr'>
     <WidgetContainer>
       <Widget title={title} wide>
@@ -371,7 +376,7 @@ function STARPRResultsViewer() {
                 })
               )
           }
-          sortFunc = {(a, b) => a.sortIndex - b.sortIndex}
+          sortFunc = {(a, b) => Number(a.sortIndex) - Number(b.sortIndex)}
           maxBarSize = {results.summaryData.weightedScoresByRound[0].reduce(
             (prev, totalScore) => Math.max(prev, totalScore), 0
           )}
@@ -409,8 +414,8 @@ function STARPRResultsViewer() {
 }
 
 function STVResultsViewer() {
-  const flags = useFeatureFlags();
-  let {results, t, race} = useRace();
+  let {results} = useRace();
+  const { t, race} = useRace();
   results = results as irvResults;
   const [page, setPage] = useState(1);
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -418,7 +423,7 @@ function STVResultsViewer() {
   };
 
   const winIndex = (aa) => {
-    let i = results.elected.findIndex(e => e.index == aa.index);
+    const i = results.elected.findIndex(e => e.index == aa.index);
     if(i == -1) return results.elected.length;
     return i;
   }
@@ -455,7 +460,7 @@ function STVResultsViewer() {
               }
             ]
           }
-          sortFunc = {(a, b) => a.sortIndex - b.sortIndex}
+          sortFunc = {(a, b) => Number(a.sortIndex) - Number(b.sortIndex)}
           maxBarSize = {results.voteCounts[0].reduce(
             (prev, totalScore) => Math.max(prev, totalScore), 0
           )}
@@ -468,9 +473,9 @@ function STVResultsViewer() {
 
 export default function Results({ race, results }: {race: Race, results: ElectionResults}) {
   const { election } = useElection();
-  let showTitleAsTie = ['random', 'five_star'].includes(results.tieBreakType);
+  const showTitleAsTie = ['random', 'five_star'].includes(results.tieBreakType);
   // added a null check for sandbox support
-  let removeTieBreakFromTitle = (election?.settings.break_ties_randomly ?? false) && results.tieBreakType == 'random';
+  const removeTieBreakFromTitle = (election?.settings.break_ties_randomly ?? false) && results.tieBreakType == 'random';
 
   const {t} = useSubstitutedTranslation(election?.settings?.term_type ?? 'election', {
     methodKey: {
@@ -515,7 +520,7 @@ export default function Results({ race, results }: {race: Race, results: Electio
             {(winnersLength < 80) ? 
               <>⭐{winnersText}{t('results.win_title_postfix', {count: results.elected.length})} ⭐</>
             :
-              [t('results.win_long_title_prefix'), ...results.elected.map(elected => ([<br/>, `${elected.name}`])).flat()]
+              [t('results.win_long_title_prefix'), ...results.elected.map(elected => ([<br key={elected.index}/>, `${elected.name}`])).flat()]
             }
             </Typography>
           }

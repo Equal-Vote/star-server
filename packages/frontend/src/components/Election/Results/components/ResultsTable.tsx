@@ -1,9 +1,14 @@
 import { TableContainer } from "@mui/material";
 
-export default ({ className='', data, minCellWidth = "120px", winningRows=1}) => {
-  let c = `resultTable ${className}`;
+interface ResultsTableProps {
+  className?: string;
+  data: (string | number)[][];
+  winningRows?: number;
+}
 
-  let winningStyle = {backgroundColor: 'var(--brand-gold)'}
+const ResultsTable = ({ className='', data, winningRows=1 }: ResultsTableProps) => {
+  const c = `resultTable ${className}`;
+  const winningStyle = { backgroundColor: 'var(--brand-gold'}
 
   return (
     <TableContainer
@@ -35,7 +40,7 @@ export default ({ className='', data, minCellWidth = "120px", winningRows=1}) =>
                     paddingLeft: j == 0 ? "8px" : "0",
                   }}
                 >
-                  {isNaN(value/100) ? value : Math.round(100*value)/100}
+                  {typeof value === "number" ? Math.round(100 * value) / 100 : value}
                 </td>
               ))}
             </tr>
@@ -45,3 +50,5 @@ export default ({ className='', data, minCellWidth = "120px", winningRows=1}) =>
     </TableContainer>
   );
 };
+
+export default ResultsTable;

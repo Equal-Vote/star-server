@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Container, FormHelperText, Grid, Paper, Stack, Typography } from "@mui/material";
+import { useState } from 'react'
+import { Paper, Stack, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -24,19 +24,19 @@ const groupStrictClusters = (items: string[], similarityFn: SimilarityFn, thresh
     // Basic clustering function, clusters items such all items in cluster are within threshold of similarity function of each other
     // Not optimal clustering, so the first cluster an item can join it will
 
-    let clusters: string[][] = [];
-    let visited = new Set<string>();
+    const clusters: string[][] = [];
+    const visited = new Set<string>();
 
-    for (let item of items) {
+    for (const item of items) {
         if (visited.has(item)) continue;
 
-        let newCluster = [item];
-        let toCheck = [item];
+        const newCluster = [item];
+        const toCheck = [item];
         visited.add(item);
 
         while (toCheck.length > 0) {
             toCheck.pop();
-            for (let other of items) {
+            for (const other of items) {
                 if (!visited.has(other) && newCluster.every(member => similarityFn(member, other) >= threshold)) {
                     newCluster.push(other);
                     toCheck.push(other);
@@ -66,8 +66,8 @@ const extractTokens = (name: string): { words: string[]; initials: string[]; ini
         .replace(/[^a-zA-Z\s.]/g, "") // Remove non-letters except spaces and periods
         .split(/\s+/); // Split by spaces
 
-    let words: string[] = [];
-    let initials: string[] = [];
+    const words: string[] = [];
+    const initials: string[] = [];
 
     let initialized = false
     if (tokens.length === 1) {
@@ -118,7 +118,7 @@ const compareInitials = (initials1: string[], initials2: string[]): number => {
     // Check if the sets of initials match
     for (const initial1 of initials1) {
         for (const initial2 of initials2) {
-            let score = levenshteinScore(initial1, initial2)
+            const score = levenshteinScore(initial1, initial2)
             if (score > bestScore) {
                 bestScore = score
             }
@@ -249,7 +249,7 @@ const NameMatchingTester = () => {
                     {group.groupName}
                 </Typography>
 
-                {group.names.map(name => <li> {name} </li>)}
+                {group.names.map((name, i) => <li key={i}> {name} </li>)}
 
             </>
             )}
@@ -260,7 +260,7 @@ const NameMatchingTester = () => {
                         items={groups}
                         identifierKey="groupName"
                         onChange={(newGroups) => setGroups(newGroups)}
-                        renderItem={(group, index) => (
+                        renderItem={(group) => (
                             <SortableList.Item id={group.groupName}>
                                 <Paper elevation={4} sx={{ width: '40%' }}>
                                     <Box

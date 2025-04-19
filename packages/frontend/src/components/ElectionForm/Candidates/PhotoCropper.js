@@ -20,7 +20,7 @@ export default async function getCroppedImg(
     canvas.width = 300
     canvas.height = 300
     ctx.drawImage(image, pixelCrop.x, pixelCrop.y, pixelCrop.width, pixelCrop.height, 0, 0, 300, 300)
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         canvas.toBlob((file) => {
             resolve(file)
         }, 'image/jpeg')

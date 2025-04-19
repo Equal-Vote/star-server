@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -14,12 +16,9 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import { makeChipStyle } from './ElectionForm/Details/ElectionStateChip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import { visuallyHidden } from '@mui/utils';
 import { epochToDateString, getLocalTimeZoneShort, useSubstitutedTranslation } from './util';
 import { Checkbox, FormControl, ListItemText, MenuItem, Select, TextField, Chip } from '@mui/material';
-import { DateTime } from 'luxon';
 import { ElectionState } from '@equal-vote/star-vote-shared/domain_model/Election';
 import Link from "@mui/material/Link";
 
@@ -46,7 +45,7 @@ interface HeadCell {
   filterGroups?: {
     [key: string]: boolean
   };
-  formatter?: Function;
+  formatter?: (value: string, row?: string, t?: (key: string, options?: object) => string) => React.ReactNode;
 }
 
 interface EnhancedTableHeadProps {
@@ -54,8 +53,8 @@ interface EnhancedTableHeadProps {
   order: Order;
   orderBy: string;
   headCells: HeadCell[];
-  filters: any[];
-  setFilters: Function
+  filters: string[];
+  setFilters: (filtersUpdater: (filters: string[]) => string[]) => void
 }
 
 const headCellPool = {
@@ -328,7 +327,7 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
   return stabilizedThis.map((el) => el[0]);
 }
 
-type filterTypes = 'search' | 'groups' | null
+// type filterTypes = 'search' | 'groups' | null
 
 function filterData<T>(array: readonly T[], headCells: HeadCell[], filters: any[]) {
   // when tweaking the headKeys the filters and headCells can sometimes be temporarily mismatched
@@ -358,7 +357,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
 
   const handleSearchFilterChange = (ind: number, value: string) => {
     props.setFilters(filters => {
-      let newFilters = [...filters]
+      const newFilters = [...filters]
       newFilters[ind] = value
       return newFilters
     })
@@ -366,7 +365,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
 
   const handleGroupFilterChange = (ind: number, value: string[]) => {
     props.setFilters(filters => {
-      let newFilters: ElectionState[] = [...filters];
+      const newFilters: ElectionState[] = [...filters as ElectionState[]];
       // Update the filter groups based on the selected values
       Object.keys(newFilters[ind]).forEach(group => {
         newFilters[ind][group] = value.includes(group);
@@ -491,9 +490,9 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 export default function EnhancedTable(props: EnhancedTableProps) {
   const [order, setOrder] = React.useState<Order>(props.defaultSortBy == 'email' ? 'asc' : 'desc');
   const [orderBy, setOrderBy] = React.useState<Extract<keyof TableData, string>>(props.defaultSortBy);
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
+  const [selected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(true);
+  const [dense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const headCells: HeadCell[] = props.headKeys.map(key => headCellPool[key] as HeadCell);
   const {t} = useSubstitutedTranslation();
@@ -531,13 +530,13 @@ export default function EnhancedTable(props: EnhancedTableProps) {
     setPage(0);
   };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
-  };
+  // const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setDense(event.target.checked);
+  // };
 
   const formatTableData = (headKeys, data) => {
-    let fData = data.map(item => {
-        let fItem = {};
+    const fData = data.map(item => {
+        const fItem = {};
         // include voter_id as a hack so that it will be available in the callback
         ['voter_id', ...headKeys].forEach( key => {
           fItem[key] = key in headCellPool ? headCellPool[key].formatter(item[key], item, t) : item[key];

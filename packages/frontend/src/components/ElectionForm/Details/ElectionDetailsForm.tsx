@@ -1,5 +1,4 @@
-import React from 'react'
-import { useState } from "react"
+import { Dispatch, useState } from "react"
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
@@ -9,8 +8,26 @@ import { DateTime } from 'luxon'
 import { timeZones } from './TimeZones'
 import { isValidDate, useSubstitutedTranslation } from '../../util';
 import { dateToLocalLuxonDate } from './useEditElectionDetails';
+import { Election } from "@equal-vote/star-vote-shared/domain_model/Election";
+import { TimeZone } from "@equal-vote/star-vote-shared/domain_model/Util";
 
-export const ElectionTitleField = ({termType, value, onUpdateValue, errors, setErrors, showLabel=true}) => {
+export interface Errors {
+    title: string;
+    description?: string;
+    startTime?: string;
+    endTime?: string;
+}
+
+interface ElectionTitleFieldProps {
+    termType: string,
+    value: string,
+    onUpdateValue: (value: string) => void,
+    errors: Errors,
+    setErrors: Dispatch<React.SetStateAction<Errors>>,
+    showLabel?: boolean
+}
+
+export const ElectionTitleField = ({termType, value, onUpdateValue, errors, setErrors, showLabel=true}: ElectionTitleFieldProps) => {
     const {t} = useSubstitutedTranslation(termType);
     return <>
         <TextField
@@ -41,10 +58,18 @@ export const ElectionTitleField = ({termType, value, onUpdateValue, errors, setE
     </>;
 }
 
-export default function ElectionDetailsForm({editedElection, applyUpdate, errors, setErrors}) {
+
+
+interface ElectionDetailsFormProps {
+    editedElection: Election;
+    applyUpdate: (updateFn: (election: Election) => void) => void;
+    errors: Errors;
+    setErrors: Dispatch<React.SetStateAction<Errors>>;
+}
+
+export default function ElectionDetailsForm({editedElection, applyUpdate, errors, setErrors}: ElectionDetailsFormProps) {
 
     const timeZone = editedElection.settings.time_zone ? editedElection.settings.time_zone : DateTime.now().zone.name
-    const possibleTimeZones = timeZones;
 
     let {t} = useSubstitutedTranslation(editedElection.settings.term_type, {time_zone: timeZone});
 
@@ -131,7 +156,7 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                                 value={timeZone}
                                 label={t('election_details.time_zone')}
                                 onChange={(e) => {
-                                    applyUpdate(election => { election.settings.time_zone = e.target.value })
+                                    applyUpdate(election => { election.settings.time_zone = e.target.value as TimeZone })
                                     const p = useSubstitutedTranslation(editedElection.settings.term_type, {time_zone: e.target.value});
                                     t = p.t;
                                 }}
@@ -139,7 +164,7 @@ export default function ElectionDetailsForm({editedElection, applyUpdate, errors
                                 <MenuItem value={DateTime.now().zone.name}>{DateTime.now().zone.name}</MenuItem>
                                 <Divider />
                                 {timeZones.map(tz =>
-                                    <MenuItem value={tz}>{t(`time_zones.${tz}`)}</MenuItem>
+                                    <MenuItem key={tz} value={tz}>{t(`time_zones.${tz}`)}</MenuItem>
                                 )}
                             </Select>
                         </FormControl>

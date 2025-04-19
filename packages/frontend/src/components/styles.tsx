@@ -1,25 +1,24 @@
-import { Box, Button, ClickAwayListener, IconButton, Tooltip, responsiveFontSizes, styled } from "@mui/material"
-import { TextField, useTheme } from '@mui/material';
+import { Button, ClickAwayListener, IconButton, TextFieldProps, Tooltip } from "@mui/material"
+import { TextField } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { useState } from "react";
+import { ReactNode, useState, isValidElement } from "react";
 import en from './en.yaml';
 import { useSubstitutedTranslation } from "./util";
-import { TermType } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 import useRace from "./RaceContextProvider";
 import useElection from "./ElectionContextProvider";
-import { Link } from "react-router-dom";
+import { ButtonProps } from "@mui/material";
 
 // this doesn't work yet, I filed a github issue
 // https://github.com/Modyfi/vite-plugin-yaml/issues/27
 type TipName = keyof typeof en.tips;
 
 
-export const Tip = (props: {name?: TipName, children?: any, content?: any}) => {
+export const Tip = (props: {name?: TipName, children?: ReactNode, content?: {title:string, description:string | JSX.Element}}) => {
     // TODO: maybe I can insert useElection and useRace within useSubstitutedTranslation?
     const {t: ts, i18n} = useSubstitutedTranslation('election');
     const {t: te} = useElection();
     const {t: tr} = useRace();
-    let t = (tr() !== undefined) ? tr : (
+    const t = (tr() !== undefined) ? tr : (
         (te() !== undefined) ? te : ts
     );
 
@@ -32,7 +31,7 @@ export const Tip = (props: {name?: TipName, children?: any, content?: any}) => {
                 <strong>{props.name ? t(`tips.${props.name as string}.title`) : props.content.title}</strong>
                 <br/>
                 {props.name ? t(`tips.${props.name as string}.description`) : props.content.description}
-                {i18n.exists(learnLinkKey) && <a href={t(learnLinkKey)} target='_blank'>Learn More</a>}
+                {i18n.exists(learnLinkKey) && <a href={t(learnLinkKey)} target='_blank' rel="noreferrer">Learn More</a>}
             </>}
             onOpen={() => setHovered(true)}
             onClose={() => setHovered(false)}
@@ -48,7 +47,7 @@ export const Tip = (props: {name?: TipName, children?: any, content?: any}) => {
                 }
             }}
         >
-            {props.children ?
+            {props.children && isValidElement(props.children) ?
                 props.children
             : 
             <IconButton size='small' sx={{marginBottom: 1}} onClick={() => setClicked(true)}>
@@ -57,8 +56,10 @@ export const Tip = (props: {name?: TipName, children?: any, content?: any}) => {
         </Tooltip>
     </ClickAwayListener>
 }
-
-export const PrimaryButton = (props) => (
+interface CustomButtonProps extends ButtonProps {
+    to?: string;
+}
+export const PrimaryButton = (props: CustomButtonProps) => (
     <Button
         variant="contained"
         {...props}
@@ -82,7 +83,7 @@ export const PrimaryButton = (props) => (
     </Button>
 )
 
-export const SecondaryButton = (props) => (
+export const SecondaryButton = (props: ButtonProps) => (
     <Button
         variant="outlined"
         {...props}
@@ -104,7 +105,7 @@ export const SecondaryButton = (props) => (
 )
 
 
-export const StyledTextField = (props) => (
+export const StyledTextField = (props: TextFieldProps) => (
     <TextField
         className='styledTextField'
         fullWidth

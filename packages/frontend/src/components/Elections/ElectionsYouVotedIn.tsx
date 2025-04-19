@@ -3,10 +3,10 @@ import { useGetElections } from "../../hooks/useAPI";
 import EnhancedTable from '../EnhancedTable';
 import { useNavigate } from 'react-router';
 
-export default () => {
+const ElectionsYouVotedIn = () => {
     const navigate = useNavigate();
 
-    const { data, isPending, error, makeRequest: fetchElections } = useGetElections();
+    const { data, isPending, makeRequest: fetchElections } = useGetElections();
 
     useEffect(() => {fetchElections()}, []);
 
@@ -27,3 +27,4 @@ export default () => {
     />
 }
 
+export default ElectionsYouVotedIn;

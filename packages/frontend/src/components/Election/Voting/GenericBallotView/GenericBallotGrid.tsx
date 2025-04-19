@@ -3,11 +3,9 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import BubbleGrid from "./BubbleGrid";
 import useSnackbar from '~/components/SnackbarContext';
-import ScoreIcon from './ScoreIcon';
 import { IBallotContext } from '../VotePage';
 import CandidateLabel from './CandidateLabel';
 import { useMemo } from 'react';
-import { use } from 'i18next';
 import ColumnHeadings from './ColumnHeadings';
 
 interface GenericBallotGridProps {

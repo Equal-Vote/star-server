@@ -30,9 +30,9 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: process.env.FRONTEND_URL,
-    // launchOptions: {
-    //   slowMo: 100
-    // },
+    launchOptions: {
+      slowMo: 1000
+    },
     actionTimeout: 30 * 1000, // Timeout for each action (like click, type, etc.)
     navigationTimeout: 30 * 1000, // Timeout for page navigation
 

@@ -8,7 +8,7 @@ interface ResultsBarChartData {
   votes?: number | undefined; 
   count?: number | undefined; 
   score?: number | undefined; 
-  [key: string]: any;
+  [key: string]: string | number | undefined | boolean;
 }
 
 interface ResultsBarChartProps {
@@ -37,11 +37,10 @@ export default function ResultsBarChart({
   stars = 0,
   majorityLegend = undefined,
   majorityOffset = false,
-  height = undefined,
   maxBarSize = undefined,
 }: ResultsBarChartProps) {
 const [rawNumbers, setRawNumbers] = useState(false);   
-  let rawData = data;
+  const rawData = data;
 
   // Sort entries
   if (sortFunc != false) {
@@ -55,11 +54,11 @@ const [rawNumbers, setRawNumbers] = useState(false);
   }
 
   // Truncate names & add percent
-  let maxValue = maxBarSize ?? Math.max(...data.map(d => d[xKey]))
+  const maxValue = maxBarSize ?? Math.max(...data.map(d => d[xKey]))
   percentDenominator ??= data.reduce((sum, d) => sum + d[xKey], 0);
   percentDenominator = Math.max(1, percentDenominator);
   data = rawData.map((d, i) => {
-    let s = {
+    const s = {
       ...d,
       name: ((i < stars || d['star']) ? "⭐ " : "") + truncName(d["name"], 40),
       // hack to get smaller values to allign different than larger ones
@@ -90,17 +89,17 @@ const [rawNumbers, setRawNumbers] = useState(false);
 
   // Add majority
   if (majorityLegend || majorityOffset) {
-    let sum = data.reduce((prev, d, i) => {
+    const sum = data.reduce((prev, d, i) => {
       if(i == data.length-1) return prev; // don't include exhausted or equal support votes in the denominator
       return prev + d[xKey];
     }, 0);
-    let m = sum / 2;
+    const m = sum / 2;
     data = data.map((d, i) => {
-      let s = { ...d };
+      const s = { ...d };
       s[majorityLegend] = i < 2 ? m : null;
       return s;
     });
-    let s = { name: "" };
+    const s = { name: "" };
     s[majorityLegend] = m;
     data.unshift(s);
     colors.unshift(colors.pop());
@@ -108,7 +107,7 @@ const [rawNumbers, setRawNumbers] = useState(false);
 
   // Bar Max Size
   if(maxBarSize){
-    let d = {name: ''}
+    const d = {name: ''}
     d[xKey] = maxBarSize;
     data = [d, ...data];
     // this is hack, I may need to add more colors later
@@ -119,7 +118,7 @@ const [rawNumbers, setRawNumbers] = useState(false);
   const maxCandidates = 10;
   if (rawData.length > maxCandidates) {
     data = data.slice(0, maxCandidates - 1);
-    let item = {
+    const item = {
       name: `+${rawData.length - (maxCandidates - 1)} more`,
       index: 0,
     };

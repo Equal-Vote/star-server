@@ -1,4 +1,3 @@
-import React from 'react'
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ShareButton from "../ShareButton";
@@ -7,7 +6,6 @@ import { PrimaryButton } from "../../styles";
 import useElection from '../../ElectionContextProvider';
 import { useSubstitutedTranslation } from '~/components/util';
 import DraftWarning from '../DraftWarning';
-import { Link } from '@mui/material';
 
 const Thanks = () => {
     

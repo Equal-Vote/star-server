@@ -1,11 +1,10 @@
 import { Box, Paper, Typography } from '@mui/material';
-import { log } from 'console';
-import React, { useState }  from 'react'
 import { starResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
 import Widget from '../components/Widget';
 
 
-const STARResultDetailedStepsWidget = ({ results, rounds, t, filterRandomFromLogs}: {results: starResults, rounds: number, t: Function, filterRandomFromLogs: boolean }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const STARResultDetailedStepsWidget = ({ results, rounds, t, filterRandomFromLogs}: {results: starResults, rounds: number, t: (key: string, v?: object) => any, filterRandomFromLogs: boolean }) => {
 
     // Note: there are other keys I don't want to show, but at least one of
     //       these will be used if the tiebreaker process is used
@@ -17,7 +16,7 @@ const STARResultDetailedStepsWidget = ({ results, rounds, t, filterRandomFromLog
         typeof log !== 'string' && warningKeys.includes(log.key)
     )))
 
-    let logs = (t('results.star.tiebreaker_note_text') as Array<String>)
+    let logs = (t('results.star.tiebreaker_note_text') as Array<string>)
     // this approach is a bit error prone, but it works for now
     if(filterRandomFromLogs) logs = logs.slice(0, logs.length-2);
     return <Widget title={t('results.star.detailed_steps_title')} wide>

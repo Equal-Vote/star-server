@@ -1,25 +1,28 @@
-import { useEffect, useState } from "react"
-import React from 'react'
+import { useEffect } from "react"
 import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Box, Divider, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
-import PermissionHandler from "../../PermissionHandler";
+import { Box, Divider, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { useParams } from "react-router";
 import { useGetBallot } from "../../../hooks/useAPI";
-import { epochToDateString, getLocalTimeZoneShort, useSubstitutedTranslation } from "../../util";
 import useElection from "../../ElectionContextProvider";
-import { PrimaryButton, SecondaryButton } from "~/components/styles";
+import { SecondaryButton } from "~/components/styles";
 import ShareButton from "../ShareButton";
+import { Ballot } from "@equal-vote/star-vote-shared/domain_model/Ballot";
+import { useSubstitutedTranslation } from "../../util";
 
-const ViewBallot = ({ ballot, onClose }) => {
+
+interface ViewBallotProps {
+    ballot: Ballot | null,
+    onClose?: () => void
+}
+const ViewBallot = ({ ballot, onClose }: ViewBallotProps) => {
     // ViewBallot doesn't iterate over races but it does referene them by index so we use the filtered version
     const { election } = useElection()
     const { ballot_id } = useParams();
     const { t } = useSubstitutedTranslation(election.settings.term_type);
 
-    const { data, isPending, error, makeRequest: fetchBallots } = useGetBallot(election.election_id, ballot_id)
+    const { data, isPending, makeRequest: fetchBallots } = useGetBallot(election.election_id, ballot_id)
 
     useEffect(() => {
         if (ballot_id) {
@@ -27,7 +30,7 @@ const ViewBallot = ({ ballot, onClose }) => {
         }
     }, [ballot_id])
 
-    let myballot = ballot === null ? data?.ballot : ballot;
+    const myballot = ballot === null ? data?.ballot : ballot;
 
     return (
         <Container>

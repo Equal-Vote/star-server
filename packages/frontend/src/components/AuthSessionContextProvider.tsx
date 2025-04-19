@@ -1,14 +1,11 @@
-import React, {
+import {
     createContext,
-    useCallback,
     useContext,
-    useRef,
-    useState,
 } from 'react';
 import { useEffect } from "react";
 import { useCookie } from "../hooks/useCookie";
 import jwt_decode from 'jwt-decode'
-let keycloakBaseUrl = process.env.REACT_APP_KEYCLOAK_URL;
+const keycloakBaseUrl = process.env.REACT_APP_KEYCLOAK_URL;
 
 const keycloakAuthConfig = {
     clientId: 'web',
@@ -30,16 +27,16 @@ const keycloakAuthConfig = {
 const authConfig = keycloakAuthConfig;
 
 export interface IAuthSession {
-    isLoggedIn: () => Boolean
+    isLoggedIn: () => boolean
     openLogin: () => void
     openLogout: () => void
-    getIdField: (fieldName: any) => any
+    getIdField: (fieldName: string) => string | null
     accountUrl: string
 }
 
 const AuthSessionContext = createContext<IAuthSession>(null);
 
-export function AuthSessionContextProvider({ children }) {
+export function AuthSessionContextProvider({ children }: { children: React.ReactNode }) {
     const [accessToken, setAccessToken] = useCookie('access_token', null, 24 * 5)
     const [idToken, setIdToken] = useCookie('id_token', null, 24 * 5)
     const [refreshToken, setRefreshToken] = useCookie('refresh_token', null, 24 * 5)
@@ -75,7 +72,7 @@ export function AuthSessionContextProvider({ children }) {
 
     const getIdField = (fieldName: string) => {
         if (!idToken) return null
-        const id_map = jwt_decode<any>(idToken);
+        const id_map = jwt_decode<string>(idToken);
         return id_map[fieldName];
     }
 
@@ -118,7 +115,7 @@ export function AuthSessionContextProvider({ children }) {
         var token_url = `${window.location.protocol}//${window.location.hostname}:${SERVER_PORT}`+
                         `/API/Token?grant_type=${grant_type}&redirect_uri=${this.redirectUri}`;
         */
-        var token_url = `/API/Token?grant_type=${grant_type}&redirect_uri=${authConfig.redirectUri}`;
+        let token_url = `/API/Token?grant_type=${grant_type}&redirect_uri=${authConfig.redirectUri}`;
 
         if (grant_type == 'authorization_code') {
             token_url = `${token_url}&code=${auth_code}`

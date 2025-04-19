@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import GenericBallotView from "./GenericBallotView/GenericBallotView";
 import { BallotContext } from "./VotePage";
 
@@ -8,7 +8,7 @@ export default function PluralityBallotView() {
 
   return (
     <GenericBallotView
-      columns={[1]}
+      columns={['1']}
       methodKey='choose_one'
       onClick={(row, score) => {
         const newScores = ballotContext.candidates.map(c => c.score);

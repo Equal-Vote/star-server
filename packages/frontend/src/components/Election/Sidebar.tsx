@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Button, Grid } from '@mui/material';
@@ -8,7 +7,7 @@ import PermissionHandler from '../PermissionHandler';
 import useElection from '../ElectionContextProvider';
 import useFeatureFlags from '../FeatureFlagContextProvider';
 
-const ListItem = ({ text, link }) => {
+const ListItem = ({ text, link }: { text:string, link: string}) => {
     return (
         <Grid item>
             <Button component={Link} to={link} fullWidth >

@@ -1,27 +1,23 @@
-import { useState, useContext } from "react"
-import React from 'react'
+import { useState } from "react"
 import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip } from "@mui/material";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import PermissionHandler from "../../PermissionHandler";
-import { useApproveRoll, useFlagRoll, useInvalidateRoll, useSendEmails, useSendInvite, useUnflagRoll } from "../../../hooks/useAPI";
-import { getLocalTimeZoneShort, useSubstitutedTranslation } from "../../util";
+import { useApproveRoll, useFlagRoll, useInvalidateRoll, useSendEmails, useUnflagRoll } from "../../../hooks/useAPI";
+import { getLocalTimeZoneShort } from "../../util";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
 import SendEmailDialog from "./SendEmailDialog";
-import { email_request_data } from "@equal-vote/star-vote-backend/src/Controllers/Election/sendEmailController";
-import { SettingsBackupRestore } from "@mui/icons-material";
 import useSnackbar from "~/components/SnackbarContext";
 import { SecondaryButton } from "~/components/styles";
 
 
 type Props = {
     roll: ElectionRoll,
-    onClose: Function,
-    fetchRolls: Function,
+    onClose: () => void,
+    fetchRolls: () => Promise<void>,
   }
 const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
     const { t, election, permissions } = useElection()
@@ -55,7 +51,6 @@ const EditElectionRoll = ({ roll, onClose, fetchRolls }:Props) => {
         subject,
         body,
         target,
-        testEmails,
     } : {
         subject: string,
         body: string,

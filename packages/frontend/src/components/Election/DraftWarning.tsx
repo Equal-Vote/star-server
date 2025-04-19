@@ -1,8 +1,7 @@
 import { Box, Paper, Typography } from "@mui/material";
-import { useSubstitutedTranslation } from "../util";
 import useElection from "../ElectionContextProvider";
 
-export default () => {
+const DraftWarning = () => {
     const { t, election } = useElection();
 
     if(election.state !== 'draft') return <></>
@@ -16,3 +15,5 @@ export default () => {
         </Box>
     </Paper>
 }
+
+export default DraftWarning;
