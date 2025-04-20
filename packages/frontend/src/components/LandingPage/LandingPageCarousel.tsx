@@ -1,32 +1,19 @@
 import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import QuickPoll from '../ElectionForm/QuickPoll'
+import { useContext, useEffect, useRef, useState } from 'react'
 import useAuthSession from '../AuthSessionContextProvider'
-import { useThemeSelector } from '../../theme'
-import useFeatureFlags from '../FeatureFlagContextProvider'
-import { useLocalStorage } from '../../hooks/useLocalStorage'
-import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
-import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
-import { PrimaryButton, Tip } from '../styles'
+import { PrimaryButton } from '../styles'
 import { BallotContext, IBallotContext } from '../Election/Voting/VotePage'
 import StarBallotView from '../Election/Voting/StarBallotView'
-import { ElectionContextProvider } from '../ElectionContextProvider'
 import { VotingMethod } from '@equal-vote/star-vote-shared/domain_model/Race'
 import ApprovalBallotView from '../Election/Voting/ApprovalBallotView'
 import RankedBallotView from '../Election/Voting/RankedBallotView'
 import { useSubstitutedTranslation } from '../util'
-import { useTranslation } from 'react-i18next'
 import { CreateElectionContext } from '../ElectionForm/CreateElectionDialog'
-import { Button } from '@mui/material'
-import { max } from 'date-fns'
 import { ArrowBack, ArrowForward } from '@mui/icons-material'
 
-export default ({}) => {
+const LandingPageCarousel = () => {
     const authSession = useAuthSession();
-    const themeSelector = useThemeSelector();
-    const flags = useFeatureFlags();
 
     const [transitionStep, setTransitionStep] = useState(1);
     const [prevMethodIndex, setPrevMethodIndex] = useState(0);
@@ -61,7 +48,7 @@ export default ({}) => {
                     ({
                         'candidate_id': '',
                         'candidate_name': String(candidateNames[i]),
-                        'score': Number(score) ?? 0,
+                        'score': Number(score ?? 0),
                     })
                 ),
             // this isn't used, it's just included to make typescript happy
@@ -94,7 +81,7 @@ export default ({}) => {
                 return (m+offset) % methodKeys.length;
             })
         }else{
-            let n = methodIndex + offset;
+            const n = methodIndex + offset;
             if(n < 0 || n >= methodKeys.length) return;
             setPrevMethodIndex(methodIndex);
             setMethodIndex(n);
@@ -123,7 +110,7 @@ export default ({}) => {
         return () => clearTimeout(autoCycleTimeout.current);
     }, [])
 
-    let animIndex = transitionStep == 0 ? prevMethodIndex : methodIndex;
+    const animIndex = transitionStep == 0 ? prevMethodIndex : methodIndex;
 
     const arrowSX = {
         transition: 'transform .2s, opacity .3s ease-out',
@@ -206,3 +193,5 @@ export default ({}) => {
         <ArrowForward sx={{...arrowSX, opacity: (methodIndex == methodKeys.length-1? 0 : 1)}} onClick={() => nextMethod(1)}/>
     </Box>
 }
+
+export default LandingPageCarousel;

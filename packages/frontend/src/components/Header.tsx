@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router';
 import { useContext, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';

@@ -1,8 +1,6 @@
 import { useState, useRef } from "react"
-import React from 'react'
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Container from '@mui/material/Container';
@@ -15,13 +13,12 @@ import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { sharedConfig } from '@equal-vote/star-vote-shared/config';
 import { PrimaryButton, SecondaryButton } from "~/components/styles";
 
-const AddElectionRoll = ({ onClose }) => {
-    const { snack, setSnack } = useSnackbar()
+const AddElectionRoll = ({ onClose }: { onClose: () => void }) => {
+    const { setSnack } = useSnackbar()
     const flags = useFeatureFlags();
     const { election } = useElection()
     const [voterIDList, setVoterIDList] = useState('')
     const postRoll = usePostRolls(election.election_id)
-    const [file, setFile] = useState()
     const fileReader = new FileReader()
     const [enableVoterID, setEnableVoterID] = useState(election.settings.voter_authentication.voter_id && election.settings.invitation !== 'email')
     const [enableEmail, setEnableEmail] = useState(election.settings.voter_authentication.email || election.settings.invitation === 'email')
@@ -46,7 +43,7 @@ const AddElectionRoll = ({ onClose }) => {
             rows.forEach((row) => {
                 const csvSplit = row.split(',')
                 if (csvSplit.length !== expectedCounts) {
-                    let err = `Incorrect number of columns: ${row}`
+                    const err = `Incorrect number of columns: ${row}`
                     setSnack({
                         message: err,
                         severity: "error",
@@ -56,7 +53,7 @@ const AddElectionRoll = ({ onClose }) => {
                     throw err;
                 }
                 let count = 0
-                let roll = {
+                const roll = {
                     state: 'approved',
                     voter_id: undefined,
                     email: undefined,
@@ -180,7 +177,7 @@ const AddElectionRoll = ({ onClose }) => {
                                 (enableVoterID || enableEmail || enablePrecinct ? 
                                     //https://stackoverflow.com/questions/5501581/why-does-the-map-method-apparently-not-work-on-arrays-created-via-new-arrayc
                                     new Array(2).fill(undefined).map((_, i) => {
-                                        let a = [];
+                                        const a = [];
                                         if(enableVoterID) a.push(`id${i+1}`)
                                         if(enableEmail) a.push(`email${i+1}`)
                                         if(enablePrecinct) a.push(`precinct${i+1}`)

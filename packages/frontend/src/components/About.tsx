@@ -1,14 +1,10 @@
 import {
   Box,
-  Button,
   Container,
-  Divider,
   Paper,
   Typography,
 } from "@mui/material";
-import React from "react";
 import { PrimaryButton } from "./styles";
-import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useSubstitutedTranslation } from "./util";
 
 const About = () => {
@@ -34,7 +30,7 @@ const About = () => {
 
         <h1>{t('about.team_title')}</h1>
         <h2>{t('about.leads_title')}</h2>
-        <ul>{t('about.leads').map(content => <li>{content}</li>)}</ul>
+        <ul>{t('about.leads').map(content => <li key={content}>{content}</li>)}</ul>
 
         <h2>{t('about.contributors_title')}</h2>
         <Box

@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import Grid from "@mui/material/Grid";
 import Typography from '@mui/material/Typography';
-import { Alert, Checkbox, FormControlLabel, FormGroup, Link, Paper } from "@mui/material";
+import { Alert, Checkbox, FormControlLabel, FormGroup, Link } from "@mui/material";
 import Box from '@mui/material/Box';
 import { BallotContext } from "../VotePage";
 import useElection from "../../../ElectionContextProvider";

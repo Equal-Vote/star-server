@@ -1,6 +1,4 @@
-import React, { useState }  from 'react'
-import { TableContainer, Typography, Paper, Box} from "@mui/material";
-import { roundResults, starResults, starSummaryData } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
+import { starResults } from '@equal-vote/star-vote-shared/domain_model/ITabulators';
 import WidgetContainer from '../components/WidgetContainer';
 import Widget from '../components/Widget';
 import ResultsTable from '../components/ResultsTable';
@@ -14,8 +12,9 @@ type candidateTableEntry = {
   runoffVotes: number
 }
 
-export default () => {
-    let {results, t} = useRace();
+const STARDetailedResults = () => {
+    let {results} = useRace();
+    const {t} = useRace();
     results = results as starResults;
 
     const tableData: candidateTableEntry[] = results.summaryData.candidates.map((c, i) => ({
@@ -24,7 +23,7 @@ export default () => {
         runoffVotes: i < 2 ? results.summaryData.preferenceMatrix[c.index][results.summaryData.candidates[1-i].index] : 0,
     }));
 
-    let runoffData = tableData.slice(0, 2);
+    const runoffData = tableData.slice(0, 2);
     const finalistVotes = runoffData[0].runoffVotes + runoffData[1].runoffVotes
     runoffData.push({
       name: t('results.star.equal_preferences'),
@@ -55,3 +54,4 @@ export default () => {
       </WidgetContainer>
     </>);
 }
+export default STARDetailedResults;

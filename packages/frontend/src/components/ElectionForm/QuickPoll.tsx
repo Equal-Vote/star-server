@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { useNavigate } from "react-router";
 import structuredClone from '@ungap/structured-clone';
 import { PrimaryButton, SecondaryButton, StyledTextField } from '../styles.js';
-import { Box, Button, IconButton, MenuItem, Paper, Select, SelectChangeEvent, Typography } from '@mui/material';
+import { Box, IconButton, MenuItem, Paper, Select, SelectChangeEvent, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { usePostElection } from '../../hooks/useAPI';
 import { useCookie } from '../../hooks/useCookie';
@@ -15,11 +15,11 @@ import useAuthSession from '../AuthSessionContextProvider.js';
 
 const QuickPoll = () => {
     const authSession = useAuthSession();
-    const [tempID, setTempID] = useCookie('temp_id', '0')
+    const [tempID] = useCookie('temp_id', '0')
     const navigate = useNavigate()
     const [methodKey, setMethodKey] = useState('star');
-    const { error, isPending, makeRequest: postElection } = usePostElection()
-    const {snack, setSnack} = useSnackbar();
+    const { isPending, makeRequest: postElection } = usePostElection()
+    const { setSnack} = useSnackbar();
 
     const {t} = useSubstitutedTranslation('poll');
 

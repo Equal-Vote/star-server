@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, FormControlLabel, FormGroup, MenuItem, Paper, Select, Typography } from "@mui/material";
+import { Box, Checkbox, FormControlLabel, FormGroup, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useSubstitutedTranslation } from "./util";
 import EnhancedTable from "./EnhancedTable";
@@ -14,9 +14,9 @@ import { OrderedNewBallot, RaceCandidateOrder } from "@equal-vote/star-vote-shar
 import { inferElectionSettings } from "./ElectionSettingInference";
 import { PrimaryButton, SecondaryButton } from "./styles";
 
-export default () => {
+const UploadElections = () => {
     const [addToPublicArchive, setAddToPublicArchive] = useState(true)
-    const { data: electionData, isPending, error, makeRequest: fetchElections } = useGetElections();
+    const { data: electionData, makeRequest: fetchElections } = useGetElections();
     const [cvrs, setCvrs] = useState([])
     const [elections, setElections] = useState({})
     const {t} = useSubstitutedTranslation();
@@ -70,7 +70,7 @@ export default () => {
                     }))
                     return
                 }
-                let newElection: NewElection = {
+                const newElection: NewElection = {
                     ...defaultElection,
                     title: cvr.name.split('.')[0],
                     state: 'closed',
@@ -98,11 +98,11 @@ export default () => {
                     ]
                 };
 
-                let updateExistingElection = elections[cvr.name].election_id && addToPublicArchive;
+                const updateExistingElection = elections[cvr.name].election_id && addToPublicArchive;
 
                 let updatedElection: Election = undefined;
                 if(updateExistingElection){
-                    let prevElection = electionData.public_archive_elections.find((e) => e.election_id == elections[cvr.name].election_id);
+                    const prevElection = electionData.public_archive_elections.find((e) => e.election_id == elections[cvr.name].election_id);
                     updatedElection = {
                         ...newElection,
                         election_id: prevElection.election_id,
@@ -140,7 +140,7 @@ export default () => {
                     return;
                 };
 
-                let {election} = await postElectionRes.json()
+                const {election} = await postElectionRes.json()
 
                 // #4 : Clear previous ballots (if needed)
                 if(updateExistingElection){
@@ -154,15 +154,17 @@ export default () => {
                 }
 
                 // #5 : Convert Rows to Ballots
-                let {ballots, errors} = rankColumnCSV(parsed_csv, election)
-                let raceOrder: RaceCandidateOrder[] = ballots[0].votes.map(v => ({
+                const {ballots, errors} = rankColumnCSV(parsed_csv, election)
+                const raceOrder: RaceCandidateOrder[] = ballots[0].votes.map(v => ({
                     race_id: v.race_id,
                     candidate_id_order: v.scores.map(s => s.candidate_id)
                 }))
-                let orderedBallots: OrderedNewBallot[] = ballots
+                const orderedBallots: OrderedNewBallot[] = ballots
                     .filter((b, i) => !errorRows.has(i))
                     .map(b => {
-                        let subBallot: any = {...b};
+                        // TODO: define subBallot type
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        const subBallot: any = {...b};
                         delete subBallot.votes;
                         return {
                             ...subBallot,
@@ -220,7 +222,7 @@ export default () => {
                     }while(!uploadRes.ok);
                     nextIndex += batchSize;
 
-                    let res = await uploadRes.json();
+                    const res = await uploadRes.json();
                     responses = [...responses, ...res.responses];
                 }
 
@@ -251,15 +253,15 @@ export default () => {
 
     const addCvrs = (files: FileList) => {
         // NOTE: FileList does not support Array.map
-        let new_files = [];
+        const new_files = [];
         for(let i = 0; i < files.length; i++){
             new_files.push({
                 name: files[i].name,
                 url: URL.createObjectURL(files[i])
             });
 
-            let tag = files[i].name.split('.')[0];
-            let election = electionData.public_archive_elections.find(e => e.public_archive_id == tag)
+            const tag = files[i].name.split('.')[0];
+            const election = electionData.public_archive_elections.find(e => e.public_archive_id == tag)
             updateElection(files[i].name, () => ({
                 file_name: files[i].name,
                 election_id: election?.election_id,
@@ -341,3 +343,5 @@ export default () => {
         <PrimaryButton disabled={electionsSubmitted} onClick={submitElections}>Add (or update) elections</PrimaryButton>
     </Box>
 }
+
+export default UploadElections;
