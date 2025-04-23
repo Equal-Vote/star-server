@@ -4,6 +4,7 @@
   extra details.
 */
 
+import { Box } from "@mui/material";
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { irvContext, irvWinnerSearch } from "./ifc";
@@ -28,7 +29,9 @@ export function IRVTopResultsView ( {wins, context}:
     <Pages
       pageCount={wins.length} page={page} setPage={setPage} title={false}
     >
-      <IRVWinnerView win={wins[winIndex]} context={context}/>
+      <Box className="resultWidget">
+        <IRVWinnerView win={wins[winIndex]} context={context}/>
+      </Box>
     </Pages>
   </>
 }

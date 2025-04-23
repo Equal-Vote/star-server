@@ -1,34 +1,53 @@
 /*
-  Describe, to the default level of detail, how the IRV tally found a winner.
+  Describe, to the default level of detail, how the IRV (Ware) tally found a
+  winner.
 */
 
-import { Box } from "@mui/material";
 import Typography from '@mui/material/Typography';
 import WidgetContainer from '../components/WidgetContainer';
 import Widget from '../components/Widget';
+import {
+  irvRoundResults
+} from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import ResultsBarChart from "../components/ResultsBarChart";
 import { irvContext, irvWinnerSearch } from "./ifc";
-import { IRVRoundView } from "./round";
+
+const chartDataFrom = (
+  {context, round}: {
+    context: irvContext,
+    round: irvRoundResults
+  }
+) => {
+  const {candidatesByIndex} = context;
+  return round.standings.map(
+    ({ candidateIndex, hareScore }) =>
+    ({ name: candidatesByIndex[candidateIndex].name, votes: hareScore })
+  )
+};
 
 export function IRVWinnerView ( {win, context}:{
   win: irvWinnerSearch, context: irvContext
 }) {
   const {t} = context;
 
-  if (win.firstRound === win.lastRound) {
-    return <Box className="resultWidget"><WidgetContainer>
-      <Widget title="Winner found on first round (TODO: i18n)">
-        <IRVRoundView round={win.firstRound} context={context}/>
-      </Widget>
-    </WidgetContainer></Box>
-  }
+  const firstRoundData = chartDataFrom({context, round: win.firstRound});
+  const runoffData = [
+    ...chartDataFrom({context, round: win.lastRound}),
+    {
+      name: t('results.rcv.exhausted'),
+      votes: win.lastRound.exhaustedVoteCount
+    }
+  ];
 
-  return <Box className="resultWidget"><WidgetContainer>
+  return <WidgetContainer>
     <Widget title={t('results.rcv.first_choice_title')}>
-      <IRVRoundView round={win.firstRound} context={context}/>
+      <ResultsBarChart data={firstRoundData} percentage majorityOffset/>
     </Widget>
     <Widget title={t('results.rcv.final_round_title')}>
-      <IRVRoundView round={win.lastRound} context={context}/>
+      < ResultsBarChart
+        data={runoffData} runoff star percentage sortFunc={false}
+        majorityLegend={t('results.rcv.runoff_majority')}
+      />
     </Widget>
-  </WidgetContainer></Box>
-
+  </WidgetContainer>
 }
