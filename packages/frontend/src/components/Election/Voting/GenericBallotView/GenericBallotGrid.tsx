@@ -3,11 +3,9 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import BubbleGrid from "./BubbleGrid";
 import useSnackbar from '~/components/SnackbarContext';
-import ScoreIcon from './ScoreIcon';
 import { IBallotContext } from '../VotePage';
 import CandidateLabel from './CandidateLabel';
 import { useMemo } from 'react';
-import { use } from 'i18next';
 import ColumnHeadings from './ColumnHeadings';
 
 interface GenericBallotGridProps {
@@ -117,7 +115,7 @@ export default function GenericBallotGrid({
             {rowBackgrounds}
             {/* Column Warnings */}
             {ballotContext.warningColumns && ballotContext.warningColumns.map((columnValue, columnIndex) =>
-                <Box key={columnIndex}
+                <Box key={columnIndex} aria-label={`Warning: Skipped Column ${columnValue}`}
                     sx={{
                         gridArea: makeArea(1, 1 + columnValue, 1, numHeaderRows + 1 + ballotContext.candidates.length * 2),
                         height: '100%',

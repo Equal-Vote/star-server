@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react"
-import { useLocation, useNavigate, useParams } from "react-router";
-import React from 'react'
-import Button from "@mui/material/Button";
+import { useLocation, useNavigate } from "react-router";
 import Container from '@mui/material/Container';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
-import PermissionHandler from "../../PermissionHandler";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import ViewBallot from "./ViewBallot";
 import { useGetBallots } from "../../../hooks/useAPI";
-import { epochToDateString, getLocalTimeZoneShort, useSubstitutedTranslation } from "../../util";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import DraftWarning from "../DraftWarning";
@@ -18,7 +14,7 @@ const ViewBallots = () => {
     // some ballots will have different subsets of the races, but we need the full list anyway
     // so we use election instead of precinctFilteredElection
     const { election } = useElection()
-    const { data, isPending, error, makeRequest: fetchBallots } = useGetBallots(election.election_id)
+    const { data, isPending, makeRequest: fetchBallots } = useGetBallots(election.election_id)
 
     const flags = useFeatureFlags();
     useEffect(() => { fetchBallots() }, [])
@@ -28,7 +24,6 @@ const ViewBallots = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const {t} = useSubstitutedTranslation(election.settings.term_type)
 
     const onOpen = (ballot) => {
         setIsViewing(true);
@@ -66,7 +61,7 @@ const ViewBallots = () => {
                                 <TableRow >
                                     <TableCell colSpan={3}></TableCell>
                                     {election.races.map(race => (
-                                        <TableCell align='center' sx={{borderWidth: 1, borderTopWidth: 0, borderColor: 'lightgray', borderStyle: 'solid'}}  colSpan={race.candidates.length}>
+                                        <TableCell key={race.race_id} align='center' sx={{borderWidth: 1, borderTopWidth: 0, borderColor: 'lightgray', borderStyle: 'solid'}}  colSpan={race.candidates.length}>
                                             {race.title}
                                         </TableCell>
                                     ))}
@@ -81,7 +76,7 @@ const ViewBallots = () => {
                                 <TableCell> Status </TableCell>
                                 {election.races.map((race) => (
                                     race.candidates.map((candidate) => (
-                                        <TableCell>
+                                        <TableCell key={candidate.candidate_id} >
                                             {candidate.candidate_name}
                                         </TableCell>
                                     ))
@@ -98,7 +93,7 @@ const ViewBallots = () => {
                                         <TableCell >{ballot.status.toString()}</TableCell>
                                         {ballot.votes.map((vote) => (
                                             vote.scores.map((score) => (
-                                                <TableCell >{score.score || ''}</TableCell>
+                                                <TableCell key={score.candidate_id}>{score.score || ''}</TableCell>
                                             ))))}
                                         <TableCell ><SecondaryButton onClick={() => onOpen(ballot)} > View </SecondaryButton></TableCell>
                                     </TableRow>

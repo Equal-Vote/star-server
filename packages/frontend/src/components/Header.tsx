@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router';
 import { useContext, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -76,7 +75,7 @@ const Header = () => {
                 <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
                     <IconButton
                         size="large"
-                        aria-label="nav-menu"
+                        aria-label="Navigation Menu"
                         aria-controls="menu-appbar"
                         aria-haspopup="true"
                         onClick={handleOpenNavMenu}
@@ -131,7 +130,7 @@ const Header = () => {
                             /*<Avatar src='/favicon-local.png'/>*/
                         }
                         {/* top should be 18.8% of the height*/}
-                        <Box component="img" sx={{position: 'relative', height: '50px', top: '7px'}} src='/logo.png'/>
+                        <Box component="img" sx={{position: 'relative', height: '50px', top: '7px'}} src='/logo.png' alt='BetterVoting Beta Logo'/>
                 </IconButton>
 
                 {/**** DESKTOP OPTIONS ****/}

@@ -95,7 +95,8 @@ export function electionSettingsValidation(obj:ElectionSettings): string | null 
   }
   
   if (obj.time_zone && !(timeZones.includes(obj.time_zone))){
-    return `Invalid Time Zone: ${obj.time_zone}`;
+    //return `Invalid Time Zone: ${obj.time_zone}`;
+    obj.time_zone = 'America/Los_Angeles'
   }
   if (obj.random_candidate_order && typeof obj.random_candidate_order !== 'boolean'){
     return "Invalid Random Candidate Order";

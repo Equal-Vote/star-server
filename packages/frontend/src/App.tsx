@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ThemeContextProvider } from './theme'
 import Header from './components/Header'
 import Election from './components/Election/Election'
 import Sandbox from './components/Sandbox'
 import LandingPage from './components/LandingPage'
-import { Box, Button, CssBaseline, Dialog, Typography } from '@mui/material'
+import { Box, CssBaseline, Typography } from '@mui/material'
 import { SnackbarContextProvider } from './components/SnackbarContext'
 import Footer from './components/Footer'
 import { ConfirmDialogProvider } from './components/ConfirmationDialogProvider'
@@ -36,7 +36,7 @@ const App = () => {
     return <>
       <Box sx={{ position: 'fixed', pointerEvents: 'none', display: {xs: 'none', md: 'flex'}, flexDirection: 'column-reverse', alignItems: 'flex-end', width: '100%', height: '100%', paddingBottom: '90px', paddingRight: '30px'}}>
           {/*Color is copied from the feedback button*/}
-          <PrimaryButton sx={{pointerEvents: 'auto', width: '170px', fontSize: 10}}  onClick={returnToClassicContext.openDialog}>
+          <PrimaryButton sx={{pointerEvents: 'auto', width: '170px', fontSize: 10}}  onClick={returnToClassicContext.openDialog} aria-label="Return to Classic" >
               {t('return_to_classic.button')}
           </PrimaryButton >
       </Box>
@@ -68,7 +68,7 @@ const App = () => {
             }}>
             <Routes>
               <Route path='/' element={<LandingPage />} />
-              <Route path='/Feedback' element={<LandingPage />} />   // creating a new route for feedback page while still loading the landing page
+              <Route path='/Feedback' element={<LandingPage />} />   {/*creating a new route for feedback page while still loading the landing page*/}
               <Route path='/About' element={<About />} />
               <Route path='/ElectionInvitations' element={<ElectionInvitations />} />
               <Route path='/ElectionsYouManage' element={<ElectionsYouManage />} />

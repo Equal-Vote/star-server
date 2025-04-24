@@ -45,7 +45,7 @@ export function IRVWinnerView ( {win, context}:{
     </Widget>
     <Widget title={t('results.rcv.final_round_title')}>
       < ResultsBarChart
-        data={runoffData} runoff star percentage sortFunc={false}
+        data={runoffData} runoff stars={1} percentage sortFunc={false}
         majorityLegend={t('results.rcv.runoff_majority')}
       />
     </Widget>

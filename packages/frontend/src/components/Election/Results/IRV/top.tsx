@@ -27,7 +27,7 @@ export function IRVTopResultsView ( {wins, context}:
       First and last round for finding each winner (TODO: i18n)
     </Typography>
     <Pages
-      pageCount={wins.length} page={page} setPage={setPage} title={false}
+      pageCount={wins.length} page={page} setPage={setPage}
     >
       <Box className="resultWidget">
         <IRVWinnerView win={wins[winIndex]} context={context}/>

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import Grid from "@mui/material/Grid";
 import { Box, IconButton, Paper, Typography } from "@mui/material"
 import ElectionStateChip from './ElectionStateChip';
@@ -65,7 +65,7 @@ export default function ElectionDetailsInlineForm() {
 
                         <Box sx={{}}>
                             <IconButton
-                                aria-label="edit"
+                                aria-label="Edit Election Details"
                                 disabled={election.state!=='draft'}
                                 onClick={handleOpen}>
                                 <EditIcon />
@@ -89,7 +89,7 @@ export default function ElectionDetailsInlineForm() {
                         <PrimaryButton
                             type='button'
                             variant="contained"
-                            width="100%"
+                            // width="100%"
                             fullWidth={false}
                             onClick={handleClose}
                             disabled={election.title.length==0}>

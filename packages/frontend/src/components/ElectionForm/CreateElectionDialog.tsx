@@ -1,6 +1,6 @@
 import { Box, capitalize, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Radio, RadioGroup, Step, StepContent, StepLabel, Stepper, TextField, Typography } from "@mui/material";
 import { PrimaryButton, SecondaryButton, Tip } from "../styles";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { ElectionTitleField } from "./Details/ElectionDetailsForm";
 import { RowButtonWithArrow, useSubstitutedTranslation } from "../util";
 import { NewElection } from "@equal-vote/star-vote-shared/domain_model/Election";
@@ -21,7 +21,7 @@ export interface ICreateElectionContext{
 
 export const CreateElectionContext = createContext<ICreateElectionContext>(null);
 
-export const CreateElectionContextProvider = ({children}) => {
+export const CreateElectionContextProvider = ({children}: {children: ReactNode}) => {
     const [open, setOpen] = useState(false);
     const [quickPoll, setQuickPoll] = useState(undefined);
 
@@ -121,7 +121,7 @@ const templateMappers = {
     }),
 }
 
-const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
+const StepButtons = ({activeStep, setActiveStep, canContinue}: { activeStep: number, setActiveStep: React.Dispatch<React.SetStateAction<number>>, canContinue: boolean }) => <>
     {activeStep > 0 &&
         <SecondaryButton
             onClick={() => setActiveStep(i => i-1)}
@@ -143,7 +143,7 @@ const StepButtons = ({activeStep, setActiveStep, canContinue}) => <>
     }
 </>
 
-export default () => {
+const CreateElectionDialog = () => {
     const createElectionContext = useContext(CreateElectionContext);
 
     const [activeStep, setActiveStep] = useState(0);
@@ -159,13 +159,13 @@ export default () => {
 
     const { t } = useSubstitutedTranslation(election.settings.term_type);
 
-    const { error, isPending, makeRequest: postElection } = usePostElection()
+    const { makeRequest: postElection } = usePostElection()
 
     const authSession = useAuthSession()
     const navigate = useNavigate()
 
     useEffect(() => {
-        let q = createElectionContext.quickPoll;
+        const q = createElectionContext.quickPoll;
         if(!createElectionContext.quickPoll) return;
 
         // quick poll also specifies a number of other settings but we're not keeping those, we're only keeping the information that the user specified
@@ -257,7 +257,7 @@ export default () => {
                             setErrors={setErrors}
                             showLabel={false}
                         />
-                        <StepButtons activeStep={1} setActiveStep={setActiveStep} canContinue={election.title != '' && errors.title == ''}/>
+                        <StepButtons activeStep={1} setActiveStep={setActiveStep} canContinue={/^[^\s][a-zA-Z0-9\s]{3,49}$/.test(election.title) && errors.title == ''}/>
                     </StepContent>
                 </Step>
                 <Step>
@@ -334,12 +334,13 @@ export default () => {
                             {t('election_creation.template_prompt')}
                         </Typography>
                         <Box style={{height: '10px'}}/> {/*hacky padding*/}
-                        {(election.settings.voter_access === 'closed'? ['email_list', 'id_list'] : ['demo', 'unlisted']).map((name, i) =>
+                        {(election.settings.voter_access === 'closed'? ['email_list', 'id_list'] : ['demo', 'unlisted']).map((name) =>
                             <RowButtonWithArrow
                                 title={t(`election_creation.${name}_title`)}
                                 description={t(`election_creation.${name}_description`)}
-                                key={i}
+                                key={name}
                                 onClick={() => onAddElection(templateMappers[name](election))}
+                                ariaLabel={t(`election_creation.${name}_title`)}
                             />
                         )}
 
@@ -352,7 +353,7 @@ export default () => {
             <PrimaryButton
                 type='button'
                 variant="contained"
-                width="100%"
+                // width="100%"
                 fullWidth={false}
                 onClick={onClose}>
                 Cancel
@@ -360,3 +361,5 @@ export default () => {
         </DialogActions>
     </Dialog>
 }
+
+export default CreateElectionDialog;

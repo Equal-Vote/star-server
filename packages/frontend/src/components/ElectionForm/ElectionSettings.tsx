@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import Grid from "@mui/material/Grid";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from '@mui/material/Typography';
-import { Checkbox, FormGroup, FormHelperText, FormLabel, InputLabel, Radio, RadioGroup, Tooltip, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Box, IconButton, TextField, capitalize } from "@mui/material"
+import { Checkbox, FormGroup, Radio, RadioGroup, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Box, IconButton, TextField, capitalize } from "@mui/material"
 import { PrimaryButton, Tip } from '../styles';
 import useElection  from '../ElectionContextProvider';
 import structuredClone from '@ungap/structured-clone';
@@ -13,7 +13,7 @@ import { ElectionSettings as IElectionSettings, TermType, electionSettingsValida
 import useSnackbar from '../SnackbarContext';
 
 export default function ElectionSettings() {
-    const { election, refreshElection, permissions, updateElection } = useElection()
+    const { election, refreshElection, updateElection } = useElection()
     const { setSnack } = useSnackbar()
     const min_rankings = 3;
     const max_rankings = Number(process.env.REACT_APP_MAX_BALLOT_RANKS) ? Number(process.env.REACT_APP_MAX_BALLOT_RANKS) : 8;
@@ -22,9 +22,9 @@ export default function ElectionSettings() {
     const {t} = useSubstitutedTranslation(election.settings.term_type, {min_rankings, max_rankings});
 
     const [editedElectionSettings, setEditedElectionSettings] = useState(election.settings)
-    let [editedIsPublic, setEditedIsPublic] = useState(election.is_public)
+    const [editedIsPublic, setEditedIsPublic] = useState(election.is_public)
 
-    const applySettingsUpdate = (updateFunc: (settings: IElectionSettings) => any) => {
+    const applySettingsUpdate = (updateFunc: (settings: IElectionSettings) => void) => {
         const settingsCopy = structuredClone(editedElectionSettings)
         updateFunc(settingsCopy)
         setEditedElectionSettings(settingsCopy)
@@ -57,8 +57,13 @@ export default function ElectionSettings() {
         await refreshElection()
         handleClose()
     }
-
-    const CheckboxSetting = ({setting, disabled=false, checked=undefined, onChange=undefined}) => <>
+    interface CheckboxSettingProps {
+        setting: string
+        disabled?: boolean
+        checked?: boolean
+        onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+    }
+    const CheckboxSetting = ({setting, disabled=false, checked=undefined, onChange=undefined}: CheckboxSettingProps) => <>
         <FormControlLabel disabled={disabled} control={
             <Checkbox
                 id={setting}
@@ -82,7 +87,7 @@ export default function ElectionSettings() {
                 </Box>
                 <Box sx={{ flexShrink: 1, p: 1 }}>
                     <IconButton
-                        aria-label="edit"
+                        aria-label="Edit Settings"
                         onClick={handleOpen}>
                         <EditIcon />
                     </IconButton>
@@ -124,7 +129,7 @@ export default function ElectionSettings() {
                                             <FormControlLabel
                                                 key={i}
                                                 control={<Radio
-                                                    onChange={((e) => {                                                
+                                                    onChange={(() => {                                                
                                                         applySettingsUpdate(settings => settings.term_type = type as TermType )
                                                     })}
                                                     checked={editedElectionSettings.term_type === type}
@@ -155,7 +160,7 @@ export default function ElectionSettings() {
                                     value={editedElectionSettings.max_rankings ? editedElectionSettings.max_rankings : default_rankings}
                                     onChange={(e) => applySettingsUpdate((settings) => { settings.max_rankings = Number(e.target.value) })}
                                     variant='standard'
-                                    InputProps={{ inputProps: { min: min_rankings, max: max_rankings } }}
+                                    InputProps={{ inputProps: { min: min_rankings, max: max_rankings, "aria-label": "Rank Limit" } }}
                                     sx={{ pl: 4, mt: -1, display: 'block'}}
                                     disabled={!editedElectionSettings.max_rankings}
                                 />
@@ -169,7 +174,7 @@ export default function ElectionSettings() {
                     <PrimaryButton
                         type='button'
                         variant="contained"
-                        width="100%"
+                        // width="100%"
                         fullWidth={false}
                         onClick={handleClose}
                     >

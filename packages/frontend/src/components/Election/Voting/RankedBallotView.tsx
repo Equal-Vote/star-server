@@ -1,14 +1,10 @@
-import React, { useContext, useMemo, useCallback, useEffect, useState } from 'react';
+import { useContext, useMemo, useCallback } from 'react';
 import { BallotContext } from './VotePage'; 
 import GenericBallotView from './GenericBallotView/GenericBallotView'; 
 import { useSubstitutedTranslation } from '~/components/util'; 
-import { use } from 'i18next';
-import { ca } from 'date-fns/locale';
-import { set } from 'date-fns';
-import { get } from 'http';
 
 
-export default function RankedBallotView({ onlyGrid = false }) {
+export default function RankedBallotView({ onlyGrid = false }: { onlyGrid?: boolean }) {
   const ballotContext = useContext(BallotContext);
   const { t } = useSubstitutedTranslation();
 

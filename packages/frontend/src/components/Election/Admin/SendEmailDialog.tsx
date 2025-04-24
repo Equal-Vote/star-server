@@ -1,13 +1,30 @@
-import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, MenuItem, Paper, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
-import { DateTime } from "luxon";
+import { Alert, Box, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material";
 import { useState } from "react";
 import useAuthSession from "~/components/AuthSessionContextProvider";
 import useElection from "~/components/ElectionContextProvider";
 import { PrimaryButton, SecondaryButton } from "~/components/styles";
 import { LabelledTextField, RowButtonWithArrow } from "~/components/util";
 import { useSendEmails } from "~/hooks/useAPI";
+import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
 
-export default ({open, onClose, onSubmit, targetedEmail=undefined, electionRoll=undefined}) => {
+
+interface SendEmailDialogProps {
+    open: boolean;
+    onClose: () => void;
+    onSubmit: (data: { subject: string, body: string, target: string }) => void;
+    targetedEmail?: string;
+    electionRoll?: ElectionRoll[]; // TODO: replace this with the official type
+}
+
+interface SelectFieldProps {
+    label: string;
+    value: string;
+    values: string[];
+    setter: (value: string) => void;
+    disabled?: boolean;
+}
+
+const SendEmailDialog = ({open, onClose, onSubmit, targetedEmail=undefined, electionRoll=undefined}:SendEmailDialogProps) => {
     const authSession = useAuthSession()
     const [audience, setAudience] = useState(targetedEmail? 'single' : 'all')
     const [templateChosen, setTemplateChosen] = useState(false)
@@ -17,7 +34,7 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined, electionRoll=
     const {election, t} = useElection();
     const sendEmails = useSendEmails(election.election_id)
 
-    const SelectField = ({label, value, values, setter, disabled=false}) => 
+    const SelectField = ({label, value, values, setter, disabled=false}: SelectFieldProps) => 
         <FormControlLabel control={
                 <Select value={value} sx={{width: '100%'}} onChange={(ev: SelectChangeEvent) => {
                     setter(ev.target.value as string)}
@@ -63,7 +80,7 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined, electionRoll=
         if(audience == 'has_not_voted') return electionRoll.filter(roll => !roll.submitted).length
     }
 
-    let warning: string = (() => {
+    const warning: string = (() => {
         if(election.state == 'draft')
             return t('emails.draft_warning')
         const currentTime = new Date();
@@ -99,6 +116,7 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined, electionRoll=
                                 key={i}
                                 title={t(`voters.email_form.${v}`, {voter_id: targetedEmail})}
                                 onClick={() => setTemplate(v)}
+                                ariaLabel='Email Template'
                             />
                         )}
                     </Box>
@@ -129,7 +147,7 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined, electionRoll=
                         <Divider/>
                         <SelectField
                             label='Audience'
-                            disabled={targetedEmail}
+                            disabled={!!targetedEmail}
                             value={audience}
                             values={targetedEmail? ['single']: ['all', 'has_voted', 'has_not_voted']}
                             setter={setAudience}
@@ -172,3 +190,5 @@ export default ({open, onClose, onSubmit, targetedEmail=undefined, electionRoll=
         </DialogActions>
     </Dialog>
 }
+
+export default SendEmailDialog

@@ -2,6 +2,7 @@ import { ballot, candidate, fiveStarCount, starResults, roundResults, starSummar
 
 import { getInitialData, makeAbstentionTest, makeBoundsTest, runBlocTabulator } from "./Util";
 import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
+import { getEntry } from "@equal-vote/star-vote-shared/domain_model/Util";
 export function Star(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], electionSettings?:ElectionSettings) {
   const [tallyVotes, initialSummaryData] = getInitialData<Omit<starSummaryData, 'fiveStarCounts'>>(
 		votes, candidates, randomTiebreakOrder, 'cardinal',
@@ -30,7 +31,17 @@ export function Star(candidates: string[], votes: ballot[], nWinners = 1, random
       tieBreakType: 'none',
     } as starResults,
     nWinners,
-    singleWinnerStar
+    singleWinnerStar,
+    // TODO: this uses index as the primary identifier, but we want to change this to id
+    // TODO: I want to store totalScores within the candidate object, then we can remove summaryData as an input
+    (candidate: candidate, roundResults: roundResults[], summaryData: starSummaryData) => ([
+      // sort first by winning round
+      roundResults.findIndex(round => round.winners[0].index == candidate.index),
+      // then by runner_up round
+      roundResults.findIndex(round => round.runner_up[0].index == candidate.index),
+      // then by totalScore
+      summaryData.totalScores.find(score => score.index == candidate.index)?.score ?? 0
+    ])
   )
 }
 
@@ -55,38 +66,34 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
   // In most elections this is a simple process, but for cases where there are ties we advance one candidate at a time
   // and resolve ties as they occur
   const finalists: candidate[] = []
-  scoreLoop: while (finalists.length < 2) {
+  outerLoop: while (finalists.length < 2) {
     const nCandidatesNeeded = 2 - finalists.length
     const eligibleCandidates = remainingCandidates.filter(c => !finalists.includes(c))
     const scoreWinners = getScoreWinners(summaryData, eligibleCandidates) // returns all winners tied for first place
 
     if (scoreWinners.length <= nCandidatesNeeded) {
       // when scoreWinners is less than candidate needed, but all can advance to runoff
-      finalists.push(...scoreWinners.map(sc => summaryData.candidates[sc.index]))
+      finalists.push(...scoreWinners.map(sc => getEntry(summaryData.candidates, sc.index, 'index')))
       scoreWinners.forEach(scoreWinner =>
         roundResults.logs.push({
           key: 'tabulation_logs.star.score_tiebreak_advance_to_runoff',
           name: scoreWinner.name,
-          score: summaryData.totalScores[scoreWinner.index].score
+          score: getEntry(summaryData.totalScores, scoreWinner.index, 'index').score
         })
       )
-      continue scoreLoop
+      continue outerLoop
     }
-    roundResults.logs.push({
-      key: 'tabulation_logs.star.scoring_round_tiebreaker_start',
-      names: scoreWinners.map(e => e.name),
-      score: summaryData.totalScores[scoreWinners[0].index].score,
-    });
     // Multiple candidates have top score, proceed to score tiebreaker
+    roundResults.logs.push({
+      // TODO: i18n should infer one vs two automatically from count, not sure why it's not working
+      key: `tabulation_logs.star.scoring_round_tiebreaker_start_${(finalists.length+1) == 1 ? 'one' : 'two'}`,
+      names: scoreWinners.map(c => c.name),
+      score: getEntry(summaryData.totalScores, scoreWinners[0].index, 'index').score,
+      count: finalists.length+1,
+    });
+
     let tiedCandidates = scoreWinners
-    tieLoop: while (tiedCandidates.length > 1) {
-      if(tiedCandidates.length < scoreWinners.length){ // hack to avoid being redundant with the log above
-        roundResults.logs.push({
-          key: 'tabulation_logs.star.scoring_round_tiebreaker_start',
-          names: tiedCandidates.map(c => c.name),
-          score: summaryData.totalScores[tiedCandidates[0].index].score
-        });
-      }
+    pairwiseLoop: while (tiedCandidates.length > 1) {
       // Get candidates with the most head to head losses
       let {headToHeadLosers, losses} = getHeadToHeadLosers(summaryData, tiedCandidates)
       if (headToHeadLosers.length < tiedCandidates.length) {
@@ -100,21 +107,21 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
           })
         )
         tiedCandidates = tiedCandidates.filter(c => !headToHeadLosers.includes(c))
-        continue tieLoop
+        continue pairwiseLoop
       }
       // All tied candidates have the same number of head to head lossess
       if (nCandidatesNeeded === 2 && tiedCandidates.length === 2) {
         // Tie between two candidates, but both can advance to runoff
-        finalists.push(...tiedCandidates)
-        tiedCandidates.forEach(c =>
+        tiedCandidates.forEach(c => {
           roundResults.logs.push({
             key: 'tabulation_logs.star.pairwise_tiebreak_advance_to_runoff',
             names: c.name,
             count: losses,
             n_tied_candidates: tiedCandidates.length
           })
-        )
-        continue scoreLoop
+          finalists.push(c)
+        })
+        continue outerLoop
       }
       // Proceed to five star tiebreaker
       roundResults.logs.push({
@@ -135,7 +142,7 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
         );
         finalists.push(fiveStarCounts[0].candidate)
         finalists.push(fiveStarCounts[1].candidate)
-        continue scoreLoop
+        continue outerLoop
       }
       if (fiveStarCounts[0].counts > fiveStarCounts[1].counts) {
         // First has more five star counts than the rest, advance them to runoff
@@ -145,7 +152,7 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
           five_star_count: fiveStarCounts[0].counts,
         });
         finalists.push(fiveStarCounts[0].candidate)
-        continue scoreLoop
+        continue outerLoop
       }
 
       // No five star winner, try to find five star losers instead
@@ -160,7 +167,7 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
           })
         )
         tiedCandidates = tiedCandidates.filter(c => !fiveStarLoserCounts.map(f => f.candidate).includes(c))
-        continue tieLoop
+        continue pairwiseLoop
       }
 
       roundResults.logs.push({
@@ -176,12 +183,18 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
         name: randomWinner.name
       })
       finalists.push(randomWinner)
-      continue scoreLoop
+      continue outerLoop
     }
 
-    // NOTE: I'm pretty sure these 2 lines are unreachable
-    //       the above loop will always push to finalists where possible, and then continue to scoreLoop
-    roundResults.logs.push(`${tiedCandidates[0].name} wins score tiebreaker and advances to the runoff round.`)
+
+    // NOTE: we can only get here if the tiedCandidates.length > 1 condition fails
+    //       so we know there's exactly one tied candidate
+    roundResults.logs.push({
+      // TODO: i18n should infer one vs two automatically from count, not sure why it's not working
+      key: `tabulation_logs.star.tiebreak_advance_${finalists.length+1 == 1 ? 'one' : 'two'}`,
+      count: finalists.length+1,
+      name: tiedCandidates[0].name,
+    });
     finalists.push(tiedCandidates[0])
   }
 
@@ -258,7 +271,7 @@ export function singleWinnerStar(remainingCandidates: candidate[], summaryData: 
   roundResults.logs.push({
     key: 'tabulation_logs.star.score_tiebreak_end',
     names: finalists.map(f => f.name),
-    score: summaryData.totalScores[finalists[0].index].score,
+    score: getEntry(summaryData.totalScores, finalists[0].index, 'index').score,
   })
 
   // Five-star tiebreaker is enabled, look for candidate with most 5 star votes
@@ -304,7 +317,7 @@ function getScoreWinners(summaryData: starSummaryData, eligibleCandidates: candi
 
   // Sort candidate total scores 
   const eligibleCandidateScores: totalScore[] = []
-  eligibleCandidates.forEach((c) => eligibleCandidateScores.push(summaryData.totalScores[c.index]))
+  eligibleCandidates.forEach((c) => eligibleCandidateScores.push(getEntry(summaryData.totalScores, c.index, 'index')))
   const sortedScores = eligibleCandidateScores.sort((a: totalScore, b: totalScore) => {
     if (a.score > b.score) return -1
     if (a.score < b.score) return 1
@@ -313,10 +326,10 @@ function getScoreWinners(summaryData: starSummaryData, eligibleCandidates: candi
 
   // Return all candidates that tie for top score
   const topScore = sortedScores[0]
-  const scoreWinners = [summaryData.candidates[topScore.index]]
+  const scoreWinners = [getEntry(summaryData.candidates, topScore.index, 'index')]
   for (let i = 1; i < sortedScores.length; i++) {
     if (sortedScores[i].score === topScore.score) {
-      scoreWinners.push(summaryData.candidates[sortedScores[i].index])
+      scoreWinners.push(getEntry(summaryData.candidates, sortedScores[i].index, 'index'))
     }
   }
   return scoreWinners
@@ -324,10 +337,10 @@ function getScoreWinners(summaryData: starSummaryData, eligibleCandidates: candi
 
 function runRunoffTiebreaker(summaryData: starSummaryData, runoffCandidates: candidate[]) {
   // Search for candidate with highest score between two runoff candidates
-  if (summaryData.totalScores[runoffCandidates[0].index].score > summaryData.totalScores[runoffCandidates[1].index].score) {
+  if (getEntry(summaryData.totalScores, runoffCandidates[0].index, 'index').score > getEntry(summaryData.totalScores, runoffCandidates[1].index, 'index').score) {
     return 0
   }
-  if (summaryData.totalScores[runoffCandidates[0].index].score < summaryData.totalScores[runoffCandidates[1].index].score) {
+  if (getEntry(summaryData.totalScores, runoffCandidates[0].index, 'index').score < getEntry(summaryData.totalScores, runoffCandidates[1].index, 'index').score) {
     return 1
   }
   return null
@@ -376,7 +389,7 @@ function getFiveStarCounts(summaryData: starSummaryData, tiedCandidates: candida
   const fiveStarCounts: fiveStarCount[] = []
   tiedCandidates.forEach((candidate) => {
     fiveStarCounts.push(
-      summaryData.fiveStarCounts[candidate.index]
+      getEntry(summaryData.fiveStarCounts, candidate.index, (item: fiveStarCount) => item.candidate.index)
     )
   })
   fiveStarCounts.sort((a, b) => b.counts - a.counts)

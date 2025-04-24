@@ -1,25 +1,23 @@
-import { useEffect, useState, useContext } from "react"
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useEffect, useState } from "react"
+import { useLocation, useNavigate } from "react-router";
 import React from 'react'
-import Button from "@mui/material/Button";
 import Container from '@mui/material/Container';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
 import EditElectionRoll from "./EditElectionRoll";
 import AddElectionRoll from "./AddElectionRoll";
 import PermissionHandler from "../../PermissionHandler";
 import { Typography } from "@mui/material";
 import EnhancedTable, { HeadKey }  from "./../../EnhancedTable";
-import { useGetRolls, useSendEmails, useSendInvites } from "../../../hooks/useAPI";
+import { useGetRolls, useSendEmails } from "../../../hooks/useAPI";
 import useElection from "../../ElectionContextProvider";
 import useFeatureFlags from "../../FeatureFlagContextProvider";
 import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
 import SendEmailDialog from "./SendEmailDialog";
-import { PrimaryButton, SecondaryButton } from "~/components/styles";
+import { SecondaryButton } from "~/components/styles";
 
 
 const ViewElectionRolls = () => {
     const { election, permissions } = useElection()
-    const { data, isPending, error, makeRequest: fetchRolls } = useGetRolls(election.election_id)
+    const { data, isPending, makeRequest: fetchRolls } = useGetRolls(election.election_id)
     const sendEmails = useSendEmails(election.election_id)
     useEffect(() => { fetchRolls() }, [])
     const [isEditing, setIsEditing] = useState(false)
@@ -70,7 +68,7 @@ const ViewElectionRolls = () => {
         setEditedRoll(currentRoll => results.electionRoll.find(roll => roll.voter_id === currentRoll.voter_id))
     }
 
-    let headKeys:HeadKey[] = (election.settings.invitation === 'email')?
+    const headKeys:HeadKey[] = (election.settings.invitation === 'email')?
         ['email', /*'invite_status', */'has_voted']
     :
         ['email', 'has_voted'];
@@ -80,7 +78,7 @@ const ViewElectionRolls = () => {
     // HACK to detect if they used email
     if(data && data.electionRoll && data.electionRoll.length > 0 && !data.electionRoll[0].email) headKeys.unshift('voter_id')
 
-    let electionRollData = React.useMemo(
+    const electionRollData = React.useMemo(
         () => data?.electionRoll ? [...data.electionRoll] : [],
         [data]
     );
@@ -108,7 +106,7 @@ const ViewElectionRolls = () => {
                         defaultSortBy={headKeys[0]}
                         title="Voters"
                         handleOnClick={(voter) => onOpen(voter)}
-                        emptyContent={<p>This election doesn't have any voters yet</p>}
+                        emptyContent={<p>This election doesn&apos;t have any voters yet</p>}
                     />
                 </>
             }

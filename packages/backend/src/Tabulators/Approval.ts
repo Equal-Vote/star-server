@@ -23,7 +23,13 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
 			tieBreakType: 'none',
 		} as approvalResults,
 		nWinners,
-		singleWinnerApproval
+		singleWinnerApproval,
+    (candidate: candidate, roundResults: roundResults[], summaryData: approvalSummaryData) => {
+      console.log(summaryData.totalScores, candidate.name, summaryData.totalScores.find(score => score.index == candidate.index)?.score ?? 0)
+      return [
+        summaryData.totalScores.find(score => score.index == candidate.index)?.score ?? 0
+      ]
+    }
 	)
 }
 

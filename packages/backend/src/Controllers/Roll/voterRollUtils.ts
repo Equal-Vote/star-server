@@ -91,7 +91,7 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
         Logger.error(req, "Email does not match saved election roll", electionRollEntries);
         throw new Unauthorized('Email does not match saved election roll');
     }
-    if (election.settings.voter_authentication.voter_id && electionRollEntries[0].voter_id !== voter_id) {
+    if (election.settings.voter_authentication.voter_id && electionRollEntries[0].voter_id.trim() !== voter_id.trim()) {
         // Voter ID does not match saved election roll, for example if email and voter ID are selected but email doesn't match the voter ID 
         Logger.error(req, "Voter ID does not match saved election roll", electionRollEntries);
         throw new Unauthorized('Voter ID does not match saved voter roll');

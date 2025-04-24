@@ -1,5 +1,3 @@
-import React, { useEffect } from 'react'
-import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { Paper } from "@mui/material";
@@ -9,7 +7,6 @@ import { useSubstitutedTranslation } from '../util';
 import useElection from '../ElectionContextProvider';
 import DraftWarning from "./DraftWarning";
 import SupportBlurb from './SupportBlurb';
-import { Support } from '@mui/icons-material';
 import { PrimaryButton, SecondaryButton } from '../styles';
 
 const ElectionHome = () => {
@@ -75,7 +72,7 @@ const ElectionHome = () => {
               voterAuth.has_voted == false && voterAuth.authorized_voter && !voterAuth.required &&
 
               <Box display='flex' flexDirection='column' alignItems='center' gap={5} sx={{ p: 1}}>
-                <PrimaryButton fullWidth href={`/${String(election?.election_id)}/vote`} >
+                <PrimaryButton fullWidth href={`/${String(election?.election_id)}/vote`} name='vote' >
                   <Typography align='center' variant="h3" component="h3" fontWeight='bold' sx={{ p: 2 }}>
                     {t('election_home.vote')}
                   </Typography>
@@ -86,12 +83,11 @@ const ElectionHome = () => {
                 </SecondaryButton>
                 }
               </Box>
-            }
-          </>}
-
+              }
+            </>}
           {election.state === 'draft' && <>
             <Box display='flex' flexDirection='column' alignItems='center' gap={3} sx={{ p: 1}}>
-              <PrimaryButton fullWidth href={`/${String(election?.election_id)}/vote`} >
+              <PrimaryButton fullWidth href={`/${String(election?.election_id)}/vote`} name='vote' >
                 <Typography align='center' variant="h3" component="h3" fontWeight='bold' sx={{ p: 2 }}>
                   {t('election_home.vote')}
                 </Typography>

@@ -1,4 +1,3 @@
-import React from 'react'
 import { useState } from "react"
 import Typography from '@mui/material/Typography';
 import { Box, Paper, Tooltip } from "@mui/material"
@@ -11,11 +10,20 @@ import { useEditRace } from './useEditRace';
 import RaceForm from './RaceForm';
 import useElection from '../../ElectionContextProvider';
 import { ContentCopy } from '@mui/icons-material';
+import { Race as IRace } from "@equal-vote/star-vote-shared/domain_model/Race";
 
-export default function Race({ race, race_index }) {
+export interface NewRace extends Omit<IRace, 'voting_method'> {
+    voting_method: "STAR" | "STAR_PR" | "Approval" | "RankedRobin" | "IRV" | "Plurality" | "STV" | ""
+}
+interface RaceProps {
+    race: IRace
+    race_index: number
+}
+
+export default function Race({ race, race_index }: RaceProps) {
 
     const { election } = useElection()
-    const { editedRace, errors, setErrors, applyRaceUpdate, onSaveRace, onDeleteRace, onAddRace, onDuplicateRace } = useEditRace(race, race_index)
+    const { editedRace, errors, setErrors, applyRaceUpdate, onSaveRace, onDeleteRace, onDuplicateRace } = useEditRace(race, race_index)
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -47,7 +55,7 @@ export default function Race({ race, race_index }) {
                 <Box sx={{ flexShrink: 1, p: 1 }}>
                     <Tooltip title='Duplicate'>
                         <IconButton
-                            aria-label="copy"
+                            aria-label='Duplicate'
                             onClick={onCopy}
                             disabled={election.state !== 'draft'}>
                             <ContentCopy />
@@ -57,7 +65,7 @@ export default function Race({ race, race_index }) {
                 <Box sx={{ flexShrink: 1, p: 1 }}>
                     <Tooltip title='Edit'>
                         <IconButton
-                            aria-label="edit"
+                            aria-label={`Edit Race: ${race.title}`}
                             onClick={handleOpen}>
                             {election.state === 'draft' ? <EditIcon /> : <VisibilityIcon />}
                         </IconButton>
@@ -66,7 +74,7 @@ export default function Race({ race, race_index }) {
                 <Box sx={{ flexShrink: 1, p: 1 }}>
                     <Tooltip title='Delete'>
                         <IconButton
-                            aria-label="delete"
+                            aria-label={`Delete Race: ${race.title}`}
                             color="error"
                             onClick={onDeleteRace}
                             disabled={election.state !== 'draft'}>
@@ -80,7 +88,6 @@ export default function Race({ race, race_index }) {
               onSaveRace={onSave}
               open={open}
               handleClose={handleClose}
-              editedRace={editedRace}
               resetStep={resetStep}
             >
                 <RaceForm

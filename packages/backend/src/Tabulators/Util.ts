@@ -202,7 +202,8 @@ export const getInitialData = <SummaryType,>(
 export const runBlocTabulator = <ResultsType extends genericResults, SummaryType extends genericSummaryData,>(
 	results: ResultsType,
 	nWinners: number,
-	singleWinnerCallback: (remainingCandidates: candidate[], summaryData: SummaryType) => roundResults
+	singleWinnerCallback: (remainingCandidates: candidate[], summaryData: SummaryType) => roundResults,
+  evaluate?: (candidate: candidate, roundResults: roundResults[], summaryData: SummaryType) => number[]
 ) => {
   let remainingCandidates = [...results.summaryData.candidates];
 
@@ -223,6 +224,25 @@ export const runBlocTabulator = <ResultsType extends genericResults, SummaryType
   }
 
   results.other = remainingCandidates.map(c => results.summaryData.candidates[c.index]); // remaining candidates in sortedScores
+
+  if(evaluate){
+    // evaulate() converts candidates into an number[] of evaluation scores
+    // candidates with higher evaluation scores will be sorted higher
+    // index 0 is checked first, then further indexes are checked to break ties
+
+    results.summaryData.candidates = 
+      results.summaryData.candidates
+        .map(c => ([c, evaluate(c, results.roundResults, results.summaryData as SummaryType)] as [candidate, number[]]))
+        .sort(([_, a]: [candidate, number[]], [__, b] : [candidate, number[]]) => {
+          const compare = (a: number[], b: number[], i: number): number => {
+            if(i > a.length || i > b.length) return 0;
+            let diff = -(a[i] - b[i]);
+            return diff == 0 ? compare(a, b, i+1) : diff;
+          };
+          return compare(a, b, 0)
+        }) 
+        .map(([c, _]) => c)
+  }
 
   return results
 }

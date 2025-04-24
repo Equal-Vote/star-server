@@ -1,7 +1,6 @@
-import React from 'react'
 import Container from '@mui/material/Container';
 import ViewElectionRolls from "./ViewElectionRolls";
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import EditRoles from './EditRoles';
 import ViewBallots from './ViewBallots';
 import AdminHome from './AdminHome';

@@ -3,7 +3,12 @@ import React from "react";
 import { useState } from 'react';
 import Pages from "./Pages";
 
-const WinnerResultPages = ({ children, numWinners }) => {
+interface WinnerResultPagesProps {
+  children: React.ReactNode | React.ReactNode[]; // Allow both single child and array of children
+  numWinners: number; 
+}
+
+const WinnerResultPages = ({ children, numWinners }: WinnerResultPagesProps) => {
   const [page, setPage] = useState(1);
   const currentTab = page - 1;
 
@@ -11,7 +16,7 @@ const WinnerResultPages = ({ children, numWinners }) => {
 
   return (
     < Pages
-      pageCount={numWinners} page={page} setPage={setPage} title={false}
+      pageCount={numWinners} page={page} setPage={setPage} 
     >
       {childArray.map((child, i) => (
         <Box

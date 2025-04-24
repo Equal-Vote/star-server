@@ -1,34 +1,45 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { Dispatch, useCallback, useMemo, useRef } from 'react'
 import { useState } from "react"
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate"
-import AddCandidate, { CandidateForm } from "../Candidates/AddCandidate"
-import EditIcon from '@mui/icons-material/Edit';
+import { CandidateForm } from "../Candidates/AddCandidate"
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from '@mui/material/Typography';
-import { Box, FormHelperText, Radio, RadioGroup, Stack, Step, StepButton, StepConnector, StepContent, StepLabel, Stepper } from "@mui/material"
+import { Box, FormHelperText, Radio, RadioGroup, Stack, Step, StepButton, StepContent, Stepper } from "@mui/material"
 import IconButton from '@mui/material/IconButton'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-import { methodValueToTextKey, scrollToElement, useSubstitutedTranslation } from '../../util';
+import { methodValueToTextKey, useSubstitutedTranslation } from '../../util';
 import useElection from '../../ElectionContextProvider';
 import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
 import { SortableList } from '~/components/DragAndDrop';
-import useSnackbar from '~/components/SnackbarContext';
+import { NewRace } from './Race';
+import { RaceErrors } from './useEditRace';
+
+interface RaceFormProps {
+    race_index: number;
+    editedRace: NewRace;
+    errors: RaceErrors;
+    setErrors: Dispatch<React.SetStateAction<RaceErrors>>;
+    applyRaceUpdate: (update: (race: NewRace) => void) => void;
+    activeStep: number;
+    setActiveStep: (step: number) => void;
+}
 
 export default function RaceForm({
   race_index, editedRace, errors, setErrors, applyRaceUpdate,
   activeStep, setActiveStep
-}) {
+}: RaceFormProps) {
     const {t} = useSubstitutedTranslation();
     const flags = useFeatureFlags();
     const [showsAllMethods, setShowsAllMethods] = useState(false)
     const { election } = useElection()
     const PR_METHODS = ['STV', 'STAR_PR'];
+    const isDisabled = election.state !== 'draft';
     const [methodFamily, setMethodFamily] = useState(
         editedRace.num_winners == 1?
             'single_winner'
@@ -41,7 +52,7 @@ export default function RaceForm({
     )
     const confirm = useConfirm();
     const inputRefs = useRef([]);
-    const ephemeralCandidates = useMemo(() => 
+    const ephemeralCandidates:Candidate[] = useMemo(() => 
         [...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }], 
         [editedRace.candidates]
     );   
@@ -55,9 +66,10 @@ export default function RaceForm({
             }
         });
 
-        setErrors(prev => ({ ...prev, candidates: '', raceNumWinners: '' }));
+        setErrors((prev: RaceErrors) => ({ ...prev, candidates: '', raceNumWinners: '' }));
     }, [applyRaceUpdate, setErrors]);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleChangeCandidates = useCallback((newCandidateList: any[]) => {
         //remove the last candidate if it is empty
         if (newCandidateList.length > 1 && newCandidateList[newCandidateList.length - 1].candidate_name === '') {
@@ -83,8 +95,8 @@ export default function RaceForm({
         }
     }, [confirm, editedRace.candidates.length, applyRaceUpdate, setErrors]);
     // Handle tab and shift+tab to move focus between candidates
-    const handleKeyDown = useCallback((event, index) => {
-        
+    const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+        const target = event.target as HTMLInputElement;
         if (event.key === 'Tab' && event.shiftKey) {
             // Move focus to the previous candidate
             event.preventDefault();
@@ -98,7 +110,7 @@ export default function RaceForm({
             if (nextIndex < ephemeralCandidates.length && inputRefs.current[nextIndex]) {
                 inputRefs.current[nextIndex].focus();
             }
-        } else if (event.key === 'Backspace' && event.target.value === '' && index > 0) {
+        } else if (event.key === 'Backspace' && target.value === '' && index > 0) {
             // Move focus to the previous candidate when backspacing on an empty candidate
             event.preventDefault();
             inputRefs.current[index - 1].focus();
@@ -110,8 +122,8 @@ export default function RaceForm({
         }
     }, [ephemeralCandidates.length, applyRaceUpdate]);
 
-    const MethodBullet = ({value}) => <>
-        <FormControlLabel value={value} control={<Radio />} label={t(`edit_race.methods.${methodValueToTextKey[value]}.title`)} sx={{ mb: 0, pb: 0 }} />
+    const MethodBullet = ({value, disabled}: {value: string, disabled: boolean}) => <>
+        <FormControlLabel value={value} disabled={disabled} control={<Radio />} label={t(`edit_race.methods.${methodValueToTextKey[value]}.title`)} sx={{ mb: 0, pb: 0 }} />
         <FormHelperText sx={{ pl: 4, mt: -1 }}>
             {t(`edit_race.methods.${methodValueToTextKey[value]}.description`)}
         </FormHelperText>
@@ -123,6 +135,7 @@ export default function RaceForm({
                 <Grid item xs={12} sx={{ m: 0, p: 1 }}>
                     <TextField
                         id={`race-title-${String(race_index)}`}
+                        disabled={isDisabled}
                         name="title"
                         label="Title"
                         type="text"
@@ -149,6 +162,7 @@ export default function RaceForm({
                         id={`race-description-${String(race_index)}`}
                         name="description"
                         label="Description"
+                        disabled={isDisabled}
                         multiline
                         fullWidth
                         type="text"
@@ -175,6 +189,7 @@ export default function RaceForm({
                             id={`race-precincts-${String(race_index)}`}
                             name="precincts"
                             label="Precincts"
+                            disabled={isDisabled}
                             fullWidth
                             multiline
                             type="text"
@@ -198,7 +213,7 @@ export default function RaceForm({
 
             <Stepper nonLinear activeStep={activeStep} orientation="vertical" sx={{my: 3}}>
                 <Step>
-                    <StepButton onClick={() => setActiveStep(0)}>
+                    <StepButton aria-label='Method Family' onClick={() => setActiveStep(0)}>
                         {t('edit_race.how_many_winners')}
                         &nbsp;
                         {editedRace.num_winners == 1 ?
@@ -227,6 +242,7 @@ export default function RaceForm({
                         >
                             <FormControlLabel
                                 value="single_winner"
+                                disabled= {isDisabled}
                                 control={<Radio />}
                                 label={t('edit_race.single_winner')}
                                 sx={{ mb: 0, pb: 0 }}
@@ -239,6 +255,7 @@ export default function RaceForm({
                             />
                             <FormControlLabel
                                 value="bloc_multi_winner"
+                                disabled= {isDisabled}
                                 control={<Radio />}
                                 label={t('edit_race.bloc_multi_winner')}
                                 sx={{ mb: 0, pb: 0 }}
@@ -251,6 +268,7 @@ export default function RaceForm({
                             />
                             <FormControlLabel
                                 value="proportional_multi_winner"
+                                disabled= {isDisabled}
                                 control={<Radio />}
                                 label={t('edit_race.proportional_multi_winner')}
                                 sx={{ mb: 0, pb: 0 }}
@@ -269,16 +287,16 @@ export default function RaceForm({
                             transition: 'height .4s, opacity .7s',
                             maxWidth: '300px'
                         }}>
-                            <Typography gutterBottom component="p" sx={{marginTop: 2}}>
+                            <Typography id="num-winners-label" gutterBottom component="p" sx={{marginTop: 2}}>
                                 <b>{t('edit_race.number_of_winners')}</b>
                             </Typography>
                             <TextField
                                 id={`num-winners-${String(race_index)}`}
-                                name="Number Of Winners"
                                 type="number"
                                 InputProps={{
                                     inputProps: { 
-                                        min: 2 
+                                        min: 2,
+                                        "aria-labelledby": "num-winners-label",
                                     }
                                 }}
                                 fullWidth
@@ -309,16 +327,18 @@ export default function RaceForm({
                         <FormControl component="fieldset" variant="standard">
                             <RadioGroup
                                 aria-labelledby="voting-method-radio-group"
+                                
                                 name="voter-method-radio-buttons-group"
                                 value={editedRace.voting_method}
-                                onChange={(e) => applyRaceUpdate(race => { race.voting_method = e.target.value })}
+                                onChange={(e) => applyRaceUpdate(race => { race.voting_method = e.target.value as NewRace['voting_method'] })}
+                                
                             >
                                 {methodFamily == 'proportional_multi_winner' ?
-                                    <MethodBullet value='STAR_PR'/>
+                                    <MethodBullet value='STAR_PR' disabled={isDisabled}/>
                                 : <>
-                                    <MethodBullet value='STAR'/>
-                                    <MethodBullet value='RankedRobin'/>
-                                    <MethodBullet value='Approval'/>
+                                    <MethodBullet value='STAR' disabled={isDisabled}/>
+                                    <MethodBullet value='RankedRobin' disabled={isDisabled}/>
+                                    <MethodBullet value='Approval' disabled={isDisabled}/>
                                 </>}
 
                                 <Box
@@ -328,14 +348,14 @@ export default function RaceForm({
                                     sx={{ width: '100%', ml: -1 }}>
 
                                     {!showsAllMethods &&
-                                        <IconButton aria-label="Home" onClick={() => { setShowsAllMethods(true) }}>
+                                        <IconButton aria-labelledby='more-options' disabled={election.state != 'draft'} onClick={() => { setShowsAllMethods(true) }}>
                                             <ExpandMore />
                                         </IconButton>}
                                     {showsAllMethods &&
-                                        <IconButton aria-label="Home" onClick={() => { setShowsAllMethods(false) }}>
+                                        <IconButton aria-label='more-options'disabled={election.state != 'draft'} onClick={() => { setShowsAllMethods(false) }}>
                                             <ExpandLess />
                                         </IconButton>}
-                                    <Typography variant="body1" >
+                                    <Typography variant="body1" id={'more-options'} >
                                         More Options
                                     </Typography>
                                 </Box>
@@ -359,10 +379,10 @@ export default function RaceForm({
 
 
                                     {methodFamily == 'proportional_multi_winner' ?
-                                        <MethodBullet value='STV'/>
+                                        <MethodBullet value='STV' disabled={isDisabled}/>
                                     : <>
-                                        <MethodBullet value='Plurality'/>
-                                        <MethodBullet value='IRV'/>
+                                        <MethodBullet value='Plurality' disabled={isDisabled}/>
+                                        <MethodBullet value='IRV' disabled={isDisabled}/>
                                     </>}
 
                                 </Box>
@@ -385,7 +405,7 @@ export default function RaceForm({
             <Stack spacing={2}>
                 {
                     <SortableList
-                        items={ephemeralCandidates}
+                        items={election.state === 'draft' ? ephemeralCandidates : editedRace.candidates}
                         identifierKey="candidate_id"
                         onChange={handleChangeCandidates}
                         renderItem={(candidate, index) => (
@@ -396,9 +416,10 @@ export default function RaceForm({
                                     candidate={candidate}
                                     index={index}
                                     onDeleteCandidate={() => onDeleteCandidate(index)}
-                                    disabled={ephemeralCandidates.length - 1 === index}
-                                    inputRef={el => inputRefs.current[index] = el}
-                                    onKeyDown={event => handleKeyDown(event, index)}/>
+                                    disabled={ephemeralCandidates.length - 1 === index || election.state !== 'draft'}
+                                    inputRef={(el:React.MutableRefObject<HTMLInputElement[]>) => inputRefs.current[index] = el}
+                                    onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(event, index)}
+                                    electionState={election.state}/>
                             </SortableList.Item>
                         )}
                     />
