@@ -1,18 +1,20 @@
-import { approvalResults, approvalSummaryData, ballot, candidate, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { approvalResults, approvalCandidate, approvalSummaryData, candidate, roundResults, vote, } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { commaListFormatter, getInitialData, makeBoundsTest, makeAbstentionTest, runBlocTabulator } from "./Util";
 import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
-export function Approval(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings) {
-  const [_, summaryData] = getInitialData<approvalSummaryData>(
-		votes, candidates, randomTiebreakOrder, 'cardinal',
+export function Approval(candidates: candidate[], votes: vote[], nWinners = 1, electionSettings?:ElectionSettings) {
+  const [_, summaryData] = getInitialData<approvalCandidate, approvalSummaryData>(
+		candidates.map(c => ({...c, score: 0})),
+    votes, 'cardinal',
 		[
 			makeBoundsTest(0, 1),
 			makeAbstentionTest(null),
-		]
-	)
+		],
+    'score',
+	);
 
-	return runBlocTabulator<approvalResults, approvalSummaryData>(
+	return runBlocTabulator<approvalCandidate, approvalSummaryData, approvalResults>(
 		{
 			votingMethod: 'Approval',
 			elected: [],
@@ -24,26 +26,14 @@ export function Approval(candidates: string[], votes: ballot[], nWinners = 1, ra
 		} as approvalResults,
 		nWinners,
 		singleWinnerApproval,
-    (candidate: candidate, roundResults: roundResults[], summaryData: approvalSummaryData) => {
-      console.log(summaryData.totalScores, candidate.name, summaryData.totalScores.find(score => score.index == candidate.index)?.score ?? 0)
-      return [
-        summaryData.totalScores.find(score => score.index == candidate.index)?.score ?? 0
-      ]
-    }
+    (candidate: approvalCandidate) => ([candidate.score])
 	)
 }
 
-const singleWinnerApproval = (remainingCandidates: candidate[], summaryData: approvalSummaryData): roundResults => {
-  const candidates = summaryData.candidates;
+const singleWinnerApproval = (remainingCandidates: approvalCandidate[], summaryData: approvalSummaryData): roundResults => {
 
-  let scoresLeft = remainingCandidates.map(c => summaryData.totalScores.find(s => s.index == c.index)) as totalScore[];
-  scoresLeft.sort((a:totalScore, b:totalScore) => -(a.score-b.score));
-
-  let topScore = scoresLeft[0];
-  let tiedCandidates = scoresLeft
-    .filter(s => s.score == topScore.score)
-    .map(s => candidates[s.index]);
-  let winner = candidates[topScore.index];
+  let winner = remainingCandidates[0];
+  let tiedCandidates = remainingCandidates.filter(c => c.score == winner.score);
 
   return {
     winners: [winner],

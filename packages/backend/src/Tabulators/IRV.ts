@@ -1,4 +1,4 @@
-import { ballot, candidate, irvResults, irvRoundResults, irvSummaryData, nonNullBallot } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { candidate, irvResults, irvSummaryData, nonNullBallot, vote } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { getInitialData, makeAbstentionTest, makeBoundsTest } from "./Util";
 import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
@@ -13,15 +13,15 @@ type weightedVote = {
     vote: nonNullBallot,
 }
 
-export function IRV(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder: number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings) {
-    return IRV_STV(candidates, votes, nWinners, randomTiebreakOrder, breakTiesRandomly, electionSettings, false)
+export function IRV(candidates: candidate[], votes: vote[], nWinners = 1, electionSettings?:ElectionSettings) {
+    return IRV_STV(candidates, votes, nWinners, electionSettings, false)
 }
 
-export function STV(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder: number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings) {
-    return IRV_STV(candidates, votes, nWinners, randomTiebreakOrder, breakTiesRandomly, electionSettings, true)
+export function STV(candidates: candidate[], votes: vote[], nWinners = 1, electionSettings?:ElectionSettings) {
+    return IRV_STV(candidates, votes, nWinners, electionSettings, true)
 }
 
-export function IRV_STV(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder: number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings, proportional = true) {
+export function IRV_STV(candidates: candidate[], votes: vote[], nWinners = 1, electionSettings?:ElectionSettings, proportional = true) {
 
     const [tallyVotes, summaryData] = getInitialData<Omit<irvSummaryData, 'nExhaustedViaOverVote' | 'nExhaustedViaSkippedRank' | 'nExhaustedViaDuplicateRank'>>(
 		votes, candidates, randomTiebreakOrder, 'ordinal',

@@ -1,9 +1,9 @@
-import { approvalSummaryData, ballot, candidate, pluralityResults, pluralitySummaryData, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { approvalSummaryData, candidate, pluralityResults, pluralitySummaryData, roundResults, vote } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { commaListFormatter, getInitialData, makeBoundsTest, makeAbstentionTest, runBlocTabulator } from "./Util";
 import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
-export function Plurality(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings) {
+export function Plurality(candidates: candidate[], votes: vote[], nWinners = 1, electionSettings?:ElectionSettings) {
   breakTiesRandomly = true // hard coding this for now
 
   const [_, summaryData] = getInitialData<pluralitySummaryData>(

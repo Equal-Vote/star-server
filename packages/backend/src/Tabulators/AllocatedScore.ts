@@ -1,4 +1,4 @@
-import { ballot, candidate, fiveStarCount, allocatedScoreResults, allocatedScoreSummaryData, totalScore, nonNullBallot } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { candidate, allocatedScoreResults, allocatedScoreSummaryData, totalScore, nonNullBallot, vote } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 const Fraction = require('fraction.js');
 import { sortByTieBreakOrder } from "./Star";
@@ -14,7 +14,7 @@ interface winner_scores {
 
 type ballotFrac = typeof Fraction[]
 
-export function AllocatedScore(candidates: string[], votes: ballot[], nWinners = 3, randomTiebreakOrder: number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings) {
+export function AllocatedScore(candidates: candidate[], votes: vote[], nWinners = 3, electionSettings?:ElectionSettings) {
     const [tallyVotes, initialSummaryData] =
     getInitialData<Omit<allocatedScoreSummaryData,'splitPoints' | 'spentAboves' | 'weight_on_splits' | 'weightedScoresByRound'>>(
 		votes, candidates, randomTiebreakOrder, 'cardinal',

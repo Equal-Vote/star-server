@@ -1,9 +1,9 @@
-import { ballot, candidate, rankedRobinResults, rankedRobinSummaryData, roundResults, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { ballot, candidate, rankedRobinResults, rankedRobinSummaryData, roundResults, vote } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 import { sortByTieBreakOrder } from "./Star";
-import { getInitialData, makeAbstentionTest, makeBoundsTest, runBlocTabulator, sortTotalScores } from "./Util";
+import { getInitialData, makeAbstentionTest, makeBoundsTest, runBlocTabulator } from "./Util";
 import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
-export function RankedRobin(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], breakTiesRandomly = true, electionSettings?:ElectionSettings) {
+export function RankedRobin(candidates: candidate[], votes: vote[], nWinners = 1, electionSettings?:ElectionSettings) {
   breakTiesRandomly = true // hard coding this for now
 
   const [_, summaryData] = getInitialData<rankedRobinSummaryData>(

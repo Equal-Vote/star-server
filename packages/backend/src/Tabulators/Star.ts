@@ -1,9 +1,9 @@
-import { ballot, candidate, fiveStarCount, starResults, roundResults, starSummaryData, totalScore } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { candidate, fiveStarCount, starResults, roundResults, starSummaryData, totalScore, starCandidate, vote, rawVote } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 import { getInitialData, makeAbstentionTest, makeBoundsTest, runBlocTabulator } from "./Util";
 import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 import { getEntry } from "@equal-vote/star-vote-shared/domain_model/Util";
-export function Star(candidates: string[], votes: ballot[], nWinners = 1, randomTiebreakOrder:number[] = [], electionSettings?:ElectionSettings) {
+export function Star(candidates: starCandidate[], votes: rawVote[], nWinners = 1, electionSettings?:ElectionSettings) {
   const [tallyVotes, initialSummaryData] = getInitialData<Omit<starSummaryData, 'fiveStarCounts'>>(
 		votes, candidates, randomTiebreakOrder, 'cardinal',
 		[
