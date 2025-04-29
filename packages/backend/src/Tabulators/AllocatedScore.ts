@@ -1,8 +1,7 @@
-import { candidate, allocatedScoreResults, allocatedScoreSummaryData, totalScore, nonNullBallot, vote } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { candidate, allocatedScoreResults, allocatedScoreSummaryData, rawVote, allocatedScoreCandidate } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 const Fraction = require('fraction.js');
-import { sortByTieBreakOrder } from "./Star";
-import { getInitialData, makeAbstentionTest, makeBoundsTest } from "./Util";
+import { getSummaryData, makeAbstentionTest, makeBoundsTest } from "./Util";
 import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
 const maxScore = 5;
@@ -14,10 +13,13 @@ interface winner_scores {
 
 type ballotFrac = typeof Fraction[]
 
-export function AllocatedScore(candidates: candidate[], votes: vote[], nWinners = 3, electionSettings?:ElectionSettings) {
-    const [tallyVotes, initialSummaryData] =
-    getInitialData<Omit<allocatedScoreSummaryData,'splitPoints' | 'spentAboves' | 'weight_on_splits' | 'weightedScoresByRound'>>(
-		votes, candidates, randomTiebreakOrder, 'cardinal',
+export function AllocatedScore(candidates: candidate[], votes: rawVote[], nWinners = 3, electionSettings?:ElectionSettings) {
+    const {summaryData: initialSummaryData, tallyVotes} =
+    getSummaryData<allocatedScoreCandidate, Omit<allocatedScoreSummaryData,'splitPoints' | 'spentAboves' | 'weight_on_splits' | 'weightedScoresByRound'>>(
+		candidates.map(c => ({...c, score: 0})),
+        votes,
+        'cardinal',
+        'score',
 		[
 			makeBoundsTest(0, 5),
 			makeAbstentionTest(null), 
@@ -58,7 +60,6 @@ export function AllocatedScore(candidates: candidate[], votes: vote[], nWinners 
 
     var ballot_weights: typeof Fraction[] = Array(V).fill(new Fraction(1));
 
-    var ties = [];
     // var weightedSumsByRound = []
     var candidatesByRound: candidate[][] = []
     // run loop until specified number of winners are found
@@ -82,7 +83,7 @@ export function AllocatedScore(candidates: candidate[], votes: vote[], nWinners 
 
         candidatesByRound.push([...remainingCandidates])
         // get index of winner
-        var maxAndTies = indexOfMax(weighted_sums, summaryData.candidates, breakTiesRandomly);
+        var maxAndTies = indexOfMax(weighted_sums, summaryData.candidates);
         var w = maxAndTies.maxIndex;
         // add winner to winner list
         results.logs.push(`${summaryData.candidates[w].name} is scored highest with ${rounded(weighted_sums[w].mul(maxScore))} stars and is elected!`)
@@ -219,7 +220,7 @@ function findWeightOnSplit(cand_df: winner_scores[], split_point: typeof Fractio
     return weight_on_split;
 }
 
-function indexOfMax(arr: typeof Fraction[], candidates: candidate[], breakTiesRandomly: boolean) {
+function indexOfMax(arr: typeof Fraction[], candidates: candidate[]) {
     if (arr.length === 0) {
         return { maxIndex: -1, ties: [] };
     }
@@ -236,8 +237,8 @@ function indexOfMax(arr: typeof Fraction[], candidates: candidate[], breakTiesRa
             ties = [candidates[i]];
         }
     }
-    if (breakTiesRandomly && ties.length > 1) {
-        maxIndex = candidates.indexOf(sortByTieBreakOrder(ties)[0])
+    if (ties.length > 1) {
+        maxIndex = candidates.indexOf(ties.sort(([a, b]) => -(a.tieBreakOrder-b.tieBreakOrder)));
     }
     return { maxIndex, ties };
 }

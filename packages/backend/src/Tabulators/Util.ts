@@ -87,18 +87,18 @@ function getTransforms(header : any, data : string[][]) {
 export const makeBoundsTest = (minValue:number, maxValue:number) => {
 	return [
 		'nOutOfBoundsVotes',
-		(ballot: number[]) => ballot.filter(b => b < minValue || maxValue < b).length > 0
+		(vote: rawVote) => Object.values(vote.marks).filter(b => b != null && (b < minValue || maxValue < b)).length > 0
 	] as const;
 }
 
 export const makeAbstentionTest = (underVoteValue:number|null = 0) => {
 	return [
 		'nAbstentions',
-		(ballot: number[]) => ballot.filter(b => (underVoteValue === null ? b : (b??0)) === underVoteValue).length == ballot.length
+		(vote: rawVote) => Object.values(vote.marks).filter(b => (underVoteValue === null ? b : (b??0)) === underVoteValue).length == vote.marks.length
 	] as const;
 }
 
-type StatTestPair = Readonly<[string, Function]>;
+type StatTestPair = Readonly<[string, (vote: rawVote) => boolean]>;
 
 const filterInitialVotes = (rawVotes: rawVote[], tests: StatTestPair[]): [vote[], {[key: string]: number}] => {
 	let tallyVotes: vote[] = [];
@@ -128,13 +128,13 @@ const filterInitialVotes = (rawVotes: rawVote[], tests: StatTestPair[]): [vote[]
   return [tallyVotes, summaryStats];
 }
 
-export const getInitialData = <CandidateType extends candidate, SummaryType extends genericSummaryData<CandidateType>,>(
+export const getSummaryData = <CandidateType extends candidate, SummaryType extends genericSummaryData<CandidateType>,>(
   candidates: CandidateType[],
-	allVotes: vote[],
+	allVotes: rawVote[],
   methodType: 'cardinal' | 'ordinal',
-  statTests: StatTestPair[],
   sortField: keyof CandidateType,
-): [vote[], SummaryType] => {
+  statTests: StatTestPair[],
+): {tallyVotes: vote[], summaryData: SummaryType} => {
 	// Filter Ballots
 	const [tallyVotes, summaryStats] = filterInitialVotes(allVotes, statTests);
 
@@ -179,23 +179,38 @@ export const getInitialData = <CandidateType extends candidate, SummaryType exte
     })   
   }
 
+  // Compute fiveStarCount
+  if(candidates.every(c => 'fiveStarCount' in c)){ // using every to make typescript happy
+    candidates.forEach(c => {
+      c.fiveStarCount = tallyVotes.reduce((count, v) => v.marks[c.id] === 5 ? count+1 : count, 0)
+    });
+  }
+
+  // Compute firstRankCount
+  if(candidates.every(c => 'firstRankCount' in c)){ // using every to make typescript happy
+    candidates.forEach(c => {
+      c.firstRankCount = tallyVotes.reduce((count, v) => v.marks[c.id] === 1 ? count+1 : count, 0)
+    });
+  }
+
+
   // Pre-Sort by the sort field
   candidates = candidates.sort((a, b) => -((a[sortField] as number) - (b[sortField] as number)))
 
-  return [
-		tallyVotes, 
-		{
+  return {
+    summaryData: {
       candidates,
-			...summaryStats,
-		} as SummaryType 
-	];
+      ...summaryStats,
+    } as SummaryType,
+    tallyVotes
+  }
 }
 
 export const runBlocTabulator = <CandidateType extends candidate, SummaryType extends genericSummaryData<CandidateType>, ResultsType extends genericResults<CandidateType, SummaryType>,>(
 	results: ResultsType,
 	nWinners: number,
 	singleWinnerCallback: (remainingCandidates: CandidateType[], summaryData: SummaryType) => roundResults<CandidateType>,
-  evaluate?: (candidate: CandidateType, roundResults: roundResults<CandidateType>[], summaryData: SummaryType) => number[]
+  evaluate?: (candidate: CandidateType, roundResults: roundResults<CandidateType>[]) => number[]
 ): ResultsType => {
   let remainingCandidates: CandidateType[] = [...results.summaryData.candidates];
 

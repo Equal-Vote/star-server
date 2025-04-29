@@ -48,7 +48,7 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
             const vote = ballot.votes.find((vote) => vote.race_id === race_id)
             if (vote) {
                 cvr.push({
-                    bubbles: Object.fromEntries(vote.scores.map(score => [score.candidate_id, score.score])),
+                    marks: Object.fromEntries(vote.scores.map(score => [score.candidate_id, score.score])),
                     overvote_rank: vote?.overvote_rank,
                     has_duplicate_rank: vote?.has_duplicate_rank,
                 })

@@ -1,3 +1,5 @@
+/////////////// GENERAL TYPES //////////////////
+
 export type keyedObject<T> = {[key: string]: T};
 
 export type rawVote = {
@@ -12,59 +14,10 @@ export type vote = {
     has_duplicate_rank?: boolean;
 }
 
-export interface candidate {
-    id: string,
-    name: string,
-    tieBreakOrder: number,
-    votesPreferredOver: keyedObject<number>,
-    winsAgainst: keyedObject<boolean>,
-}
-
-export interface starCandidate extends candidate {
-    score: number,
-    fiveStarCount: number;
-}
-
-export interface approvalCandidate extends candidate {
-    score: number,
-}
-export interface rankedRobinCandidate extends candidate {
-    copelandScore: number,
-}
-
-export interface voter {
-    csvRow: number
-}
-
-type rankHist = number[][]
-
-export interface genericSummaryData<CandidateType extends candidate> {
-    candidates: CandidateType[],
-    // nVotes = nOutOfBoundsVotes + nAbstentions + nTallyVotes
-    nOutOfBoundsVotes: number,
-    nAbstentions: number,
-    nTallyVotes: number,
-}
-
-export type starSummaryData = genericSummaryData<starCandidate>
-
-export type approvalSummaryData = genericSummaryData<approvalCandidate>
-
-export interface allocatedScoreSummaryData extends genericSummaryData<candidate> {
-    splitPoints: number[],
-    spentAboves: number[],
-    weight_on_splits: number[],
-    weightedScoresByRound: number[][]
-}
-export interface pluralitySummaryData extends genericSummaryData<candidate> {
-    nOvervotes: number
-}
-
-export interface rankedRobinSummaryData extends genericSummaryData<candidate> {
-    rankHist: rankHist,
-}
-
-export interface irvSummaryData extends rankedRobinSummaryData {}
+// commenting and seeing where things break
+//export interface voter {
+//    csvRow: number
+//}
 
 export type tabulatorLog = string | tabulatorLogObject;
 
@@ -74,6 +27,42 @@ interface tabulatorLogObject {
 }
 
 type tieBreakType = 'none' | 'score' | 'five_star' | 'random';
+
+export type ElectionResults =
+    starResults |
+    allocatedScoreResults |
+    approvalResults |
+    rankedRobinResults | 
+    irvResults |
+    pluralityResults;
+
+type votingMethod = 
+    'STAR' |
+    'STAR_PR' |
+    'Approval' |
+    'RankedRobin' |
+    'IRV' |
+    'STV' |
+    'Plurality';
+
+/////////////// GENERICS //////////////////
+
+export interface candidate {
+    id: string,
+    name: string,
+    tieBreakOrder: number,
+    votesPreferredOver: keyedObject<number>,
+    winsAgainst: keyedObject<boolean>,
+}
+
+export interface genericSummaryData<CandidateType extends candidate> {
+    candidates: CandidateType[],
+    // nVotes = nOutOfBoundsVotes + nAbstentions + nTallyVotes
+    nOutOfBoundsVotes: number,
+    nAbstentions: number,
+    nTallyVotes: number,
+}
+
 export interface roundResults<CandidateType extends candidate> {
     winners: CandidateType[],
     runner_up: CandidateType[],
@@ -92,44 +81,100 @@ export interface genericResults<CandidateType extends candidate, SummaryType ext
     tieBreakType: tieBreakType,
 }
 
+/////////////// STAR TYPES //////////////////
+export interface starCandidate extends candidate {
+    score: number,
+    fiveStarCount: number;
+}
+
+export type starSummaryData = genericSummaryData<starCandidate>
+
+export type starRoundResults = roundResults<starCandidate>
+
 export interface starResults extends genericResults<starCandidate, starSummaryData> {
     votingMethod: 'STAR',
 }
 
-export interface allocatedScoreResults extends genericResults<candidate, allocatedScoreSummaryData>{
-    votingMethod: 'STAR_PR',
-    tieRounds: candidate[][],
-    logs: tabulatorLog[]
+/////////////// APPROVAL TYPES //////////////////
+
+export interface approvalCandidate extends candidate {
+    score: number,
 }
+
+export type approvalSummaryData = genericSummaryData<approvalCandidate>
+
+export type approvalRoundResults = roundResults<approvalCandidate>
 
 export interface approvalResults extends genericResults<approvalCandidate, approvalSummaryData> {
     votingMethod: 'Approval',
 }
 
-export interface pluralityResults extends genericResults<candidate, pluralitySummaryData> {
-    votingMethod: 'Plurality',
+/////////////// RANKED ROBIN TYPES //////////////////
+export interface rankedRobinCandidate extends candidate {
+    copelandScore: number,
 }
 
-export interface rankedRobinResults extends genericResults<candidate, rankedRobinSummaryData> {
+export type rankedRobinSummaryData = genericSummaryData<rankedRobinCandidate>;
+
+export type rankedRobinRoundResults = roundResults<rankedRobinCandidate>
+
+export interface rankedRobinResults extends genericResults<rankedRobinCandidate, rankedRobinSummaryData> {
     votingMethod: 'RankedRobin',
 }
 
-export interface irvElimationRoundResults{
-    winners: candidate[],
-    eliminated: candidate[],
-    logs: string[], /* envisioned for possible debugging? */
+/////////////// STAR PR TYPES //////////////////
+export interface allocatedScoreCandidate extends candidate {
+    score: number,
+}
+
+export interface allocatedScoreSummaryData extends genericSummaryData<allocatedScoreCandidate > {
+    splitPoints: number[],
+    spentAboves: number[],
+    weight_on_splits: number[],
+    weightedScoresByRound: number[][]
+}
+
+export type allocatedScoreRoundResults = roundResults<allocatedScoreCandidate>
+export interface allocatedScoreResults extends genericResults<allocatedScoreCandidate, allocatedScoreSummaryData>{
+    votingMethod: 'STAR_PR',
+    logs: tabulatorLog[]
+}
+
+/////////////// PLURALITY TYPES //////////////////
+ 
+export interface pluralityCandidate extends candidate{
+    score: number,
+}
+
+export interface pluralitySummaryData extends genericSummaryData<pluralityCandidate> {
+    nOvervotes: number
+}
+
+export type plurlaityRoundResults = roundResults<pluralityCandidate>;
+export interface pluralityResults extends genericResults<pluralityCandidate, pluralitySummaryData> {
+    votingMethod: 'Plurality',
+}
+
+/////////////// IRV TYPES //////////////////
+
+export interface irvCandidate extends candidate{
+    firstRankCount: number;
+};
+
+export type irvSummaryData = genericSummaryData<irvCandidate>;
+
+export interface irvRoundResults extends roundResults<irvCandidate>{
+    eliminated: irvCandidate[],
     standings: {candidateIndex: number, hareScore: number}[],
-      /* Sorted by decreasing Hare score */
+    /* Sorted by decreasing Hare score */
     /* Next two are maybe filled in only in front end: */
     exhaustedVoteCount?: number | undefined,
     isStartOfSearch?: boolean | undefined,
 }
 
-export interface irvResults extends genericResults<candidate, irvSummaryData> {
+export interface irvResults extends genericResults<irvCandidate, irvSummaryData> {
     votingMethod: 'IRV' | 'STV',
-    summaryData: rankedRobinSummaryData,
-    elimationRoundResults: irvElimationRoundResults[],
-    logs: string[],
+    roundResults: irvRoundResults[],
     voteCounts: number[][],
       /* Outer index is round; inner index is candidate. */
     exhaustedVoteCounts: number[],  /* by round */
@@ -137,20 +182,3 @@ export interface irvResults extends genericResults<candidate, irvSummaryData> {
     nExhaustedViaSkippedRank: number,
     nExhaustedViaDuplicateRank: number,
 }
-
-export type ElectionResults =
-    starResults |
-    allocatedScoreResults |
-    approvalResults |
-    rankedRobinResults | 
-    irvResults |
-    pluralityResults;
-
-type votingMethod = 
-    'STAR' |
-    'STAR_PR' |
-    'Approval' |
-    'RankedRobin' |
-    'IRV' |
-    'STV' |
-    'Plurality';

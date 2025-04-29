@@ -1,17 +1,18 @@
-import { approvalResults, approvalCandidate, approvalSummaryData, candidate, roundResults, vote, } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { approvalResults, approvalCandidate, approvalSummaryData, candidate, rawVote, approvalRoundResults, } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
-import { commaListFormatter, getInitialData, makeBoundsTest, makeAbstentionTest, runBlocTabulator } from "./Util";
+import { commaListFormatter, makeBoundsTest, makeAbstentionTest, runBlocTabulator, getSummaryData } from "./Util";
 import { ElectionSettings } from "@equal-vote/star-vote-shared/domain_model/ElectionSettings";
 
-export function Approval(candidates: candidate[], votes: vote[], nWinners = 1, electionSettings?:ElectionSettings) {
-  const [_, summaryData] = getInitialData<approvalCandidate, approvalSummaryData>(
+export function Approval(candidates: candidate[], votes: rawVote[], nWinners = 1, electionSettings?:ElectionSettings) {
+  const {summaryData} = getSummaryData<approvalCandidate, approvalSummaryData>(
 		candidates.map(c => ({...c, score: 0})),
-    votes, 'cardinal',
+    votes,
+    'cardinal',
+    'score',
 		[
 			makeBoundsTest(0, 1),
 			makeAbstentionTest(null),
 		],
-    'score',
 	);
 
 	return runBlocTabulator<approvalCandidate, approvalSummaryData, approvalResults>(
@@ -30,7 +31,7 @@ export function Approval(candidates: candidate[], votes: vote[], nWinners = 1, e
 	)
 }
 
-const singleWinnerApproval = (remainingCandidates: approvalCandidate[], summaryData: approvalSummaryData): roundResults => {
+const singleWinnerApproval = (remainingCandidates: approvalCandidate[], summaryData: approvalSummaryData): approvalRoundResults => {
 
   let winner = remainingCandidates[0];
   let tiedCandidates = remainingCandidates.filter(c => c.score == winner.score);
