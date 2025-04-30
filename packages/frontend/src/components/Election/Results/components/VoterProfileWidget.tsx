@@ -5,23 +5,28 @@ import useRace from "~/components/RaceContextProvider";
 import { useState } from "react";
 import {  Divider, MenuItem, Select, Typography } from "@mui/material";
 import { formatPercent } from "~/components/util";
-import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import ResultsBarChart from "./ResultsBarChart";
 import HeadToHeadChart from "./HeadToHeadChart";
 import { getVoterErrorData } from "./VoterErrorStatsWidget";
+import { candidate } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 // candidates helps define the order
-const VoterProfileWidget = ({topScore, frontRunners, ranked=false, candidates=undefined} : {topScore: number, frontRunners: [Candidate,Candidate], ranked?: boolean, candidates?: Candidate[]}) => {
+const VoterProfileWidget = ({topScore, ranked=false} : {topScore: number, ranked?: boolean}) => {
     const {t} = useElection();
     const {ballotsForRace, ballotsForRaceWithMeta} = useAnonymizedBallots();
-    const {race} = useRace();
-    candidates ??= race.candidates;
-    const [refCandidateId, setRefCandidateId] = useState(candidates[0].candidate_id);
+    const {race, results} = useRace();
+    const candidates = results.summaryData.candidates;
+    const [refCandidateId, setRefCandidateId] = useState(candidates[0].id);
+
+
+    const refCandidate = candidates.find(c => c.id == refCandidateId);
+
+    const [left, right] = candidates.slice(0, 2);
 
     const avgBallot: {[key: string]:{name, score}} = {};
     candidates.forEach((c) => {
-        avgBallot[c.candidate_id] = {
-            name: c.candidate_name,
+        avgBallot[c.id] = {
+            name: c.name,
             score: 0,
         }
     });
@@ -39,8 +44,6 @@ const VoterProfileWidget = ({topScore, frontRunners, ranked=false, candidates=un
         arr[index].count++;
     }
 
-    const refCandidateName = candidates.find(c => c.candidate_id == refCandidateId).candidate_name;
-
     let totalTopScored = 0;
 
     const b = ballotsForRace()
@@ -53,7 +56,7 @@ const VoterProfileWidget = ({topScore, frontRunners, ranked=false, candidates=un
         if(refScore != topScore) return;
         if(scores.filter(score => score.score != 0 && score.score != null).length === 1) numBullets++;
         totalTopScored++;
-        let fScores = [0, 0];
+        let [leftScore, rightScore] = [0, 0]
 
         let defValue = 0;
         if(ranked){
@@ -64,16 +67,18 @@ const VoterProfileWidget = ({topScore, frontRunners, ranked=false, candidates=un
         scores.forEach(s => {
             const score = s.score ?? defValue;
             avgBallot[s.candidate_id].score += score;
-            frontRunners.forEach((f, i) => {
-                if(s.candidate_id == f.candidate_id) fScores[i] = score;
-            })
+            if(s.candidate_id == left.id) leftScore = score;
+            if(s.candidate_id == right.id) rightScore = score;
         })
 
-        if(ranked) fScores = fScores.map(s => -s);
+        if(ranked){
+            leftScore = -leftScore;
+            rightScore = -rightScore;
+        }
 
-        if(fScores[0] > fScores[1]) leftVotes++;
-        if(fScores[0] < fScores[1]) rightVotes++;
-        if(fScores[0] == fScores[1]) incIndex(equalPreferences, fScores[0])
+        if(leftScore > rightScore) leftVotes++;
+        if(leftScore < rightScore) rightVotes++;
+        if(leftScore == rightScore) incIndex(equalPreferences, leftScore)
         total++;
     });
 
@@ -102,14 +107,14 @@ const VoterProfileWidget = ({topScore, frontRunners, ranked=false, candidates=un
             label={t('results_ext.candidateSelector')}
             onChange={(e) => setRefCandidateId(e.target.value as string)}
         >
-            {candidates.map((c, i) => <MenuItem key={i} value={c.candidate_id}>{c.candidate_name}</MenuItem>)}
+            {candidates.map((c, i) => <MenuItem key={i} value={c.id}>{c.name}</MenuItem>)}
         </Select>
-        <Typography variant='h6'>{t('results_ext.voter_profile_count', {count: totalTopScored, name: refCandidateName})}</Typography>
+        <Typography variant='h6'>{t('results_ext.voter_profile_count', {count: totalTopScored, name: refCandidate.name})}</Typography>
         <Divider variant='middle' sx={{width: '100%', m:1}}/>
-        <Typography variant='h6'>{t('results_ext.voter_profile_preferred_frontrunner', {name: refCandidateName})}</Typography>
+        <Typography variant='h6'>{t('results_ext.voter_profile_preferred_frontrunner', {name: refCandidate.name})}</Typography>
         {totalTopScored == 0 ? 'n/a' : <HeadToHeadChart 
-            leftName={frontRunners[0].candidate_name}
-            rightName={frontRunners[1].candidate_name}
+            leftName={left.name}
+            rightName={right.name}
             leftVotes={leftVotes}
             rightVotes={rightVotes}
             total={total}
@@ -119,14 +124,14 @@ const VoterProfileWidget = ({topScore, frontRunners, ranked=false, candidates=un
             }}
         />}
         <Divider variant='middle' sx={{width: '100%', m:1}}/>
-        <Typography variant='h6'>{t(`results_ext.voter_profile_average_${ranked? 'ranks' : 'scores'}`, {name: refCandidateName})}</Typography>
+        <Typography variant='h6'>{t(`results_ext.voter_profile_average_${ranked? 'ranks' : 'scores'}`, {name: refCandidate.name})}</Typography>
         {totalTopScored == 0 ? 'n/a' : <>
-            <Typography>{`${formatPercent(numBullets/totalTopScored)} of ${refCandidateName} supporters only voted for one candidate`}</Typography>
+            <Typography>{`${formatPercent(numBullets/totalTopScored)} of ${refCandidate.name} supporters only voted for one candidate`}</Typography>
             <ResultsBarChart data={data} xKey='score' percentage={false} sortFunc={false}/>
         </>}
         {(race.voting_method === 'IRV' || race.voting_method === 'STV') && <>
             <Divider variant='middle' sx={{width: '100%', m:1}}/>
-            <Typography variant='h6'>{t(`results_ext.voter_profile_error_rates`, {name: refCandidateName})}</Typography>
+            <Typography variant='h6'>{t(`results_ext.voter_profile_error_rates`, {name: refCandidate.name})}</Typography>
             <ResultsBarChart data={voterErrorData} xKey='votes' percentage/>
             <Typography>Ballots with errors can still be counted in most cases, but it&apos;s a useful measure of the voter&apos;s understanding</Typography>
         </>}

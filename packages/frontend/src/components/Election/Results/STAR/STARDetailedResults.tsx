@@ -19,8 +19,8 @@ const STARDetailedResults = () => {
 
     const tableData: candidateTableEntry[] = results.summaryData.candidates.map((c, i) => ({
         name: c.name,
-        votes: getEntry(results.summaryData.totalScores, c.index, 'index').score,
-        runoffVotes: i < 2 ? results.summaryData.preferenceMatrix[c.index][results.summaryData.candidates[1-i].index] : 0,
+        votes: c.score,
+        runoffVotes: i < 2 ? c.votesPreferredOver[results.summaryData.candidates[1-i].id] : 0,
     }));
 
     const runoffData = tableData.slice(0, 2);

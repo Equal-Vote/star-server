@@ -21,9 +21,9 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
     const histData = candidates
         .map((c) => ({
             name: c.name,
-            votes: getEntry(results.summaryData.totalScores, c.index, 'index').score,
+            votes: c.score,
             // vvvv HACK to get the bars to fill the whole width, this is useful if we want to test the graph padding
-            votesBig: getEntry(results.summaryData.totalScores, c.index, 'index').score*10000 
+            votesBig: c.score*10000 
         }))
 
     if(results.roundResults[roundIndex].runner_up.length == 0)
@@ -31,7 +31,7 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
 
     const pieData = candidates.slice(0, 2).map((c, i) => ({
         name: c.name,
-        votes: results.summaryData.preferenceMatrix[c.index][candidates[1-i].index]
+        votes: c.votesPreferredOver[candidates[1-i].id]
     }));
 
     const runoffData = [...pieData]

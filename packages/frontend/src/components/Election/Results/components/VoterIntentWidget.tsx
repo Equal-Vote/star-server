@@ -4,55 +4,58 @@ import Widget from "./Widget";
 import useRace from "~/components/RaceContextProvider";
 import { Box, Typography } from "@mui/material";
 import ResultsPieChart from "./ResultsPieChart";
-import { irvResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { candidate, irvResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 // eliminationOrder is an array of candidateIds
-const VoterIntentWidget = ({eliminationOrderById, winnerId} : {eliminationOrderById : string[], winnerId: string}) => {
+const VoterIntentWidget = () => {
     const {t} = useElection();
-    let  { results} = useRace();
-    const { race } = useRace();
+    let { results, race } = useRace();
     const { ballotsForRace} = useAnonymizedBallots();
+
+    const candidates = results.summaryData.candidates;
 
     results = results as irvResults;
 
-    const sortedCandidates = race.candidates
-        .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
-        .sort((a, b) => {
-        // prioritize ranking in later rounds, but use previous rounds as tiebreaker
-        let i = results.voteCounts.length-1;
-        while(i >= 0){
-            const diff = -(results.voteCounts[i][a.index] - results.voteCounts[i][b.index]);
-            if(diff != 0) return diff;
-            i--;
-        }
-        return 0;
-        })
-        .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
+    // NOTE: we're trusting that voteCounts order is consistent with candidates
+    let [winner, runnerUp] = results.voteCounts.slice(-1)[0]
+        .map((c,i) => ({candidate: candidates[i], votes: c}))
+        .sort((a, b) => b.votes - a.votes)
+        .map(m => m.candidate)
 
-
-    // eslint-disable-next-line prefer-const
-    let [winner_name, runner_up_name] = sortedCandidates.slice(0, 2).map(c => c.candidate_name);
-
-    const final_round_candidates = results.voteCounts.slice(-1)[0].filter(c => c != 0).length;
+    const final_round_candidates = results.voteCounts.at(-1).filter(c => c != 0).length;
     if(final_round_candidates > 2){
-        runner_up_name = 'a losing candidate'
+        runnerUp.name = 'a losing candidate'
     }
 
-    const condorcetCandidate = results.summaryData.candidates.find(c => 
-        results.summaryData.pairwiseMatrix[c.index].filter(p => p == 1).length == sortedCandidates.length-1
-    );
+    const condorcetCandidate = candidates.find(c => candidates.every(c2 => c.id == c2.id || c.winsAgainst[c2.id]))
 
-// End note: Add asterisk and change to: "*In some elections, the uncounted rankings could have made a difference in the race if they had been counted."
-//     if the Condorcet winner won,  If the Condorcet winner lost change end note to say "In this election, the uncounted rankings could have made a
-//     difference. Looking at the full ballot data, voters preferred x over all other candidates.
+    const candidatesInElimOrder: candidate[] = candidates
+        .map((c, i) => ({candidate: c, index: i}))
+        .filter(c => results.voteCounts.at(-1)[c.index] == 0)
+        .sort((a, b) => {
+            // prioritize ranking in later rounds, but use previous rounds as tiebreaker
+            let i = results.voteCounts.length-1;
+            while(i >= 0){
+                const diff = -(results.voteCounts[i][a.index] - results.voteCounts[i][b.index]);
+                if(diff != 0) return diff;
+                i--;
+            }
+            return 0;
+        })
+        .map(item => item.candidate)
+        .reverse();
+
+    // End note: Add asterisk and change to: "*In some elections, the uncounted rankings could have made a difference in the race if they had been counted."
+    //     if the Condorcet winner won,  If the Condorcet winner lost change end note to say "In this election, the uncounted rankings could have made a
+    //     difference. Looking at the full ballot data, voters preferred x over all other candidates.
     const data = [
         { // Type 1: !hasPassedOver && isWinner
-            name: `Voter's vote went to ${winner_name}. Rankings for all candidates preferred over ${winner_name} were counted`,
+            name: `Voter's vote went to ${winner.name}. Rankings for all candidates preferred over ${winner.name} were counted`,
             votes: 0,
             color: 'var(--ltbrand-green)'
         },
         { // Type 2: !hasPassedOver && !isWinner && !trailingRanks
-            name: `Voter didn't support ${winner_name} but all their preferences were still counted`,
+            name: `Voter didn't support ${winner.name} but all their preferences were still counted`,
             votes: 0,
             color: 'var(--ltbrand-lime)'
         },
@@ -62,7 +65,7 @@ const VoterIntentWidget = ({eliminationOrderById, winnerId} : {eliminationOrderB
             color: 'var(--ltbrand-red)'
         },
         { // Type 4: !hasPassedOver && !isWinner && trailingRanks
-            name: `Vote was counted towards ${runner_up_name}, and some of the voter's rankings were not counted at all.*`,
+            name: `Vote was counted towards ${runnerUp.name}, and some of the voter's rankings were not counted at all.*`,
             votes: 0,
             color: 'var(--brand-orange)'
         },
@@ -91,9 +94,9 @@ const VoterIntentWidget = ({eliminationOrderById, winnerId} : {eliminationOrderB
         let hasPassedOver = false;
         const alreadyEliminated = []
 
-        eliminationOrderById.forEach((elimId) => {
+        candidatesInElimOrder.forEach((c) => {
             if(ranksLeft.length == 0) return;
-            if(ranksLeft[0].candidate_id == elimId){
+            if(ranksLeft[0].candidate_id == c.id){
                 ranksLeft.shift();
                 while(ranksLeft.length > 0 && alreadyEliminated.includes(ranksLeft[0].candidate_id)){
                     hasPassedOver = true; 
@@ -101,11 +104,11 @@ const VoterIntentWidget = ({eliminationOrderById, winnerId} : {eliminationOrderB
                     ranksLeft.shift();
                 }
             }
-            alreadyEliminated.push(elimId);
+            alreadyEliminated.push(c);
         })
 
         const trailingRanks = ranksLeft.length > 1;
-        const isWinner = ranksLeft.length > 0 && ranksLeft[0].candidate_id == winnerId;
+        const isWinner = ranksLeft.length > 0 && ranksLeft[0].candidate_id == winner.id;
 
         numIgnored += ranksLeft.length-1;
 
@@ -157,10 +160,10 @@ const VoterIntentWidget = ({eliminationOrderById, winnerId} : {eliminationOrderB
             {[2,3].map(i => <Definition key={i} i={i}/>)}
         </Box>
         <Typography sx={{textAlign: 'left', mt: 2}}><b>*</b>
-            {(condorcetCandidate === undefined || condorcetCandidate.name === sortedCandidates[0].candidate_name) &&
+            {(condorcetCandidate === undefined || condorcetCandidate.id === winner.id) &&
             'In some elections, the uncounted rankings could have made a difference and changed the winner if they had been counted.'
             }
-            {condorcetCandidate !== undefined && condorcetCandidate.name !== sortedCandidates[0].candidate_name &&
+            {condorcetCandidate !== undefined && condorcetCandidate.id !== winner.id &&
             `In this election, the uncounted rankings could have made a difference and changed the winner. Looking at the full ballot data, voters preferred ${condorcetCandidate.name} over all other candidates.`
             }
         </Typography>
