@@ -132,7 +132,7 @@ export const getSummaryData = <CandidateType extends candidate, SummaryType exte
   candidates: CandidateType[],
 	allVotes: rawVote[],
   methodType: 'cardinal' | 'ordinal',
-  sortField: keyof CandidateType,
+  sortField: keyof CandidateType | undefined,
   statTests: StatTestPair[],
 ): {tallyVotes: vote[], summaryData: SummaryType} => {
 	// Filter Ballots
@@ -195,7 +195,7 @@ export const getSummaryData = <CandidateType extends candidate, SummaryType exte
 
 
   // Pre-Sort by the sort field
-  candidates = candidates.sort((a, b) => -((a[sortField] as number) - (b[sortField] as number)))
+  if(sortField) candidates = candidates.sort((a, b) => -((a[sortField] as number) - (b[sortField] as number)))
 
   return {
     summaryData: {
@@ -239,7 +239,7 @@ export const runBlocTabulator = <CandidateType extends candidate, SummaryType ex
 
     results.summaryData.candidates = 
       results.summaryData.candidates
-        .map((c: CandidateType) => ([c, evaluate(c, results.roundResults, results.summaryData as SummaryType)] as [CandidateType, number[]]))
+        .map((c: CandidateType) => ([c, evaluate(c, results.roundResults)] as [CandidateType, number[]]))
         .sort(([_, a]: [candidate, number[]], [__, b] : [candidate, number[]]) => {
           const compare = (a: number[], b: number[], i: number): number => {
             if(i > a.length || i > b.length) return 0;

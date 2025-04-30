@@ -51,8 +51,8 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
         <DetailExpander level={1}>
           <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
           <STAREqualPreferencesWidget frontRunners={candidates.slice(0, 2) as [starCandidate, starCandidate]}/>
-          <HeadToHeadWidget candidates={candidates} numVotes={results.summaryData.nTallyVotes}/>
-          <VoterProfileWidget candidates={candidates} topScore={5}/>
+          <HeadToHeadWidget/>
+          <VoterProfileWidget topScore={5}/>
           {flags.isSet('ALL_STATS') && <ScoreRangeWidget/>}
           {flags.isSet('ALL_STATS') && <ColumnDistributionWidget/>}
           {flags.isSet('ALL_STATS') && <NameRecognitionWidget/>}
@@ -293,12 +293,13 @@ function STARPRResultsViewer() {
   let {results} = useRace();
   const {t, race} = useRace();
   results = results as allocatedScoreResults;
+  console.log(results);
   const [page, setPage] = useState(1);
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
-  const tabulationRows = results.summaryData.candidates.map(({index, name}) => {
+  const tabulationRows = results.summaryData.candidates.map(({name}, index) => {
     return [name].concat(
       (results.summaryData.weightedScoresByRound as Array<number[]>).map(counts => counts[index] == 0? '' : '' + Math.round(counts[index]*10)/10)
     )
@@ -309,18 +310,18 @@ function STARPRResultsViewer() {
   )))
 
   const winIndex = (aa) => {
-    const i = results.elected.findIndex(e => e.index == aa.index);
+    const i = results.elected.findIndex(e => e.id == aa.id);
     if(i == -1) return results.elected.length;
     return i;
   }
-  const sortedCandidates = race.candidates
-    .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
+
+  const sortedCandidates = results.summaryData.candidates
+    .map((c,i) => ({...c, index: i}))
     .sort((a, b) => {
       const finalScore = (aa) => results.summaryData.weightedScoresByRound.slice(-1)[0][aa.index]
       if(winIndex(a) != winIndex(b)) return winIndex(a) - winIndex(b);
       return -(finalScore(a) - finalScore(b));
     })
-    .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
 
   let remainingVoters = (results.summaryData.nTallyVotes*(1 - ((page-1)/results.summaryData.weightedScoresByRound.length)))
   remainingVoters = Math.round(remainingVoters*10)/10;
@@ -343,7 +344,7 @@ function STARPRResultsViewer() {
                   label: undefined,
                   star: winIndex(results.summaryData.candidates[index]) < page,
                   // a bit hacky using candidate_name but oh well
-                  sortIndex: sortedCandidates.findIndex((c) => c.candidate_name == results.summaryData.candidates[index].name)
+                  sortIndex: sortedCandidates.findIndex((c) => c.index == index)
                 })
               )
           }
@@ -394,19 +395,18 @@ function STVResultsViewer() {
   };
 
   const winIndex = (aa) => {
-    const i = results.elected.findIndex(e => e.index == aa.index);
+    const i = results.elected.findIndex(e => e.id == aa.id);
     if(i == -1) return results.elected.length;
     return i;
   }
 
-  const sortedCandidates = race.candidates
-    .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
+  const sortedCandidates = results.summaryData.candidates
+    .map((c,i) => ({...c, index: i}))
     .sort((a, b) => {
       const finalScore = (aa) => results.voteCounts.slice(-1)[0][aa.index]
       if(winIndex(a) != winIndex(b)) return winIndex(a) - winIndex(b);
       return -(finalScore(a) - finalScore(b));
     })
-    .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
 
   return <ResultsViewer methodKey='stv'>
     <WidgetContainer>

@@ -31,7 +31,7 @@ export function IRV_STV(candidates: candidate[], votes: rawVote[], nWinners = 1,
         candidates.map(c => ({...c, firstRankCount: 0})), 
 		votes,
         'ordinal',
-        'firstRankCount',
+        proportional? undefined : 'firstRankCount',
 		[
 			makeBoundsTest(0, electionSettings?.max_rankings ?? Infinity), 
 			makeAbstentionTest(null),
@@ -195,8 +195,6 @@ function addWeightedVotes(weightedVotes: weightedVote[]) {
     })
     return voteTotal
 }
-
-
 
 function distributeVotes(remainingCandidates: irvCandidate[], candidateVotes: keyedObject<candidateVotes>, votesToDistribute: weightedVote[], results: irvResults, electionSettings?: ElectionSettings) {
     // we'll remove as votes get exhausted, hence the backwards iteration
