@@ -1,3 +1,4 @@
+import { mapMethodInputs } from '../test/TestHelper'
 import { IRV } from './IRV'
 
 describe("IRV Tests", () => {
@@ -17,7 +18,7 @@ describe("IRV Tests", () => {
             [2, 3, 1, 4, 0],
             [2, 3, 4, 1, 0],
         ]
-        const results = IRV(candidates, votes)
+        const results = IRV(...mapMethodInputs(candidates, votes))
         expect(results.elected[0].name).toBe('Alice');
         expect(results.voteCounts.length).toBe(1);  //only single round
         expect(results.voteCounts[0]).toStrictEqual([5,2,1,1]);  
@@ -40,7 +41,7 @@ describe("IRV Tests", () => {
             [2, 3, 1, 4, 0],
             [2, 3, 4, 1, 0],
         ]
-        const results = IRV(candidates, votes, 2)
+        const results = IRV(...mapMethodInputs(candidates, votes), 2)
         expect(results.elected.length).toBe(2); 
         expect(results.elected[0].name).toBe('Alice');
         expect(results.elected[1].name).toBe('Bob');
@@ -62,11 +63,11 @@ describe("IRV Tests", () => {
             [3, 2, 1, 0],
             [2, 1, 3, 0],
         ]
-        const results = IRV(candidates, votes)
+        const results = IRV(...mapMethodInputs(candidates, votes))
         expect(results.elected[0].name).toBe('Alice');
         expect(results.voteCounts.length).toBe(2);  //Two rounds
-        expect(results.voteCounts[0]).toStrictEqual([2,1,2]);  
-        expect(results.voteCounts[1]).toStrictEqual([3,0,2]); 
+        expect(results.voteCounts[0]).toStrictEqual([2,2,1]);  
+        expect(results.voteCounts[1]).toStrictEqual([3,2,0]); 
     })
     test("Exhausted Ballots", () => {
         // Exhaust ballot if no remaining candidates
@@ -87,11 +88,12 @@ describe("IRV Tests", () => {
             [2, 1, 2, 2],//second round overvote & exhausted
             [0, 1, 0, 0],//second round exhausted vote
         ]
-        const results = IRV(candidates, votes)
+        const results = IRV(...mapMethodInputs(candidates, votes))
         expect(results.elected[0].name).toBe('Alice');
         expect(results.voteCounts.length).toBe(2);  //Two rounds
-        expect(results.voteCounts[0]).toStrictEqual([4,3,4]);  
-        expect(results.voteCounts[1]).toStrictEqual([5,0,4]);  
+        expect(results.voteCounts[0]).toStrictEqual([4,4,3]);  
+        // NOTE: this could be 4,5,0 or 5,4,0 depending on the initial sort order, we should make the sorting smarter later
+        expect(results.voteCounts[1]).toStrictEqual([4,5,0]);  
         expect(results.exhaustedVoteCounts).toStrictEqual([1,3]); 
         expect(results.nExhaustedViaOvervote).toBe(2); 
     })
@@ -120,12 +122,12 @@ describe("IRV Tests", () => {
             [2, 2, 1, 4, 2],//second round overvote & exhausted
             [3, 2, 1, 3, 3],//third round overvote
         ]
-        const results = IRV(candidates, votes)
+        const results = IRV(...mapMethodInputs(candidates, votes))
         expect(results.elected[0].name).toBe('Alice');
         expect(results.voteCounts.length).toBe(3);  
-        expect(results.voteCounts[0]).toStrictEqual([6,3,2,6]);  
-        expect(results.voteCounts[1]).toStrictEqual([6,4,0,6]);  
-        expect(results.voteCounts[2]).toStrictEqual([9,0,0,6]);  
+        expect(results.voteCounts[0]).toStrictEqual([6,6,3,2]);  
+        expect(results.voteCounts[1]).toStrictEqual([6,6,4,0]);  
+        expect(results.voteCounts[2]).toStrictEqual([9,6,0,0]);  
         expect(results.exhaustedVoteCounts).toStrictEqual([1,2,3]); 
         expect(results.nExhaustedViaOvervote).toBe(3); 
     })

@@ -53,8 +53,9 @@ const singleWinnerRankedRobin = (remainingCandidates: rankedRobinCandidate[], su
     roundResults.logs.push(`${winners[0].name} wins round with highest number of wins.`)
     return roundResults
   }
-  else if (winners.length===2){
-    const [left, right] = winners.slice(0, 2);
+  
+  const [left, right] = winners.slice(0, 2);
+  if (winners.length===2 && left.winsAgainst[right.id] != right.winsAgainst[left.id]){
     const [winner, loser] = left.winsAgainst[right.id] ? [left, right] : [right, left];
 
     roundResults.winners.push(winner)
@@ -63,7 +64,7 @@ const singleWinnerRankedRobin = (remainingCandidates: rankedRobinCandidate[], su
   }
 
   // Break Tie Randomly
-  const randomWinner = winners.sort((a, b) => -(a.tieBreakOrder - b.tieBreakOrder))[0]
+  const randomWinner = winners.sort((a, b) => (a.tieBreakOrder - b.tieBreakOrder))[0]
   roundResults.winners.push(randomWinner)
   roundResults.logs.push(`${winners[0].name} picked in random tie-breaker, more robust tiebreaker not yet implemented.`)
   return roundResults

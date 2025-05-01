@@ -1,3 +1,4 @@
+import { mapMethodInputs } from '../test/TestHelper'
 import { STV } from './IRV'
 
 describe("STV Tests", () => {
@@ -18,7 +19,7 @@ describe("STV Tests", () => {
             [2, 3, 1, 4, 0],
             [2, 3, 4, 1, 0],
         ]
-        const results = STV(candidates, votes,2)
+        const results = STV(...mapMethodInputs(candidates, votes),2)
         expect(results.elected.length).toBe(2); 
         expect(results.elected[0].name).toBe('Alice');
         expect(results.elected[1].name).toBe('Bob');

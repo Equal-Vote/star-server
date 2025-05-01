@@ -293,7 +293,7 @@ function STARPRResultsViewer() {
   let {results} = useRace();
   const {t, race} = useRace();
   results = results as allocatedScoreResults;
-  console.log(results);
+
   const [page, setPage] = useState(1);
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -420,7 +420,7 @@ function STVResultsViewer() {
                 label: winIndex(results.summaryData.candidates[i]) < page-1 ? '(elected)' : undefined,
                 star: winIndex(results.summaryData.candidates[i]) < page,
                 // a bit hacky using candidate_name but oh well
-                sortIndex: sortedCandidates.findIndex((c) => c.candidate_name == results.summaryData.candidates[i].name)
+                sortIndex: sortedCandidates.findIndex((c) => c.id == results.summaryData.candidates[i].id)
               })), 
               {
                 name: 'Exhausted',

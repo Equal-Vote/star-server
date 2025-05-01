@@ -89,6 +89,9 @@ function pgConnectionString(): string {
 }
 
 async function eventQueue(): Promise<IEventQueue> {
+    console.log('trace')
+    console.trace()
+    throw new Error();
     if (_eventQueue == null) {
         const eq = new PGBossEventQueue();
         const conn = pgConnectionObject();

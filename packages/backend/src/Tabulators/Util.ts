@@ -1,5 +1,4 @@
 import { candidate, genericResults, genericSummaryData, rawVote, roundResults, vote } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
-
 declare namespace Intl {
   class ListFormat {
     constructor(locales?: string | string[], options?: {});
@@ -94,7 +93,9 @@ export const makeBoundsTest = (minValue:number, maxValue:number) => {
 export const makeAbstentionTest = (underVoteValue:number|null = 0) => {
 	return [
 		'nAbstentions',
-		(vote: rawVote) => Object.values(vote.marks).filter(b => (underVoteValue === null ? b : (b??0)) === underVoteValue).length == vote.marks.length
+		(vote: rawVote) => {
+      return Object.values(vote.marks).every(b => (underVoteValue === null ? b : (b??0)) === underVoteValue);
+    }
 	] as const;
 }
 
@@ -162,6 +163,7 @@ export const getSummaryData = <CandidateType extends candidate, SummaryType exte
   // Totaled score measures for each candidate
   if(candidates.every(c => 'score' in c)){ // using every to make typescript happy
     candidates.forEach(c => {
+      // @ts-ignore - We know `score` is present even if typescript doesn't
       c.score = tallyVotes.reduce((score, vote) => score + vote.marks[c.id], 0)
     })   
   }
@@ -169,10 +171,16 @@ export const getSummaryData = <CandidateType extends candidate, SummaryType exte
   // Compute copeland score based on matrix
   if(candidates.every(c => 'copelandScore' in c)){ // using every to make typescript happy
     candidates.forEach(c => {
+      // @ts-ignore - We know `copelandScore` is present even if typescript doesn't
       c.copelandScore = candidates.reduce(
         (prev, other) => {
+          // self
+          if(c.id == other.id) return prev;
+          // win
           if(c.winsAgainst[other.id]) return prev+1;
+          // tie
           if(c.winsAgainst[other.id] === other.winsAgainst[c.id]) return prev+0.5;
+          // loss
           return prev;
         }, 0
       )
@@ -182,6 +190,7 @@ export const getSummaryData = <CandidateType extends candidate, SummaryType exte
   // Compute fiveStarCount
   if(candidates.every(c => 'fiveStarCount' in c)){ // using every to make typescript happy
     candidates.forEach(c => {
+      // @ts-ignore - We know `fiveStarCount` is present even if typescript doesn't
       c.fiveStarCount = tallyVotes.reduce((count, v) => v.marks[c.id] === 5 ? count+1 : count, 0)
     });
   }
@@ -189,6 +198,7 @@ export const getSummaryData = <CandidateType extends candidate, SummaryType exte
   // Compute firstRankCount
   if(candidates.every(c => 'firstRankCount' in c)){ // using every to make typescript happy
     candidates.forEach(c => {
+      // @ts-ignore - We know `firstRankCount` is present even if typescript doesn't
       c.firstRankCount = tallyVotes.reduce((count, v) => v.marks[c.id] === 1 ? count+1 : count, 0)
     });
   }
