@@ -1874,9 +1874,33 @@
             },
             "type": "array"
           },
+          "exhaustedVoteCount": {
+            "type": "number"
+          },
+          "isStartOfSearch": {
+            "type": "boolean"
+          },
           "logs": {
             "items": {
               "type": "string"
+            },
+            "type": "array"
+          },
+          "standings": {
+            "items": {
+              "properties": {
+                "candidateIndex": {
+                  "type": "number"
+                },
+                "hareScore": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "candidateIndex",
+                "hareScore"
+              ],
+              "type": "object"
             },
             "type": "array"
           },
@@ -1890,6 +1914,7 @@
         "required": [
           "eliminated",
           "logs",
+          "standings",
           "winners"
         ],
         "type": "object"

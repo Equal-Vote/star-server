@@ -26,6 +26,9 @@ import ScoreRangeWidget from "./components/ScoreRangeWidget";
 import useFeatureFlags from "~/components/FeatureFlagContextProvider";
 import STAREqualPreferencesWidget from "./STAR/STAREqualPreferencesWidget";
 import VoterErrorStatsWidget from "./components/VoterErrorStatsWidget";
+import Pages from "./Pages";
+import { irvContext, irvWinnerSearch } from "./IRV/ifc";
+import { IRVTopResultsView } from "./IRV/top";
 
 function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: boolean }) {
   let i = 0;
@@ -119,16 +122,41 @@ function IRVResultsViewer() {
   const { t, race} = useRace();
   results = results as irvResults;
 
-  const firstRoundData = results.voteCounts[0].map((c,i) => ({name: results.summaryData.candidates[i].name, votes: c}));
+  const {roundResults, exhaustedVoteCounts} = results;
 
-  const runoffData = results.voteCounts.slice(-1)[0]
-    .map((c,i) => ({name: results.summaryData.candidates[i].name, votes: c}))
-    .sort((a, b) => b.votes - a.votes)
-    .filter(a => a.votes != 0) // filter out eliminated candidates
-    .concat([{
-      name: t('results.rcv.exhausted'),
-      votes: results.exhaustedVoteCounts.slice(-1)[0]
-    }])
+  /* For top view: */
+
+  /* Put all round information in one place. */
+
+  if (roundResults.length !== exhaustedVoteCounts.length)
+    console.error(Error("IRV round counts don't match."));
+  const roundCount = roundResults.length;
+  for (let idx = 0; idx < roundCount; idx++) {
+    let cur = roundResults[idx];
+    cur.exhaustedVoteCount = exhaustedVoteCounts[idx];
+    cur.isStartOfSearch = 0 === idx || ! ! roundResults[idx - 1].winners.length;
+  }
+
+  /* Group the rounds by searches for a winner. */
+
+  const wins: irvWinnerSearch[] = [];
+  let rx = 0; /* round index */
+  let lim = roundResults.length;
+  while (rx < lim) {
+    const win: irvWinnerSearch = {
+      firstRound: roundResults[rx],
+      lastRound: null
+    };
+    while (! roundResults[rx].winners.length)
+      rx++;
+    win.lastRound = roundResults[rx];
+    wins.push(win);
+    rx++; /* advance past the round that found the winner */
+  }
+
+  /* End of setting up for top view. */
+
+  /* Details for optional expansion. */
 
   const tabulationRows = results.summaryData.candidates.map(({index, name}) => {
     return [name].concat(
@@ -148,7 +176,6 @@ function IRVResultsViewer() {
 
     return 0;
   });
-
   tabulationRows.unshift([t('results.rcv.tabulation_candidate_column')].concat([...Array(results.voteCounts.length).keys()].map(i =>
     t('results.rcv.round_column', {n: i+1})
   )))
@@ -185,14 +212,9 @@ function IRVResultsViewer() {
     .reverse();
 
   return <ResultsViewer methodKey='rcv'>
-    <WidgetContainer>
-      <Widget title={t('results.rcv.first_choice_title')}>
-        <ResultsBarChart data={firstRoundData} percentage majorityOffset/>
-      </Widget>
-      <Widget title={t('results.rcv.final_round_title')}>
-        <ResultsBarChart data={runoffData} runoff stars={1} percentage sortFunc={false} majorityLegend={t('results.rcv.runoff_majority')}/>
-      </Widget>
-    </WidgetContainer>
+    < IRVTopResultsView wins={wins} context={{
+      candidatesByIndex: results.summaryData.candidates, t
+    }}/>
     <DetailExpander>
       <WidgetContainer>
         <Widget title={t('results.rcv.table_title')} wide>
