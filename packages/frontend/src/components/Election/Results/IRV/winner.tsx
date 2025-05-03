@@ -7,35 +7,35 @@ import Typography from '@mui/material/Typography';
 import WidgetContainer from '../components/WidgetContainer';
 import Widget from '../components/Widget';
 import {
+  irvCandidate,
+  irvResults,
   irvRoundResults
 } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 import ResultsBarChart from "../components/ResultsBarChart";
 import { irvContext, irvWinnerSearch } from "./ifc";
-
-const chartDataFrom = (
-  {context, round}: {
-    context: irvContext,
-    round: irvRoundResults
-  }
-) => {
-  const {candidatesByIndex} = context;
-  return round.standings.map(
-    ({ candidateIndex, hareScore }) =>
-    ({ name: candidatesByIndex[candidateIndex].name, votes: hareScore })
-  )
-};
+import useRace from '~/components/RaceContextProvider';
 
 export function IRVWinnerView ( {win, context}:{
   win: irvWinnerSearch, context: irvContext
 }) {
-  const {t} = context;
+  let {results, t} = useRace();
 
-  const firstRoundData = chartDataFrom({context, round: win.firstRound});
+  results = results as irvResults;
+
+  const firstRoundData = results.summaryData.candidates.map((c: irvCandidate) => ({
+    name: c.name,
+    votes: c.hareScores[win.firstRoundIndex] 
+  }))
   const runoffData = [
-    ...chartDataFrom({context, round: win.lastRound}),
+    ...results.summaryData.candidates
+      .filter(c => results.roundResults.slice(0, win.lastRoundIndex).every(round => !round.eliminated.map(cc => cc.id).includes(c.id)))
+      .map((c: irvCandidate) => ({
+        name: c.name,
+        votes: c.hareScores[win.lastRoundIndex] 
+      })),
     {
       name: t('results.rcv.exhausted'),
-      votes: win.lastRound.exhaustedVoteCount
+      votes: results.roundResults[win.lastRoundIndex].exhaustedVoteCount
     }
   ];
 

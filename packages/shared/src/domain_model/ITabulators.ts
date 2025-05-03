@@ -158,14 +158,13 @@ export interface pluralityResults extends genericResults<pluralityCandidate, plu
 /////////////// IRV TYPES //////////////////
 
 export interface irvCandidate extends candidate{
-    firstRankCount: number;
+    hareScores: number[]
 };
 
 export type irvSummaryData = genericSummaryData<irvCandidate>;
 
 export interface irvRoundResults extends roundResults<irvCandidate>{
     eliminated: irvCandidate[],
-    standings: {candidateIndex: number, hareScore: number}[],
     /* Sorted by decreasing Hare score */
     /* Next two are maybe filled in only in front end: */
     exhaustedVoteCount?: number | undefined,
@@ -175,7 +174,6 @@ export interface irvRoundResults extends roundResults<irvCandidate>{
 export interface irvResults extends genericResults<irvCandidate, irvSummaryData> {
     votingMethod: 'IRV' | 'STV',
     roundResults: irvRoundResults[],
-    voteCounts: number[][],
       /* Outer index is round; inner index is candidate. */
     exhaustedVoteCounts: number[],  /* by round */
     nExhaustedViaOvervote: number,

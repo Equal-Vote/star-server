@@ -1,4 +1,6 @@
 import { candidate, genericResults, genericSummaryData, rawVote, roundResults, vote } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+
+const Fraction = require('fraction.js');
 declare namespace Intl {
   class ListFormat {
     constructor(locales?: string | string[], options?: {});
@@ -56,6 +58,7 @@ const columnTypes = [
   // Last row MUST accept anything!
   { test: isAny, transform: transformAny }
 ];
+
 
 function getTransforms(header : any, data : string[][]) {
   const transforms : any[] = [];
@@ -129,11 +132,64 @@ const filterInitialVotes = (rawVotes: rawVote[], tests: StatTestPair[]): [vote[]
   return [tallyVotes, summaryStats];
 }
 
+export type CandidateSortField<CandidateType extends candidate> = keyof CandidateType
+
+export const sortCandidates = <CandidateType extends candidate>(
+  candidates: CandidateType[],
+  fieldsExpr: CandidateSortField<CandidateType>[] | CandidateSortField<CandidateType> | undefined,
+  roundResults?: roundResults<CandidateType>[]
+) => {
+  if(fieldsExpr === undefined) return;
+  const fields = Array.isArray(fieldsExpr) ? fieldsExpr : [fieldsExpr];
+
+  const evalField = (candidate: CandidateType, field: CandidateSortField<CandidateType>, subIndex?: number) => {
+    if(Array.isArray(candidate[field])){
+      // @ts-ignore: typescript doesn't know candidate[field] is an array
+      return candidate[field].at(subIndex ?? -1)
+    }else{
+      return candidate[field]
+    }
+  }
+
+  const cmpr = (a: CandidateType, b: CandidateType, fieldIndex: number = 0, subIndex: number = -1): number => {
+    if(fieldIndex >= fields.length) return 0;
+    let aa = evalField(a, fields[fieldIndex], subIndex);
+    let bb = evalField(b, fields[fieldIndex], subIndex);
+    if(typeof aa == typeof Fraction){
+      let diff = aa.sub(bb).mul(-1);
+      if(!diff.equals(0)) return diff.valueOf();
+    }else{
+      let diff = -(aa - bb);
+      if(diff != 0) return diff;
+    }
+    if(Array.isArray(a[fields[fieldIndex]]) && subIndex != 0){
+      // @ts-ignore - we just established that it's an array, not sure why typescript is confused
+      let l = a[fields[fieldIndex]].length;
+      return cmpr(a, b, fieldIndex, (subIndex-1+l)%l)
+    }else{
+      return cmpr(a, b, fieldIndex+1);
+    }
+  }
+
+  const winRound = (c: CandidateType) => {
+    if(roundResults == undefined) return -1;
+    let i = roundResults.findIndex(r => r.winners.map(w => w.id).includes(c.id))
+    if(i == -1) return 999999; // I can't do infinity because Infinity can't equal Infinity for comparison purposes
+    return i;
+  }
+
+  candidates.sort((a, b) => {
+    let wDiff = winRound(a) - winRound(b);
+    if(wDiff != 0) return wDiff;
+    return cmpr(a, b);
+  });
+}
+
 export const getSummaryData = <CandidateType extends candidate, SummaryType extends genericSummaryData<CandidateType>,>(
   candidates: CandidateType[],
 	allVotes: rawVote[],
   methodType: 'cardinal' | 'ordinal',
-  sortField: keyof CandidateType | undefined,
+  sortFields: CandidateSortField<CandidateType>[] | CandidateSortField<CandidateType> | undefined,
   statTests: StatTestPair[],
 ): {tallyVotes: vote[], summaryData: SummaryType} => {
 	// Filter Ballots
@@ -195,17 +251,18 @@ export const getSummaryData = <CandidateType extends candidate, SummaryType exte
     });
   }
 
-  // Compute firstRankCount
-  if(candidates.every(c => 'firstRankCount' in c)){ // using every to make typescript happy
-    candidates.forEach(c => {
-      // @ts-ignore - We know `firstRankCount` is present even if typescript doesn't
-      c.firstRankCount = tallyVotes.reduce((count, v) => v.marks[c.id] === 1 ? count+1 : count, 0)
-    });
-  }
+  // hareScores is handled in irv tabulator
+  // Compute hareScores (just adding first rounds for now, tabulator will add the rest)
+  //if(candidates.every(c => 'hareScores' in c)){ // using every to make typescript happy
+  //  candidates.forEach(c => {
+  //    // @ts-ignore - We know `firstRankCount` is present even if typescript doesn't
+  //    c.hareScores = [tallyVotes.reduce((count, v) => v.marks[c.id] === 1 ? count+1 : count, 0)]
+  //  });
+  //}
 
 
   // Pre-Sort by the sort field
-  if(sortField) candidates = candidates.sort((a, b) => -((a[sortField] as number) - (b[sortField] as number)))
+  sortCandidates(candidates, sortFields);
 
   return {
     summaryData: {

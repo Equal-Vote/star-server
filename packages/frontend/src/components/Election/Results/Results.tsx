@@ -132,44 +132,24 @@ function IRVResultsViewer() {
   let lim = roundResults.length;
   while (rx < lim) {
     const win: irvWinnerSearch = {
-      firstRound: roundResults[rx],
-      lastRound: null
+      firstRoundIndex: rx,
+      lastRoundIndex: null
     };
     while (! roundResults[rx].winners.length)
       rx++;
-    win.lastRound = roundResults[rx];
+    win.lastRoundIndex = rx;
     wins.push(win);
     rx++; /* advance past the round that found the winner */
   }
 
   /* End of setting up for top view. */
 
-  /* Details for optional expansion. */
-
-  const tabulationRows = results.summaryData.candidates.map(({name}, index) => {
-    return [name].concat(
-      (results.voteCounts as Array<number[]>).map(counts => counts[index] == 0? '' : '' + counts[index])
-    )
-  }).sort((r1, r2) => {
-    const z1 = r1.filter(s => s == '').length;
-    const z2 = r2.filter(s => s == '').length;
-    if(z1 != z2)
-      return z1-z2;
-
-    for(let i = r1.length-1; i >= 1; i--){
-      if(r1[i] == '') continue;
-      if(r2[i] == '') continue;
-      return parseInt(r2[i]) - parseInt(r1[i])
-    }
-
-    return 0;
-  });
-  tabulationRows.unshift([t('results.rcv.tabulation_candidate_column')].concat([...Array(results.voteCounts.length).keys()].map(i =>
-    t('results.rcv.round_column', {n: i+1})
-  )))
+  const tabulationRows = results.summaryData.candidates.map(c => ([c.name,...c.hareScores]));
+  tabulationRows.unshift([
+    t('results.rcv.tabulation_candidate_column'),
+    ...(Array(tabulationRows[0].length-1).keys().map(i => t('results.rcv.round_column', {n: i+1})))
+  ])
   tabulationRows.push([t('results.rcv.exhausted'), ...results.exhaustedVoteCounts.map(i => ''+i)])
-
-  const candidates = results.summaryData.candidates;
 
   return <ResultsViewer methodKey='rcv'>
     < IRVTopResultsView wins={wins} context={{
@@ -343,7 +323,6 @@ function STARPRResultsViewer() {
                   votes: Math.round(totalScore*10)/10,
                   label: undefined,
                   star: winIndex(results.summaryData.candidates[index]) < page,
-                  // a bit hacky using candidate_name but oh well
                   sortIndex: sortedCandidates.findIndex((c) => c.index == index)
                 })
               )
@@ -400,27 +379,17 @@ function STVResultsViewer() {
     return i;
   }
 
-  const sortedCandidates = results.summaryData.candidates
-    .map((c,i) => ({...c, index: i}))
-    .sort((a, b) => {
-      const finalScore = (aa) => results.voteCounts.slice(-1)[0][aa.index]
-      if(winIndex(a) != winIndex(b)) return winIndex(a) - winIndex(b);
-      return -(finalScore(a) - finalScore(b));
-    })
-
   return <ResultsViewer methodKey='stv'>
     <WidgetContainer>
       <Widget title={t('results.stv.table_title')}>
         <ResultsBarChart
           data={
             [
-              ...results.voteCounts[page-1].map((totalScore, i) => ({
-                name: results.summaryData.candidates[i].name,
-                votes: Math.round(totalScore*10)/10,
-                label: winIndex(results.summaryData.candidates[i]) < page-1 ? '(elected)' : undefined,
-                star: winIndex(results.summaryData.candidates[i]) < page,
-                // a bit hacky using candidate_name but oh well
-                sortIndex: sortedCandidates.findIndex((c) => c.id == results.summaryData.candidates[i].id)
+              ...results.summaryData.candidates.map(c => ({
+                name: c.name,
+                votes: Math.round(c.hareScores[page-1]*10)/10,
+                label: winIndex(c) < page-1 ? '(elected)' : undefined,
+                star: winIndex(c) < page,
               })), 
               {
                 name: 'Exhausted',
@@ -432,11 +401,11 @@ function STVResultsViewer() {
             ]
           }
           sortFunc = {(a, b) => Number(a.sortIndex) - Number(b.sortIndex)}
-          maxBarSize = {results.voteCounts[0].reduce(
-            (prev, totalScore) => Math.max(prev, totalScore), 0
+          maxBarSize = {results.summaryData.candidates.reduce(
+            (prev, c) => Math.max(prev, c.hareScores[0]), 0
           )}
         />
-        <Pagination count={results.voteCounts.length} page={page} onChange={handleChange} />
+        <Pagination count={results.summaryData.candidates[0].hareScores.length} page={page} onChange={handleChange} />
       </Widget>
     </WidgetContainer>
   </ResultsViewer>
