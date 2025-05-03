@@ -244,6 +244,7 @@ results:
     exhausted: Exhausted
     tabulation_candidate_column: '{{capital_candidate}}'
     round_column: Round {{n}}
+    bloc_results_title: First and last round for finding each winner
 
   stv:
     table_title: STV Tabulation Rounds

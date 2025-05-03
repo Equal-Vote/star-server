@@ -10,11 +10,13 @@ import { useState } from 'react';
 import { irvContext, irvWinnerSearch } from "./ifc";
 import { IRVWinnerView } from "./winner";
 import Pages from "../Pages";
+import useRace from "~/components/RaceContextProvider";
 
 export function IRVTopResultsView ( {wins, context}:
   {wins: irvWinnerSearch[], context: irvContext}
 ) {
 
+  const {t} = useRace();
   /* Only paginate if there is more than one page. */
 
   if (1 === wins.length)
@@ -24,7 +26,7 @@ export function IRVTopResultsView ( {wins, context}:
   const winIndex = page - 1;
   return <>
     <Typography variant="h5" component="h5">
-      First and last round for finding each winner (TODO: i18n)
+      {t('results.rcv.bloc_results_title')}
     </Typography>
     <Pages
       pageCount={wins.length} page={page} setPage={setPage}
