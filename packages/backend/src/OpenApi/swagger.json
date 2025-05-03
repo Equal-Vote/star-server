@@ -1970,8 +1970,11 @@
       },
       "irvCandidate": {
         "properties": {
-          "firstRankCount": {
-            "type": "number"
+          "hareScores": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
           },
           "id": {
             "type": "string"
@@ -1996,7 +1999,7 @@
           }
         },
         "required": [
-          "firstRankCount",
+          "hareScores",
           "id",
           "name",
           "tieBreakOrder",
@@ -2052,15 +2055,6 @@
             },
             "type": "array"
           },
-          "voteCounts": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
           "votingMethod": {
             "enum": [
               "IRV",
@@ -2080,7 +2074,6 @@
           "summaryData",
           "tieBreakType",
           "tied",
-          "voteCounts",
           "votingMethod"
         ],
         "type": "object"
@@ -2111,24 +2104,6 @@
             },
             "type": "array"
           },
-          "standings": {
-            "items": {
-              "properties": {
-                "candidateIndex": {
-                  "type": "number"
-                },
-                "hareScore": {
-                  "type": "number"
-                }
-              },
-              "required": [
-                "candidateIndex",
-                "hareScore"
-              ],
-              "type": "object"
-            },
-            "type": "array"
-          },
           "tieBreakType": {
             "$ref": "#/components/schemas/tieBreakType"
           },
@@ -2149,7 +2124,6 @@
           "eliminated",
           "logs",
           "runner_up",
-          "standings",
           "tieBreakType",
           "tied",
           "winners"

@@ -12,38 +12,18 @@ const VoterIntentWidget = () => {
     let { results, race } = useRace();
     const { ballotsForRace} = useAnonymizedBallots();
 
-    const candidates = results.summaryData.candidates;
-
     results = results as irvResults;
 
-    // NOTE: we're trusting that voteCounts order is consistent with candidates
-    let [winner, runnerUp] = results.voteCounts.slice(-1)[0]
-        .map((c,i) => ({candidate: candidates[i], votes: c}))
-        .sort((a, b) => b.votes - a.votes)
-        .map(m => m.candidate)
+    const candidates = results.summaryData.candidates;
 
-    const final_round_candidates = results.voteCounts.at(-1).filter(c => c != 0).length;
+    let [winner, runnerUp] = candidates.slice(0, 2);
+
+    const final_round_candidates = candidates.filter(c => c.hareScores.at(-1) != 0).length;
     if(final_round_candidates > 2){
         runnerUp.name = 'a losing candidate'
     }
 
     const condorcetCandidate = candidates.find(c => candidates.every(c2 => c.id == c2.id || c.winsAgainst[c2.id]))
-
-    const candidatesInElimOrder: candidate[] = candidates
-        .map((c, i) => ({candidate: c, index: i}))
-        .filter(c => results.voteCounts.at(-1)[c.index] == 0)
-        .sort((a, b) => {
-            // prioritize ranking in later rounds, but use previous rounds as tiebreaker
-            let i = results.voteCounts.length-1;
-            while(i >= 0){
-                const diff = -(results.voteCounts[i][a.index] - results.voteCounts[i][b.index]);
-                if(diff != 0) return diff;
-                i--;
-            }
-            return 0;
-        })
-        .map(item => item.candidate)
-        .reverse();
 
     // End note: Add asterisk and change to: "*In some elections, the uncounted rankings could have made a difference in the race if they had been counted."
     //     if the Condorcet winner won,  If the Condorcet winner lost change end note to say "In this election, the uncounted rankings could have made a
@@ -94,7 +74,7 @@ const VoterIntentWidget = () => {
         let hasPassedOver = false;
         const alreadyEliminated = []
 
-        candidatesInElimOrder.forEach((c) => {
+        candidates.reverse().forEach((c) => {
             if(ranksLeft.length == 0) return;
             if(ranksLeft[0].candidate_id == c.id){
                 ranksLeft.shift();
