@@ -4,6 +4,7 @@ const className = "Elections.Controllers";
 import { VotingMethods } from '../../Tabulators/VotingMethodSelecter'
 import { Request, Response, NextFunction } from 'express';
 import { STV } from '../../Tabulators/IRV';
+import { VotingMethod } from '@equal-vote/star-vote-shared/domain_model/Race';
 
 const getSandboxResults = async (req: Request, res: Response, next: NextFunction) => {
     Logger.info(req, `${className}.getSandboxResults`);
@@ -11,9 +12,9 @@ const getSandboxResults = async (req: Request, res: Response, next: NextFunction
     const candidateNames = req.body.candidates;
     let cvr = req.body.cvr;
     const num_winners = req.body.num_winners;
-    const voting_method = req.body.votingMethod
+    const voting_method = req.body.votingMethod as VotingMethod;
 
-    if (!VotingMethods[voting_method]) {
+    if (!(voting_method in VotingMethods)) {
         throw new Error('Invalid Voting Method')
     }
 
@@ -24,10 +25,7 @@ const getSandboxResults = async (req: Request, res: Response, next: NextFunction
         cvr = cvr.map((row:any) => ([...row, null]));
     }
 
-    let results: ElectionResults = {
-        votingMethod: voting_method,
-        ...VotingMethods[voting_method](candidateNames, cvr, num_winners)
-    }
+    let results: ElectionResults = VotingMethods[voting_method](candidateNames, cvr, num_winners);
 
     res.json(
         {

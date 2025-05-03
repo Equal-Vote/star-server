@@ -8,6 +8,7 @@ import { CHART_COLORS, methodValueToTextKey } from "~/components/util";
 import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 import HeadToHeadChart from "./HeadToHeadChart";
 import ResultsKey from "./ResultsKey";
+import { candidate } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 
 interface IMatchup {
     name: string
@@ -17,52 +18,23 @@ interface IMatchup {
 }
 
 // candidates helps define the order
-const HeadToHeadWidget = ({candidates=[], ranked=false} : {candidates?: Candidate[], ranked?: boolean}) => {
+const HeadToHeadWidget = () => {
     const {t} = useElection();
-    const {ballotsForRace} = useAnonymizedBallots();
-    const {race} = useRace();
-    if(candidates.length == 0) candidates = race.candidates;
-    const [refCandidateId, setRefCandidateId] = useState(candidates[0].candidate_id);
+    const {race, results} = useRace();
+    const candidates = results.summaryData.candidates;
+    const [refCandidateId, setRefCandidateId] = useState(candidates[0].id);
 
-    const refCandidateName = candidates.find(c => c.candidate_id == refCandidateId).candidate_name;
+    const refCandidate = candidates.find(c => c.id == refCandidateId);
     const matchups: {[key: string]:IMatchup} = {};
     candidates.forEach((c) => {
-        if(c.candidate_id == refCandidateId) return;
-        matchups[c.candidate_id] = {
-            name: c.candidate_name,
-            leftVotes: 0,
-            rightVotes: 0,
+        if(c.id == refCandidateId) return;
+        matchups[c.id] = {
+            name: c.name,
+            leftVotes: refCandidate.votesPreferredOver[c.id],
+            rightVotes: c.votesPreferredOver[refCandidate.id],
             equalPreferences: [] 
         }
     });
-
-    const incIndex = (arr, index) => {
-        if(index < 0) return; // Quick Hack to keep the page from crashing
-        while(index >= arr.length ){
-            arr.push({
-                name: arr.length,
-                count: 0
-            });
-        }
-        arr[index].count++;
-    }
-
-    const defValue =  (ranked)? Infinity : 0;
-    const b = ballotsForRace()
-    const numBallots = b.length;
-    b.forEach((scores) => {
-        let refValue = scores.find((score) => score.candidate_id == refCandidateId)?.score ?? defValue;
-        if(ranked) refValue = -refValue; // this lets us use a max function
-        scores.forEach(score => {
-            if(matchups[score.candidate_id] === undefined) return;
-            let value = score.score ?? defValue;
-            if(ranked) value = -value; 
-            if(refValue > value) matchups[score.candidate_id].leftVotes++;
-            if(refValue < value) matchups[score.candidate_id].rightVotes++;
-            // hacky infinitiy check
-            if(Math.abs(value) < 1000 && refValue == value) incIndex(matchups[score.candidate_id].equalPreferences, value)
-        })
-    })
 
     let wins = 0;
     let losses = 0;
@@ -80,18 +52,18 @@ const HeadToHeadWidget = ({candidates=[], ranked=false} : {candidates?: Candidat
             label={t('results_ext.candidate_selector')}
             onChange={(e) => setRefCandidateId(e.target.value as string)}
         >
-            {candidates.map((c, i) => <MenuItem key={i} value={c.candidate_id}>{c.candidate_name}</MenuItem>)}
+            {candidates.map((c, i) => <MenuItem key={i} value={c.id}>{c.name}</MenuItem>)}
         </Select>
         <Divider variant='middle' sx={{width: '100%', m: 3}}/>
-        <Typography variant='h6'>{refCandidateName} won {wins} matchups, and lost {losses}.</Typography>
+        <Typography variant='h6'>{refCandidate.name} won {wins} matchups, and lost {losses}.</Typography>
         <Box display='flex' flexDirection='column' gap={4} sx={{my: 3, width: '100%', overflowY: {xs: 'unset', md: 'scroll'}, maxHeight: {xs: 'unset', md: '750px'}}}>
-            {candidates.filter(c => c.candidate_id != refCandidateId).map((c,i) => {
-                const m = matchups[c.candidate_id];
+            {candidates.filter(c => c.id != refCandidateId).map((c,i) => {
+                const m = matchups[c.id];
                 return <HeadToHeadChart
                     key={i}
-                    leftName={refCandidateName} rightName={m.name}
+                    leftName={refCandidate.name} rightName={m.name}
                     leftVotes={m.leftVotes} rightVotes={m.rightVotes}
-                    total={numBallots}
+                    total={results.summaryData.nTallyVotes}
                     equalContent={
                         (race.voting_method == 'IRV' || race.voting_method == 'STV')?
                         {
@@ -108,9 +80,9 @@ const HeadToHeadWidget = ({candidates=[], ranked=false} : {candidates?: Candidat
             })}
         </Box>
         <ResultsKey items={[
-            [CHART_COLORS[0], t(`results_ext.head_to_head_key.${methodKey}.higher`, {name: refCandidateName, other_name: t('results_ext.head_to_head_other_name')})],
+            [CHART_COLORS[0], t(`results_ext.head_to_head_key.${methodKey}.higher`, {name: refCandidate.name, other_name: t('results_ext.head_to_head_other_name')})],
             ['var(--brand-gray-1)', t(`results_ext.head_to_head_key.${methodKey}.equal`)],
-            [CHART_COLORS[1], t(`results_ext.head_to_head_key.${methodKey}.higher`, {name: t('results_ext.head_to_head_other_name'), other_name: refCandidateName})],
+            [CHART_COLORS[1], t(`results_ext.head_to_head_key.${methodKey}.higher`, {name: t('results_ext.head_to_head_other_name'), other_name: refCandidate.name})],
         ]} />
     </Widget>
 }

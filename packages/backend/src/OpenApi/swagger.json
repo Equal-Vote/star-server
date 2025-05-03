@@ -192,6 +192,105 @@
         ],
         "type": "object"
       },
+      "CandidateType": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tieBreakOrder": {
+            "type": "number"
+          },
+          "votesPreferredOver": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          },
+          "winsAgainst": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "tieBreakOrder",
+          "votesPreferredOver",
+          "winsAgainst"
+        ],
+        "type": "object"
+      },
+      "CandidateType_1": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tieBreakOrder": {
+            "type": "number"
+          },
+          "votesPreferredOver": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          },
+          "winsAgainst": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "tieBreakOrder",
+          "votesPreferredOver",
+          "winsAgainst"
+        ],
+        "type": "object"
+      },
+      "CandidateType_2": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tieBreakOrder": {
+            "type": "number"
+          },
+          "votesPreferredOver": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          },
+          "winsAgainst": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "tieBreakOrder",
+          "votesPreferredOver",
+          "winsAgainst"
+        ],
+        "type": "object"
+      },
       "Credentials": {
         "properties": {
           "email": {
@@ -348,13 +447,13 @@
             "$ref": "#/components/schemas/approvalResults"
           },
           {
-            "$ref": "#/components/schemas/pluralityResults"
-          },
-          {
             "$ref": "#/components/schemas/rankedRobinResults"
           },
           {
             "$ref": "#/components/schemas/irvResults"
+          },
+          {
+            "$ref": "#/components/schemas/pluralityResults"
           }
         ]
       },
@@ -1110,6 +1209,35 @@
         ],
         "type": "object"
       },
+      "SummaryType": {
+        "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/CandidateType_2"
+            },
+            "type": "array"
+          },
+          "nAbstentions": {
+            "type": "number"
+          },
+          "nOutOfBoundsVotes": {
+            "type": "number"
+          },
+          "nTallyVotes": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "candidates",
+          "nAbstentions",
+          "nOutOfBoundsVotes",
+          "nTallyVotes"
+        ],
+        "type": "object"
+      },
+      "T": {
+        "type": "object"
+      },
       "TermType": {
         "enum": [
           "election",
@@ -1363,11 +1491,48 @@
         ],
         "type": "string"
       },
+      "allocatedScoreCandidate": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "tieBreakOrder": {
+            "type": "number"
+          },
+          "votesPreferredOver": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          },
+          "winsAgainst": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "score",
+          "tieBreakOrder",
+          "votesPreferredOver",
+          "winsAgainst"
+        ],
+        "type": "object"
+      },
       "allocatedScoreResults": {
         "properties": {
           "elected": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/allocatedScoreCandidate"
             },
             "type": "array"
           },
@@ -1385,7 +1550,7 @@
           },
           "roundResults": {
             "items": {
-              "$ref": "#/components/schemas/roundResults"
+              "$ref": "#/components/schemas/roundResults<allocatedScoreCandidate>"
             },
             "type": "array"
           },
@@ -1397,10 +1562,7 @@
           },
           "tied": {
             "items": {
-              "items": {
-                "$ref": "#/components/schemas/candidate"
-              },
-              "type": "array"
+              "$ref": "#/components/schemas/candidate"
             },
             "type": "array"
           },
@@ -1421,11 +1583,50 @@
         ],
         "type": "object"
       },
+      "allocatedScoreRoundResults": {
+        "properties": {
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/tabulatorLog"
+            },
+            "type": "array"
+          },
+          "runner_up": {
+            "items": {
+              "$ref": "#/components/schemas/allocatedScoreCandidate"
+            },
+            "type": "array"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/allocatedScoreCandidate"
+            },
+            "type": "array"
+          },
+          "winners": {
+            "items": {
+              "$ref": "#/components/schemas/allocatedScoreCandidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "logs",
+          "runner_up",
+          "tieBreakType",
+          "tied",
+          "winners"
+        ],
+        "type": "object"
+      },
       "allocatedScoreSummaryData": {
         "properties": {
           "candidates": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/allocatedScoreCandidate"
             },
             "type": "array"
           },
@@ -1438,24 +1639,6 @@
           "nTallyVotes": {
             "type": "number"
           },
-          "pairwiseMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "preferenceMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
           "spentAboves": {
             "items": {
               "type": "number"
@@ -1465,12 +1648,6 @@
           "splitPoints": {
             "items": {
               "type": "number"
-            },
-            "type": "array"
-          },
-          "totalScores": {
-            "items": {
-              "$ref": "#/components/schemas/totalScore"
             },
             "type": "array"
           },
@@ -1495,13 +1672,47 @@
           "nAbstentions",
           "nOutOfBoundsVotes",
           "nTallyVotes",
-          "pairwiseMatrix",
-          "preferenceMatrix",
           "spentAboves",
           "splitPoints",
-          "totalScores",
           "weight_on_splits",
           "weightedScoresByRound"
+        ],
+        "type": "object"
+      },
+      "approvalCandidate": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "tieBreakOrder": {
+            "type": "number"
+          },
+          "votesPreferredOver": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          },
+          "winsAgainst": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "score",
+          "tieBreakOrder",
+          "votesPreferredOver",
+          "winsAgainst"
         ],
         "type": "object"
       },
@@ -1509,7 +1720,7 @@
         "properties": {
           "elected": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/approvalCandidate"
             },
             "type": "array"
           },
@@ -1521,7 +1732,7 @@
           },
           "roundResults": {
             "items": {
-              "$ref": "#/components/schemas/roundResults"
+              "$ref": "#/components/schemas/roundResults<approvalCandidate>"
             },
             "type": "array"
           },
@@ -1553,11 +1764,50 @@
         ],
         "type": "object"
       },
+      "approvalRoundResults": {
+        "properties": {
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/tabulatorLog"
+            },
+            "type": "array"
+          },
+          "runner_up": {
+            "items": {
+              "$ref": "#/components/schemas/approvalCandidate"
+            },
+            "type": "array"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/approvalCandidate"
+            },
+            "type": "array"
+          },
+          "winners": {
+            "items": {
+              "$ref": "#/components/schemas/approvalCandidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "logs",
+          "runner_up",
+          "tieBreakType",
+          "tied",
+          "winners"
+        ],
+        "type": "object"
+      },
       "approvalSummaryData": {
         "properties": {
           "candidates": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/approvalCandidate"
             },
             "type": "array"
           },
@@ -1569,40 +1819,13 @@
           },
           "nTallyVotes": {
             "type": "number"
-          },
-          "pairwiseMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "preferenceMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "totalScores": {
-            "items": {
-              "$ref": "#/components/schemas/totalScore"
-            },
-            "type": "array"
           }
         },
         "required": [
           "candidates",
           "nAbstentions",
           "nOutOfBoundsVotes",
-          "nTallyVotes",
-          "pairwiseMatrix",
-          "preferenceMatrix",
-          "totalScores"
+          "nTallyVotes"
         ],
         "type": "object"
       },
@@ -1639,43 +1862,36 @@
         },
         "type": "object"
       },
-      "ballot": {
-        "items": {
-          "$ref": "#/components/schemas/score"
-        },
-        "type": "array"
-      },
       "candidate": {
         "properties": {
-          "index": {
-            "type": "number"
+          "id": {
+            "type": "string"
           },
           "name": {
             "type": "string"
           },
           "tieBreakOrder": {
             "type": "number"
-          }
-        },
-        "required": [
-          "index",
-          "name",
-          "tieBreakOrder"
-        ],
-        "type": "object"
-      },
-      "fiveStarCount": {
-        "properties": {
-          "candidate": {
-            "$ref": "#/components/schemas/candidate"
           },
-          "counts": {
-            "type": "number"
+          "votesPreferredOver": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          },
+          "winsAgainst": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
           }
         },
         "required": [
-          "candidate",
-          "counts"
+          "id",
+          "name",
+          "tieBreakOrder",
+          "votesPreferredOver",
+          "winsAgainst"
         ],
         "type": "object"
       },
@@ -1683,7 +1899,7 @@
         "properties": {
           "elected": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/CandidateType_2"
             },
             "type": "array"
           },
@@ -1695,12 +1911,12 @@
           },
           "roundResults": {
             "items": {
-              "$ref": "#/components/schemas/roundResults"
+              "$ref": "#/components/schemas/roundResults<CandidateType>_1"
             },
             "type": "array"
           },
           "summaryData": {
-            "$ref": "#/components/schemas/genericSummaryData"
+            "$ref": "#/components/schemas/SummaryType"
           },
           "tieBreakType": {
             "$ref": "#/components/schemas/tieBreakType"
@@ -1730,7 +1946,7 @@
         "properties": {
           "candidates": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/CandidateType"
             },
             "type": "array"
           },
@@ -1742,40 +1958,53 @@
           },
           "nTallyVotes": {
             "type": "number"
-          },
-          "pairwiseMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "preferenceMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "totalScores": {
-            "items": {
-              "$ref": "#/components/schemas/totalScore"
-            },
-            "type": "array"
           }
         },
         "required": [
           "candidates",
           "nAbstentions",
           "nOutOfBoundsVotes",
-          "nTallyVotes",
-          "pairwiseMatrix",
-          "preferenceMatrix",
-          "totalScores"
+          "nTallyVotes"
+        ],
+        "type": "object"
+      },
+      "irvCandidate": {
+        "properties": {
+          "hareScores": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tieBreakOrder": {
+            "type": "number"
+          },
+          "votesPreferredOver": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          },
+          "winsAgainst": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "hareScores",
+          "id",
+          "name",
+          "tieBreakOrder",
+          "votesPreferredOver",
+          "winsAgainst"
         ],
         "type": "object"
       },
@@ -1783,19 +2012,13 @@
         "properties": {
           "elected": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/irvCandidate"
             },
             "type": "array"
           },
           "exhaustedVoteCounts": {
             "items": {
               "type": "number"
-            },
-            "type": "array"
-          },
-          "logs": {
-            "items": {
-              "type": "string"
             },
             "type": "array"
           },
@@ -1821,7 +2044,7 @@
             "type": "array"
           },
           "summaryData": {
-            "$ref": "#/components/schemas/rankedRobinSummaryData"
+            "$ref": "#/components/schemas/irvSummaryData"
           },
           "tieBreakType": {
             "$ref": "#/components/schemas/tieBreakType"
@@ -1829,15 +2052,6 @@
           "tied": {
             "items": {
               "$ref": "#/components/schemas/candidate"
-            },
-            "type": "array"
-          },
-          "voteCounts": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
             },
             "type": "array"
           },
@@ -1852,7 +2066,6 @@
         "required": [
           "elected",
           "exhaustedVoteCounts",
-          "logs",
           "nExhaustedViaDuplicateRank",
           "nExhaustedViaOvervote",
           "nExhaustedViaSkippedRank",
@@ -1861,7 +2074,6 @@
           "summaryData",
           "tieBreakType",
           "tied",
-          "voteCounts",
           "votingMethod"
         ],
         "type": "object"
@@ -1870,7 +2082,7 @@
         "properties": {
           "eliminated": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/irvCandidate"
             },
             "type": "array"
           },
@@ -1882,31 +2094,28 @@
           },
           "logs": {
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/tabulatorLog"
             },
             "type": "array"
           },
-          "standings": {
+          "runner_up": {
             "items": {
-              "properties": {
-                "candidateIndex": {
-                  "type": "number"
-                },
-                "hareScore": {
-                  "type": "number"
-                }
-              },
-              "required": [
-                "candidateIndex",
-                "hareScore"
-              ],
-              "type": "object"
+              "$ref": "#/components/schemas/irvCandidate"
+            },
+            "type": "array"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/irvCandidate"
             },
             "type": "array"
           },
           "winners": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/irvCandidate"
             },
             "type": "array"
           }
@@ -1914,7 +2123,9 @@
         "required": [
           "eliminated",
           "logs",
-          "standings",
+          "runner_up",
+          "tieBreakType",
+          "tied",
           "winners"
         ],
         "type": "object"
@@ -1923,7 +2134,7 @@
         "properties": {
           "candidates": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/irvCandidate"
             },
             "type": "array"
           },
@@ -1935,67 +2146,21 @@
           },
           "nTallyVotes": {
             "type": "number"
-          },
-          "pairwiseMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "preferenceMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "rankHist": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "totalScores": {
-            "items": {
-              "$ref": "#/components/schemas/totalScore"
-            },
-            "type": "array"
           }
         },
         "required": [
           "candidates",
           "nAbstentions",
           "nOutOfBoundsVotes",
-          "nTallyVotes",
-          "pairwiseMatrix",
-          "preferenceMatrix",
-          "rankHist",
-          "totalScores"
+          "nTallyVotes"
         ],
         "type": "object"
       },
-      "nonNullBallot": {
-        "items": {
-          "type": "number"
+      "keyedObject": {
+        "additionalProperties": {
+          "$ref": "#/components/schemas/T"
         },
-        "type": "array"
-      },
-      "pairwiseMatrix": {
-        "items": {
-          "items": {
-            "type": "number"
-          },
-          "type": "array"
-        },
-        "type": "array"
+        "type": "object"
       },
       "permission": {
         "items": {
@@ -2003,11 +2168,48 @@
         },
         "type": "array"
       },
+      "pluralityCandidate": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "tieBreakOrder": {
+            "type": "number"
+          },
+          "votesPreferredOver": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          },
+          "winsAgainst": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "score",
+          "tieBreakOrder",
+          "votesPreferredOver",
+          "winsAgainst"
+        ],
+        "type": "object"
+      },
       "pluralityResults": {
         "properties": {
           "elected": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/pluralityCandidate"
             },
             "type": "array"
           },
@@ -2019,7 +2221,7 @@
           },
           "roundResults": {
             "items": {
-              "$ref": "#/components/schemas/roundResults"
+              "$ref": "#/components/schemas/roundResults<pluralityCandidate>"
             },
             "type": "array"
           },
@@ -2055,7 +2257,7 @@
         "properties": {
           "candidates": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/pluralityCandidate"
             },
             "type": "array"
           },
@@ -2070,30 +2272,6 @@
           },
           "nTallyVotes": {
             "type": "number"
-          },
-          "pairwiseMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "preferenceMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "totalScores": {
-            "items": {
-              "$ref": "#/components/schemas/totalScore"
-            },
-            "type": "array"
           }
         },
         "required": [
@@ -2101,36 +2279,91 @@
           "nAbstentions",
           "nOutOfBoundsVotes",
           "nOvervotes",
-          "nTallyVotes",
-          "pairwiseMatrix",
-          "preferenceMatrix",
-          "totalScores"
+          "nTallyVotes"
         ],
         "type": "object"
       },
-      "preferenceMatrix": {
-        "items": {
-          "items": {
-            "type": "number"
+      "plurlaityRoundResults": {
+        "properties": {
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/tabulatorLog"
+            },
+            "type": "array"
           },
-          "type": "array"
+          "runner_up": {
+            "items": {
+              "$ref": "#/components/schemas/pluralityCandidate"
+            },
+            "type": "array"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/pluralityCandidate"
+            },
+            "type": "array"
+          },
+          "winners": {
+            "items": {
+              "$ref": "#/components/schemas/pluralityCandidate"
+            },
+            "type": "array"
+          }
         },
-        "type": "array"
+        "required": [
+          "logs",
+          "runner_up",
+          "tieBreakType",
+          "tied",
+          "winners"
+        ],
+        "type": "object"
       },
-      "rankHist": {
-        "items": {
-          "items": {
+      "rankedRobinCandidate": {
+        "properties": {
+          "copelandScore": {
             "type": "number"
           },
-          "type": "array"
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tieBreakOrder": {
+            "type": "number"
+          },
+          "votesPreferredOver": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          },
+          "winsAgainst": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          }
         },
-        "type": "array"
+        "required": [
+          "copelandScore",
+          "id",
+          "name",
+          "tieBreakOrder",
+          "votesPreferredOver",
+          "winsAgainst"
+        ],
+        "type": "object"
       },
       "rankedRobinResults": {
         "properties": {
           "elected": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/rankedRobinCandidate"
             },
             "type": "array"
           },
@@ -2142,7 +2375,7 @@
           },
           "roundResults": {
             "items": {
-              "$ref": "#/components/schemas/roundResults"
+              "$ref": "#/components/schemas/roundResults<rankedRobinCandidate>"
             },
             "type": "array"
           },
@@ -2174,11 +2407,50 @@
         ],
         "type": "object"
       },
+      "rankedRobinRoundResults": {
+        "properties": {
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/tabulatorLog"
+            },
+            "type": "array"
+          },
+          "runner_up": {
+            "items": {
+              "$ref": "#/components/schemas/rankedRobinCandidate"
+            },
+            "type": "array"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/rankedRobinCandidate"
+            },
+            "type": "array"
+          },
+          "winners": {
+            "items": {
+              "$ref": "#/components/schemas/rankedRobinCandidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "logs",
+          "runner_up",
+          "tieBreakType",
+          "tied",
+          "winners"
+        ],
+        "type": "object"
+      },
       "rankedRobinSummaryData": {
         "properties": {
           "candidates": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/rankedRobinCandidate"
             },
             "type": "array"
           },
@@ -2190,50 +2462,33 @@
           },
           "nTallyVotes": {
             "type": "number"
-          },
-          "pairwiseMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "preferenceMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "rankHist": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "totalScores": {
-            "items": {
-              "$ref": "#/components/schemas/totalScore"
-            },
-            "type": "array"
           }
         },
         "required": [
           "candidates",
           "nAbstentions",
           "nOutOfBoundsVotes",
-          "nTallyVotes",
-          "pairwiseMatrix",
-          "preferenceMatrix",
-          "rankHist",
-          "totalScores"
+          "nTallyVotes"
+        ],
+        "type": "object"
+      },
+      "rawVote": {
+        "properties": {
+          "has_duplicate_rank": {
+            "type": "boolean"
+          },
+          "marks": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          },
+          "overvote_rank": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "marks"
         ],
         "type": "object"
       },
@@ -2279,7 +2534,7 @@
           },
           "runner_up": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/CandidateType_1"
             },
             "type": "array"
           },
@@ -2288,13 +2543,13 @@
           },
           "tied": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/CandidateType_1"
             },
             "type": "array"
           },
           "winners": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/CandidateType_1"
             },
             "type": "array"
           }
@@ -2308,26 +2563,286 @@
         ],
         "type": "object"
       },
-      "score": {
-        "type": [
-          "null",
-          "number"
-        ]
+      "roundResults<CandidateType>_1": {
+        "properties": {
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/tabulatorLog"
+            },
+            "type": "array"
+          },
+          "runner_up": {
+            "items": {
+              "$ref": "#/components/schemas/CandidateType_2"
+            },
+            "type": "array"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/CandidateType_2"
+            },
+            "type": "array"
+          },
+          "winners": {
+            "items": {
+              "$ref": "#/components/schemas/CandidateType_2"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "logs",
+          "runner_up",
+          "tieBreakType",
+          "tied",
+          "winners"
+        ],
+        "type": "object"
       },
-      "scoreHist": {
-        "items": {
-          "items": {
+      "roundResults<allocatedScoreCandidate>": {
+        "properties": {
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/tabulatorLog"
+            },
+            "type": "array"
+          },
+          "runner_up": {
+            "items": {
+              "$ref": "#/components/schemas/allocatedScoreCandidate"
+            },
+            "type": "array"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/allocatedScoreCandidate"
+            },
+            "type": "array"
+          },
+          "winners": {
+            "items": {
+              "$ref": "#/components/schemas/allocatedScoreCandidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "logs",
+          "runner_up",
+          "tieBreakType",
+          "tied",
+          "winners"
+        ],
+        "type": "object"
+      },
+      "roundResults<approvalCandidate>": {
+        "properties": {
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/tabulatorLog"
+            },
+            "type": "array"
+          },
+          "runner_up": {
+            "items": {
+              "$ref": "#/components/schemas/approvalCandidate"
+            },
+            "type": "array"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/approvalCandidate"
+            },
+            "type": "array"
+          },
+          "winners": {
+            "items": {
+              "$ref": "#/components/schemas/approvalCandidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "logs",
+          "runner_up",
+          "tieBreakType",
+          "tied",
+          "winners"
+        ],
+        "type": "object"
+      },
+      "roundResults<pluralityCandidate>": {
+        "properties": {
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/tabulatorLog"
+            },
+            "type": "array"
+          },
+          "runner_up": {
+            "items": {
+              "$ref": "#/components/schemas/pluralityCandidate"
+            },
+            "type": "array"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/pluralityCandidate"
+            },
+            "type": "array"
+          },
+          "winners": {
+            "items": {
+              "$ref": "#/components/schemas/pluralityCandidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "logs",
+          "runner_up",
+          "tieBreakType",
+          "tied",
+          "winners"
+        ],
+        "type": "object"
+      },
+      "roundResults<rankedRobinCandidate>": {
+        "properties": {
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/tabulatorLog"
+            },
+            "type": "array"
+          },
+          "runner_up": {
+            "items": {
+              "$ref": "#/components/schemas/rankedRobinCandidate"
+            },
+            "type": "array"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/rankedRobinCandidate"
+            },
+            "type": "array"
+          },
+          "winners": {
+            "items": {
+              "$ref": "#/components/schemas/rankedRobinCandidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "logs",
+          "runner_up",
+          "tieBreakType",
+          "tied",
+          "winners"
+        ],
+        "type": "object"
+      },
+      "roundResults<starCandidate>": {
+        "properties": {
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/tabulatorLog"
+            },
+            "type": "array"
+          },
+          "runner_up": {
+            "items": {
+              "$ref": "#/components/schemas/starCandidate"
+            },
+            "type": "array"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/starCandidate"
+            },
+            "type": "array"
+          },
+          "winners": {
+            "items": {
+              "$ref": "#/components/schemas/starCandidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "logs",
+          "runner_up",
+          "tieBreakType",
+          "tied",
+          "winners"
+        ],
+        "type": "object"
+      },
+      "starCandidate": {
+        "properties": {
+          "fiveStarCount": {
             "type": "number"
           },
-          "type": "array"
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "tieBreakOrder": {
+            "type": "number"
+          },
+          "votesPreferredOver": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          },
+          "winsAgainst": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          }
         },
-        "type": "array"
+        "required": [
+          "fiveStarCount",
+          "id",
+          "name",
+          "score",
+          "tieBreakOrder",
+          "votesPreferredOver",
+          "winsAgainst"
+        ],
+        "type": "object"
       },
       "starResults": {
         "properties": {
           "elected": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
+              "$ref": "#/components/schemas/starCandidate"
             },
             "type": "array"
           },
@@ -2339,7 +2854,7 @@
           },
           "roundResults": {
             "items": {
-              "$ref": "#/components/schemas/roundResults"
+              "$ref": "#/components/schemas/roundResults<starCandidate>"
             },
             "type": "array"
           },
@@ -2371,17 +2886,50 @@
         ],
         "type": "object"
       },
+      "starRoundResults": {
+        "properties": {
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/tabulatorLog"
+            },
+            "type": "array"
+          },
+          "runner_up": {
+            "items": {
+              "$ref": "#/components/schemas/starCandidate"
+            },
+            "type": "array"
+          },
+          "tieBreakType": {
+            "$ref": "#/components/schemas/tieBreakType"
+          },
+          "tied": {
+            "items": {
+              "$ref": "#/components/schemas/starCandidate"
+            },
+            "type": "array"
+          },
+          "winners": {
+            "items": {
+              "$ref": "#/components/schemas/starCandidate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "logs",
+          "runner_up",
+          "tieBreakType",
+          "tied",
+          "winners"
+        ],
+        "type": "object"
+      },
       "starSummaryData": {
         "properties": {
           "candidates": {
             "items": {
-              "$ref": "#/components/schemas/candidate"
-            },
-            "type": "array"
-          },
-          "fiveStarCounts": {
-            "items": {
-              "$ref": "#/components/schemas/fiveStarCount"
+              "$ref": "#/components/schemas/starCandidate"
             },
             "type": "array"
           },
@@ -2393,41 +2941,13 @@
           },
           "nTallyVotes": {
             "type": "number"
-          },
-          "pairwiseMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "preferenceMatrix": {
-            "items": {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            "type": "array"
-          },
-          "totalScores": {
-            "items": {
-              "$ref": "#/components/schemas/totalScore"
-            },
-            "type": "array"
           }
         },
         "required": [
           "candidates",
-          "fiveStarCounts",
           "nAbstentions",
           "nOutOfBoundsVotes",
-          "nTallyVotes",
-          "pairwiseMatrix",
-          "preferenceMatrix",
-          "totalScores"
+          "nTallyVotes"
         ],
         "type": "object"
       },
@@ -2477,29 +2997,23 @@
         ],
         "type": "string"
       },
-      "totalScore": {
+      "vote": {
         "properties": {
-          "index": {
-            "type": "number"
+          "has_duplicate_rank": {
+            "type": "boolean"
           },
-          "score": {
+          "marks": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/T"
+            },
+            "type": "object"
+          },
+          "overvote_rank": {
             "type": "number"
           }
         },
         "required": [
-          "index",
-          "score"
-        ],
-        "type": "object"
-      },
-      "voter": {
-        "properties": {
-          "csvRow": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "csvRow"
+          "marks"
         ],
         "type": "object"
       },

@@ -8,7 +8,7 @@ import STARDetailedResults from "./STAR/STARDetailedResults";
 import STARResultDetailedStepsWidget from "./STAR/STARResultDetailedStepsWidget";
 import WinnerResultPages from "./WinnerResultPages";
 import { Race } from "@equal-vote/star-vote-shared/domain_model/Race";
-import { allocatedScoreResults, approvalResults, ElectionResults, irvResults, rankedRobinResults, starResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { allocatedScoreResults, approvalCandidate, approvalResults, candidate, ElectionResults, irvResults, rankedRobinResults, starCandidate, starResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
 import useElection from "../../ElectionContextProvider";
 import DetailExpander from "./components/DetailExpander";
 import ResultsTable from "./components/ResultsTable";
@@ -37,10 +37,9 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
   const rounds = race.num_winners;
   const roundIndexes = Array.from({length: rounds}, () => i++);
   const flags = useFeatureFlags();
+  const candidates = results.summaryData.candidates;
 
   results = results as starResults;
-
-  const sortedCandidates = results.summaryData.candidates.map(c => tabToCandidate(c, race.candidates));
 
   return <ResultsViewer methodKey='star'>
     <WinnerResultPages numWinners={rounds}>
@@ -51,9 +50,9 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
         <STARDetailedResults/>
         <DetailExpander level={1}>
           <STARResultDetailedStepsWidget results={results} rounds={rounds} t={t} filterRandomFromLogs={filterRandomFromLogs}/>
-          <STAREqualPreferencesWidget frontRunners={sortedCandidates.slice(0, 2)}/>
-          <HeadToHeadWidget candidates={sortedCandidates}/>
-          <VoterProfileWidget candidates={sortedCandidates} topScore={5} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
+          <STAREqualPreferencesWidget frontRunners={candidates.slice(0, 2) as [starCandidate, starCandidate]}/>
+          <HeadToHeadWidget/>
+          <VoterProfileWidget topScore={5}/>
           {flags.isSet('ALL_STATS') && <ScoreRangeWidget/>}
           {flags.isSet('ALL_STATS') && <ColumnDistributionWidget/>}
           {flags.isSet('ALL_STATS') && <NameRecognitionWidget/>}
@@ -73,23 +72,14 @@ function RankedRobinResultsViewer() {
   const {race, t} = useRace();
   results = results as rankedRobinResults;
 
-  const sortedCandidates = race.candidates
-    .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
-    .sort((a, b) => 
-      -(results.summaryData.totalScores.find(s => s.index == a.index).score -
-        results.summaryData.totalScores.find(s => s.index == b.index).score)
-    )
-    .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}))
+  const candidates = results.summaryData.candidates;
 
   return <ResultsViewer methodKey='ranked_robin'>
     <WidgetContainer>
       <Widget title={t('results.ranked_robin.bar_title')}>
         <ResultsBarChart
           data={
-            results.summaryData.totalScores.map((totalScore) => ({
-              name: results.summaryData.candidates[totalScore.index].name,
-              votes: totalScore.score,
-            }))
+            candidates.map((c) => ({name: c.name, votes: c.copelandScore}))
           }
           percentage
           percentDenominator={results.summaryData.candidates.length-1}
@@ -103,15 +93,13 @@ function RankedRobinResultsViewer() {
         <Widget title={t('results.ranked_robin.table_title')}>
           <ResultsTable className='rankedRobinTable' data={[
             t('results.ranked_robin.table_columns'),
-            ...results.summaryData.totalScores.map((totalScore) => [
-              results.summaryData.candidates[totalScore.index].name,
-              totalScore.score,
-              `${Math.round(totalScore.score * 1000 / (results.summaryData.candidates.length-1)) / 10}%`,
+            ...results.summaryData.candidates.map(c => [
+              c.name, c.copelandScore, formatPercent(c.copelandScore / (results.summaryData.candidates.length-1))
             ])
           ]}/>
         </Widget>
-        <HeadToHeadWidget ranked candidates={sortedCandidates}/>
-        <VoterProfileWidget candidates={sortedCandidates} topScore={1} ranked frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
+        <HeadToHeadWidget/>
+        <VoterProfileWidget topScore={1} ranked />
       </WidgetContainer>
     </DetailExpander>
   </ResultsViewer>
@@ -144,72 +132,24 @@ function IRVResultsViewer() {
   let lim = roundResults.length;
   while (rx < lim) {
     const win: irvWinnerSearch = {
-      firstRound: roundResults[rx],
-      lastRound: null
+      firstRoundIndex: rx,
+      lastRoundIndex: null
     };
     while (! roundResults[rx].winners.length)
       rx++;
-    win.lastRound = roundResults[rx];
+    win.lastRoundIndex = rx;
     wins.push(win);
     rx++; /* advance past the round that found the winner */
   }
 
   /* End of setting up for top view. */
 
-  /* Details for optional expansion. */
-
-  const tabulationRows = results.summaryData.candidates.map(({index, name}) => {
-    return [name].concat(
-      (results.voteCounts as Array<number[]>).map(counts => counts[index] == 0? '' : '' + counts[index])
-    )
-  }).sort((r1, r2) => {
-    const z1 = r1.filter(s => s == '').length;
-    const z2 = r2.filter(s => s == '').length;
-    if(z1 != z2)
-      return z1-z2;
-
-    for(let i = r1.length-1; i >= 1; i--){
-      if(r1[i] == '') continue;
-      if(r2[i] == '') continue;
-      return parseInt(r2[i]) - parseInt(r1[i])
-    }
-
-    return 0;
-  });
-  tabulationRows.unshift([t('results.rcv.tabulation_candidate_column')].concat([...Array(results.voteCounts.length).keys()].map(i =>
-    t('results.rcv.round_column', {n: i+1})
-  )))
+  const tabulationRows = results.summaryData.candidates.map(c => ([c.name,...c.hareScores]));
+  tabulationRows.unshift([
+    t('results.rcv.tabulation_candidate_column'),
+    ...(Array(tabulationRows[0].length-1).keys().map(i => t('results.rcv.round_column', {n: i+1})))
+  ])
   tabulationRows.push([t('results.rcv.exhausted'), ...results.exhaustedVoteCounts.map(i => ''+i)])
-
-  const sortedCandidates = race.candidates
-    .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
-    .sort((a, b) => {
-      // prioritize ranking in later rounds, but use previous rounds as tiebreaker
-      let i = results.voteCounts.length-1;
-      while(i >= 0){
-        const diff = -(results.voteCounts[i][a.index] - results.voteCounts[i][b.index]);
-        if(diff != 0) return diff;
-        i--;
-      }
-      return 0;
-    })
-    .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
-
-  const eliminationOrderById = race.candidates
-    .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
-    .filter(c => results.voteCounts.at(-1)[c.index] == 0)
-    .sort((a, b) => {
-      // prioritize ranking in later rounds, but use previous rounds as tiebreaker
-      let i = results.voteCounts.length-1;
-      while(i >= 0){
-        const diff = -(results.voteCounts[i][a.index] - results.voteCounts[i][b.index]);
-        if(diff != 0) return diff;
-        i--;
-      }
-      return 0;
-    })
-    .map(c => c.candidate_id)
-    .reverse();
 
   return <ResultsViewer methodKey='rcv'>
     < IRVTopResultsView wins={wins} context={{
@@ -222,9 +162,9 @@ function IRVResultsViewer() {
         </Widget>
       </WidgetContainer>
       <DetailExpander level={1}>
-        <HeadToHeadWidget ranked candidates={sortedCandidates}/>
-        <VoterProfileWidget candidates={sortedCandidates} topScore={1} ranked frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
-        <VoterIntentWidget eliminationOrderById={eliminationOrderById} winnerId={sortedCandidates[0].candidate_id}/>
+        <HeadToHeadWidget/>
+        <VoterProfileWidget topScore={1} ranked/>
+        <VoterIntentWidget/>
         <VoterErrorStatsWidget/>
         <ColumnDistributionWidget/>
       </DetailExpander>
@@ -235,16 +175,15 @@ function IRVResultsViewer() {
 function PluralityResultsViewer() {
   let { results } = useRace();
   const { t } = useRace();
-  results = results as irvResults;
 
   return <ResultsViewer methodKey='choose_one'>
     <WidgetContainer>
       <Widget title={t('results.choose_one.bar_title')}>
         <ResultsBarChart
           data={
-            results.summaryData.totalScores.map((totalScore ) => ({
-              name: results.summaryData.candidates[totalScore.index].name,
-              votes: totalScore.score,
+            results.summaryData.candidates.map(c => ({
+              name: c.name,
+              votes: c.score,
             }))
           }
           stars={1}
@@ -258,10 +197,8 @@ function PluralityResultsViewer() {
         <Widget title={t('results.choose_one.table_title')}>
           <ResultsTable className='chooseOneTable' data={[
             t('results.choose_one.table_columns'),
-            ...results.summaryData.totalScores.map((totalScore ) => [
-              results.summaryData.candidates[totalScore.index].name,
-              totalScore.score,
-              `${Math.round(totalScore.score * 1000 / results.summaryData.nTallyVotes) / 10}%`,
+            ...results.summaryData.candidates.map(c => [
+              c.name, c.score, formatPercent(c.score / results.summaryData.nTallyVotes)
             ])
           ]}/>
         </Widget>
@@ -276,22 +213,14 @@ function ApprovalResultsViewer() {
   results = results as approvalResults;
   const flags = useFeatureFlags();
 
-  const sortedCandidates = race.candidates
-    .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
-    .sort((a, b) => 
-      -(results.summaryData.totalScores.find(s => s.index == a.index).score -
-        results.summaryData.totalScores.find(s => s.index == b.index).score)
-    )
-    .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
-
   return <ResultsViewer methodKey='approval'>
     <WidgetContainer>
       <Widget title={t('results.approval.bar_title')}>
         <ResultsBarChart
           data={
-            results.summaryData.totalScores.map((totalScore) => ({
-              name: results.summaryData.candidates[totalScore.index].name,
-              votes: totalScore.score,
+            results.summaryData.candidates.map((c) => ({
+              name: c.name,
+              votes: c.score
             }))
           }
           stars={race.num_winners}
@@ -308,16 +237,16 @@ function ApprovalResultsViewer() {
             t('results.approval.table_columns'),
             ...results.summaryData.candidates.map(c => [
               c.name,
-              results.summaryData.totalScores.find(score => score.index == c.index)?.score ?? 0,
-              formatPercent(results.summaryData.totalScores.find(score => score.index == c.index)?.score / results.summaryData.nTallyVotes)
+              c.score,
+              formatPercent(c.score / results.summaryData.nTallyVotes)
             ])
           ]}/>
         </Widget>
       </WidgetContainer>
 
       <DetailExpander level={1}>
-        <HeadToHeadWidget candidates={sortedCandidates}/>
-        <VoterProfileWidget candidates={sortedCandidates} topScore={1} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
+        <HeadToHeadWidget/>
+        <VoterProfileWidget topScore={1}/>
         {flags.isSet('ALL_STATS') && <ColumnDistributionWidget/>}
       </DetailExpander>
     </DetailExpander>
@@ -344,12 +273,13 @@ function STARPRResultsViewer() {
   let {results} = useRace();
   const {t, race} = useRace();
   results = results as allocatedScoreResults;
+
   const [page, setPage] = useState(1);
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
-  const tabulationRows = results.summaryData.candidates.map(({index, name}) => {
+  const tabulationRows = results.summaryData.candidates.map(({name}, index) => {
     return [name].concat(
       (results.summaryData.weightedScoresByRound as Array<number[]>).map(counts => counts[index] == 0? '' : '' + Math.round(counts[index]*10)/10)
     )
@@ -360,18 +290,18 @@ function STARPRResultsViewer() {
   )))
 
   const winIndex = (aa) => {
-    const i = results.elected.findIndex(e => e.index == aa.index);
+    const i = results.elected.findIndex(e => e.id == aa.id);
     if(i == -1) return results.elected.length;
     return i;
   }
-  const sortedCandidates = race.candidates
-    .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
+
+  const sortedCandidates = results.summaryData.candidates
+    .map((c,i) => ({...c, index: i}))
     .sort((a, b) => {
       const finalScore = (aa) => results.summaryData.weightedScoresByRound.slice(-1)[0][aa.index]
       if(winIndex(a) != winIndex(b)) return winIndex(a) - winIndex(b);
       return -(finalScore(a) - finalScore(b));
     })
-    .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
 
   let remainingVoters = (results.summaryData.nTallyVotes*(1 - ((page-1)/results.summaryData.weightedScoresByRound.length)))
   remainingVoters = Math.round(remainingVoters*10)/10;
@@ -393,8 +323,7 @@ function STARPRResultsViewer() {
                   votes: Math.round(totalScore*10)/10,
                   label: undefined,
                   star: winIndex(results.summaryData.candidates[index]) < page,
-                  // a bit hacky using candidate_name but oh well
-                  sortIndex: sortedCandidates.findIndex((c) => c.candidate_name == results.summaryData.candidates[index].name)
+                  sortIndex: sortedCandidates.findIndex((c) => c.index == index)
                 })
               )
           }
@@ -425,8 +354,8 @@ function STARPRResultsViewer() {
         </Widget>
       </WidgetContainer>
       <DetailExpander level={1}>
-        <HeadToHeadWidget candidates={sortedCandidates}/>
-        <VoterProfileWidget candidates={sortedCandidates} topScore={5} frontRunners={sortedCandidates.slice(0, 2) as [Candidate, Candidate]}/>
+        <HeadToHeadWidget/>
+        <VoterProfileWidget topScore={5}/>
         {flags.isSet('ALL_STATS') && <ScoreRangeWidget/>}
         {flags.isSet('ALL_STATS') && <ColumnDistributionWidget/>}
         {flags.isSet('ALL_STATS') && <NameRecognitionWidget/>}
@@ -445,19 +374,10 @@ function STVResultsViewer() {
   };
 
   const winIndex = (aa) => {
-    const i = results.elected.findIndex(e => e.index == aa.index);
+    const i = results.elected.findIndex(e => e.id == aa.id);
     if(i == -1) return results.elected.length;
     return i;
   }
-
-  const sortedCandidates = race.candidates
-    .map(c => ({...c, index: results.summaryData.candidates.find(cc => cc.name == c.candidate_name).index}))
-    .sort((a, b) => {
-      const finalScore = (aa) => results.voteCounts.slice(-1)[0][aa.index]
-      if(winIndex(a) != winIndex(b)) return winIndex(a) - winIndex(b);
-      return -(finalScore(a) - finalScore(b));
-    })
-    .map(c => ({candidate_id: c.candidate_id, candidate_name: c.candidate_name}));
 
   return <ResultsViewer methodKey='stv'>
     <WidgetContainer>
@@ -465,13 +385,11 @@ function STVResultsViewer() {
         <ResultsBarChart
           data={
             [
-              ...results.voteCounts[page-1].map((totalScore, i) => ({
-                name: results.summaryData.candidates[i].name,
-                votes: Math.round(totalScore*10)/10,
-                label: winIndex(results.summaryData.candidates[i]) < page-1 ? '(elected)' : undefined,
-                star: winIndex(results.summaryData.candidates[i]) < page,
-                // a bit hacky using candidate_name but oh well
-                sortIndex: sortedCandidates.findIndex((c) => c.candidate_name == results.summaryData.candidates[i].name)
+              ...results.summaryData.candidates.map(c => ({
+                name: c.name,
+                votes: Math.round(c.hareScores[page-1]*10)/10,
+                label: winIndex(c) < page-1 ? '(elected)' : undefined,
+                star: winIndex(c) < page,
               })), 
               {
                 name: 'Exhausted',
@@ -483,11 +401,11 @@ function STVResultsViewer() {
             ]
           }
           sortFunc = {(a, b) => Number(a.sortIndex) - Number(b.sortIndex)}
-          maxBarSize = {results.voteCounts[0].reduce(
-            (prev, totalScore) => Math.max(prev, totalScore), 0
+          maxBarSize = {results.summaryData.candidates.reduce(
+            (prev, c) => Math.max(prev, c.hareScores[0]), 0
           )}
         />
-        <Pagination count={results.voteCounts.length} page={page} onChange={handleChange} />
+        <Pagination count={results.summaryData.candidates[0].hareScores.length} page={page} onChange={handleChange} />
       </Widget>
     </WidgetContainer>
   </ResultsViewer>

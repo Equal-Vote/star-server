@@ -8,7 +8,8 @@ import { permissions } from '@equal-vote/star-vote-shared/domain_model/permissio
 import { VotingMethods } from '../../Tabulators/VotingMethodSelecter';
 import { IElectionRequest } from "../../IRequest";
 import { Response, NextFunction } from 'express';
-import { ballot, ElectionResults } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { vote, ElectionResults, candidate, rawVote } from "@equal-vote/star-vote-shared/domain_model/ITabulators";
+import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate";
 var seedrandom = require('seedrandom');
 
 const BallotModel = ServiceLocator.ballotsDb();
@@ -31,24 +32,26 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
     const election = req.election
     let results: ElectionResults[] = []
     for (let race_index = 0; race_index < election.races.length; race_index++) {
-        const candidateNames = election.races[race_index].candidates.map((Candidate: any) => (Candidate.candidate_name))
+        const candidates: candidate[] = election.races[race_index].candidates.map((c: Candidate, i) => ({
+            id: c.candidate_id,
+            name: c.candidate_name,
+            // These will be set later
+            tieBreakOrder: i,
+            votesPreferredOver: {},
+            winsAgainst: {}
+        }))
         const race_id = election.races[race_index].race_id
-        const cvr: ballot[] = []
+        const cvr: rawVote[] = []
         const num_winners = election.races[race_index].num_winners
         const voting_method = election.races[race_index].voting_method
         ballots.forEach((ballot: Ballot) => {
             const vote = ballot.votes.find((vote) => vote.race_id === race_id)
             if (vote) {
-                let row: ballot = vote.scores.map((score: Score) => (
-                    score.score
-                ))
-                // Feels hacky to add overrank information as an additional column
-                // but the other alternatives required updating the voting method inputs 
-                // and that would need refactors to all methods
-                if(voting_method == 'IRV' || voting_method == 'STV'){
-                    row = [...row, vote.overvote_rank ?? null];
-                }
-                cvr.push(row)
+                cvr.push({
+                    marks: Object.fromEntries(vote.scores.map(score => [score.candidate_id, score.score])),
+                    overvote_rank: vote?.overvote_rank,
+                    has_duplicate_rank: vote?.has_duplicate_rank,
+                })
             }
         })
 
@@ -57,12 +60,7 @@ const getElectionResults = async (req: IElectionRequest, res: Response, next: Ne
         }
         const msg = `Tabulating results for ${voting_method} election`
         Logger.info(req, msg);
-        let rng = seedrandom(election.election_id + ballots.length.toString())
-        const tieBreakOrders = election.races[race_index].candidates.map((Candidate) => (rng() as number))
-        results[race_index] = {
-            votingMethod: voting_method,
-            ...VotingMethods[voting_method](candidateNames, cvr, num_winners, tieBreakOrders, election.settings)
-        }
+        results[race_index] = VotingMethods[voting_method](candidates, cvr, num_winners, election.settings)
     }
     
     res.json(
