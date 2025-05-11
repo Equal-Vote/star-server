@@ -24,6 +24,7 @@ interface ResultsBarChartProps {
   majorityOffset?: boolean;
   height?: number;
   maxBarSize?: number;
+  averageStars?: boolean;
 }
 
 export default function ResultsBarChart({
@@ -33,13 +34,14 @@ export default function ResultsBarChart({
   sortFunc = undefined,
   xKey = 'votes',
   percentage = false,
+  averageStars = false,
   percentDenominator = undefined,
   stars = 0,
   majorityLegend = undefined,
   majorityOffset = false,
   maxBarSize = undefined,
 }: ResultsBarChartProps) {
-const [rawNumbers, setRawNumbers] = useState(false);   
+  const [rawNumbers, setRawNumbers] = useState(false);   
   const rawData = data;
 
   // Sort entries
@@ -57,14 +59,21 @@ const [rawNumbers, setRawNumbers] = useState(false);
   const maxValue = maxBarSize ?? Math.max(...data.map(d => d[xKey]))
   percentDenominator ??= data.reduce((sum, d) => sum + d[xKey], 0);
   percentDenominator = Math.max(1, percentDenominator);
+
   data = rawData.map((d, i) => {
+    const formatValue = (value) => {
+      let def = (Math.round(value*100)/100).toString()
+      if(rawNumbers) return def;
+      if(percentage) return formatPercent(value / percentDenominator)
+      if(averageStars) return (Math.round((value/percentDenominator)*10)/10).toString() + "★";
+      return def;
+    }
+
     const s = {
       ...d,
       name: ((i < stars || d['star']) ? "⭐ " : "") + truncName(d["name"], 40),
       // hack to get smaller values to allign different from larger ones
-      left: (percentage && !rawNumbers)
-        ? formatPercent(d[xKey] / percentDenominator)
-        : (Math.round(d[xKey]*100)/100).toString(),
+      left: formatValue(d[xKey]),
       right: "",
     };
 
@@ -78,8 +87,6 @@ const [rawNumbers, setRawNumbers] = useState(false);
 
     return s;
   });
-
-  
 
   // compute colors
   let colors = [...CHART_COLORS];

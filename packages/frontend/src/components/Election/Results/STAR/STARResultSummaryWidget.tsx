@@ -48,7 +48,8 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
                 <ResultsBarChart
                     data={histData}
                     percentage={false} 
-                    percentDenominator={results.summaryData.nTallyVotes*5} 
+                    averageStars
+                    percentDenominator={results.summaryData.nTallyVotes} 
                     majorityOffset
                 />
             </Widget>
