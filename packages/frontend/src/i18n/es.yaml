@@ -25,11 +25,11 @@ ballot:
   submit_ballot: Entregar
   submitting: Entregando...
 
-  dialog_submit_title: Submit {{capital_ballot}}?
-  dialog_send_receipt: Send Ballot Receipt Email?
-  dialog_email_placeholder: Receipt Email
-  dialog_cancel: Cancel
-  dialog_submit: Submit
+  dialog_submit_title: Entregar {{capital_ballot}}?
+  dialog_send_receipt: Enviar recibo de votación por email? 
+  dialog_email_placeholder: Recibo por email 
+  dialog_cancel: Cancelar
+  dialog_submit: Entregar
   warnings:
     skipped_rank: Do not skip rankings. Rank candidates in order to clearly show preferences. Candidates left blank are ranked last.
     duplicate_rank: Do not rank multiple candidates equally. (Ranking candidates equally can void your ballot.)
@@ -37,10 +37,10 @@ ballot:
   methods:
     approval:
       instruction_bullets:
-        - Fill in the bubble next to your favorite
-        - You can select as many {{candidates}} as you like
-      footer_single_winner: The {{candidate}} with the most votes wins
-      footer_multi_winner: The {{n}} {{candidates}} with the most votes wins
+        - Rellenar el círculo al lado de su(s) favorito(s)
+        - Puede seleccionar a tantos {{candidates}} como desee
+      footer_single_winner: Gana el {{candidate}} con más votos
+      footer_multi_winner: Ganan los {{n}} {{candidates}} con más votos
       left_title: ''
       right_title: ''
       heading_prefix: ''
@@ -56,8 +56,8 @@ ballot:
         then designates that {{candidate}}'s strongest supporters as represented. Subsequent rounds include all voters who are not yet
         fully represented.
       # These show above the star columns 
-      left_title: 'Worst'
-      right_title: 'Best'
+      left_title: 'Peor'
+      right_title: 'Mejor'
     star:
       instruction_bullets:
        - Give your favorite(s) five stars.
@@ -71,8 +71,8 @@ ballot:
         This election uses STAR Voting and will elect {{n}} winners.
         In STAR Voting the two highest scoring {{candidates}} are finalists and the finalist preferred by more voters wins.
       # These show above the star columns 
-      left_title: 'Worst'
-      right_title: 'Best'
+      left_title: 'Peor'
+      right_title: 'Mejor'
     rcv: 
       instruction_bullets:
         - Rank the {{candidates}} in order of preference. (1st, 2nd, 3rd, etc.)
@@ -105,41 +105,41 @@ ballot:
       right_title: ''
     choose_one:
       instruction_bullets:
-        - Fill in the bubble next to your favorite
-      footer_single_winner: The {{candidate}} with the most votes wins
-      footer_multi_winner: The {{n}} {{candidates}} with the most votes win
+        - Rellenar el círculo al lado de su(s) favorito(s)
+      footer_single_winner: Gana el {{candidate}} con más votos
+      footer_multi_winner: Ganan los {{n}} {{candidates}} con más votos
       left_title: ''
       right_title: ''
 
 # Displayed at the bottom of voter pages (ex. https://bettervoting.com/j87vqp/)
-support_blurb: For support on this {{election}} please contact [{{email}}](mailto)
+support_blurb: Para asistencia con esta {{election}} por favor contacte a [{{email}}](mailto)
 
 # Share Button dropdown (ex. https://bettervoting.com/pres24/thanks)
 share:
-  button: Share {{capital_election}}
+  button: Compartir {{capital_election}}
   facebook: Facebook
   X: X
   reddit: Reddit
-  copy_link: Copy Link
-  link_copied: Link Copied!
+  copy_link: Copiar enlace
+  link_copied: El enlace se ha copiado!
 
 # Number translations (used for {{spelled_count}})
 spelled_numbers:
-  1: one
-  2: two
-  3: three
-  4: four
-  5: five
-  6: six
-  7: seven
-  8: eight
-  9: nine
-  10: ten
+  1: uno
+  2: dos
+  3: tres
+  4: cuatro
+  5: cinco
+  6: seis
+  7: siete
+  8: ocho
+  9: nueve
+  10: diez
 
 # Winner pluralization
 winner:
-  winner_one: winner
-  winner_other: winners
+  winner_one: ganador
+  winner_other: ganadores
 
 methods: 
   star:
@@ -212,11 +212,11 @@ results:
   learn_link_text: How {{voting_method}} works
 
   choose_one:
-    bar_title: Votes for each {{capital_candidate}}
+    bar_title: Votos por {{capital_candidate}}
     table_title: Table
     table_columns:
       - '{{capital_candidate}}'
-      - Votes
+      - Votos
       - '% All Votes'
 
   approval:
