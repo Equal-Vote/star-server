@@ -327,8 +327,6 @@ function STARPRResultsViewer() {
                 })
               )
           }
-          percentDenominator={results.summaryData.nTallyVotes}
-          averageStars
           sortFunc = {(a, b) => Number(a.sortIndex) - Number(b.sortIndex)}
           maxBarSize = {results.summaryData.weightedScoresByRound[0].reduce(
             (prev, totalScore) => Math.max(prev, totalScore), 0
