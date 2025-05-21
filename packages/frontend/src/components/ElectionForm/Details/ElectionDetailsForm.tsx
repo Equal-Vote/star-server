@@ -31,7 +31,7 @@ export const ElectionTitleField = ({termType, value, onUpdateValue, errors, setE
     const {t} = useSubstitutedTranslation(termType);
     return <>
         <TextField
-            inputProps={{ pattern: "[a-z]{3,15}", "aria-label": "Title" }}
+            inputProps={{ "aria-label": "Title" }}
             error={errors.title !== ''}
             required
             id="election-title"
