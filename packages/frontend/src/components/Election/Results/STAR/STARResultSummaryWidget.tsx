@@ -16,7 +16,13 @@ const STARResultSummaryWidget = ({ results, roundIndex, t }: {results: starResul
     const [pie, setPie] = useState(false);
 
     // slice away candidates that won in prior rounds
-    const candidates = results.summaryData.candidates.slice(roundIndex);
+    const candidates = results.summaryData.candidates.slice(roundIndex).sort((a, b) => {
+        // NOTE: I need this sorting here since the order could be different on different rounds of bloc STAR
+        const sortEval = (c) => {
+            return (results.roundResults[roundIndex].winners[0].id == c.id) ? Infinity : c.score
+        }
+        return -(sortEval(a) - sortEval(b))
+    });
 
     const histData = candidates
         .map((c) => ({
