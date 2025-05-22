@@ -41,6 +41,8 @@ function STARResultsViewer({ filterRandomFromLogs }: {filterRandomFromLogs: bool
 
   results = results as starResults;
 
+  console.log(candidates)
+
   return <ResultsViewer methodKey='star'>
     <WinnerResultPages numWinners={rounds}>
       {roundIndexes.map((i) => <STARResultSummaryWidget key={`STAR-widget-${i}`} results={results} roundIndex={i} t={t}/>)}
