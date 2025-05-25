@@ -31,7 +31,7 @@ const ScoreRangeWidget = () => {
 
     return <Widget title={t(`results_ext.score_range_title`)}>
         <Typography variant='h6'>{t(`results_ext.score_range_sub_title`)}</Typography>
-        <ResultsBarChart data={numAtDiff.reverse()} xKey='count' percentage={true} sortFunc={false}/>
+        <ResultsBarChart data={numAtDiff.reverse()} xKey='count' percentage={true}/>
         <Typography sx={{'textAlign': 'left'}}>{t(`results_ext.score_range_warning`)}</Typography>
     </Widget>
 }

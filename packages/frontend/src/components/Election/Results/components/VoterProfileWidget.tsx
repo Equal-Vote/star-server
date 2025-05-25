@@ -127,7 +127,7 @@ const VoterProfileWidget = ({topScore, ranked=false} : {topScore: number, ranked
         <Typography variant='h6'>{t(`results_ext.voter_profile_average_${ranked? 'ranks' : 'scores'}`, {name: refCandidate.name})}</Typography>
         {totalTopScored == 0 ? 'n/a' : <>
             <Typography>{`${formatPercent(numBullets/totalTopScored)} of ${refCandidate.name} supporters only voted for one candidate`}</Typography>
-            <ResultsBarChart data={data} xKey='score' percentage={false} sortFunc={false}/>
+            <ResultsBarChart data={data} xKey='score' percentage={false}/>
         </>}
         {(race.voting_method === 'IRV' || race.voting_method === 'STV') && <>
             <Divider variant='middle' sx={{width: '100%', m:1}}/>

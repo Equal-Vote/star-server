@@ -30,7 +30,7 @@ export default function ResultsBarChart({
   data,
   runoff = false,
   colorOffset = 0,
-  sortFunc = false,
+  sortFunc = undefined,
   xKey = 'votes',
   percentage = false,
   percentDenominator = undefined,
@@ -43,15 +43,7 @@ const [rawNumbers, setRawNumbers] = useState(false);
   const rawData = data;
 
   // Sort entries
-  //if (sortFunc != false) {
-  //  // we're handling undefined and false difference, so that's why this is explicit
-  //  rawData.sort(
-  //    sortFunc ??
-  //      ((a, b) => {
-  //        return b[xKey] - a[xKey];
-  //      })
-  //  );
-  //}
+  if (sortFunc) rawData.sort(sortFunc)
 
   // Truncate names & add percent
   const maxValue = maxBarSize ?? Math.max(...data.map(d => d[xKey]))

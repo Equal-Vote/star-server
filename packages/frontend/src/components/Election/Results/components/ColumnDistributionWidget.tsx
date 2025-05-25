@@ -40,11 +40,11 @@ const ColumnDistributionWidget = () => {
         <Typography variant='h6'>{t(`results_ext.column_distribution_num_avg`, {count: Math.round(100*totalColumns / b.length)/100})}</Typography>
         <Divider/>
         <Typography variant='h6'>{t(`results_ext.column_distribution_num_title`)}</Typography>
-        <ResultsBarChart data={numColumns} xKey='count' percentage={true} sortFunc={false}/>
+        <ResultsBarChart data={numColumns} xKey='count' percentage={true}/>
         <Divider/>
         {(race.voting_method == 'STAR' || race.voting_method == 'STAR_PR') && <>
             <Typography variant='h6'>{t('results_ext.column_distribution_which_title')}</Typography>
-            <ResultsBarChart data={whichColumns} xKey='count' percentage={true} sortFunc={false} percentDenominator={b.length}/>
+            <ResultsBarChart data={whichColumns} xKey='count' percentage={true} percentDenominator={b.length}/>
         </>}
     </Widget>
 }
