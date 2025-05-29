@@ -15,7 +15,7 @@ interface ResultsBarChartProps {
   data: ResultsBarChartData[];
   runoff?: boolean;
   colorOffset?: number;
-  sortFunc?: ((a: ResultsBarChartData, b: ResultsBarChartData) => number) | false;
+  sortFunc?: ((a: ResultsBarChartData, b: ResultsBarChartData) => number);
   xKey?: 'votes' | 'count' | 'score';
   percentage?: boolean;
   percentDenominator?: number;

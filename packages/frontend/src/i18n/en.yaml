@@ -473,7 +473,7 @@ landing_page:
     - title: Accessible Polls
       text: Quick and easy options for creating and sharing a public poll online.
     - title: Open Source
-      text: This project is shared [open source](https://github.com/Equal-Vote/star-server/) under a AGPL-3.0 license. Run your elections via BetterVoting or self host on your own server.
+      text: This project is shared [open source](https://github.com/Equal-Vote/bettervoting/) under a AGPL-3.0 license. Run your elections via BetterVoting or self host on your own server.
     - title: Educational Resources
       text: Find everything you need to learn about voting methods and choose the best option for you.
 
@@ -924,7 +924,7 @@ about:
 
   contribute_title: Contribute
   contribute_description: >
-    Our source code is available on [Github](https://github.com/Equal-Vote/star-server),
+    Our source code is available on [Github](https://github.com/Equal-Vote/bettervoting),
     Pull Requests and bug reports are greatly appreciated
 
 

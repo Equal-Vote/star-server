@@ -1,7 +1,7 @@
 {
   "name": "@equal-vote/star-vote",
   "version": "1.0.0",
-  "description": "star-server is built using Express (For now) for the back end server and React for the front end user interface",
+  "description": "bettervoting is built using Express (For now) for the back end server and React for the front end user interface",
   "main": "index.js",
   "workspaces": [
     "./packages/shared",
@@ -17,15 +17,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Equal-Vote/star-server.git"
+    "url": "git+https://github.com/Equal-Vote/bettervoting.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Equal-Vote/star-server/issues"
+    "url": "https://github.com/Equal-Vote/bettervoting/issues"
   },
-  "homepage": "https://github.com/Equal-Vote/star-server#readme",
+  "homepage": "https://github.com/Equal-Vote/bettervoting#readme",
   "devDependencies": {
     "rimraf": "^5.0.5"
   },

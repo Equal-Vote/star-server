@@ -62,8 +62,8 @@ jobs:
           token: ${{ secrets.GH_PAT }}
       - name: Update argocd repo
         run: |
-          yq -i ".image.tag = \"sha-${GITHUB_SHA::7}\"" applications/star-server/values.yaml
+          yq -i ".image.tag = \"sha-${GITHUB_SHA::7}\"" applications/bettervoting/values.yaml
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git commit -am "Automatically updating star-server image."
+          git commit -am "Automatically updating bettervoting image."
           git push

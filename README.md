@@ -1,4 +1,4 @@
-# star-server
+# BetterVoting
 
 The live site can be found at https://bettervoting.com
 

@@ -66,7 +66,7 @@ export default class AccountService {
         } else {
             // TODO: I should probably be validating the refresh tokens, possibly using the express-jwt library
             //          https://github.com/auth0/express-jwt
-            // Github Issue: https://github.com/Equal-Vote/star-server/issues/21
+            // Github Issue: https://github.com/Equal-Vote/bettervoting/issues/21
             params.refresh_token = req.cookies.refresh_token;
         }
 
