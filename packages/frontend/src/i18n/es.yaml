@@ -31,7 +31,7 @@ ballot:
   dialog_cancel: Cancelar
   dialog_submit: Enviar
   warnings:
-    skipped_rank: No omita preferencias. Ordene a los candidatos para mostrar claramente sus preferencias. Los candidatos que se dejen en blanco se clasificarán al final.
+    skipped_rank: No omita preferencias. Ordene a los candidatos para mostrar claramente sus preferencias. Los candidatos que se dejen en blanco se clasificarán en último lugar.
     duplicate_rank: No clasifique a varios candidatos por igual. (Clasificar a los candidatos por igual puede anular su voto.)
 
   methods:
@@ -46,27 +46,26 @@ ballot:
       heading_prefix: ''
     star_pr:
       instruction_bullets:
-       - Dale a tu(s) favorito(s) cinco estrellas.
-       - Dale cero estrellas a tu última opción o déjelo en blanco.
+       - Dele a su(s) favorito(s) cinco estrellas.
+       - Dele cero estrellas a su última opción o déjelo en blanco.
        - Calfique a otros {{candidates}} según lo desee.
        - Las puntuaciones iguales indican el mismo apoyo.
       footer_single_winner: ''
       footer_multi_winner: >
         Los ganadores en la Votación Estrella Proporcional son elegidos en rondas. Cada ronda elige al {{candidate}} con la puntuación total más alta,
-        luego designa a los partidarios más fuertes de {{candidate}} como representados. Las rondas posteriores incluyen a todos los votantes que no 
+        luego designa a los partidarios más fuertes del {{candidate}} como representados. Las rondas posteriores incluyen a todos los votantes que no 
         han sido totalmente representados.
       # These show above the star columns 
       left_title: 'Peor'
       right_title: 'Mejor'
     star:
       instruction_bullets:
-       - Dale a tu favorito cinco estrellas.
-       - Dale cero estrelas a tu última opción o déjelo en blanco.
+       - Dele a su favorito cinco estrellas.
+       - Dele cero estrelas a su última opción o déjelo en blanco.
        - Califique a los otros {{candidates}} según lo desee.
        - Las puntuaciones iguales indican el mismo apoyo.
       footer_single_winner: |
-        Los dos {{candidates}} con mayor puntaje son finalistas. Tu voto va al finalista que prefieras. 
-        Gana el finalista con más votos. 
+        Los dos {{candidates}} con mayor puntaje son finalistas. Su voto va al finalista que prefiera. Gana el finalista con más votos. 
       footer_multi_winner: >
         Esta elección usa Votación Estrella y elegirá a {{n}} ganadores.
         En la Votación Estrella, los dos {{candidates}} con mayor puntaje son finalistas y el finalista preferido por más votantes gana.
@@ -75,8 +74,8 @@ ballot:
       right_title: 'Mejor'
     rcv: 
       instruction_bullets:
-        - Ordene los {{candidates}} según su preferencia. (1ro, 2do, 3ro, etc.)
-        - Ordenar {{candidates}} igualmente no está permitido.
+        - Ordene a los {{candidates}} según su preferencia. (1ro, 2do, 3ro, etc.)
+        - Ordenar a los {{candidates}} igualmente no está permitido.
         - '{{capital_candidates}} dejados en blanco se clasifican como último de su preferencia'
       footer_single_winner: > 
         Cómo se cuenta el Voto por Orden de Preferencia (RCV in inglés): Las boletas se cuentan en rondas de eliminación. En cada ronda, su voto va al candidato que clasificó más alto, si es posible.
@@ -86,15 +85,15 @@ ballot:
       right_title: ''
     stv: 
       instruction_bullets:
-        - Ordene los {{candidates}} según su preferencia. (1ro, 2do, 3ro, etc.)
-        - Ordenar {{candidates}} igualmente no está permitido.
+        - Ordene a los {{candidates}} según su preferencia. (1ro, 2do, 3ro, etc.)
+        - Ordenar a los {{candidates}} igualmente no está permitido.
         - '{{capital_candidates}} dejados en blanco se clasifican como último de su preferencia.'
       footer_multi_winner: ''
       left_title: ''
       right_title: ''
     ranked_robin:
       instruction_bullets:
-        - Ordene los {{candidates}} según su preferencia.
+        - Ordene a los {{candidates}} según su preferencia.
         - Se permiten clasificaciones iguales.
         - '{{capital_candidates}} dejados en blanco se clasifican como último de su preferencia.'
       footer_single_winner: |
@@ -174,7 +173,7 @@ ballot_submitted:
   title: '¡{{capital_ballot}} Enviado!'
   description: ¡Gracias por participar en la votación!
   results: Resultados
-  donate: Donar a Equal Vote para apoyar to support el software de votación de código abierto.
+  donate: Donar a Equal Vote para apoyar el software de votación de código abierto.
   end_time: '{{capital_election}} termina el {{date}} a las {{time}}'
 
 # Localisation for numbers
@@ -205,7 +204,7 @@ results:
   tie_title: '¡Empate!'
   tiebreak_subtitle: '{{names}} ganó después de un desempate.'
   win_title_postfix_one: '¡Gana!'
-  win_title_postfix: '¡Ganó!'
+  win_title_postfix: '¡Ganan!'
   vote_count: '{{n}} votantes'
   method_context: 'Método de votación: {{voting_method}}'
   learn_link_text: Cómo {{voting_method}} funciona
@@ -249,7 +248,7 @@ results:
   star:
     score_title: Ronda de Puntuación
     score_description:
-      - Suma las estrellas de todas las boletas.
+      - Sume las estrellas de todas las boletas.
       - Los {{candidates}} con las puntaciones más altas son los finalistas.
     runoff_title: Segunda Ronda Automática
     runoff_description:
@@ -277,7 +276,7 @@ results:
     score_higher_than_runoff_title: ¿Por qué el candidato con mayor puntuación es diferente del ganador?
     score_higher_than_runoff_text: |
       El candidato con la mayor puntuación suele coincidir con el ganador de la segunda ronda, pero no siempre.
-      En la segunda ronda, solo cuentan los votos de los candidatos preferidos por el votante, lo que puede cambiar el resultado.
+      En la segunda ronda, solo cuentan los votos de los candidatos más preferidos por el votante, lo que puede cambiar el resultado.
       Por ejemplo, un voto de 5 estrellas frente a 4 estrellas tiene menos impacto en la puntuación, pero cuenta completamente en la segunda ronda,
       mientras que un voto de 5 estrellas frente a 0 estrellas hace una gran diferencia en la puntuación, pero es igual en la segunda ronda.  
       El ganador de la segunda ronda es el que tiene más apoyo entre los votantes en comparación con el segundo finalista.
