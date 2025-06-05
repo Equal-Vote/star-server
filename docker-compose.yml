@@ -15,7 +15,7 @@ services:
         - REACT_APP_BACKEND_URL=http://web:5000
         - REACT_APP_KEYCLOAK_URL=http://keycloak:8080/realms/Dev/protocol/openid-connect
         - DANGEROUSLY_DISABLE_HOST_CHECK=true
-        - FRONTEND_PORT=5000
+        - REACT_APP_FRONTEND_PORT=5000
         - DATABASE_URL=postgresql://postgres:ChangeMeOrDontTest2020@my-db:5432/postgres
         - DEV_DATABASE=FALSE
         - KEYCLOAK_SECRET=DefaultKeycloakSecret
