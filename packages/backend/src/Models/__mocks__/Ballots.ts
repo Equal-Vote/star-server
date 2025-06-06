@@ -30,14 +30,14 @@ export default class BallotsDB implements IBallotStore {
     }
 
     getBallotByID(ballot_id: string, ctx:ILoggingContext): Promise<Ballot | null> {
-        const ballots = this.ballots.filter(
+        const ballot = this.ballots.find(
             (ballot) => ballot.ballot_id === ballot_id
         );
-        if (!ballots) {
+        if (!ballot) {
             return Promise.resolve(null);
         }
-        var resBallots = JSON.parse(JSON.stringify(ballots));
-        return Promise.resolve(resBallots);
+        var resBallot = JSON.parse(JSON.stringify(ballot));
+        return Promise.resolve(resBallot);
     }
 
     deleteAllBallotsForElectionID(election_id: string, ctx: ILoggingContext): Promise<boolean> {

@@ -6,7 +6,7 @@ import useElection from '../../ElectionContextProvider';
 import { Race as iRace } from '@equal-vote/star-vote-shared/domain_model/Race';
 import structuredClone from '@ungap/structured-clone';
 import useConfirm from '../../ConfirmationDialogProvider';
-import { v4 as uuidv4 } from 'uuid';
+import { makeID, ID_PREFIXES, ID_LENGTHS } from '@equal-vote/star-vote-shared/utils/makeID';
 import { Candidate } from '@equal-vote/star-vote-shared/domain_model/Candidate';
 import { useDeleteAllBallots } from '~/hooks/useAPI';
 import useSnackbar from '~/components/SnackbarContext';
@@ -30,7 +30,7 @@ export const useEditRace = (race: iRace | null, race_index: number) => {
         voting_method: 'STAR',
         candidates: [
             { 
-                candidate_id: uuidv4(),
+                candidate_id: makeID(ID_PREFIXES.CANDIDATE, ID_LENGTHS.CANDIDATE),
                 candidate_name: ''
             },
         ] as Candidate[],
@@ -140,7 +140,7 @@ export const useEditRace = (race: iRace | null, race_index: number) => {
         let success = await updateElection(election => {
             election.races.push({
                 ...editedRace,
-                race_id: uuidv4()
+                race_id: makeID(ID_PREFIXES.RACE, ID_LENGTHS.RACE)
             })
         })
         success = success && await deleteAllBallots()
@@ -156,7 +156,7 @@ export const useEditRace = (race: iRace | null, race_index: number) => {
             election.races.push({
                 ...editedRace,
                 title: 'Copy Of ' + editedRace.title,
-                race_id: uuidv4()
+                race_id: makeID(ID_PREFIXES.RACE, ID_LENGTHS.RACE)
             })
         })
         success = success && await deleteAllBallots()

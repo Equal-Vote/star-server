@@ -9,6 +9,7 @@ import { useCookie } from '../../hooks/useCookie';
 import { NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { CreateElectionContext } from './CreateElectionDialog.js';
 import useSnackbar from '../SnackbarContext.js';
+import { makeID, ID_PREFIXES, ID_LENGTHS } from '@equal-vote/star-vote-shared/utils/makeID';
 
 import { useSubstitutedTranslation } from '../util.jsx';
 import useAuthSession from '../AuthSessionContextProvider.js';
@@ -45,15 +46,15 @@ const QuickPoll = () => {
                 voting_method: 'STAR',
                 candidates: [
                     {
-                        candidate_id: '0',
+                        candidate_id: makeID(ID_PREFIXES.CANDIDATE, ID_LENGTHS.CANDIDATE),
                         candidate_name: '',
                     },
                     {
-                        candidate_id: '1',
+                        candidate_id: makeID(ID_PREFIXES.CANDIDATE, ID_LENGTHS.CANDIDATE),
                         candidate_name: '',
                     },
                     {
-                        candidate_id: '2',
+                        candidate_id: makeID(ID_PREFIXES.CANDIDATE, ID_LENGTHS.CANDIDATE),
                         candidate_name: '',
                     }
                 ],
@@ -142,7 +143,7 @@ const QuickPoll = () => {
         newElection.races[0].candidates.forEach(candidate => {
             if (candidate.candidate_name !== '') {
                 newCandidates.push({
-                    candidate_id: String(newCandidates.length),
+                    candidate_id: makeID(ID_PREFIXES.CANDIDATE, ID_LENGTHS.CANDIDATE),
                     candidate_name: candidate.candidate_name
                 })
             }
@@ -162,7 +163,7 @@ const QuickPoll = () => {
         if (index === candidates.length - 1) {
             // If last form entry is updated, add another entry to form
             candidates.push({
-                candidate_id: String(updatedElection.races[0].candidates.length),
+                candidate_id: makeID(ID_PREFIXES.CANDIDATE, ID_LENGTHS.CANDIDATE),
                 candidate_name: '',
             })
         }

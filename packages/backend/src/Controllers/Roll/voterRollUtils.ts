@@ -3,10 +3,10 @@ import { ElectionRoll, ElectionRollState } from "@equal-vote/star-vote-shared/do
 import { IRequest } from "../../IRequest";
 import ServiceLocator from "../../ServiceLocator";
 import Logger from "../../Services/Logging/Logger";
-import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-errors";
+import { InternalServerError, Unauthorized } from "@curveball/http-errors";
 import { ILoggingContext } from "../../Services/Logging/ILogger";
-import { randomUUID } from "crypto";
 import { hashString } from "../controllerUtils";
+import { makeUniqueID, ID_LENGTHS, ID_PREFIXES } from "@equal-vote/star-vote-shared/utils/makeID";
 
 const ElectionRollModel = ServiceLocator.electionRollDb();
 
@@ -42,7 +42,13 @@ export async function getOrCreateElectionRoll(req: IRequest, election: Election,
         if (!skipStateCheck && election.state !== 'open') return null
 
         Logger.info(req, "Creating new roll");
-        const new_voter_id = election.settings.voter_authentication.voter_id ? voter_id : randomUUID()
+        const new_voter_id = election.settings.voter_authentication.voter_id ? 
+            voter_id : 
+            await makeUniqueID(
+                ID_PREFIXES.VOTER,
+                ID_LENGTHS.VOTER,
+                async (id: string) => await ElectionRollModel.getByVoterID(String(election.election_id), id, ctx) !== null,
+            );
         const history = [{
             action_type: ElectionRollState.approved,
             actor: new_voter_id,

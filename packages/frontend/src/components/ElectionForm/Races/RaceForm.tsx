@@ -13,12 +13,12 @@ import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import { methodValueToTextKey, useSubstitutedTranslation } from '../../util';
 import useElection from '../../ElectionContextProvider';
-import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
 import { SortableList } from '~/components/DragAndDrop';
 import { NewRace } from './Race';
 import { RaceErrors } from './useEditRace';
+import { makeID, ID_PREFIXES, ID_LENGTHS } from '@equal-vote/star-vote-shared/utils/makeID';
 
 interface RaceFormProps {
     race_index: number;
@@ -52,8 +52,11 @@ export default function RaceForm({
     )
     const confirm = useConfirm();
     const inputRefs = useRef([]);
-    const ephemeralCandidates:Candidate[] = useMemo(() => 
-        [...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }], 
+    const ephemeralCandidates = useMemo(() => 
+        [...editedRace.candidates, { 
+            candidate_id: makeID(ID_PREFIXES.CANDIDATE, ID_LENGTHS.CANDIDATE), 
+            candidate_name: '' 
+        }], 
         [editedRace.candidates]
     );   
 
