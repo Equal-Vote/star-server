@@ -32,21 +32,41 @@ export function makeID(prefix: string = '', length: number): string {
   return prefix ? `${prefix}-${randomPart}` : randomPart;
 }
 
+// Common constants
+const MAX_ITERATIONS = 10;
+
 // Async version for when collision checking is needed
 export async function makeUniqueID(
   prefix: string | null = null, 
   length: number,
-  hasCollision: Function
+  hasCollision: (id: string) => Promise<boolean> | boolean
 ): Promise<string> {
   let i = 0;
-  const maxIter = 10;
   let currentId = makeID(prefix || '', length);
   
-  while(i < maxIter && await hasCollision(currentId)) {
+  while(i < MAX_ITERATIONS && await hasCollision(currentId)) {
     currentId = makeID(prefix || '', length);
     i++;
   }
   
-  if(i === maxIter) throw new Error("Failed to generate unique ID");
+  if(i === MAX_ITERATIONS) throw new Error("Failed to generate unique ID");
+  return currentId;
+}
+
+// Synchronous version for when collision checking is needed but async isn't required
+export function makeUniqueIDSync(
+  prefix: string | null = null, 
+  length: number,
+  hasCollision: (id: string) => boolean
+): string {
+  let i = 0;
+  let currentId = makeID(prefix || '', length);
+  
+  while(i < MAX_ITERATIONS && hasCollision(currentId)) {
+    currentId = makeID(prefix || '', length);
+    i++;
+  }
+  
+  if(i === MAX_ITERATIONS) throw new Error("Failed to generate unique ID");
   return currentId;
 }
