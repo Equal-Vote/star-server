@@ -39,7 +39,7 @@ const MAX_ITERATIONS = 10;
 export async function makeUniqueID(
   prefix: string | null = null, 
   length: number,
-  hasCollision: (id: string) => Promise<boolean> | boolean
+  hasCollision: (id: string) => Promise<boolean>
 ): Promise<string> {
   let i = 0;
   let currentId = makeID(prefix || '', length);

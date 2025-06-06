@@ -7,7 +7,6 @@ import { roles } from "@equal-vote/star-vote-shared/domain_model/roles";
 import { permission } from '@equal-vote/star-vote-shared/domain_model/permissions';
 import { createHash } from "crypto";
 import ServiceLocator from "../ServiceLocator";
-import { Uid } from "@equal-vote/star-vote-shared/domain_model/Uid";
 import { makeUniqueID , ID_LENGTHS } from "@equal-vote/star-vote-shared/utils/makeID";
 const ElectionsModel =  ServiceLocator.electionsDb();
 
@@ -16,7 +15,7 @@ export async function expectValidElectionFromRequest(req:IRequest):Promise<Elect
     inputElection.election_id = await makeUniqueID(
         null,
         ID_LENGTHS.ELECTION,
-        async (id: Uid) => await ElectionsModel.electionExistsByID(id, req)
+        async (id: string) => Boolean(await ElectionsModel.electionExistsByID(id, req))
     );
     inputElection.create_date = new Date().toISOString()
     const validationErr = electionValidation(inputElection);
