@@ -1,6 +1,5 @@
 import React, { Dispatch, useCallback, useMemo, useRef } from 'react'
 import { useState } from "react"
-import { Candidate } from "@equal-vote/star-vote-shared/domain_model/Candidate"
 import { CandidateForm } from "../Candidates/AddCandidate"
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -13,12 +12,12 @@ import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import { methodValueToTextKey, useSubstitutedTranslation } from '../../util';
 import useElection from '../../ElectionContextProvider';
-import { v4 as uuidv4 } from 'uuid';
 import useConfirm from '../../ConfirmationDialogProvider';
 import useFeatureFlags from '../../FeatureFlagContextProvider';
 import { SortableList } from '~/components/DragAndDrop';
 import { NewRace } from './Race';
 import { RaceErrors } from './useEditRace';
+import { makeUniqueIDSync, ID_PREFIXES, ID_LENGTHS } from '@equal-vote/star-vote-shared/utils/makeID';
 
 interface RaceFormProps {
     race_index: number;
@@ -52,10 +51,23 @@ export default function RaceForm({
     )
     const confirm = useConfirm();
     const inputRefs = useRef([]);
-    const ephemeralCandidates:Candidate[] = useMemo(() => 
-        [...editedRace.candidates, { candidate_id: uuidv4(), candidate_name: '' }], 
-        [editedRace.candidates]
-    );   
+    const ephemeralCandidates = useMemo(() => {
+        // Get all existing candidate IDs
+        const existingIds = new Set(editedRace.candidates.map(c => c.candidate_id));
+        
+        const hasCollision = (id: string) => existingIds.has(id);
+        
+        const newId = makeUniqueIDSync(
+            ID_PREFIXES.CANDIDATE, 
+            ID_LENGTHS.CANDIDATE,
+            hasCollision
+        );
+        
+        return [...editedRace.candidates, { 
+            candidate_id: newId, 
+            candidate_name: '' 
+        }];
+    }, [editedRace.candidates]);
 
     const onEditCandidate = useCallback((candidate, index) => {
         applyRaceUpdate(race => {

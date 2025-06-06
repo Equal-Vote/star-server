@@ -1,7 +1,6 @@
-import { Election, electionValidation } from "@equal-vote/star-vote-shared/domain_model/Election";
-import { ElectionRoll, ElectionRollState } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
-import { Ballot, Ballot as BallotType, ballotValidation, NewBallot, OrderedNewBallot, RaceCandidateOrder } from '@equal-vote/star-vote-shared/domain_model/Ballot';
-import { IRequest } from "../../IRequest";
+import { Election } from "@equal-vote/star-vote-shared/domain_model/Election";
+import { ElectionRoll } from "@equal-vote/star-vote-shared/domain_model/ElectionRoll";
+import { Ballot, ballotValidation, NewBallot, OrderedNewBallot, RaceCandidateOrder } from '@equal-vote/star-vote-shared/domain_model/Ballot';
 import ServiceLocator from "../../ServiceLocator";
 import Logger from "../../Services/Logging/Logger";
 import { BadRequest, InternalServerError, Unauthorized } from "@curveball/http-errors";
@@ -19,6 +18,7 @@ import { expectPermission } from "../controllerUtils";
 import { permissions } from "@equal-vote/star-vote-shared/domain_model/permissions";
 import { OrderedVote } from "@equal-vote/star-vote-shared/domain_model/Vote";
 import { Score } from "@equal-vote/star-vote-shared/domain_model/Score";
+import { makeUniqueID, ID_LENGTHS, ID_PREFIXES } from "@equal-vote/star-vote-shared/utils/makeID";
 
 const ElectionsModel = ServiceLocator.electionsDb();
 const ElectionRollModel = ServiceLocator.electionRollDb();
@@ -77,7 +77,11 @@ async function makeBallotEvent(req: IElectionRequest, targetElection: Election, 
     }
     // preserve the ballot id if it's already provided from prior election
     if(!inputBallot.ballot_id || targetElection.ballot_source != 'prior_election'){
-        inputBallot.ballot_id = randomUUID();
+        inputBallot.ballot_id = await makeUniqueID(
+            ID_PREFIXES.BALLOT,
+            ID_LENGTHS.BALLOT,
+            async (id: string) => await BallotModel.getBallotByID(id, req) !== null
+        );
     }
     //TODO, ensure the user ID is added to the ballot...
     //should server-authenticate the user id based on auth token

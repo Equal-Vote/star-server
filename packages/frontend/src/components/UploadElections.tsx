@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSubstitutedTranslation } from "./util";
 import EnhancedTable from "./EnhancedTable";
 import { rankColumnCSV } from "./cvrParsers";
-import { v4 as uuidv4 } from 'uuid';
+import { makeID, ID_PREFIXES, ID_LENGTHS } from '@equal-vote/star-vote-shared/utils/makeID';
 import Papa from 'papaparse';
 import useAuthSession from "./AuthSessionContextProvider";
 import { defaultElection } from "./ElectionForm/CreateElectionDialog";
@@ -85,11 +85,11 @@ const UploadElections = () => {
                     },
                     races: [
                         {
-                            race_id: uuidv4(),
+                            race_id: makeID(ID_PREFIXES.RACE, ID_LENGTHS.RACE),
                             voting_method: 'IRV', 
                             title: cvr.name.split('.')[0],
                             candidates: [...candidateNames].map(name => ({ 
-                                candidate_id: uuidv4(),
+                                candidate_id: makeID(ID_PREFIXES.CANDIDATE, ID_LENGTHS.CANDIDATE),
                                 candidate_name: name
                             })) as Candidate[],
                             num_winners: 1,

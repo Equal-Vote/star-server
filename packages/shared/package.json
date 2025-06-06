@@ -37,6 +37,10 @@
       "types": "./dist/types/domain_model/*.d.ts",
       "default": "./dist/domain_model/*.js"
     },
+    "./utils/*": {
+      "types": "./dist/types/utils/*.d.ts",
+      "default": "./dist/utils/*.js"
+    },
     "./schema.json": {
       "default": "./dist/schema.json"
     }

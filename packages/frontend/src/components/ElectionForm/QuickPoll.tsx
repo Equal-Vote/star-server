@@ -9,6 +9,7 @@ import { useCookie } from '../../hooks/useCookie';
 import { NewElection } from '@equal-vote/star-vote-shared/domain_model/Election';
 import { CreateElectionContext } from './CreateElectionDialog.js';
 import useSnackbar from '../SnackbarContext.js';
+import { makeID, makeUniqueIDSync, ID_PREFIXES, ID_LENGTHS } from '@equal-vote/star-vote-shared/utils/makeID';
 
 import { useSubstitutedTranslation } from '../util.jsx';
 import useAuthSession from '../AuthSessionContextProvider.js';
@@ -30,6 +31,18 @@ const QuickPoll = () => {
         'ranked_robin': 'RankedRobin',
     }
 
+    const existingIds = new Set<string>();
+    const generateUniqueCandidateId = () => {
+        const hasCollision = (id: string) => existingIds.has(id);
+        const newId = makeUniqueIDSync(
+            ID_PREFIXES.CANDIDATE, 
+            ID_LENGTHS.CANDIDATE,
+            hasCollision
+        );
+        existingIds.add(newId);
+        return newId;
+    };
+
     const QuickPollTemplate: NewElection = {
         title: '',
         state: 'open',
@@ -45,15 +58,15 @@ const QuickPoll = () => {
                 voting_method: 'STAR',
                 candidates: [
                     {
-                        candidate_id: '0',
+                        candidate_id: generateUniqueCandidateId(),
                         candidate_name: '',
                     },
                     {
-                        candidate_id: '1',
+                        candidate_id: generateUniqueCandidateId(),
                         candidate_name: '',
                     },
                     {
-                        candidate_id: '2',
+                        candidate_id: generateUniqueCandidateId(),
                         candidate_name: '',
                     }
                 ],
@@ -138,11 +151,20 @@ const QuickPoll = () => {
         }
 
         const newCandidates = []
+        const existingIds = new Set<string>();
 
         newElection.races[0].candidates.forEach(candidate => {
             if (candidate.candidate_name !== '') {
+                const hasCollision = (id: string) => existingIds.has(id);
+                const newId = makeUniqueIDSync(
+                    ID_PREFIXES.CANDIDATE, 
+                    ID_LENGTHS.CANDIDATE,
+                    hasCollision
+                );
+                existingIds.add(newId);
+                
                 newCandidates.push({
-                    candidate_id: String(newCandidates.length),
+                    candidate_id: newId,
                     candidate_name: candidate.candidate_name
                 })
             }
@@ -162,7 +184,7 @@ const QuickPoll = () => {
         if (index === candidates.length - 1) {
             // If last form entry is updated, add another entry to form
             candidates.push({
-                candidate_id: String(updatedElection.races[0].candidates.length),
+                candidate_id: makeID(ID_PREFIXES.CANDIDATE, ID_LENGTHS.CANDIDATE),
                 candidate_name: '',
             })
         }
