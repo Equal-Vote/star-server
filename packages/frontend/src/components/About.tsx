@@ -41,7 +41,7 @@ const About = () => {
           sx={{ maxWidth: 800 }}
         >
           {t('about.contributors').map(({github_user_name, github_image_id}) => (
-            <a href={`https://github.com/${github_user_name}`} aria-label={`${github_user_name} github profile`} key={github_user_name}>
+            <a href={`https://github.com/${github_user_name}`} target = "_blank" aria-label={`${github_user_name} github profile`} key={github_user_name}>
               <Box
                 component="img"
                 src={`https://avatars.githubusercontent.com/u/${github_image_id}?v=4`}
@@ -62,7 +62,10 @@ const About = () => {
           {t('about.donate_description')}
         </Typography>
 
-        <PrimaryButton sx={{m: 3}} href={t('about.donate_link')}>
+        <PrimaryButton 
+          sx={{m: 3}}
+          href={t('about.donate_link')}
+        >
           {t('about.donate_button')}
         </PrimaryButton>
       </Paper>
