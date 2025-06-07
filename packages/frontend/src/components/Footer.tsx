@@ -42,6 +42,7 @@ export default function Footer() {
             <br/>
 						<Link
 							href="https://www.starvoting.org/"
+							target = "_blank"
 							sx={{
 								color: 'var(--brand-pop)',
 								textDecoration: 'underline',
@@ -53,6 +54,7 @@ export default function Footer() {
             <Tooltip title="Equal Vote Coalition" arrow placement="top">
               <Link
                 href="https://www.equal.vote/"
+				target = "_blank"
                 sx={{ 
                   color: 'var(--brand-pop)',
                   textDecoration: 'underline',
@@ -94,6 +96,7 @@ export default function Footer() {
 							component="img"
 							alt="Equal Vote Coalition Logo"
 							src="https://assets.nationbuilder.com/unifiedprimary/sites/1/meta_images/original/evc_logo.png?1730324377"
+							
 							sx={{
 								width: '100%',
 								padding: 2,
@@ -127,6 +130,7 @@ export default function Footer() {
 							<Link
 								aria-label="STAR Voting Facebook page"
 								href="https://www.facebook.com/STARVoting"
+								target = "_blank"
 								color="inherit"
 								sx={{ pl: 1, pr: 1 }}
 							>
@@ -135,6 +139,7 @@ export default function Footer() {
 							<Link
 								aria-label="STAR Voting Instagram page"
 								href="https://www.instagram.com/starvoting/"
+								target = "_blank"
 								color="inherit"
 								sx={{ pl: 1, pr: 1 }}
 							>
@@ -143,6 +148,7 @@ export default function Footer() {
 							<Link
 								aria-label="STAR Voting X page"
 								href="https://twitter.com/5starvoting"
+								target = "_blank"
 								color="inherit"
 								sx={{ pl: 1, pr: 1 }}
 							>
@@ -151,6 +157,7 @@ export default function Footer() {
 							<Link
 								aria-label="Equal Vote GitHub"
 								href="https://github.com/Equal-Vote"
+								target = "_blank"
 								color="inherit"
 								sx={{ pl: 1, pr: 1 }}
 							>
