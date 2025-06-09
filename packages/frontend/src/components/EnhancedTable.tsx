@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as React from 'react';
+import { useState, useMemo, ReactNode, MouseEvent, ChangeEvent } from 'react';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -45,11 +45,11 @@ interface HeadCell {
   filterGroups?: {
     [key: string]: boolean
   };
-  formatter?: (value: string, row?: string, t?: (key: string, options?: object) => string) => React.ReactNode;
+  formatter?: (value: string, row?: string, t?: (key: string, options?: object) => string) => ReactNode;
 }
 
 interface EnhancedTableHeadProps {
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof TableData) => void;
+  onRequestSort: (event: MouseEvent<unknown>, property: keyof TableData) => void;
   order: Order;
   orderBy: string;
   headCells: HeadCell[];
@@ -351,7 +351,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
   const { order, orderBy, onRequestSort } = props;
 
   const createSortHandler =
-    (property: keyof TableData) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof TableData) => (event: MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 
@@ -488,15 +488,15 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
 
 export default function EnhancedTable(props: EnhancedTableProps) {
-  const [order, setOrder] = React.useState<Order>(props.defaultSortBy == 'email' ? 'asc' : 'desc');
-  const [orderBy, setOrderBy] = React.useState<Extract<keyof TableData, string>>(props.defaultSortBy);
-  const [selected] = React.useState<readonly string[]>([]);
-  const [page, setPage] = React.useState(0);
-  const [dense] = React.useState(true);
-  const [rowsPerPage, setRowsPerPage] = React.useState(25);
+  const [order, setOrder] = useState<Order>(props.defaultSortBy == 'email' ? 'asc' : 'desc');
+  const [orderBy, setOrderBy] = useState<Extract<keyof TableData, string>>(props.defaultSortBy);
+  const [selected] = useState<readonly string[]>([]);
+  const [page, setPage] = useState(0);
+  const [dense] = useState(true);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
   const headCells: HeadCell[] = props.headKeys.map(key => headCellPool[key] as HeadCell);
   const {t} = useSubstitutedTranslation();
-  const [filters, setFilters] = React.useState([])
+  const [filters, setFilters] = useState([])
 
   if(filters.length != headCells.length){
     setFilters(headCells.map(col => {
@@ -513,7 +513,7 @@ export default function EnhancedTable(props: EnhancedTableProps) {
   }
 
   const handleRequestSort = (
-    event: React.MouseEvent<unknown>,
+    event: MouseEvent<unknown>,
     property: Extract<keyof TableData, string>,
   ) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -525,12 +525,12 @@ export default function EnhancedTable(props: EnhancedTableProps) {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-  // const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleChangeDense = (event: ChangeEvent<HTMLInputElement>) => {
   //   setDense(event.target.checked);
   // };
 
@@ -547,7 +547,7 @@ export default function EnhancedTable(props: EnhancedTableProps) {
     return fData;
   }
 
-  const filteredRows = React.useMemo(
+  const filteredRows = useMemo(
     () => {
       setPage(0);
       return filterData(formatTableData(props.headKeys, props.data), headCells, filters);
@@ -560,7 +560,7 @@ export default function EnhancedTable(props: EnhancedTableProps) {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredRows.length) : 0;
 
 
-  const visibleRows = React.useMemo(
+  const visibleRows = useMemo(
     () =>
       stableSort(filteredRows, getComparator(order, orderBy, headCellPool[orderBy].isDate === true )).slice(
         page * rowsPerPage,
