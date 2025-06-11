@@ -14,7 +14,7 @@ export default function PluralityBallotView() {
         const newScores = ballotContext.candidates.map(c => c.score);
         // bubble becomes null
         if(newScores[row] === score){
-          newScores[row] = 0
+          newScores[row] = null
 
         // bubble becomes 1, all others become 0
         }else{
