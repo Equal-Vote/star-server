@@ -27,6 +27,7 @@ import PublicArchive from './components/Elections/PublicArchive'
 import NameMatchingTester from './components/NameMatchingTester'
 import StyleGuide from './components/StyleGuide'
 import { PrimaryButton } from './components/styles'
+import ScrollToTop from './hooks/scrollToTop'
 
 const App = () => {
   const {t} = useSubstitutedTranslation();
@@ -45,6 +46,7 @@ const App = () => {
   }
   return (
     <Router>
+      <ScrollToTop/>
       <ComposeContextProviders providers={[
         FeatureFlagContextProvider,
         ThemeContextProvider,
