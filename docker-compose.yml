@@ -40,7 +40,7 @@ services:
     volumes:
     # Any sql file at docker-entrypoint-initdb.d will automatically be run
     # If you would like to create a new backup run the following command:
-    # docker exec star-server-my-db-1 pg_dump -U postgres postgres > test-data.sql
+    # docker exec bettervoting-my-db-1 pg_dump -U postgres postgres > test-data.sql
       - ./test-data.sql:/docker-entrypoint-initdb.d/test-data.sql
     networks:
       - star-net
