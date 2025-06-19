@@ -12,6 +12,7 @@ import { SecondaryButton } from "../styles";
 import useSnackbar from "../SnackbarContext";
 import { useSubstitutedTranslation } from "../util";
 import { useState } from "react"
+import IosShareIcon from '@mui/icons-material/IosShare';
 
 export default function ShareButton({ url }: { url: string }) {
     const { setSnack } = useSnackbar()
@@ -75,6 +76,7 @@ export default function ShareButton({ url }: { url: string }) {
                 fullWidth
                 onClick={handleOpenNavMenu}>
                 {t('share.button')}
+                <IosShareIcon sx={{pl: 1}} />
             </SecondaryButton>
             <Fade timeout={350}>
                 <Paper >
