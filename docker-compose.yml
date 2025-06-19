@@ -8,7 +8,6 @@ services:
     networks:
       - star-net
     environment:
-
         - REACT_APP_FEATURED_ELECTIONS=4xtfb4 #We've got the postgres database restoring from a backup that creates an election with this ID
         - REACT_APP_MAX_BALLOT_RANKS=10
         - REACT_APP_DEFAULT_BALLOT_RANKS=6
