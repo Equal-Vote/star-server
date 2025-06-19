@@ -5,22 +5,19 @@ on:
     branches:
       - main
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   build-push-deploy:
     runs-on: ubuntu-latest
     steps:
-
-      # We have to do this to workaround these errors:
-      # ERROR: failed to configure registry cache importer: invalid reference format: repository name must be lowercase
-      - name: Create REPO env var that contains lowercase github.repository name
-        run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
-
       - name: Docker Metadata action
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96 # v5.6.1
         id: meta
         with:
-          images: |
-            ghcr.io/${{ env.REPO }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
           # Using `branch` to give a predictable name to cache from, and using
           # `sha` so we always have a unique tag which will trigger
@@ -42,7 +39,7 @@ jobs:
       - name: Build and push Docker images
         uses: docker/build-push-action@v5
         with:
-          cache-from: type=registry,ref=ghcr.io/${{ env.REPO }}:${{ github.ref_name }}
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
           cache-to: type=inline
           labels: ${{ steps.meta.outputs.labels }}
           push: true
